@@ -348,10 +348,6 @@ StackTrace:
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>Odpojování...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] heslo: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>Tento bot nebude spuštěn protože je v konfiguračním souboru nastaven jako neaktivní.</value>
 	</data>

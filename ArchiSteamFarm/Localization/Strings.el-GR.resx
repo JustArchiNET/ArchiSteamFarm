@@ -366,10 +366,6 @@ StackTrace:
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>Αποσύνδεση...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] κωδικός: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>Δεν γίνεται εκκίνηση αυτού του bot καθώς έχει απενεργοποιηθεί στο αρχείο διαμόρφωσης!</value>
 	</data>

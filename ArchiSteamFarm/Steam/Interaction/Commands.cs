@@ -123,8 +123,6 @@ public sealed class Commands {
 						return await ResponseLevel(steamID).ConfigureAwait(false);
 					case "LOOT":
 						return await ResponseLoot(steamID).ConfigureAwait(false);
-					case "PASSWORD":
-						return ResponsePassword(steamID);
 					case "PAUSE":
 						return await ResponsePause(steamID, true).ConfigureAwait(false);
 					case "PAUSE~":
@@ -242,8 +240,6 @@ public sealed class Commands {
 						return await ResponseOwns(steamID, args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
 					case "OWNS":
 						return (await ResponseOwns(steamID, args[1]).ConfigureAwait(false)).Response;
-					case "PASSWORD":
-						return await ResponsePassword(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 					case "PAUSE":
 						return await ResponsePause(steamID, Utilities.GetArgsAsText(args, 1, ","), true).ConfigureAwait(false);
 					case "PAUSE~":
@@ -2082,49 +2078,6 @@ public sealed class Commands {
 		IEnumerable<string> extraResponses = ownedGamesStats.Select(kv => FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnsOverviewPerGame, kv.Value.Count, validResults.Count, $"{kv.Key}{(!string.IsNullOrEmpty(kv.Value.GameName) ? $" | {kv.Value.GameName}" : "")}")));
 
 		return string.Join(Environment.NewLine, validResults.Select(static result => result.Response).Concat(extraResponses));
-	}
-
-	private string? ResponsePassword(ulong steamID) {
-		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
-		if (!Bot.HasAccess(steamID, BotConfig.EAccess.Master)) {
-			return null;
-		}
-
-		if (string.IsNullOrEmpty(Bot.BotConfig.DecryptedSteamPassword)) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(BotConfig.DecryptedSteamPassword)));
-		}
-
-		Dictionary<ArchiCryptoHelper.ECryptoMethod, string> encryptedPasswords = new(2) {
-			{ ArchiCryptoHelper.ECryptoMethod.AES, ArchiCryptoHelper.Encrypt(ArchiCryptoHelper.ECryptoMethod.AES, Bot.BotConfig.DecryptedSteamPassword!) ?? "" },
-			{ ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, ArchiCryptoHelper.Encrypt(ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, Bot.BotConfig.DecryptedSteamPassword!) ?? "" }
-		};
-
-		return FormatBotResponse(string.Join(", ", encryptedPasswords.Where(static kv => !string.IsNullOrEmpty(kv.Value)).Select(static kv => string.Format(CultureInfo.CurrentCulture, Strings.BotEncryptedPassword, kv.Key, kv.Value))));
-	}
-
-	private static async Task<string?> ResponsePassword(ulong steamID, string botNames) {
-		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		HashSet<Bot>? bots = Bot.GetBots(botNames);
-
-		if ((bots == null) || (bots.Count == 0)) {
-			return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
-		}
-
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponsePassword(steamID)))).ConfigureAwait(false);
-
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
-
-		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
 	private async Task<string?> ResponsePause(ulong steamID, bool permanent, string? resumeInSecondsText = null) {

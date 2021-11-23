@@ -364,10 +364,6 @@ StackTrace:
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>연결을 끊는 중...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] 비밀번호: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>이 봇 인스턴스는 설정 파일에서 비활성화되어 있기에 시작하지 않습니다!</value>
 	</data>

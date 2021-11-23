@@ -365,10 +365,6 @@ StackTrace:
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>Desconectando...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] contraseña: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>¡No se ha iniciado esta instancia de bot porque está desactivado en el archivo de configuración!</value>
 	</data>

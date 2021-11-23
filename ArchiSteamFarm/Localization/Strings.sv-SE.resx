@@ -300,10 +300,6 @@ StackTrace:
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>Bortkopplar...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] lösenord: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>Startar inte denna bot-instansen för att den är inaktiverad i config filen!</value>
 	</data>

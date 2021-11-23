@@ -306,10 +306,6 @@ StackTrace:
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>Atvienojas...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] parole: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>Šis bots netiek startēts, jo tas ir atspējots konfigurācijas failā!</value>
 	</data>

@@ -311,10 +311,6 @@ StackTrace:
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>Verbinding verbreken...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] wachtwoord: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>Deze bot wordt niet gestart omdat hij uitgeschakeld is in het configuratiebestand!</value>
 	</data>

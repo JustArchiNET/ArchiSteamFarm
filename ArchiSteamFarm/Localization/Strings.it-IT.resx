@@ -364,10 +364,6 @@
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>Disconnessione...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] password: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>Questo bot non verrà avviato poiché è disabilitato nel file di configurazione!</value>
 	</data>

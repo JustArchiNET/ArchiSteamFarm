@@ -366,10 +366,6 @@
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>Отключение...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] пароль: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>Не запускаем этого бота, поскольку он отключён в конфигурационном файле!</value>
 	</data>

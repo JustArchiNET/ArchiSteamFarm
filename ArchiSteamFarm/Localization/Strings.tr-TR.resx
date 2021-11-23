@@ -366,10 +366,6 @@ Yığın izleme:
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>Bağlantı Kesiliyor...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] parola: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>Bu bot örneği, yapılandırma dosyasında devre dışı bırakıldığından başlatılmıyor!</value>
 	</data>

@@ -561,12 +561,6 @@ namespace ArchiSteamFarm.Localization {
             }
         }
         
-        public static string BotEncryptedPassword {
-            get {
-                return ResourceManager.GetString("BotEncryptedPassword", resourceCulture);
-            }
-        }
-        
         public static string BotInstanceNotStartingBecauseDisabled {
             get {
                 return ResourceManager.GetString("BotInstanceNotStartingBecauseDisabled", resourceCulture);

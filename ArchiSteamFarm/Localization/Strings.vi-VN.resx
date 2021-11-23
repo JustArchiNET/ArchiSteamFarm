@@ -366,10 +366,6 @@ StackTrace:
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>Đang ngắt kết nối...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] mật khẩu: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>Không chạy bot này bởi vì nó đã bị vô hiệu hóa trong tập tin cấu hình!</value>
 	</data>

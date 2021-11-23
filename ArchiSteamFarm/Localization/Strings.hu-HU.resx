@@ -309,10 +309,6 @@ StackTrace: {2}</value>
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>Kapcsolat bontása...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] jelszó: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>Ezt a bot példányt nem lehet elindítani, mert a konfigurációs fájlban ki van kapcsolva!</value>
 	</data>
