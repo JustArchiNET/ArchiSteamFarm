@@ -365,10 +365,6 @@
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>正在中斷連線...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] 密碼︰{1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>這個 Bot 將不會啟動，因為它在設定檔中被停用！</value>
 	</data>
@@ -728,6 +724,7 @@
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>你在不支援的環境下提供了 --ignore-unsupported-environment 參數 請注意 我們不為這種情況提供任何支持 風險請完全由你自行承擔 我們已經警告過你了</value>
 	</data>
+	
 	
 	
 	

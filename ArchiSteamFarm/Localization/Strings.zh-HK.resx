@@ -306,10 +306,6 @@
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>正在中斷連線……</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] 密碼：{1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>不會啟動此機械人實例，因為它在設定檔中被禁用！</value>
 	</data>
@@ -575,6 +571,7 @@
 	<data name="IPCConfigChanged" xml:space="preserve">
 		<value>IPC 設定檔已變更！</value>
 	</data>
+	
 	
 	
 	

@@ -724,11 +724,14 @@ Tiempo de actividad del proceso: {1}</value>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Estás ejecutando ASF en un entorno no soportado, proporcionando el argumento --ignore-unsupported-environment. Ten en cuenta que no ofrecemos ningún tipo de soporte para este escenario y lo haces bajo tu propio riesgo. Has sido advertido.</value>
 	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Obteniendo la suma de verificación del servidor remoto...</value>
+	</data>
 	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
-		<value>Comprobando la suma de verificación del ejecutable descargado con el del servidor remoto de ASF...</value>
+		<value>Comprobando la suma de verificación del ejecutable descargado contra el del servidor remoto...</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>El servidor remoto no tiene conocimiento acerca de la versión a la que estamos actualizando. Esta situación es posible si la versión fue publicada recientemente - aplazando el procedimiento de actualización hasta un poco más tarde como medida de seguridad adicional.</value>
+		<value>El servidor remoto no tiene conocimiento acerca de la versión a la que estamos actualizando. Esta situación es posible si la versión fue publicada recientemente - negándose a proceder con el procedimiento de actualización inmediatamente como medida de seguridad adicional.</value>
 	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>El servidor remoto ha respondido con una suma de verificación diferente, esto podría indicar una descarga corrupta o un ataque MITM, ¡negándose a continuar con el procedimiento de actualización!</value>

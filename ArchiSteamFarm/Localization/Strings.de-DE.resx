@@ -725,11 +725,14 @@ Prozesslaufzeit: {1}</value>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Du verwendest ASF in einer nicht unterstützten Umgebung und verwendest das Argument --ignore-unsupported-environment. Bitte beachte, dass wir für dieses Szenario keinerlei Unterstützung anbieten und du das Risiko vollständig auf dich selber nehmen musst. Du wurdest gewarnt.</value>
 	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Rufe Prüfsumme vom ASF Server ab...</value>
+	</data>
 	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
-		<value>Verifiziere Prüfsumme der heruntergeladenen Version mit dem ASF-Server...</value>
+		<value>Verifiziere Prüfsumme der heruntergeladenen Datei mmit der des ASF Servers...</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>Der Server weiß nichts von der Version, zu der wir aktualisieren wollen. Diese Situation ist möglich, wenn die Version erst vor kurzem veröffentlicht wurde - Wir verzögern das Updateprozedere etwas als eine zusätzliche Sicherheitsmaßnahme.</value>
+		<value>Der Server weiß nichts von der Version, zu der wir versuchen zu aktualisieren. Diese Situation ist möglich wenn die Version erst kürzlich veröffentlicht wurde - Wir weigern uns als zusätzliche Sicherheitsmaßnahme das Updateprozedere zum jetzigen Zeitpunkt durchzuführen.</value>
 	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Der Server antwortete mit einer unterschiedlichen Prüfsumme. Dies kann einen korrupten Download oder eine MITM-Attacke indizieren; Wir weigern uns mit dem Update fortzufahren!</value>

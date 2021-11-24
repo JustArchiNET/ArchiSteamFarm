@@ -285,7 +285,6 @@ StackTrace:
 	
 	
 	
-	
 	<data name="BotReconnecting" xml:space="preserve">
 		<value>กำลังเชื่อมต่อใหม่...</value>
 	</data>
@@ -402,6 +401,7 @@ StackTrace:
 		<value>ผลลัพธ์: {0}</value>
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
+	
 	
 	
 	

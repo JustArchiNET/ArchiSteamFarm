@@ -366,10 +366,6 @@ STACKTRACE:
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>DISCONNECTIN...</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] PASWORD: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>NOT STARTIN DIS BOT INSTANCE CUZ IZ DISABLD IN CONFIG FILE!</value>
 	</data>
@@ -729,6 +725,7 @@ PROCES UPTIME: {1}</value>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>URE RUNNIN ASF IN UNSUPPORTD ENVIRONMENT, SUPPLYIN --ignore-unsupported-environment  ARGUMENT. PLZ NOWT DAT WE DO NOT OFFR ANY KIND OV SUPPORT 4 DIS SCENARIO AN URE DOIN IT ENTIRELY AT UR OWN RISK. UVE BEEN WARND.</value>
 	</data>
+	
 	
 	
 	

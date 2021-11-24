@@ -725,11 +725,14 @@ Czas procesu: {1}</value>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Używasz ASF w nieobsługiwanym środowisku, podając argument --ignore-unsupported-environment. Pamiętaj, że nie oferujemy żadnego wsparcia dla tego scenariusza i robisz to całkowicie na własne ryzyko. Zostałeś ostrzeżony.</value>
 	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Pobieranie sumy kontrolnej ze zdalnego serwera...</value>
+	</data>
 	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
-		<value>Sprawdzanie sumy kontrolnej pobranego pliku binarnego ze zdalnym serwerem ASF...</value>
+		<value>Sprawdzanie sumy kontrolnej pobranego pliku binarnego z tą ze zdalnego serwera...</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>Serwer zdalny nie wie nic o wydaniu, do którego aktualizujemy. Taka sytuacja jest możliwa, jeśli wydanie zostało opublikowane niedawno – wstrzymanie się trochę z aktualizacją jako dodatkowy środek bezpieczeństwa.</value>
+		<value>Serwer zdalny nie wie nic o wydaniu, do którego aktualizujemy. Taka sytuacja jest możliwa, jeśli wydanie zostało opublikowane niedawno – odmowa natychmiastowego przeprowadzenia procedury aktualizacji jako dodatkowy środek bezpieczeństwa.</value>
 	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Serwer zdalny odpowiedział inną sumą kontrolną, co może wskazywać na uszkodzenie pobranego pliku lub atak MITM, odmowa kontynuowania procedury aktualizacji!</value>

@@ -366,10 +366,6 @@
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>正在断开连接……</value>
 	</data>
-	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}] 密码: {1}</value>
-		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>您已在配置文件中禁用此机器人，该实例将不会启动！</value>
 	</data>
@@ -729,11 +725,14 @@
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>您提供了 --ignore-unsupported-environment 参数，使 ASF 在不受支持的环境中运行。请注意我们不会为此场景提供任何类型的支持。如果您一定要这样做，必须自己承担一切责任。</value>
 	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>正在从远程服务器拉取校验和……</value>
+	</data>
 	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
-		<value>正在通过 ASF 远程服务器验证下载的二进制文件校验和……</value>
+		<value>正在对照远程服务器验证下载的二进制文件校验和……</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>远程服务器不知道我们要更新到的版本信息。这种情况可能是因为版本刚刚发布——作为额外的安全措施，已延后更新过程。</value>
+		<value>远程服务器不知道我们要更新到的版本信息。这种情况可能是因为版本刚刚发布——作为额外的安全措施，已终止当前更新过程。</value>
 	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>远程服务器响应了不同的校验和，这可能表示下载损坏或者中间人攻击，已拒绝执行更新过程！</value>
