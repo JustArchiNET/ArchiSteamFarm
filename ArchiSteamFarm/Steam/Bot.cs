@@ -863,7 +863,7 @@ public sealed class Bot : IAsyncDisposable {
 
 				break;
 			case ASF.EUserInputType.Password:
-				BotConfig.SetDecryptedSteamPassword(inputValue, true);
+				BotConfig.SetDecryptedSteamPassword(inputValue);
 				BotConfig.IsSteamPasswordSet = false;
 
 				break;

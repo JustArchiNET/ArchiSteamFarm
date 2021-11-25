@@ -607,18 +607,13 @@ public sealed class BotConfig {
 		return (botConfig, json != latestJson ? latestJson : null);
 	}
 
-	internal void SetDecryptedSteamPassword(string? decryptedSteamPassword, bool fromUser = false) {
+	internal void SetDecryptedSteamPassword(string? decryptedSteamPassword) {
 		if (!string.IsNullOrEmpty(decryptedSteamPassword) && PasswordFormat.HasTransformation()) {
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			decryptedSteamPassword = ArchiCryptoHelper.Encrypt(PasswordFormat, decryptedSteamPassword!);
 		}
 
 		SteamPassword = decryptedSteamPassword;
-
-		if (fromUser) {
-			// Reset steam password set flag, it actually isn't set in the config
-			IsSteamPasswordSet = false;
-		}
 	}
 
 	public enum EAccess : byte {
