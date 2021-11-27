@@ -438,13 +438,23 @@ public static class ASF {
 	private static void LoadAssembliesNeededBeforeUpdate() {
 		HashSet<string> loadedAssembliesNames = GetLoadedAssembliesNames();
 
-		foreach (Assembly assembly in AssembliesNeededBeforeUpdate.Where(assemblyName => !loadedAssembliesNames.Contains(assemblyName)).Select(Assembly.Load)) {
+		foreach (string assemblyName in AssembliesNeededBeforeUpdate.Where(loadedAssembliesNames.Add)) {
+			Assembly assembly;
+
+			try {
+				assembly = Assembly.Load(assemblyName);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericDebuggingException(e);
+
+				continue;
+			}
+
 			LoadAssembliesRecursively(assembly, loadedAssembliesNames);
 		}
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	private static void LoadAssembliesRecursively(Assembly assembly, ICollection<string> loadedAssembliesNames) {
+	private static void LoadAssembliesRecursively(Assembly assembly, ISet<string> loadedAssembliesNames) {
 		if (assembly == null) {
 			throw new ArgumentNullException(nameof(assembly));
 		}
@@ -453,10 +463,18 @@ public static class ASF {
 			throw new ArgumentNullException(nameof(loadedAssembliesNames));
 		}
 
-		foreach (AssemblyName assemblyName in assembly.GetReferencedAssemblies().Where(assemblyName => !loadedAssembliesNames.Contains(assemblyName.FullName))) {
-			loadedAssembliesNames.Add(assemblyName.FullName);
+		foreach (AssemblyName assemblyName in assembly.GetReferencedAssemblies().Where(assemblyName => loadedAssembliesNames.Add(assemblyName.FullName))) {
+			Assembly loadedAssembly;
 
-			LoadAssembliesRecursively(Assembly.Load(assemblyName), loadedAssembliesNames);
+			try {
+				loadedAssembly = Assembly.Load(assemblyName);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericDebuggingException(e);
+
+				continue;
+			}
+
+			LoadAssembliesRecursively(loadedAssembly, loadedAssembliesNames);
 		}
 	}
 
