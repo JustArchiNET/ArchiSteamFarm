@@ -124,6 +124,19 @@ internal static class Program {
 			throw new ArgumentNullException(nameof(path));
 		}
 
+		// Aid userspace and replace ~ with user's home directory if possible
+		if (path.Contains('~', StringComparison.Ordinal)) {
+			try {
+				string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+				if (!string.IsNullOrEmpty(homeDirectory)) {
+					path = path.Replace("~", homeDirectory, StringComparison.Ordinal);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
 		try {
 			Directory.SetCurrentDirectory(path);
 		} catch (Exception e) {
