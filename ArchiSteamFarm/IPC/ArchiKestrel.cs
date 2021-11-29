@@ -113,7 +113,9 @@ internal static class ArchiKestrel {
 		builder.ConfigureWebHostDefaults(
 			webBuilder => {
 				// Set default web root
-				webBuilder.UseWebRoot(websiteDirectory);
+				if (Directory.Exists(websiteDirectory)) {
+					webBuilder.UseWebRoot(websiteDirectory);
+				}
 
 				// Now conditionally initialize settings that are not possible to override
 				if (customConfigExists) {
