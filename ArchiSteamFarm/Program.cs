@@ -127,7 +127,7 @@ internal static class Program {
 		// Aid userspace and replace ~ with user's home directory if possible
 		if (path.Contains('~', StringComparison.Ordinal)) {
 			try {
-				string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+				string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile, Environment.SpecialFolderOption.DoNotVerify);
 
 				if (!string.IsNullOrEmpty(homeDirectory)) {
 					path = path.Replace("~", homeDirectory, StringComparison.Ordinal);
