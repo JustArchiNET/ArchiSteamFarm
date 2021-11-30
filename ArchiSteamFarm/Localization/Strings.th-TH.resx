@@ -261,24 +261,49 @@ StackTrace:
 	
 	
 	
+	<data name="BotAuthenticatorToken" xml:space="preserve">
+		<value>โทเคน 2FA: {0}</value>
+		<comment>{0} will be replaced by generated 2FA token (string)</comment>
+	</data>
+	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+		<value>การฟาร์มอัตโนมัติหยุดชั่วคราว!</value>
+	</data>
+	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+		<value>การฟาร์มอัตโนมัติกลับมาทำงานอีกครั้ง!</value>
+	</data>
+	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+		<value>การฟาร์มอัตโนมัติถูกหยุดชั่วคราวแล้ว!</value>
+	</data>
+	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+		<value>การฟาร์มอัตโนมัติถูกกลับมาทำงานต่อแล้ว!</value>
+	</data>
+	<data name="BotConnected" xml:space="preserve">
+		<value>เชื่อมต่อกับ Steam แล้ว!</value>
+	</data>
+	<data name="BotDisconnected" xml:space="preserve">
+		<value>ตัดการเชื่อมต่อจาก Steam แล้ว!</value>
+	</data>
+	<data name="BotDisconnecting" xml:space="preserve">
+		<value>กำลังตัดการเชื่อมต่อ...</value>
+	</data>
 	
 	
 	
 	
+	<data name="BotLoggingIn" xml:space="preserve">
+		<value>กำลังเข้าสู่ระบบ...</value>
+	</data>
 	
+	<data name="BotLootingFailed" xml:space="preserve">
+		<value>ข้อเสนอแลกเปลี่ยนล้มเหลว!</value>
+	</data>
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="BotLootingSuccess" xml:space="preserve">
+		<value>ส่งข้อเสนอแลกเปลี่ยนสำเร็จ!</value>
+	</data>
+	<data name="BotSendingTradeToYourself" xml:space="preserve">
+		<value>ไม่สามารถส่งข้อเสนอแลกเปลี่ยนให้ตัวเองได้!</value>
+	</data>
 	
 	
 	
@@ -340,7 +365,10 @@ StackTrace:
 	</data>
 	
 	
-	
+	<data name="Initializing" xml:space="preserve">
+		<value>กำลังเริ่ม {0}...</value>
+		<comment>{0} will be replaced by service name that is being initialized</comment>
+	</data>
 	
 	
 	
@@ -370,7 +398,9 @@ StackTrace:
 	
 	
 	
-	
+	<data name="ErrorAborted" xml:space="preserve">
+		<value>ยกเลิกแล้ว!</value>
+	</data>
 	
 	
 	
