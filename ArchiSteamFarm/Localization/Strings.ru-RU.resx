@@ -725,9 +725,15 @@
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Вы запускаете ASF в неподдерживаемой среде с аргументом --ignore-unsupported-environment.  Обратите внимание, что мы не оказываем никакой поддержки в этом случае, и вы делаете это исключительно на свой страх и риск.  Вас предупредили.</value>
 	</data>
-	
-	
-	
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Получение контрольной суммы с удаленного сервера...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>Проверка контрольной суммы скачанного бинарника с удаленного сервера...</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>Удаленный сервер ничего не знает о выпуске, до которого мы обновляем. Такая ситуация возможна, если релиз был опубликован недавно - обновление отложено на некоторое время в качестве дополнительной меры безопасности.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Удаленный сервер ответил с другой контрольной суммой, это может означать поврежденную загрузку или Атаку посредника-MITM, отказ от процедуры обновления!</value>
 	</data>
