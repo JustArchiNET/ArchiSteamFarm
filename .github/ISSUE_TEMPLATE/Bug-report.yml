@@ -46,6 +46,7 @@ body:
         - linux-arm
         - linux-arm64
         - linux-x64
+        - osx-arm64
         - osx-x64
         - win-x64
     validations:
