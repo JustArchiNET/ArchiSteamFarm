@@ -271,10 +271,8 @@ internal static class Program {
 			}
 
 			if (OS.IsRunningAsRoot()) {
-				ASF.ArchiLogger.LogGenericError(Strings.WarningRunningAsRoot);
-				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
-
-				return false;
+				ASF.ArchiLogger.LogGenericWarning(Strings.WarningRunningAsRoot);
+				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 			}
 		}
 
