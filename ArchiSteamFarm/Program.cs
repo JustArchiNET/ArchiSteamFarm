@@ -119,7 +119,7 @@ internal static class Program {
 		NetworkGroup = networkGroup;
 	}
 
-	private static void HandlePathArgument(string path) {
+	private static bool HandlePathArgument(string path) {
 		if (string.IsNullOrEmpty(path)) {
 			throw new ArgumentNullException(nameof(path));
 		}
@@ -134,6 +134,8 @@ internal static class Program {
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
+
+				return false;
 			}
 		}
 
@@ -141,7 +143,11 @@ internal static class Program {
 			Directory.SetCurrentDirectory(path);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
+
+			return false;
 		}
+
+		return true;
 	}
 
 	private static async Task Init(IReadOnlyCollection<string>? args) {
@@ -192,6 +198,9 @@ internal static class Program {
 	}
 
 	private static async Task<bool> InitCore(IReadOnlyCollection<string>? args) {
+		// Init emergency loggers used for failures before setting up ones according to preference of the user
+		Logging.InitEmergencyLoggers();
+
 		Directory.SetCurrentDirectory(SharedInfo.HomeDirectory);
 
 		// Allow loading configs from source tree if it's a debug build
@@ -212,15 +221,24 @@ internal static class Program {
 		}
 
 		// Parse environment variables
-		ParseEnvironmentVariables();
+		if (!ParseEnvironmentVariables()) {
+			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+
+			return false;
+		}
 
 		// Parse args
 		if (args?.Count > 0) {
-			ParseArgs(args);
+			if (!ParseArgs(args)) {
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+
+				return false;
+			}
 		}
 
 		bool uniqueInstance = await OS.RegisterProcess().ConfigureAwait(false);
 
+		// Init core loggers according to user's preferences
 		Logging.InitCoreLoggers(uniqueInstance);
 
 		if (!uniqueInstance) {
@@ -498,7 +516,7 @@ internal static class Program {
 		e.SetObserved();
 	}
 
-	private static void ParseArgs(IReadOnlyCollection<string> args) {
+	private static bool ParseArgs(IReadOnlyCollection<string> args) {
 		if ((args == null) || (args.Count == 0)) {
 			throw new ArgumentNullException(nameof(args));
 		}
@@ -558,7 +576,10 @@ internal static class Program {
 						HandleNetworkGroupArgument(arg);
 					} else if (pathNext) {
 						pathNext = false;
-						HandlePathArgument(arg);
+
+						if (!HandlePathArgument(arg)) {
+							return false;
+						}
 					} else {
 						switch (arg.Length) {
 							case > 16 when arg.StartsWith("--NETWORK-GROUP=", StringComparison.OrdinalIgnoreCase):
@@ -570,7 +591,9 @@ internal static class Program {
 
 								break;
 							case > 7 when arg.StartsWith("--PATH=", StringComparison.OrdinalIgnoreCase):
-								HandlePathArgument(arg[7..]);
+								if (!HandlePathArgument(arg[7..])) {
+									return false;
+								}
 
 								break;
 							default:
@@ -583,9 +606,11 @@ internal static class Program {
 					break;
 			}
 		}
+
+		return true;
 	}
 
-	private static void ParseEnvironmentVariables() {
+	private static bool ParseEnvironmentVariables() {
 		// We're using a single try-catch block here, as a failure for getting one variable will result in the same failure for all other ones
 		try {
 			string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
@@ -606,11 +631,17 @@ internal static class Program {
 
 			if (!string.IsNullOrEmpty(envPath)) {
 				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				HandlePathArgument(envPath!);
+				if (!HandlePathArgument(envPath!)) {
+					return false;
+				}
 			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
+
+			return false;
 		}
+
+		return true;
 	}
 
 	private static async Task Shutdown(byte exitCode = 0) {

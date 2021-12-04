@@ -149,29 +149,20 @@ internal static class Logging {
 	internal static void InitCoreLoggers(bool uniqueInstance) {
 		try {
 			if ((Directory.GetCurrentDirectory() != AppContext.BaseDirectory) && File.Exists(NLogConfigurationFile)) {
+				IsUsingCustomConfiguration = true;
+
 				LogManager.Configuration = new XmlLoggingConfiguration(NLogConfigurationFile);
 			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 
-		if (LogManager.Configuration != null) {
-			IsUsingCustomConfiguration = true;
+		if (IsUsingCustomConfiguration) {
 			InitConsoleLoggers();
 			LogManager.ConfigurationChanged += OnConfigurationChanged;
 
 			return;
 		}
-
-		ConfigurationItemFactory.Default.ParseMessageTemplates = false;
-		LoggingConfiguration config = new();
-
-#pragma warning disable CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
-		ColoredConsoleTarget coloredConsoleTarget = new("ColoredConsole") { Layout = GeneralLayout };
-#pragma warning restore CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
-
-		config.AddTarget(coloredConsoleTarget);
-		config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, coloredConsoleTarget));
 
 		if (uniqueInstance) {
 			try {
@@ -196,12 +187,34 @@ internal static class Logging {
 			};
 #pragma warning restore CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
 
-			config.AddTarget(fileTarget);
-			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
+			LogManager.Configuration.AddTarget(fileTarget);
+			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
+
+			LogManager.ReconfigExistingLoggers();
 		}
 
-		LogManager.Configuration = config;
 		InitConsoleLoggers();
+	}
+
+	internal static void InitEmergencyLoggers() {
+		if (LogManager.Configuration != null) {
+			IsUsingCustomConfiguration = true;
+
+			return;
+		}
+
+		// This is a temporary, bare, file-less configuration that must work until we're able to initialize it properly
+		ConfigurationItemFactory.Default.ParseMessageTemplates = false;
+		LoggingConfiguration config = new();
+
+#pragma warning disable CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
+		ColoredConsoleTarget coloredConsoleTarget = new("ColoredConsole") { Layout = GeneralLayout };
+#pragma warning restore CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
+
+		config.AddTarget(coloredConsoleTarget);
+		config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, coloredConsoleTarget));
+
+		LogManager.Configuration = config;
 	}
 
 	internal static void InitHistoryLogger() {
