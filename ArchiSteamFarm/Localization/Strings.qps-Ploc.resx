@@ -719,9 +719,7 @@ PROCES UPTIME: {1}</value>
 		<value>URE USIN {0} SETTIN OV {1} PROPERTY, BUT U DIDNT PROVIDE CUSTOM --cryptkey. DIS ENTIRELY DEFEATS TEH PROTECSHUN, AS ASF IZ FORCD 2 USE ITZ OWN (KNOWN) KEY. U SHUD PROVIDE CUSTOM --cryptkey 4 MAKIN USE OV TEH SECURITY BENEFIT OFFERD BY DIS SETTIN.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
-	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>URE ATTEMPTIN 2 RUN ASF AS TEH ADMINISTRATOR (ROOT). DIS CAUSEZ SIGNIFICANT SECURITY RISK 2 UR MACHINE, AN AS ASF DOEZ NOT REQUIRE ROOT ACCES 4 ITZ OPERASHUN, WE DO NOT SUPPORT DIS SCENARIO. SUPPLY --ignore-unsupported-environment ARGUMENT IF U RLY KNOE WUT URE DOIN.</value>
-	</data>
+	
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>URE RUNNIN ASF IN UNSUPPORTD ENVIRONMENT, SUPPLYIN --ignore-unsupported-environment  ARGUMENT. PLZ NOWT DAT WE DO NOT OFFR ANY KIND OV SUPPORT 4 DIS SCENARIO AN URE DOIN IT ENTIRELY AT UR OWN RISK. UVE BEEN WARND.</value>
 	</data>

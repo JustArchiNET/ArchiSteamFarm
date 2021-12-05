@@ -719,9 +719,7 @@ Durée de fonctionnement : {1}</value>
 		<value>Vous utilisez le paramètre {0} de la propriété {1} , mais vous n'avez pas fourni de --cryptkey personnalisé. Cela casse complètement la protection, car ASF est forcé d’utiliser sa propre clé (connue). Vous devez fournir une --cryptkey personnalisée pour utiliser les avantages de sécurité offerts par ce paramètre.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
-	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>Vous essayez d'exécuter ASF en tant qu'administrateur (root). Cela entraîne un risque important pour la sécurité de votre machine, et comme ASF ne nécessite pas l'accès root pour son fonctionnement, nous ne prenons pas en charge ce scénario. Utilisez l'argument --ignore-unsupported-environment si vous savez vraiment ce que vous faites.</value>
-	</data>
+	
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Vous utilisez ASF dans un environnement non pris en charge, en utilisant --ignore-unsupported-environment comme argument. Veuillez noter que nous n'offrons aucun support pour ce scénario et que vous le faites risques et périls. Vous avez été prévenu.</value>
 	</data>

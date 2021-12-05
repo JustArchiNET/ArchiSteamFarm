@@ -720,7 +720,7 @@ Czas procesu: {1}</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
 	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>Próbujesz uruchomić ASF jako administrator (root). Powoduje to znaczne ryzyko dla bezpieczeństwa urządzenia, ponieważ ASF nie wymaga dostępu roota do swojego działania, a my nie obsługujemy tego scenariusza. Podaj argument --ignore-unsupported-environment, jeśli naprawdę wiesz, co robisz.</value>
+		<value>Próbujesz uruchomić ASF jako administrator (root). Powoduje to znaczne zagrożenie bezpieczeństwa Twojego komputera. Ponieważ ASF nie wymaga dostępu roota do swojego działania, zalecamy uruchomienie go jako użytkownik niebędący administratorem, jeśli to możliwe.</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Używasz ASF w nieobsługiwanym środowisku, podając argument --ignore-unsupported-environment. Pamiętaj, że nie oferujemy żadnego wsparcia dla tego scenariusza i robisz to całkowicie na własne ryzyko. Zostałeś ostrzeżony.</value>

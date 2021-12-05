@@ -719,9 +719,7 @@
 		<value>Вы используете настройку {0} свойства {1}, но не указали специальный ключ --cryptkey. Это полностью снимает защиту, поскольку ASF вынужден использовать свой собственный (общедоступный) ключ. Вы должны предоставить собственный ключ --cryptkey, чтобы использовать преимущества безопасности, предлагаемые этим параметром.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
-	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>Вы пытаетесь запустить ASF от имени администратора (root).  Это создает значительный риск для безопасности вашего компьютера, и, поскольку ASF не требует root-доступа для своей работы, мы не поддерживаем этот сценарий.  Укажите аргумент --ignore-unsupported-environment, если вы действительно знаете, что делаете.</value>
-	</data>
+	
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Вы запускаете ASF в неподдерживаемой среде с аргументом --ignore-unsupported-environment.  Обратите внимание, что мы не оказываем никакой поддержки в этом случае, и вы делаете это исключительно на свой страх и риск.  Вас предупредили.</value>
 	</data>

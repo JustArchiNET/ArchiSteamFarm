@@ -718,9 +718,7 @@
 		<value>你正在使用 {0} 設置 {1} 屬性 但你沒有提供一個自定義的加密密鑰 這很不安全 你應該提供一個自定義的加密密鑰</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
-	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>你正在以管理員權限運行ASF 我們不需要管理員權限 如果你知道自己在做什麼 請加入 --ignore-unsupported-environment 參數</value>
-	</data>
+	
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>你在不支援的環境下提供了 --ignore-unsupported-environment 參數 請注意 我們不為這種情況提供任何支持 風險請完全由你自行承擔 我們已經警告過你了</value>
 	</data>

@@ -132,7 +132,10 @@ StackTrace:
 		<value>เพิกเฉยการแลกเปลี่ยน: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
-	
+	<data name="LoggingIn" xml:space="preserve">
+		<value>กำลังเข้าสู่ระบบ {0}…</value>
+		<comment>{0} will be replaced by service's name</comment>
+	</data>
 	<data name="NoBotsAreRunning" xml:space="preserve">
 		<value>ไม่มีบอตทำงาน กำลังออกจากโปรแกรม…</value>
 	</data>
@@ -288,8 +291,14 @@ StackTrace:
 	</data>
 	
 	
-	
-	
+	<data name="BotLoggedOff" xml:space="preserve">
+		<value>ออกจากระบบ Steam แล้ว: {0}</value>
+		<comment>{0} will be replaced by logging off reason (string)</comment>
+	</data>
+	<data name="BotLoggedOn" xml:space="preserve">
+		<value>{0} เข้าสู่ระบบสำเร็จ</value>
+		<comment>{0} will be replaced by steam ID (number)</comment>
+	</data>
 	<data name="BotLoggingIn" xml:space="preserve">
 		<value>กำลังเข้าสู่ระบบ...</value>
 	</data>
@@ -375,11 +384,17 @@ StackTrace:
 	
 	
 	
+	<data name="BotVersion" xml:space="preserve">
+		<value>{0} V{1}</value>
+		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
+	</data>
 	
 	
 	
-	
-	
+	<data name="BotOwnedAlready" xml:space="preserve">
+		<value>เป็นเจ้าของแล้ว: {0}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="ErrorAccessDenied" xml:space="preserve">
 		<value>ปฏิเสธการเข้าถึง!</value>
 	</data>
@@ -388,14 +403,24 @@ StackTrace:
 	
 	
 	
+	<data name="BotRefreshingPackagesData" xml:space="preserve">
+		<value>กำลังรีเฟรชข้อมูลแพ็กเกจ…</value>
+	</data>
 	
 	
 	
 	
-	
-	
-	
-	
+	<data name="BotWalletBalance" xml:space="preserve">
+		<value>ยอดวอลเล็ต: {0} {1}</value>
+		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+	</data>
+	<data name="BotHasNoWallet" xml:space="preserve">
+		<value>บอตไม่มีวอลเล็ต</value>
+	</data>
+	<data name="BotLevel" xml:space="preserve">
+		<value>บอตมีเลเวล {0}</value>
+		<comment>{0} will be replaced by bot's level</comment>
+	</data>
 	
 	
 	<data name="ErrorAborted" xml:space="preserve">
@@ -404,8 +429,13 @@ StackTrace:
 	
 	
 	
-	
-	
+	<data name="PluginLoading" xml:space="preserve">
+		<value>กำลังโหลด {0} V{1}…</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+	</data>
+	<data name="NothingFound" xml:space="preserve">
+		<value>ไม่พบอะไรเลย!</value>
+	</data>
 	
 	<data name="PleaseWait" xml:space="preserve">
 		<value>กรุณารอ...</value>
@@ -448,5 +478,7 @@ StackTrace:
 	
 	
 	
-	
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>กำลังแพตช์ไฟล์ ASF…</value>
+	</data>
 </root>

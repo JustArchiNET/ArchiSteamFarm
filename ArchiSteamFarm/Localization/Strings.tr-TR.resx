@@ -719,9 +719,7 @@ Süreç çalışma zamanı: {1}</value>
 		<value>{1} özelliğinin {0} ayarını kullanıyorsunuz, ancak özel bir --cryptkey sağlamadınız. Bu, ASF'nin kendi (bilinen) anahtarını kullanmak zorunda kalması nedeniyle korumayı tamamen ortadan kaldırır. Bu ayarın sunduğu güvenlik avantajından yararlanmak için özel bir --cryptkey sağlamalısınız.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
-	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>ASF'yi yönetici (root) olarak çalıştırmaya çalışıyorsunuz. Bu, makineniz için önemli bir güvenlik riskine neden olur ve ASF'nin çalışması için kök erişimi gerektirmediğinden bu senaryoyu desteklemiyoruz. Ne yaptığınızı gerçekten biliyorsanız, --ignore-unsupported-environment argümanını sağlayın.</value>
-	</data>
+	
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>ASF'yi desteklenmeyen ortamda çalıştırıyorsunuz ve --ignore-unsupported-environment argümanı sağlıyorsunuz. Lütfen bu senaryo için herhangi bir destek sağlamadığımızı ve bunu tamamen kendi sorumluluğunuzda yaptığınızı unutmayın. Uyarıldınız.</value>
 	</data>

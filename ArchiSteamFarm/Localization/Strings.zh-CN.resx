@@ -720,7 +720,7 @@
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
 	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>您正尝试以管理员（root）身份运行 ASF。这会导致您的设备暴露在巨大的安全风险下，又因为 ASF 不需要 root 权限就可以运行，所以我们不支持这种场景。如果您了解自己在做什么，请提供 --ignore-unsupported-environment 参数。</value>
+		<value>您正尝试以管理员（root）身份运行 ASF。这会导致您的设备暴露在巨大的安全风险下，又因为 ASF 不需要 root 权限就可以运行，所以我们建议您尽可能在普通用户下运行。</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>您提供了 --ignore-unsupported-environment 参数，使 ASF 在不受支持的环境中运行。请注意我们不会为此场景提供任何类型的支持。如果您一定要这样做，必须自己承担一切责任。</value>
