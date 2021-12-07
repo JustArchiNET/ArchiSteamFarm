@@ -680,11 +680,11 @@ public sealed class WebBrowser : IDisposable {
 							requestMessage.Content = content;
 
 							break;
-						case IReadOnlyCollection<KeyValuePair<string?, string?>> nameValueCollection:
+						case IReadOnlyCollection<KeyValuePair<string, string>> nameValueCollection:
 							try {
 								requestMessage.Content = new FormUrlEncodedContent(nameValueCollection);
 							} catch (UriFormatException) {
-								requestMessage.Content = new StringContent(string.Join("&", nameValueCollection.Select(static kv => $"{WebUtility.UrlEncode(kv.Key)}={WebUtility.UrlEncode(kv.Value)}")), null, "application/x-www-form-urlencoded");
+								requestMessage.Content = new StringContent(string.Join("&", nameValueCollection.Select(static kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}")), null, "application/x-www-form-urlencoded");
 							}
 
 							break;

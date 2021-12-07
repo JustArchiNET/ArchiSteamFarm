@@ -1666,7 +1666,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		}
 
-		Uri request = new(SteamCommunityURL, $"/mobileconf/conf?a={Bot.SteamID}&k={WebUtility.UrlEncode(confirmationHash)}&l=english&m=android&p={WebUtility.UrlEncode(deviceID)}&t={time}&tag=conf");
+		Uri request = new(SteamCommunityURL, $"/mobileconf/conf?a={Bot.SteamID}&k={Uri.EscapeDataString(confirmationHash)}&l=english&m=android&p={Uri.EscapeDataString(deviceID)}&t={time}&tag=conf");
 
 		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
@@ -1954,7 +1954,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		}
 
-		Uri request = new(SteamCommunityURL, $"/mobileconf/ajaxop?a={Bot.SteamID}&cid={confirmationID}&ck={confirmationKey}&k={WebUtility.UrlEncode(confirmationHash)}&l=english&m=android&op={(accept ? "allow" : "cancel")}&p={WebUtility.UrlEncode(deviceID)}&t={time}&tag=conf");
+		Uri request = new(SteamCommunityURL, $"/mobileconf/ajaxop?a={Bot.SteamID}&cid={confirmationID}&ck={confirmationKey}&k={Uri.EscapeDataString(confirmationHash)}&l=english&m=android&op={(accept ? "allow" : "cancel")}&p={Uri.EscapeDataString(deviceID)}&t={time}&tag=conf");
 
 		ObjectResponse<BooleanResponse>? response = await UrlGetToJsonObjectWithSession<BooleanResponse>(request).ConfigureAwait(false);
 
@@ -2118,7 +2118,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamStoreURL.Host}"));
 
 		// Report proper time when doing timezone-based calculations, see setTimezoneCookies() from https://steamcommunity-a.akamaihd.net/public/shared/javascript/shared_global.js
-		string timeZoneOffset = $"{DateTimeOffset.Now.Offset.TotalSeconds}{WebUtility.UrlEncode(",")}0";
+		string timeZoneOffset = $"{DateTimeOffset.Now.Offset.TotalSeconds}{Uri.EscapeDataString(",")}0";
 
 		WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", $".{SteamCommunityURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", $".{SteamHelpURL.Host}"));
