@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -45,5 +46,5 @@ public interface IPlugin {
 	/// <summary>
 	///     ASF will call this method right after plugin initialization.
 	/// </summary>
-	void OnLoaded();
+	Task OnLoaded();
 }

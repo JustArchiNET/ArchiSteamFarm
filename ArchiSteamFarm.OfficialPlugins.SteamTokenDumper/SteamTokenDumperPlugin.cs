@@ -62,7 +62,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 
 	public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(Config?.Enabled == true ? GlobalCache?.LastChangeNumber ?? 0 : 0);
 
-	public async void OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
+	public async Task OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
 		if (!SharedInfo.HasValidToken) {
 			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledMissingBuildToken, nameof(SteamTokenDumperPlugin)));
 
@@ -100,8 +100,6 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 			config.Enabled = true;
 		}
 
-		Config = config;
-
 		if (!config.Enabled) {
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(SteamTokenDumperPlugin)));
 
@@ -132,6 +130,8 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 			}
 		}
 
+		Config = config;
+
 #pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
 		TimeSpan startIn = TimeSpan.FromMinutes(Random.Shared.Next(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
 #pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
@@ -144,7 +144,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginInitializedAndEnabled, nameof(SteamTokenDumperPlugin), startIn.ToHumanReadable()));
 	}
 
-	public async void OnBotDestroy(Bot bot) {
+	public async Task OnBotDestroy(Bot bot) {
 		if (bot == null) {
 			throw new ArgumentNullException(nameof(bot));
 		}
@@ -160,7 +160,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 		}
 	}
 
-	public async void OnBotInit(Bot bot) {
+	public async Task OnBotInit(Bot bot) {
 		if (bot == null) {
 			throw new ArgumentNullException(nameof(bot));
 		}
@@ -179,7 +179,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 		}
 	}
 
-	public void OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager) {
+	public Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager) {
 		if (bot == null) {
 			throw new ArgumentNullException(nameof(bot));
 		}
@@ -193,7 +193,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 		}
 
 		if (Config is not { Enabled: true }) {
-			return;
+			return Task.CompletedTask;
 		}
 
 		subscription = callbackManager.Subscribe<SteamApps.LicenseListCallback>(callback => OnLicenseList(bot, callback));
@@ -201,13 +201,19 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 		if (!BotSubscriptions.TryAdd(bot, subscription)) {
 			subscription.Dispose();
 		}
+
+		return Task.CompletedTask;
 	}
 
-	public IReadOnlyCollection<ClientMsgHandler>? OnBotSteamHandlersInit(Bot bot) => null;
+	public Task<IReadOnlyCollection<ClientMsgHandler>?> OnBotSteamHandlersInit(Bot bot) => Task.FromResult((IReadOnlyCollection<ClientMsgHandler>?) null);
 
-	public override void OnLoaded() => Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
+	public override Task OnLoaded() {
+		Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
 
-	public void OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges) {
+		return Task.CompletedTask;
+	}
+
+	public Task OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges) {
 		if (currentChangeNumber == 0) {
 			throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
 		}
@@ -221,7 +227,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 		}
 
 		if (Config is not { Enabled: true }) {
-			return;
+			return Task.CompletedTask;
 		}
 
 		if (GlobalCache == null) {
@@ -229,15 +235,17 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 		}
 
 		GlobalCache.OnPICSChanges(currentChangeNumber, appChanges);
+
+		return Task.CompletedTask;
 	}
 
-	public void OnPICSChangesRestart(uint currentChangeNumber) {
+	public Task OnPICSChangesRestart(uint currentChangeNumber) {
 		if (currentChangeNumber == 0) {
 			throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
 		}
 
 		if (Config is not { Enabled: true }) {
-			return;
+			return Task.CompletedTask;
 		}
 
 		if (GlobalCache == null) {
@@ -245,6 +253,8 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 		}
 
 		GlobalCache.OnPICSChangesRestart(currentChangeNumber);
+
+		return Task.CompletedTask;
 	}
 
 	private static async void OnBotRefreshTimer(object? state) {

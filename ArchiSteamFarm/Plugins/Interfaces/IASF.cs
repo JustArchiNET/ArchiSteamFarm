@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -32,5 +33,5 @@ public interface IASF : IPlugin {
 	///     ASF will call this method right after global config initialization.
 	/// </summary>
 	/// <param name="additionalConfigProperties">Extra config properties made out of <see cref="JsonExtensionDataAttribute" />. Can be null if no extra properties are found.</param>
-	void OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null);
+	Task OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null);
 }

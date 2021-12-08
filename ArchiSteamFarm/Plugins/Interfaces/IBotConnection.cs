@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
 using SteamKit2;
@@ -32,11 +33,11 @@ public interface IBotConnection : IPlugin {
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="reason">Reason for disconnection, or <see cref="EResult.OK" /> if the disconnection was initiated by ASF (e.g. as a result of a command).</param>
-	void OnBotDisconnected(Bot bot, EResult reason);
+	Task OnBotDisconnected(Bot bot, EResult reason);
 
 	/// <summary>
 	///     ASF will call this method when bot successfully connects to Steam network.
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
-	void OnBotLoggedOn(Bot bot);
+	Task OnBotLoggedOn(Bot bot);
 }

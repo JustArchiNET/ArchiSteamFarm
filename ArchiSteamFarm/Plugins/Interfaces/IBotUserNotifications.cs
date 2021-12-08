@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
 using JetBrains.Annotations;
@@ -33,5 +34,5 @@ public interface IBotUserNotifications : IPlugin {
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="newNotifications">Collection containing those notification types that are new (that is, when new count > previous count of that notification type).</param>
-	void OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications);
+	Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications);
 }

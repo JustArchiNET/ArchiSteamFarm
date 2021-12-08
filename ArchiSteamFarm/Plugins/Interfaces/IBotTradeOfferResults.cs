@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Exchange;
 using JetBrains.Annotations;
@@ -33,5 +34,5 @@ public interface IBotTradeOfferResults : IPlugin {
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="tradeResults">Trade results related to this callback.</param>
-	void OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults);
+	Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults);
 }

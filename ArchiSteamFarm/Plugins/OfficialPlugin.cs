@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading.Tasks;
 using ArchiSteamFarm.Plugins.Interfaces;
 
 namespace ArchiSteamFarm.Plugins;
@@ -27,7 +28,7 @@ namespace ArchiSteamFarm.Plugins;
 internal abstract class OfficialPlugin : IPlugin {
 	public abstract string Name { get; }
 	public abstract Version Version { get; }
-	public abstract void OnLoaded();
+	public abstract Task OnLoaded();
 
 	internal bool HasSameVersion() => Version == SharedInfo.Version;
 }

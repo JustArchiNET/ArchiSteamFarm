@@ -24,6 +24,7 @@ using System.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime;
 using System.Threading;
+using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Plugins.Interfaces;
 
@@ -41,7 +42,7 @@ internal sealed class PeriodicGCPlugin : IPlugin {
 
 	public Version Version => typeof(PeriodicGCPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-	public void OnLoaded() {
+	public Task OnLoaded() {
 		TimeSpan timeSpan = TimeSpan.FromSeconds(GCPeriod);
 
 		ASF.ArchiLogger.LogGenericWarning($"Periodic GC will occur every {timeSpan.ToHumanReadable()}. Please keep in mind that this plugin should be used for debugging tests only.");
@@ -49,6 +50,8 @@ internal sealed class PeriodicGCPlugin : IPlugin {
 		lock (LockObject) {
 			PeriodicGCTimer.Change(timeSpan, timeSpan);
 		}
+
+		return Task.CompletedTask;
 	}
 
 	private static void PerformGC(object? state = null) {

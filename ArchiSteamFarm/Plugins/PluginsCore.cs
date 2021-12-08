@@ -260,7 +260,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IASF>().Select(plugin => Task.Run(() => plugin.OnASFInit(additionalConfigProperties)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IASF>().Select(plugin => plugin.OnASFInit(additionalConfigProperties))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -310,7 +310,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBot>().Select(plugin => Task.Run(() => plugin.OnBotDestroy(bot)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBot>().Select(plugin => plugin.OnBotDestroy(bot))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -326,7 +326,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotConnection>().Select(plugin => Task.Run(() => plugin.OnBotDisconnected(bot, reason)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotConnection>().Select(plugin => plugin.OnBotDisconnected(bot, reason))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -342,7 +342,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => Task.Run(() => plugin.OnBotFarmingFinished(bot, farmedSomething)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => plugin.OnBotFarmingFinished(bot, farmedSomething))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -358,7 +358,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => Task.Run(() => plugin.OnBotFarmingStarted(bot)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => plugin.OnBotFarmingStarted(bot))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -374,7 +374,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => Task.Run(() => plugin.OnBotFarmingStopped(bot)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => plugin.OnBotFarmingStopped(bot))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -416,7 +416,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBot>().Select(plugin => Task.Run(() => plugin.OnBotInit(bot)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBot>().Select(plugin => plugin.OnBotInit(bot))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -432,7 +432,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotModules>().Select(plugin => Task.Run(() => plugin.OnBotInitModules(bot, additionalConfigProperties)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotModules>().Select(plugin => plugin.OnBotInitModules(bot, additionalConfigProperties))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -448,7 +448,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotConnection>().Select(plugin => Task.Run(() => plugin.OnBotLoggedOn(bot)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotConnection>().Select(plugin => plugin.OnBotLoggedOn(bot))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -498,7 +498,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotSteamClient>().Select(plugin => Task.Run(() => plugin.OnBotSteamCallbacksInit(bot, callbackManager)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotSteamClient>().Select(plugin => plugin.OnBotSteamCallbacksInit(bot, callbackManager))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -516,7 +516,7 @@ internal static class PluginsCore {
 		IList<IReadOnlyCollection<ClientMsgHandler>?> responses;
 
 		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotSteamClient>().Select(plugin => Task.Run(() => plugin.OnBotSteamHandlersInit(bot)))).ConfigureAwait(false);
+			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotSteamClient>().Select(plugin => plugin.OnBotSteamHandlersInit(bot))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -566,7 +566,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOfferResults>().Select(plugin => Task.Run(() => plugin.OnBotTradeOfferResults(bot, tradeResults)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOfferResults>().Select(plugin => plugin.OnBotTradeOfferResults(bot, tradeResults))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -586,7 +586,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotUserNotifications>().Select(plugin => Task.Run(() => plugin.OnBotUserNotifications(bot, newNotifications)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotUserNotifications>().Select(plugin => plugin.OnBotUserNotifications(bot, newNotifications))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -610,7 +610,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => Task.Run(() => plugin.OnPICSChanges(currentChangeNumber, appChanges, packageChanges)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => plugin.OnPICSChanges(currentChangeNumber, appChanges, packageChanges))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -626,7 +626,7 @@ internal static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => Task.Run(() => plugin.OnPICSChangesRestart(currentChangeNumber)))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => plugin.OnPICSChangesRestart(currentChangeNumber))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}

@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
 
@@ -31,17 +32,17 @@ public interface IBotCardsFarmerInfo : IPlugin {
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="farmedSomething">Bool value indicating whether the module has finished successfully, so when there was at least one card to drop, and nothing has interrupted us in the meantime.</param>
-	void OnBotFarmingFinished(Bot bot, bool farmedSomething);
+	Task OnBotFarmingFinished(Bot bot, bool farmedSomething);
 
 	/// <summary>
 	///     ASF will call this method when cards farming module is started on given bot instance. The module is started only when there are valid cards to drop, so this method won't be called when there is nothing to idle.
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
-	void OnBotFarmingStarted(Bot bot);
+	Task OnBotFarmingStarted(Bot bot);
 
 	/// <summary>
 	///     ASF will call this method when cards farming module is stopped on given bot instance. The stop could be a result of a natural finish, or other situations (e.g. Steam networking issues, user commands).
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
-	void OnBotFarmingStopped(Bot bot);
+	Task OnBotFarmingStopped(Bot bot);
 }
