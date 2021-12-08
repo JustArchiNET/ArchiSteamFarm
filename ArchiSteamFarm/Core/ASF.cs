@@ -315,6 +315,8 @@ public static class ASF {
 				return SharedInfo.Version;
 			}
 
+			await PluginsCore.OnUpdateProceeding(newVersion).ConfigureAwait(false);
+
 			try {
 				// We disable ArchiKestrel here as the update process moves the core files and might result in IPC crash
 				// TODO: It might fail if the update was triggered from the API, this should be something to improve in the future, by changing the structure into request -> return response -> finish update
@@ -342,6 +344,8 @@ public static class ASF {
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
+
+			await PluginsCore.OnUpdateFinished(newVersion).ConfigureAwait(false);
 
 			return newVersion;
 		} finally {

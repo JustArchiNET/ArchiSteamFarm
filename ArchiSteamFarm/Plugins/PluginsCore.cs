@@ -632,6 +632,38 @@ internal static class PluginsCore {
 		}
 	}
 
+	internal static async Task OnUpdateFinished(Version newVersion) {
+		if (newVersion == null) {
+			throw new ArgumentNullException(nameof(newVersion));
+		}
+
+		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			return;
+		}
+
+		try {
+			await Utilities.InParallel(ActivePlugins.OfType<IUpdateAware>().Select(plugin => plugin.OnUpdateFinished(SharedInfo.Version, newVersion))).ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+		}
+	}
+
+	internal static async Task OnUpdateProceeding(Version newVersion) {
+		if (newVersion == null) {
+			throw new ArgumentNullException(nameof(newVersion));
+		}
+
+		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			return;
+		}
+
+		try {
+			await Utilities.InParallel(ActivePlugins.OfType<IUpdateAware>().Select(plugin => plugin.OnUpdateProceeding(SharedInfo.Version, newVersion))).ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+		}
+	}
+
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	private static HashSet<Assembly>? LoadAssembliesFrom(string path) {
 		if (string.IsNullOrEmpty(path)) {
