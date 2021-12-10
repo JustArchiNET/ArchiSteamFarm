@@ -28,6 +28,7 @@ fi
 cd "$BINARY_DIR"
 
 BINARY_ARGS=""
+SERVICE=0
 PATH_NEXT=0
 
 PARSE_ARG() {
@@ -43,6 +44,7 @@ PARSE_ARG() {
 				cd "$(echo "$1" | cut -d '=' -f 2-)"
 			fi
 			;;
+		--service) SERVICE=1 ;;
 		*)
 			if [ "$PATH_NEXT" -eq 1 ]; then
 				PATH_NEXT=0
@@ -81,7 +83,7 @@ fi
 
 dotnet --info
 
-if [ -f "$CONFIG_PATH" ] && grep -Eq '"Headless":\s+?true' "$CONFIG_PATH"; then
+if [ "$SERVICE" -eq 1 ] || ([ -f "$CONFIG_PATH" ] && grep -Eq '"Headless":\s+?true' "$CONFIG_PATH"); then
 	# We're running ASF in headless mode so we don't need STDIN
 	dotnet "$BINARY" $BINARY_ARGS & # Start ASF in the background, trap will work properly due to non-blocking call
 	wait $! # This will forward dotnet error code, set -e will abort the script if it's non-zero
