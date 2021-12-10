@@ -719,13 +719,25 @@ Süreç çalışma zamanı: {1}</value>
 		<value>{1} özelliğinin {0} ayarını kullanıyorsunuz, ancak özel bir --cryptkey sağlamadınız. Bu, ASF'nin kendi (bilinen) anahtarını kullanmak zorunda kalması nedeniyle korumayı tamamen ortadan kaldırır. Bu ayarın sunduğu güvenlik avantajından yararlanmak için özel bir --cryptkey sağlamalısınız.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
-	
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>ASF'yi yönetici (root) olarak çalıştırmaya çalışıyorsunuz. Bu, makineniz için önemli bir güvenlik riskine neden olur ve ASF'nin çalışması için kök erişimi gerektirmez. Mümkünse yönetici olmadan çalıştırmanızı öneriyoruz.</value>
+	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>ASF'yi desteklenmeyen ortamda çalıştırıyorsunuz ve --ignore-unsupported-environment argümanı sağlıyorsunuz. Lütfen bu senaryo için herhangi bir destek sağlamadığımızı ve bunu tamamen kendi sorumluluğunuzda yaptığınızı unutmayın. Uyarıldınız.</value>
 	</data>
-	
-	
-	
-	
-	
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Uzak sunucudan sağlama toplamı alınıyor...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>Uzak sunucudan indirilen ikili dosyanın sağlama toplamı doğrulanıyor...</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>Uzak sunucu, güncelleme yaptığımız sürüm hakkında hiçbir şey bilmiyor. Bu durum, sürüm yakın zamanda yayınlandıysa mümkündür - ek bir güvenlik önlemi olarak güncelleme prosedürüne hemen devam etmeyi reddeder.</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>Uzak sunucu farklı bir sağlama toplamı ile yanıt verdi, bu, güncelleme prosedürüne devam etmeyi reddeden bozuk indirme veya MITM saldırısını gösterebilir!</value>
+	</data>
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>ASF dosyaları yamanıyor...</value>
+	</data>
 </root>
