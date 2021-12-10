@@ -63,6 +63,13 @@ public sealed class ASFResponse {
 	public DateTime ProcessStartTime { get; private set; }
 
 	/// <summary>
+	///     Boolean value specifying whether ASF has been started with a --service parameter.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public bool Service { get; private set; }
+
+	/// <summary>
 	///     ASF version of currently running binary.
 	/// </summary>
 	[JsonProperty(Required = Required.Always)]
@@ -76,5 +83,7 @@ public sealed class ASFResponse {
 		MemoryUsage = memoryUsage > 0 ? memoryUsage : throw new ArgumentOutOfRangeException(nameof(memoryUsage));
 		ProcessStartTime = processStartTime > DateTime.MinValue ? processStartTime : throw new ArgumentOutOfRangeException(nameof(processStartTime));
 		Version = version ?? throw new ArgumentNullException(nameof(version));
+
+		Service = Program.Service;
 	}
 }
