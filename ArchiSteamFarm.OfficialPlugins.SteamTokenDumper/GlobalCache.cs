@@ -96,11 +96,7 @@ internal sealed class GlobalCache : SerializableFile {
 
 	internal static async Task<GlobalCache?> Load() {
 		if (!File.Exists(SharedFilePath)) {
-			GlobalCache result = new();
-
-			Utilities.InBackground(result.Save);
-
-			return result;
+			return new GlobalCache();
 		}
 
 		ASF.ArchiLogger.LogGenericInfo(Localization.Strings.LoadingGlobalCache);
@@ -132,11 +128,9 @@ internal sealed class GlobalCache : SerializableFile {
 		ASF.ArchiLogger.LogGenericInfo(Localization.Strings.ValidatingGlobalCacheIntegrity);
 
 		if (globalCache.DepotKeys.Values.Any(static depotKey => !IsValidDepotKey(depotKey))) {
-			ASF.ArchiLogger.LogGenericWarning(Localization.Strings.GlobalCacheIntegrityValidationFailed);
+			ASF.ArchiLogger.LogGenericError(Localization.Strings.GlobalCacheIntegrityValidationFailed);
 
-			globalCache = new GlobalCache();
-
-			Utilities.InBackground(globalCache.Save);
+			return null;
 		}
 
 		return globalCache;
