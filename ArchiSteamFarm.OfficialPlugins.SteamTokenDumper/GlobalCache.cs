@@ -103,6 +103,8 @@ internal sealed class GlobalCache : SerializableFile {
 			return result;
 		}
 
+		ASF.ArchiLogger.LogGenericInfo(Localization.Strings.LoadingGlobalCache);
+
 		GlobalCache? globalCache;
 
 		try {
@@ -125,6 +127,16 @@ internal sealed class GlobalCache : SerializableFile {
 			ASF.ArchiLogger.LogNullError(nameof(globalCache));
 
 			return null;
+		}
+
+		ASF.ArchiLogger.LogGenericInfo(Localization.Strings.ValidatingGlobalCacheIntegrity);
+
+		if (globalCache.DepotKeys.Values.Any(static depotKey => !IsValidDepotKey(depotKey))) {
+			ASF.ArchiLogger.LogGenericWarning(Localization.Strings.GlobalCacheIntegrityValidationFailed);
+
+			globalCache = new GlobalCache();
+
+			Utilities.InBackground(globalCache.Save);
 		}
 
 		return globalCache;
@@ -243,6 +255,12 @@ internal sealed class GlobalCache : SerializableFile {
 
 			string depotKey = Convert.ToHexString(depotKeyResult.DepotKey);
 
+			if (!IsValidDepotKey(depotKey)) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(depotKey)));
+
+				continue;
+			}
+
 			if (DepotKeys.TryGetValue(depotKeyResult.DepotID, out string? previousDepotKey) && (previousDepotKey == depotKey)) {
 				continue;
 			}
@@ -303,5 +321,13 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		Utilities.InBackground(Save);
+	}
+
+	private static bool IsValidDepotKey(string depotKey) {
+		if (string.IsNullOrEmpty(depotKey)) {
+			throw new ArgumentNullException(nameof(depotKey));
+		}
+
+		return (depotKey.Length == 64) && Utilities.IsValidHexadecimalText(depotKey);
 	}
 }
