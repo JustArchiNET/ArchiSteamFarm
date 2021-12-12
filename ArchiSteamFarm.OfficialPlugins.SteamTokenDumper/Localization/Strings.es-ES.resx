@@ -168,4 +168,13 @@
 		<value>{0} iniciado, el plugin no analizará ninguno de los siguientes: {1}.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
 	</data>
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>Cargando caché global de STD... </value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>Validando integridad de la caché global de STD... </value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>No se pudo verificar la integridad de la caché global de STD. Esto puede significar una potencial corrupción de archivo/memoria, se iniciará una nueva instancia. </value>
+	</data>
 </root>

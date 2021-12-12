@@ -168,4 +168,7 @@
 		<value>{0} đã được khởi tạo, plugin sẽ không can thiệp với những thứ sau: {1}.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
 	</data>
+	
+	
+	
 </root>

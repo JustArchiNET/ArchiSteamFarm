@@ -168,4 +168,13 @@
 		<value>{0} 已初始化，插件无法解析以下任何内容：{1}。</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
 	</data>
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>正在加载 STD 全局缓存……</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>正在验证 STD 全局缓存完整性……</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>验证 STD 全局缓存完整性失败。这意味着潜在的文件或内存损坏，即将初始化新实例作为替代。</value>
+	</data>
 </root>
