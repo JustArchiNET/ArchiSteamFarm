@@ -48,9 +48,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	internal DateTime LastPacketReceived { get; private set; }
 
 	internal ArchiHandler(ArchiLogger archiLogger, SteamUnifiedMessages steamUnifiedMessages) {
-		if (steamUnifiedMessages == null) {
-			throw new ArgumentNullException(nameof(steamUnifiedMessages));
-		}
+		ArgumentNullException.ThrowIfNull(steamUnifiedMessages);
 
 		ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 		UnifiedChatRoomService = steamUnifiedMessages.CreateService<IChatRoom>();
@@ -132,9 +130,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	public override void HandleMsg(IPacketMsg packetMsg) {
-		if (packetMsg == null) {
-			throw new ArgumentNullException(nameof(packetMsg));
-		}
+		ArgumentNullException.ThrowIfNull(packetMsg);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -499,9 +495,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	internal async Task PlayGames(IReadOnlyCollection<uint> gameIDs, string? gameName = null) {
-		if (gameIDs == null) {
-			throw new ArgumentNullException(nameof(gameIDs));
-		}
+		ArgumentNullException.ThrowIfNull(gameIDs);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -777,9 +771,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				throw new ArgumentNullException(nameof(jobID));
 			}
 
-			if (msg == null) {
-				throw new ArgumentNullException(nameof(msg));
-			}
+			ArgumentNullException.ThrowIfNull(msg);
 
 			JobID = jobID;
 			PlayingBlocked = msg.playing_blocked;
@@ -794,9 +786,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				throw new ArgumentNullException(nameof(jobID));
 			}
 
-			if (msg == null) {
-				throw new ArgumentNullException(nameof(msg));
-			}
+			ArgumentNullException.ThrowIfNull(msg);
 
 			JobID = jobID;
 

@@ -32,9 +32,7 @@ internal sealed class CMsgClientAcknowledgeClanInvite : ISteamSerializableMessag
 	internal ulong ClanID { private get; set; }
 
 	void ISteamSerializable.Deserialize(Stream stream) {
-		if (stream == null) {
-			throw new ArgumentNullException(nameof(stream));
-		}
+		ArgumentNullException.ThrowIfNull(stream);
 
 		using BinaryReader binaryReader = new(stream, Encoding.UTF8, true);
 
@@ -45,9 +43,7 @@ internal sealed class CMsgClientAcknowledgeClanInvite : ISteamSerializableMessag
 	EMsg ISteamSerializableMessage.GetEMsg() => EMsg.ClientAcknowledgeClanInvite;
 
 	void ISteamSerializable.Serialize(Stream stream) {
-		if (stream == null) {
-			throw new ArgumentNullException(nameof(stream));
-		}
+		ArgumentNullException.ThrowIfNull(stream);
 
 		using BinaryWriter binaryWriter = new(stream, Encoding.UTF8, true);
 

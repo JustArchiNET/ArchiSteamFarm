@@ -33,9 +33,7 @@ public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
 	public IDocument Content { get; }
 
 	private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : base(basicResponse) {
-		if (basicResponse == null) {
-			throw new ArgumentNullException(nameof(basicResponse));
-		}
+		ArgumentNullException.ThrowIfNull(basicResponse);
 
 		Content = content ?? throw new ArgumentNullException(nameof(content));
 	}
@@ -44,9 +42,7 @@ public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
 
 	[PublicAPI]
 	public static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse) {
-		if (streamResponse == null) {
-			throw new ArgumentNullException(nameof(streamResponse));
-		}
+		ArgumentNullException.ThrowIfNull(streamResponse);
 
 		IBrowsingContext context = BrowsingContext.New();
 

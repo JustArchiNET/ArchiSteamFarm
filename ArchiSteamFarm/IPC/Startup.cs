@@ -62,13 +62,9 @@ internal sealed class Startup {
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "PathString is a primitive, it's unlikely to be trimmed to the best of our knowledge")]
 	[UsedImplicitly]
 	public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-		if (app == null) {
-			throw new ArgumentNullException(nameof(app));
-		}
+		ArgumentNullException.ThrowIfNull(app);
 
-		if (env == null) {
-			throw new ArgumentNullException(nameof(env));
-		}
+		ArgumentNullException.ThrowIfNull(env);
 
 		// The order of dependency injection is super important, doing things in wrong order will break everything
 		// https://docs.microsoft.com/aspnet/core/fundamentals/middleware
@@ -189,9 +185,7 @@ internal sealed class Startup {
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "HashSet<string> isn't a primitive, but we widely use the required features everywhere and it's unlikely to be trimmed to the best of our knowledge")]
 	public void ConfigureServices(IServiceCollection services) {
-		if (services == null) {
-			throw new ArgumentNullException(nameof(services));
-		}
+		ArgumentNullException.ThrowIfNull(services);
 
 		// The order of dependency injection is super important, doing things in wrong order will break everything
 		// Order in Configure() method is a good start

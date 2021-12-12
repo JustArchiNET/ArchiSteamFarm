@@ -223,9 +223,7 @@ public sealed class Actions : IAsyncDisposable {
 
 	[PublicAPI]
 	public async Task<(bool Success, string Message)> Play(IReadOnlyCollection<uint> gameIDs, string? gameName = null) {
-		if (gameIDs == null) {
-			throw new ArgumentNullException(nameof(gameIDs));
-		}
+		ArgumentNullException.ThrowIfNull(gameIDs);
 
 		if (!Bot.IsConnectedAndLoggedOn) {
 			return (false, Strings.BotNotConnected);

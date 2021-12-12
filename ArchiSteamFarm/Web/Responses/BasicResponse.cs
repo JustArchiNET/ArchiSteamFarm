@@ -33,18 +33,14 @@ public class BasicResponse {
 	internal readonly Uri FinalUri;
 
 	internal BasicResponse(HttpResponseMessage httpResponseMessage) {
-		if (httpResponseMessage == null) {
-			throw new ArgumentNullException(nameof(httpResponseMessage));
-		}
+		ArgumentNullException.ThrowIfNull(httpResponseMessage);
 
 		FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage?.RequestUri ?? throw new InvalidOperationException();
 		StatusCode = httpResponseMessage.StatusCode;
 	}
 
 	internal BasicResponse(BasicResponse basicResponse) {
-		if (basicResponse == null) {
-			throw new ArgumentNullException(nameof(basicResponse));
-		}
+		ArgumentNullException.ThrowIfNull(basicResponse);
 
 		FinalUri = basicResponse.FinalUri;
 		StatusCode = basicResponse.StatusCode;

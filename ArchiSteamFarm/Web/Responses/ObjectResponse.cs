@@ -29,9 +29,7 @@ public sealed class ObjectResponse<T> : BasicResponse {
 	public T Content { get; }
 
 	public ObjectResponse(BasicResponse basicResponse, T content) : base(basicResponse) {
-		if (basicResponse == null) {
-			throw new ArgumentNullException(nameof(basicResponse));
-		}
+		ArgumentNullException.ThrowIfNull(basicResponse);
 
 		Content = content ?? throw new ArgumentNullException(nameof(content));
 	}

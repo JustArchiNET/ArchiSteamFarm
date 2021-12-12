@@ -32,9 +32,7 @@ public sealed class BinaryResponse : BasicResponse {
 	private readonly byte[] Bytes;
 
 	public BinaryResponse(BasicResponse basicResponse, byte[] bytes) : base(basicResponse) {
-		if (basicResponse == null) {
-			throw new ArgumentNullException(nameof(basicResponse));
-		}
+		ArgumentNullException.ThrowIfNull(basicResponse);
 
 		Bytes = bytes ?? throw new ArgumentNullException(nameof(bytes));
 	}

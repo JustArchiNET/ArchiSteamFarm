@@ -342,9 +342,7 @@ internal sealed class Statistics : IAsyncDisposable {
 			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
 		}
 
-		if (triedSteamIDs == null) {
-			throw new ArgumentNullException(nameof(triedSteamIDs));
-		}
+		ArgumentNullException.ThrowIfNull(triedSteamIDs);
 
 		HashSet<Asset> ourInventory;
 

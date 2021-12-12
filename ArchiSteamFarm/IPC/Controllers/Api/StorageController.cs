@@ -79,9 +79,7 @@ public sealed class StorageController : ArchiController {
 			throw new ArgumentNullException(nameof(key));
 		}
 
-		if (value == null) {
-			throw new ArgumentNullException(nameof(value));
-		}
+		ArgumentNullException.ThrowIfNull(value);
 
 		if (ASF.GlobalDatabase == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));

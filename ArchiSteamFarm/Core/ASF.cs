@@ -485,13 +485,9 @@ public static class ASF {
 	private static async void OnAutoUpdatesTimer(object? state = null) => await UpdateAndRestart().ConfigureAwait(false);
 
 	private static async void OnChanged(object sender, FileSystemEventArgs e) {
-		if (sender == null) {
-			throw new ArgumentNullException(nameof(sender));
-		}
+		ArgumentNullException.ThrowIfNull(sender);
 
-		if (e == null) {
-			throw new ArgumentNullException(nameof(e));
-		}
+		ArgumentNullException.ThrowIfNull(e);
 
 		if (string.IsNullOrEmpty(e.Name)) {
 			throw new InvalidOperationException(nameof(e.Name));
@@ -571,13 +567,9 @@ public static class ASF {
 	}
 
 	private static async void OnCreated(object sender, FileSystemEventArgs e) {
-		if (sender == null) {
-			throw new ArgumentNullException(nameof(sender));
-		}
+		ArgumentNullException.ThrowIfNull(sender);
 
-		if (e == null) {
-			throw new ArgumentNullException(nameof(e));
-		}
+		ArgumentNullException.ThrowIfNull(e);
 
 		if (string.IsNullOrEmpty(e.Name)) {
 			throw new InvalidOperationException(nameof(e.Name));
@@ -713,13 +705,9 @@ public static class ASF {
 	}
 
 	private static async void OnDeleted(object sender, FileSystemEventArgs e) {
-		if (sender == null) {
-			throw new ArgumentNullException(nameof(sender));
-		}
+		ArgumentNullException.ThrowIfNull(sender);
 
-		if (e == null) {
-			throw new ArgumentNullException(nameof(e));
-		}
+		ArgumentNullException.ThrowIfNull(e);
 
 		if (string.IsNullOrEmpty(e.Name)) {
 			throw new InvalidOperationException(nameof(e.Name));
@@ -837,13 +825,9 @@ public static class ASF {
 	}
 
 	private static async void OnRenamed(object sender, RenamedEventArgs e) {
-		if (sender == null) {
-			throw new ArgumentNullException(nameof(sender));
-		}
+		ArgumentNullException.ThrowIfNull(sender);
 
-		if (e == null) {
-			throw new ArgumentNullException(nameof(e));
-		}
+		ArgumentNullException.ThrowIfNull(e);
 
 		if (string.IsNullOrEmpty(e.OldName)) {
 			throw new InvalidOperationException(nameof(e.OldName));
@@ -953,9 +937,7 @@ public static class ASF {
 	}
 
 	private static bool UpdateFromArchive(ZipArchive archive, string targetDirectory) {
-		if (archive == null) {
-			throw new ArgumentNullException(nameof(archive));
-		}
+		ArgumentNullException.ThrowIfNull(archive);
 
 		if (string.IsNullOrEmpty(targetDirectory)) {
 			throw new ArgumentNullException(nameof(targetDirectory));

@@ -541,9 +541,7 @@ public sealed class GlobalConfig {
 			throw new ArgumentNullException(nameof(filePath));
 		}
 
-		if (globalConfig == null) {
-			throw new ArgumentNullException(nameof(globalConfig));
-		}
+		ArgumentNullException.ThrowIfNull(globalConfig);
 
 		string json = JsonConvert.SerializeObject(globalConfig, Formatting.Indented);
 

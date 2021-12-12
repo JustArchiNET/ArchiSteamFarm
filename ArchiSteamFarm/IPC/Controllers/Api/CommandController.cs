@@ -48,9 +48,7 @@ public sealed class CommandController : ArchiController {
 	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult<GenericResponse>> CommandPost([FromBody] CommandRequest request) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (string.IsNullOrEmpty(request.Command)) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.Command))));

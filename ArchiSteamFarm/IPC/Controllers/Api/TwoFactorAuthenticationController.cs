@@ -49,9 +49,7 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 			throw new ArgumentNullException(nameof(botNames));
 		}
 
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (request.AcceptedType.HasValue && ((request.AcceptedType.Value == Confirmation.EType.Unknown) || !Enum.IsDefined(typeof(Confirmation.EType), request.AcceptedType.Value))) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.AcceptedType))));
@@ -116,9 +114,7 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 			throw new ArgumentNullException(nameof(botNames));
 		}
 
-		if (authenticator == null) {
-			throw new ArgumentNullException(nameof(authenticator));
-		}
+		ArgumentNullException.ThrowIfNull(authenticator);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 

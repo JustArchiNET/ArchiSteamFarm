@@ -35,9 +35,7 @@ internal static class CatAPI {
 	private const string URL = "https://aws.random.cat";
 
 	internal static async Task<string?> GetRandomCatURL(WebBrowser webBrowser) {
-		if (webBrowser == null) {
-			throw new ArgumentNullException(nameof(webBrowser));
-		}
+		ArgumentNullException.ThrowIfNull(webBrowser);
 
 		Uri request = new($"{URL}/meow");
 

@@ -38,9 +38,7 @@ public sealed class UserNotificationsCallback : CallbackMsg {
 			throw new ArgumentNullException(nameof(jobID));
 		}
 
-		if (msg == null) {
-			throw new ArgumentNullException(nameof(msg));
-		}
+		ArgumentNullException.ThrowIfNull(msg);
 
 		JobID = jobID;
 
@@ -82,9 +80,7 @@ public sealed class UserNotificationsCallback : CallbackMsg {
 			throw new ArgumentNullException(nameof(jobID));
 		}
 
-		if (msg == null) {
-			throw new ArgumentNullException(nameof(msg));
-		}
+		ArgumentNullException.ThrowIfNull(msg);
 
 		JobID = jobID;
 		Notifications = new Dictionary<EUserNotification, uint>(1) { { EUserNotification.Items, msg.count_new_items } };
@@ -95,9 +91,7 @@ public sealed class UserNotificationsCallback : CallbackMsg {
 			throw new ArgumentNullException(nameof(jobID));
 		}
 
-		if (msg == null) {
-			throw new ArgumentNullException(nameof(msg));
-		}
+		ArgumentNullException.ThrowIfNull(msg);
 
 		JobID = jobID;
 		Notifications = new Dictionary<EUserNotification, uint>(1) { { EUserNotification.Comments, msg.count_new_comments + msg.count_new_comments_owner + msg.count_new_comments_subscriptions } };

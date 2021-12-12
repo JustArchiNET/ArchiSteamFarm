@@ -34,9 +34,7 @@ public sealed class SwaggerValidValuesAttribute : CustomSwaggerAttribute {
 	public string[]? ValidStringValues { get; set; }
 
 	public override void Apply(OpenApiSchema schema) {
-		if (schema == null) {
-			throw new ArgumentNullException(nameof(schema));
-		}
+		ArgumentNullException.ThrowIfNull(schema);
 
 		OpenApiArray validValues = new();
 

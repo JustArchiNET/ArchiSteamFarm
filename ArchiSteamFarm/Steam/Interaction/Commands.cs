@@ -869,9 +869,7 @@ public sealed class Commands {
 			throw new ArgumentOutOfRangeException(nameof(contextID));
 		}
 
-		if (targetBot == null) {
-			throw new ArgumentNullException(nameof(targetBot));
-		}
+		ArgumentNullException.ThrowIfNull(targetBot);
 
 		if (!Bot.HasAccess(steamID, BotConfig.EAccess.Master)) {
 			return null;
@@ -2131,9 +2129,7 @@ public sealed class Commands {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (gameIDs == null) {
-			throw new ArgumentNullException(nameof(gameIDs));
-		}
+		ArgumentNullException.ThrowIfNull(gameIDs);
 
 		if (gameIDs.Count > ArchiHandler.MaxGamesPlayedConcurrently) {
 			throw new ArgumentOutOfRangeException(nameof(gameIDs));
@@ -3176,9 +3172,7 @@ public sealed class Commands {
 			throw new ArgumentNullException(nameof(realAppIDs));
 		}
 
-		if (targetBot == null) {
-			throw new ArgumentNullException(nameof(targetBot));
-		}
+		ArgumentNullException.ThrowIfNull(targetBot);
 
 		if (!Bot.HasAccess(steamID, BotConfig.EAccess.Master)) {
 			return null;

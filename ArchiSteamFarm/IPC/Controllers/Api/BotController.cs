@@ -94,9 +94,7 @@ public sealed class BotController : ArchiController {
 			throw new ArgumentNullException(nameof(botNames));
 		}
 
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));
@@ -220,9 +218,7 @@ public sealed class BotController : ArchiController {
 			throw new ArgumentNullException(nameof(botNames));
 		}
 
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (request.GamesToRedeemInBackground.Count == 0) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.GamesToRedeemInBackground))));
@@ -263,9 +259,7 @@ public sealed class BotController : ArchiController {
 			throw new ArgumentNullException(nameof(botNames));
 		}
 
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if ((request.Type == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), request.Type) || string.IsNullOrEmpty(request.Value)) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, $"{nameof(request.Type)} || {nameof(request.Value)}")));
@@ -294,9 +288,7 @@ public sealed class BotController : ArchiController {
 			throw new ArgumentNullException(nameof(botNames));
 		}
 
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -325,9 +317,7 @@ public sealed class BotController : ArchiController {
 			throw new ArgumentNullException(nameof(botNames));
 		}
 
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (request.KeysToRedeem.Count == 0) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.KeysToRedeem))));
@@ -369,9 +359,7 @@ public sealed class BotController : ArchiController {
 			throw new ArgumentNullException(nameof(botName));
 		}
 
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));

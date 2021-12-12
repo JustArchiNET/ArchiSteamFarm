@@ -485,13 +485,9 @@ public sealed class Bot {
 	}
 
 	private static void AssertResultMatchesExpectation(IReadOnlyDictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult, IReadOnlyCollection<Asset> itemsToSend) {
-		if (expectedResult == null) {
-			throw new ArgumentNullException(nameof(expectedResult));
-		}
+		ArgumentNullException.ThrowIfNull(expectedResult);
 
-		if (itemsToSend == null) {
-			throw new ArgumentNullException(nameof(itemsToSend));
-		}
+		ArgumentNullException.ThrowIfNull(itemsToSend);
 
 		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), long> realResult = itemsToSend.GroupBy(static asset => (asset.RealAppID, asset.ContextID, asset.ClassID)).ToDictionary(static group => group.Key, static group => group.Sum(static asset => asset.Amount));
 		Assert.AreEqual(expectedResult.Count, realResult.Count);

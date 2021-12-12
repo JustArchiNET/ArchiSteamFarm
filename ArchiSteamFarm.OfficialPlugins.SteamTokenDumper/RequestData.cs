@@ -58,17 +58,11 @@ internal sealed class RequestData {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (apps == null) {
-			throw new ArgumentNullException(nameof(apps));
-		}
+		ArgumentNullException.ThrowIfNull(apps);
 
-		if (accessTokens == null) {
-			throw new ArgumentNullException(nameof(accessTokens));
-		}
+		ArgumentNullException.ThrowIfNull(accessTokens);
 
-		if (depots == null) {
-			throw new ArgumentNullException(nameof(depots));
-		}
+		ArgumentNullException.ThrowIfNull(depots);
 
 		SteamID = steamID;
 

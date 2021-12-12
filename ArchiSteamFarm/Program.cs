@@ -445,9 +445,7 @@ internal static class Program {
 	}
 
 	private static async Task<int> Main(string[] args) {
-		if (args == null) {
-			throw new ArgumentNullException(nameof(args));
-		}
+		ArgumentNullException.ThrowIfNull(args);
 
 		// Initialize
 		await Init(args.Length > 0 ? args : null).ConfigureAwait(false);
@@ -460,9 +458,7 @@ internal static class Program {
 
 #if !NETFRAMEWORK
 	private static async void OnPosixSignal(PosixSignalContext signal) {
-		if (signal == null) {
-			throw new ArgumentNullException(nameof(signal));
-		}
+		ArgumentNullException.ThrowIfNull(signal);
 
 		switch (signal.Signal) {
 			case PosixSignal.SIGINT:
@@ -480,9 +476,7 @@ internal static class Program {
 	private static async void OnProcessExit(object? sender, EventArgs e) => await Shutdown().ConfigureAwait(false);
 
 	private static async void OnUnhandledException(object? sender, UnhandledExceptionEventArgs e) {
-		if (e == null) {
-			throw new ArgumentNullException(nameof(e));
-		}
+		ArgumentNullException.ThrowIfNull(e);
 
 		if (e.ExceptionObject == null) {
 			throw new ArgumentNullException(nameof(e));
@@ -493,9 +487,7 @@ internal static class Program {
 	}
 
 	private static async void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e) {
-		if (e == null) {
-			throw new ArgumentNullException(nameof(e));
-		}
+		ArgumentNullException.ThrowIfNull(e);
 
 		if (e.Exception == null) {
 			throw new ArgumentNullException(nameof(e));

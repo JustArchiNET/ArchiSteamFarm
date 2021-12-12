@@ -46,9 +46,7 @@ public sealed class ASFController : ArchiController {
 	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	public ActionResult<GenericResponse> ASFEncryptPost([FromBody] ASFEncryptRequest request) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (string.IsNullOrEmpty(request.StringToEncrypt)) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.StringToEncrypt))));
@@ -84,9 +82,7 @@ public sealed class ASFController : ArchiController {
 	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	public ActionResult<GenericResponse> ASFHashPost([FromBody] ASFHashRequest request) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (string.IsNullOrEmpty(request.StringToHash)) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.StringToHash))));
@@ -105,9 +101,7 @@ public sealed class ASFController : ArchiController {
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult<GenericResponse>> ASFPost([FromBody] ASFRequest request) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (ASF.GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalConfig));

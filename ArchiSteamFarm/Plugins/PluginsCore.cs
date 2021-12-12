@@ -267,9 +267,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task<string?> OnBotCommand(Bot bot, ulong steamID, string message, string[] args) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -301,9 +299,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnBotDestroy(Bot bot) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;
@@ -317,9 +313,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnBotDisconnected(Bot bot, EResult reason) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;
@@ -333,9 +327,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnBotFarmingFinished(Bot bot, bool farmedSomething) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;
@@ -349,9 +341,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnBotFarmingStarted(Bot bot) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;
@@ -365,9 +355,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnBotFarmingStopped(Bot bot) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;
@@ -381,9 +369,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task<bool> OnBotFriendRequest(Bot bot, ulong steamID) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsValid) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -407,9 +393,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnBotInit(Bot bot) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;
@@ -423,9 +407,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;
@@ -439,9 +421,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnBotLoggedOn(Bot bot) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;
@@ -455,9 +435,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task<string?> OnBotMessage(Bot bot, ulong steamID, string message) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -485,13 +463,9 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
-		if (callbackManager == null) {
-			throw new ArgumentNullException(nameof(callbackManager));
-		}
+		ArgumentNullException.ThrowIfNull(callbackManager);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;
@@ -505,9 +479,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task<HashSet<ClientMsgHandler>?> OnBotSteamHandlersInit(Bot bot) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return null;
@@ -527,13 +499,9 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
-		if (tradeOffer == null) {
-			throw new ArgumentNullException(nameof(tradeOffer));
-		}
+		ArgumentNullException.ThrowIfNull(tradeOffer);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return false;
@@ -553,9 +521,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((tradeResults == null) || (tradeResults.Count == 0)) {
 			throw new ArgumentNullException(nameof(tradeResults));
@@ -573,9 +539,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((newNotifications == null) || (newNotifications.Count == 0)) {
 			throw new ArgumentNullException(nameof(newNotifications));
@@ -597,13 +561,9 @@ internal static class PluginsCore {
 			throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
 		}
 
-		if (appChanges == null) {
-			throw new ArgumentNullException(nameof(appChanges));
-		}
+		ArgumentNullException.ThrowIfNull(appChanges);
 
-		if (packageChanges == null) {
-			throw new ArgumentNullException(nameof(packageChanges));
-		}
+		ArgumentNullException.ThrowIfNull(packageChanges);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;

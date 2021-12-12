@@ -32,13 +32,9 @@ namespace ArchiSteamFarm.IPC.Integration;
 [UsedImplicitly]
 internal sealed class EnumSchemaFilter : ISchemaFilter {
 	public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
-		if (schema == null) {
-			throw new ArgumentNullException(nameof(schema));
-		}
+		ArgumentNullException.ThrowIfNull(schema);
 
-		if (context == null) {
-			throw new ArgumentNullException(nameof(context));
-		}
+		ArgumentNullException.ThrowIfNull(context);
 
 		if (context.Type is not { IsEnum: true }) {
 			return;
@@ -91,9 +87,7 @@ internal sealed class EnumSchemaFilter : ISchemaFilter {
 	}
 
 	private static bool TryCast<T>(object value, out T typedValue) where T : struct {
-		if (value == null) {
-			throw new ArgumentNullException(nameof(value));
-		}
+		ArgumentNullException.ThrowIfNull(value);
 
 		try {
 			typedValue = (T) Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);

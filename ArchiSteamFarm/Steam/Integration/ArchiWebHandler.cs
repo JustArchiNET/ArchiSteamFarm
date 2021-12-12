@@ -1163,9 +1163,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentNullException(nameof(service));
 		}
 
-		if (function == null) {
-			throw new ArgumentNullException(nameof(function));
-		}
+		ArgumentNullException.ThrowIfNull(function);
 
 		if (ASF.RateLimitingSemaphore == null) {
 			throw new InvalidOperationException(nameof(ASF.RateLimitingSemaphore));
@@ -1325,9 +1323,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool> ChangePrivacySettings(UserPrivacy userPrivacy) {
-		if (userPrivacy == null) {
-			throw new ArgumentNullException(nameof(userPrivacy));
-		}
+		ArgumentNullException.ThrowIfNull(userPrivacy);
 
 		string? profileURL = await GetAbsoluteProfileURL().ConfigureAwait(false);
 
@@ -2485,17 +2481,13 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryResponse.Description> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Asset> output) {
-		if (descriptions == null) {
-			throw new ArgumentNullException(nameof(descriptions));
-		}
+		ArgumentNullException.ThrowIfNull(descriptions);
 
 		if ((input == null) || (input.Count == 0)) {
 			throw new ArgumentNullException(nameof(input));
 		}
 
-		if (output == null) {
-			throw new ArgumentNullException(nameof(output));
-		}
+		ArgumentNullException.ThrowIfNull(output);
 
 		foreach (KeyValue item in input) {
 			uint appID = item["appid"].AsUnsignedInteger();

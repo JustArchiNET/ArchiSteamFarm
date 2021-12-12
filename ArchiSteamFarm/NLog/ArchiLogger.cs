@@ -55,9 +55,7 @@ public sealed class ArchiLogger {
 
 	[PublicAPI]
 	public void LogGenericDebuggingException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
-		if (exception == null) {
-			throw new ArgumentNullException(nameof(exception));
-		}
+		ArgumentNullException.ThrowIfNull(exception);
 
 		if (!Debugging.IsUserDebugging) {
 			return;
@@ -77,9 +75,7 @@ public sealed class ArchiLogger {
 
 	[PublicAPI]
 	public void LogGenericException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
-		if (exception == null) {
-			throw new ArgumentNullException(nameof(exception));
-		}
+		ArgumentNullException.ThrowIfNull(exception);
 
 		Logger.Error(exception, $"{previousMethodName}()");
 	}
@@ -113,9 +109,7 @@ public sealed class ArchiLogger {
 
 	[PublicAPI]
 	public void LogGenericWarningException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
-		if (exception == null) {
-			throw new ArgumentNullException(nameof(exception));
-		}
+		ArgumentNullException.ThrowIfNull(exception);
 
 		Logger.Warn(exception, $"{previousMethodName}()");
 	}
@@ -164,9 +158,7 @@ public sealed class ArchiLogger {
 	}
 
 	internal async Task LogFatalException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
-		if (exception == null) {
-			throw new ArgumentNullException(nameof(exception));
-		}
+		ArgumentNullException.ThrowIfNull(exception);
 
 		Logger.Fatal(exception, $"{previousMethodName}()");
 

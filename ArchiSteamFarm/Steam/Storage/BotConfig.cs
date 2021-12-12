@@ -402,9 +402,7 @@ public sealed class BotConfig {
 			throw new ArgumentNullException(nameof(filePath));
 		}
 
-		if (botConfig == null) {
-			throw new ArgumentNullException(nameof(botConfig));
-		}
+		ArgumentNullException.ThrowIfNull(botConfig);
 
 		string json = JsonConvert.SerializeObject(botConfig, Formatting.Indented);
 

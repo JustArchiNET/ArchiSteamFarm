@@ -59,9 +59,7 @@ internal sealed class ApiAuthenticationMiddleware {
 	public ApiAuthenticationMiddleware(RequestDelegate next, IOptions<ForwardedHeadersOptions> forwardedHeadersOptions) {
 		Next = next ?? throw new ArgumentNullException(nameof(next));
 
-		if (forwardedHeadersOptions == null) {
-			throw new ArgumentNullException(nameof(forwardedHeadersOptions));
-		}
+		ArgumentNullException.ThrowIfNull(forwardedHeadersOptions);
 
 		ForwardedHeadersOptions = forwardedHeadersOptions.Value ?? throw new InvalidOperationException(nameof(forwardedHeadersOptions));
 
@@ -72,13 +70,9 @@ internal sealed class ApiAuthenticationMiddleware {
 
 	[UsedImplicitly]
 	public async Task InvokeAsync(HttpContext context, IOptions<MvcNewtonsoftJsonOptions> jsonOptions) {
-		if (context == null) {
-			throw new ArgumentNullException(nameof(context));
-		}
+		ArgumentNullException.ThrowIfNull(context);
 
-		if (jsonOptions == null) {
-			throw new ArgumentNullException(nameof(jsonOptions));
-		}
+		ArgumentNullException.ThrowIfNull(jsonOptions);
 
 		(HttpStatusCode statusCode, bool permanent) = await GetAuthenticationStatus(context).ConfigureAwait(false);
 
@@ -98,9 +92,7 @@ internal sealed class ApiAuthenticationMiddleware {
 	private static void ClearFailedAuthorizations(object? state = null) => FailedAuthorizations.Clear();
 
 	private async Task<(HttpStatusCode StatusCode, bool Permanent)> GetAuthenticationStatus(HttpContext context) {
-		if (context == null) {
-			throw new ArgumentNullException(nameof(context));
-		}
+		ArgumentNullException.ThrowIfNull(context);
 
 		IPAddress? clientIP = context.Connection.RemoteIpAddress;
 

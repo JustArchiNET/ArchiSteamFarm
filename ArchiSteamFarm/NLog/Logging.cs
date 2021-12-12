@@ -406,9 +406,7 @@ internal static class Logging {
 	}
 
 	private static void OnConfigurationChanged(object? sender, LoggingConfigurationChangedEventArgs e) {
-		if (e == null) {
-			throw new ArgumentNullException(nameof(e));
-		}
+		ArgumentNullException.ThrowIfNull(e);
 
 		InitConsoleLoggers();
 

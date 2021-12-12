@@ -63,9 +63,7 @@ internal sealed class HistoryTarget : TargetWithLayout {
 	internal HistoryTarget(string name) : this() => Name = name;
 
 	protected override void Write(LogEventInfo logEvent) {
-		if (logEvent == null) {
-			throw new ArgumentNullException(nameof(logEvent));
-		}
+		ArgumentNullException.ThrowIfNull(logEvent);
 
 		base.Write(logEvent);
 

@@ -141,9 +141,7 @@ internal sealed class GlobalCache : SerializableFile {
 			throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
 		}
 
-		if (appChanges == null) {
-			throw new ArgumentNullException(nameof(appChanges));
-		}
+		ArgumentNullException.ThrowIfNull(appChanges);
 
 		if (currentChangeNumber <= LastChangeNumber) {
 			return;
@@ -181,9 +179,7 @@ internal sealed class GlobalCache : SerializableFile {
 	internal bool ShouldRefreshDepotKey(uint depotID) => !DepotKeys.ContainsKey(depotID);
 
 	internal void UpdateAppChangeNumbers(IReadOnlyCollection<KeyValuePair<uint, uint>> appChangeNumbers) {
-		if (appChangeNumbers == null) {
-			throw new ArgumentNullException(nameof(appChangeNumbers));
-		}
+		ArgumentNullException.ThrowIfNull(appChangeNumbers);
 
 		bool save = false;
 
@@ -202,13 +198,9 @@ internal sealed class GlobalCache : SerializableFile {
 	}
 
 	internal void UpdateAppTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> appTokens, IReadOnlyCollection<uint> publicAppIDs) {
-		if (appTokens == null) {
-			throw new ArgumentNullException(nameof(appTokens));
-		}
+		ArgumentNullException.ThrowIfNull(appTokens);
 
-		if (publicAppIDs == null) {
-			throw new ArgumentNullException(nameof(publicAppIDs));
-		}
+		ArgumentNullException.ThrowIfNull(publicAppIDs);
 
 		bool save = false;
 
@@ -236,9 +228,7 @@ internal sealed class GlobalCache : SerializableFile {
 	}
 
 	internal void UpdateDepotKeys(ICollection<SteamApps.DepotKeyCallback> depotKeyResults) {
-		if (depotKeyResults == null) {
-			throw new ArgumentNullException(nameof(depotKeyResults));
-		}
+		ArgumentNullException.ThrowIfNull(depotKeyResults);
 
 		bool save = false;
 
@@ -269,9 +259,7 @@ internal sealed class GlobalCache : SerializableFile {
 	}
 
 	internal void UpdatePackageTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> packageTokens) {
-		if (packageTokens == null) {
-			throw new ArgumentNullException(nameof(packageTokens));
-		}
+		ArgumentNullException.ThrowIfNull(packageTokens);
 
 		bool save = false;
 
@@ -290,17 +278,11 @@ internal sealed class GlobalCache : SerializableFile {
 	}
 
 	internal void UpdateSubmittedData(IReadOnlyDictionary<uint, ulong> apps, IReadOnlyDictionary<uint, ulong> packages, IReadOnlyDictionary<uint, string> depots) {
-		if (apps == null) {
-			throw new ArgumentNullException(nameof(apps));
-		}
+		ArgumentNullException.ThrowIfNull(apps);
 
-		if (packages == null) {
-			throw new ArgumentNullException(nameof(packages));
-		}
+		ArgumentNullException.ThrowIfNull(packages);
 
-		if (depots == null) {
-			throw new ArgumentNullException(nameof(depots));
-		}
+		ArgumentNullException.ThrowIfNull(depots);
 
 		foreach ((uint appID, ulong token) in apps) {
 			SubmittedApps[appID] = token;

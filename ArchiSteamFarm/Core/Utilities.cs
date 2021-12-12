@@ -51,9 +51,7 @@ public static class Utilities {
 
 	[PublicAPI]
 	public static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
-		if (args == null) {
-			throw new ArgumentNullException(nameof(args));
-		}
+		ArgumentNullException.ThrowIfNull(args);
 
 		if (args.Length <= argsToSkip) {
 			throw new InvalidOperationException($"{nameof(args.Length)} && {nameof(argsToSkip)}");
@@ -79,9 +77,7 @@ public static class Utilities {
 
 	[PublicAPI]
 	public static string? GetCookieValue(this CookieContainer cookieContainer, Uri uri, string name) {
-		if (cookieContainer == null) {
-			throw new ArgumentNullException(nameof(cookieContainer));
-		}
+		ArgumentNullException.ThrowIfNull(cookieContainer);
 
 		if (uri == null) {
 			throw new ArgumentNullException(nameof(uri));
@@ -105,9 +101,7 @@ public static class Utilities {
 
 	[PublicAPI]
 	public static async void InBackground(Action action, bool longRunning = false) {
-		if (action == null) {
-			throw new ArgumentNullException(nameof(action));
-		}
+		ArgumentNullException.ThrowIfNull(action);
 
 		TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
 
@@ -120,9 +114,7 @@ public static class Utilities {
 
 	[PublicAPI]
 	public static async void InBackground<T>(Func<T> function, bool longRunning = false) {
-		if (function == null) {
-			throw new ArgumentNullException(nameof(function));
-		}
+		ArgumentNullException.ThrowIfNull(function);
 
 		TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
 
@@ -135,9 +127,7 @@ public static class Utilities {
 
 	[PublicAPI]
 	public static async Task<IList<T>> InParallel<T>(IEnumerable<Task<T>> tasks) {
-		if (tasks == null) {
-			throw new ArgumentNullException(nameof(tasks));
-		}
+		ArgumentNullException.ThrowIfNull(tasks);
 
 		IList<T> results;
 
@@ -161,9 +151,7 @@ public static class Utilities {
 
 	[PublicAPI]
 	public static async Task InParallel(IEnumerable<Task> tasks) {
-		if (tasks == null) {
-			throw new ArgumentNullException(nameof(tasks));
-		}
+		ArgumentNullException.ThrowIfNull(tasks);
 
 		switch (ASF.GlobalConfig?.OptimizationMode) {
 			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -208,9 +196,7 @@ public static class Utilities {
 
 	[PublicAPI]
 	public static IEnumerable<IElement> SelectNodes(this IDocument document, string xpath) {
-		if (document == null) {
-			throw new ArgumentNullException(nameof(document));
-		}
+		ArgumentNullException.ThrowIfNull(document);
 
 		return document.Body.SelectNodes(xpath).OfType<IElement>();
 	}
@@ -220,9 +206,7 @@ public static class Utilities {
 
 	[PublicAPI]
 	public static IElement? SelectSingleNode(this IDocument document, string xpath) {
-		if (document == null) {
-			throw new ArgumentNullException(nameof(document));
-		}
+		ArgumentNullException.ThrowIfNull(document);
 
 		return (IElement?) document.Body.SelectSingleNode(xpath);
 	}
@@ -237,9 +221,7 @@ public static class Utilities {
 
 	[PublicAPI]
 	public static Task<T> ToLongRunningTask<T>(this AsyncJob<T> job) where T : CallbackMsg {
-		if (job == null) {
-			throw new ArgumentNullException(nameof(job));
-		}
+		ArgumentNullException.ThrowIfNull(job);
 
 		job.Timeout = TimeSpan.FromSeconds(TimeoutForLongRunningTasksInSeconds);
 
@@ -248,9 +230,7 @@ public static class Utilities {
 
 	[PublicAPI]
 	public static Task<AsyncJobMultiple<T>.ResultSet> ToLongRunningTask<T>(this AsyncJobMultiple<T> job) where T : CallbackMsg {
-		if (job == null) {
-			throw new ArgumentNullException(nameof(job));
-		}
+		ArgumentNullException.ThrowIfNull(job);
 
 		job.Timeout = TimeSpan.FromSeconds(TimeoutForLongRunningTasksInSeconds);
 
@@ -311,9 +291,7 @@ public static class Utilities {
 	}
 
 	internal static void WarnAboutIncompleteTranslation(ResourceManager resourceManager) {
-		if (resourceManager == null) {
-			throw new ArgumentNullException(nameof(resourceManager));
-		}
+		ArgumentNullException.ThrowIfNull(resourceManager);
 
 		// Skip translation progress for English and invariant (such as "C") cultures
 		switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {

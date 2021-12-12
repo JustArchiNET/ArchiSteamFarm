@@ -145,9 +145,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 	}
 
 	public async Task OnBotDestroy(Bot bot) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if (BotSubscriptions.TryRemove(bot, out IDisposable? subscription)) {
 			subscription.Dispose();
@@ -161,9 +159,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 	}
 
 	public async Task OnBotInit(Bot bot) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if (Config is not { Enabled: true }) {
 			return;
@@ -180,13 +176,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 	}
 
 	public Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
-		if (callbackManager == null) {
-			throw new ArgumentNullException(nameof(callbackManager));
-		}
+		ArgumentNullException.ThrowIfNull(callbackManager);
 
 		if (BotSubscriptions.TryRemove(bot, out IDisposable? subscription)) {
 			subscription.Dispose();
@@ -218,13 +210,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 			throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
 		}
 
-		if (appChanges == null) {
-			throw new ArgumentNullException(nameof(appChanges));
-		}
+		ArgumentNullException.ThrowIfNull(appChanges);
 
-		if (packageChanges == null) {
-			throw new ArgumentNullException(nameof(packageChanges));
-		}
+		ArgumentNullException.ThrowIfNull(packageChanges);
 
 		if (Config is not { Enabled: true }) {
 			return Task.CompletedTask;
@@ -266,13 +254,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 	}
 
 	private static async void OnLicenseList(Bot bot, SteamApps.LicenseListCallback callback) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		if (Config is not { Enabled: true }) {
 			return;
@@ -290,9 +274,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 	}
 
 	private static async Task Refresh(Bot bot, IReadOnlyCollection<uint>? packageIDs = null) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if (Config is not { Enabled: true }) {
 			return;

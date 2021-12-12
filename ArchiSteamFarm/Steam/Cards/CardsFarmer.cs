@@ -394,13 +394,9 @@ public sealed class CardsFarmer : IAsyncDisposable {
 	}
 
 	private async Task CheckPage(IDocument htmlDocument, ISet<uint> parsedAppIDs) {
-		if (htmlDocument == null) {
-			throw new ArgumentNullException(nameof(htmlDocument));
-		}
+		ArgumentNullException.ThrowIfNull(htmlDocument);
 
-		if (parsedAppIDs == null) {
-			throw new ArgumentNullException(nameof(parsedAppIDs));
-		}
+		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
 		IEnumerable<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_row_inner']");
 
@@ -716,9 +712,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			throw new ArgumentOutOfRangeException(nameof(page));
 		}
 
-		if (parsedAppIDs == null) {
-			throw new ArgumentNullException(nameof(parsedAppIDs));
-		}
+		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
 		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 
@@ -829,9 +823,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 	}
 
 	private async Task<bool> FarmCards(Game game) {
-		if (game == null) {
-			throw new ArgumentNullException(nameof(game));
-		}
+		ArgumentNullException.ThrowIfNull(game);
 
 		if (game.AppID != game.PlayableAppID) {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningIdlingGameMismatch, game.AppID, game.GameName, game.PlayableAppID));
@@ -936,9 +928,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 	}
 
 	private async Task<bool> FarmSolo(Game game) {
-		if (game == null) {
-			throw new ArgumentNullException(nameof(game));
-		}
+		ArgumentNullException.ThrowIfNull(game);
 
 		CurrentGamesFarming.Add(game);
 
@@ -1076,9 +1066,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 	}
 
 	private async Task<bool> IsPlayableGame(Game game) {
-		if (game == null) {
-			throw new ArgumentNullException(nameof(game));
-		}
+		ArgumentNullException.ThrowIfNull(game);
 
 		(uint playableAppID, DateTime ignoredUntil, bool ignoredGlobally) = await Bot.GetAppDataForIdling(game.AppID, game.HoursPlayed).ConfigureAwait(false);
 
@@ -1097,9 +1085,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 	}
 
 	private async Task<bool?> ShouldFarm(Game game) {
-		if (game == null) {
-			throw new ArgumentNullException(nameof(game));
-		}
+		ArgumentNullException.ThrowIfNull(game);
 
 		ushort? cardsRemaining = await GetCardsRemaining(game.AppID).ConfigureAwait(false);
 

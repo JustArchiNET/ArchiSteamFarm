@@ -41,9 +41,7 @@ internal static class ArchiNet {
 	private static Uri URL => new("https://asf.JustArchi.net");
 
 	internal static async Task<HttpStatusCode?> AnnounceForListing(Bot bot, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, string tradeToken, string? nickname = null, string? avatarHash = null) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((inventory == null) || (inventory.Count == 0)) {
 			throw new ArgumentNullException(nameof(inventory));
@@ -105,9 +103,7 @@ internal static class ArchiNet {
 	}
 
 	internal static async Task<ImmutableHashSet<ListedUser>?> GetListedUsers(Bot bot) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		Uri request = new(URL, "/Api/Bots");
 
@@ -117,9 +113,7 @@ internal static class ArchiNet {
 	}
 
 	internal static async Task<HttpStatusCode?> HeartBeatForListing(Bot bot) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		Uri request = new(URL, "/Api/HeartBeat");
 

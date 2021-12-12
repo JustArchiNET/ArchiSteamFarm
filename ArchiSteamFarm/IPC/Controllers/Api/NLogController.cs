@@ -112,9 +112,7 @@ public sealed class NLogController : ArchiController {
 	}
 
 	internal static async void OnNewHistoryEntry(object? sender, HistoryTarget.NewHistoryEntryArgs newHistoryEntryArgs) {
-		if (newHistoryEntryArgs == null) {
-			throw new ArgumentNullException(nameof(newHistoryEntryArgs));
-		}
+		ArgumentNullException.ThrowIfNull(newHistoryEntryArgs);
 
 		if (ActiveLogWebSockets.IsEmpty) {
 			return;
@@ -126,17 +124,13 @@ public sealed class NLogController : ArchiController {
 	}
 
 	private static async Task PostLoggedJsonUpdate(WebSocket webSocket, string json, SemaphoreSlim sendSemaphore, CancellationToken cancellationToken) {
-		if (webSocket == null) {
-			throw new ArgumentNullException(nameof(webSocket));
-		}
+		ArgumentNullException.ThrowIfNull(webSocket);
 
 		if (string.IsNullOrEmpty(json)) {
 			throw new ArgumentNullException(nameof(json));
 		}
 
-		if (sendSemaphore == null) {
-			throw new ArgumentNullException(nameof(sendSemaphore));
-		}
+		ArgumentNullException.ThrowIfNull(sendSemaphore);
 
 		if (cancellationToken.IsCancellationRequested || (webSocket.State != WebSocketState.Open)) {
 			return;
@@ -170,17 +164,13 @@ public sealed class NLogController : ArchiController {
 	}
 
 	private static async Task PostLoggedMessageUpdate(WebSocket webSocket, string loggedMessage, SemaphoreSlim sendSemaphore, CancellationToken cancellationToken) {
-		if (webSocket == null) {
-			throw new ArgumentNullException(nameof(webSocket));
-		}
+		ArgumentNullException.ThrowIfNull(webSocket);
 
 		if (string.IsNullOrEmpty(loggedMessage)) {
 			throw new ArgumentNullException(nameof(loggedMessage));
 		}
 
-		if (sendSemaphore == null) {
-			throw new ArgumentNullException(nameof(sendSemaphore));
-		}
+		ArgumentNullException.ThrowIfNull(sendSemaphore);
 
 		if (cancellationToken.IsCancellationRequested || (webSocket.State != WebSocketState.Open)) {
 			return;

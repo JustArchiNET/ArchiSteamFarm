@@ -59,9 +59,7 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 	public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
 
 	protected override async Task WriteAsyncTask(LogEventInfo logEvent, CancellationToken cancellationToken) {
-		if (logEvent == null) {
-			throw new ArgumentNullException(nameof(logEvent));
-		}
+		ArgumentNullException.ThrowIfNull(logEvent);
 
 		base.Write(logEvent);
 

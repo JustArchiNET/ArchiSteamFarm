@@ -76,9 +76,7 @@ internal static class WebUtilities {
 #endif
 
 	internal static string? GetUnifiedName(this Type type) {
-		if (type == null) {
-			throw new ArgumentNullException(nameof(type));
-		}
+		ArgumentNullException.ThrowIfNull(type);
 
 		return type.GenericTypeArguments.Length == 0 ? type.FullName : $"{type.Namespace}.{type.Name}{string.Join("", type.GenericTypeArguments.Select(static innerType => $"[{innerType.GetUnifiedName()}]"))}";
 	}
@@ -106,9 +104,7 @@ internal static class WebUtilities {
 	}
 
 	internal static async Task WriteJsonAsync<TValue>(this HttpResponse response, TValue? value, JsonSerializerSettings? jsonSerializerSettings = null) {
-		if (response == null) {
-			throw new ArgumentNullException(nameof(response));
-		}
+		ArgumentNullException.ThrowIfNull(response);
 
 		JsonSerializer serializer = JsonSerializer.CreateDefault(jsonSerializerSettings);
 

@@ -56,9 +56,7 @@ public sealed class GitHubReleaseResponse {
 	public string Version { get; private set; }
 
 	internal GitHubReleaseResponse(GitHub.ReleaseResponse releaseResponse) {
-		if (releaseResponse == null) {
-			throw new ArgumentNullException(nameof(releaseResponse));
-		}
+		ArgumentNullException.ThrowIfNull(releaseResponse);
 
 		ChangelogHTML = releaseResponse.ChangelogHTML ?? "";
 		ReleasedAt = releaseResponse.PublishedAt;

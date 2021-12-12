@@ -45,9 +45,7 @@ internal sealed class LocalizationMiddleware {
 
 	[UsedImplicitly]
 	public async Task InvokeAsync(HttpContext context) {
-		if (context == null) {
-			throw new ArgumentNullException(nameof(context));
-		}
+		ArgumentNullException.ThrowIfNull(context);
 
 		RequestHeaders headers = context.Request.GetTypedHeaders();
 

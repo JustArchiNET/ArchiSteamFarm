@@ -34,9 +34,7 @@ internal sealed class ConcurrentEnumerator<T> : IEnumerator<T> {
 	object? IEnumerator.Current => Current;
 
 	internal ConcurrentEnumerator(IReadOnlyCollection<T> collection, IDisposable lockObject) {
-		if (collection == null) {
-			throw new ArgumentNullException(nameof(collection));
-		}
+		ArgumentNullException.ThrowIfNull(collection);
 
 		LockObject = lockObject ?? throw new ArgumentNullException(nameof(lockObject));
 		Enumerator = collection.GetEnumerator();

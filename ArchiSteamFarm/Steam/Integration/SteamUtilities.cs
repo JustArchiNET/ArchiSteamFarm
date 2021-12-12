@@ -29,9 +29,7 @@ namespace ArchiSteamFarm.Steam.Integration;
 
 internal static class SteamUtilities {
 	internal static Dictionary<uint, string>? ParseItems(this SteamApps.PurchaseResponseCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		List<KeyValue> lineItems = callback.PurchaseReceiptInfo["lineitems"].Children;
 

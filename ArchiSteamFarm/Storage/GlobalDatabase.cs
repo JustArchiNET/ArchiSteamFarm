@@ -137,9 +137,7 @@ public sealed class GlobalDatabase : SerializableFile {
 			throw new ArgumentNullException(nameof(key));
 		}
 
-		if (value == null) {
-			throw new ArgumentNullException(nameof(value));
-		}
+		ArgumentNullException.ThrowIfNull(value);
 
 		if (value.Type == JTokenType.Null) {
 			DeleteFromJsonStorage(key);
@@ -233,9 +231,7 @@ public sealed class GlobalDatabase : SerializableFile {
 			throw new ArgumentOutOfRangeException(nameof(appID));
 		}
 
-		if (packageIDs == null) {
-			throw new ArgumentNullException(nameof(packageIDs));
-		}
+		ArgumentNullException.ThrowIfNull(packageIDs);
 
 		HashSet<uint> result = new();
 
@@ -300,9 +296,7 @@ public sealed class GlobalDatabase : SerializableFile {
 	}
 
 	internal async Task RefreshPackages(Bot bot, IReadOnlyDictionary<uint, uint> packages) {
-		if (bot == null) {
-			throw new ArgumentNullException(nameof(bot));
-		}
+		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((packages == null) || (packages.Count == 0)) {
 			throw new ArgumentNullException(nameof(packages));

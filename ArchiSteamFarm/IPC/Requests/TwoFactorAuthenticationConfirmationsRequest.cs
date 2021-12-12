@@ -59,9 +59,7 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 	public ImmutableHashSet<string> SAcceptedCreatorIDs {
 		get => AcceptedCreatorIDs.Select(static creatorID => creatorID.ToString(CultureInfo.InvariantCulture)).ToImmutableHashSet();
 		set {
-			if (value == null) {
-				throw new ArgumentNullException(nameof(value));
-			}
+			ArgumentNullException.ThrowIfNull(value);
 
 			HashSet<ulong> acceptedCreatorIDs = new();
 

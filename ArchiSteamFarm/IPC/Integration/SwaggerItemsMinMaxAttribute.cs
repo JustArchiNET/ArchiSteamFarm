@@ -41,9 +41,7 @@ public sealed class SwaggerItemsMinMaxAttribute : CustomSwaggerAttribute {
 	private decimal? BackingMinimum;
 
 	public override void Apply(OpenApiSchema schema) {
-		if (schema == null) {
-			throw new ArgumentNullException(nameof(schema));
-		}
+		ArgumentNullException.ThrowIfNull(schema);
 
 		if (schema.Items == null) {
 			throw new InvalidOperationException(nameof(schema.Items));

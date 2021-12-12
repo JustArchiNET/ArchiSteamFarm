@@ -39,9 +39,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> where
 	public ConcurrentHashSet() => BackingCollection = new ConcurrentDictionary<T, bool>();
 
 	public ConcurrentHashSet(IEqualityComparer<T> comparer) {
-		if (comparer == null) {
-			throw new ArgumentNullException(nameof(comparer));
-		}
+		ArgumentNullException.ThrowIfNull(comparer);
 
 		BackingCollection = new ConcurrentDictionary<T, bool>(comparer);
 	}
@@ -71,9 +69,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> where
 	public void CopyTo(T[] array, int arrayIndex) => BackingCollection.Keys.CopyTo(array, arrayIndex);
 
 	public void ExceptWith(IEnumerable<T> other) {
-		if (other == null) {
-			throw new ArgumentNullException(nameof(other));
-		}
+		ArgumentNullException.ThrowIfNull(other);
 
 		foreach (T item in other) {
 			Remove(item);
@@ -151,9 +147,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> where
 	}
 
 	public void UnionWith(IEnumerable<T> other) {
-		if (other == null) {
-			throw new ArgumentNullException(nameof(other));
-		}
+		ArgumentNullException.ThrowIfNull(other);
 
 		foreach (T otherElement in other) {
 			Add(otherElement);

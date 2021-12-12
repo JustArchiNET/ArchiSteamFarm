@@ -1270,9 +1270,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	internal async Task IdleGame(Game game) {
-		if (game == null) {
-			throw new ArgumentNullException(nameof(game));
-		}
+		ArgumentNullException.ThrowIfNull(game);
 
 		string? gameName = null;
 
@@ -1709,9 +1707,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	internal bool TryImportAuthenticator(MobileAuthenticator authenticator) {
-		if (authenticator == null) {
-			throw new ArgumentNullException(nameof(authenticator));
-		}
+		ArgumentNullException.ThrowIfNull(authenticator);
 
 		if (HasMobileAuthenticator) {
 			return false;
@@ -1872,9 +1868,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private HashSet<uint>? GetPossiblyCompletedBadgeAppIDs(IDocument badgePage) {
-		if (badgePage == null) {
-			throw new ArgumentNullException(nameof(badgePage));
-		}
+		ArgumentNullException.ThrowIfNull(badgePage);
 
 		// We select badges that are ready to craft, as well as those that are already crafted to a maximum level, as those will not display with a craft button
 		// Level 5 is maximum level for card badges according to https://steamcommunity.com/tradingcards/faq
@@ -2211,9 +2205,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async void OnConnected(SteamClient.ConnectedCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		HeartBeatFailures = 0;
 		ReconnectOnUserInitiated = false;
@@ -2335,9 +2327,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		if (ASF.LoginRateLimitingSemaphore == null) {
 			throw new InvalidOperationException(nameof(ASF.LoginRateLimitingSemaphore));
@@ -2411,9 +2401,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async void OnFriendsList(SteamFriends.FriendsListCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.FriendList == null) {
 			throw new ArgumentNullException(nameof(callback));
@@ -2492,9 +2480,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async void OnGuestPassList(SteamApps.GuestPassListCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.GuestPasses == null) {
 			throw new ArgumentNullException(nameof(callback));
@@ -2514,9 +2500,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async Task OnIncomingChatMessage(CChatRoom_IncomingChatMessage_Notification notification) {
-		if (notification == null) {
-			throw new ArgumentNullException(nameof(notification));
-		}
+		ArgumentNullException.ThrowIfNull(notification);
 
 		if ((notification.chat_group_id == 0) || (notification.chat_id == 0) || (notification.steamid_sender == 0)) {
 			ArchiLogger.LogNullError($"{nameof(notification.chat_group_id)} || {nameof(notification.chat_id)} || {nameof(notification.steamid_sender)}");
@@ -2556,9 +2540,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async Task OnIncomingMessage(CFriendMessages_IncomingMessage_Notification notification) {
-		if (notification == null) {
-			throw new ArgumentNullException(nameof(notification));
-		}
+		ArgumentNullException.ThrowIfNull(notification);
 
 		if (notification.steamid_friend == 0) {
 			ArchiLogger.LogNullError(nameof(notification.steamid_friend));
@@ -2614,9 +2596,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async void OnLicenseList(SteamApps.LicenseListCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.LicenseList == null) {
 			throw new ArgumentNullException(nameof(callback));
@@ -2673,9 +2653,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private void OnLoggedOff(SteamUser.LoggedOffCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		LastLogOnResult = callback.Result;
 
@@ -2707,9 +2685,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async void OnLoggedOn(SteamUser.LoggedOnCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		// Always reset one-time-only access tokens when we get OnLoggedOn() response
 		AuthCode = TwoFactorCode = null;
@@ -2935,9 +2911,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private void OnLoginKey(SteamUser.LoginKeyCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		if (string.IsNullOrEmpty(callback.LoginKey)) {
 			throw new ArgumentNullException(nameof(callback));
@@ -2958,9 +2932,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async void OnMachineAuth(SteamUser.UpdateMachineAuthCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		string sentryFilePath = GetFilePath(EFileType.SentryFile);
 
@@ -3021,9 +2993,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.FriendID != SteamID) {
 			return;
@@ -3050,9 +3020,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async void OnPlayingSessionState(ArchiHandler.PlayingSessionStateCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.PlayingBlocked == PlayingBlocked) {
 			return; // No status update, we're not interested
@@ -3065,9 +3033,7 @@ public sealed class Bot : IAsyncDisposable {
 	private async void OnSendItemsTimer(object? state = null) => await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 
 	private async void OnServiceMethod(SteamUnifiedMessages.ServiceMethodNotification notification) {
-		if (notification == null) {
-			throw new ArgumentNullException(nameof(notification));
-		}
+		ArgumentNullException.ThrowIfNull(notification);
 
 		switch (notification.MethodName) {
 			case "ChatRoomClient.NotifyIncomingChatMessage#1":
@@ -3082,9 +3048,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async void OnSharedLibraryLockStatus(ArchiHandler.SharedLibraryLockStatusCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		// Ignore no status updates
 		if (LibraryLocked) {
@@ -3105,9 +3069,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private void OnUserNotifications(UserNotificationsCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.Notifications == null) {
 			throw new ArgumentNullException(nameof(callback));
@@ -3158,17 +3120,13 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private void OnVanityURLChangedCallback(SteamUser.VanityURLChangedCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
 	}
 
 	private void OnWalletUpdate(SteamUser.WalletInfoCallback callback) {
-		if (callback == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback);
 
 		WalletBalance = callback.LongBalance;
 		WalletCurrency = callback.Currency;
@@ -3492,9 +3450,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private (bool IsSteamParentalEnabled, string? SteamParentalCode) ValidateSteamParental(ParentalSettings settings, string? steamParentalCode = null) {
-		if (settings == null) {
-			throw new ArgumentNullException(nameof(settings));
-		}
+		ArgumentNullException.ThrowIfNull(settings);
 
 		if (!settings.is_enabled) {
 			return (false, null);

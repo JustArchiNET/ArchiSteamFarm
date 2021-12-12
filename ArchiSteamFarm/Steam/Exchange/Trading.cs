@@ -292,13 +292,9 @@ public sealed class Trading : IDisposable {
 	}
 
 	internal static bool IsEmptyForMatching(IReadOnlyDictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> fullState, IReadOnlyDictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState) {
-		if (fullState == null) {
-			throw new ArgumentNullException(nameof(fullState));
-		}
+		ArgumentNullException.ThrowIfNull(fullState);
 
-		if (tradableState == null) {
-			throw new ArgumentNullException(nameof(tradableState));
-		}
+		ArgumentNullException.ThrowIfNull(tradableState);
 
 		foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) set, IReadOnlyDictionary<ulong, uint> state) in tradableState) {
 			if (!fullState.TryGetValue(set, out Dictionary<ulong, uint>? fullSet) || (fullSet.Count == 0)) {
@@ -315,13 +311,9 @@ public sealed class Trading : IDisposable {
 	}
 
 	internal static bool IsEmptyForMatching(IReadOnlyDictionary<ulong, uint> fullSet, IReadOnlyDictionary<ulong, uint> tradableSet) {
-		if (fullSet == null) {
-			throw new ArgumentNullException(nameof(fullSet));
-		}
+		ArgumentNullException.ThrowIfNull(fullSet);
 
-		if (tradableSet == null) {
-			throw new ArgumentNullException(nameof(tradableSet));
-		}
+		ArgumentNullException.ThrowIfNull(tradableSet);
 
 		foreach ((ulong classID, uint amount) in tradableSet) {
 			switch (amount) {
@@ -446,9 +438,7 @@ public sealed class Trading : IDisposable {
 	}
 
 	private async Task<(ParseTradeResult? TradeResult, bool RequiresMobileConfirmation)> ParseTrade(TradeOffer tradeOffer) {
-		if (tradeOffer == null) {
-			throw new ArgumentNullException(nameof(tradeOffer));
-		}
+		ArgumentNullException.ThrowIfNull(tradeOffer);
 
 		if (tradeOffer.State != ETradeOfferState.Active) {
 			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, tradeOffer.State));
@@ -527,9 +517,7 @@ public sealed class Trading : IDisposable {
 	}
 
 	private async Task<ParseTradeResult.EResult> ShouldAcceptTrade(TradeOffer tradeOffer) {
-		if (tradeOffer == null) {
-			throw new ArgumentNullException(nameof(tradeOffer));
-		}
+		ArgumentNullException.ThrowIfNull(tradeOffer);
 
 		if (ASF.GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalConfig));

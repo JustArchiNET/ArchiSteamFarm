@@ -34,9 +34,7 @@ public sealed class SwaggerSteamIdentifierAttribute : CustomSwaggerAttribute {
 	public EUniverse Universe { get; set; } = EUniverse.Public;
 
 	public override void Apply(OpenApiSchema schema) {
-		if (schema == null) {
-			throw new ArgumentNullException(nameof(schema));
-		}
+		ArgumentNullException.ThrowIfNull(schema);
 
 		schema.Minimum = new SteamID(MinimumAccountID, Universe, AccountType);
 		schema.Maximum = new SteamID(MaximumAccountID, Universe, AccountType);
