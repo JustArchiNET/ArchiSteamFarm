@@ -71,7 +71,6 @@ internal sealed class ApiAuthenticationMiddleware {
 	[UsedImplicitly]
 	public async Task InvokeAsync(HttpContext context, IOptions<MvcNewtonsoftJsonOptions> jsonOptions) {
 		ArgumentNullException.ThrowIfNull(context);
-
 		ArgumentNullException.ThrowIfNull(jsonOptions);
 
 		(HttpStatusCode statusCode, bool permanent) = await GetAuthenticationStatus(context).ConfigureAwait(false);

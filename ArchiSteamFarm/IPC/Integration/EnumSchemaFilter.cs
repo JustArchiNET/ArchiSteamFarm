@@ -33,7 +33,6 @@ namespace ArchiSteamFarm.IPC.Integration;
 internal sealed class EnumSchemaFilter : ISchemaFilter {
 	public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
 		ArgumentNullException.ThrowIfNull(schema);
-
 		ArgumentNullException.ThrowIfNull(context);
 
 		if (context.Type is not { IsEnum: true }) {

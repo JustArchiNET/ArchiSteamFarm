@@ -464,7 +464,6 @@ internal static class PluginsCore {
 
 	internal static async Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager) {
 		ArgumentNullException.ThrowIfNull(bot);
-
 		ArgumentNullException.ThrowIfNull(callbackManager);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
@@ -500,7 +499,6 @@ internal static class PluginsCore {
 
 	internal static async Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer) {
 		ArgumentNullException.ThrowIfNull(bot);
-
 		ArgumentNullException.ThrowIfNull(tradeOffer);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
@@ -562,7 +560,6 @@ internal static class PluginsCore {
 		}
 
 		ArgumentNullException.ThrowIfNull(appChanges);
-
 		ArgumentNullException.ThrowIfNull(packageChanges);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {

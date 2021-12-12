@@ -486,7 +486,6 @@ public static class ASF {
 
 	private static async void OnChanged(object sender, FileSystemEventArgs e) {
 		ArgumentNullException.ThrowIfNull(sender);
-
 		ArgumentNullException.ThrowIfNull(e);
 
 		if (string.IsNullOrEmpty(e.Name)) {
@@ -568,7 +567,6 @@ public static class ASF {
 
 	private static async void OnCreated(object sender, FileSystemEventArgs e) {
 		ArgumentNullException.ThrowIfNull(sender);
-
 		ArgumentNullException.ThrowIfNull(e);
 
 		if (string.IsNullOrEmpty(e.Name)) {
@@ -706,7 +704,6 @@ public static class ASF {
 
 	private static async void OnDeleted(object sender, FileSystemEventArgs e) {
 		ArgumentNullException.ThrowIfNull(sender);
-
 		ArgumentNullException.ThrowIfNull(e);
 
 		if (string.IsNullOrEmpty(e.Name)) {
@@ -826,7 +823,6 @@ public static class ASF {
 
 	private static async void OnRenamed(object sender, RenamedEventArgs e) {
 		ArgumentNullException.ThrowIfNull(sender);
-
 		ArgumentNullException.ThrowIfNull(e);
 
 		if (string.IsNullOrEmpty(e.OldName)) {

@@ -293,7 +293,6 @@ public sealed class Trading : IDisposable {
 
 	internal static bool IsEmptyForMatching(IReadOnlyDictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> fullState, IReadOnlyDictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState) {
 		ArgumentNullException.ThrowIfNull(fullState);
-
 		ArgumentNullException.ThrowIfNull(tradableState);
 
 		foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) set, IReadOnlyDictionary<ulong, uint> state) in tradableState) {
@@ -312,7 +311,6 @@ public sealed class Trading : IDisposable {
 
 	internal static bool IsEmptyForMatching(IReadOnlyDictionary<ulong, uint> fullSet, IReadOnlyDictionary<ulong, uint> tradableSet) {
 		ArgumentNullException.ThrowIfNull(fullSet);
-
 		ArgumentNullException.ThrowIfNull(tradableSet);
 
 		foreach ((ulong classID, uint amount) in tradableSet) {

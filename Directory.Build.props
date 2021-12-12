@@ -33,6 +33,7 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 		<PackageReference Include="JustArchiNET.Madness" />
 		<Using Include="JustArchiNET.Madness" />
+		<Using Include="JustArchiNET.Madness.ArgumentNullExceptionMadness.ArgumentNullException" Alias="ArgumentNullException" />
 		<Using Include="JustArchiNET.Madness.ConvertMadness.Convert" Alias="Convert" />
 		<Using Include="JustArchiNET.Madness.EnvironmentMadness.Environment" Alias="Environment" />
 		<Using Include="JustArchiNET.Madness.FileMadness.File" Alias="File" />

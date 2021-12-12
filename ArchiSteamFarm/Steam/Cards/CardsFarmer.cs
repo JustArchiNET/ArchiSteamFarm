@@ -395,7 +395,6 @@ public sealed class CardsFarmer : IAsyncDisposable {
 
 	private async Task CheckPage(IDocument htmlDocument, ISet<uint> parsedAppIDs) {
 		ArgumentNullException.ThrowIfNull(htmlDocument);
-
 		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
 		IEnumerable<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_row_inner']");

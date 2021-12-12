@@ -177,7 +177,6 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 
 	public Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager) {
 		ArgumentNullException.ThrowIfNull(bot);
-
 		ArgumentNullException.ThrowIfNull(callbackManager);
 
 		if (BotSubscriptions.TryRemove(bot, out IDisposable? subscription)) {
@@ -211,7 +210,6 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 		}
 
 		ArgumentNullException.ThrowIfNull(appChanges);
-
 		ArgumentNullException.ThrowIfNull(packageChanges);
 
 		if (Config is not { Enabled: true }) {
@@ -255,7 +253,6 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 
 	private static async void OnLicenseList(Bot bot, SteamApps.LicenseListCallback callback) {
 		ArgumentNullException.ThrowIfNull(bot);
-
 		ArgumentNullException.ThrowIfNull(callback);
 
 		if (Config is not { Enabled: true }) {

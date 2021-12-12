@@ -31,7 +31,6 @@ namespace ArchiSteamFarm.IPC.Integration;
 internal sealed class CustomAttributesSchemaFilter : ISchemaFilter {
 	public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
 		ArgumentNullException.ThrowIfNull(schema);
-
 		ArgumentNullException.ThrowIfNull(context);
 
 		ICustomAttributeProvider attributesProvider;

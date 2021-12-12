@@ -59,9 +59,7 @@ internal sealed class RequestData {
 		}
 
 		ArgumentNullException.ThrowIfNull(apps);
-
 		ArgumentNullException.ThrowIfNull(accessTokens);
-
 		ArgumentNullException.ThrowIfNull(depots);
 
 		SteamID = steamID;

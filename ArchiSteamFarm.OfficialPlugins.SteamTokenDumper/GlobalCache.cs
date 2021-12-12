@@ -199,7 +199,6 @@ internal sealed class GlobalCache : SerializableFile {
 
 	internal void UpdateAppTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> appTokens, IReadOnlyCollection<uint> publicAppIDs) {
 		ArgumentNullException.ThrowIfNull(appTokens);
-
 		ArgumentNullException.ThrowIfNull(publicAppIDs);
 
 		bool save = false;
@@ -279,9 +278,7 @@ internal sealed class GlobalCache : SerializableFile {
 
 	internal void UpdateSubmittedData(IReadOnlyDictionary<uint, ulong> apps, IReadOnlyDictionary<uint, ulong> packages, IReadOnlyDictionary<uint, string> depots) {
 		ArgumentNullException.ThrowIfNull(apps);
-
 		ArgumentNullException.ThrowIfNull(packages);
-
 		ArgumentNullException.ThrowIfNull(depots);
 
 		foreach ((uint appID, ulong token) in apps) {

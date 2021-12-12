@@ -63,7 +63,6 @@ internal sealed class Startup {
 	[UsedImplicitly]
 	public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 		ArgumentNullException.ThrowIfNull(app);
-
 		ArgumentNullException.ThrowIfNull(env);
 
 		// The order of dependency injection is super important, doing things in wrong order will break everything
