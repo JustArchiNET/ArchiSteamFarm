@@ -62,34 +62,87 @@
 			PublicKeyToken=b77a5c561934e089
 		</value>
 	</resheader>
+	<data name="PluginDisabledMissingBuildToken" xml:space="preserve">
+		<value>{0} buvo išjungtas, dėl trūkstamos dalies</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} buvo sėkmingai įrašytas, dėkojame už jūsų pagalbą. Pirma pateiktis įvyks už maždaug {1} nuo dabar.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+		<value>{0} nepavyko užkrauti, bus įrašyta nauja instancija...</value>
+		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+	</data>
+	<data name="BotNoAppsToRefresh" xml:space="preserve">
+		<value>Šiame robote nėra jokių programų, kurias reikėtų atnaujinti.</value>
+	</data>
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Iš viso gaunama {0} programos prieigos raktų...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Gaunama {0} programos prieigos raktų...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Baigta gauti {0} programos prieigos raktų.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Iš viso baigta gauti {0} programos prieigos raktų.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
+	
+	<data name="BotRetrievingAppInfos" xml:space="preserve">
+		<value>Gaunama {0} programos informacijos...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
+		<value>Baigta gauti {0} programos informacijos.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
+	</data>
 	
 	
 	
+	<data name="SubmissionNoNewData" xml:space="preserve">
+		<value>Nėra jokių naujų duomenų, kuriuos būtų galima pateikti, viskas jau atnaujinta.</value>
+	</data>
 	
 	
+	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+		<value>Pateiktis nepavyko dėl per daug išsiustų prašymų, pradėsime iš naujo už maždaug {0} nuo dabar.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	
+	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+		<value>Naujos programos: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+		<value>Patvirtintos programos: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+		<value>Nauji paketai: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+		<value>Patvirtinti paketai: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginSecretListInitialized" xml:space="preserve">
+		<value>{0} inicijuota, įskiepis neišspręs nė vieno iš šių dalykų: {1}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>Kraunama STD global talpykla...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>Tvirtinamas STD global talpyklos vientisumas...</value>
+	</data>
 	
 </root>

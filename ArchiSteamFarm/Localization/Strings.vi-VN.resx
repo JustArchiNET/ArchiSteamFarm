@@ -165,7 +165,7 @@ StackTrace:
 		<value>Đang khởi động lại...</value>
 	</data>
 	<data name="Starting" xml:space="preserve">
-		<value>Bắt đầu...</value>
+		<value>Đang khởi động...</value>
 	</data>
 	<data name="Success" xml:space="preserve">
 		<value>Hoàn tất!</value>
@@ -719,13 +719,25 @@ Thời gian hoạt động: {1}</value>
 		<value>Bạn đang sử dụng cài đặt {0} của thuộc tính {1}, nhưng bạn đã không cung cấp một --cryptkey tùy chỉnh. Điều này hoàn toàn tự hủy sự bảo vệ, vì ASF buộc phải sử dụng khóa (đã biết) của nó. Bạn nên cung cấp một --cryptkey tùy chỉnh để nhận được lợi ích bảo mật được cung cấp bởi cài đặt này.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
-	
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Bạn đang cố chạy ASF với tư cách là quản trị viên (admin/root). Điều này gây ra rủi ro bảo mật đáng kể cho máy của bạn, và vì ASF không yêu cầu quyền truy cập root cho hoạt động của nó, chúng tôi đề xuất chạy ASF thông thường thay vì với tư cách admin nếu có thể.</value>
+	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Bạn đang chạy ASF trong môi trường không được hỗ trợ, bằng việc cung cấp lệnh --ignore-unsupported-environment. Xin lưu ý rằng chúng tôi không cung cấp bất cứ sự hỗ trợ nào cho hoàn cảnh này và bạn hoàn toàn tự chịu trách nhiệm. Bạn đã được cảnh báo.</value>
 	</data>
-	
-	
-	
-	
-	
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Đang thu nhận checksum từ máy chủ từ xa...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>Đang xác minh checksum của dữ liệu nhị phân đã tải xuống với cái từ máy chủ từ xa...</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>Máy chủ từ xa không biết gì về phiên bản chúng ta đang chuẩn bị cập nhật lên. Tình huống này có thể do phiên bản đó vừa được phát hành gần đây - đang từ chối việc tiếp tục quá trình cập nhật ngay lập tức để đề phòng bảo mật.</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>Máy chủ từ xa vừa trả lại một checksum khác, điều này có thể nghĩa là phần tải xuống bị hỏng hoặc một vụ tấn cống MITM, đang từ chối việc tiếp tục quá trình cập nhật!</value>
+	</data>
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>Đang vá tệp ASF...</value>
+	</data>
 </root>

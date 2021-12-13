@@ -168,7 +168,13 @@
 		<value>{0} đã được khởi tạo, plugin sẽ không can thiệp với những thứ sau: {1}.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
-	
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>Đang tải bộ nhớ đệm STD chung...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>Đang kiểm tra trạng thái bộ nhớ đệm STD chung...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>Không thể xác minh trạng thái bộ nhớ đệm chung STD. Điều này có khả năng do tệp/bộ nhớ bị hỏng, một trạng thái mới sẽ được khởi tạo thay thế.</value>
+	</data>
 </root>
