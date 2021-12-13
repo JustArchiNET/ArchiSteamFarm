@@ -59,20 +59,27 @@
 
 	<!-- Default configuration for release builds -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
-		<AssemblyOriginatorKeyFile>../resources/ArchiSteamFarm.snk.pub</AssemblyOriginatorKeyFile>
 		<DebugSymbols>false</DebugSymbols>
 		<DebugType>none</DebugType>
-		<PublicSign>true</PublicSign>
-		<SignAssembly>true</SignAssembly>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
 		<WarningsNotAsErrors>CS8002,IL2026,IL2057,IL2072,IL2075,IL2104</WarningsNotAsErrors>
 	</PropertyGroup>
 
+	<!-- Enable public signing if not part of Visual Studio, which is too stupid to understand what public signing is -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Release' AND '$(BuildingInsideVisualStudio)' != 'true'">
+		<AssemblyOriginatorKeyFile>../resources/ArchiSteamFarm.snk.pub</AssemblyOriginatorKeyFile>
+		<DefineConstants>$(DefineConstants);ASF_SIGNED_BUILD</DefineConstants>
+		<PublicSign>true</PublicSign>
+		<SignAssembly>true</SignAssembly>
+	</PropertyGroup>
+
 	<!-- Private SNK signing -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Release' AND EXISTS('resources/ArchiSteamFarm.snk')">
 		<AssemblyOriginatorKeyFile>../resources/ArchiSteamFarm.snk</AssemblyOriginatorKeyFile>
+		<DefineConstants>$(DefineConstants);ASF_SIGNED_BUILD</DefineConstants>
 		<PublicSign>false</PublicSign>
+		<SignAssembly>true</SignAssembly>
 	</PropertyGroup>
 
 	<!-- Trimming functionality as described on https://docs.microsoft.com/dotnet/core/deploying/trim-self-contained -->
