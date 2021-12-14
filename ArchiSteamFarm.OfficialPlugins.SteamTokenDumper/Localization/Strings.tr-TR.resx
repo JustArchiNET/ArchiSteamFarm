@@ -168,7 +168,13 @@
 		<value>{0} başlatıldı, eklenti şunlardan hiçbirini çözemedi: {1}.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
-	
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>STD küresel önbelleği yükleniyor...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>STD küresel önbellek bütünlüğü doğrulanıyor...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>STD küresel önbellek bütünlüğü doğrulanamadı. Bu, olası bir dosya/bellek bozulması olduğunu gösterir, bunun yerine yeni bir örnek başlatılacaktır.</value>
+	</data>
 </root>
