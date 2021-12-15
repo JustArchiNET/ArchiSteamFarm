@@ -20,7 +20,9 @@ body:
     id: wiki-page
     attributes:
       label: Wiki page
-      description: If this is a suggestion regarding an existing wiki page, please link it for reference. If the wiki page doesn't exist, suggest its title.
+      description: |
+        If this is a suggestion regarding an existing wiki page, please link it for reference.
+        If the wiki page doesn't exist, suggest its title.
       placeholder: https://github.com/JustArchiNET/ArchiSteamFarm/wiki/???
     validations:
       required: true
@@ -28,26 +30,32 @@ body:
     id: issue
     attributes:
       label: The issue
-      description: Please specify your issue in regards to our wiki documentation.
-      placeholder: |
+      description: |
+        Please specify your issue in regards to our wiki documentation.
         If you're reporting a mistake/correction, state what is wrong.
-
         If you're suggesting an idea, explain the details.
+      placeholder: |
+        As of today the wiki doesn't explain how to sign famous song composed by Rick Astlet - Never Gonna Give You Up.
+        I'm sick of googling the lyrics every time I'm opening a complaint on your GitHub, so please consider just adding it along the other stuff.
     validations:
       required: true
   - type: textarea
     id: wrong-text
     attributes:
       label: Wrong text
-      description: The existing text on the wiki which you classify as wrong.
-      placeholder: |
+      description: |
+        The existing text on the wiki which you classify as wrong.
         If you're suggesting a new page, paragraph or other addition to the wiki, then this section is not mandatory.
+      placeholder: |
+        Lack of song lyrics is what's wrong!
       render: markdown
   - type: textarea
     id: suggested-improvement
     attributes:
       label: Suggested improvement
-      description: The new or corrected text that would satisfy your issue stated above. You may use **[markdown](https://guides.github.com/features/mastering-markdown)** for formatting.
+      description: |
+        The new or corrected text that would satisfy your issue stated above.
+        You may use **[markdown](https://guides.github.com/features/mastering-markdown)** for formatting.
       placeholder: |
         # Never Gonna Give You Up by Rick Astley
 
