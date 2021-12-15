@@ -35,7 +35,7 @@ body:
         If you're reporting a mistake/correction, state what is wrong.
         If you're suggesting an idea, explain the details.
       placeholder: |
-        As of today the wiki doesn't explain how to sign famous song composed by Rick Astlet - Never Gonna Give You Up.
+        As of today the wiki doesn't explain how to sing famous song composed by Rick Astlet - Never Gonna Give You Up.
         I'm sick of googling the lyrics every time I'm opening a complaint on your GitHub, so please consider just adding it along the other stuff.
     validations:
       required: true
