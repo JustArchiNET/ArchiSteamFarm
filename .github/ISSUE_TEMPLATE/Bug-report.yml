@@ -156,6 +156,7 @@ body:
         {
           "AutoRestart": false,
           "Headless": true,
+          "IPCPassword": "********",
           "UpdateChannel": 2,
           "SteamTokenDumperPluginEnabled": true
         }
@@ -179,7 +180,9 @@ body:
         Redacting involves replacing sensitive details, for example with stars (***). You should refrain from removing config lines entirely, as their pure existence may be relevant and should be preserved.
       placeholder: |
         {
-          "Enabled": true
+          "Enabled": true,
+          "SteamLogin": "********",
+          "SteamPassword": "********"
         }
       render: json
   - type: textarea
