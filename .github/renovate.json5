@@ -17,6 +17,7 @@
 		{
 			// TODO: <= 3.1 for Mono support, last failed version 6.12, https://steamcommunity.com/groups/archiasf/discussions/1/2997673517556002529
 			"allowedVersions": "<= 3.1",
+			"matchManagers": [ "nuget" ],
 			"matchPackageNames": [ "Microsoft.Extensions.Configuration.Json", "Microsoft.Extensions.Logging.Configuration" ]
 		}
 	]
