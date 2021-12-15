@@ -703,18 +703,40 @@ StackTrace:
 		<value>Vaše Steam heslo pro '{0}' se zdá být slabé. Pro větší zabezpečení zvažte změnu hesla na silnější variantu. Detaily: {1}</value>
 		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
-	
-	
-	
-	
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Váš šifrovací klíč se zdá být slabý. Zvažte výběr silnější varianty pro zvýšení bezpečnosti. Detaily: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Váš šifrovací klíč je příliš krátký. Doporučujeme použít ten, který je alespoň {0} bajtů (znaků) dlouhý.</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Používáte {0} nastavení vlastnosti {1}, ale neposkytujete vlastní --cryptkey. Pro zvýšení bezpečnosti byste měli poskytnout vlastní --cryptkey.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>Používáte {0} nastavení vlastnosti {1}, ale neposkytuješ vlastní --cryptkey. To zcela ruší ochranu, protože ASF je nucen použít svůj vlastní (známý) klíč. Pro využití bezpečnostního přínosu nabízeného tímto nastavením, byste měli poskytnout vlastní --cryptkey.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
 	<data name="WarningRunningAsRoot" xml:space="preserve">
 		<value>Snažíte se spustit ASF jako administrátor (root). To způsobuje značné bezpečnostní riziko pro váš počítač, navíc ASF nevyžaduje administrátorské oprávnění pro jeho provoz, proto doporučujeme běh aplikace pod klasickým uživatelem.</value>
 	</data>
-	
-	
-	
-	
-	
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Používáte ASF v nepodporovaném prostředí s použitím parametru --ignore-unsupported-environment. Vezměte prosím na vědomí, že nenabízíme žádnou podporu pro tento scénář a děláte to zcela na vlastní riziko. Byli jste varováni.</value>
+	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Načítání kontrolního součtu ze vzdáleného serveru...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>Ověřování kontrolního součtu stažených binárních souborů vůči vzdálenému serveru...</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>Vzdálený server nezná verzi na kterou se snažíte aktualizovat. Tato situace nastává, pokud verze byla vydána nedávno - aktualizace nebude z bezpečnostních důvodu pokračovat.</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>Vzdálený server odpověděl s jiným kontrolním součtem, což může naznačovat chybu při stahování nebo útok MITM, proces aktualizace proto nebude pokračovat!</value>
+	</data>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Aktualizace ASF souborů...</value>
 	</data>
