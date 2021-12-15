@@ -8,7 +8,7 @@ body:
       label: Checklist
       description: Ensure that our bug report form is appropriate for you.
       options:
-        - label: I read and understood ASF's **[Contributing Guidelines](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/CONTRIBUTING.md)**
+        - label: I read and understood ASF's **[Contributing guidelines](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/CONTRIBUTING.md)**
           required: true
         - label: I also read **[Setting-up](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up)** and **[FAQ](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ)**, I don't need **[help](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/SUPPORT.md)**, this is a bug report
           required: true
@@ -82,15 +82,22 @@ body:
     id: steps-to-reproduce
     attributes:
       label: Steps to reproduce
-      description: Every command or action that happened after launching ASF, which leads to the bug.
-      placeholder: |
+      description: |
+        Every command or action that happened after launching ASF, which leads to the bug.
         If launching ASF with provided configs (below) is everything that is needed, then this section is not mandatory.
+      placeholder: |
+        1. Put cup below the machine hosting ASF.
+        2. Send `PUT /Api/Coffee` request selecting latte macchiato.
+        3. No coffee was brewed.
   - type: textarea
     id: possible-solution
     attributes:
       label: Possible reason/solution
-      description: Not mandatory, but you can suggest a fix/reason for the bug, if known to you.
-      placeholder: If you observed something peculiar about your issue that could help us locate and fix the culprit, this is the right place.
+      description: |
+        Not mandatory, but you can suggest a fix/reason for the bug, if known to you.
+        If you observed something peculiar about your issue that could help us locate and fix the culprit, this is the right place.
+      placeholder: |
+        Perhaps no coffee was brewed because I was out of milk?
   - type: dropdown
     id: help
     attributes:
