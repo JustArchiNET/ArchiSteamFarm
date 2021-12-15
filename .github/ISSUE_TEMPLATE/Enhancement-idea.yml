@@ -29,7 +29,9 @@ body:
       description: |
         Purpose of the enhancement - if it solves some problem, precise in particular which. If it benefits the program in some other way, precise in particular why.
         Present the underlying reason why this enhancement makes sense, and what is the context of it.
-      placeholder: As of today ASF offers variety of beverages, such as latte macchiato or cappuccino. I'd appreciate if ASF offered some no-milk options as well, for example espresso or ristretto. I believe it'd further improve the program offering the users wider selection, which is very convenient.
+      placeholder: |
+        As of today ASF offers variety of beverages, such as latte macchiato or cappuccino. I'd appreciate if ASF offered some no-milk options as well, for example espresso or ristretto.
+        I believe it'd further improve the program offering the users wider selection, which is very convenient.
     validations:
       required: true
   - type: textarea
@@ -50,7 +52,8 @@ body:
         If something you're suggesting is already possible, then explain to us why the currently available solutions are not sufficient.
         If it's not possible yet, then explain to us why it should be.
       placeholder: |
-        I'm allergic to milk, there is currently no option to pick a beverage that doesn't include it. Temporarily I'm switching cup mid-brewing as a workaround, but that is suboptimal considering the milk wasted.
+        I'm allergic to milk, there is currently no option to pick a beverage that doesn't include it.
+        Temporarily I'm switching cup mid-brewing as a workaround, but that is suboptimal considering the milk wasted.
     validations:
       required: true
   - type: dropdown
