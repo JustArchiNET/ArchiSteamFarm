@@ -68,12 +68,52 @@ public sealed class CardsFarmer : IAsyncDisposable {
 
 	[JsonProperty]
 	[PublicAPI]
-	public TimeSpan TimeRemaining =>
-		new(
-			Bot.BotConfig.HoursUntilCardDrops > 0 ? (ushort) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently) * Bot.BotConfig.HoursUntilCardDrops : 0,
-			30 * GamesToFarm.Sum(static game => game.CardsRemaining),
-			0
-		);
+	public TimeSpan TimeRemaining {
+		get {
+			if (GamesToFarm.Count == 0) {
+				return new TimeSpan(0);
+			}
+
+			byte hoursRequired = Bot.BotConfig.HoursUntilCardDrops;
+
+			if (hoursRequired == 0) {
+				// This is the simple case, one card drops each 30 minutes on average
+				return TimeSpan.FromMinutes(GamesToFarm.Sum(static game => game.CardsRemaining) * 30);
+			}
+
+			// More advanced calculation, the above AND hours required for bumps
+			uint cardsRemaining = 0;
+			List<float> totalHoursClocked = new();
+
+			foreach (Game gameToFarm in GamesToFarm) {
+				cardsRemaining += gameToFarm.CardsRemaining;
+
+				if (gameToFarm.HoursPlayed < hoursRequired) {
+					totalHoursClocked.Add(gameToFarm.HoursPlayed);
+				}
+			}
+
+			if (totalHoursClocked.Count == 0) {
+				// Same as simple because we have no hours to bump
+				return TimeSpan.FromMinutes(cardsRemaining * 30);
+			}
+
+			// Determine how many additional hours we'll waste on game bumps
+			totalHoursClocked.Sort();
+
+			double extraHours = 0;
+
+			// Due to the fact that we have hours sorted, the lowest amount in each group is what we'll need for the entire group
+			// This is still simplified as ASF will farm cards instead of hours ASAP, but it should give good enough approximation (if not the exact value)
+			for (int i = 0; i < totalHoursClocked.Count; i += ArchiHandler.MaxGamesPlayedConcurrently) {
+				float hoursClocked = totalHoursClocked[i];
+
+				extraHours += hoursRequired - hoursClocked;
+			}
+
+			return TimeSpan.FromHours(extraHours) + TimeSpan.FromMinutes(cardsRemaining * 30);
+		}
+	}
 
 	private readonly Bot Bot;
 	private readonly ConcurrentHashSet<Game> CurrentGamesFarming = new();
