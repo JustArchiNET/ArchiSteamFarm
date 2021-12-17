@@ -325,9 +325,18 @@ jobs:
 
         foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
             Start-Job -Name "$variant" $PublishBlock -ArgumentList "$variant"
+
+            # Limit active jobs in parallel to help with memory usage
+            $jobs = $(Get-Job -State Running)
+
+            while ($jobs.Count -ge 5) {
+                Wait-Job -Job $jobs -Any | Out-Null
+
+                $jobs = $(Get-Job -State Running)
+            }
         }
 
-        Get-Job | Receive-Job -Wait
+        Get-Job | Receive-Job -Wait -AutoRemoveJob
 
     - name: Upload ASF-generic
       continue-on-error: true
