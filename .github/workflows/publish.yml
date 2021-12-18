@@ -336,7 +336,7 @@ jobs:
             }
         }
 
-        Get-Job | Receive-Job -Wait -AutoRemoveJob
+        Get-Job | Receive-Job -Wait
 
     - name: Upload ASF-generic
       continue-on-error: true
