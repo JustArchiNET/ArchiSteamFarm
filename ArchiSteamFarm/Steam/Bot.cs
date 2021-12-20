@@ -61,7 +61,6 @@ namespace ArchiSteamFarm.Steam;
 public sealed class Bot : IAsyncDisposable {
 	internal const ushort CallbackSleep = 500; // In milliseconds
 	internal const byte MinCardsPerBadge = 5;
-	internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
 
 	private const char DefaultBackgroundKeysRedeemerSeparator = '\t';
 	private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
@@ -2104,10 +2103,12 @@ public sealed class Bot : IAsyncDisposable {
 			return;
 		}
 
+		byte minFarmingDelayAfterBlock = ASF.GlobalConfig?.MinFarmingDelayAfterBlock ?? GlobalConfig.DefaultMinFarmingDelayAfterBlock;
+
 		PlayingWasBlockedTimer = new Timer(
 			ResetPlayingWasBlockedWithTimer,
 			null,
-			TimeSpan.FromSeconds(MinPlayingBlockedTTL), // Delay
+			TimeSpan.FromSeconds(minFarmingDelayAfterBlock), // Delay
 			Timeout.InfiniteTimeSpan // Period
 		);
 	}

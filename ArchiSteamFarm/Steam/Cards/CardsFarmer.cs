@@ -340,16 +340,24 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			}
 
 			if (Bot.PlayingWasBlocked) {
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotExtraIdlingCooldown, TimeSpan.FromSeconds(Bot.MinPlayingBlockedTTL).ToHumanReadable()));
+				byte minFarmingDelayAfterBlock = ASF.GlobalConfig?.MinFarmingDelayAfterBlock ?? GlobalConfig.DefaultMinFarmingDelayAfterBlock;
 
-				for (byte i = 0; (i < Bot.MinPlayingBlockedTTL) && Bot.IsPlayingPossible && Bot.PlayingWasBlocked; i++) {
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
+				if (minFarmingDelayAfterBlock > 0) {
+					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotExtraIdlingCooldown, TimeSpan.FromSeconds(minFarmingDelayAfterBlock).ToHumanReadable()));
 
-				if (!Bot.IsPlayingPossible) {
-					Bot.ArchiLogger.LogGenericInfo(Strings.PlayingNotAvailable);
+					for (byte i = 0; (i < minFarmingDelayAfterBlock) && Bot.IsConnectedAndLoggedOn && Bot.IsPlayingPossible && Bot.PlayingWasBlocked; i++) {
+						await Task.Delay(1000).ConfigureAwait(false);
+					}
 
-					return;
+					if (!Bot.IsConnectedAndLoggedOn) {
+						return;
+					}
+
+					if (!Bot.IsPlayingPossible) {
+						Bot.ArchiLogger.LogGenericInfo(Strings.PlayingNotAvailable);
+
+						return;
+					}
 				}
 			}
 

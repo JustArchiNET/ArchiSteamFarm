@@ -94,6 +94,9 @@ public sealed class GlobalConfig {
 	public const byte DefaultMaxTradeHoldDuration = 15;
 
 	[PublicAPI]
+	public const byte DefaultMinFarmingDelayAfterBlock = 60;
+
+	[PublicAPI]
 	public const EOptimizationMode DefaultOptimizationMode = EOptimizationMode.MaxPerformance;
 
 	[PublicAPI]
@@ -250,6 +253,10 @@ public sealed class GlobalConfig {
 	public byte MaxTradeHoldDuration { get; private set; } = DefaultMaxTradeHoldDuration;
 
 	[JsonProperty(Required = Required.DisallowNull)]
+	[Range(byte.MinValue, byte.MaxValue)]
+	public byte MinFarmingDelayAfterBlock { get; private set; } = DefaultMinFarmingDelayAfterBlock;
+
+	[JsonProperty(Required = Required.DisallowNull)]
 	public EOptimizationMode OptimizationMode { get; private set; } = DefaultOptimizationMode;
 
 	[JsonProperty(Required = Required.DisallowNull)]
@@ -381,6 +388,9 @@ public sealed class GlobalConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeMaxTradeHoldDuration() => !Saving || (MaxTradeHoldDuration != DefaultMaxTradeHoldDuration);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeMinFarmingDelayAfterBlock() => !Saving || (MinFarmingDelayAfterBlock != DefaultMinFarmingDelayAfterBlock);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeOptimizationMode() => !Saving || (OptimizationMode != DefaultOptimizationMode);
