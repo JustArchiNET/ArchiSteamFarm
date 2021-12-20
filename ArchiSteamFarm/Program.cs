@@ -182,11 +182,7 @@ internal static class Program {
 			return false;
 		}
 
-		if (ASF.GlobalConfig == null) {
-			throw new InvalidOperationException(nameof(ASF.GlobalConfig));
-		}
-
-		OS.Init(ASF.GlobalConfig.OptimizationMode);
+		OS.Init(ASF.GlobalConfig?.OptimizationMode ?? GlobalConfig.DefaultOptimizationMode);
 
 		if (!await InitGlobalDatabaseAndServices().ConfigureAwait(false)) {
 			return false;

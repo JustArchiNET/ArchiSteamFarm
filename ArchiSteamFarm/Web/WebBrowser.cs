@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -96,15 +97,13 @@ public sealed class WebBrowser : IDisposable {
 
 	[PublicAPI]
 	public HttpClient GenerateDisposableHttpClient(bool extendedTimeout = false) {
-		if (ASF.GlobalConfig == null) {
-			throw new InvalidOperationException(nameof(ASF.GlobalConfig));
-		}
+		byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 		HttpClient result = new(HttpClientHandler, false) {
 #if !NETFRAMEWORK
 			DefaultRequestVersion = HttpVersion.Version30,
 #endif
-			Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * ASF.GlobalConfig.ConnectionTimeout : ASF.GlobalConfig.ConnectionTimeout)
+			Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * connectionTimeout : connectionTimeout)
 		};
 
 		// Most web services expect that UserAgent is set, so we declare it globally

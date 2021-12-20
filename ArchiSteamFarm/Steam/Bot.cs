@@ -266,10 +266,6 @@ public sealed class Bot : IAsyncDisposable {
 		BotConfig = botConfig ?? throw new ArgumentNullException(nameof(botConfig));
 		BotDatabase = botDatabase ?? throw new ArgumentNullException(nameof(botDatabase));
 
-		if (ASF.GlobalConfig == null) {
-			throw new InvalidOperationException(nameof(ASF.GlobalConfig));
-		}
-
 		if (ASF.GlobalDatabase == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 		}
@@ -284,7 +280,7 @@ public sealed class Bot : IAsyncDisposable {
 			builder => {
 				builder.WithCellID(ASF.GlobalDatabase.CellID);
 				builder.WithHttpClientFactory(ArchiWebHandler.GenerateDisposableHttpClient);
-				builder.WithProtocolTypes(ASF.GlobalConfig.SteamProtocols);
+				builder.WithProtocolTypes(ASF.GlobalConfig?.SteamProtocols ?? GlobalConfig.DefaultSteamProtocols);
 				builder.WithServerListProvider(ASF.GlobalDatabase.ServerListProvider);
 
 				if (CustomMachineInfoProvider != null) {
@@ -343,7 +339,7 @@ public sealed class Bot : IAsyncDisposable {
 		Commands = new Commands(this);
 		Trading = new Trading(this);
 
-		if (!Debugging.IsDebugBuild && ASF.GlobalConfig.Statistics) {
+		if (!Debugging.IsDebugBuild && (ASF.GlobalConfig?.Statistics ?? GlobalConfig.DefaultStatistics)) {
 			Statistics = new Statistics(this);
 		}
 
@@ -1920,16 +1916,14 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async void HeartBeat(object? state = null) {
-		if (ASF.GlobalConfig == null) {
-			throw new InvalidOperationException(nameof(ASF.GlobalConfig));
-		}
-
 		if (!KeepRunning || !IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
 			return;
 		}
 
+		byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
 		try {
-			if (DateTime.UtcNow.Subtract(ArchiHandler.LastPacketReceived).TotalSeconds > ASF.GlobalConfig.ConnectionTimeout) {
+			if (DateTime.UtcNow.Subtract(ArchiHandler.LastPacketReceived).TotalSeconds > connectionTimeout) {
 				await SteamFriends.RequestProfileInfo(SteamID).ToLongRunningTask().ConfigureAwait(false);
 			}
 
@@ -1945,7 +1939,7 @@ public sealed class Bot : IAsyncDisposable {
 				return;
 			}
 
-			if (++HeartBeatFailures >= (byte) Math.Ceiling(ASF.GlobalConfig.ConnectionTimeout / 10.0)) {
+			if (++HeartBeatFailures >= (byte) Math.Ceiling(connectionTimeout / 10.0)) {
 				HeartBeatFailures = byte.MaxValue;
 				ArchiLogger.LogGenericWarning(Strings.BotConnectionLost);
 				Utilities.InBackground(() => Connect(true));

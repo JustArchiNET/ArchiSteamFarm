@@ -456,10 +456,6 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 			throw new InvalidOperationException(nameof(GlobalCache));
 		}
 
-		if (ASF.GlobalConfig == null) {
-			throw new InvalidOperationException(nameof(ASF.GlobalConfig));
-		}
-
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
@@ -479,7 +475,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 				return;
 			}
 
-			ulong contributorSteamID = (ASF.GlobalConfig.SteamOwnerID > 0) && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : Bot.Bots.Values.Where(static bot => bot.SteamID > 0).OrderByDescending(static bot => bot.OwnedPackageIDs.Count).FirstOrDefault()?.SteamID ?? 0;
+			ulong contributorSteamID = ASF.GlobalConfig is { SteamOwnerID: > 0 } && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : Bot.Bots.Values.Where(static bot => bot.SteamID > 0).OrderByDescending(static bot => bot.OwnedPackageIDs.Count).FirstOrDefault()?.SteamID ?? 0;
 
 			if (contributorSteamID == 0) {
 				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionNoContributorSet, nameof(ASF.GlobalConfig.SteamOwnerID)));

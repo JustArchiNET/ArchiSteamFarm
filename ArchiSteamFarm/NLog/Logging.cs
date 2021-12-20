@@ -240,7 +240,7 @@ internal static class Logging {
 	}
 
 	internal static void StartInteractiveConsole() {
-		if ((ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID) == 0) {
+		if ((ASF.GlobalConfig == null) || (ASF.GlobalConfig.SteamOwnerID == 0)) {
 			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.InteractiveConsoleNotAvailable, nameof(ASF.GlobalConfig.SteamOwnerID)));
 
 			return;

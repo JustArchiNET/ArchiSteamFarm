@@ -34,6 +34,7 @@ using ArchiSteamFarm.Steam.Cards;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Security;
 using ArchiSteamFarm.Steam.Storage;
+using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 using SteamKit2;
 
@@ -517,10 +518,6 @@ public sealed class Trading : IDisposable {
 	private async Task<ParseTradeResult.EResult> ShouldAcceptTrade(TradeOffer tradeOffer) {
 		ArgumentNullException.ThrowIfNull(tradeOffer);
 
-		if (ASF.GlobalConfig == null) {
-			throw new InvalidOperationException(nameof(ASF.GlobalConfig));
-		}
-
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));
 		}
@@ -612,7 +609,7 @@ public sealed class Trading : IDisposable {
 
 			// If user has a trade hold, we add extra logic
 			// If trade hold duration exceeds our max, or user asks for cards with short lifespan, reject the trade
-			case > 0 when (holdDuration.Value > ASF.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(static item => item.Type is Asset.EType.FoilTradingCard or Asset.EType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)):
+			case > 0 when (holdDuration.Value > (ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration)) || tradeOffer.ItemsToGive.Any(static item => item.Type is Asset.EType.FoilTradingCard or Asset.EType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)):
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(holdDuration)} > 0: {holdDuration.Value}"));
 
 				return ParseTradeResult.EResult.Rejected;

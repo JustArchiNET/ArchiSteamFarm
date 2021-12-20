@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using ArchiSteamFarm.Storage;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Core;
@@ -31,7 +32,7 @@ internal static class Debugging {
 	internal static bool IsDebugBuild => false;
 #endif
 
-	internal static bool IsDebugConfigured => ASF.GlobalConfig?.Debug ?? throw new InvalidOperationException(nameof(ASF.GlobalConfig));
+	internal static bool IsDebugConfigured => ASF.GlobalConfig?.Debug ?? GlobalConfig.DefaultDebug;
 
 	internal static bool IsUserDebugging => IsDebugBuild || IsDebugConfigured;
 
