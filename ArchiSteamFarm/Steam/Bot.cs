@@ -2996,7 +2996,7 @@ public sealed class Bot : IAsyncDisposable {
 
 		string? avatarHash = null;
 
-		if ((callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(static singleByte => singleByte != 0)) {
+		if ((callback.AvatarHash?.Length > 0) && callback.AvatarHash.Any(static singleByte => singleByte != 0)) {
 #pragma warning disable CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
 			avatarHash = Convert.ToHexString(callback.AvatarHash).ToLowerInvariant();
 #pragma warning restore CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
