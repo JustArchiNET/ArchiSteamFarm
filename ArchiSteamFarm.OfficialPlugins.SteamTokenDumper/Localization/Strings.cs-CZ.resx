@@ -66,6 +66,35 @@
 		<value>{0} byl zakázán z důvodu chybějícího tokenu</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
+	<data name="PluginDisabledInConfig" xml:space="preserve">
+		<value>{0} je v současné době v souladu s vaší konfigurací zakázán. Pokud byste chtěli pomoci SteamDB při odesílání dat, podívejte se na naši wiki.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} byl úspěšně inicializován, předem vám děkujeme za vaši pomoc. První příspěvek se od teď stane přibližně za {1}.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+		<value>{0} nelze načíst, nová instance bude inicializována...</value>
+		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+	</data>
+	
+	
+	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Načítání {0} přístupových tokenů...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+	</data>
+	
+	
+	
+	<data name="BotRetrievingAppInfos" xml:space="preserve">
+		<value>Získávání {0} informací o aplikaci...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
+		<value>Načítání informací o aplikaci {0} bylo dokončeno.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
+	</data>
 	
 	
 	
@@ -76,23 +105,24 @@
 	
 	
 	
+	<data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+		<value>Nové balíčky: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+		<value>Ověřené balíčky: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>Načítání globální mezipaměti STD...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>Ověřování globální integrity STD keše...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>Ověření globální integrity STD keše se nezdařilo. To naznačuje, že může dojít k poškození souboru/paměti, místo toho bude inicializována nová instance.</value>
+	</data>
 </root>
