@@ -69,6 +69,8 @@ public static class ASF {
 	[PublicAPI]
 	public static WebBrowser? WebBrowser { get; private set; }
 
+	internal static readonly SemaphoreSlim OpenConnectionsSemaphore = new(WebBrowser.MaxConnections, WebBrowser.MaxConnections);
+
 	internal static ICrossProcessSemaphore? ConfirmationsSemaphore { get; private set; }
 	internal static ICrossProcessSemaphore? GiftsSemaphore { get; private set; }
 	internal static ICrossProcessSemaphore? InventorySemaphore { get; private set; }

@@ -1181,6 +1181,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(service), service));
 
 			limiters.RateLimitingSemaphore = ASF.RateLimitingSemaphore;
+			limiters.OpenConnectionsSemaphore = ASF.OpenConnectionsSemaphore;
 		}
 
 		// Sending a request opens a new connection
