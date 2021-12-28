@@ -168,10 +168,32 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
-			ObjectResponse<InventoryResponse>? response;
+			ObjectResponse<InventoryResponse>? response = null;
 
 			try {
-				response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
+				for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+					if ((i > 0) && (rateLimitingDelay > 0)) {
+						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+					}
+
+					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
+
+					if (response == null) {
+						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
+					}
+
+					if (response.StatusCode.IsServerErrorCode()) {
+						if (string.IsNullOrEmpty(response.Content.Error)) {
+							// This is a generic server error without a reason, try again
+							response = null;
+
+							continue;
+						}
+
+						// This is actually client error with a reason, so it doesn't make sense to retry
+						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Error));
+					}
+				}
 			} finally {
 				if (rateLimitingDelay == 0) {
 					ASF.InventorySemaphore.Release();
