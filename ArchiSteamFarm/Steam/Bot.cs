@@ -1893,8 +1893,8 @@ public sealed class Bot : IAsyncDisposable {
 		return result;
 	}
 
-	private void HandleCallbacks() {
-		if (!CallbackSemaphore.Wait(0)) {
+	private async Task HandleCallbacks() {
+		if (!await CallbackSemaphore.WaitAsync(CallbackSleep)) {
 			if (Debugging.IsUserDebugging) {
 				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(CallbackSemaphore)));
 			}
