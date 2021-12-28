@@ -1894,24 +1894,24 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private void HandleCallbacks() {
-		TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
-
-		while (KeepRunning || SteamClient.IsConnected) {
-			if (!CallbackSemaphore.Wait(0)) {
-				if (Debugging.IsUserDebugging) {
-					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(CallbackSemaphore)));
-				}
-
-				return;
+		if (!CallbackSemaphore.Wait(0)) {
+			if (Debugging.IsUserDebugging) {
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(CallbackSemaphore)));
 			}
 
-			try {
+			return;
+		}
+
+		try {
+			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
+
+			while (KeepRunning || SteamClient.IsConnected) {
 				CallbackManager.RunWaitAllCallbacks(timeSpan);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-			} finally {
-				CallbackSemaphore.Release();
 			}
+		} catch (Exception e) {
+			ArchiLogger.LogGenericException(e);
+		} finally {
+			CallbackSemaphore.Release();
 		}
 	}
 
