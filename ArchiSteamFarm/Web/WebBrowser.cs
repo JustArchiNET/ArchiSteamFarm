@@ -133,7 +133,7 @@ public sealed class WebBrowser : IDisposable {
 				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -233,7 +233,7 @@ public sealed class WebBrowser : IDisposable {
 				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -289,7 +289,7 @@ public sealed class WebBrowser : IDisposable {
 				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -519,7 +519,7 @@ public sealed class WebBrowser : IDisposable {
 				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -575,7 +575,7 @@ public sealed class WebBrowser : IDisposable {
 				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
