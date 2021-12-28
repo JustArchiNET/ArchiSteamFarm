@@ -1894,7 +1894,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async Task HandleCallbacks() {
-		if (!await CallbackSemaphore.WaitAsync(CallbackSleep)) {
+		if (!await CallbackSemaphore.WaitAsync(CallbackSleep).ConfigureAwait(false)) {
 			if (Debugging.IsUserDebugging) {
 				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(CallbackSemaphore)));
 			}
