@@ -1761,7 +1761,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Uri request = new(SteamCommunityURL, $"/mobileconf/conf?a={Bot.SteamID}&k={Uri.EscapeDataString(confirmationHash)}&l=english&m=android&p={Uri.EscapeDataString(deviceID)}&t={time}&tag=conf");
 
-		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
 		return response?.Content;
 	}
@@ -1769,7 +1769,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal async Task<HashSet<ulong>?> GetDigitalGiftCards() {
 		Uri request = new(SteamStoreURL, "/gifts");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -1807,7 +1807,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal async Task<IDocument?> GetDiscoveryQueuePage() {
 		Uri request = new(SteamStoreURL, "/explore?l=english");
 
-		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
 		return response?.Content;
 	}
@@ -1815,7 +1815,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal async Task<HashSet<ulong>?> GetFamilySharingSteamIDs() {
 		Uri request = new(SteamStoreURL, "/account/managedevices?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -1907,7 +1907,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
 		IElement? htmlNode = response?.Content.SelectSingleNode("//div[@class='pagecontent']/script");
 
@@ -2358,7 +2358,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	private async Task<(ESteamApiKeyState State, string? Key)> GetApiKeyState() {
 		Uri request = new(SteamCommunityURL, "/dev/apikey?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
 		if (response == null) {
 			return (ESteamApiKeyState.Timeout, null);
