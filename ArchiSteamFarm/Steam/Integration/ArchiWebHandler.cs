@@ -2268,9 +2268,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			await UrlHeadWithSession(request, checkSessionPreemptively: false, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
 		} finally {
-			byte inventoryLimiterDelay = ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay;
-
-			if (inventoryLimiterDelay == 0) {
+			if (rateLimitingDelay == 0) {
 				ASF.InventorySemaphore.Release();
 			} else {
 				Utilities.InBackground(
