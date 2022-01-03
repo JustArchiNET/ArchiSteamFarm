@@ -168,7 +168,13 @@
 		<value>{0} αρχικοποιήθηκε, το plugin δεν θα επιλύσει κανένα από αυτά: {1}.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
-	
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>Φόρτωση καθολικής μνήμης cache...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>Επικύρωση ακεραιότητας καθολικής λανθάνουσας μνήμης STD...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>Αποτυχία επαλήθευσης ακεραιότητας καθολικής λανθάνουσας μνήμης STD. Αυτό υποδηλώνει πιθανή διαφθορά αρχείου/μνήμης, αντ' αυτού θα ξεκινήσει μια νέα διεργασία.</value>
+	</data>
 </root>
