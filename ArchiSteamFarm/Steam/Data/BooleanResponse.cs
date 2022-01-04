@@ -28,6 +28,8 @@ namespace ArchiSteamFarm.Steam.Data;
 [PublicAPI]
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public class BooleanResponse {
+	// You say it works in a RESTFUL way
+	// Then your errors come back as 200 OK
 	[JsonProperty(PropertyName = "success", Required = Required.Always)]
 	public bool Success { get; private set; }
 
