@@ -224,7 +224,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		};
 
 		// TODO: Use below or equivalent after SK2 merges https://github.com/SteamRE/SteamKit/pull/1075
-		//UnifiedChatRoomService.SendMessage(x => x.AckChatMessage(request), true);
+		//UnifiedChatRoomService.SendNotification(x => x.AckChatMessage(request));
 
 		ClientMsgProtobuf<CChatRoom_AckChatMessage_Notification> msg = new(EMsg.ServiceMethodCallFromClient);
 
@@ -257,7 +257,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		};
 
 		// TODO: Use below or equivalent after SK2 merges https://github.com/SteamRE/SteamKit/pull/1075
-		//UnifiedFriendMessagesService.SendMessage(x => x.AckMessage(request), true);
+		//UnifiedFriendMessagesService.SendNotification(x => x.AckMessage(request));
 
 		ClientMsgProtobuf<CFriendMessages_AckMessage_Notification> msg = new(EMsg.ServiceMethodCallFromClient);
 
