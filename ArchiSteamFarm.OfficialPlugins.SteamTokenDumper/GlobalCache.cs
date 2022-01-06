@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2021 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2022 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
@@ -99,7 +99,7 @@ internal sealed class GlobalCache : SerializableFile {
 			return new GlobalCache();
 		}
 
-		ASF.ArchiLogger.LogGenericInfo(Localization.Strings.LoadingGlobalCache);
+		ASF.ArchiLogger.LogGenericInfo(Strings.LoadingGlobalCache);
 
 		GlobalCache? globalCache;
 
@@ -107,7 +107,7 @@ internal sealed class GlobalCache : SerializableFile {
 			string json = await File.ReadAllTextAsync(SharedFilePath).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsEmpty, nameof(json)));
 
 				return null;
 			}
@@ -125,10 +125,10 @@ internal sealed class GlobalCache : SerializableFile {
 			return null;
 		}
 
-		ASF.ArchiLogger.LogGenericInfo(Localization.Strings.ValidatingGlobalCacheIntegrity);
+		ASF.ArchiLogger.LogGenericInfo(Strings.ValidatingGlobalCacheIntegrity);
 
 		if (globalCache.DepotKeys.Values.Any(static depotKey => !IsValidDepotKey(depotKey))) {
-			ASF.ArchiLogger.LogGenericError(Localization.Strings.GlobalCacheIntegrityValidationFailed);
+			ASF.ArchiLogger.LogGenericError(Strings.GlobalCacheIntegrityValidationFailed);
 
 			return null;
 		}
@@ -239,7 +239,7 @@ internal sealed class GlobalCache : SerializableFile {
 			string depotKey = Convert.ToHexString(depotKeyResult.DepotKey);
 
 			if (!IsValidDepotKey(depotKey)) {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(depotKey)));
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsInvalid, nameof(depotKey)));
 
 				continue;
 			}
