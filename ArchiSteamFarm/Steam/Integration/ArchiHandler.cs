@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2021 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2022 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -223,7 +223,15 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			timestamp = timestamp
 		};
 
-		UnifiedChatRoomService.SendMessage(x => x.AckChatMessage(request), true);
+		// TODO: Use below or equivalent after SK2 merges https://github.com/SteamRE/SteamKit/pull/1075
+		//UnifiedChatRoomService.SendMessage(x => x.AckChatMessage(request), true);
+
+		ClientMsgProtobuf<CChatRoom_AckChatMessage_Notification> msg = new(EMsg.ServiceMethodCallFromClient);
+
+		msg.Header.Proto.target_job_name = "FriendMessages.AckChatMessage#1";
+		msg.Body = request;
+
+		Client.Send(msg);
 	}
 
 	internal void AckMessage(ulong steamID, uint timestamp) {
@@ -248,7 +256,15 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			timestamp = timestamp
 		};
 
-		UnifiedFriendMessagesService.SendMessage(x => x.AckMessage(request), true);
+		// TODO: Use below or equivalent after SK2 merges https://github.com/SteamRE/SteamKit/pull/1075
+		//UnifiedFriendMessagesService.SendMessage(x => x.AckMessage(request), true);
+
+		ClientMsgProtobuf<CFriendMessages_AckMessage_Notification> msg = new(EMsg.ServiceMethodCallFromClient);
+
+		msg.Header.Proto.target_job_name = "FriendMessages.AckMessage#1";
+		msg.Body = request;
+
+		Client.Send(msg);
 	}
 
 	internal void AcknowledgeClanInvite(ulong steamID, bool acceptInvite) {
