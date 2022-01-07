@@ -226,34 +226,67 @@ internal static class OS {
 	}
 
 	internal static bool VerifyEnvironment() {
-#if NETFRAMEWORK
-		// This is .NET Framework build, we support that one only on mono for platforms not supported by .NET Core
-
 		// We're not going to analyze source builds, as we don't know what changes the author has made, assume they have a point
 		if (SharedInfo.BuildInfo.IsCustomBuild) {
 			return true;
 		}
 
-		// All windows variants have valid .NET Core build, and generic-netf is supported only on mono
-		if (OperatingSystem.IsWindows() || !RuntimeMadness.IsRunningOnMono) {
-			return false;
-		}
+		if (SharedInfo.BuildInfo.Variant.EndsWith("-netf", StringComparison.Ordinal)) {
+#if NETFRAMEWORK
+			// All Windows variants (7+) have valid .NET Core build
+			if (OperatingSystem.IsWindows()) {
+				return false;
+			}
 
-		return RuntimeInformation.OSArchitecture switch {
-			// Sadly we can't tell a difference between ARMv6 and ARMv7 reliably, we'll believe that this linux-arm user knows what he's doing and he's indeed in need of generic-netf on ARMv6
-			Architecture.Arm => true,
+			// Non-Windows variants of generic-netf are supported only in Mono
+			if (!RuntimeMadness.IsRunningOnMono) {
+				return false;
+			}
 
-			// Apart from real x86, this also covers all unknown architectures, such as sparc, ppc64, and anything else Mono might support, we're fine with that
-			Architecture.X86 => true,
+			// Platforms not supported by .NET Core
+			return RuntimeInformation.OSArchitecture switch {
+				// Sadly we can't tell a difference between ARMv6 and ARMv7 reliably, we'll believe that this linux-arm user knows what he's doing and he's indeed in need of generic-netf on ARMv6
+				Architecture.Arm => true,
 
-			// Everything else is covered by .NET Core
-			_ => false
-		};
+				// Apart from real x86, this also covers all unknown architectures, such as sparc, ppc64, and anything else Mono might support, we're fine with that
+				Architecture.X86 => true,
+
+				// Everything else is covered by .NET Core
+				_ => false
+			};
 #else
 
-		// This is .NET Core build, we support all scenarios
-		return true;
+			// .NET Framework build running on .NET Core? Very funny - only if somebody lied during build process
+			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(SharedInfo.BuildInfo.Variant), SharedInfo.BuildInfo.Variant));
+
+			return false;
 #endif
+		}
+
+		if (SharedInfo.BuildInfo.Variant == "generic") {
+			// Generic is supported everywhere
+			return true;
+		}
+
+		if ((SharedInfo.BuildInfo.Variant == "docker") || SharedInfo.BuildInfo.Variant.StartsWith("linux-", StringComparison.Ordinal)) {
+			// OS-specific Linux and Docker builds are supported only on Linux
+			return OperatingSystem.IsLinux();
+		}
+
+		if (SharedInfo.BuildInfo.Variant.StartsWith("osx-", StringComparison.Ordinal)) {
+			// OS-specific OS X build is supported only on OS X
+			return OperatingSystem.IsMacOS();
+		}
+
+		if (SharedInfo.BuildInfo.Variant.StartsWith("win-", StringComparison.Ordinal)) {
+			// OS-specific Windows build is supported only on Windows
+			return OperatingSystem.IsWindows();
+		}
+
+		// Unknown combination, we intend to cover all of the available ones above, so this results in an error
+		ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(SharedInfo.BuildInfo.Variant), SharedInfo.BuildInfo.Variant));
+
+		return false;
 	}
 
 	[SupportedOSPlatform("Windows")]
