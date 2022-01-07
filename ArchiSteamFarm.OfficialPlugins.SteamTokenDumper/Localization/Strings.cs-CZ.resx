@@ -78,14 +78,25 @@
 		<value>{0} nelze načíst, nová instance bude inicializována...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
 	</data>
-	
-	
+	<data name="BotNoAppsToRefresh" xml:space="preserve">
+		<value>Neexistují žádné aplikace, které by vyžadovaly aktualizaci této instance bota.</value>
+	</data>
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Načítám celkem {0} přístupových tokenů...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
 	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
 		<value>Načítání {0} přístupových tokenů...</value>
 		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
 	</data>
-	
-	
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Načítání {0} přístupových tokenů bylo dokončeno.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Dokončeno načítání celkem {0} přístupových tokenů.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
 	
 	<data name="BotRetrievingAppInfos" xml:space="preserve">
 		<value>Získávání {0} informací o aplikaci...</value>
@@ -103,8 +114,14 @@
 	
 	
 	
-	
-	
+	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+		<value>Nové aplikace: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+		<value>Ověřené aplikace: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
 		<value>Nové balíčky: {0}</value>
 		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
