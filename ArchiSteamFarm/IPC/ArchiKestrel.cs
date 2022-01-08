@@ -42,6 +42,8 @@ using NLog.Web;
 namespace ArchiSteamFarm.IPC;
 
 internal static class ArchiKestrel {
+	internal static bool IsRunning => KestrelWebHost != null;
+
 	internal static HistoryTarget? HistoryTarget { get; private set; }
 
 	private static IHost? KestrelWebHost;

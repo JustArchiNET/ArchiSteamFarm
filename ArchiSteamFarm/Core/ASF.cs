@@ -319,12 +319,16 @@ public static class ASF {
 
 			await PluginsCore.OnUpdateProceeding(newVersion).ConfigureAwait(false);
 
-			try {
+			bool kestrelWasRunning = ArchiKestrel.IsRunning;
+
+			if (kestrelWasRunning) {
 				// We disable ArchiKestrel here as the update process moves the core files and might result in IPC crash
 				// TODO: It might fail if the update was triggered from the API, this should be something to improve in the future, by changing the structure into request -> return response -> finish update
-				await ArchiKestrel.Stop().ConfigureAwait(false);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericWarningException(e);
+				try {
+					await ArchiKestrel.Stop().ConfigureAwait(false);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericWarningException(e);
+				}
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.PatchingFiles);
@@ -341,6 +345,16 @@ public static class ASF {
 				}
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
+
+				if (kestrelWasRunning) {
+					// We've temporarily disabled ArchiKestrel but the update has failed, let's bring it back up
+					// We can't even be sure if it's possible to bring it back up in this state, but it's worth trying anyway
+					try {
+						await ArchiKestrel.Start().ConfigureAwait(false);
+					} catch (Exception ex) {
+						ArchiLogger.LogGenericWarningException(ex);
+					}
+				}
 
 				return null;
 			}
