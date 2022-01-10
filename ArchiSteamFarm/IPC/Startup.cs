@@ -309,7 +309,8 @@ internal sealed class Startup {
 							Url = new Uri(SharedInfo.LicenseURL)
 						},
 
-						Title = $"{SharedInfo.ASF} API"
+						Title = $"{SharedInfo.AssemblyName} API",
+						Version = SharedInfo.Version.ToString()
 					}
 				);
 
