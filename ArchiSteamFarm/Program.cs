@@ -489,13 +489,6 @@ internal static class Program {
 			throw new ArgumentNullException(nameof(e));
 		}
 
-		// TODO: Silence https://github.com/dotnet/runtime/issues/60856 - pending for removal (after verification) in 6.0.1+
-		if (e.Exception.InnerExceptions.All(static exception => exception is TimeoutException timeoutException && string.IsNullOrEmpty(timeoutException.StackTrace))) {
-			e.SetObserved();
-
-			return;
-		}
-
 		await ASF.ArchiLogger.LogFatalException(e.Exception).ConfigureAwait(false);
 
 		// Normally we should abort the application, but due to the fact that unobserved exceptions do not have to do that, it's a better idea to log it and try to continue

@@ -2996,7 +2996,6 @@ public sealed class Bot : IAsyncDisposable {
 
 		string? avatarHash = null;
 
-		// ReSharper disable once ConstantConditionalAccessQualifier - TODO: The code below is valid, and this disable once can be removed in SK 2.5.0+
 		if ((callback.AvatarHash?.Length > 0) && callback.AvatarHash.Any(static singleByte => singleByte != 0)) {
 #pragma warning disable CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
 			avatarHash = Convert.ToHexString(callback.AvatarHash).ToLowerInvariant();

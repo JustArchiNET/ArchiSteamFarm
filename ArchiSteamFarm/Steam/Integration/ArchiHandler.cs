@@ -223,15 +223,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			timestamp = timestamp
 		};
 
-		// TODO: Use below or equivalent after SK2 merges https://github.com/SteamRE/SteamKit/pull/1075
-		//UnifiedChatRoomService.SendNotification(x => x.AckChatMessage(request));
-
-		ClientMsgProtobuf<CChatRoom_AckChatMessage_Notification> msg = new(EMsg.ServiceMethodCallFromClient);
-
-		msg.Header.Proto.target_job_name = "FriendMessages.AckChatMessage#1";
-		msg.Body = request;
-
-		Client.Send(msg);
+		UnifiedChatRoomService.SendNotification(x => x.AckChatMessage(request));
 	}
 
 	internal void AckMessage(ulong steamID, uint timestamp) {
@@ -256,15 +248,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			timestamp = timestamp
 		};
 
-		// TODO: Use below or equivalent after SK2 merges https://github.com/SteamRE/SteamKit/pull/1075
-		//UnifiedFriendMessagesService.SendNotification(x => x.AckMessage(request));
-
-		ClientMsgProtobuf<CFriendMessages_AckMessage_Notification> msg = new(EMsg.ServiceMethodCallFromClient);
-
-		msg.Header.Proto.target_job_name = "FriendMessages.AckMessage#1";
-		msg.Body = request;
-
-		Client.Send(msg);
+		UnifiedFriendMessagesService.SendNotification(x => x.AckMessage(request));
 	}
 
 	internal void AcknowledgeClanInvite(ulong steamID, bool acceptInvite) {
