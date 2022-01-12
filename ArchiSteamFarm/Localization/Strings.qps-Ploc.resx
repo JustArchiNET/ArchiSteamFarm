@@ -194,10 +194,7 @@ STACKTRACE:
 		<value>PLZ ENTR UR 2FA CODE FRUM UR STEAM AUTHENTICATOR APP: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>PLZ ENTR STEAMGUARD AUTH CODE DAT WUZ SENT ON UR E-MAIL: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>PLZ ENTR UR STEAM LOGIN: </value>
 		<comment>Please note that this translation should end with space</comment>

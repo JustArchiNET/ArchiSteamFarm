@@ -192,10 +192,7 @@ StackTrace:
 		<value>Lūdzu, ievadi savu 2FA kodu no Steam autentifikatora aplikācijas: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Lūdzu, ievadi SteamGuard autentifikācijas kodu, kas tika aizsūtīts uz Jūsu e-pastu: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Lūdzu, ievadiet savu Steam lietotājvārdu: </value>
 		<comment>Please note that this translation should end with space</comment>

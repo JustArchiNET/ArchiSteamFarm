@@ -192,10 +192,7 @@ StackTrace:
 		<value>Steam 인증 어플의 2차 인증 코드를 입력하세요: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>E-mail로 받은 SteamGuard 인증 코드를 입력하세요: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Steam 로그인 아이디를 입력하세요: </value>
 		<comment>Please note that this translation should end with space</comment>

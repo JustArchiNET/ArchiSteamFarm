@@ -192,10 +192,7 @@
 		<value>Будь ласка, введіть ваш код 2FA з додатку для автентифікації у Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Будь ласка, введіть код SteamGuard, який був надісланий вам на електронну пошту: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Будь ласка, введіть свій Steam логін: </value>
 		<comment>Please note that this translation should end with space</comment>

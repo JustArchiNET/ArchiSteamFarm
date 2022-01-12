@@ -193,7 +193,7 @@ StackTrace:
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Molimo Vas unesite vaš SteamGuard autentikacioni kod koji poslat na vaš e-mail: </value>
+		<value>Molimo Vas unesite vaš SteamGuard autentikacioni kod koji vam je poslat na vaš e-mail: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">

@@ -189,10 +189,7 @@
 		<value>Silakan masukkan kode 2FA dari aplikasi authenticator Steam Anda: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Silakan masukkan kode otentikasi SteamGuard yang dikirim ke e-mail Anda: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Masukkan login Steam Anda: </value>
 		<comment>Please note that this translation should end with space</comment>

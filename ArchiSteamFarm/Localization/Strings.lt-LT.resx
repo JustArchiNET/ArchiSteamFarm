@@ -192,10 +192,7 @@ StackTrace:
 		<value>Prašome įvesti 2FA kodą iš jūsų Steam autentifikavimo programėlės: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Prašome įvesti „Steam Guard“ autentifikavimo kodą, kuris buvo išsiųstas į jūsų el. paštą: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Prašome įvesti savo Steam prisijungimo vardą: </value>
 		<comment>Please note that this translation should end with space</comment>

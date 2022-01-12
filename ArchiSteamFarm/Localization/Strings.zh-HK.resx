@@ -192,10 +192,7 @@
 		<value>請輸入您的 Steam 身份驗證器應用程式上顯示的雙重驗證代碼： </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>請輸入寄送至您的電子信箱的 Steam Guard 驗證代碼: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>請輸入您的 Steam 帳戶: </value>
 		<comment>Please note that this translation should end with space</comment>

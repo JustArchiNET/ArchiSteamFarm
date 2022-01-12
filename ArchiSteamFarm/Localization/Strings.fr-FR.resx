@@ -194,10 +194,7 @@ StackTrace :
 		<value>Veuillez entrer votre code 2FA généré par votre application d'authentification de Steam : </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Veuillez entrer le code d’authentification SteamGuard qui a été envoyé sur votre e-mail : </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Veuillez entrer votre nom d’utilisateur Steam : </value>
 		<comment>Please note that this translation should end with space</comment>

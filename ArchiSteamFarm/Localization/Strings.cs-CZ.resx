@@ -195,7 +195,7 @@ StackTrace:
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Zadejte kód autentifikátoru SteamGuard, který byl zaslán na Váš email: </value>
+		<value>Prosím, zadejte ověřovací kód SteamGuard, který byl odeslán na váš e-mail: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">

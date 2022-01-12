@@ -193,10 +193,7 @@ StackTrace:
 		<value>Voer de 2FA code in van je Steam authenticator app: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Voer de SteamGuard authenticator-code in die naar je e-mail is verzonden: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Voer je Steam gebruikersnaam in: </value>
 		<comment>Please note that this translation should end with space</comment>

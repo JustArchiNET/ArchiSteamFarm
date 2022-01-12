@@ -191,10 +191,7 @@
 		<value>Steam 認証アプリの二次認証コードを入力してください: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>あなたのメールアドレスに送信された SteamGuard 認証コードを入力してください: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>あなたの Steam アカウント名を入力してください: </value>
 		<comment>Please note that this translation should end with space</comment>

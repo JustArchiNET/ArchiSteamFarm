@@ -165,10 +165,7 @@ StackTrace:
 		<value>โปรดป้อนรหัส 2FA ของคุณจากแอปยืนยันตัวตน Steam ของคุณ: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>โปรดป้อนรหัสยืนยัน SteamGuard ที่ถูกส่งไปยังอีเมลของคุณ: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>โปรดป้อนชื่อล็อกอิน Steam ของคุณ: </value>
 		<comment>Please note that this translation should end with space</comment>

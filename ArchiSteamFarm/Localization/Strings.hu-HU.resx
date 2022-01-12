@@ -190,10 +190,7 @@ StackTrace: {2}</value>
 		<value>Add meg a 2FA kódot a Steam hitelesítő alkalmazásból: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Add meg a SteamGuard hitelesítő kódot amit e-mailben kaptál: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Add meg a Steames felhasználó neved: </value>
 		<comment>Please note that this translation should end with space</comment>

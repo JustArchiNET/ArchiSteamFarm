@@ -194,10 +194,7 @@ StackTrace:
 		<value>Εισάγετε τον κωδικό από την εφαρμογή επαληθευτή Steam σας: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Εισάγετε τον κωδικό Steam Guard που έχει αποσταλεί στο e-mail σας: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Εισάγετε το όνομα χρήστη Steam σας: </value>
 		<comment>Please note that this translation should end with space</comment>

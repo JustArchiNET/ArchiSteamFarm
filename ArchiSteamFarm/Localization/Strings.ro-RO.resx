@@ -194,10 +194,7 @@ StackTrace:
 		<value>Te rog să introduci codul 2FA de pe autentificatorul Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Te rog să introduci codul de autentificare SteamGuard, care a fost trimis pe adresa de e-mail: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Te rugăm să introduci datele de autentificare Steam: </value>
 		<comment>Please note that this translation should end with space</comment>

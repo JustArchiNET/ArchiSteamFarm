@@ -192,10 +192,7 @@ StackTrace:
 		<value>אנא הכנס את קוד האימות מאפליקציית המאמת של Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>אנא הזן את קוד האימות של SteamGuard אשר נשלח אליך בדואר אלקטרוני: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>נא הזינו את משתמש ה- Steam שלכם: </value>
 		<comment>Please note that this translation should end with space</comment>

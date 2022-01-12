@@ -192,10 +192,7 @@ StackTrace:
 		<value>Syötä 2FA koodi Steam varmennus sovelluksesta: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Syötä SteamGuard varmennuskoodi, joka lähetettiin sähköpostiisi: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Syötä Steam-tilisi käyttäjätunnus: </value>
 		<comment>Please note that this translation should end with space</comment>

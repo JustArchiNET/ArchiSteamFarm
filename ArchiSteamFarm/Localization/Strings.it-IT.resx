@@ -193,7 +193,7 @@
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Inserisci il codice di autenticazione di SteamGuard che è stato inviato al tuo indirizzo e-mail: </value>
+		<value>Inserisci il codice di autenticazione SteamGuard che è stato inviato al tuo indirizzo e-mail: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
@@ -693,17 +693,49 @@ Tempo di attività: {1}</value>
 		<value>Il file di configurazione {0} verrà migrato all'ultima sintassi...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>La tua password IPC sembra essere debole. Considera di sceglierne una più forte per una maggiore sicurezza. Dettagli: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>La tua password di Steam per '{0}' sembra essere debole. Considera di sceglierne una più forte per una maggiore sicurezza. Dettagli: {1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>La tua chiave di crittografia sembra essere debole. Considera di sceglierne una più forte per una maggiore sicurezza. Dettagli: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>La chiave di crittografia è troppo corta. Si consiglia di utilizzarne una lunga almeno {0} byte (caratteri).</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Stai usando {0} come impostazione della proprietà {1}, ma non hai fornito un --cryptkey personalizzato. Dovresti fornire un --cryptkey personalizzato per una maggiore sicurezza.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>Stai usando {0} come impostazione della proprietà {1}, ma non hai fornito un --cryptkey personalizzato. Questo sconfigge completamente la protezione, in quanto ASF è costretto a utilizzare la propria chiave (conosciuta). Dovresti fornire un --cryptkey personalizzato per sfruttare il vantaggio di sicurezza offerto da questa impostazione.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Stai tentando di eseguire ASF come amministratore (root). Questo causa un rischio significativo per la sicurezza della vostra macchina e poiché ASF non richiede l'accesso root per il suo funzionamento, si consiglia di eseguirlo come utente non amministratore, se possibile.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Stai eseguendo ASF in ambiente non supportato, fornendo --ignore-unsupported-environment come argomento. Si prega di notare che non offriamo alcun tipo di supporto per questo scenario e lo stai facendo a tuo rischio e pericolo. Siete avvisati.</value>
+	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Recupero del checksum dal server remoto...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>Verifica del checksum del binario scaricato con quello dal server remoto...</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>Il server remoto non sa nulla della versione alla quale stiamo aggiornando. Questa situazione è possibile se la versione è stata pubblicata di recente, come misura di sicurezza aggiuntiva si rifiuta l'aggiornamento a questa versione per il momento.</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>Il server remoto ha risposto con un checksum diverso, questo potrebbe indicare un download danneggiato o un attacco MITM, procedura di aggiornamento fermata!</value>
+	</data>
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>Patching dei file ASF...</value>
+	</data>
 </root>

@@ -101,13 +101,22 @@
 		<value>Ricezione di tutti i depositi per un totale di {0} app...</value>
 		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
 	</data>
-	
+	<data name="BotRetrievingAppInfos" xml:space="preserve">
+		<value>Recuperate {0} informazioni app...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+	</data>
 	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
 		<value>Hai completato il recupero di {0} informazioni app.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
-	
+	<data name="BotRetrievingDepotKeys" xml:space="preserve">
+		<value>Recupero {0} chiavi...</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Completato il recupero di {0} chiavi.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Finito il recupero di tutte le chiavi del deposito per un totale di {0} applicazioni.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
@@ -143,11 +152,29 @@
 		<value>Nuovi pacchetti: {0}</value>
 		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
+	<data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+		<value>Pacchetti verificati: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+		<value>Nuove app: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+		<value>App verificate: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="PluginSecretListInitialized" xml:space="preserve">
+		<value>{0} inizializzato, il plugin non risolverà nessuno dei seguenti: {1}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>Caricamento cache globale STD...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>Convalida integrità cache globale STD...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>Impossibile verificare l'integrità globale della cache STD. Questo suggerisce un potenziale danneggiamento di file/memoria, una nuova istanza verrà inizializzata.</value>
+	</data>
 </root>

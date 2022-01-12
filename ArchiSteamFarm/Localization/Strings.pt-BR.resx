@@ -194,10 +194,7 @@ StackTrace:
 		<value>Insira o código gerado pelo autenticador móvel do Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Insira o código de autenticação do Steam Guard enviado por e-mail: </value>
-		<comment>Please note that this translation should end with space</comment>
-	</data>
+	
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Insira o seu nome de usuário Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
