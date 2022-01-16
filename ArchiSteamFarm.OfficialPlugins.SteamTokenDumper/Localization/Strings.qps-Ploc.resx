@@ -168,7 +168,13 @@
 		<value>{0} INITIALIZD, TEH PLUGIN WILL NOT RESOLVE ANY OV DOSE: {1}.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
-	
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>LOADIN STD GLOBAL CACHE...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>VALIDATIN STD GLOBAL CACHE INTEGRITY...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>FAILD 2 VERIFY STD GLOBAL CACHE INTEGRITY. DIS SUGGESTS POTENTIAL FILE/MEMS CORRUPSHUN, FRESH INSTANCE WILL BE INITIALIZD INSTEAD.</value>
+	</data>
 </root>
