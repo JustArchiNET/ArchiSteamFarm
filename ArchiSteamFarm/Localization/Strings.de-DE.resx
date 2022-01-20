@@ -194,7 +194,10 @@ StackTrace:
 		<value>Bitte geben Sie Ihren 2FA-Code aus Ihrer Steam-Authentifizierungsapp ein: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Bitte gebe den SteamGuard Authentifizierungstoken ein, der an deine E-Mail Adresse geschickt wurde: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Bitte geben Sie Ihren Steam-Benutzernamen ein: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -716,7 +719,9 @@ Prozesslaufzeit: {1}</value>
 		<value>Du verwendest {0} für {1}, hast aber keinen eigenen kryptografischen Schlüssel mit --cryptkey spezifiziert. Dies umgeht den Schutz komplett, da ASF gezwungen ist den internen (öffentlich bekannten) Schlüssel zu verwenden. Du solltest einen eigenen kryptografischen Schlüssel verwenden, um Nutzen von dieser Einstellung zu haben.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
-	
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Du versuchst ASF als Administrator (root) auszuführen. Dies stellt ein signifikantes Sicherheitsrisiko für dein Gerät dar und da ASF diese Rechte nicht benötigt, unterstützen wir dieses Szenario nicht. Verwende das Kommandozeilenargument --ignore-unsupported-environment, wenn du wirklich weißt, was du tust.</value>
+	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Du verwendest ASF in einer nicht unterstützten Umgebung und verwendest das Argument --ignore-unsupported-environment. Bitte beachte, dass wir für dieses Szenario keinerlei Unterstützung anbieten und du das Risiko vollständig auf dich selber nehmen musst. Du wurdest gewarnt.</value>
 	</data>
