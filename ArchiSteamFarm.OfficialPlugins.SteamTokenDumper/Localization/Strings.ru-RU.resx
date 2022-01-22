@@ -168,7 +168,13 @@
 		<value>{0} инициализирован, плагин не взаимодействует ни с одним из их: {1}.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
-	
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>Загрузка глобального кэша STD...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>Проверка целостности глобального кэша STD...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>Не удалось проверить целостность глобального кэша STD. Это говорит о потенциальном повреждении файла/памяти, вместо этого будет инициализирован новый экземпляр.</value>
+	</data>
 </root>
