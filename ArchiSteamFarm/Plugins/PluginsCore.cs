@@ -289,11 +289,35 @@ internal static class PluginsCore {
 		IList<string?> responses;
 
 		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand>().Select(plugin => plugin.OnBotCommand(bot, access, message, args, steamID))).ConfigureAwait(false);
+			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand2>().Select(plugin => plugin.OnBotCommand(bot, access, message, args, steamID))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return null;
+		}
+
+		ulong oldSteamID = steamID;
+
+		if (oldSteamID == 0) {
+			oldSteamID = ASF.GlobalConfig?.SteamOwnerID ?? 0;
+		}
+
+		if ((oldSteamID != 0) && new SteamID(oldSteamID).IsIndividualAccount) {
+			IList<string?> oldResponses;
+
+			try {
+#pragma warning disable CS0618 // We intentionally support deprecated interface for a while longer
+				oldResponses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand>().Select(plugin => plugin.OnBotCommand(bot, oldSteamID, message, args))).ConfigureAwait(false);
+#pragma warning restore CS0618 // We intentionally support deprecated interface for a while longer
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return null;
+			}
+
+			foreach (string? oldResponse in oldResponses) {
+				responses.Add(oldResponse);
+			}
 		}
 
 		return string.Join(Environment.NewLine, responses.Where(static response => !string.IsNullOrEmpty(response)));
