@@ -756,34 +756,26 @@ public sealed class Bot : IAsyncDisposable {
 			return EAccess.Owner;
 		}
 
-		EAccess result = SteamFamilySharingIDs.Contains(steamID) ? EAccess.FamilySharing : EAccess.None;
+		EAccess familySharingAccess = SteamFamilySharingIDs.Contains(steamID) ? EAccess.FamilySharing : EAccess.None;
 
-		if (BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess permission)) {
-			switch (permission) {
-				case BotConfig.EAccess.None:
-					result = EAccess.None;
-
-					break;
-				case BotConfig.EAccess.FamilySharing:
-					result = EAccess.FamilySharing;
-
-					break;
-				case BotConfig.EAccess.Operator:
-					result = EAccess.Operator;
-
-					break;
-				case BotConfig.EAccess.Master:
-					result = EAccess.Master;
-
-					break;
-				default:
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(permission), permission));
-
-					break;
-			}
+		if (!BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess permission)) {
+			return familySharingAccess;
 		}
 
-		return result;
+		switch (permission) {
+			case BotConfig.EAccess.None:
+				return EAccess.None;
+			case BotConfig.EAccess.FamilySharing:
+				return EAccess.FamilySharing;
+			case BotConfig.EAccess.Operator:
+				return EAccess.Operator;
+			case BotConfig.EAccess.Master:
+				return EAccess.Master;
+			default:
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(permission), permission));
+
+				return familySharingAccess;
+		}
 	}
 
 	[PublicAPI]
