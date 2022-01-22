@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Composition;
 using System.Composition.Convention;
 using System.Composition.Hosting;
@@ -39,6 +40,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
+using ArchiSteamFarm.Storage;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
 
@@ -266,11 +268,11 @@ internal static class PluginsCore {
 		}
 	}
 
-	internal static async Task<string?> OnBotCommand(Bot bot, ulong steamID, string message, string[] args) {
+	internal static async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
+		if (!Enum.IsDefined(typeof(EAccess), access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
 		if (string.IsNullOrEmpty(message)) {
@@ -288,11 +290,35 @@ internal static class PluginsCore {
 		IList<string?> responses;
 
 		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand>().Select(plugin => plugin.OnBotCommand(bot, steamID, message, args))).ConfigureAwait(false);
+			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand2>().Select(plugin => plugin.OnBotCommand(bot, access, message, args, steamID))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return null;
+		}
+
+		ulong oldSteamID = steamID;
+
+		if (oldSteamID == 0) {
+			oldSteamID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
+		}
+
+		if ((oldSteamID != 0) && new SteamID(oldSteamID).IsIndividualAccount) {
+			IList<string?> oldResponses;
+
+			try {
+#pragma warning disable CS0618 // We intentionally support deprecated interface for a while longer
+				oldResponses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand>().Select(plugin => plugin.OnBotCommand(bot, oldSteamID, message, args))).ConfigureAwait(false);
+#pragma warning restore CS0618 // We intentionally support deprecated interface for a while longer
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return null;
+			}
+
+			foreach (string? oldResponse in oldResponses) {
+				responses.Add(oldResponse);
+			}
 		}
 
 		return string.Join(Environment.NewLine, responses.Where(static response => !string.IsNullOrEmpty(response)));

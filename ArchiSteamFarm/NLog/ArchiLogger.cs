@@ -209,7 +209,7 @@ public sealed class ArchiLogger {
 
 	internal void LogInvite(SteamID steamID, bool? handled = null, [CallerMemberName] string? previousMethodName = null) {
 		if ((steamID == null) || (steamID.AccountType == EAccountType.Invalid)) {
-			throw new ArgumentNullException(nameof(steamID));
+			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
 		ulong steamID64 = steamID;

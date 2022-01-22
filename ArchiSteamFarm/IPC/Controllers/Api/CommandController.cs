@@ -54,12 +54,6 @@ public sealed class CommandController : ArchiController {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.Command))));
 		}
 
-		ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
-
-		if (steamOwnerID == 0) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(ASF.GlobalConfig.SteamOwnerID))));
-		}
-
 		Bot? targetBot = Bot.Bots?.OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value).FirstOrDefault();
 
 		if (targetBot == null) {
@@ -80,7 +74,7 @@ public sealed class CommandController : ArchiController {
 			command = command[commandPrefix.Length..];
 		}
 
-		string? response = await targetBot.Commands.Response(steamOwnerID, command).ConfigureAwait(false);
+		string? response = await targetBot.Commands.Response(EAccess.Owner, command).ConfigureAwait(false);
 
 		return Ok(new GenericResponse<string>(response));
 	}

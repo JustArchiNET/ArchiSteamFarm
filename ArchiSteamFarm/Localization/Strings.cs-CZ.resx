@@ -637,10 +637,6 @@ StackTrace:
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>Interaktivní konzole je nyní aktivní, napište "c" pro vstup do příkazového režimu.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>Interaktivní konzole není dostupná z důvodu chybějící {0} konfigurace.</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Bot má {0} zbývajících her ve frontě.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

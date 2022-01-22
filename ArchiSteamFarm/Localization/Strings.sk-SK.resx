@@ -635,10 +635,6 @@ Doba prevádzky procesu: {1}</value>
 		<value>Interaktivní konzole je nyní aktivní, napište "c" pro vstup do příkazového režimu.
 Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazového režimu.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>Interaktívna konzola nie je dostupná z dôvodu chýbajúcej {0} konfigurácie.</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Bot má {0} zostávajúcich hier vo fronte.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

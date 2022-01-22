@@ -571,10 +571,6 @@ Proces uptime: {1}</value>
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>De interactieve console is nu actief, typ 'c' om naar de opdrachtprompt te gaan.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>De interactieve console is niet beschikbaar vanwege de ontbrekende configuratie-eigenschap {0}.</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Bot heeft {0} spellen resterend in de achtergrondwachtrij.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

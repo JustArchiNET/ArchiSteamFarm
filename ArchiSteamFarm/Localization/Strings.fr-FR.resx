@@ -634,10 +634,6 @@ Durée de fonctionnement : {1}</value>
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>La console interactive est maintenant active, tapez 'c' pour entrer en mode commande.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>La console interactive n'est pas disponible en raison de la propriété de configuration {0} manquante.</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Le bot a {0} jeux restants dans sa file d'attente.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

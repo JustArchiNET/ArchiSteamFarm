@@ -524,7 +524,7 @@ public sealed class Trading : IDisposable {
 
 		if (tradeOffer.OtherSteamID64 != 0) {
 			// Always accept trades from SteamMasterID
-			if (Bot.HasAccess(tradeOffer.OtherSteamID64, BotConfig.EAccess.Master)) {
+			if (Bot.GetAccess(tradeOffer.OtherSteamID64) >= EAccess.Master) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, $"{nameof(tradeOffer.OtherSteamID64)} {tradeOffer.OtherSteamID64}: {BotConfig.EAccess.Master}"));
 
 				return ParseTradeResult.EResult.Accepted;

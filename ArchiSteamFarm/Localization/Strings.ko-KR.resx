@@ -632,10 +632,6 @@ StackTrace:
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>대화형 콘솔이 활성화되었습니다. 명령어 모드로 들어가려면 ' c '를 입력하십시오.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>환경설정 속성값 {0} 이 누락되어 대화형 콘솔을 사용할 수 없습니다.</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>{0} 개의 게임이 이 봇의 배경 큐에 남아있습니다.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

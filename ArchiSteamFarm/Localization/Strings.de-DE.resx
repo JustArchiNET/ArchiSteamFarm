@@ -637,10 +637,6 @@ Prozesslaufzeit: {1}</value>
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>Interaktive Konsole ist jetzt aktiv, geben Sie 'c' ein, um den Befehlsmodus zu wechseln.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>Die interaktive Konsole ist aufgrund der fehlenden Konfigurationseigenschaften {0} nicht verfügbar.</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Bot hat {0} Spiele, die in seiner Hintergrundwarteschlange verbleiben.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

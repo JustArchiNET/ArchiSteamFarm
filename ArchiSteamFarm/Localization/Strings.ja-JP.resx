@@ -597,10 +597,6 @@ Process uptime: {1}</value>
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>対話型コンソールがアクティブになりました。コマンドモードに入るには「c」と入力します。</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>{0} の設定が見つからないため、対話型コンソールが無効にしました。</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>bot のバックグラウンドキューに {0} つのゲームが残っています。</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
