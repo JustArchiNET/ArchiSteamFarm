@@ -551,10 +551,6 @@
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>Интерактивната конзола е вече активна, натиснете 'c' за да влезето в команден режим.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>Интерактивната конзола не е налична, защото липсва {0} конфигурирана стойност.</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Ботът има {0} игри оставащи в опашката на заден фон.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

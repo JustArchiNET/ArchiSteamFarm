@@ -726,9 +726,10 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	[PublicAPI]
+	[Obsolete($"Use {nameof(GetAccess)} instead.", true)]
 	public bool HasAccess(ulong steamID, BotConfig.EAccess access) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-			throw new ArgumentNullException(nameof(steamID));
+			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
 		if ((access == BotConfig.EAccess.None) || !Enum.IsDefined(typeof(BotConfig.EAccess), access)) {
@@ -743,6 +744,46 @@ public sealed class Bot : IAsyncDisposable {
 			BotConfig.EAccess.FamilySharing when SteamFamilySharingIDs.Contains(steamID) => true,
 			_ => BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess realPermission) && (realPermission >= access)
 		};
+	}
+
+	[PublicAPI]
+	public EAccess GetAccess(ulong steamID) {
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		if (ASF.IsOwner(steamID)) {
+			return EAccess.Owner;
+		}
+
+		EAccess result = SteamFamilySharingIDs.Contains(steamID) ? EAccess.FamilySharing : EAccess.None;
+
+		if (BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess permission)) {
+			switch (permission) {
+				case BotConfig.EAccess.None:
+					result = EAccess.None;
+
+					break;
+				case BotConfig.EAccess.FamilySharing:
+					result = EAccess.FamilySharing;
+
+					break;
+				case BotConfig.EAccess.Operator:
+					result = EAccess.Operator;
+
+					break;
+				case BotConfig.EAccess.Master:
+					result = EAccess.Master;
+
+					break;
+				default:
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(permission), permission));
+
+					break;
+			}
+		}
+
+		return result;
 	}
 
 	[PublicAPI]
@@ -2120,7 +2161,7 @@ public sealed class Bot : IAsyncDisposable {
 
 	private bool IsMasterClanID(ulong steamID) {
 		if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
-			throw new ArgumentNullException(nameof(steamID));
+			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
 		return steamID == BotConfig.SteamMasterClanID;
@@ -2435,7 +2476,7 @@ public sealed class Bot : IAsyncDisposable {
 
 					break;
 				default:
-					if (HasAccess(friend.SteamID, BotConfig.EAccess.FamilySharing)) {
+					if (GetAccess(friend.SteamID) >= EAccess.FamilySharing) {
 						ArchiLogger.LogInvite(friend.SteamID, true);
 
 						if (!await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false)) {

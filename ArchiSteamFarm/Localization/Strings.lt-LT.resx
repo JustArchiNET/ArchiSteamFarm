@@ -552,10 +552,6 @@ Proceso veikimo laikas: {1}</value>
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>Interaktyvi konsolė aktyvuota, norėdami pateikti į komandų rėžimą paspauskite „c“.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>Interaktyvi konsolė yra negalima dėl trūkstamų konfigūracinių parametrų: {0}</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Boto foninėje eilėje yra likę {0} žaidimai.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

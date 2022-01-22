@@ -240,12 +240,6 @@ internal static class Logging {
 	}
 
 	internal static void StartInteractiveConsole() {
-		if ((ASF.GlobalConfig == null) || (ASF.GlobalConfig.SteamOwnerID == 0)) {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.InteractiveConsoleNotAvailable, nameof(ASF.GlobalConfig.SteamOwnerID)));
-
-			return;
-		}
-
 		Utilities.InBackground(HandleConsoleInteractively, true);
 		ASF.ArchiLogger.LogGenericInfo(Strings.InteractiveConsoleEnabled);
 	}
@@ -368,10 +362,8 @@ internal static class Logging {
 
 						Console.WriteLine($@"<> {Strings.Executing}");
 
-						ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
-
 						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						string? response = await targetBot.Commands.Response(steamOwnerID, command!).ConfigureAwait(false);
+						string? response = await targetBot.Commands.Response(EAccess.Owner, command!).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(response)) {
 							ASF.ArchiLogger.LogNullError(nameof(response));

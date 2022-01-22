@@ -634,10 +634,6 @@ Proces: {1}</value>
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>Consola interactivă este acum activă, tastați 'c' pentru a introduce modul de comandă.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>Consola interactivă nu este disponibilă deoarece lipsesc {0} din configurare.</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Botul are {0} jocuri rămase la rând în fundal.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

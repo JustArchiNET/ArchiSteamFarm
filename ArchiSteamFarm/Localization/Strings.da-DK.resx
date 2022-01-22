@@ -556,10 +556,6 @@ Processens oppetid: {1}</value>
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>Den interaktive konsol er nu aktiv, tast "c" for at skifte til kommando-mode.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>Den interaktive konsol den ikke tilgængelig på grund af at {0} mangler en eller flere konfigurationsindstillinger.</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Bot har {0} spil tilbage i sin baggrundskø.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

@@ -28,7 +28,6 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Storage;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
@@ -86,11 +85,11 @@ internal sealed class ExamplePlugin : IASF, IBot, IBotCommand, IBotConnection, I
 	// Since ASF already had to do initial parsing in order to determine that the command is unknown, args[] are splitted using standard ASF delimiters
 	// If by any chance you want to handle message in its raw format, you also have it available, although for usual ASF pattern you can most likely stick with args[] exclusively. The message has CommandPrefix already stripped for your convenience
 	// If you do not recognize the command, just return null/empty and allow ASF to gracefully return "unknown command" to user on usual basis
-	public async Task<string?> OnBotCommand(Bot bot, ulong steamID, string message, string[] args) {
+	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
 		// In comparison with OnBotMessage(), we're using asynchronous CatAPI call here, so we declare our method as async and return the message as usual
 		// Notice how we handle access here as well, it'll work only for FamilySharing+
 		switch (args[0].ToUpperInvariant()) {
-			case "CAT" when bot.HasAccess(steamID, BotConfig.EAccess.FamilySharing):
+			case "CAT" when access >= EAccess.FamilySharing:
 				// Notice how we can decide whether to use bot's AWH WebBrowser or ASF's one. For Steam-related requests, AWH's one should always be used, for third-party requests like those it doesn't really matter
 				// Still, it makes sense to pass AWH's one, so in case you get some errors or alike, you know from which bot instance they come from. It's similar to using Bot's ArchiLogger compared to ASF's one
 				string? randomCatURL = await CatAPI.GetRandomCatURL(bot.ArchiWebHandler.WebBrowser).ConfigureAwait(false);

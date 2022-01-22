@@ -1029,12 +1029,6 @@ namespace ArchiSteamFarm.Localization {
             }
         }
         
-        public static string InteractiveConsoleNotAvailable {
-            get {
-                return ResourceManager.GetString("InteractiveConsoleNotAvailable", resourceCulture);
-            }
-        }
-        
         public static string BotGamesToRedeemInBackgroundCount {
             get {
                 return ResourceManager.GetString("BotGamesToRedeemInBackgroundCount", resourceCulture);

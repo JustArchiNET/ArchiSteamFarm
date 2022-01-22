@@ -19,23 +19,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Threading.Tasks;
-using ArchiSteamFarm.Steam;
-using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Plugins.Interfaces;
+namespace ArchiSteamFarm.Steam;
 
 [PublicAPI]
-public interface IBotCommand : IPlugin {
-	/// <summary>
-	///     ASF will call this method for unrecognized commands.
-	/// </summary>
-	/// <param name="bot">Bot object related to this callback.</param>
-	/// <param name="access">Access of user executing the command.</param>
-	/// <param name="message">Command message in its raw format, stripped of <see cref="GlobalConfig.CommandPrefix" />.</param>
-	/// <param name="args">Pre-parsed message using standard ASF delimiters.</param>
-	/// <param name="steamID">Optionally, steamID of the user who executed the command - may not be available with value of 0 (e.g. ASF API).</param>
-	/// <returns>Response to the command, or null/empty (as the task value) if the command isn't handled by this plugin.</returns>
-	Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0);
+public enum EAccess : byte {
+	None,
+	FamilySharing = 10,
+	Operator = 50,
+	Master = 100,
+	Owner = 255
 }

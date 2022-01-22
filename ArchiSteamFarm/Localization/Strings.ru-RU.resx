@@ -634,10 +634,6 @@
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>Включена интерактивная консоль, нажмите 'c' чтобы перейти в режим команд.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>Интерактивная консоль недоступна из-за отсутствия параметра конфигурации {0}.</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>У бота в фоновой очереди осталось {0} игр.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

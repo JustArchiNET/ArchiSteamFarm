@@ -637,10 +637,6 @@ Süreç çalışma zamanı: {1}</value>
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>Etkileşimli konsol şimdi etkin, komut girme moduna girmek için 'c' tuşuna basın.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>Etkileşimli konsol eksik {0} yapılandırma özelliği nedeniyle kullanılamıyor.</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Bot kuyruğunda {0} oyun kaldı.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
