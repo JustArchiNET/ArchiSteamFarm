@@ -40,6 +40,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
+using ArchiSteamFarm.Storage;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
 
@@ -299,7 +300,7 @@ internal static class PluginsCore {
 		ulong oldSteamID = steamID;
 
 		if (oldSteamID == 0) {
-			oldSteamID = ASF.GlobalConfig?.SteamOwnerID ?? 0;
+			oldSteamID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
 		}
 
 		if ((oldSteamID != 0) && new SteamID(oldSteamID).IsIndividualAccount) {
