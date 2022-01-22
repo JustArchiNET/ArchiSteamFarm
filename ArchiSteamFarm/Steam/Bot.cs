@@ -410,6 +410,38 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	[PublicAPI]
+	public EAccess GetAccess(ulong steamID) {
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		if (ASF.IsOwner(steamID)) {
+			return EAccess.Owner;
+		}
+
+		EAccess familySharingAccess = SteamFamilySharingIDs.Contains(steamID) ? EAccess.FamilySharing : EAccess.None;
+
+		if (!BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess permission)) {
+			return familySharingAccess;
+		}
+
+		switch (permission) {
+			case BotConfig.EAccess.None:
+				return EAccess.None;
+			case BotConfig.EAccess.FamilySharing:
+				return EAccess.FamilySharing;
+			case BotConfig.EAccess.Operator:
+				return EAccess.Operator;
+			case BotConfig.EAccess.Master:
+				return EAccess.Master;
+			default:
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(permission), permission));
+
+				return familySharingAccess;
+		}
+	}
+
+	[PublicAPI]
 	public static Bot? GetBot(string botName) {
 		if (string.IsNullOrEmpty(botName)) {
 			throw new ArgumentNullException(nameof(botName));
@@ -744,38 +776,6 @@ public sealed class Bot : IAsyncDisposable {
 			BotConfig.EAccess.FamilySharing when SteamFamilySharingIDs.Contains(steamID) => true,
 			_ => BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess realPermission) && (realPermission >= access)
 		};
-	}
-
-	[PublicAPI]
-	public EAccess GetAccess(ulong steamID) {
-		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
-		if (ASF.IsOwner(steamID)) {
-			return EAccess.Owner;
-		}
-
-		EAccess familySharingAccess = SteamFamilySharingIDs.Contains(steamID) ? EAccess.FamilySharing : EAccess.None;
-
-		if (!BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess permission)) {
-			return familySharingAccess;
-		}
-
-		switch (permission) {
-			case BotConfig.EAccess.None:
-				return EAccess.None;
-			case BotConfig.EAccess.FamilySharing:
-				return EAccess.FamilySharing;
-			case BotConfig.EAccess.Operator:
-				return EAccess.Operator;
-			case BotConfig.EAccess.Master:
-				return EAccess.Master;
-			default:
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(permission), permission));
-
-				return familySharingAccess;
-		}
 	}
 
 	[PublicAPI]
