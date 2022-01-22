@@ -726,7 +726,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	[PublicAPI]
-	[Obsolete($"Use {nameof(GetAccess)} instead.", true)]
+	[Obsolete($"Use {nameof(GetAccess)} instead (if you still need it), this one will be removed soon.", true)]
 	public bool HasAccess(ulong steamID, BotConfig.EAccess access) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
