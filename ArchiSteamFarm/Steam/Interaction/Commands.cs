@@ -90,7 +90,7 @@ public sealed class Commands {
 
 		EAccess access = Bot.GetAccess(steamID);
 
-		return await Response(access, message).ConfigureAwait(false);
+		return await Response(access, message, steamID).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
@@ -367,7 +367,7 @@ public sealed class Commands {
 
 		EAccess access = Bot.GetAccess(steamID);
 
-		Task<string?> responseTask = Response(access, message);
+		Task<string?> responseTask = Response(access, message, steamID);
 
 		bool feedback = access >= EAccess.FamilySharing;
 
@@ -446,7 +446,7 @@ public sealed class Commands {
 
 		EAccess access = Bot.GetAccess(steamID);
 
-		Task<string?> responseTask = Response(access, message);
+		Task<string?> responseTask = Response(access, message, steamID);
 
 		bool feedback = access >= EAccess.FamilySharing;
 
