@@ -316,8 +316,14 @@ internal static class PluginsCore {
 				return null;
 			}
 
-			foreach (string? oldResponse in oldResponses) {
-				responses.Add(oldResponse);
+			if (oldResponses.Count > 0) {
+				// Due to fact that responses is string[] array, not a List, we need to reinitialize it
+				// Normally I'd wrote it differently but this is temporary code to be removed soon, so this will suffice
+				responses = new List<string?>(responses);
+
+				foreach (string? oldResponse in oldResponses) {
+					responses.Add(oldResponse);
+				}
 			}
 		}
 
