@@ -637,10 +637,6 @@
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>交互式控制台已启用，输入 c 以进入命令模式。</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>由于缺少 {0} 配置属性，交互式控制台目前不可用。</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>机器人的后台队列中剩余 {0} 个游戏。</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

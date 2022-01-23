@@ -637,10 +637,6 @@ PROCES UPTIME: {1}</value>
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>INTERACTIV CONSOLE IZ NAO ACTIV, TYPE C IN ORDR 2 ENTR COMMAND MODE.</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>INTERACTIV CONSOLE IZ NOT AVAILABLE DUE 2 MISIN {0} CONFIG PROPERTY.</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>BOT HAS {0} GAMEZ REMAININ IN ITZ BAKGROUND KEW.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

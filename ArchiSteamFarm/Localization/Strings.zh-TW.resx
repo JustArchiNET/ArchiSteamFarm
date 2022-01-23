@@ -633,10 +633,6 @@
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
 		<value>已開啟互動式主控台，按「C」進入指令模式</value>
 	</data>
-	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-		<value>由於缺少 {0} 設定內容，互動式主控台無法使用。</value>
-		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
-	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Bot 的背景佇列中剩下 {0} 個遊戲。</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
