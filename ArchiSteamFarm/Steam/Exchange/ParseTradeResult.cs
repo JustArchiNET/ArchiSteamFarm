@@ -43,7 +43,7 @@ public sealed class ParseTradeResult {
 			throw new ArgumentOutOfRangeException(nameof(tradeOfferID));
 		}
 
-		if ((result == EResult.Unknown) || !Enum.IsDefined(typeof(EResult), result)) {
+		if ((result == EResult.Unknown) || !Enum.IsDefined(result)) {
 			throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(EResult));
 		}
 

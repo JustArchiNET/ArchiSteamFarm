@@ -70,7 +70,7 @@ public sealed class Actions : IAsyncDisposable {
 
 	[PublicAPI]
 	public static string? Encrypt(ArchiCryptoHelper.ECryptoMethod cryptoMethod, string stringToEncrypt) {
-		if (!Enum.IsDefined(typeof(ArchiCryptoHelper.ECryptoMethod), cryptoMethod)) {
+		if (!Enum.IsDefined(cryptoMethod)) {
 			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ArchiCryptoHelper.ECryptoMethod));
 		}
 
@@ -178,7 +178,7 @@ public sealed class Actions : IAsyncDisposable {
 
 	[PublicAPI]
 	public static string Hash(ArchiCryptoHelper.EHashingMethod hashingMethod, string stringToHash) {
-		if (!Enum.IsDefined(typeof(ArchiCryptoHelper.EHashingMethod), hashingMethod)) {
+		if (!Enum.IsDefined(hashingMethod)) {
 			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(ArchiCryptoHelper.EHashingMethod));
 		}
 

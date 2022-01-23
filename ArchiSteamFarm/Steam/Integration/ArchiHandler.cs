@@ -730,7 +730,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	internal void SetCurrentMode(EUserInterfaceMode userInterfaceMode, byte chatMode = 2) {
-		if (!Enum.IsDefined(typeof(EUserInterfaceMode), userInterfaceMode)) {
+		if (!Enum.IsDefined(userInterfaceMode)) {
 			throw new InvalidEnumArgumentException(nameof(userInterfaceMode), (int) userInterfaceMode, typeof(EUserInterfaceMode));
 		}
 

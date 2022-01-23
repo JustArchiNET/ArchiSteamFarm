@@ -271,7 +271,7 @@ internal static class PluginsCore {
 	internal static async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 

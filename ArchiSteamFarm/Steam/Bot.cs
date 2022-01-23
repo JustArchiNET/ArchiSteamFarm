@@ -555,7 +555,7 @@ public sealed class Bot : IAsyncDisposable {
 			throw new ArgumentNullException(nameof(botName));
 		}
 
-		if (!Enum.IsDefined(typeof(EFileType), fileType)) {
+		if (!Enum.IsDefined(fileType)) {
 			throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EFileType));
 		}
 
@@ -575,7 +575,7 @@ public sealed class Bot : IAsyncDisposable {
 
 	[PublicAPI]
 	public string GetFilePath(EFileType fileType) {
-		if (!Enum.IsDefined(typeof(EFileType), fileType)) {
+		if (!Enum.IsDefined(fileType)) {
 			throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EFileType));
 		}
 
@@ -764,7 +764,7 @@ public sealed class Bot : IAsyncDisposable {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if ((access == BotConfig.EAccess.None) || !Enum.IsDefined(typeof(BotConfig.EAccess), access)) {
+		if ((access == BotConfig.EAccess.None) || !Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(BotConfig.EAccess));
 		}
 
@@ -875,7 +875,7 @@ public sealed class Bot : IAsyncDisposable {
 
 	[PublicAPI]
 	public bool SetUserInput(ASF.EUserInputType inputType, string inputValue) {
-		if ((inputType == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), inputType)) {
+		if ((inputType == ASF.EUserInputType.None) || !Enum.IsDefined(inputType)) {
 			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
 		}
 

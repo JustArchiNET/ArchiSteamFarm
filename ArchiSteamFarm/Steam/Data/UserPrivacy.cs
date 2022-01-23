@@ -65,27 +65,27 @@ internal sealed class UserPrivacy {
 
 		// Constructed from privacy change request
 		internal PrivacySettings(ArchiHandler.EPrivacySetting profile, ArchiHandler.EPrivacySetting ownedGames, ArchiHandler.EPrivacySetting playtime, ArchiHandler.EPrivacySetting friendsList, ArchiHandler.EPrivacySetting inventory, ArchiHandler.EPrivacySetting inventoryGifts) {
-			if ((profile == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), profile)) {
+			if ((profile == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(profile)) {
 				throw new InvalidEnumArgumentException(nameof(profile), (int) profile, typeof(ArchiHandler.EPrivacySetting));
 			}
 
-			if ((ownedGames == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), ownedGames)) {
+			if ((ownedGames == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(ownedGames)) {
 				throw new InvalidEnumArgumentException(nameof(ownedGames), (int) ownedGames, typeof(ArchiHandler.EPrivacySetting));
 			}
 
-			if ((playtime == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), playtime)) {
+			if ((playtime == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(playtime)) {
 				throw new InvalidEnumArgumentException(nameof(playtime), (int) playtime, typeof(ArchiHandler.EPrivacySetting));
 			}
 
-			if ((friendsList == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), friendsList)) {
+			if ((friendsList == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(friendsList)) {
 				throw new InvalidEnumArgumentException(nameof(friendsList), (int) friendsList, typeof(ArchiHandler.EPrivacySetting));
 			}
 
-			if ((inventory == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), inventory)) {
+			if ((inventory == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(inventory)) {
 				throw new InvalidEnumArgumentException(nameof(inventory), (int) inventory, typeof(ArchiHandler.EPrivacySetting));
 			}
 
-			if ((inventoryGifts == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), inventoryGifts)) {
+			if ((inventoryGifts == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(inventoryGifts)) {
 				throw new InvalidEnumArgumentException(nameof(inventoryGifts), (int) inventoryGifts, typeof(ArchiHandler.EPrivacySetting));
 			}
 

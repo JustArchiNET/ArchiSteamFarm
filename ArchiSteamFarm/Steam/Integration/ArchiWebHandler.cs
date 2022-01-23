@@ -727,7 +727,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentNullException(nameof(request));
 		}
 
-		if (!Enum.IsDefined(typeof(ESession), session)) {
+		if (!Enum.IsDefined(session)) {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 		}
 
@@ -841,7 +841,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentNullException(nameof(request));
 		}
 
-		if (!Enum.IsDefined(typeof(ESession), session)) {
+		if (!Enum.IsDefined(session)) {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 		}
 
@@ -955,7 +955,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentNullException(nameof(request));
 		}
 
-		if (!Enum.IsDefined(typeof(ESession), session)) {
+		if (!Enum.IsDefined(session)) {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 		}
 
@@ -1071,7 +1071,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentNullException(nameof(request));
 		}
 
-		if (!Enum.IsDefined(typeof(ESession), session)) {
+		if (!Enum.IsDefined(session)) {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 		}
 
@@ -1579,7 +1579,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		foreach (KeyValue trade in response["trade_offers_received"].Children) {
 			ETradeOfferState state = trade["trade_offer_state"].AsEnum<ETradeOfferState>();
 
-			if (!Enum.IsDefined(typeof(ETradeOfferState), state)) {
+			if (!Enum.IsDefined(state)) {
 				Bot.ArchiLogger.LogNullError(nameof(state));
 
 				return null;
@@ -2121,7 +2121,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if ((universe == EUniverse.Invalid) || !Enum.IsDefined(typeof(EUniverse), universe)) {
+		if ((universe == EUniverse.Invalid) || !Enum.IsDefined(universe)) {
 			throw new InvalidEnumArgumentException(nameof(universe), (int) universe, typeof(EUniverse));
 		}
 

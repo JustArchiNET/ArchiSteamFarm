@@ -441,7 +441,7 @@ public sealed class GlobalConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(FarmingDelay), FarmingDelay));
 		}
 
-		if (!Enum.IsDefined(typeof(ArchiCryptoHelper.EHashingMethod), IPCPasswordFormat)) {
+		if (!Enum.IsDefined(IPCPasswordFormat)) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(IPCPasswordFormat), IPCPasswordFormat));
 		}
 
@@ -449,7 +449,7 @@ public sealed class GlobalConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(MaxFarmingTime), MaxFarmingTime));
 		}
 
-		if (!Enum.IsDefined(typeof(EOptimizationMode), OptimizationMode)) {
+		if (!Enum.IsDefined(OptimizationMode)) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OptimizationMode), OptimizationMode));
 		}
 
@@ -465,7 +465,7 @@ public sealed class GlobalConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamProtocols), SteamProtocols));
 		}
 
-		return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, null) : (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
+		return Enum.IsDefined(UpdateChannel) ? (true, null) : (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
 	}
 
 	internal static async Task<(GlobalConfig? GlobalConfig, string? LatestJson)> Load(string filePath) {

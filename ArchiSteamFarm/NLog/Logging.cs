@@ -73,7 +73,7 @@ internal static class Logging {
 	}
 
 	internal static async Task<string?> GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF) {
-		if ((userInputType == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), userInputType)) {
+		if ((userInputType == ASF.EUserInputType.None) || !Enum.IsDefined(userInputType)) {
 			throw new InvalidEnumArgumentException(nameof(userInputType), (int) userInputType, typeof(ASF.EUserInputType));
 		}
 

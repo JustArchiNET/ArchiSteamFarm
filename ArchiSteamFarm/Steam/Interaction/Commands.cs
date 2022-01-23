@@ -95,7 +95,7 @@ public sealed class Commands {
 
 	[PublicAPI]
 	public async Task<string?> Response(EAccess access, string message, ulong steamID = 0) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -517,7 +517,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> Response2FA(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -531,7 +531,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> Response2FA(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -553,7 +553,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> Response2FAConfirm(EAccess access, bool confirm) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -575,7 +575,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> Response2FAConfirm(EAccess access, string botNames, bool confirm) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -597,7 +597,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseAddLicense(EAccess access, string query) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -669,7 +669,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseAddLicense(EAccess access, string botNames, string query) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -695,7 +695,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseAdvancedLoot(EAccess access, string targetAppID, string targetContextID) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -729,7 +729,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseAdvancedLoot(EAccess access, string botNames, string appID, string contextID) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -759,7 +759,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseAdvancedRedeem(EAccess access, string options, string keys, ulong steamID = 0) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -844,7 +844,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseAdvancedRedeem(EAccess access, string botNames, string options, string keys, ulong steamID = 0) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -874,7 +874,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseAdvancedTransfer(EAccess access, uint appID, ulong contextID, Bot targetBot) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -906,7 +906,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseAdvancedTransfer(EAccess access, string targetAppID, string targetContextID, string botNameTo) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -940,7 +940,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseAdvancedTransfer(EAccess access, string botNames, string targetAppID, string targetContextID, string botNameTo) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -988,7 +988,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseBackgroundGamesRedeemer(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1002,7 +1002,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseBackgroundGamesRedeemer(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1024,7 +1024,7 @@ public sealed class Commands {
 	}
 
 	private static string? ResponseEncrypt(EAccess access, string cryptoMethodText, string stringToEncrypt) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1050,7 +1050,7 @@ public sealed class Commands {
 	}
 
 	private static string? ResponseExit(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1064,7 +1064,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseFarm(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1086,7 +1086,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseFarm(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1108,7 +1108,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseFarmingBlacklist(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1116,7 +1116,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseFarmingBlacklist(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1138,7 +1138,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseFarmingBlacklistAdd(EAccess access, string targetAppIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1183,7 +1183,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseFarmingBlacklistAdd(EAccess access, string botNames, string targetAppIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1209,7 +1209,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseFarmingBlacklistRemove(EAccess access, string targetAppIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1249,7 +1249,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseFarmingBlacklistRemove(EAccess access, string botNames, string targetAppIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1275,7 +1275,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseFarmingQueue(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1283,7 +1283,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseFarmingQueue(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1305,7 +1305,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseFarmingQueueAdd(EAccess access, string targetAppIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1357,7 +1357,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseFarmingQueueAdd(EAccess access, string botNames, string targetAppIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1383,7 +1383,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseFarmingQueueRemove(EAccess access, string targetAppIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1428,7 +1428,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseFarmingQueueRemove(EAccess access, string botNames, string targetAppIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1454,7 +1454,7 @@ public sealed class Commands {
 	}
 
 	private static string? ResponseHash(EAccess access, string hashingMethodText, string stringToHash) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1480,7 +1480,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseHelp(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1488,7 +1488,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseInput(EAccess access, string propertyName, string inputValue) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1510,7 +1510,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.ErrorFunctionOnlyInHeadlessMode);
 		}
 
-		if (!Enum.TryParse(propertyName, true, out ASF.EUserInputType inputType) || (inputType == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), inputType)) {
+		if (!Enum.TryParse(propertyName, true, out ASF.EUserInputType inputType) || (inputType == ASF.EUserInputType.None) || !Enum.IsDefined(inputType)) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(inputType)));
 		}
 
@@ -1520,7 +1520,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseInput(EAccess access, string botNames, string propertyName, string inputValue) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1550,7 +1550,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseLevel(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1568,7 +1568,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseLevel(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1590,7 +1590,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseLoot(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1612,7 +1612,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseLoot(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1634,7 +1634,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseLootByRealAppIDs(EAccess access, string realAppIDsText, bool exclude = false) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1676,7 +1676,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseLootByRealAppIDs(EAccess access, string botNames, string realAppIDsText, bool exclude = false) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1702,7 +1702,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseMatchActivelyBlacklist(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1710,7 +1710,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseMatchActivelyBlacklist(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1732,7 +1732,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseMatchActivelyBlacklistAdd(EAccess access, string targetAppIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1764,7 +1764,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseMatchActivelyBlacklistAdd(EAccess access, string botNames, string targetAppIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1790,7 +1790,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseMatchActivelyBlacklistRemove(EAccess access, string targetAppIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1822,7 +1822,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseMatchActivelyBlacklistRemove(EAccess access, string botNames, string targetAppIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1848,7 +1848,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseNickname(EAccess access, string nickname) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1870,7 +1870,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseNickname(EAccess access, string botNames, string nickname) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -1896,7 +1896,7 @@ public sealed class Commands {
 	}
 
 	private async Task<(string? Response, Dictionary<string, string>? OwnedGames)> ResponseOwns(EAccess access, string query) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2048,7 +2048,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseOwns(EAccess access, string botNames, string query) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2096,7 +2096,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponsePause(EAccess access, bool permanent, string? resumeInSecondsText = null) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2120,7 +2120,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponsePause(EAccess access, string botNames, bool permanent, string? resumeInSecondsText = null) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2142,7 +2142,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponsePlay(EAccess access, IReadOnlyCollection<uint> gameIDs, string? gameName = null) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2166,7 +2166,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponsePlay(EAccess access, string targetGameIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2213,7 +2213,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponsePlay(EAccess access, string botNames, string targetGameIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2239,7 +2239,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponsePointsBalance(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2257,7 +2257,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponsePointsBalance(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2279,7 +2279,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponsePrivacy(EAccess access, string privacySettingsText) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2317,7 +2317,7 @@ public sealed class Commands {
 
 		// Converting digits to enum
 		for (byte index = 0; index < privacySettingsArgs.Length; index++) {
-			if (!Enum.TryParse(privacySettingsArgs[index], true, out ArchiHandler.EPrivacySetting privacySetting) || (privacySetting == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), privacySetting)) {
+			if (!Enum.TryParse(privacySettingsArgs[index], true, out ArchiHandler.EPrivacySetting privacySetting) || (privacySetting == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(privacySetting)) {
 				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(privacySettingsArgs)));
 			}
 
@@ -2413,7 +2413,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponsePrivacy(EAccess access, string botNames, string privacySettingsText) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2439,7 +2439,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseRedeem(EAccess access, string keysText, ulong steamID = 0, ERedeemFlags redeemFlags = ERedeemFlags.None) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2698,7 +2698,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseRedeem(EAccess access, string botNames, string keysText, ulong steamID = 0, ERedeemFlags redeemFlags = ERedeemFlags.None) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2724,7 +2724,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseReset(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2742,7 +2742,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseReset(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2764,7 +2764,7 @@ public sealed class Commands {
 	}
 
 	private static string? ResponseRestart(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2778,7 +2778,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseResume(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2792,7 +2792,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseResume(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2814,7 +2814,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseStart(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2828,7 +2828,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseStart(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2850,7 +2850,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseStats(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2865,7 +2865,7 @@ public sealed class Commands {
 	}
 
 	private (string? Response, Bot Bot) ResponseStatus(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2907,7 +2907,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseStatus(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2937,7 +2937,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseStop(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2951,7 +2951,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseStop(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2973,7 +2973,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseTradingBlacklist(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -2981,7 +2981,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseTradingBlacklist(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3003,7 +3003,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseTradingBlacklistAdd(EAccess access, string targetSteamIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3035,7 +3035,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseTradingBlacklistAdd(EAccess access, string botNames, string targetSteamIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3061,7 +3061,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseTradingBlacklistRemove(EAccess access, string targetSteamIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3093,7 +3093,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseTradingBlacklistRemove(EAccess access, string botNames, string targetSteamIDs) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3119,7 +3119,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseTransfer(EAccess access, string botNameTo) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3159,7 +3159,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseTransfer(EAccess access, string botNames, string botNameTo) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3185,7 +3185,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseTransferByRealAppIDs(EAccess access, IReadOnlyCollection<uint> realAppIDs, Bot targetBot, bool exclude = false) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3221,7 +3221,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseTransferByRealAppIDs(EAccess access, string realAppIDsText, string botNameTo, bool exclude = false) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3263,7 +3263,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseTransferByRealAppIDs(EAccess access, string botNames, string realAppIDsText, string botNameTo, bool exclude = false) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3315,7 +3315,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseUnknown(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3323,7 +3323,7 @@ public sealed class Commands {
 	}
 
 	private async Task<string?> ResponseUnpackBoosters(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3359,7 +3359,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseUnpackBoosters(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3381,7 +3381,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseUpdate(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3395,7 +3395,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseVersion(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3403,7 +3403,7 @@ public sealed class Commands {
 	}
 
 	private string? ResponseWalletBalance(EAccess access) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
@@ -3415,7 +3415,7 @@ public sealed class Commands {
 	}
 
 	private static async Task<string?> ResponseWalletBalance(EAccess access, string botNames) {
-		if (!Enum.IsDefined(typeof(EAccess), access)) {
+		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 

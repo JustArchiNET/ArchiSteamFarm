@@ -414,7 +414,7 @@ public sealed class BotConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(BotBehaviour), BotBehaviour));
 		}
 
-		foreach (EFarmingOrder farmingOrder in FarmingOrders.Where(static farmingOrder => !Enum.IsDefined(typeof(EFarmingOrder), farmingOrder))) {
+		foreach (EFarmingOrder farmingOrder in FarmingOrders.Where(static farmingOrder => !Enum.IsDefined(farmingOrder))) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrders), farmingOrder));
 		}
 
@@ -426,14 +426,14 @@ public sealed class BotConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(GamesPlayedWhileIdle), $"{nameof(GamesPlayedWhileIdle.Count)} {GamesPlayedWhileIdle.Count} > {ArchiHandler.MaxGamesPlayedConcurrently}"));
 		}
 
-		foreach (Asset.EType lootableType in LootableTypes.Where(static lootableType => !Enum.IsDefined(typeof(Asset.EType), lootableType))) {
+		foreach (Asset.EType lootableType in LootableTypes.Where(static lootableType => !Enum.IsDefined(lootableType))) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
 		}
 
 		HashSet<Asset.EType>? completeTypesToSendValidTypes = null;
 
 		foreach (Asset.EType completableType in CompleteTypesToSend) {
-			if (!Enum.IsDefined(typeof(Asset.EType), completableType)) {
+			if (!Enum.IsDefined(completableType)) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(CompleteTypesToSend), completableType));
 			}
 
@@ -452,15 +452,15 @@ public sealed class BotConfig {
 			}
 		}
 
-		foreach (Asset.EType matchableType in MatchableTypes.Where(static matchableType => !Enum.IsDefined(typeof(Asset.EType), matchableType))) {
+		foreach (Asset.EType matchableType in MatchableTypes.Where(static matchableType => !Enum.IsDefined(matchableType))) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
 		}
 
-		if (!Enum.IsDefined(typeof(EPersonaState), OnlineStatus)) {
+		if (!Enum.IsDefined(OnlineStatus)) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OnlineStatus), OnlineStatus));
 		}
 
-		if (!Enum.IsDefined(typeof(ArchiCryptoHelper.ECryptoMethod), PasswordFormat)) {
+		if (!Enum.IsDefined(PasswordFormat)) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(PasswordFormat), PasswordFormat));
 		}
 
@@ -485,7 +485,7 @@ public sealed class BotConfig {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamUserPermissions), steamID));
 			}
 
-			if (!Enum.IsDefined(typeof(EAccess), permission)) {
+			if (!Enum.IsDefined(permission)) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamUserPermissions), permission));
 			}
 		}
@@ -494,7 +494,7 @@ public sealed class BotConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(TradingPreferences), TradingPreferences));
 		}
 
-		return !Enum.IsDefined(typeof(ArchiHandler.EUserInterfaceMode), UserInterfaceMode) ? (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UserInterfaceMode), UserInterfaceMode)) : (true, null);
+		return !Enum.IsDefined(UserInterfaceMode) ? (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UserInterfaceMode), UserInterfaceMode)) : (true, null);
 	}
 
 	internal async Task<string?> GetDecryptedSteamPassword() {

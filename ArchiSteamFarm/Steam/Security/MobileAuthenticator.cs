@@ -182,7 +182,7 @@ public sealed class MobileAuthenticator : IDisposable {
 				return null;
 			}
 
-			if (!Enum.IsDefined(typeof(Confirmation.EType), type)) {
+			if (!Enum.IsDefined(type)) {
 				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(type), type));
 
 				return null;

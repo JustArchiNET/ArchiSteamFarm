@@ -96,7 +96,7 @@ public static class ASF {
 	}
 
 	internal static string GetFilePath(EFileType fileType) {
-		if (!Enum.IsDefined(typeof(EFileType), fileType)) {
+		if (!Enum.IsDefined(fileType)) {
 			throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EFileType));
 		}
 

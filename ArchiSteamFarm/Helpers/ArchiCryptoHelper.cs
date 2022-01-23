@@ -60,7 +60,7 @@ public static class ArchiCryptoHelper {
 	private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
 	internal static async Task<string?> Decrypt(ECryptoMethod cryptoMethod, string encryptedString) {
-		if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod)) {
+		if (!Enum.IsDefined(cryptoMethod)) {
 			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ECryptoMethod));
 		}
 
@@ -79,7 +79,7 @@ public static class ArchiCryptoHelper {
 	}
 
 	internal static string? Encrypt(ECryptoMethod cryptoMethod, string decryptedString) {
-		if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod)) {
+		if (!Enum.IsDefined(cryptoMethod)) {
 			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ECryptoMethod));
 		}
 
@@ -98,7 +98,7 @@ public static class ArchiCryptoHelper {
 	}
 
 	internal static string Hash(EHashingMethod hashingMethod, string stringToHash) {
-		if (!Enum.IsDefined(typeof(EHashingMethod), hashingMethod)) {
+		if (!Enum.IsDefined(hashingMethod)) {
 			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
 		}
 
@@ -129,7 +129,7 @@ public static class ArchiCryptoHelper {
 			throw new ArgumentOutOfRangeException(nameof(hashLength));
 		}
 
-		if (!Enum.IsDefined(typeof(EHashingMethod), hashingMethod)) {
+		if (!Enum.IsDefined(hashingMethod)) {
 			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
 		}
 
@@ -163,7 +163,7 @@ public static class ArchiCryptoHelper {
 			throw new ArgumentNullException(nameof(salt));
 		}
 
-		if (!Enum.IsDefined(typeof(EHashingMethod), hashingMethod)) {
+		if (!Enum.IsDefined(hashingMethod)) {
 			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
 		}
 

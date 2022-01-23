@@ -58,7 +58,7 @@ public sealed class TradeOffer {
 			throw new ArgumentOutOfRangeException(nameof(otherSteamID3));
 		}
 
-		if (!Enum.IsDefined(typeof(ETradeOfferState), state)) {
+		if (!Enum.IsDefined(state)) {
 			throw new InvalidEnumArgumentException(nameof(state), (int) state, typeof(ETradeOfferState));
 		}
 

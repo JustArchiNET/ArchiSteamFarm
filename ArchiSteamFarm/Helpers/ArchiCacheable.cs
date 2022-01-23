@@ -48,7 +48,7 @@ public sealed class ArchiCacheable<T> : IDisposable {
 
 	[PublicAPI]
 	public async Task<(bool Success, T? Result)> GetValue(EFallback fallback = EFallback.DefaultForType) {
-		if (!Enum.IsDefined(typeof(EFallback), fallback)) {
+		if (!Enum.IsDefined(fallback)) {
 			throw new InvalidEnumArgumentException(nameof(fallback), (int) fallback, typeof(EFallback));
 		}
 

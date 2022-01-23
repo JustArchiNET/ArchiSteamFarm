@@ -51,7 +51,7 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 
 		ArgumentNullException.ThrowIfNull(request);
 
-		if (request.AcceptedType.HasValue && ((request.AcceptedType.Value == Confirmation.EType.Unknown) || !Enum.IsDefined(typeof(Confirmation.EType), request.AcceptedType.Value))) {
+		if (request.AcceptedType.HasValue && ((request.AcceptedType.Value == Confirmation.EType.Unknown) || !Enum.IsDefined(request.AcceptedType.Value))) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.AcceptedType))));
 		}
 

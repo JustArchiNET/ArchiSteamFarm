@@ -43,7 +43,7 @@ public sealed class Confirmation {
 		ID = id > 0 ? id : throw new ArgumentOutOfRangeException(nameof(id));
 		Key = key > 0 ? key : throw new ArgumentOutOfRangeException(nameof(key));
 		Creator = creator > 0 ? creator : throw new ArgumentOutOfRangeException(nameof(creator));
-		Type = Enum.IsDefined(typeof(EType), type) ? type : throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(EType));
+		Type = Enum.IsDefined(type) ? type : throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(EType));
 	}
 
 	// REF: Internal documentation

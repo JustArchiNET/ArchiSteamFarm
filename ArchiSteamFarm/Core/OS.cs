@@ -121,7 +121,7 @@ internal static class OS {
 	}
 
 	internal static void Init(GlobalConfig.EOptimizationMode optimizationMode) {
-		if (!Enum.IsDefined(typeof(GlobalConfig.EOptimizationMode), optimizationMode)) {
+		if (!Enum.IsDefined(optimizationMode)) {
 			throw new ArgumentNullException(nameof(optimizationMode));
 		}
 
