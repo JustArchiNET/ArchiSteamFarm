@@ -171,6 +171,10 @@
 	<data name="LoadingGlobalCache" xml:space="preserve">
 		<value>Globaler STD-Cache wird geladen...</value>
 	</data>
-	
-	
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>Überprüfe STD globale Cache-Integrität...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>Fehler beim Überprüfen der globalen STD-Cache-Integrität. Dies deutet auf eine mögliche Datei-/Speicher-Beschädigung hin; stattdessen wird eine neue Instanz initialisiert.</value>
+	</data>
 </root>
