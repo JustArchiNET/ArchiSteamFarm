@@ -105,7 +105,7 @@ StackTrace:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Nenhum bot foi definido. Você esqueceu de configurar seu Archi Steam Farm? Siga o guia de "configuração" no wiki se você estiver com dúvidas.</value>
+		<value>Nenhum bot foi definido. Você esqueceu de configurar seu ASF? Confira o guia de "configuração" no wiki se você estiver confuso.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} é nulo!</value>
@@ -194,7 +194,10 @@ StackTrace:
 		<value>Insira o código gerado pelo autenticador móvel do Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Por favor digite o código do Steam Guard que foi enviado para o seu e-mail: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Insira o seu nome de usuário Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -705,7 +708,7 @@ Tempo de execução: {1}</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Você está utilizando {0} configuração de {1}, mas você não forneceu uma senha de criptografia personalizada. Você deve fornecer uma senha de criptografia para melhorar sua segurança.</value>
+		<value>Você está usando a configuração {0} de propriedade {1}, mas você não forneceu uma --cryptkey personalizada. Você deve fornecer uma --cryptkey personalizada para maior segurança.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
@@ -713,24 +716,24 @@ Tempo de execução: {1}</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
 	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>Você está utilizando o Archi Steam Farm como administrador (Root). Isto não é necessário, e poderá trazer riscos a sua máquina. É recomendado rodar em modo usuário se possível.</value>
+		<value>Você está tentando executar o ASF como administrador (root). Isto causa um risco de segurança significativo à sua máquina e já que o ASF não requer acesso root para o seu funcionamento, recomendamos executá-lo como usuário não-administrador, se possível.</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
-		<value>Você está executando o Archi Steam Farm em um ambiente não suportado, utilizando o argumento --ignore-unported-environment. Por favor, note que não oferecemos qualquer tipo de apoio a este cenário, e você está fazendo isso inteiramente por sua conta e risco! Você foi avisado.</value>
+		<value>Você está executando o ASF em um ambiente não suportado, utilizando o argumento --ignore-unported-environment. Por favor, note que não oferecemos qualquer tipo de apoio a este cenário, e você está fazendo isso inteiramente por sua conta e risco! Você foi avisado.</value>
 	</data>
 	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
 		<value>Obtendo checksum do servidor remoto...</value>
 	</data>
 	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
-		<value>Comparando a checksum do binário baixado junto ao servidor remoto...</value>
+		<value>Comparando a checksum do binário baixado com a do servidor remoto...</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>O servidor remoto não reconhece a versão para a qual estamos atualizando. Esta situação pode ser possível se a versão foi publicada recentemente, recusando-se a prosseguir imediatamente com o processo de atualização, como uma medida de segurança adicional.</value>
+		<value>O servidor remoto não sabe nada sobre a versão para a qual estamos atualizando. Esta situação é possível se a atualização foi publicada recentemente - recusando-se a prosseguir com o processo de atualização imediatamente como uma medida de segurança adicional.</value>
 	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
-		<value>O servidor remoto retornou com uma chave de verificação diferente. Isto pode indicar que o download corrompeu, ou um ataque MITM, não será possível prosseguir com a atualização!</value>
+		<value>O servidor remoto respondeu com um checksum diferente, isto pode indicar download corrompido ou um ataque MITM, recusando-se a prosseguir com o procedimento de atualização!</value>
 	</data>
 	<data name="PatchingFiles" xml:space="preserve">
-		<value>Extraindo arquivos do Archi Steam Farm...</value>
+		<value>Atualizando arquivos do ASF...</value>
 	</data>
 </root>
