@@ -297,6 +297,10 @@ public sealed class GlobalConfig {
 
 	internal bool Saving { get; set; }
 
+	// TODO: Pending removal, Statistics property which got changed into RemoteConnection
+	[JsonProperty(Required = Required.DisallowNull)]
+	internal bool Statistics { get; private set; } = true;
+
 	[JsonProperty]
 	internal string? WebProxyPassword {
 		get => BackingWebProxyPassword;
@@ -391,6 +395,12 @@ public sealed class GlobalConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSSteamOwnerID() => !Saving;
+
+	// TODO: Pending removal, Statistics property which got changed into RemoteConnection, we never serialize it after update
+#pragma warning disable CA1822 // We can't mark it as static
+	[UsedImplicitly]
+	public bool ShouldSerializeStatistics() => false;
+#pragma warning restore CA1822 // We can't mark it as static
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSteamMessagePrefix() => !Saving || (SteamMessagePrefix != DefaultSteamMessagePrefix);
