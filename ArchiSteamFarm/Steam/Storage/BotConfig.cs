@@ -81,6 +81,9 @@ public sealed class BotConfig {
 	public const ERedeemingPreferences DefaultRedeemingPreferences = ERedeemingPreferences.None;
 
 	[PublicAPI]
+	public const ERemoteCommunication DefaultRemoteCommunication = ERemoteCommunication.All;
+
+	[PublicAPI]
 	public const bool DefaultSendOnFarmingFinished = false;
 
 	[PublicAPI]
@@ -194,6 +197,9 @@ public sealed class BotConfig {
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	public ERedeemingPreferences RedeemingPreferences { get; private set; } = DefaultRedeemingPreferences;
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	public ERemoteCommunication RemoteCommunication { get; private set; } = DefaultRemoteCommunication;
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	public bool SendOnFarmingFinished { get; private set; } = DefaultSendOnFarmingFinished;
@@ -350,6 +356,9 @@ public sealed class BotConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeRedeemingPreferences() => !Saving || (RedeemingPreferences != DefaultRedeemingPreferences);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeRemoteCommunication() => !Saving || (RemoteCommunication != DefaultRemoteCommunication);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSendOnFarmingFinished() => !Saving || (SendOnFarmingFinished != DefaultSendOnFarmingFinished);
@@ -660,6 +669,15 @@ public sealed class BotConfig {
 		KeepMissingGames = 4,
 		AssumeWalletKeyOnBadActivationCode = 8,
 		All = Forwarding | Distributing | KeepMissingGames | AssumeWalletKeyOnBadActivationCode
+	}
+
+	[Flags]
+	public enum ERemoteCommunication : byte {
+		None = 0,
+		SteamGroup = 1,
+		TradeMatcher = 2,
+		PublicListing = 4,
+		All = SteamGroup | TradeMatcher | PublicListing
 	}
 
 	[Flags]

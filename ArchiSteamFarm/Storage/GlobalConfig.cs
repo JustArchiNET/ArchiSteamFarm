@@ -100,9 +100,6 @@ public sealed class GlobalConfig {
 	public const EOptimizationMode DefaultOptimizationMode = EOptimizationMode.MaxPerformance;
 
 	[PublicAPI]
-	public const bool DefaultStatistics = true;
-
-	[PublicAPI]
 	public const string? DefaultSteamMessagePrefix = "/me ";
 
 	[PublicAPI]
@@ -259,9 +256,6 @@ public sealed class GlobalConfig {
 	[JsonProperty(Required = Required.DisallowNull)]
 	public EOptimizationMode OptimizationMode { get; private set; } = DefaultOptimizationMode;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool Statistics { get; private set; } = DefaultStatistics;
-
 	[JsonProperty]
 	[MaxLength(SteamChatMessage.MaxMessagePrefixBytes / SteamChatMessage.ReservedEscapeMessageBytes)]
 	public string? SteamMessagePrefix { get; private set; } = DefaultSteamMessagePrefix;
@@ -397,9 +391,6 @@ public sealed class GlobalConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSSteamOwnerID() => !Saving;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeStatistics() => !Saving || (Statistics != DefaultStatistics);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSteamMessagePrefix() => !Saving || (SteamMessagePrefix != DefaultSteamMessagePrefix);
