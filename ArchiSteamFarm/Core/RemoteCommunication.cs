@@ -245,7 +245,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable {
 	}
 
 	private async Task<bool?> IsEligibleForListing() {
-		// But must be eligible for matching first
+		// Bot must be eligible for matching first
 		bool? isEligibleForMatching = await IsEligibleForMatching().ConfigureAwait(false);
 
 		if (isEligibleForMatching != true) {
