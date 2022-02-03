@@ -154,7 +154,6 @@ public sealed class Bot : IAsyncDisposable {
 	private readonly SemaphoreSlim MessagingSemaphore = new(1, 1);
 	private readonly ConcurrentDictionary<UserNotificationsCallback.EUserNotification, uint> PastNotifications = new();
 	private readonly SemaphoreSlim SendCompleteTypesSemaphore = new(1, 1);
-	private readonly Statistics? Statistics;
 	private readonly SteamClient SteamClient;
 	private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new();
 	private readonly SteamUser SteamUser;
@@ -250,6 +249,7 @@ public sealed class Bot : IAsyncDisposable {
 #pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 
 	private bool ReconnectOnUserInitiated;
+	private RemoteCommunication? RemoteCommunication;
 	private bool SendCompleteTypesScheduled;
 
 #pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
@@ -339,10 +339,6 @@ public sealed class Bot : IAsyncDisposable {
 		Commands = new Commands(this);
 		Trading = new Trading(this);
 
-		if (!Debugging.IsDebugBuild && (ASF.GlobalConfig?.Statistics ?? GlobalConfig.DefaultStatistics)) {
-			Statistics = new Statistics(this);
-		}
-
 		HeartBeatTimer = new Timer(
 			HeartBeat,
 			null,
@@ -383,8 +379,8 @@ public sealed class Bot : IAsyncDisposable {
 			await SendItemsTimer.DisposeAsync().ConfigureAwait(false);
 		}
 
-		if (Statistics != null) {
-			await Statistics.DisposeAsync().ConfigureAwait(false);
+		if (RemoteCommunication != null) {
+			await RemoteCommunication.DisposeAsync().ConfigureAwait(false);
 		}
 
 		if (SteamSaleEvent != null) {
@@ -1962,8 +1958,8 @@ public sealed class Bot : IAsyncDisposable {
 
 			HeartBeatFailures = 0;
 
-			if (Statistics != null) {
-				Utilities.InBackground(Statistics.OnHeartBeat);
+			if (RemoteCommunication != null) {
+				Utilities.InBackground(RemoteCommunication.OnHeartBeat);
 			}
 		} catch (Exception e) {
 			ArchiLogger.LogGenericDebuggingException(e);
@@ -2110,6 +2106,16 @@ public sealed class Bot : IAsyncDisposable {
 
 		if (BotConfig.AutoSteamSaleEvent) {
 			SteamSaleEvent = new SteamSaleEvent(this);
+		}
+
+		if (RemoteCommunication != null) {
+			await RemoteCommunication.DisposeAsync().ConfigureAwait(false);
+
+			RemoteCommunication = null;
+		}
+
+		if (!Debugging.IsDebugBuild && (BotConfig.RemoteCommunication > BotConfig.ERemoteCommunication.None)) {
+			RemoteCommunication = new RemoteCommunication(this);
 		}
 
 		await PluginsCore.OnBotInitModules(this, BotConfig.AdditionalProperties).ConfigureAwait(false);
@@ -2866,8 +2872,8 @@ public sealed class Bot : IAsyncDisposable {
 
 				Utilities.InBackground(InitializeFamilySharing);
 
-				if (Statistics != null) {
-					Utilities.InBackground(Statistics.OnLoggedOn);
+				if (RemoteCommunication != null) {
+					Utilities.InBackground(RemoteCommunication.OnLoggedOn);
 				}
 
 				if (BotConfig.OnlineStatus != EPersonaState.Offline) {
@@ -3042,8 +3048,8 @@ public sealed class Bot : IAsyncDisposable {
 		AvatarHash = avatarHash;
 		Nickname = callback.Name;
 
-		if (Statistics != null) {
-			Utilities.InBackground(() => Statistics.OnPersonaState(callback.Name, avatarHash));
+		if (RemoteCommunication != null) {
+			Utilities.InBackground(() => RemoteCommunication.OnPersonaState(callback.Name, avatarHash));
 		}
 	}
 

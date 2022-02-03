@@ -41,7 +41,7 @@ using ArchiSteamFarm.Web;
 
 namespace ArchiSteamFarm.Core;
 
-internal sealed class Statistics : IAsyncDisposable {
+internal sealed class RemoteCommunication : IAsyncDisposable {
 	private const ushort MaxItemsForFairBots = ArchiWebHandler.MaxItemsInSingleInventoryRequest * WebBrowser.MaxTries; // Determines which fair bots we'll deprioritize when matching due to excessive number of inventory requests they need to make, which are likely to fail in the process or cause excessive delays
 	private const byte MaxMatchedBotsHard = 40; // Determines how many bots we can attempt to match in total, where match attempt is equal to analyzing bot's inventory
 	private const byte MaxMatchingRounds = 10; // Determines maximum amount of matching rounds we're going to consider before leaving the rest of work for the next batch
@@ -61,7 +61,7 @@ internal sealed class Statistics : IAsyncDisposable {
 	private readonly SemaphoreSlim MatchActivelySemaphore = new(1, 1);
 
 #pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
-	private readonly Timer MatchActivelyTimer;
+	private readonly Timer? MatchActivelyTimer;
 #pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 
 	private readonly SemaphoreSlim RequestsSemaphore = new(1, 1);
@@ -71,25 +71,33 @@ internal sealed class Statistics : IAsyncDisposable {
 	private DateTime LastPersonaStateRequest;
 	private bool ShouldSendHeartBeats;
 
-	internal Statistics(Bot bot) {
+	internal RemoteCommunication(Bot bot) {
 		Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-		MatchActivelyTimer = new Timer(
-			MatchActively,
-			null,
-			TimeSpan.FromHours(1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0), // Delay
-			TimeSpan.FromHours(8) // Period
-		);
+		if (Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.TradeMatcher)) {
+			MatchActivelyTimer = new Timer(
+				MatchActively,
+				null,
+				TimeSpan.FromHours(1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0), // Delay
+				TimeSpan.FromHours(8) // Period
+			);
+		}
 	}
 
 	public async ValueTask DisposeAsync() {
 		MatchActivelySemaphore.Dispose();
 		RequestsSemaphore.Dispose();
 
-		await MatchActivelyTimer.DisposeAsync().ConfigureAwait(false);
+		if (MatchActivelyTimer != null) {
+			await MatchActivelyTimer.DisposeAsync().ConfigureAwait(false);
+		}
 	}
 
 	internal async Task OnHeartBeat() {
+		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
+			return;
+		}
+
 		// Request persona update if needed
 		if ((DateTime.UtcNow > LastPersonaStateRequest.AddHours(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL))) {
 			LastPersonaStateRequest = DateTime.UtcNow;
@@ -125,12 +133,20 @@ internal sealed class Statistics : IAsyncDisposable {
 	}
 
 	internal async Task OnLoggedOn() {
+		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.SteamGroup)) {
+			return;
+		}
+
 		if (!await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiWebHandler.JoinGroup)));
 		}
 	}
 
 	internal async Task OnPersonaState(string? nickname = null, string? avatarHash = null) {
+		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
+			return;
+		}
+
 		if ((DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {
 			return;
 		}
@@ -282,6 +298,10 @@ internal sealed class Statistics : IAsyncDisposable {
 	}
 
 	private async void MatchActively(object? state = null) {
+		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.TradeMatcher)) {
+			return;
+		}
+
 		if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || (await IsEligibleForMatching().ConfigureAwait(false) != true)) {
 			Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
 
