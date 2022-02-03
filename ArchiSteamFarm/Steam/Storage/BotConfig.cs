@@ -687,9 +687,8 @@ public sealed class BotConfig {
 	public enum ERemoteCommunication : byte {
 		None = 0,
 		SteamGroup = 1,
-		TradeMatcher = 2,
-		PublicListing = 4,
-		All = SteamGroup | TradeMatcher | PublicListing
+		PublicListing = 2,
+		All = SteamGroup | PublicListing
 	}
 
 	[Flags]

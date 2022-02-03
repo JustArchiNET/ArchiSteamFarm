@@ -74,7 +74,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable {
 	internal RemoteCommunication(Bot bot) {
 		Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-		if (Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.TradeMatcher)) {
+		if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively)) {
 			MatchActivelyTimer = new Timer(
 				MatchActively,
 				null,
@@ -245,10 +245,18 @@ internal sealed class RemoteCommunication : IAsyncDisposable {
 	}
 
 	private async Task<bool?> IsEligibleForListing() {
+		// But must be eligible for matching first
 		bool? isEligibleForMatching = await IsEligibleForMatching().ConfigureAwait(false);
 
 		if (isEligibleForMatching != true) {
 			return isEligibleForMatching;
+		}
+
+		// Bot must have STM enabled in TradingPreferences
+		if (!Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.BotConfig.TradingPreferences)}: {Bot.BotConfig.TradingPreferences}"));
+
+			return false;
 		}
 
 		// Bot must have public inventory
@@ -267,13 +275,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable {
 		// Bot must have ASF 2FA
 		if (!Bot.HasMobileAuthenticator) {
 			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.HasMobileAuthenticator)}: {Bot.HasMobileAuthenticator}"));
-
-			return false;
-		}
-
-		// Bot must have STM enable in TradingPreferences
-		if (!Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.BotConfig.TradingPreferences)}: {Bot.BotConfig.TradingPreferences}"));
 
 			return false;
 		}
@@ -298,10 +299,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable {
 	}
 
 	private async void MatchActively(object? state = null) {
-		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.TradeMatcher)) {
-			return;
-		}
-
 		if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || (await IsEligibleForMatching().ConfigureAwait(false) != true)) {
 			Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
 
