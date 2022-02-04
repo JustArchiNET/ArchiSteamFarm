@@ -94,8 +94,6 @@ internal sealed class BotDatabase : SerializableFile {
 	[JsonProperty(PropertyName = $"_{nameof(MobileAuthenticator)}")]
 	private MobileAuthenticator? BackingMobileAuthenticator;
 
-	private bool SaveNeededDueToMigration;
-
 	private BotDatabase(string filePath) {
 		if (string.IsNullOrEmpty(filePath)) {
 			throw new ArgumentNullException(nameof(filePath));
@@ -202,12 +200,6 @@ internal sealed class BotDatabase : SerializableFile {
 		}
 
 		botDatabase.FilePath = filePath;
-
-		if (botDatabase.SaveNeededDueToMigration) {
-			botDatabase.SaveNeededDueToMigration = false;
-
-			Utilities.InBackground(botDatabase.Save);
-		}
 
 		return botDatabase;
 	}
