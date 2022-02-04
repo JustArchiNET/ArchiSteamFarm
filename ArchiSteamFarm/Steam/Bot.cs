@@ -754,27 +754,6 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	[PublicAPI]
-	[Obsolete($"Use {nameof(GetAccess)} instead (if you still need it), this one will be removed soon.", true)]
-	public bool HasAccess(ulong steamID, BotConfig.EAccess access) {
-		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
-		if ((access == BotConfig.EAccess.None) || !Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(BotConfig.EAccess));
-		}
-
-		if (ASF.IsOwner(steamID)) {
-			return true;
-		}
-
-		return access switch {
-			BotConfig.EAccess.FamilySharing when SteamFamilySharingIDs.Contains(steamID) => true,
-			_ => BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess realPermission) && (realPermission >= access)
-		};
-	}
-
-	[PublicAPI]
 	public async Task<Dictionary<uint, byte>?> LoadCardsPerSet(IReadOnlyCollection<uint> appIDs) {
 		if ((appIDs == null) || (appIDs.Count == 0)) {
 			throw new ArgumentNullException(nameof(appIDs));

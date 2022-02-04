@@ -82,18 +82,6 @@ public sealed class Commands {
 	}
 
 	[PublicAPI]
-	[Obsolete($"Use overload which accepts {nameof(EAccess)} instead, this one will be removed soon.", true)]
-	public async Task<string?> Response(ulong steamID, string message) {
-		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
-		EAccess access = Bot.GetAccess(steamID);
-
-		return await Response(access, message, steamID).ConfigureAwait(false);
-	}
-
-	[PublicAPI]
 	public async Task<string?> Response(EAccess access, string message, ulong steamID = 0) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
