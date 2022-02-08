@@ -195,7 +195,7 @@ StackTrace:
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Bitte gebe den SteamGuard Authentifizierungstoken ein, der an deine E-Mail Adresse geschickt wurde: </value>
+		<value>Bitte gebe den SteamGuard Authentifizierungstoken ein, der an Ihre E-Mail Adresse geschickt wurde: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
@@ -445,10 +445,10 @@ StackTrace:
 		<value>Bot stellt eine Verbindung zum Steam-Netzwerk her.</value>
 	</data>
 	<data name="BotStatusNotRunning" xml:space="preserve">
-		<value>Bot läuft nicht.</value>
+		<value>Bot ist nicht in Betrieb.</value>
 	</data>
 	<data name="BotStatusPaused" xml:space="preserve">
-		<value>Bot ist pausiert oder läuft im manuellen Modus.</value>
+		<value>Bot ist pausiert oder wird im manuellen Modus ausgeführt.</value>
 	</data>
 	<data name="BotStatusPlayingNotAvailable" xml:space="preserve">
 		<value>Bot wird zurzeit benutzt.</value>
@@ -476,7 +476,7 @@ StackTrace:
 		<value>Benutzerkonto ist nicht mehr in Verwendung: Sammelprozess fortgesetzt!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
-		<value>Benutzerkonto ist in Verwendung: ASF wird den Sammelprozess fortsetzen, wenn es wieder möglich ist...</value>
+		<value>Benutzerkonto ist in Verwendung: ASF wird den Sammelprozess fortsetzen, sobald diese wieder verfügbar ist...</value>
 	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Verbinde...</value>
@@ -506,7 +506,7 @@ StackTrace:
 		<value>Bitte lesen Sie den Abschnitt zu unseren Datenschutzrichtlinien im Wiki, wenn Sie wissen möchten was ASF im Detail alles macht!</value>
 	</data>
 	<data name="Welcome" xml:space="preserve">
-		<value>Es sieht so aus, als ob Sie das Programm zum ersten Mal gestartet haben, willkommen!</value>
+		<value>Es sieht so aus, als ob Sie das Programm zum ersten Mal gestartet haben. Willkommen!</value>
 	</data>
 	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
 		<value>Ihre angegebene CurrentCulture ist ungültig, ASF wird weiterhin mit dem Standard laufen!</value>

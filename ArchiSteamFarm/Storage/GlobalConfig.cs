@@ -100,9 +100,6 @@ public sealed class GlobalConfig {
 	public const EOptimizationMode DefaultOptimizationMode = EOptimizationMode.MaxPerformance;
 
 	[PublicAPI]
-	public const bool DefaultStatistics = true;
-
-	[PublicAPI]
 	public const string? DefaultSteamMessagePrefix = "/me ";
 
 	[PublicAPI]
@@ -259,9 +256,6 @@ public sealed class GlobalConfig {
 	[JsonProperty(Required = Required.DisallowNull)]
 	public EOptimizationMode OptimizationMode { get; private set; } = DefaultOptimizationMode;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool Statistics { get; private set; } = DefaultStatistics;
-
 	[JsonProperty]
 	[MaxLength(SteamChatMessage.MaxMessagePrefixBytes / SteamChatMessage.ReservedEscapeMessageBytes)]
 	public string? SteamMessagePrefix { get; private set; } = DefaultSteamMessagePrefix;
@@ -302,6 +296,10 @@ public sealed class GlobalConfig {
 	internal bool IsWebProxyPasswordSet { get; private set; }
 
 	internal bool Saving { get; set; }
+
+	// TODO: Pending removal, Statistics property which got changed into RemoteConnection
+	[JsonProperty(Required = Required.DisallowNull)]
+	internal bool Statistics { get; private set; } = true;
 
 	[JsonProperty]
 	internal string? WebProxyPassword {
@@ -398,8 +396,11 @@ public sealed class GlobalConfig {
 	[UsedImplicitly]
 	public bool ShouldSerializeSSteamOwnerID() => !Saving;
 
+	// TODO: Pending removal, Statistics property which got changed into RemoteConnection, we never serialize it after update
+#pragma warning disable CA1822 // We can't mark it as static
 	[UsedImplicitly]
-	public bool ShouldSerializeStatistics() => !Saving || (Statistics != DefaultStatistics);
+	public bool ShouldSerializeStatistics() => false;
+#pragma warning restore CA1822 // We can't mark it as static
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSteamMessagePrefix() => !Saving || (SteamMessagePrefix != DefaultSteamMessagePrefix);

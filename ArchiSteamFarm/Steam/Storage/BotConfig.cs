@@ -35,6 +35,7 @@ using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration;
+using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -79,6 +80,9 @@ public sealed class BotConfig {
 
 	[PublicAPI]
 	public const ERedeemingPreferences DefaultRedeemingPreferences = ERedeemingPreferences.None;
+
+	[PublicAPI]
+	public const ERemoteCommunication DefaultRemoteCommunication = ERemoteCommunication.All;
 
 	[PublicAPI]
 	public const bool DefaultSendOnFarmingFinished = false;
@@ -194,6 +198,9 @@ public sealed class BotConfig {
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	public ERedeemingPreferences RedeemingPreferences { get; private set; } = DefaultRedeemingPreferences;
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	public ERemoteCommunication RemoteCommunication { get; private set; } = DefaultRemoteCommunication;
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	public bool SendOnFarmingFinished { get; private set; } = DefaultSendOnFarmingFinished;
@@ -350,6 +357,9 @@ public sealed class BotConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeRedeemingPreferences() => !Saving || (RedeemingPreferences != DefaultRedeemingPreferences);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeRemoteCommunication() => !Saving || (RemoteCommunication != DefaultRemoteCommunication);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSendOnFarmingFinished() => !Saving || (SendOnFarmingFinished != DefaultSendOnFarmingFinished);
@@ -594,7 +604,18 @@ public sealed class BotConfig {
 				break;
 		}
 
+		// TODO: Pending removal, Statistics -> RemoteCommunication migration
+		if ((ASF.GlobalConfig?.Statistics == false) && (botConfig.RemoteCommunication == DefaultRemoteCommunication)) {
+			botConfig.RemoteCommunication = ERemoteCommunication.None;
+		}
+
 		if (!Program.ConfigMigrate) {
+			// TODO: Pending removal, warning for people that disabled config migrate, they need to migrate themselves
+			if (ASF.GlobalConfig?.Statistics == false) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Program.ConfigMigrate)));
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(GlobalConfig.Statistics), nameof(RemoteCommunication)));
+			}
+
 			return (botConfig, null);
 		}
 
@@ -660,6 +681,14 @@ public sealed class BotConfig {
 		KeepMissingGames = 4,
 		AssumeWalletKeyOnBadActivationCode = 8,
 		All = Forwarding | Distributing | KeepMissingGames | AssumeWalletKeyOnBadActivationCode
+	}
+
+	[Flags]
+	public enum ERemoteCommunication : byte {
+		None = 0,
+		SteamGroup = 1,
+		PublicListing = 2,
+		All = SteamGroup | PublicListing
 	}
 
 	[Flags]

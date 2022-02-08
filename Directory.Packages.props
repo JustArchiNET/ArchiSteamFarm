@@ -3,9 +3,9 @@
 		<PackageVersion Include="AngleSharp.XPath" Version="1.1.7" />
 		<PackageVersion Include="ConfigureAwaitChecker.Analyzer" Version="5.0.0" />
 		<PackageVersion Include="CryptSharpStandard" Version="1.0.0" />
-		<PackageVersion Include="Humanizer" Version="2.13.14" />
+		<PackageVersion Include="Humanizer" Version="2.14.1" />
 		<PackageVersion Include="JetBrains.Annotations" Version="2021.3.0" />
-		<PackageVersion Include="Markdig.Signed" Version="0.26.0" />
+		<PackageVersion Include="Markdig.Signed" Version="0.27.0" />
 		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
 		<PackageVersion Include="MSTest.TestAdapter" Version="2.2.8" />
 		<PackageVersion Include="MSTest.TestFramework" Version="2.2.8" />
@@ -18,7 +18,7 @@
 		<PackageVersion Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.2.3" />
 		<PackageVersion Include="System.Composition" Version="6.0.0" />
 		<PackageVersion Include="System.Composition.AttributedModel" Version="6.0.0" />
-		<PackageVersion Include="System.Linq.Async" Version="5.1.0" />
+		<PackageVersion Include="System.Linq.Async" Version="6.0.1" />
 		<PackageVersion Include="zxcvbn-core" Version="7.0.92" />
 	</ItemGroup>
 

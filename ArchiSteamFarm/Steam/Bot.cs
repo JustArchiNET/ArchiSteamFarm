@@ -154,7 +154,6 @@ public sealed class Bot : IAsyncDisposable {
 	private readonly SemaphoreSlim MessagingSemaphore = new(1, 1);
 	private readonly ConcurrentDictionary<UserNotificationsCallback.EUserNotification, uint> PastNotifications = new();
 	private readonly SemaphoreSlim SendCompleteTypesSemaphore = new(1, 1);
-	private readonly Statistics? Statistics;
 	private readonly SteamClient SteamClient;
 	private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new();
 	private readonly SteamUser SteamUser;
@@ -250,6 +249,7 @@ public sealed class Bot : IAsyncDisposable {
 #pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 
 	private bool ReconnectOnUserInitiated;
+	private RemoteCommunication? RemoteCommunication;
 	private bool SendCompleteTypesScheduled;
 
 #pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
@@ -339,10 +339,6 @@ public sealed class Bot : IAsyncDisposable {
 		Commands = new Commands(this);
 		Trading = new Trading(this);
 
-		if (!Debugging.IsDebugBuild && (ASF.GlobalConfig?.Statistics ?? GlobalConfig.DefaultStatistics)) {
-			Statistics = new Statistics(this);
-		}
-
 		HeartBeatTimer = new Timer(
 			HeartBeat,
 			null,
@@ -383,8 +379,8 @@ public sealed class Bot : IAsyncDisposable {
 			await SendItemsTimer.DisposeAsync().ConfigureAwait(false);
 		}
 
-		if (Statistics != null) {
-			await Statistics.DisposeAsync().ConfigureAwait(false);
+		if (RemoteCommunication != null) {
+			await RemoteCommunication.DisposeAsync().ConfigureAwait(false);
 		}
 
 		if (SteamSaleEvent != null) {
@@ -755,27 +751,6 @@ public sealed class Bot : IAsyncDisposable {
 		}
 
 		return await ArchiWebHandler.GetTradeHoldDurationForTrade(tradeID).ConfigureAwait(false);
-	}
-
-	[PublicAPI]
-	[Obsolete($"Use {nameof(GetAccess)} instead (if you still need it), this one will be removed soon.", true)]
-	public bool HasAccess(ulong steamID, BotConfig.EAccess access) {
-		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
-		if ((access == BotConfig.EAccess.None) || !Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(BotConfig.EAccess));
-		}
-
-		if (ASF.IsOwner(steamID)) {
-			return true;
-		}
-
-		return access switch {
-			BotConfig.EAccess.FamilySharing when SteamFamilySharingIDs.Contains(steamID) => true,
-			_ => BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess realPermission) && (realPermission >= access)
-		};
 	}
 
 	[PublicAPI]
@@ -1962,8 +1937,8 @@ public sealed class Bot : IAsyncDisposable {
 
 			HeartBeatFailures = 0;
 
-			if (Statistics != null) {
-				Utilities.InBackground(Statistics.OnHeartBeat);
+			if (RemoteCommunication != null) {
+				Utilities.InBackground(RemoteCommunication.OnHeartBeat);
 			}
 		} catch (Exception e) {
 			ArchiLogger.LogGenericDebuggingException(e);
@@ -2110,6 +2085,16 @@ public sealed class Bot : IAsyncDisposable {
 
 		if (BotConfig.AutoSteamSaleEvent) {
 			SteamSaleEvent = new SteamSaleEvent(this);
+		}
+
+		if (RemoteCommunication != null) {
+			await RemoteCommunication.DisposeAsync().ConfigureAwait(false);
+
+			RemoteCommunication = null;
+		}
+
+		if (!Debugging.IsDebugBuild && (BotConfig.RemoteCommunication > BotConfig.ERemoteCommunication.None)) {
+			RemoteCommunication = new RemoteCommunication(this);
 		}
 
 		await PluginsCore.OnBotInitModules(this, BotConfig.AdditionalProperties).ConfigureAwait(false);
@@ -2866,8 +2851,8 @@ public sealed class Bot : IAsyncDisposable {
 
 				Utilities.InBackground(InitializeFamilySharing);
 
-				if (Statistics != null) {
-					Utilities.InBackground(Statistics.OnLoggedOn);
+				if (RemoteCommunication != null) {
+					Utilities.InBackground(RemoteCommunication.OnLoggedOn);
 				}
 
 				if (BotConfig.OnlineStatus != EPersonaState.Offline) {
@@ -3042,8 +3027,8 @@ public sealed class Bot : IAsyncDisposable {
 		AvatarHash = avatarHash;
 		Nickname = callback.Name;
 
-		if (Statistics != null) {
-			Utilities.InBackground(() => Statistics.OnPersonaState(callback.Name, avatarHash));
+		if (RemoteCommunication != null) {
+			Utilities.InBackground(() => RemoteCommunication.OnPersonaState(callback.Name, avatarHash));
 		}
 	}
 
@@ -3288,7 +3273,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async Task ResetGamesPlayed() {
-		if (CardsFarmer.NowFarming) {
+		if (!IsConnectedAndLoggedOn || CardsFarmer.NowFarming) {
 			return;
 		}
 
@@ -3300,8 +3285,22 @@ public sealed class Bot : IAsyncDisposable {
 			// This function might be executed before PlayingSessionStateCallback/SharedLibraryLockStatusCallback, ensure proper delay in this case
 			await Task.Delay(2000).ConfigureAwait(false);
 
-			if (CardsFarmer.NowFarming || !IsPlayingPossible) {
+			if (!IsConnectedAndLoggedOn || CardsFarmer.NowFarming || !IsPlayingPossible) {
 				return;
+			}
+
+			if (PlayingWasBlocked) {
+				byte minFarmingDelayAfterBlock = ASF.GlobalConfig?.MinFarmingDelayAfterBlock ?? GlobalConfig.DefaultMinFarmingDelayAfterBlock;
+
+				if (minFarmingDelayAfterBlock > 0) {
+					for (byte i = 0; (i < minFarmingDelayAfterBlock) && IsConnectedAndLoggedOn && !CardsFarmer.NowFarming && IsPlayingPossible && PlayingWasBlocked; i++) {
+						await Task.Delay(1000).ConfigureAwait(false);
+					}
+
+					if (!IsConnectedAndLoggedOn || CardsFarmer.NowFarming || !IsPlayingPossible) {
+						return;
+					}
+				}
 			}
 
 			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotIdlingSelectedGames, nameof(BotConfig.GamesPlayedWhileIdle), string.Join(", ", BotConfig.GamesPlayedWhileIdle)));

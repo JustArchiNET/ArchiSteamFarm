@@ -94,48 +94,6 @@ internal sealed class BotDatabase : SerializableFile {
 	[JsonProperty(PropertyName = $"_{nameof(MobileAuthenticator)}")]
 	private MobileAuthenticator? BackingMobileAuthenticator;
 
-	private bool SaveNeededDueToMigration;
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	[Obsolete("Available for limited time and only to migrate existing databases")]
-	private ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs {
-		set {
-			if (TradingBlacklistSteamIDs.AddRange(value) && string.IsNullOrEmpty(FilePath)) {
-				SaveNeededDueToMigration = true;
-			}
-		}
-	}
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	[Obsolete("Available for limited time and only to migrate existing databases")]
-	private ConcurrentHashSet<uint> IdlingBlacklistedAppIDs {
-		set {
-			if (FarmingBlacklistAppIDs.AddRange(value) && string.IsNullOrEmpty(FilePath)) {
-				SaveNeededDueToMigration = true;
-			}
-		}
-	}
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	[Obsolete("Available for limited time and only to migrate existing databases")]
-	private ConcurrentHashSet<uint> IdlingPriorityAppIDs {
-		set {
-			if (FarmingPriorityQueueAppIDs.AddRange(value) && string.IsNullOrEmpty(FilePath)) {
-				SaveNeededDueToMigration = true;
-			}
-		}
-	}
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	[Obsolete("Available for limited time and only to migrate existing databases")]
-	private ConcurrentHashSet<uint> MatchActivelyBlacklistedAppIDs {
-		set {
-			if (MatchActivelyBlacklistAppIDs.AddRange(value) && string.IsNullOrEmpty(FilePath)) {
-				SaveNeededDueToMigration = true;
-			}
-		}
-	}
-
 	private BotDatabase(string filePath) {
 		if (string.IsNullOrEmpty(filePath)) {
 			throw new ArgumentNullException(nameof(filePath));
@@ -242,12 +200,6 @@ internal sealed class BotDatabase : SerializableFile {
 		}
 
 		botDatabase.FilePath = filePath;
-
-		if (botDatabase.SaveNeededDueToMigration) {
-			botDatabase.SaveNeededDueToMigration = false;
-
-			Utilities.InBackground(botDatabase.Save);
-		}
 
 		return botDatabase;
 	}
