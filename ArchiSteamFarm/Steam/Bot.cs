@@ -3273,7 +3273,7 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private async Task ResetGamesPlayed() {
-		if (CardsFarmer.NowFarming) {
+		if (!IsConnectedAndLoggedOn || CardsFarmer.NowFarming) {
 			return;
 		}
 
@@ -3285,8 +3285,22 @@ public sealed class Bot : IAsyncDisposable {
 			// This function might be executed before PlayingSessionStateCallback/SharedLibraryLockStatusCallback, ensure proper delay in this case
 			await Task.Delay(2000).ConfigureAwait(false);
 
-			if (CardsFarmer.NowFarming || !IsPlayingPossible) {
+			if (!IsConnectedAndLoggedOn || CardsFarmer.NowFarming || !IsPlayingPossible) {
 				return;
+			}
+
+			if (PlayingWasBlocked) {
+				byte minFarmingDelayAfterBlock = ASF.GlobalConfig?.MinFarmingDelayAfterBlock ?? GlobalConfig.DefaultMinFarmingDelayAfterBlock;
+
+				if (minFarmingDelayAfterBlock > 0) {
+					for (byte i = 0; (i < minFarmingDelayAfterBlock) && IsConnectedAndLoggedOn && !CardsFarmer.NowFarming && IsPlayingPossible && PlayingWasBlocked; i++) {
+						await Task.Delay(1000).ConfigureAwait(false);
+					}
+
+					if (!IsConnectedAndLoggedOn || CardsFarmer.NowFarming || !IsPlayingPossible) {
+						return;
+					}
+				}
 			}
 
 			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotIdlingSelectedGames, nameof(BotConfig.GamesPlayedWhileIdle), string.Join(", ", BotConfig.GamesPlayedWhileIdle)));
