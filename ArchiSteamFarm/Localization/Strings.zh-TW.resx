@@ -190,7 +190,7 @@
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
-		<value>請輸入你的 Steam Guard 行動驗證器上的兩步驟驗證代碼： </value>
+		<value>請輸入你的 Steam Guard 行動驗證器上的雙重驗證代碼： </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
@@ -341,7 +341,7 @@
 		<value>已成功匯入行動驗證器！</value>
 	</data>
 	<data name="BotAuthenticatorToken" xml:space="preserve">
-		<value>兩步驟驗證權杖：{0}</value>
+		<value>雙重驗證權杖：{0}</value>
 		<comment>{0} will be replaced by generated 2FA token (string)</comment>
 	</data>
 	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
@@ -369,7 +369,7 @@
 		<value>這個 Bot 將不會啟動，因為它在設定檔中被停用！</value>
 	</data>
 	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-		<value>已連續收到 {0} 次 TwoFactorCodeMismatch 錯誤訊息。你的兩步驟驗證憑證可能已失效，或者時間不同步，正在中止！</value>
+		<value>已連續收到 {0} 次 TwoFactorCodeMismatch 錯誤訊息。你的雙重驗證憑證可能已失效，或者時間不同步，正在中止！</value>
 		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
 	</data>
 	<data name="BotLoggedOff" xml:space="preserve">
@@ -399,7 +399,7 @@
 		<value>你無法對自己發出交易請求！</value>
 	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
-		<value>這個 Bot 並未啟用 ASF 兩步驟驗證！您是否忘記將兩步驟驗證導入至 ASF？</value>
+		<value>這個 Bot 並未啟用 ASF 雙重驗證！您是否忘記將雙重驗證導入至 ASF？</value>
 	</data>
 	<data name="BotNotConnected" xml:space="preserve">
 		<value>此 Bot 尚未連線！</value>

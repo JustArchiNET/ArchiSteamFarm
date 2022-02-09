@@ -63,81 +63,81 @@
 		</value>
 	</resheader>
 	<data name="PluginDisabledMissingBuildToken" xml:space="preserve">
-		<value>{0} foi desativado devido à falta de um token de compilação</value>
+		<value>O {0} foi desativado devido a um token de compilação ausente</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
 	<data name="PluginDisabledInConfig" xml:space="preserve">
-		<value>{0} está desativado de acordo com sua configuração. Se você gostaria de ajudar o SteamDB no envio de dados, por favor, confira nosso wiki.</value>
+		<value>O {0} está desativado de acordo com a sua configuração. Caso deseje ajudar o SteamDB com o envio de informações, dê uma olhada na nossa wiki.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
 	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} foi inicializado com sucesso, obrigado antecipadamente pela sua ajuda. O primeiro envio ocorrerá em aproximadamente {1} a partir de agora.</value>
+		<value>O {0} foi inicializado com sucesso, agradecemos a sua ajuda. O primeiro envio ocorrerá em aproximadamente {1}.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
 	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
-		<value>{0} não pôde ser carregado, uma instância nova será inicializada...</value>
+		<value>O {0} não pôde ser carregado, uma instância nova será inicializada...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
 	</data>
 	<data name="BotNoAppsToRefresh" xml:space="preserve">
-		<value>Não há aplicativos que necessitem de ser atualizados nesta instância de bot.</value>
+		<value>Não há aplicativos que exijam atualizações na instância atual.</value>
 	</data>
 	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
-		<value>Recuperando um total de {0} tokens de acesso a aplicativos...</value>
+		<value>Recuperando um total de {0} tokens de acesso para aplicativos...</value>
 		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
 	</data>
 	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
-		<value>Recuperando {0} tokens de acesso a aplicativos...</value>
+		<value>Recuperando {0} tokens...</value>
 		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
-		<value>Concluímos a recuperação de {0} tokens de acesso ao aplicativo.</value>
+		<value>Recuperamos {0} tokens.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
-		<value>Obtivemos um total de {0} tokens de acesso aos aplicativos.</value>
+		<value>Recuperamos um total de {0} tokens de acesso.</value>
 		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
 	</data>
 	<data name="BotRetrievingTotalDepots" xml:space="preserve">
-		<value>Recuperando todos os depósitos por um total de {0} apps...</value>
+		<value>Recuperando depots para todos os {0} aplicativos...</value>
 		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
 	</data>
 	<data name="BotRetrievingAppInfos" xml:space="preserve">
-		<value>Recuperando {0} informações de aplicativos...</value>
+		<value>Recuperando informações para {0} aplicativos...</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
-		<value>Concluímos a recuperação de {0} informações de aplicativo.</value>
+		<value>Recuperamos informações para {0} aplicativos.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
 	<data name="BotRetrievingDepotKeys" xml:space="preserve">
-		<value>Recuperando {0} chaves de depósito...</value>
+		<value>Recuperando {0} códigos de depots...</value>
 		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
-		<value>Terminamos de recuperar {0} chaves de depósito.</value>
+		<value>Recuperamos códigos para {0} depots.</value>
 		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
-		<value>Terminamos de recuperar todas as chaves de depósito para um total de {0} apps.</value>
+		<value>Recuperamos códigos de acesso para {0} aplicativos.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
 	</data>
 	<data name="SubmissionNoNewData" xml:space="preserve">
-		<value>Não há novos dados para enviar, tudo está atualizado.</value>
+		<value>Não há novos dados a serem enviados. Tudo está atualizado.</value>
 	</data>
 	<data name="SubmissionNoContributorSet" xml:space="preserve">
-		<value>Não foi possível enviar os dados porque não há um conjunto SteamID válido que possamos classificar como colaborador. Considere configurar a propriedade {0}.</value>
+		<value>Não foi possível enviar os dados porque não conseguimos identificar um ID Steam válido para definir como colaborador. Considere configurar a propriedade "{0}".</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
 	</data>
 	<data name="SubmissionInProgress" xml:space="preserve">
-		<value>Enviando um total de apps/pacotes/pacotes registrados: {0}/{1}/{2}...</value>
+		<value>Enviando um total de {0} aplicativos, {1} pacotes e {2} depots registrados...</value>
 		<comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
 	</data>
 	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
-		<value>O envio falhou devido a muitas solicitações enviadas, tentaremos novamente em aproximadamente {0} a partir de agora.</value>
+		<value>O envio falhou porque muitas solicitações foram enviadas pelo cliente. Tentaremos novamente em aproximadamente {0}.</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
 	</data>
 	<data name="SubmissionSuccessful" xml:space="preserve">
-		<value>Os dados foram enviados com sucesso. O servidor registrou um total de novos aplicativos/pacotes/depósitos: {0} ({1} verificado)/{2} ({3} verificado)/{4} ({5} verificado).</value>
+		<value>Os dados foram enviados com sucesso. O servidor registrou um total de {0} aplicativos ({1} verificados), {2} pacotes ({3} verificados) e {4} depots ({5} verificados).</value>
 		<comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
 	</data>
 	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
@@ -157,24 +157,24 @@
 		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
-		<value>Novos depósitos: {0}</value>
+		<value>Novos depots: {0}</value>
 		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
-		<value>Depósitos verificados: {0}</value>
+		<value>Depots verificados: {0}</value>
 		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="PluginSecretListInitialized" xml:space="preserve">
-		<value>{0} inicializado, o plugin não resolverá nenhum desses: {1}.</value>
+		<value>{0} inicializado, o plugin ignorará os seguintes pacotes: {1}.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="LoadingGlobalCache" xml:space="preserve">
-		<value>Carregando cache STD global...</value>
+		<value>Carregando cache global do STD...</value>
 	</data>
 	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
-		<value>Validando integridade do cache STD global...</value>
+		<value>Validando integridade do cache global do STD...</value>
 	</data>
 	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
-		<value>Falha ao verificar a integridade do cache STD global. Isso sugere uma potencial corrupção de arquivo/memória, uma instância nova será inicializada em vez disso.</value>
+		<value>Falha ao verificar a integridade do cache global do STD. Isto pode indicar uma possível corrupção de arquivo/memória, uma nova instância será inicializada.</value>
 	</data>
 </root>
