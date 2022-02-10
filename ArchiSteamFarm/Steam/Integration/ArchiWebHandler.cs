@@ -20,7 +20,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
@@ -66,8 +65,6 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public static Uri SteamStoreURL => new("https://store.steampowered.com");
-
-	private static readonly ConcurrentDictionary<uint, byte> CachedCardCountsForGame = new();
 
 	private static ushort WebLimiterDelay => ASF.GlobalConfig?.WebLimiterDelay ?? GlobalConfig.DefaultWebLimiterDelay;
 
@@ -1705,7 +1702,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(appID));
 		}
 
-		if (CachedCardCountsForGame.TryGetValue(appID, out byte result)) {
+		if (ASF.GlobalDatabase?.CardCountsPerGame.TryGetValue(appID, out byte result) == true) {
 			return result;
 		}
 
@@ -1727,7 +1724,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return 0;
 		}
 
-		CachedCardCountsForGame.TryAdd(appID, result);
+		ASF.GlobalDatabase?.CardCountsPerGame.TryAdd(appID, result);
 
 		return result;
 	}

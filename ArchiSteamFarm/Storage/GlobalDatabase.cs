@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
@@ -47,6 +48,9 @@ public sealed class GlobalDatabase : SerializableFile {
 	[JsonIgnore]
 	[PublicAPI]
 	public IReadOnlyDictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)> PackagesDataReadOnly => PackagesData;
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	internal readonly ObservableConcurrentDictionary<uint, byte> CardCountsPerGame = new();
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly InMemoryServerListProvider ServerListProvider = new();
@@ -107,7 +111,10 @@ public sealed class GlobalDatabase : SerializableFile {
 	}
 
 	[JsonConstructor]
-	private GlobalDatabase() => ServerListProvider.ServerListUpdated += OnObjectModified;
+	private GlobalDatabase() {
+		CardCountsPerGame.OnModified += OnObjectModified;
+		ServerListProvider.ServerListUpdated += OnObjectModified;
+	}
 
 	[PublicAPI]
 	public void DeleteFromJsonStorage(string key) {
@@ -160,6 +167,9 @@ public sealed class GlobalDatabase : SerializableFile {
 	public bool ShouldSerializeBackingLastChangeNumber() => LastChangeNumber != 0;
 
 	[UsedImplicitly]
+	public bool ShouldSerializeCardCountsPerGame() => !CardCountsPerGame.IsEmpty;
+
+	[UsedImplicitly]
 	public bool ShouldSerializeKeyValueJsonStorage() => !KeyValueJsonStorage.IsEmpty;
 
 	[UsedImplicitly]
@@ -174,6 +184,7 @@ public sealed class GlobalDatabase : SerializableFile {
 	protected override void Dispose(bool disposing) {
 		if (disposing) {
 			// Events we registered
+			CardCountsPerGame.OnModified -= OnObjectModified;
 			ServerListProvider.ServerListUpdated -= OnObjectModified;
 
 			// Those are objects that are always being created if constructor doesn't throw exception
