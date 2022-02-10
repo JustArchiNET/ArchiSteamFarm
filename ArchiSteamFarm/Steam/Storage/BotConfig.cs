@@ -120,6 +120,9 @@ public sealed class BotConfig {
 	[PublicAPI]
 	public const ArchiHandler.EUserInterfaceMode DefaultUserInterfaceMode = ArchiHandler.EUserInterfaceMode.Default;
 
+	[PublicAPI]
+	public const bool DefaultVRMode = false;
+
 	internal const byte SteamParentalCodeLength = 4;
 	internal const byte SteamTradeTokenLength = 8;
 
@@ -273,6 +276,9 @@ public sealed class BotConfig {
 	[JsonProperty(Required = Required.DisallowNull)]
 	public ArchiHandler.EUserInterfaceMode UserInterfaceMode { get; private set; } = DefaultUserInterfaceMode;
 
+	[JsonProperty(Required = Required.DisallowNull)]
+	public bool VRMode { get; private set; } = DefaultVRMode;
+
 	[JsonExtensionData]
 	internal Dictionary<string, JToken>? AdditionalProperties {
 		get;
@@ -405,6 +411,9 @@ public sealed class BotConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeUserInterfaceMode() => !Saving || (UserInterfaceMode != DefaultUserInterfaceMode);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeVRMode() => !Saving || (VRMode != DefaultVRMode);
 
 	[PublicAPI]
 	public static async Task<bool> Write(string filePath, BotConfig botConfig) {
