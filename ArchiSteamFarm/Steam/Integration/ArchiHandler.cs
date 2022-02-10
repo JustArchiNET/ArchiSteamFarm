@@ -730,6 +730,19 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	internal void SetPersonaStateFlags(global::SteamKit2.EPersonaStateFlag flags){
+
+		if (!Enum.IsDefined(flags)) {
+			throw new InvalidEnumArgumentException(nameof(global::SteamKit2.EPersonaStateFlag ), (int) flags, typeof(EUserInterfaceMode));
+		}
+
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return;
+		}
+
 		ClientMsgProtobuf<CMsgClientChangeStatus> request = new(EMsg.ClientChangeStatus) {
 			Body = {
 				persona_state_flags = (uint) flags
