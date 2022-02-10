@@ -1641,6 +1641,18 @@ public sealed class Bot : IAsyncDisposable {
 		SteamFriends.RequestFriendInfo(SteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
 	}
 
+	internal void ResetPersonaState() {
+		if (BotConfig.OnlineStatus == EPersonaState.Offline) {
+			return;
+		}
+
+		SteamFriends.SetPersonaState(BotConfig.OnlineStatus);
+
+		if (BotConfig.OnlineFlags > 0) {
+			ArchiHandler.SetPersonaState(BotConfig.OnlineStatus, BotConfig.OnlineFlags);
+		}
+	}
+
 	internal async Task<bool> SendTypingMessage(ulong steamID) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -2855,13 +2867,7 @@ public sealed class Bot : IAsyncDisposable {
 					Utilities.InBackground(RemoteCommunication.OnLoggedOn);
 				}
 
-				if (BotConfig.OnlineStatus != EPersonaState.Offline) {
-					SteamFriends.SetPersonaState(BotConfig.OnlineStatus);
-				}
-
-				if (BotConfig.OnlineFlags > 0) {
-					ArchiHandler.SetPersonaStateFlags(BotConfig.OnlineFlags);
-				}
+				ResetPersonaState();
 
 				if (BotConfig.SteamMasterClanID != 0) {
 					Utilities.InBackground(

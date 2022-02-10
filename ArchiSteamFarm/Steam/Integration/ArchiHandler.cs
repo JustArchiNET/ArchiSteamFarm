@@ -757,7 +757,11 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		Client.Send(request);
 	}
 
-	internal void SetPersonaStateFlags(EPersonaStateFlag flags) {
+	internal void SetPersonaState(EPersonaState state, EPersonaStateFlag flags) {
+		if (!Enum.IsDefined(state)) {
+			throw new InvalidEnumArgumentException(nameof(state), (int) state, typeof(EPersonaState));
+		}
+
 		if (!Enum.IsDefined(flags)) {
 			throw new InvalidEnumArgumentException(nameof(flags), (int) flags, typeof(EPersonaStateFlag));
 		}
@@ -772,6 +776,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 		ClientMsgProtobuf<CMsgClientChangeStatus> request = new(EMsg.ClientChangeStatus) {
 			Body = {
+				persona_state = (uint) state,
 				persona_state_flags = (uint) flags
 			}
 		};

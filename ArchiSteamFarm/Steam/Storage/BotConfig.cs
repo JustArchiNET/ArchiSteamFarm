@@ -475,6 +475,10 @@ public sealed class BotConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
 		}
 
+		if (!Enum.IsDefined(OnlineFlags)) {
+			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OnlineFlags), OnlineFlags));
+		}
+
 		if (!Enum.IsDefined(OnlineStatus)) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OnlineStatus), OnlineStatus));
 		}

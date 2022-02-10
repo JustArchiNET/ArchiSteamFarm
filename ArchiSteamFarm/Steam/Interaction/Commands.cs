@@ -1877,6 +1877,9 @@ public sealed class Commands {
 
 		Bot.SteamFriends.SetPersonaName(nickname);
 
+		// Nickname change affects the current persona state, reset it back to wanted one
+		Bot.ResetPersonaState();
+
 		return FormatBotResponse(Strings.Done);
 	}
 
