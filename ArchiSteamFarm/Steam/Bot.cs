@@ -3373,21 +3373,42 @@ public sealed class Bot : IAsyncDisposable {
 				}
 
 				Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(inventory);
+
+				// Filter appIDs that can't possibly be completed due to having less cards than smallest badges possible
 				appIDs.IntersectWith(inventorySets.Where(static kv => kv.Value.Count >= MinCardsPerBadge).Select(static kv => kv.Key.RealAppID));
 
 				if (appIDs.Count == 0) {
 					return;
 				}
 
-				Dictionary<uint, byte>? cardCountPerAppID = await LoadCardsPerSet(appIDs).ConfigureAwait(false);
+				Dictionary<uint, byte>? cardsCountPerAppID = await LoadCardsPerSet(appIDs).ConfigureAwait(false);
 
-				if ((cardCountPerAppID == null) || (cardCountPerAppID.Count == 0)) {
+				if (cardsCountPerAppID == null) {
 					return;
 				}
 
-				Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = inventorySets.Where(kv => appIDs.Contains(kv.Key.RealAppID)).ToDictionary(static kv => kv.Key, kv => (kv.Value[0], cardCountPerAppID[kv.Key.RealAppID]));
+				Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = new();
 
-				if (itemsToTakePerInventorySet.Values.All(static value => value.Sets == 0)) {
+				foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key, List<uint>? amounts) in inventorySets.Where(set => appIDs.Contains(set.Key.RealAppID))) {
+					if (!cardsCountPerAppID.TryGetValue(key.RealAppID, out byte cardsCount) || (cardsCount == 0)) {
+						throw new InvalidOperationException(nameof(cardsCount));
+					}
+
+					if (amounts.Count < cardsCount) {
+						// Filter results that can't be completed due to not having enough cards available (now that we know how much exactly)
+						continue;
+					}
+
+					uint minimumOwnedAmount = amounts[0];
+
+					if (minimumOwnedAmount == 0) {
+						throw new InvalidOperationException(nameof(minimumOwnedAmount));
+					}
+
+					itemsToTakePerInventorySet[key] = (minimumOwnedAmount, cardsCount);
+				}
+
+				if (itemsToTakePerInventorySet.Count == 0) {
 					return;
 				}
 
