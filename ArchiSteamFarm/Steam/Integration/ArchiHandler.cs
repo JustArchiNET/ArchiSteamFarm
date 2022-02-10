@@ -746,9 +746,19 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			return;
 		}
 
+		if(userInterfaceMode == EUserInterfaceMode.VR){
+			ClientMsgProtobuf<CMsgClientChangeStatus> requestChangeStatus = new(EMsg.ClientChangeStatus) {
+				Body = {
+					persona_state_flags = 2048
+				}
+			};
+
+			Client.Send(requestChangeStatus);
+		}
+
 		ClientMsgProtobuf<CMsgClientUIMode> request = new(EMsg.ClientCurrentUIMode) {
 			Body = {
-				uimode = (uint) userInterfaceMode,
+				uimode = userInterfaceMode != EUserInterfaceMode.VR ? (uint) userInterfaceMode : 0,
 				chat_mode = chatMode
 			}
 		};
@@ -760,7 +770,8 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	public enum EUserInterfaceMode : byte {
 		Default = 0,
 		BigPicture = 1,
-		Mobile = 2
+		Mobile = 2,
+		VR = 3
 	}
 
 	internal sealed class PlayingSessionStateCallback : CallbackMsg {
