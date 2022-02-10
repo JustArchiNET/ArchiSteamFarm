@@ -762,7 +762,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			throw new InvalidEnumArgumentException(nameof(state), (int) state, typeof(EPersonaState));
 		}
 
-		if (!Enum.IsDefined(flags)) {
+		if (flags < 0) {
 			throw new InvalidEnumArgumentException(nameof(flags), (int) flags, typeof(EPersonaStateFlag));
 		}
 

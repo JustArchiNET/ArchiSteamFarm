@@ -475,7 +475,7 @@ public sealed class BotConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
 		}
 
-		if (!Enum.IsDefined(OnlineFlags)) {
+		if (OnlineFlags < 0) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OnlineFlags), OnlineFlags));
 		}
 
