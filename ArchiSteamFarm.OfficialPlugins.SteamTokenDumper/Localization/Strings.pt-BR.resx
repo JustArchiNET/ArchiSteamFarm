@@ -102,11 +102,11 @@
 		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
 	</data>
 	<data name="BotRetrievingAppInfos" xml:space="preserve">
-		<value>Recuperando informações para {0} aplicativos...</value>
+		<value>Recuperando {0} informações de aplicativos...</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
-		<value>Recuperamos informações para {0} aplicativos.</value>
+		<value>Recuperamos um total de {0} informações de aplicativos.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
 	<data name="BotRetrievingDepotKeys" xml:space="preserve">
