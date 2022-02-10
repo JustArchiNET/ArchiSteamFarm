@@ -2859,16 +2859,7 @@ public sealed class Bot : IAsyncDisposable {
 					SteamFriends.SetPersonaState(BotConfig.OnlineStatus);
 				}
 
-				if (BotConfig.VRMode){
-					ClientMsgProtobuf<global::SteamKit2.Internal.CMsgClientChangeStatus> requestVRMode = new(EMsg.ClientChangeStatus) {
-						Body = {
-							persona_state = (uint) BotConfig.OnlineStatus,
-							persona_state_flags = (uint) global::SteamKit2.EPersonaStateFlag.ClientTypeVR
-						}
-					};
-
-					SteamClient.Send(requestVRMode);
-				}
+				ArchiHandler.SetPersonaStateFlags(BotConfig.PersonaStateFlags);
 				
 				if (BotConfig.SteamMasterClanID != 0) {
 					Utilities.InBackground(
