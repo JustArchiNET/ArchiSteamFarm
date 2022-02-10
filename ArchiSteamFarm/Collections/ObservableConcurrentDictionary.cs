@@ -28,12 +28,15 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Collections;
 
-[PublicAPI]
 public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue> where TKey : notnull {
 	public event EventHandler? OnModified;
 
+	[PublicAPI]
 	public int Count => BackingDictionary.Count;
+
+	[PublicAPI]
 	public bool IsEmpty => BackingDictionary.IsEmpty;
+
 	public bool IsReadOnly => false;
 
 	[JsonProperty(Required = Required.DisallowNull)]
@@ -107,6 +110,7 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 	bool IReadOnlyDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value) => BackingDictionary.TryGetValue(key, out value!);
 	bool IDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value) => BackingDictionary.TryGetValue(key, out value!);
 
+	[PublicAPI]
 	public bool TryAdd(TKey key, TValue value) {
 		if (!BackingDictionary.TryAdd(key, value)) {
 			return false;
@@ -117,5 +121,6 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 		return true;
 	}
 
+	[PublicAPI]
 	public bool TryGetValue(TKey key, out TValue? value) => BackingDictionary.TryGetValue(key, out value);
 }
