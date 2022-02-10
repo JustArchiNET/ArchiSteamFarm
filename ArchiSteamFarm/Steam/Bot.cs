@@ -2859,10 +2859,10 @@ public sealed class Bot : IAsyncDisposable {
 					SteamFriends.SetPersonaState(BotConfig.OnlineStatus);
 				}
 
-				if(BotConfig.OnlineFlags > 0){
+				if (BotConfig.OnlineFlags > 0) {
 					ArchiHandler.SetPersonaStateFlags(BotConfig.OnlineFlags);
 				}
-				
+
 				if (BotConfig.SteamMasterClanID != 0) {
 					Utilities.InBackground(
 						async () => {

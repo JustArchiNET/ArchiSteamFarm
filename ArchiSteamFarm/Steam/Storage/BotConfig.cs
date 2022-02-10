@@ -70,6 +70,9 @@ public sealed class BotConfig {
 	public const byte DefaultHoursUntilCardDrops = 3;
 
 	[PublicAPI]
+	public const EPersonaStateFlag DefaultOnlineFlags = 0;
+
+	[PublicAPI]
 	public const EPersonaState DefaultOnlineStatus = EPersonaState.Online;
 
 	[PublicAPI]
@@ -119,9 +122,6 @@ public sealed class BotConfig {
 
 	[PublicAPI]
 	public const ArchiHandler.EUserInterfaceMode DefaultUserInterfaceMode = ArchiHandler.EUserInterfaceMode.Default;
-
-	[PublicAPI]
-	public const EPersonaStateFlag DefaultOnlineFlags = 0;
 
 	internal const byte SteamParentalCodeLength = 4;
 	internal const byte SteamTradeTokenLength = 8;
@@ -189,6 +189,9 @@ public sealed class BotConfig {
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	public ImmutableHashSet<Asset.EType> MatchableTypes { get; private set; } = DefaultMatchableTypes;
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	public EPersonaStateFlag OnlineFlags { get; private set; } = DefaultOnlineFlags;
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	public EPersonaState OnlineStatus { get; private set; } = DefaultOnlineStatus;
@@ -276,9 +279,6 @@ public sealed class BotConfig {
 	[JsonProperty(Required = Required.DisallowNull)]
 	public ArchiHandler.EUserInterfaceMode UserInterfaceMode { get; private set; } = DefaultUserInterfaceMode;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public EPersonaStateFlag OnlineFlags { get; private set; } = DefaultOnlineFlags;
-
 	[JsonExtensionData]
 	internal Dictionary<string, JToken>? AdditionalProperties {
 		get;
@@ -353,6 +353,9 @@ public sealed class BotConfig {
 	public bool ShouldSerializeMatchableTypes() => !Saving || ((MatchableTypes != DefaultMatchableTypes) && !MatchableTypes.SetEquals(DefaultMatchableTypes));
 
 	[UsedImplicitly]
+	public bool ShouldSerializeOnlineFlags() => !Saving || (OnlineFlags != DefaultOnlineFlags);
+
+	[UsedImplicitly]
 	public bool ShouldSerializeOnlineStatus() => !Saving || (OnlineStatus != DefaultOnlineStatus);
 
 	[UsedImplicitly]
@@ -411,9 +414,6 @@ public sealed class BotConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeUserInterfaceMode() => !Saving || (UserInterfaceMode != DefaultUserInterfaceMode);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeOnlineFlags() => !Saving || (OnlineFlags != DefaultOnlineFlags);
 
 	[PublicAPI]
 	public static async Task<bool> Write(string filePath, BotConfig botConfig) {
