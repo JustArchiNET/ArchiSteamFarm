@@ -121,7 +121,7 @@ public sealed class BotConfig {
 	public const ArchiHandler.EUserInterfaceMode DefaultUserInterfaceMode = ArchiHandler.EUserInterfaceMode.Default;
 
 	[PublicAPI]
-	public const EPersonaStateFlag DefaultPersonaStateFlags = 0;
+	public const EPersonaStateFlag DefaultOnlineFlags = 0;
 
 	internal const byte SteamParentalCodeLength = 4;
 	internal const byte SteamTradeTokenLength = 8;
@@ -277,7 +277,7 @@ public sealed class BotConfig {
 	public ArchiHandler.EUserInterfaceMode UserInterfaceMode { get; private set; } = DefaultUserInterfaceMode;
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	public EPersonaStateFlag PersonaStateFlags { get; private set; } = DefaultPersonaStateFlags;
+	public EPersonaStateFlag OnlineFlags { get; private set; } = DefaultOnlineFlags;
 
 	[JsonExtensionData]
 	internal Dictionary<string, JToken>? AdditionalProperties {
@@ -413,7 +413,7 @@ public sealed class BotConfig {
 	public bool ShouldSerializeUserInterfaceMode() => !Saving || (UserInterfaceMode != DefaultUserInterfaceMode);
 
 	[UsedImplicitly]
-	public bool ShouldSerializePersonaStateFlags() => !Saving || (PersonaStateFlags != DefaultPersonaStateFlags);
+	public bool ShouldSerializeOnlineFlags() => !Saving || (OnlineFlags != DefaultOnlineFlags);
 
 	[PublicAPI]
 	public static async Task<bool> Write(string filePath, BotConfig botConfig) {
