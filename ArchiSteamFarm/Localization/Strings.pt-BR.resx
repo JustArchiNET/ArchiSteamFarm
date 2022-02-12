@@ -105,7 +105,7 @@ StackTrace:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Nenhum bot foi definido. Você esqueceu de configurar seu ASF? Confira o guia de "configuração" no wiki se você estiver confuso.</value>
+		<value>Nenhum bot definido. Você esqueceu de configurar o ASF? Confira o guia "Primeiros passos" na wiki caso esteja com dúvidas.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} é nulo!</value>
@@ -195,7 +195,7 @@ StackTrace:
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Por favor digite o código do Steam Guard que foi enviado para o seu e-mail: </value>
+		<value>Insira o código do Steam Guard recebido por e-mail: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
@@ -692,27 +692,27 @@ Tempo de execução: {1}</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
 	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Sua senha IPC parece muito fraca. Considere escolher uma senha mais forte para melhorar sua segurança. Detalhe: {0}</value>
+		<value>A senha do servidor IPC é muito fraca. Escolha uma senha mais forte para aumentar a segurança. Detalhes: {0}</value>
 		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Sua senha Steam para '{0}' parece ser fraca. Considere escolher uma mais forte para aumentar a segurança. Detalhes: {1}</value>
+		<value>A senha da conta Steam "{0}" é muito fraca. Escolha uma senha mais forte para aumentar a segurança. Detalhes: {0}</value>
 		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Sua chave de criptografia parece ser fraca. Considere escolher uma mais forte para melhorar sua segurança. Detalhe: {0}</value>
+		<value>A chave de criptografia é muito fraca. Escolha uma senha mais forte para aumentar a segurança. Detalhes: {0}</value>
 		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
 	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
-		<value>Sua chave de criptografia é muito curta. É recomendado utilizar uma com no mínimo {0} caracteres.</value>
+		<value>A chave de criptografia é muito curta. Recomendamos usar uma chave que tenha pelo menos {0} bytes (caracteres) de comprimento.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Você está usando a configuração {0} de propriedade {1}, mas você não forneceu uma --cryptkey personalizada. Você deve fornecer uma --cryptkey personalizada para maior segurança.</value>
+		<value>Você está usando a configuração {0} da propriedade {1} sem uma --cryptkey personalizada. Forneça uma --cryptkey personalizada para aumentar a segurança.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
-		<value>Você está utilizando {0} configuração de {1}, mas você não forneceu uma senha de criptografia personalizada. Isto anula totalmente a proteção, porque o Archi Steam Farm é forçado a utilizar sua própria senha (pública). Você deverá fornecer uma senha de criptografia personalizada para utilizar os benefícios de segurança fornecidos por esta configuração.</value>
+		<value>Você está usando a configuração {0} da propriedade {1} sem uma --cryptkey personalizada. O ASF será forçado a usar a chave padrão, que é menos segura e inutiliza a proteção configurada. Forneça uma --cryptkey personalizada para se beneficiar da segurança adicional.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
 	<data name="WarningRunningAsRoot" xml:space="preserve">

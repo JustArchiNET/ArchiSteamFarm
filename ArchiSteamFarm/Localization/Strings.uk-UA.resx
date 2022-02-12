@@ -299,8 +299,14 @@
 		<value>Все ще фармиться: {0}</value>
 		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
+	<data name="StoppedIdling" xml:space="preserve">
+		<value>Зупинено фарм: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StoppedIdlingList" xml:space="preserve">
+		<value>Зупинено фарм: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="UnknownCommand" xml:space="preserve">
 		<value>Невідома команда!</value>
 	</data>
@@ -315,7 +321,9 @@
 		<value>Прийняття подарунку: {0}...</value>
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
-	
+	<data name="BotAccountLimited" xml:space="preserve">
+		<value>Цей акаунт обмежений, фарм буде недоступним доки ви не позбудетесь обмежень!</value>
+	</data>
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID: {0} | Стан: {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
