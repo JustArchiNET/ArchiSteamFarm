@@ -120,13 +120,13 @@ public static class ASF {
 
 		switch (await Sanctions.IsCountryBlacklisted().ConfigureAwait(false)) {
 			case null:
-				ArchiLogger.LogGenericError("Could not verify your IP address, ensure that your network is up and then try again.");
+				ArchiLogger.LogGenericError(Strings.CountryCouldNotBeResolved);
 
 				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 				return false;
 			case true:
-				ArchiLogger.LogGenericError("Your country is blacklisted from using ASF due to international sanctions, contact your country's leaders for more information.");
+				ArchiLogger.LogGenericError(Strings.CountryBlacklisted);
 
 				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 

@@ -1196,5 +1196,17 @@ namespace ArchiSteamFarm.Localization {
                 return ResourceManager.GetString("PatchingFiles", resourceCulture);
             }
         }
+        
+        public static string CountryCouldNotBeResolved {
+            get {
+                return ResourceManager.GetString("CountryCouldNotBeResolved", resourceCulture);
+            }
+        }
+        
+        public static string CountryBlacklisted {
+            get {
+                return ResourceManager.GetString("CountryBlacklisted", resourceCulture);
+            }
+        }
     }
 }

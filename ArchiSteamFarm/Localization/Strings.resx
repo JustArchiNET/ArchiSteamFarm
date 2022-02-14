@@ -736,4 +736,10 @@ Process uptime: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Patching ASF files...</value>
 	</data>
+	<data name="CountryCouldNotBeResolved" xml:space="preserve">
+		<value>Could not verify country of your IP address, ensure that your network is up and then try again.</value>
+	</data>
+	<data name="CountryBlacklisted" xml:space="preserve">
+		<value>Country of your IP address is blacklisted from using ASF due to international sanctions, contact your country's leaders for more information.</value>
+	</data>
 </root>
