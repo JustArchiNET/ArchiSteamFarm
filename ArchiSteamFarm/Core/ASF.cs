@@ -122,9 +122,13 @@ public static class ASF {
 			case null:
 				ArchiLogger.LogGenericError("Could not verify your IP address, ensure that your network is up and then try again.");
 
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+
 				return false;
 			case true:
 				ArchiLogger.LogGenericError("Your country is blacklisted from using ASF due to international sanctions, contact your country's leaders for more information.");
+
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 				return false;
 		}

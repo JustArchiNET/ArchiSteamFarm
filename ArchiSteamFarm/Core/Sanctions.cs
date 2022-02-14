@@ -35,6 +35,7 @@ internal static class Sanctions {
 			return null;
 		}
 
-		return Blacklist.Contains(country);
+		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+		return Blacklist.Contains(country!);
 	}
 }
