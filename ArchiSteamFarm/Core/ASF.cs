@@ -107,7 +107,7 @@ public static class ASF {
 		};
 	}
 
-	internal static async Task Init() {
+	internal static async Task<bool> Init() {
 		if (GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
@@ -117,6 +117,17 @@ public static class ASF {
 		}
 
 		WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
+
+		switch (await Sanctions.IsCountryBlacklisted().ConfigureAwait(false)) {
+			case null:
+				ArchiLogger.LogGenericError("Could not verify your IP address, ensure that your network is up and then try again.");
+
+				return false;
+			case true:
+				ArchiLogger.LogGenericError("Your country is blacklisted from using ASF due to international sanctions, contact your country's leaders for more information.");
+
+				return false;
+		}
 
 		await UpdateAndRestart().ConfigureAwait(false);
 
@@ -145,6 +156,8 @@ public static class ASF {
 		if (Program.ConfigWatch) {
 			InitConfigWatchEvents();
 		}
+
+		return true;
 	}
 
 	internal static bool IsValidBotName(string botName) {

@@ -188,9 +188,7 @@ internal static class Program {
 			return false;
 		}
 
-		await ASF.Init().ConfigureAwait(false);
-
-		return true;
+		return await ASF.Init().ConfigureAwait(false);
 	}
 
 	private static async Task<bool> InitCore(IReadOnlyCollection<string>? args) {
