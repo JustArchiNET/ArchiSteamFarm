@@ -101,7 +101,9 @@
 		<value>{0} е невалиден!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Бота не е настроен. Забравихте ли да проверите конфигурацията на ASF? Следвайте инструкцийте в "wiki" ако срещате трудности.</value>
+	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} е нулев!</value>
 		<comment>{0} will be replaced by object's name</comment>
@@ -189,7 +191,10 @@
 		<value>Моля въведете Вашият 2FA код от Steam authenticator приложението: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Моля, въведете SteamGuard кода, изпратен на Вашият e-mail: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Моля, въведете Вашият Steam login: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -219,38 +224,86 @@
 		<value>Не е намерен бот с името {0}!</value>
 		<comment>{0} will be replaced by bot's name query (string)</comment>
 	</data>
-	
-	
-	
+	<data name="BotStatusOverview" xml:space="preserve">
+		<value>Има {0}/{1} работещи бота, с общо {2} игри ({3} карти) оставащи за "фармене".</value>
+		<comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
+	</data>
+	<data name="BotStatusIdling" xml:space="preserve">
+		<value>Ботът фарми играта: {0} ({1}, {2} оставащи карти) от общо {3} игри ({4} карти) остават за "фармене" (~{5} оставащо време).</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="BotStatusIdlingList" xml:space="preserve">
+		<value>Ботът фарми игрите: {0} от общо {1} игри ({2} карти) остават за "фармене" (~{3} оставащо време).</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
 	<data name="CheckingFirstBadgePage" xml:space="preserve">
 		<value>Проверяване на първата страница със значки...</value>
 	</data>
 	<data name="CheckingOtherBadgePages" xml:space="preserve">
 		<value>Проверяване на други страници със значки...</value>
 	</data>
-	
+	<data name="ChosenFarmingAlgorithm" xml:space="preserve">
+		<value>Избран алгоритъм за фармене: {0}</value>
+		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+	</data>
 	<data name="Done" xml:space="preserve">
 		<value>Готово!</value>
 	</data>
-	
-	
-	
-	
-	
-	
+	<data name="GamesToIdle" xml:space="preserve">
+		<value>Остават общо {0} игри ({1} карти) за "фармене" (~{2} оставащо време)...</value>
+		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinished" xml:space="preserve">
+		<value>Фарменето на карти приключи!</value>
+	</data>
+	<data name="IdlingFinishedForGame" xml:space="preserve">
+		<value>Фарменето на карти завърши: {0} ({1}) след {2} игра!</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinishedForGames" xml:space="preserve">
+		<value>Фарменето на карти завърши за игрите: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="IdlingStatusForGame" xml:space="preserve">
+		<value>Статус на фарменето за {0} ({1}): {2} карти остават</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm</comment>
+	</data>
+	<data name="IdlingStopped" xml:space="preserve">
+		<value>Фарменето е спряно!</value>
+	</data>
 	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
 		<value>Отказване на това желание, тъй като е активирана постоянна пауза!</value>
 	</data>
-	
-	
-	
+	<data name="NothingToIdle" xml:space="preserve">
+		<value>Няма нищо за фармене на този акаунт!</value>
+	</data>
+	<data name="NowIdling" xml:space="preserve">
+		<value>Сега се фарми: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="NowIdlingList" xml:space="preserve">
+		<value>Сега се фарми: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="PlayingNotAvailable" xml:space="preserve">
 		<value>Игрането не е възможно в момента, ще пробваме по-късно!</value>
 	</data>
-	
-	
-	
-	
+	<data name="StillIdling" xml:space="preserve">
+		<value>Все още се фарми: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StillIdlingList" xml:space="preserve">
+		<value>Все още се фарми: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="StoppedIdling" xml:space="preserve">
+		<value>Фарменето прекратено: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StoppedIdlingList" xml:space="preserve">
+		<value>Фарменето прекратено: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="UnknownCommand" xml:space="preserve">
 		<value>Непозната команда!</value>
 	</data>
@@ -265,7 +318,9 @@
 		<value>Приемане на подарък: {0}...</value>
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
-	
+	<data name="BotAccountLimited" xml:space="preserve">
+		<value>Този акаунт е ограничен, фарменето е невъзможен докато ограничението не бъде премахнато!</value>
+	</data>
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID: {0} | Статус: {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -287,10 +342,18 @@
 		<value>2FA Token: {0}</value>
 		<comment>{0} will be replaced by generated 2FA token (string)</comment>
 	</data>
-	
-	
-	
-	
+	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+		<value>Автоматичното фармене е паузирано!</value>
+	</data>
+	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+		<value>Автоматичното фармене е възобновено!</value>
+	</data>
+	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+		<value>Автоматичното фармене е вече паузирано!</value>
+	</data>
+	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+		<value>Автоматичното фармене е вече възобновено!</value>
+	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>Свързан към Steam!</value>
 	</data>
@@ -347,7 +410,10 @@
 		<value>Вече се притежава: {0} | {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
-	
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>Баланс на точките: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
 	<data name="BotRateLimitExceeded" xml:space="preserve">
 		<value>Ограничението надвишено, ще повторим след {0} на "отброяване"...</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
@@ -366,8 +432,12 @@
 	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
 		<value>Премахнат изтекъл ключ за вход!</value>
 	</data>
-	
-	
+	<data name="BotStatusNotIdling" xml:space="preserve">
+		<value>Бота не фарми нищо.</value>
+	</data>
+	<data name="BotStatusLimited" xml:space="preserve">
+		<value>Бота е ограничен и не може да "дропне" карти чрез фармене.</value>
+	</data>
 	<data name="BotStatusConnecting" xml:space="preserve">
 		<value>Ботът се свързва към мрежата на Steam.</value>
 	</data>
@@ -399,8 +469,12 @@
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Връзката с мрежата на Steam е загубена. Повторно свързване...</value>
 	</data>
-	
-	
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>Акаунтът вече не е зает: фарменето на карти е възобновено!</value>
+	</data>
+	<data name="BotAccountOccupied" xml:space="preserve">
+		<value>Акаунтът в момента се ползва: ASF ще възобнови фарменето на карти, когато е свободен...</value>
+	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Свързване…</value>
 	</data>
@@ -438,7 +512,10 @@
 		<value>ASF ще се опита да ползва вашият предпочитан {0} език, но преводът за този език е само {1} завършен. Може би може да ни помогнете да подобрим ASF с превод на вашия език?</value>
 		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
 	</data>
-	
+	<data name="IdlingGameNotPossible" xml:space="preserve">
+		<value>Фарменето на {0} ({1}) е временно забранено, тъй като ASF не е в състояние да "играе" тази игра в момента.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="WarningIdlingGameMismatch" xml:space="preserve">
 		<value>ASF откри несъответствие на ID за {0} ({1}) и ще използва ID на {2} вместо това.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -447,8 +524,12 @@
 		<value>{0} V{1}</value>
 		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
 	</data>
-	
-	
+	<data name="BotAccountLocked" xml:space="preserve">
+		<value>Този акаунт е заключен, фарменето на карти е недостъпно завинаги!</value>
+	</data>
+	<data name="BotStatusLocked" xml:space="preserve">
+		<value>Бота е заключен и не може да "дропне" карти чрез фармене.</value>
+	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
 		<value>Тази функция е възможна само в headless режим!</value>
 	</data>
@@ -459,7 +540,9 @@
 	<data name="ErrorAccessDenied" xml:space="preserve">
 		<value>Достъпът отказан!</value>
 	</data>
-	
+	<data name="WarningPreReleaseVersion" xml:space="preserve">
+		<value>Вие използвате версия, която е по-нова от последната версия за актуализация. Моля, имайте предвид, че предварителните версии са посветени на потребителите, които знаят как да докладват за бъгове, да се справят с проблеми и да дават обратна връзка - няма да ви бъде осигурена техническа подръжка.</value>
+	</data>
 	<data name="BotStats" xml:space="preserve">
 		<value>Текущо използване на паметта: {0} MB.
 Работно време на процеса: {1}</value>
@@ -562,7 +645,10 @@
 		<value>Успешно извършени {0} потвърждения!</value>
 		<comment>{0} will be replaced by number of confirmations</comment>
 	</data>
-	
+	<data name="BotExtraIdlingCooldown" xml:space="preserve">
+		<value>Изчакване до {0}, за да се гарантира, че е може да започне фарменето на карти...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+	</data>
 	<data name="UpdateCleanup" xml:space="preserve">
 		<value>Изтриване на старите файлове след обновление...</value>
 	</data>

@@ -194,7 +194,10 @@ StackTrace:
 		<value>Xin vui lòng nhập mã 2FA từ ứng dụng Steam Authenticator của bạn: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Vui lòng nhập mã SteamGuard đã được gửi tới email của bạn: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Xin vui lòng nhập tài khoản Steam của bạn: </value>
 		<comment>Please note that this translation should end with space</comment>
