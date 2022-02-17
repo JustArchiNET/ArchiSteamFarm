@@ -82,6 +82,30 @@ public sealed class Commands {
 	}
 
 	[PublicAPI]
+	public static EAccess GetProxyAccess(Bot bot, EAccess access, ulong steamID = 0) {
+		// The objective here should be simple, calculating effective access of the user
+		// Problem is, history already proved nothing in this damn file is as simple as it seems
+		// We use this function for proxying commands such as !status 2 sent to bot 1, which should use 2's user access instead
+		ArgumentNullException.ThrowIfNull(bot);
+
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		if ((steamID != 0) && !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		// If we got executed with owner access or lack steamID entirely, then this is effective access
+		if ((access >= EAccess.Owner) || (steamID == 0)) {
+			return access;
+		}
+
+		// Otherwise, effective access is the access of the user on target bot, whatever that would be, not this one
+		return bot.GetAccess(steamID);
+	}
+
+	[PublicAPI]
 	public async Task<string?> Response(EAccess access, string message, ulong steamID = 0) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
@@ -504,29 +528,6 @@ public sealed class Commands {
 		return gamesOwned;
 	}
 
-	private static EAccess ProxyAccess(Bot bot, EAccess access, ulong steamID = 0) {
-		// The objective here should be simple, calculating effective access of the user
-		// Problem is, history already proved nothing in this damn file is as simple as it seems
-		// We use this function for proxying commands such as !status 2 sent to bot 1, which should use 2's user access instead
-		ArgumentNullException.ThrowIfNull(bot);
-
-		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
-		}
-
-		if ((steamID != 0) && !new SteamID(steamID).IsIndividualAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
-		// If we got executed with owner access or lack steamID entirely, then this is effective access
-		if ((access >= EAccess.Owner) || (steamID == 0)) {
-			return access;
-		}
-
-		// Otherwise, effective access is the access of the user on target bot, whatever that would be, not this one
-		return bot.GetAccess(steamID);
-	}
-
 	private async Task<string?> Response2FA(EAccess access) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
@@ -556,7 +557,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.Response2FA(ProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.Response2FA(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -600,7 +601,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.Response2FAConfirm(ProxyAccess(bot, access, steamID), confirm))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.Response2FAConfirm(GetProxyAccess(bot, access, steamID), confirm))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -698,7 +699,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAddLicense(ProxyAccess(bot, access, steamID), query))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAddLicense(GetProxyAccess(bot, access, steamID), query))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -762,7 +763,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedLoot(ProxyAccess(bot, access, steamID), appID, contextID))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedLoot(GetProxyAccess(bot, access, steamID), appID, contextID))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -877,7 +878,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedRedeem(ProxyAccess(bot, access, steamID), options, keys, steamID))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedRedeem(GetProxyAccess(bot, access, steamID), options, keys, steamID))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -991,7 +992,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNameTo)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransfer(ProxyAccess(bot, access, steamID), appID, contextID, targetBot))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransfer(GetProxyAccess(bot, access, steamID), appID, contextID, targetBot))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1027,7 +1028,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBackgroundGamesRedeemer(ProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBackgroundGamesRedeemer(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1111,7 +1112,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseFarm(ProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseFarm(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1141,7 +1142,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklist(ProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklist(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1212,7 +1213,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklistAdd(ProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklistAdd(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1278,7 +1279,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklistRemove(ProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklistRemove(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1308,7 +1309,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueue(ProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueue(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1386,7 +1387,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueueAdd(ProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueueAdd(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1457,7 +1458,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueueRemove(ProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueueRemove(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1553,7 +1554,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseInput(ProxyAccess(bot, access, steamID), propertyName, inputValue)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseInput(GetProxyAccess(bot, access, steamID), propertyName, inputValue)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1593,7 +1594,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLevel(ProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLevel(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1637,7 +1638,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLoot(ProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLoot(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1705,7 +1706,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLootByRealAppIDs(ProxyAccess(bot, access, steamID), realAppIDsText, exclude))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLootByRealAppIDs(GetProxyAccess(bot, access, steamID), realAppIDsText, exclude))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1735,7 +1736,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklist(ProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklist(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1793,7 +1794,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklistAdd(ProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklistAdd(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1851,7 +1852,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklistRemove(ProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklistRemove(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -1902,7 +1903,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseNickname(ProxyAccess(bot, access, steamID), nickname)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseNickname(GetProxyAccess(bot, access, steamID), nickname)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -2080,7 +2081,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<(string? Response, Dictionary<string, string>? OwnedGames)> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseOwns(ProxyAccess(bot, access, steamID), query))).ConfigureAwait(false);
+		IList<(string? Response, Dictionary<string, string>? OwnedGames)> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseOwns(GetProxyAccess(bot, access, steamID), query))).ConfigureAwait(false);
 
 		List<(string Response, Dictionary<string, string> OwnedGames)> validResults = new(results.Where(static result => !string.IsNullOrEmpty(result.Response) && (result.OwnedGames != null))!);
 
@@ -2148,7 +2149,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePause(ProxyAccess(bot, access, steamID), permanent, resumeInSecondsText))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePause(GetProxyAccess(bot, access, steamID), permanent, resumeInSecondsText))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -2245,7 +2246,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePlay(ProxyAccess(bot, access, steamID), targetGameIDs))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePlay(GetProxyAccess(bot, access, steamID), targetGameIDs))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -2285,7 +2286,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePointsBalance(ProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePointsBalance(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -2445,7 +2446,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePrivacy(ProxyAccess(bot, access, steamID), privacySettingsText))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePrivacy(GetProxyAccess(bot, access, steamID), privacySettingsText))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -2730,7 +2731,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseRedeem(ProxyAccess(bot, access, steamID), keysText, steamID, redeemFlags))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseRedeem(GetProxyAccess(bot, access, steamID), keysText, steamID, redeemFlags))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -2770,7 +2771,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseReset(ProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseReset(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -2820,7 +2821,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseResume(ProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseResume(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -2856,7 +2857,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStart(ProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStart(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -2935,7 +2936,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<(string? Response, Bot Bot)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStatus(ProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+		IList<(string? Response, Bot Bot)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStatus(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
 		List<(string Response, Bot Bot)> validResults = new(results.Where(static result => !string.IsNullOrEmpty(result.Response))!);
 
@@ -2979,7 +2980,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStop(ProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStop(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -3009,7 +3010,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklist(ProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklist(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -3067,7 +3068,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklistAdd(ProxyAccess(bot, access, steamID), targetSteamIDs)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklistAdd(GetProxyAccess(bot, access, steamID), targetSteamIDs)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -3125,7 +3126,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklistRemove(ProxyAccess(bot, access, steamID), targetSteamIDs)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklistRemove(GetProxyAccess(bot, access, steamID), targetSteamIDs)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -3191,7 +3192,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransfer(ProxyAccess(bot, access, steamID), botNameTo))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransfer(GetProxyAccess(bot, access, steamID), botNameTo))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -3321,7 +3322,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNameTo)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransferByRealAppIDs(ProxyAccess(bot, access, steamID), realAppIDs, targetBot, exclude))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransferByRealAppIDs(GetProxyAccess(bot, access, steamID), realAppIDs, targetBot, exclude))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -3387,7 +3388,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseUnpackBoosters(ProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseUnpackBoosters(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
@@ -3443,7 +3444,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseWalletBalance(ProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseWalletBalance(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
