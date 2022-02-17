@@ -108,6 +108,19 @@ public sealed class Actions : IAsyncDisposable {
 	}
 
 	[PublicAPI]
+	public ulong GetFirstSteamMasterID() {
+		ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(static kv => kv.Key).OrderBy(static steamID => steamID).FirstOrDefault();
+
+		if (steamMasterID > 0) {
+			return steamMasterID;
+		}
+
+		ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
+
+		return (steamOwnerID > 0) && new SteamID(steamOwnerID).IsIndividualAccount ? steamOwnerID : 0;
+	}
+
+	[PublicAPI]
 	public async Task<IDisposable> GetTradingLock() {
 		await TradingSemaphore.WaitAsync().ConfigureAwait(false);
 
@@ -505,18 +518,6 @@ public sealed class Actions : IAsyncDisposable {
 	}
 
 	internal void OnDisconnected() => HandledGifts.Clear();
-
-	private ulong GetFirstSteamMasterID() {
-		ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(static kv => kv.Key).OrderBy(static steamID => steamID).FirstOrDefault();
-
-		if (steamMasterID > 0) {
-			return steamMasterID;
-		}
-
-		ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
-
-		return (steamOwnerID > 0) && new SteamID(steamOwnerID).IsIndividualAccount ? steamOwnerID : 0;
-	}
 
 	private static async Task LimitGiftsRequestsAsync() {
 		if (ASF.GiftsSemaphore == null) {
