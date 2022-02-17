@@ -130,6 +130,37 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		return body.games.ToDictionary(static game => (uint) game.appid, static game => game.name);
 	}
 
+	[PublicAPI]
+	public async Task<string?> GetTradeToken() {
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return null;
+		}
+
+		CEcon_GetTradeOfferAccessToken_Request request = new();
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedEconService.SendMessage(x => x.GetTradeOfferAccessToken(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return null;
+		}
+
+		if (response.Result != EResult.OK) {
+			return null;
+		}
+
+		CEcon_GetTradeOfferAccessToken_Response body = response.GetDeserializedResponse<CEcon_GetTradeOfferAccessToken_Response>();
+
+		return body.trade_offer_access_token;
+	}
+
 	public override void HandleMsg(IPacketMsg packetMsg) {
 		ArgumentNullException.ThrowIfNull(packetMsg);
 
@@ -399,36 +430,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		CPlayer_GetPrivacySettings_Response body = response.GetDeserializedResponse<CPlayer_GetPrivacySettings_Response>();
 
 		return body.privacy_settings;
-	}
-
-	internal async Task<string?> GetTradeToken() {
-		if (Client == null) {
-			throw new InvalidOperationException(nameof(Client));
-		}
-
-		if (!Client.IsConnected) {
-			return null;
-		}
-
-		CEcon_GetTradeOfferAccessToken_Request request = new();
-
-		SteamUnifiedMessages.ServiceMethodResponse response;
-
-		try {
-			response = await UnifiedEconService.SendMessage(x => x.GetTradeOfferAccessToken(request)).ToLongRunningTask().ConfigureAwait(false);
-		} catch (Exception e) {
-			ArchiLogger.LogGenericWarningException(e);
-
-			return null;
-		}
-
-		if (response.Result != EResult.OK) {
-			return null;
-		}
-
-		CEcon_GetTradeOfferAccessToken_Response body = response.GetDeserializedResponse<CEcon_GetTradeOfferAccessToken_Response>();
-
-		return body.trade_offer_access_token;
 	}
 
 	internal async Task<string?> GetTwoFactorDeviceIdentifier(ulong steamID) {
