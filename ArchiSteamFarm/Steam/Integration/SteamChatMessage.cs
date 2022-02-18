@@ -74,9 +74,7 @@ internal static class SteamChatMessage {
 
 		using StringReader stringReader = new(message);
 
-		string? line;
-
-		while ((line = await stringReader.ReadLineAsync().ConfigureAwait(false)) != null) {
+		while (await stringReader.ReadLineAsync().ConfigureAwait(false) is { } line) {
 			// Special case for empty newline
 			if (line.Length == 0) {
 				if (messagePart.Length > prefixLength) {

@@ -1307,9 +1307,7 @@ public sealed class Bot : IAsyncDisposable {
 			OrderedDictionary gamesToRedeemInBackground = new();
 
 			using (StreamReader reader = new(filePath)) {
-				string? line;
-
-				while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null) {
+				while (await reader.ReadLineAsync().ConfigureAwait(false) is { } line) {
 					if (line.Length == 0) {
 						continue;
 					}
@@ -1831,9 +1829,7 @@ public sealed class Bot : IAsyncDisposable {
 		try {
 			using StreamReader reader = new(filePath);
 
-			string? line;
-
-			while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null) {
+			while (await reader.ReadLineAsync().ConfigureAwait(false) is { } line) {
 				if (line.Length == 0) {
 					continue;
 				}
