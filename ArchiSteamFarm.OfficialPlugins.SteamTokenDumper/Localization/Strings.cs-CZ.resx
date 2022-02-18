@@ -97,7 +97,10 @@
 		<value>Dokončeno načítání celkem {0} přístupových tokenů.</value>
 		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
 	</data>
-	
+	<data name="BotRetrievingTotalDepots" xml:space="preserve">
+		<value>Načítání všech úložišť, celkem z {0} aplikací...</value>
+		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
+	</data>
 	<data name="BotRetrievingAppInfos" xml:space="preserve">
 		<value>Získávání {0} informací o aplikaci...</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
@@ -106,14 +109,37 @@
 		<value>Načítání informací o aplikaci {0} bylo dokončeno.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="BotRetrievingDepotKeys" xml:space="preserve">
+		<value>Získávání {0} tokenů úložišť...</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Načítání {0} přístupových tokenů bylo dokončeno.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
+		<value>Načítání všech tokenbů úložišť, celkem z {0} aplikací bylo dokončeno.</value>
+		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
+	</data>
+	<data name="SubmissionNoNewData" xml:space="preserve">
+		<value>Nejsou k dispozici žádné nové údaje k odeslání, vše je aktuální.</value>
+	</data>
+	<data name="SubmissionNoContributorSet" xml:space="preserve">
+		<value>Data nelze odeslat, protože neexistuje žádné platné SteamID, které bychom mohli klasifikovat jako přispěvatele. Zvažte nastavení {0} parametrů.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
+	</data>
+	<data name="SubmissionInProgress" xml:space="preserve">
+		<value>Odesílání celkem registrovaných aplikací/balíčků/úložišť: {0}/{1}/{2}...</value>
+		<comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
+	</data>
+	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+		<value>Odeslání se nezdařilo z důvodu příliš mnoha odeslaných požadavků. Pokusíme se znovu přibližně za {0}.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="SubmissionSuccessful" xml:space="preserve">
+		<value>Data byla úspěšně odeslána. Server zaregistroval celkem nové aplikace/balíčky/úložiště: {0} ({1} ověřeno)/{2} ({3} ověřeno)/{4} ({5} ověřeno).</value>
+		<comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
+	</data>
 	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
 		<value>Nové aplikace: {0}</value>
 		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
@@ -130,9 +156,18 @@
 		<value>Ověřené balíčky: {0}</value>
 		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
-	
+	<data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+		<value>Nová úložiště: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+		<value>Ověřená úložiště: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="PluginSecretListInitialized" xml:space="preserve">
+		<value>{0} inicializován, žádný plugin nebude rozpoznávat: {1}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="LoadingGlobalCache" xml:space="preserve">
 		<value>Načítání globální mezipaměti STD...</value>
 	</data>
