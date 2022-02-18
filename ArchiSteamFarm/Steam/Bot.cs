@@ -1397,7 +1397,7 @@ public sealed class Bot : IAsyncDisposable {
 			return;
 		}
 
-		(BotConfig? botConfig, _) = await BotConfig.Load(configFile).ConfigureAwait(false);
+		(BotConfig? botConfig, _) = await BotConfig.Load(configFile, BotName).ConfigureAwait(false);
 
 		if (botConfig == null) {
 			await Destroy().ConfigureAwait(false);
@@ -1499,7 +1499,7 @@ public sealed class Bot : IAsyncDisposable {
 			return;
 		}
 
-		(BotConfig? botConfig, string? latestJson) = await BotConfig.Load(configFilePath).ConfigureAwait(false);
+		(BotConfig? botConfig, string? latestJson) = await BotConfig.Load(configFilePath, botName).ConfigureAwait(false);
 
 		if (botConfig == null) {
 			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorBotConfigInvalid, configFilePath));

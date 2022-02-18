@@ -540,7 +540,7 @@ public sealed class BotConfig {
 		return result;
 	}
 
-	internal static async Task<(BotConfig? BotConfig, string? LatestJson)> Load(string filePath) {
+	internal static async Task<(BotConfig? BotConfig, string? LatestJson)> Load(string filePath, string? botName = null) {
 		if (string.IsNullOrEmpty(filePath)) {
 			throw new ArgumentNullException(nameof(filePath));
 		}
@@ -600,7 +600,11 @@ public sealed class BotConfig {
 					(bool isWeak, string? reason) = Utilities.TestPasswordStrength(decryptedSteamPassword!, disallowedValues);
 
 					if (isWeak) {
-						ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakSteamPassword, !string.IsNullOrEmpty(botConfig.SteamLogin) ? botConfig.SteamLogin! : filePath, reason));
+						if (string.IsNullOrEmpty(botName)) {
+							botName = Path.GetFileNameWithoutExtension(filePath);
+						}
+
+						ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakSteamPassword, botName, reason));
 					}
 				}
 			);
