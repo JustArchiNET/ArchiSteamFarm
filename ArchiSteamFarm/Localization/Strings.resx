@@ -697,7 +697,7 @@ Process uptime: {1}</value>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
 		<value>Your Steam password for '{0}' seems to be weak. Consider choosing a stronger one for increased security. Details: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>Your encryption key seems to be weak. Consider choosing a stronger one for increased security. Details: {0}</value>

@@ -601,7 +601,7 @@ public sealed class Bot : IAsyncDisposable {
 			}
 
 			if (itemsPerSet < itemsPerClassID.Count) {
-				throw new InvalidOperationException($"{nameof(inventory)} && {nameof(amountsToExtract)}");
+				throw new InvalidOperationException($"{nameof(itemsPerSet)} < {nameof(itemsPerClassID)}");
 			}
 
 			if (itemsPerSet > itemsPerClassID.Count) {
