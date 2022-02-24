@@ -24,7 +24,7 @@ jobs:
         submodules: recursive
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1.9.0
+      uses: actions/setup-dotnet@v1.9.1
       with:
         dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
 
