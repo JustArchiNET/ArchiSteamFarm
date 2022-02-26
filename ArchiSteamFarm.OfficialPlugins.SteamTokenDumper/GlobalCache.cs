@@ -281,19 +281,38 @@ internal sealed class GlobalCache : SerializableFile {
 		ArgumentNullException.ThrowIfNull(packages);
 		ArgumentNullException.ThrowIfNull(depots);
 
+		bool save = false;
+
 		foreach ((uint appID, ulong token) in apps) {
+			if (SubmittedApps.TryGetValue(appID, out ulong previousToken) && (previousToken == token)) {
+				continue;
+			}
+
 			SubmittedApps[appID] = token;
+			save = true;
 		}
 
 		foreach ((uint packageID, ulong token) in packages) {
+			if (SubmittedPackages.TryGetValue(packageID, out ulong previousToken) && (previousToken == token)) {
+				continue;
+			}
+
 			SubmittedPackages[packageID] = token;
+			save = true;
 		}
 
 		foreach ((uint depotID, string key) in depots) {
+			if (SubmittedDepots.TryGetValue(depotID, out string? previousKey) && (previousKey == key)) {
+				continue;
+			}
+
 			SubmittedDepots[depotID] = key;
+			save = true;
 		}
 
-		Utilities.InBackground(Save);
+		if (save) {
+			Utilities.InBackground(Save);
+		}
 	}
 
 	private static bool IsValidDepotKey(string depotKey) {
