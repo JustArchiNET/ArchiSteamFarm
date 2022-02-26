@@ -150,7 +150,7 @@ internal sealed class GlobalCache : SerializableFile {
 		LastChangeNumber = currentChangeNumber;
 
 		foreach ((uint appID, SteamApps.PICSChangesCallback.PICSChangeData appData) in appChanges) {
-			if (!AppChangeNumbers.TryGetValue(appID, out uint previousChangeNumber) || (appData.ChangeNumber <= previousChangeNumber)) {
+			if (!AppChangeNumbers.TryGetValue(appID, out uint previousChangeNumber) || (previousChangeNumber >= appData.ChangeNumber)) {
 				continue;
 			}
 
@@ -184,7 +184,7 @@ internal sealed class GlobalCache : SerializableFile {
 		bool save = false;
 
 		foreach ((uint appID, uint changeNumber) in appChangeNumbers) {
-			if (AppChangeNumbers.TryGetValue(appID, out uint previousChangeNumber) && (previousChangeNumber == changeNumber)) {
+			if (AppChangeNumbers.TryGetValue(appID, out uint previousChangeNumber) && (previousChangeNumber >= changeNumber)) {
 				continue;
 			}
 
