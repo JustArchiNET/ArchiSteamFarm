@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-2019]
 
     runs-on: ${{ matrix.os }}
 
@@ -407,52 +407,52 @@ jobs:
     # TODO: It'd be perfect if we could match final artifacts to the platform they target, so e.g. linux build comes from the linux machine
     # However, that is currently impossible due to https://github.com/dotnet/msbuild/issues/3897
     # Therefore, we'll (sadly) pull artifacts from Windows machine only for now
-    - name: Download ASF-generic artifact from windows-latest
+    - name: Download ASF-generic artifact from windows-2019
       uses: actions/download-artifact@v3.0.0
       with:
-        name: windows-latest_ASF-generic
+        name: windows-2019_ASF-generic
         path: out
 
-    - name: Download ASF-generic-netf artifact from windows-latest
+    - name: Download ASF-generic-netf artifact from windows-2019
       uses: actions/download-artifact@v3.0.0
       with:
-        name: windows-latest_ASF-generic-netf
+        name: windows-2019_ASF-generic-netf
         path: out
 
-    - name: Download ASF-linux-arm artifact from windows-latest
+    - name: Download ASF-linux-arm artifact from windows-2019
       uses: actions/download-artifact@v3.0.0
       with:
-        name: windows-latest_ASF-linux-arm
+        name: windows-2019_ASF-linux-arm
         path: out
 
-    - name: Download ASF-linux-arm64 artifact from windows-latest
+    - name: Download ASF-linux-arm64 artifact from windows-2019
       uses: actions/download-artifact@v3.0.0
       with:
-        name: windows-latest_ASF-linux-arm64
+        name: windows-2019_ASF-linux-arm64
         path: out
 
-    - name: Download ASF-linux-x64 artifact from windows-latest
+    - name: Download ASF-linux-x64 artifact from windows-2019
       uses: actions/download-artifact@v3.0.0
       with:
-        name: windows-latest_ASF-linux-x64
+        name: windows-2019_ASF-linux-x64
         path: out
 
-    - name: Download ASF-osx-arm64 artifact from windows-latest
+    - name: Download ASF-osx-arm64 artifact from windows-2019
       uses: actions/download-artifact@v3.0.0
       with:
-        name: windows-latest_ASF-osx-arm64
+        name: windows-2019_ASF-osx-arm64
         path: out
 
-    - name: Download ASF-osx-x64 artifact from windows-latest
+    - name: Download ASF-osx-x64 artifact from windows-2019
       uses: actions/download-artifact@v3.0.0
       with:
-        name: windows-latest_ASF-osx-x64
+        name: windows-2019_ASF-osx-x64
         path: out
 
-    - name: Download ASF-win-x64 artifact from windows-latest
+    - name: Download ASF-win-x64 artifact from windows-2019
       uses: actions/download-artifact@v3.0.0
       with:
-        name: windows-latest_ASF-win-x64
+        name: windows-2019_ASF-win-x64
         path: out
 
     - name: Import GPG key for signing
