@@ -38,7 +38,6 @@ jobs:
       run: dotnet test ArchiSteamFarm.Tests -c "${{ matrix.configuration }}" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false --nologo
 
     - name: Upload latest strings for translation on Crowdin
-      continue-on-error: true
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.configuration == 'Release' && startsWith(matrix.os, 'ubuntu-') }}
       uses: crowdin/github-action@1.4.7
       with:
