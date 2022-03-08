@@ -694,7 +694,7 @@ Durée de fonctionnement : {1}</value>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
 		<value>Votre mot de passe Steam pour '{0}' semble faible. Pensez à choisir un mot de passe plus fort pour plus de sécurité. Détails: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>Votre clé de chiffrement semble faible. Pensez à en choisir une plus forte pour plus sécurité. Détails: {0}</value>

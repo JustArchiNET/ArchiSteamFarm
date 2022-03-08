@@ -697,7 +697,7 @@ Tempo de execução: {1}</value>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
 		<value>A senha da conta Steam "{0}" é muito fraca. Escolha uma senha mais forte para aumentar a segurança. Detalhes: {0}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>A chave de criptografia é muito fraca. Escolha uma senha mais forte para aumentar a segurança. Detalhes: {0}</value>

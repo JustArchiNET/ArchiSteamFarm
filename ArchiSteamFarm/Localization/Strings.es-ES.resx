@@ -696,7 +696,7 @@ Tiempo de actividad del proceso: {1}</value>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
 		<value>Parece que tu contraseña de Steam para '{0}' es débil. Considera elegir una más fuerte para mayor seguridad. Detalles: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>Parece que tu clave de cifrado es débil. Considera elegir una más fuerte para mayor seguridad. Detalles: {0}</value>

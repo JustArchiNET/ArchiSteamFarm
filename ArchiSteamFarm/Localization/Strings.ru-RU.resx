@@ -697,7 +697,7 @@
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
 		<value>Ваш пароль Steam для '{0}' кажется ненадежным.  Подумайте о том, чтобы использовать более надежный пароль для повышения безопасности.  Подробности: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>Ваш ключ шифрования кажется слабым.  Подумайте о том, чтобы использовать более надежный вариант для повышения безопасности.  Подробности: {0}</value>

@@ -697,7 +697,7 @@
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
 		<value>您 '{0}' 的 Steam 密码似乎很弱。请考虑选择更强的密码来增强安全性，详情 ：{1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>您的加密密钥似乎很弱。请考虑选择更强的密钥来增强安全性，详情 ：{0}</value>

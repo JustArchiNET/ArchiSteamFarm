@@ -697,7 +697,7 @@ StackTrace:
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
 		<value>Vaše Steam heslo pro '{0}' se zdá být slabé. Pro větší zabezpečení zvažte změnu hesla na silnější variantu. Detaily: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>Váš šifrovací klíč se zdá být slabý. Zvažte výběr silnější varianty pro zvýšení bezpečnosti. Detaily: {0}</value>

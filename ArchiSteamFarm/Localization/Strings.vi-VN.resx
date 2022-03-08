@@ -697,7 +697,7 @@ Thời gian hoạt động: {1}</value>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
 		<value>Mật khẩu Steam cho '{0}' của bạn có vẻ yếu. Hãy cân nhắc việc chọn mật khẩu mạnh hơn để tăng tính bảo mật. Chi tiết: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>Khóa mã hóa của bạn có vẻ yếu. Hãy cân nhắc việc chọn một cái mạnh hơn để tăng tính bảo mật. Chi tiết: {0}</value>

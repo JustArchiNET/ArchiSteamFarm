@@ -482,7 +482,7 @@ StackTrace:
 		<value>Verbinde...</value>
 	</data>
 	<data name="BotHeartBeatFailed" xml:space="preserve">
-		<value>Die Verbindung zum Client konnte nicht getrennt werden. Verzichte auf diese Bot-Instanz!</value>
+		<value>Die Verbindung zum Client konnte nicht getrennt werden. Verzicht auf diese Bot-Instanz!</value>
 	</data>
 	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
 		<value>SteamDirectory konnte nicht initialisiert werden: Die Verbindung mit dem Steam-Netzwerk könnte viel länger dauern als sonst!</value>
@@ -697,7 +697,7 @@ Prozesslaufzeit: {1}</value>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
 		<value>Dein Steam-Passwort für '{0}' scheint schwach zu sein. Für erhöhte Sicherheit solltest du überlegen, ein Stärkeres auszusuchen. Details: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>Dein kryptografischer Schlüssel scheint schwach zu sein. Für erhöhte Sicherheit solltest du überlegen, einen Stärkeren auszusuchen. Details: {0}</value>

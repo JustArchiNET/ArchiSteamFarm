@@ -695,7 +695,7 @@ Tempo di attività: {1}</value>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
 		<value>La tua password di Steam per '{0}' sembra essere debole. Considera di sceglierne una più forte per una maggiore sicurezza. Dettagli: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>La tua chiave di crittografia sembra essere debole. Considera di sceglierne una più forte per una maggiore sicurezza. Dettagli: {0}</value>

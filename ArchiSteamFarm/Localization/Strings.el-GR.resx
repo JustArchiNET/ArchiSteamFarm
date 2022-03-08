@@ -694,7 +694,7 @@ StackTrace:
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
 		<value>Ο κωδικός πρόσβασης Steam για το '{0}' φαίνεται να είναι αδύναμος. Εξετάστε το ενδεχόμενο να επιλέξετε έναν ισχυρότερο για αυξημένη ασφάλεια. Λεπτομέρειες: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>Το κλειδί κρυπτογράφησής σας φαίνεται να είναι αδύναμο. Εξετάστε το ενδεχόμενο να επιλέξετε ένα ισχυρότερο για αυξημένη ασφάλεια. Λεπτομέρειες: {0}</value>

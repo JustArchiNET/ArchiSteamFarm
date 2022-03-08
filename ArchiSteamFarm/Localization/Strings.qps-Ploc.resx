@@ -697,7 +697,7 @@ PROCES UPTIME: {1}</value>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
 		<value>UR STEAM PASWORD 4 '{0}' SEEMS 2 BE WEAK. CONSIDR CHOOSIN STRONGR WAN 4 INCREASD SECURITY. DETAILS: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>UR ENCRYPSHUN KEY SEEMS 2 BE WEAK. CONSIDR CHOOSIN STRONGR WAN 4 INCREASD SECURITY. DETAILS: {0}</value>
