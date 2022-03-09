@@ -104,7 +104,7 @@
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>沒有設定任何 Bot。你是否忘記設定 ASF 了？如果你不明白發生了什麼，請閱讀 Wiki 上的「設定指南」。</value>
+		<value>沒有設定任何 Bot。您是否忘記設定 ASF 了？如果您不明白發生了什麼，請閱讀 Wiki 上的「設定指南」。</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} 為空值！</value>
@@ -122,10 +122,10 @@
 		<value>無法檢查最新版本！</value>
 	</data>
 	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-		<value>無法進行更新，因為沒有與目前執行中的版本相關的資產！無法自動更新到該版本。</value>
+		<value>無法進行更新，因為沒有與目前執行中的版本相關的資源檔案！無法自動更新到該版本。</value>
 	</data>
 	<data name="ErrorUpdateNoAssets" xml:space="preserve">
-		<value>無法進行更新，因為此版本沒有提供任何資產！</value>
+		<value>無法進行更新，因為此版本沒有提供任何資源檔案！</value>
 	</data>
 	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
 		<value>收到一個使用者輸入請求，但進程目前正以無介面模式執行！</value>
@@ -190,19 +190,19 @@
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
-		<value>請輸入你的 Steam Guard 行動驗證器上的雙重驗證代碼： </value>
+		<value>請輸入您的 Steam Guard 行動驗證器上的雙重驗證代碼： </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>請輸入寄送至你的電子信箱的 Steam Guard 驗證代碼： </value>
+		<value>請輸入寄送至您的電子信箱的 Steam Guard 驗證代碼： </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
-		<value>請輸入你的 Steam 帳號： </value>
+		<value>請輸入您的 Steam 帳號： </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamParentalCode" xml:space="preserve">
-		<value>請輸入 Steam 家庭監護 PIN 碼： </value>
+		<value>請輸入 Steam 家庭監護 PIN 碼：</value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamPassword" xml:space="preserve">
@@ -369,7 +369,7 @@
 		<value>這個 Bot 將不會啟動，因為它在設定檔中被停用！</value>
 	</data>
 	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-		<value>已連續收到 {0} 次 TwoFactorCodeMismatch 錯誤訊息。你的雙重驗證憑證可能已失效，或者時間不同步，正在中止！</value>
+		<value>已連續收到 {0} 次 TwoFactorCodeMismatch 錯誤訊息。您的雙重驗證憑證可能已失效，或者時間不同步，正在中止！</value>
 		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
 	</data>
 	<data name="BotLoggedOff" xml:space="preserve">
@@ -396,7 +396,7 @@
 		<value>交易提案發送成功！</value>
 	</data>
 	<data name="BotSendingTradeToYourself" xml:space="preserve">
-		<value>你無法對自己發出交易請求！</value>
+		<value>您無法對自己發出交易請求！</value>
 	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
 		<value>這個 Bot 並未啟用 ASF 雙重驗證！您是否忘記將雙重驗證導入至 ASF？</value>
@@ -469,7 +469,7 @@
 		<comment>{0} will be replaced by failure reason (string)</comment>
 	</data>
 	<data name="BotConnectionLost" xml:space="preserve">
-		<value>與 Steam 網路的連線中斷，正在重新連線……</value>
+		<value>與 Steam 網路的連線中斷，正在重新連線…</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
 		<value>帳號不再被佔用，已恢復掛卡！</value>
@@ -490,11 +490,11 @@
 		<value>正在停止…</value>
 	</data>
 	<data name="ErrorBotConfigInvalid" xml:space="preserve">
-		<value>你的 Bot 設定無效，請確認 {0} 的內容然後再試一次！</value>
+		<value>您的 Bot 設定無效，請確認 {0} 的內容然後再試一次！</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="ErrorDatabaseInvalid" xml:space="preserve">
-		<value>無法載入長存資料庫，如果問題仍然存在，請刪除 {0} 以重建資料庫！</value>
+		<value>無法載入持久性資料庫，如果問題仍然存在，請刪除 {0} 以重建資料庫！</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="Initializing" xml:space="preserve">
@@ -502,16 +502,16 @@
 		<comment>{0} will be replaced by service name that is being initialized</comment>
 	</data>
 	<data name="WarningPrivacyPolicy" xml:space="preserve">
-		<value>如果你對 ASF 的實際運作方式有疑慮，請查看 Wiki 中的隱私政策章節！</value>
+		<value>如果您對 ASF 的實際運作方式有疑慮，請查看 Wiki 中的隱私權政策章節！</value>
 	</data>
 	<data name="Welcome" xml:space="preserve">
 		<value>看來這是您首次使用本程式，歡迎！</value>
 	</data>
 	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-		<value>你提供的 CurrentCulture 無效，ASF 將以預設值繼續執行！</value>
+		<value>您提供的 CurrentCulture 無效，ASF 將以預設值繼續執行！</value>
 	</data>
 	<data name="TranslationIncomplete" xml:space="preserve">
-		<value>ASF 將使用你的偏好語系 {0}，但該語言的翻譯只完成了 {1}。或許你能協助我們完善 ASF 的翻譯。</value>
+		<value>ASF 將使用您的偏好語系 {0}，但該語言的翻譯只完成了 {1}。或許您能協助我們完善 ASF 的翻譯。</value>
 		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
 	</data>
 	<data name="IdlingGameNotPossible" xml:space="preserve">
@@ -543,7 +543,7 @@
 		<value>存取被拒！</value>
 	</data>
 	<data name="WarningPreReleaseVersion" xml:space="preserve">
-		<value>你目前使用的版本高於最新的正式版本。請注意：預覽版本是專門給了解如何回報錯誤、處理問題並提供回饋的使用者使用 (將不會提供任何技術支援)。</value>
+		<value>您目前使用的版本高於最新的正式版本。請注意：預覽版本是專門給了解如何回報錯誤、處理問題並提供回饋的使用者使用 (將不會提供任何技術支援)。</value>
 	</data>
 	<data name="BotStats" xml:space="preserve">
 		<value>目前記憶體使用量：{0} MB。
@@ -607,7 +607,7 @@
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
-		<value>你執行的個人 Bot 帳號數量超過我們的建議上限 ({0})。請留意，此設定不受支援，且可能會導致各種 Steam 相關問題，包括帳號停權。請參閱常見問答了解詳情。</value>
+		<value>您執行的個人 Bot 帳號數量超過我們的建議上限 ({0})。請留意，此設定不受支援，且可能會導致各種 Steam 相關問題，包括帳號停權。請參閱常見問答了解詳情。</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
 	</data>
 	<data name="PluginLoaded" xml:space="preserve">
@@ -628,7 +628,7 @@
 		<value>請稍候…</value>
 	</data>
 	<data name="EnterCommand" xml:space="preserve">
-		<value>輸入指令：</value>
+		<value>輸入指令： </value>
 	</data>
 	<data name="Executing" xml:space="preserve">
 		<value>正在執行…</value>
@@ -673,7 +673,7 @@
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
 	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
-		<value>你正嘗試執行 {0} 不同的 ASF 於不支援的環境中：{1}。如果你真的知道你在做什麼的話，請加上 --ignore-unsupported-environment 參數。</value>
+		<value>您正嘗試執行 {0} 不同的 ASF 於不支援的環境中：{1}。如果您真的知道您在做什麼的話，請加上 --ignore-unsupported-environment 參數。</value>
 	</data>
 	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
 		<value>未知的命令列參數：{0}</value>
@@ -691,7 +691,7 @@
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
 	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>你的 IPC 密碼看起來很弱。請考慮換一個強度更高的密碼來增加安全性。詳細資訊： {0}</value>
+		<value>您的 IPC 密碼看起來很弱。請考慮換一個強度更高的密碼來增加安全性。詳細資訊： {0}</value>
 		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
@@ -699,23 +699,23 @@
 		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>你的加密金鑰看起來很弱。請考慮換一個強度更高的金鑰來增加安全性。詳細資訊： {0}</value>
+		<value>您的加密金鑰看起來很弱。請考慮換一個強度更高的金鑰來增加安全性。詳細資訊： {0}</value>
 		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
 	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
-		<value>你的加密金鑰太短。我們推薦使用 {0} 位元組 (字元) 以上長度的金鑰。</value>
+		<value>您的加密金鑰太短。我們推薦使用 {0} 位元組 (字元) 以上長度的金鑰。</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>你正在使用 {0} 設定 {1} 屬性。但你沒有提供一個自定義的 --cryptkey。你應該提供自定義 --cryptkey 以提高安全性。</value>
+		<value>您正在使用 {0} 設定 {1} 屬性。但您沒有提供一個自定義的 --cryptkey。您應該提供自定義 --cryptkey 以提高安全性。</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
-		<value>你正在使用 {0} 設定 {1} 屬性。但你沒有提供一個自定義的 --cryptkey。這完全破壞了保護，因為 ASF 被迫使用自己的 (已知) 金鑰。你應該提供自定義 --cryptkey 用於使用此設定提供的安全優勢。</value>
+		<value>您正在使用 {0} 設定 {1} 屬性。但您沒有提供一個自定義的 --cryptkey。這完全破壞了保護，因為 ASF 被迫使用自己的 (已知) 金鑰。您應該提供自定義 --cryptkey 用於使用此設定提供的安全優勢。</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
 	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>你正在以管理員權限 (Root) 執行 ASF。這會給你的機器帶來重大的安全風險，且由於 ASF 的操作不需要 Root 權限，我們建議盡可能以非管理員使用者身份執行它。</value>
+		<value>您正在以管理員權限 (Root) 執行 ASF。這會給您的機器帶來重大的安全風險，且由於 ASF 的操作不需要 Root 權限，我們建議盡可能以非管理員使用者身份執行它。</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>您在不受支援的環境中執行 ASF，並提供 --ignore-unsupported-environment 引數。請注意，我們不對這種情況提供任何形式的支援，您完全需要自行承擔風險。你已經被警告過了。</value>
@@ -727,7 +727,7 @@
 		<value>正在驗證已下載的二進制檔案與來自遠端伺服器的核對和…</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>遠端伺服器對我們要更新到的版本一無所知。如果該版本是最近發布的，則可能出現這種情況——立刻拒絕進行更新程序作為額外的安全措施。</value>
+		<value>遠端伺服器對我們要更新到的版本一無所知。如果該版本是最近發布的，則可能出現這種情況──立刻拒絕進行更新程序作為額外的安全措施。</value>
 	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>遠端伺服器回覆了不同的核對和，這可能意味著下載檔案損毀或遭受中間人攻擊，拒絕繼續更新程序！</value>
