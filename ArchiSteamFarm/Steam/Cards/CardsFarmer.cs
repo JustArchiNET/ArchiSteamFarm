@@ -144,7 +144,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 	private bool KeepFarming;
 	private bool ParsingScheduled;
 	private bool PermanentlyPaused;
-	private bool ShouldResumeFarming = true;
+	private bool ShouldResumeFarming;
 
 	internal CardsFarmer(Bot bot) {
 		Bot = bot ?? throw new ArgumentNullException(nameof(bot));
@@ -291,7 +291,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 
 	internal void SetInitialState(bool paused) {
 		PermanentlyPaused = Paused = paused;
-		ShouldResumeFarming = true;
+		ShouldResumeFarming = false;
 	}
 
 	internal async Task StartFarming() {
