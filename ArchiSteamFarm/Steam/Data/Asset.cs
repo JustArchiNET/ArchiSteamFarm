@@ -256,6 +256,7 @@ public sealed class Asset {
 		ChatEffect,
 		MiniProfileBackground,
 		AvatarProfileFrame,
-		AnimatedAvatar
+		AnimatedAvatar,
+		KeyboardSkin
 	}
 }
