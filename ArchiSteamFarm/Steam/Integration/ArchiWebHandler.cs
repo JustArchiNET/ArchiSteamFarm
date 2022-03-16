@@ -416,7 +416,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "tradeoffermessage", $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}" }
 		};
 
-		HashSet<ulong> mobileTradeOfferIDs = new();
+		HashSet<ulong> mobileTradeOfferIDs = new(trades.Count);
 
 		foreach (TradeOfferSendRequest trade in trades) {
 			data["json_tradeoffer"] = JsonConvert.SerializeObject(trade);
