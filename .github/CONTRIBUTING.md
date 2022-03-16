@@ -67,7 +67,7 @@ ASF is open-source project, developed mainly by **[JustArchi](https://github.com
 
 ### License
 
-ASF is using **[Apache License 2.0](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/LICENSE-2.0.txt)**.
+ASF is using **[Apache License 2.0](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/LICENSE.txt)**.
 
 > Unless You explicitly state otherwise, any Contribution intentionally submitted for inclusion in the Work by You to the Licensor shall be under the terms and conditions of this License, without any additional terms or conditions.
 
