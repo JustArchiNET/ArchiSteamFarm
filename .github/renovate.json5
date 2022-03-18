@@ -19,14 +19,6 @@
 			"allowedVersions": "<= 3.1",
 			"matchManagers": [ "nuget" ],
 			"matchPackageNames": [ "Microsoft.Extensions.Configuration.Json", "Microsoft.Extensions.Logging.Configuration" ]
-		},
-		{
-			// TODO: ASF-ui bug, https://github.com/JustArchiNET/ASF-ui/issues/1556
-			"matchManagers": ["git-submodules"],
-			"matchPackageNames": [
-				"ASF-ui"
-			],
-			"enabled": false
 		}
 	]
 }
