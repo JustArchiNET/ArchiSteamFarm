@@ -2384,17 +2384,9 @@ public sealed class Bot : IAsyncDisposable {
 				// Do not attempt to reconnect, those failures are permanent
 				return;
 			case EResult.InvalidPassword when !string.IsNullOrEmpty(BotDatabase.LoginKey):
+				// We can retry immediately
 				BotDatabase.LoginKey = null;
 				ArchiLogger.LogGenericInfo(Strings.BotRemovedExpiredLoginKey);
-
-				break;
-			case EResult.InvalidPassword:
-			case EResult.NoConnection:
-			case EResult.ServiceUnavailable:
-			case EResult.Timeout:
-			case EResult.TryAnotherCM:
-			case EResult.TwoFactorCodeMismatch:
-				await Task.Delay(5000).ConfigureAwait(false);
 
 				break;
 			case EResult.RateLimitExceeded:
@@ -2409,6 +2401,11 @@ public sealed class Bot : IAsyncDisposable {
 				} finally {
 					ASF.LoginRateLimitingSemaphore.Release();
 				}
+
+				break;
+			default:
+				// Generic delay before retrying
+				await Task.Delay(5000).ConfigureAwait(false);
 
 				break;
 		}
