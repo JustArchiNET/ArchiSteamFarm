@@ -240,7 +240,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			foreach (Asset asset in response.Content.Assets) {
-				if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out InventoryResponse.Description? description) || assetIDs.Contains(asset.AssetID)) {
+				if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out InventoryResponse.Description? description) || !assetIDs.Add(asset.AssetID)) {
 					continue;
 				}
 
@@ -254,8 +254,6 @@ public sealed class ArchiWebHandler : IDisposable {
 				if (description.AdditionalProperties != null) {
 					asset.AdditionalProperties = description.AdditionalProperties;
 				}
-
-				assetIDs.Add(asset.AssetID);
 
 				yield return asset;
 			}
