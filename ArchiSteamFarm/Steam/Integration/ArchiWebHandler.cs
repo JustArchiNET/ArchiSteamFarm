@@ -208,8 +208,8 @@ public sealed class ArchiWebHandler : IDisposable {
 				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
 			}
 
-			if (response.Content.Result != EResult.OK) {
-				throw new HttpRequestException(!string.IsNullOrEmpty(response.Content.Error) ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Error) : Strings.WarningFailed);
+			if (response.Content.Result is not EResult.OK) {
+				throw new HttpRequestException(!string.IsNullOrEmpty(response.Content.Error) ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Error) : response.Content.Result.HasValue ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Result) : Strings.WarningFailed);
 			}
 
 			if (response.Content.TotalInventoryCount == 0) {

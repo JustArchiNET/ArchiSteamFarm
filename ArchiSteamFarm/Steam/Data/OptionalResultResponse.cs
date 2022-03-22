@@ -26,10 +26,10 @@ using SteamKit2;
 namespace ArchiSteamFarm.Steam.Data;
 
 [PublicAPI]
-public class ResultResponse {
-	[JsonProperty(PropertyName = "success", Required = Required.Always)]
-	public EResult Result { get; private set; }
+public class OptionalResultResponse {
+	[JsonProperty(PropertyName = "success", Required = Required.DisallowNull)]
+	public EResult? Result { get; private set; }
 
 	[JsonConstructor]
-	protected ResultResponse() { }
+	protected OptionalResultResponse() { }
 }

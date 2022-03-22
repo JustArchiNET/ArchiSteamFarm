@@ -33,7 +33,7 @@ using Newtonsoft.Json.Linq;
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-internal sealed class InventoryResponse : ResultResponse {
+internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonProperty(PropertyName = "assets", Required = Required.DisallowNull)]
 	internal readonly ImmutableHashSet<Asset> Assets = ImmutableHashSet<Asset>.Empty;
 
