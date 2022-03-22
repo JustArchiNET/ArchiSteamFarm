@@ -30,27 +30,27 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
 internal sealed class RequestData {
-	[JsonProperty(PropertyName = "guid", Required = Required.Always)]
+	[JsonProperty("guid", Required = Required.Always)]
 	private static string Guid => ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
 
-	[JsonProperty(PropertyName = "token", Required = Required.Always)]
+	[JsonProperty("token", Required = Required.Always)]
 	private static string Token => SharedInfo.Token;
 
-	[JsonProperty(PropertyName = "v", Required = Required.Always)]
+	[JsonProperty("v", Required = Required.Always)]
 	private static byte Version => SharedInfo.ApiVersion;
 
-	[JsonProperty(PropertyName = "apps", Required = Required.Always)]
+	[JsonProperty("apps", Required = Required.Always)]
 	private readonly ImmutableDictionary<string, string> Apps;
 
-	[JsonProperty(PropertyName = "depots", Required = Required.Always)]
+	[JsonProperty("depots", Required = Required.Always)]
 	private readonly ImmutableDictionary<string, string> Depots;
 
 	private readonly ulong SteamID;
 
-	[JsonProperty(PropertyName = "subs", Required = Required.Always)]
+	[JsonProperty("subs", Required = Required.Always)]
 	private readonly ImmutableDictionary<string, string> Subs;
 
-	[JsonProperty(PropertyName = "steamid", Required = Required.Always)]
+	[JsonProperty("steamid", Required = Required.Always)]
 	private string SteamIDText => new SteamID(SteamID).Render();
 
 	internal RequestData(ulong steamID, IReadOnlyCollection<KeyValuePair<uint, ulong>> apps, IReadOnlyCollection<KeyValuePair<uint, ulong>> accessTokens, IReadOnlyCollection<KeyValuePair<uint, string>> depots) {

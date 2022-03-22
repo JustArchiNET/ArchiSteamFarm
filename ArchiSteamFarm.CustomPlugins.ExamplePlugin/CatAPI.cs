@@ -55,7 +55,7 @@ internal static class CatAPI {
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	private sealed class MeowResponse {
-		[JsonProperty(PropertyName = "file", Required = Required.Always)]
+		[JsonProperty("file", Required = Required.Always)]
 		internal readonly string Link = "";
 
 		[JsonConstructor]

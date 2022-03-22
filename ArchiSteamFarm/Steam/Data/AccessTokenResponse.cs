@@ -26,7 +26,7 @@ namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class AccessTokenResponse : ResultResponse {
-	[JsonProperty(PropertyName = "data", Required = Required.Always)]
+	[JsonProperty("data", Required = Required.Always)]
 	internal readonly AccessTokenData Data = new();
 
 	[JsonConstructor]
@@ -34,7 +34,7 @@ internal sealed class AccessTokenResponse : ResultResponse {
 
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class AccessTokenData {
-		[JsonProperty(PropertyName = "webapi_token", Required = Required.Always)]
+		[JsonProperty("webapi_token", Required = Required.Always)]
 		internal readonly string WebAPIToken = "";
 
 		[JsonConstructor]

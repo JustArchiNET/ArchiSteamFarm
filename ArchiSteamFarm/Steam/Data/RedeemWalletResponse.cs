@@ -27,7 +27,7 @@ namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class RedeemWalletResponse : ResultResponse {
-	[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
+	[JsonProperty("detail", Required = Required.DisallowNull)]
 	internal readonly EPurchaseResultDetail PurchaseResultDetail;
 
 	[JsonConstructor]

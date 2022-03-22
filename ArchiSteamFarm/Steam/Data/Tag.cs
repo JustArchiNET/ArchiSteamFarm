@@ -26,11 +26,11 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.Steam.Data;
 
 public sealed class Tag {
-	[JsonProperty(PropertyName = "category", Required = Required.Always)]
+	[JsonProperty("category", Required = Required.Always)]
 	[PublicAPI]
 	public string Identifier { get; private set; } = "";
 
-	[JsonProperty(PropertyName = "internal_name", Required = Required.Always)]
+	[JsonProperty("internal_name", Required = Required.Always)]
 	[PublicAPI]
 	public string Value { get; private set; } = "";
 

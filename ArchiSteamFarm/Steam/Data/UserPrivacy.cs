@@ -29,10 +29,10 @@ namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class UserPrivacy {
-	[JsonProperty(PropertyName = "eCommentPermission", Required = Required.Always)]
+	[JsonProperty("eCommentPermission", Required = Required.Always)]
 	internal readonly ECommentPermission CommentPermission;
 
-	[JsonProperty(PropertyName = "PrivacySettings", Required = Required.Always)]
+	[JsonProperty("PrivacySettings", Required = Required.Always)]
 	internal readonly PrivacySettings Settings = new();
 
 	// Constructed from privacy change request
@@ -45,22 +45,22 @@ internal sealed class UserPrivacy {
 	private UserPrivacy() { }
 
 	internal sealed class PrivacySettings {
-		[JsonProperty(PropertyName = "PrivacyFriendsList", Required = Required.Always)]
+		[JsonProperty("PrivacyFriendsList", Required = Required.Always)]
 		internal readonly ArchiHandler.EPrivacySetting FriendsList;
 
-		[JsonProperty(PropertyName = "PrivacyInventory", Required = Required.Always)]
+		[JsonProperty("PrivacyInventory", Required = Required.Always)]
 		internal readonly ArchiHandler.EPrivacySetting Inventory;
 
-		[JsonProperty(PropertyName = "PrivacyInventoryGifts", Required = Required.Always)]
+		[JsonProperty("PrivacyInventoryGifts", Required = Required.Always)]
 		internal readonly ArchiHandler.EPrivacySetting InventoryGifts;
 
-		[JsonProperty(PropertyName = "PrivacyOwnedGames", Required = Required.Always)]
+		[JsonProperty("PrivacyOwnedGames", Required = Required.Always)]
 		internal readonly ArchiHandler.EPrivacySetting OwnedGames;
 
-		[JsonProperty(PropertyName = "PrivacyPlaytime", Required = Required.Always)]
+		[JsonProperty("PrivacyPlaytime", Required = Required.Always)]
 		internal readonly ArchiHandler.EPrivacySetting Playtime;
 
-		[JsonProperty(PropertyName = "PrivacyProfile", Required = Required.Always)]
+		[JsonProperty("PrivacyProfile", Required = Required.Always)]
 		internal readonly ArchiHandler.EPrivacySetting Profile;
 
 		// Constructed from privacy change request

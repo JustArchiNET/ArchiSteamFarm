@@ -130,30 +130,30 @@ internal static class ArchiNet {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class ListedUser {
 #pragma warning disable CS0649 // False positive, it's a field set during json deserialization
-		[JsonProperty(PropertyName = "items_count", Required = Required.Always)]
+		[JsonProperty("items_count", Required = Required.Always)]
 		internal readonly ushort ItemsCount;
 #pragma warning restore CS0649 // False positive, it's a field set during json deserialization
 
 		internal readonly HashSet<Asset.EType> MatchableTypes = new();
 
 #pragma warning disable CS0649 // False positive, it's a field set during json deserialization
-		[JsonProperty(PropertyName = "steam_id", Required = Required.Always)]
+		[JsonProperty("steam_id", Required = Required.Always)]
 		internal readonly ulong SteamID;
 #pragma warning restore CS0649 // False positive, it's a field set during json deserialization
 
-		[JsonProperty(PropertyName = "trade_token", Required = Required.Always)]
+		[JsonProperty("trade_token", Required = Required.Always)]
 		internal readonly string TradeToken = "";
 
 		internal float Score => GamesCount / (float) ItemsCount;
 
 #pragma warning disable CS0649 // False positive, it's a field set during json deserialization
-		[JsonProperty(PropertyName = "games_count", Required = Required.Always)]
+		[JsonProperty("games_count", Required = Required.Always)]
 		private readonly ushort GamesCount;
 #pragma warning restore CS0649 // False positive, it's a field set during json deserialization
 
 		internal bool MatchEverything { get; private set; }
 
-		[JsonProperty(PropertyName = "matchable_backgrounds", Required = Required.Always)]
+		[JsonProperty("matchable_backgrounds", Required = Required.Always)]
 		private byte MatchableBackgroundsNumber {
 			set {
 				switch (value) {
@@ -173,7 +173,7 @@ internal static class ArchiNet {
 			}
 		}
 
-		[JsonProperty(PropertyName = "matchable_cards", Required = Required.Always)]
+		[JsonProperty("matchable_cards", Required = Required.Always)]
 		private byte MatchableCardsNumber {
 			set {
 				switch (value) {
@@ -193,7 +193,7 @@ internal static class ArchiNet {
 			}
 		}
 
-		[JsonProperty(PropertyName = "matchable_emoticons", Required = Required.Always)]
+		[JsonProperty("matchable_emoticons", Required = Required.Always)]
 		private byte MatchableEmoticonsNumber {
 			set {
 				switch (value) {
@@ -213,7 +213,7 @@ internal static class ArchiNet {
 			}
 		}
 
-		[JsonProperty(PropertyName = "matchable_foil_cards", Required = Required.Always)]
+		[JsonProperty("matchable_foil_cards", Required = Required.Always)]
 		private byte MatchableFoilCardsNumber {
 			set {
 				switch (value) {
@@ -233,7 +233,7 @@ internal static class ArchiNet {
 			}
 		}
 
-		[JsonProperty(PropertyName = "match_everything", Required = Required.Always)]
+		[JsonProperty("match_everything", Required = Required.Always)]
 		private byte MatchEverythingNumber {
 			set {
 				switch (value) {

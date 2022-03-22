@@ -25,14 +25,14 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.Steam.Data;
 
 internal sealed class TradeOfferSendRequest {
-	[JsonProperty(PropertyName = "me", Required = Required.Always)]
+	[JsonProperty("me", Required = Required.Always)]
 	internal readonly ItemList ItemsToGive = new();
 
-	[JsonProperty(PropertyName = "them", Required = Required.Always)]
+	[JsonProperty("them", Required = Required.Always)]
 	internal readonly ItemList ItemsToReceive = new();
 
 	internal sealed class ItemList {
-		[JsonProperty(PropertyName = "assets", Required = Required.Always)]
+		[JsonProperty("assets", Required = Required.Always)]
 		internal readonly HashSet<Asset> Assets = new();
 	}
 }

@@ -58,11 +58,11 @@ public sealed class CardsFarmer : IAsyncDisposable {
 	// Games that were confirmed to show false status on general badges page
 	private static readonly ImmutableHashSet<uint> UntrustedAppIDs = ImmutableHashSet.Create<uint>(440, 570, 730);
 
-	[JsonProperty(PropertyName = nameof(CurrentGamesFarming))]
+	[JsonProperty(nameof(CurrentGamesFarming))]
 	[PublicAPI]
 	public IReadOnlyCollection<Game> CurrentGamesFarmingReadOnly => CurrentGamesFarming;
 
-	[JsonProperty(PropertyName = nameof(GamesToFarm))]
+	[JsonProperty(nameof(GamesToFarm))]
 	[PublicAPI]
 	public IReadOnlyCollection<Game> GamesToFarmReadOnly => GamesToFarm;
 

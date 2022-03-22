@@ -29,12 +29,12 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class ResponseData {
 #pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty(PropertyName = "data", Required = Required.DisallowNull)]
+	[JsonProperty("data", Required = Required.DisallowNull)]
 	internal readonly InternalData? Data;
 #pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
 #pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty(PropertyName = "success", Required = Required.Always)]
+	[JsonProperty("success", Required = Required.Always)]
 	internal readonly bool Success;
 #pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
@@ -42,22 +42,22 @@ internal sealed class ResponseData {
 	private ResponseData() { }
 
 	internal sealed class InternalData {
-		[JsonProperty(PropertyName = "new_apps", Required = Required.Always)]
+		[JsonProperty("new_apps", Required = Required.Always)]
 		internal readonly ImmutableHashSet<uint> NewApps = ImmutableHashSet<uint>.Empty;
 
-		[JsonProperty(PropertyName = "new_depots", Required = Required.Always)]
+		[JsonProperty("new_depots", Required = Required.Always)]
 		internal readonly ImmutableHashSet<uint> NewDepots = ImmutableHashSet<uint>.Empty;
 
-		[JsonProperty(PropertyName = "new_subs", Required = Required.Always)]
+		[JsonProperty("new_subs", Required = Required.Always)]
 		internal readonly ImmutableHashSet<uint> NewPackages = ImmutableHashSet<uint>.Empty;
 
-		[JsonProperty(PropertyName = "verified_apps", Required = Required.Always)]
+		[JsonProperty("verified_apps", Required = Required.Always)]
 		internal readonly ImmutableHashSet<uint> VerifiedApps = ImmutableHashSet<uint>.Empty;
 
-		[JsonProperty(PropertyName = "verified_depots", Required = Required.Always)]
+		[JsonProperty("verified_depots", Required = Required.Always)]
 		internal readonly ImmutableHashSet<uint> VerifiedDepots = ImmutableHashSet<uint>.Empty;
 
-		[JsonProperty(PropertyName = "verified_subs", Required = Required.Always)]
+		[JsonProperty("verified_subs", Required = Required.Always)]
 		internal readonly ImmutableHashSet<uint> VerifiedPackages = ImmutableHashSet<uint>.Empty;
 
 		[JsonConstructor]

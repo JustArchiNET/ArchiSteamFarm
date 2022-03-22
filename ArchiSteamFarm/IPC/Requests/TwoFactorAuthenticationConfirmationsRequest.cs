@@ -55,7 +55,7 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 	/// <summary>
 	///     A helper property which works the same as <see cref="AcceptedCreatorIDs" /> but with values written as strings - for javascript compatibility purposes. Use either this one, or <see cref="AcceptedCreatorIDs" />, not both.
 	/// </summary>
-	[JsonProperty(PropertyName = $"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(AcceptedCreatorIDs)}", Required = Required.DisallowNull)]
+	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(AcceptedCreatorIDs)}", Required = Required.DisallowNull)]
 	public ImmutableHashSet<string> SAcceptedCreatorIDs {
 		get => AcceptedCreatorIDs.Select(static creatorID => creatorID.ToString(CultureInfo.InvariantCulture)).ToImmutableHashSet();
 		set {

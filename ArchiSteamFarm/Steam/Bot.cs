@@ -180,7 +180,7 @@ public sealed class Bot : IAsyncDisposable {
 	/// </remarks>
 	private bool ShouldUseLoginKeys => BotConfig.UseLoginKeys && (!BotConfig.IsSteamPasswordSet || !HasMobileAuthenticator);
 
-	[JsonProperty(PropertyName = $"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
+	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
 	private string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
 
 	[JsonProperty]

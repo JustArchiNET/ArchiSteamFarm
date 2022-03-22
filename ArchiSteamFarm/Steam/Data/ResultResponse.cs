@@ -27,7 +27,7 @@ namespace ArchiSteamFarm.Steam.Data;
 
 [PublicAPI]
 public class ResultResponse {
-	[JsonProperty(PropertyName = "success", Required = Required.Always)]
+	[JsonProperty("success", Required = Required.Always)]
 	public EResult Result { get; private set; }
 
 	[JsonConstructor]

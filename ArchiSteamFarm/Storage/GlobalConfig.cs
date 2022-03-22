@@ -279,7 +279,7 @@ public sealed class GlobalConfig {
 	[Range(ushort.MinValue, ushort.MaxValue)]
 	public ushort WebLimiterDelay { get; private set; } = DefaultWebLimiterDelay;
 
-	[JsonProperty(PropertyName = nameof(WebProxy))]
+	[JsonProperty(nameof(WebProxy))]
 	public string? WebProxyText { get; private set; } = DefaultWebProxyText;
 
 	[JsonProperty]
@@ -315,7 +315,7 @@ public sealed class GlobalConfig {
 	private WebProxy? BackingWebProxy;
 	private string? BackingWebProxyPassword = DefaultWebProxyPassword;
 
-	[JsonProperty(PropertyName = $"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamOwnerID)}", Required = Required.DisallowNull)]
+	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamOwnerID)}", Required = Required.DisallowNull)]
 	private string SSteamOwnerID {
 		get => SteamOwnerID.ToString(CultureInfo.InvariantCulture);
 

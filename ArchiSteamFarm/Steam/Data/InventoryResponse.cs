@@ -34,22 +34,22 @@ namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class InventoryResponse : OptionalResultResponse {
-	[JsonProperty(PropertyName = "assets", Required = Required.DisallowNull)]
+	[JsonProperty("assets", Required = Required.DisallowNull)]
 	internal readonly ImmutableHashSet<Asset> Assets = ImmutableHashSet<Asset>.Empty;
 
-	[JsonProperty(PropertyName = "descriptions", Required = Required.DisallowNull)]
+	[JsonProperty("descriptions", Required = Required.DisallowNull)]
 	internal readonly ImmutableHashSet<Description> Descriptions = ImmutableHashSet<Description>.Empty;
 
-	[JsonProperty(PropertyName = "error", Required = Required.DisallowNull)]
+	[JsonProperty("error", Required = Required.DisallowNull)]
 	internal readonly string Error = "";
 
-	[JsonProperty(PropertyName = "total_inventory_count", Required = Required.DisallowNull)]
+	[JsonProperty("total_inventory_count", Required = Required.DisallowNull)]
 	internal readonly uint TotalInventoryCount;
 
 	internal ulong LastAssetID { get; private set; }
 	internal bool MoreItems { get; private set; }
 
-	[JsonProperty(PropertyName = "last_assetid", Required = Required.DisallowNull)]
+	[JsonProperty("last_assetid", Required = Required.DisallowNull)]
 	private string LastAssetIDText {
 		set {
 			if (string.IsNullOrEmpty(value)) {
@@ -68,7 +68,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		}
 	}
 
-	[JsonProperty(PropertyName = "more_items", Required = Required.DisallowNull)]
+	[JsonProperty("more_items", Required = Required.DisallowNull)]
 	private byte MoreItemsNumber {
 		set => MoreItems = value > 0;
 	}
@@ -201,19 +201,19 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 			set;
 		}
 
-		[JsonProperty(PropertyName = "appid", Required = Required.Always)]
+		[JsonProperty("appid", Required = Required.Always)]
 		internal uint AppID { get; set; }
 
 		internal ulong ClassID { get; set; }
 		internal ulong InstanceID { get; set; }
 		internal bool Marketable { get; set; }
 
-		[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
+		[JsonProperty("tags", Required = Required.DisallowNull)]
 		internal ImmutableHashSet<Tag> Tags { get; set; } = ImmutableHashSet<Tag>.Empty;
 
 		internal bool Tradable { get; set; }
 
-		[JsonProperty(PropertyName = "classid", Required = Required.Always)]
+		[JsonProperty("classid", Required = Required.Always)]
 		private string ClassIDText {
 			set {
 				if (string.IsNullOrEmpty(value)) {
@@ -232,7 +232,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 			}
 		}
 
-		[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
+		[JsonProperty("instanceid", Required = Required.DisallowNull)]
 		private string InstanceIDText {
 			set {
 				if (string.IsNullOrEmpty(value)) {
@@ -249,12 +249,12 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 			}
 		}
 
-		[JsonProperty(PropertyName = "marketable", Required = Required.Always)]
+		[JsonProperty("marketable", Required = Required.Always)]
 		private byte MarketableNumber {
 			set => Marketable = value > 0;
 		}
 
-		[JsonProperty(PropertyName = "tradable", Required = Required.Always)]
+		[JsonProperty("tradable", Required = Required.Always)]
 		private byte TradableNumber {
 			set => Tradable = value > 0;
 		}

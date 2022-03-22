@@ -27,7 +27,7 @@ namespace ArchiSteamFarm.Steam.Data;
 
 [PublicAPI]
 public class OptionalResultResponse {
-	[JsonProperty(PropertyName = "success", Required = Required.DisallowNull)]
+	[JsonProperty("success", Required = Required.DisallowNull)]
 	public EResult? Result { get; private set; }
 
 	[JsonConstructor]

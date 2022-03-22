@@ -204,16 +204,16 @@ internal static class GitHub {
 
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class ReleaseResponse {
-		[JsonProperty(PropertyName = "assets", Required = Required.Always)]
+		[JsonProperty("assets", Required = Required.Always)]
 		internal readonly ImmutableHashSet<Asset> Assets = ImmutableHashSet<Asset>.Empty;
 
-		[JsonProperty(PropertyName = "prerelease", Required = Required.Always)]
+		[JsonProperty("prerelease", Required = Required.Always)]
 		internal readonly bool IsPreRelease;
 
-		[JsonProperty(PropertyName = "published_at", Required = Required.Always)]
+		[JsonProperty("published_at", Required = Required.Always)]
 		internal readonly DateTime PublishedAt;
 
-		[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
+		[JsonProperty("tag_name", Required = Required.Always)]
 		internal readonly string Tag = "";
 
 		internal string? ChangelogHTML {
@@ -266,7 +266,7 @@ internal static class GitHub {
 			}
 		}
 
-		[JsonProperty(PropertyName = "body", Required = Required.Always)]
+		[JsonProperty("body", Required = Required.Always)]
 		private readonly string? MarkdownBody = "";
 
 		private MarkdownDocument? Changelog {
@@ -293,13 +293,13 @@ internal static class GitHub {
 		private ReleaseResponse() { }
 
 		internal sealed class Asset {
-			[JsonProperty(PropertyName = "browser_download_url", Required = Required.Always)]
+			[JsonProperty("browser_download_url", Required = Required.Always)]
 			internal readonly Uri? DownloadURL;
 
-			[JsonProperty(PropertyName = "name", Required = Required.Always)]
+			[JsonProperty("name", Required = Required.Always)]
 			internal readonly string? Name;
 
-			[JsonProperty(PropertyName = "size", Required = Required.Always)]
+			[JsonProperty("size", Required = Required.Always)]
 			internal readonly uint Size;
 
 			[JsonConstructor]

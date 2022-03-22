@@ -56,10 +56,10 @@ public sealed class MobileAuthenticator : IDisposable {
 
 	private readonly ArchiCacheable<string> CachedDeviceID;
 
-	[JsonProperty(PropertyName = "identity_secret", Required = Required.Always)]
+	[JsonProperty("identity_secret", Required = Required.Always)]
 	private readonly string IdentitySecret = "";
 
-	[JsonProperty(PropertyName = "shared_secret", Required = Required.Always)]
+	[JsonProperty("shared_secret", Required = Required.Always)]
 	private readonly string SharedSecret = "";
 
 	private Bot? Bot;

@@ -46,7 +46,7 @@ public sealed class Asset {
 	[PublicAPI]
 	public uint Amount { get; internal set; }
 
-	[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
+	[JsonProperty("appid", Required = Required.DisallowNull)]
 	public uint AppID { get; private set; }
 
 	[JsonIgnore]
@@ -92,7 +92,7 @@ public sealed class Asset {
 	[JsonExtensionData(WriteData = false)]
 	internal Dictionary<string, JToken>? AdditionalProperties { private get; set; }
 
-	[JsonProperty(PropertyName = "amount", Required = Required.Always)]
+	[JsonProperty("amount", Required = Required.Always)]
 	private string AmountText {
 		get => Amount.ToString(CultureInfo.InvariantCulture);
 
@@ -113,7 +113,7 @@ public sealed class Asset {
 		}
 	}
 
-	[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
+	[JsonProperty("assetid", Required = Required.DisallowNull)]
 	private string AssetIDText {
 		get => AssetID.ToString(CultureInfo.InvariantCulture);
 
@@ -134,7 +134,7 @@ public sealed class Asset {
 		}
 	}
 
-	[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
+	[JsonProperty("classid", Required = Required.DisallowNull)]
 	private string ClassIDText {
 		set {
 			if (string.IsNullOrEmpty(value)) {
@@ -151,7 +151,7 @@ public sealed class Asset {
 		}
 	}
 
-	[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
+	[JsonProperty("contextid", Required = Required.DisallowNull)]
 	private string ContextIDText {
 		get => ContextID.ToString(CultureInfo.InvariantCulture);
 
@@ -172,12 +172,12 @@ public sealed class Asset {
 		}
 	}
 
-	[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
+	[JsonProperty("id", Required = Required.DisallowNull)]
 	private string IDText {
 		set => AssetIDText = value;
 	}
 
-	[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
+	[JsonProperty("instanceid", Required = Required.DisallowNull)]
 	private string InstanceIDText {
 		set {
 			if (string.IsNullOrEmpty(value)) {

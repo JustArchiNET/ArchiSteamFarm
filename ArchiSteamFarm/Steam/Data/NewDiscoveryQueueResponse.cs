@@ -27,7 +27,7 @@ namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class NewDiscoveryQueueResponse {
-	[JsonProperty(PropertyName = "queue", Required = Required.Always)]
+	[JsonProperty("queue", Required = Required.Always)]
 	internal readonly ImmutableHashSet<uint> Queue = ImmutableHashSet<uint>.Empty;
 
 	[JsonConstructor]
