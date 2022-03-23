@@ -30,7 +30,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using ArchiSteamFarm.Core;
@@ -44,7 +43,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
@@ -136,12 +134,6 @@ internal sealed class Startup {
 			}
 		);
 
-		// Add support for additional localization mappings
-		app.UseMiddleware<LocalizationMiddleware>();
-
-		// Add support for localization
-		app.UseRequestLocalization();
-
 		// Use routing for our API controllers, this should be called once we're done with all the static files mess
 #if !NETFRAMEWORK
 		app.UseRouting();
@@ -232,29 +224,6 @@ internal sealed class Startup {
 
 		// Add support for response compression
 		services.AddResponseCompression();
-
-		// Add support for localization
-		services.AddLocalization();
-
-		services.AddRequestLocalization(
-			static options => {
-				// We do not set the DefaultRequestCulture here, because it will default to Thread.CurrentThread.CurrentCulture in this case, which is set when loading GlobalConfig
-
-				try {
-					CultureInfo lolcatCulture = CultureInfo.CreateSpecificCulture(SharedInfo.LolcatCultureName);
-
-					options.SupportedCultures = options.SupportedUICultures = CultureInfo.GetCultures(CultureTypes.AllCultures).Append(lolcatCulture).ToList();
-				} catch (Exception e) {
-					// Fallback for platforms that do not support qps-Ploc culture
-					ASF.ArchiLogger.LogGenericDebuggingException(e);
-
-					options.SupportedCultures = options.SupportedUICultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
-				}
-
-				// The default checks the URI and cookies and only then for headers; ASFs IPC does not use either of the higher priority mechanisms anywhere else and we don't want to start here.
-				options.RequestCultureProviders = new List<IRequestCultureProvider>(1) { new AcceptLanguageHeaderRequestCultureProvider() };
-			}
-		);
 
 		string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 

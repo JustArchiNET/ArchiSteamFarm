@@ -20,7 +20,6 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 #endif
@@ -60,18 +59,6 @@ internal static class WebUtilities {
 		mvc.AddJsonOptions(setupAction);
 
 		return mvc;
-	}
-
-	internal static IServiceCollection AddRequestLocalization(this IServiceCollection services, Action<RequestLocalizationOptions> action) {
-		if (services == null) {
-			throw new ArgumentNullException(nameof(services));
-		}
-
-		if (action == null) {
-			throw new ArgumentNullException(nameof(action));
-		}
-
-		return services.Configure(action);
 	}
 #endif
 
