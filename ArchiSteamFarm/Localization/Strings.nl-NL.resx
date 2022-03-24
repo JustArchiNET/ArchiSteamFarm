@@ -609,10 +609,22 @@ Proces uptime: {1}</value>
 	
 	
 	
-	
-	
-	
-	
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>Uw IPC wachtwoord is zwak. Vanwege beveiliging redenen zal het veiliger zijn om een sterker wachtwoord te kiezen. Details: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>Je Steam wachtwoord voor '{0}' lijkt zwak te zijn. Overweeg om een sterker wachtwoord te kiezen voor betere veiligheid. Details: {1}</value>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Uw IPC wachtwoord is zwak. Vanwege beveiliging redenen zal het veiliger zijn om een sterker wachtwoord te kiezen. Details: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Uw encryptiesleutel is te kort. We raden u aan om er één te gebruiken die minstens {0} bytes (tekens) lang is.</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
 	
 	
 	
