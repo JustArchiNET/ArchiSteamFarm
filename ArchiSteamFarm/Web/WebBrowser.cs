@@ -153,11 +153,7 @@ public sealed class WebBrowser : IDisposable {
 					}
 				}
 
-#if NETFRAMEWORK
-				if (response.Length > 0X7FFFFFC7) {
-#else
 				if (response.Length > Array.MaxLength) {
-#endif
 					throw new InvalidOperationException(nameof(response.Length));
 				}
 
