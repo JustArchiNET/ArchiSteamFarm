@@ -7,6 +7,7 @@
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<ApplicationIcon>../resources/ASF.ico</ApplicationIcon>
 		<Authors>JustArchi</Authors>
+		<CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
 		<Company>JustArchiNET</Company>
 		<Copyright>Copyright © 2015-$([System.DateTime]::UtcNow.Year) $(Company)</Copyright>
 		<Description>ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously.</Description>
@@ -60,6 +61,7 @@
 
 	<!-- Default configuration for release builds -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
 		<DebugSymbols>false</DebugSymbols>
 		<DebugType>none</DebugType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
