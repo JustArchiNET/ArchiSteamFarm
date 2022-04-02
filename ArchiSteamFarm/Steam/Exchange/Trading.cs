@@ -197,7 +197,8 @@ public sealed class Trading : IDisposable {
 			int neutrality = 0;
 
 			for (byte i = 0; i < afterAmounts.Count; i++) {
-				neutrality += (int) (afterAmounts[i] - beforeAmounts[i]);
+				// We assume that the difference between amounts will be within int range, therefore we accept underflow here (for subtraction), and since we cast that result to int afterwards, we also accept overflow for the cast itself
+				neutrality += unchecked((int) (afterAmounts[i] - beforeAmounts[i]));
 
 				if (neutrality < 0) {
 					return false;

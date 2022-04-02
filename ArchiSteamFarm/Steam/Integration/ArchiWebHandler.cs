@@ -217,6 +217,10 @@ public sealed class ArchiWebHandler : IDisposable {
 				yield break;
 			}
 
+			if (response.Content.TotalInventoryCount > Array.MaxLength) {
+				throw new InvalidOperationException(nameof(response.Content.TotalInventoryCount));
+			}
+
 			assetIDs ??= new HashSet<ulong>((int) response.Content.TotalInventoryCount);
 
 			if ((response.Content.Assets.Count == 0) || (response.Content.Descriptions.Count == 0)) {

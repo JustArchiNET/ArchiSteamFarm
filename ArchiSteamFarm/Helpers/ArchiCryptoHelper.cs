@@ -159,6 +159,10 @@ public static class ArchiCryptoHelper {
 			throw new ArgumentNullException(nameof(passwordHash));
 		}
 
+		if (passwordHash.Length > byte.MaxValue) {
+			throw new ArgumentOutOfRangeException(nameof(passwordHash));
+		}
+
 		if ((salt == null) || (salt.Length == 0)) {
 			throw new ArgumentNullException(nameof(salt));
 		}

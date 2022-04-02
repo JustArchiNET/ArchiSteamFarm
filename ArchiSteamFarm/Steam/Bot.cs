@@ -608,9 +608,7 @@ public sealed class Bot : IAsyncDisposable {
 				continue;
 			}
 
-			ushort maxSetsAllowed = (ushort) (maxItems - result.Count);
-			maxSetsAllowed -= (ushort) (maxSetsAllowed % itemsPerSet);
-			maxSetsAllowed /= itemsPerSet;
+			ushort maxSetsAllowed = (ushort) ((maxItems - result.Count) / itemsPerSet);
 			ushort realSetsToExtract = (ushort) Math.Min(setsToExtract, maxSetsAllowed);
 
 			if (realSetsToExtract == 0) {
@@ -3505,6 +3503,10 @@ public sealed class Bot : IAsyncDisposable {
 
 		if (!settings.is_enabled) {
 			return (false, null);
+		}
+
+		if (settings.passwordhash.Length > byte.MaxValue) {
+			throw new ArgumentOutOfRangeException(nameof(settings));
 		}
 
 		ArchiCryptoHelper.EHashingMethod steamParentalHashingMethod;

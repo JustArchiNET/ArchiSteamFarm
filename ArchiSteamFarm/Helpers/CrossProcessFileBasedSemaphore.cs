@@ -113,6 +113,10 @@ internal sealed class CrossProcessFileBasedSemaphore : ICrossProcessSemaphore, I
 		try {
 			stopwatch.Stop();
 
+			if (stopwatch.ElapsedMilliseconds >= int.MaxValue) {
+				return false;
+			}
+
 			millisecondsTimeout -= (int) stopwatch.ElapsedMilliseconds;
 
 			if (millisecondsTimeout <= 0) {
