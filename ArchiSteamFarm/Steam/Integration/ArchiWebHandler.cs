@@ -217,7 +217,11 @@ public sealed class ArchiWebHandler : IDisposable {
 				yield break;
 			}
 
+#if NETFRAMEWORK
+			if (response.Content.TotalInventoryCount > 0X7FFFFFC7) {
+#else
 			if (response.Content.TotalInventoryCount > Array.MaxLength) {
+#endif
 				throw new InvalidOperationException(nameof(response.Content.TotalInventoryCount));
 			}
 
