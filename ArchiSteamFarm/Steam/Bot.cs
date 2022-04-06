@@ -2783,7 +2783,7 @@ public sealed class Bot : IAsyncDisposable {
 				}
 
 				if (callback.ParentalSettings != null) {
-					(bool isSteamParentalEnabled, string? steamParentalCode) = ValidateSteamParental(callback.ParentalSettings, BotConfig.SteamParentalCode);
+					(bool isSteamParentalEnabled, string? steamParentalCode) = ValidateSteamParental(callback.ParentalSettings, BotConfig.SteamParentalCode, Program.SteamParentalGeneration);
 
 					if (isSteamParentalEnabled) {
 						// Steam parental enabled
@@ -2801,7 +2801,7 @@ public sealed class Bot : IAsyncDisposable {
 									break;
 								}
 							}
-						} else if (string.IsNullOrEmpty(BotConfig.SteamParentalCode)) {
+						} else {
 							// We failed to generate the pin ourselves, ask the user
 							RequiredInput = ASF.EUserInputType.SteamParentalCode;
 
@@ -3503,7 +3503,7 @@ public sealed class Bot : IAsyncDisposable {
 		PlayingWasBlockedTimer = null;
 	}
 
-	private (bool IsSteamParentalEnabled, string? SteamParentalCode) ValidateSteamParental(ParentalSettings settings, string? steamParentalCode = null) {
+	private (bool IsSteamParentalEnabled, string? SteamParentalCode) ValidateSteamParental(ParentalSettings settings, string? steamParentalCode = null, bool allowGeneration = true) {
 		ArgumentNullException.ThrowIfNull(settings);
 
 		if (!settings.is_enabled) {
@@ -3548,6 +3548,10 @@ public sealed class Bot : IAsyncDisposable {
 					return (true, steamParentalCode);
 				}
 			}
+		}
+
+		if (!allowGeneration) {
+			return (true, null);
 		}
 
 		ArchiLogger.LogGenericInfo(Strings.BotGeneratingSteamParentalCode);

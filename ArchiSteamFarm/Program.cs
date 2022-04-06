@@ -54,6 +54,7 @@ internal static class Program {
 	internal static bool RestartAllowed { get; private set; } = true;
 	internal static bool Service { get; private set; }
 	internal static bool ShutdownSequenceInitialized { get; private set; }
+	internal static bool SteamParentalGeneration { get; private set; } = true;
 
 #if !NETFRAMEWORK
 	private static readonly Dictionary<PosixSignal, PosixSignalRegistration> RegisteredPosixSignals = new();
@@ -528,6 +529,10 @@ internal static class Program {
 					break;
 				case "--NO-RESTART" when !cryptKeyNext && !networkGroupNext && !pathNext:
 					RestartAllowed = false;
+
+					break;
+				case "--NO-STEAM-PARENTAL-GENERATION" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					SteamParentalGeneration = false;
 
 					break;
 				case "--PROCESS-REQUIRED" when !cryptKeyNext && !networkGroupNext && !pathNext:
