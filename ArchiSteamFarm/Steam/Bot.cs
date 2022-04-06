@@ -256,7 +256,7 @@ public sealed class Bot : IAsyncDisposable {
 	private Timer? SendItemsTimer;
 #pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 
-	private bool SteamParentalActive = true;
+	private bool SteamParentalActive;
 	private SteamSaleEvent? SteamSaleEvent;
 	private string? TwoFactorCode;
 	private byte TwoFactorCodeFailures;
@@ -2355,7 +2355,6 @@ public sealed class Bot : IAsyncDisposable {
 		EResult lastLogOnResult = LastLogOnResult;
 		LastLogOnResult = EResult.Invalid;
 		HeartBeatFailures = 0;
-		SteamParentalActive = true;
 		StopConnectionFailureTimer();
 		StopPlayingWasBlockedTimer();
 
@@ -2783,12 +2782,10 @@ public sealed class Bot : IAsyncDisposable {
 				}
 
 				if (callback.ParentalSettings != null) {
-					(bool isSteamParentalEnabled, string? steamParentalCode) = ValidateSteamParental(callback.ParentalSettings, BotConfig.SteamParentalCode, Program.SteamParentalGeneration);
+					(SteamParentalActive, string? steamParentalCode) = ValidateSteamParental(callback.ParentalSettings, BotConfig.SteamParentalCode, Program.SteamParentalGeneration);
 
-					if (isSteamParentalEnabled) {
+					if (SteamParentalActive) {
 						// Steam parental enabled
-						SteamParentalActive = true;
-
 						if (!string.IsNullOrEmpty(steamParentalCode)) {
 							// We were able to automatically generate it, potentially with help of the config
 							if (BotConfig.SteamParentalCode != steamParentalCode) {
@@ -2816,24 +2813,10 @@ public sealed class Bot : IAsyncDisposable {
 								break;
 							}
 						}
-					} else {
-						// Steam parental disables
-						SteamParentalActive = false;
 					}
-				} else if (SteamParentalActive && string.IsNullOrEmpty(BotConfig.SteamParentalCode)) {
-					// Steam parental is active but we're unable to generate the pin ourselves, same as failure to do so
-					RequiredInput = ASF.EUserInputType.SteamParentalCode;
-
-					string? steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
-
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode!)) {
-						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamParentalCode)));
-
-						Stop();
-
-						break;
-					}
+				} else {
+					// Steam parental disabled
+					SteamParentalActive = false;
 				}
 
 				ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
