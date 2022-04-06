@@ -7,9 +7,9 @@
     "translation_replace": {
       ".lol-US.resx": ".qps-Ploc.resx",
       ".sr-CS.resx": ".sr-Latn.resx",
-      ".zh-CN.resx": ".zh-Hans-CN.resx",
+      ".zh-CN.resx": ".zh-Hans.resx",
       ".zh-HK.resx": ".zh-Hant-HK.resx",
-      ".zh-TW.resx": ".zh-Hant-TW.resx"
+      ".zh-TW.resx": ".zh-Hant.resx"
     }
   },
   {
@@ -18,9 +18,9 @@
     "translation_replace": {
       ".lol-US.resx": ".qps-Ploc.resx",
       ".sr-CS.resx": ".sr-Latn.resx",
-      ".zh-CN.resx": ".zh-Hans-CN.resx",
+      ".zh-CN.resx": ".zh-Hans.resx",
       ".zh-HK.resx": ".zh-Hant-HK.resx",
-      ".zh-TW.resx": ".zh-Hant-TW.resx"
+      ".zh-TW.resx": ".zh-Hant.resx"
     }
   },
   {
