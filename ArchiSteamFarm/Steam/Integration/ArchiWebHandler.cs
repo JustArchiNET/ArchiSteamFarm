@@ -37,7 +37,6 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Security;
-using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
@@ -2228,7 +2227,8 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		// Unlock Steam Parental if needed
 		if (!string.IsNullOrEmpty(parentalCode)) {
-			if (!await UnlockParentalAccount(parentalCode).ConfigureAwait(false)) {
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			if (!await UnlockParentalAccount(parentalCode!).ConfigureAwait(false)) {
 				return false;
 			}
 		}

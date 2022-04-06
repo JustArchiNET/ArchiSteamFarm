@@ -3533,7 +3533,9 @@ public sealed class Bot : IAsyncDisposable {
 
 		if (!string.IsNullOrEmpty(steamParentalCode)) {
 			byte i = 0;
-			byte[] password = new byte[steamParentalCode.Length];
+
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			byte[] password = new byte[steamParentalCode!.Length];
 
 			foreach (char character in steamParentalCode.TakeWhile(static character => character is >= '0' and <= '9')) {
 				password[i++] = (byte) character;
