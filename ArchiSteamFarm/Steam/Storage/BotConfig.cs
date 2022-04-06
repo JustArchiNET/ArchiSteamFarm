@@ -495,7 +495,7 @@ public sealed class BotConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMasterClanID), SteamMasterClanID));
 		}
 
-		if (!string.IsNullOrEmpty(SteamParentalCode) && (SteamParentalCode != "0") && (SteamParentalCode!.Length != SteamParentalCodeLength)) {
+		if (!string.IsNullOrEmpty(SteamParentalCode) && ((SteamParentalCode!.Length != SteamParentalCodeLength) || SteamParentalCode.Any(static character => character is < '0' or > '9'))) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamParentalCode), SteamParentalCode));
 		}
 

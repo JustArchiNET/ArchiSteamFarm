@@ -2227,7 +2227,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
 		// Unlock Steam Parental if needed
-		if (parentalCode?.Length == BotConfig.SteamParentalCodeLength) {
+		if (!string.IsNullOrEmpty(parentalCode)) {
 			if (!await UnlockParentalAccount(parentalCode).ConfigureAwait(false)) {
 				return false;
 			}

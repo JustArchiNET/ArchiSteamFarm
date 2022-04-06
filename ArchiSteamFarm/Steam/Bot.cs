@@ -877,7 +877,7 @@ public sealed class Bot : IAsyncDisposable {
 
 				break;
 			case ASF.EUserInputType.SteamParentalCode:
-				if (inputValue.Length != BotConfig.SteamParentalCodeLength) {
+				if ((inputValue.Length != BotConfig.SteamParentalCodeLength) || inputValue.Any(static character => character is < '0' or > '9')) {
 					return false;
 				}
 
@@ -2786,9 +2786,11 @@ public sealed class Bot : IAsyncDisposable {
 					(bool isSteamParentalEnabled, string? steamParentalCode) = ValidateSteamParental(callback.ParentalSettings, BotConfig.SteamParentalCode);
 
 					if (isSteamParentalEnabled) {
+						// Steam parental enabled
 						SteamParentalActive = true;
 
 						if (!string.IsNullOrEmpty(steamParentalCode)) {
+							// We were able to automatically generate it, potentially with help of the config
 							if (BotConfig.SteamParentalCode != steamParentalCode) {
 								// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 								if (!SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode!)) {
@@ -2799,7 +2801,8 @@ public sealed class Bot : IAsyncDisposable {
 									break;
 								}
 							}
-						} else if (string.IsNullOrEmpty(BotConfig.SteamParentalCode) || (BotConfig.SteamParentalCode!.Length != BotConfig.SteamParentalCodeLength)) {
+						} else if (string.IsNullOrEmpty(BotConfig.SteamParentalCode)) {
+							// We failed to generate the pin ourselves, ask the user
 							RequiredInput = ASF.EUserInputType.SteamParentalCode;
 
 							steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
@@ -2814,9 +2817,11 @@ public sealed class Bot : IAsyncDisposable {
 							}
 						}
 					} else {
+						// Steam parental disables
 						SteamParentalActive = false;
 					}
-				} else if (SteamParentalActive && !string.IsNullOrEmpty(BotConfig.SteamParentalCode) && (BotConfig.SteamParentalCode!.Length != BotConfig.SteamParentalCodeLength)) {
+				} else if (SteamParentalActive && string.IsNullOrEmpty(BotConfig.SteamParentalCode)) {
+					// Steam parental is active but we're unable to generate the pin ourselves, same as failure to do so
 					RequiredInput = ASF.EUserInputType.SteamParentalCode;
 
 					string? steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
@@ -3526,7 +3531,7 @@ public sealed class Bot : IAsyncDisposable {
 				return (true, null);
 		}
 
-		if (steamParentalCode?.Length == BotConfig.SteamParentalCodeLength) {
+		if (!string.IsNullOrEmpty(steamParentalCode)) {
 			byte i = 0;
 			byte[] password = new byte[steamParentalCode.Length];
 
