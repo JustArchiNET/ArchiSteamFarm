@@ -1,6 +1,6 @@
 ### Notice
 
-**Pre-releases are experimental versions that often contain unpatched bugs, work-in-progress features or rewritten implementations. If you don't consider yourself advanced user, please download **[latest stable release](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)** instead. Pre-release versions are dedicated to users who know how to report bugs, deal with issues and give feedback - no technical support will be given. Check out ASF **[release cycle](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Release-cycle)** if you'd like to learn more.**
+**Pre-releases are experimental versions that often contain unpatched bugs, work-in-progress features and rewritten implementations. If you don't consider yourself advanced user, please download **[latest stable release](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)** instead. Pre-release versions are dedicated to users who know how to report bugs, deal with issues and give feedback - no technical support will be given. Check out ASF **[release cycle](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Release-cycle)** if you'd like to learn more.**
 
 ---
 
