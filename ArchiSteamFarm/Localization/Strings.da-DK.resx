@@ -235,35 +235,74 @@ StackTrace:
 		<value>Botten idler spil: {0} ({1}, {2} kort drop tilbage) fra i alt {3} spil ({4} kort) tilbage at idle (~{5} tilbage).</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
-	
+	<data name="BotStatusIdlingList" xml:space="preserve">
+		<value>Botten idler spil: {0} fra en total af {1} spil ({2} kort) tilbage at idle (~{3} tilbage).</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
 	<data name="CheckingFirstBadgePage" xml:space="preserve">
 		<value>Tjekker første badge side...</value>
 	</data>
 	<data name="CheckingOtherBadgePages" xml:space="preserve">
 		<value>Tjekker andre badge sider...</value>
 	</data>
-	
+	<data name="ChosenFarmingAlgorithm" xml:space="preserve">
+		<value>Valgte idle algoritme: {0}</value>
+		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+	</data>
 	<data name="Done" xml:space="preserve">
 		<value>Færdig!</value>
 	</data>
-	
-	
-	
-	
-	
-	
+	<data name="GamesToIdle" xml:space="preserve">
+		<value>Vi har totalt {0} spil ({1} kort) tilbage at idle (~{2} tilbage)...</value>
+		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinished" xml:space="preserve">
+		<value>Idling færdig!</value>
+	</data>
+	<data name="IdlingFinishedForGame" xml:space="preserve">
+		<value>Færdiggjort idling: {0} ({1}) efter {2} spilletid!</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinishedForGames" xml:space="preserve">
+		<value>Færdig med at idle spil: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="IdlingStatusForGame" xml:space="preserve">
+		<value>Idle status for {0} ({1}): {2} kort tilbage</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm</comment>
+	</data>
+	<data name="IdlingStopped" xml:space="preserve">
+		<value>Idling stoppede!</value>
+	</data>
 	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
 		<value>Ignorere denne anmodning da permanent pause er aktiveret!</value>
 	</data>
-	
-	
-	
+	<data name="NothingToIdle" xml:space="preserve">
+		<value>Vi har ikke noget at idle på denne konto!</value>
+	</data>
+	<data name="NowIdling" xml:space="preserve">
+		<value>Idler nu: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="NowIdlingList" xml:space="preserve">
+		<value>Idler nu: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="PlayingNotAvailable" xml:space="preserve">
 		<value>Det er ikke muligt at spille nu, vi vil prøve igen senere!</value>
 	</data>
-	
-	
-	
+	<data name="StillIdling" xml:space="preserve">
+		<value>Idler stadig: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StillIdlingList" xml:space="preserve">
+		<value>Idler stadig: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="StoppedIdling" xml:space="preserve">
+		<value>Stoppede med at idle: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	
 	<data name="UnknownCommand" xml:space="preserve">
 		<value>Ukendt kommando!</value>
@@ -380,7 +419,9 @@ StackTrace:
 	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
 		<value>Fjernede udløbet login nøgle!</value>
 	</data>
-	
+	<data name="BotStatusNotIdling" xml:space="preserve">
+		<value>Botten idler ikke noget.</value>
+	</data>
 	
 	<data name="BotStatusConnecting" xml:space="preserve">
 		<value>Botten er forbundet til Steam-netværket.</value>
@@ -618,11 +659,15 @@ Processens oppetid: {1}</value>
 	
 	
 	
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Du forsøger at køre ASF som administrator (root). Dette medfører en betydelig sikkerhedsrisiko for din maskine, og da ASF ikke kræver root-adgang for dens drift, vi anbefaler at køre det som ikke-administrator bruger hvis det er muligt.</value>
+	</data>
 	
 	
 	
 	
 	
-	
-	
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>Retter ASF-filer...</value>
+	</data>
 </root>
