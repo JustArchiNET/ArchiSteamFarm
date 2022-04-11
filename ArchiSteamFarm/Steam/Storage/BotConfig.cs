@@ -35,7 +35,6 @@ using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration;
-using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -621,18 +620,7 @@ public sealed class BotConfig {
 				break;
 		}
 
-		// TODO: Pending removal, Statistics -> RemoteCommunication migration
-		if ((ASF.GlobalConfig?.Statistics == false) && (botConfig.RemoteCommunication == DefaultRemoteCommunication)) {
-			botConfig.RemoteCommunication = ERemoteCommunication.None;
-		}
-
 		if (!Program.ConfigMigrate) {
-			// TODO: Pending removal, warning for people that disabled config migrate, they need to migrate themselves
-			if (ASF.GlobalConfig?.Statistics == false) {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Program.ConfigMigrate)));
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(GlobalConfig.Statistics), nameof(RemoteCommunication)));
-			}
-
 			return (botConfig, null);
 		}
 
