@@ -75,7 +75,7 @@ public sealed class ASFController : ArchiController {
 	}
 
 	/// <summary>
-	///     Encrypts data with ASF encryption mechanisms using provided details.
+	///     Hashes data with ASF hashing mechanisms using provided details.
 	/// </summary>
 	[Consumes("application/json")]
 	[HttpPost("Hash")]
