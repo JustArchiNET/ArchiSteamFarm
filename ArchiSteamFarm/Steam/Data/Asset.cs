@@ -98,13 +98,13 @@ public sealed class Asset {
 
 		set {
 			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(nameof(value));
+				ASF.ArchiLogger.LogNullError(value);
 
 				return;
 			}
 
 			if (!uint.TryParse(value, out uint amount) || (amount == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(amount));
+				ASF.ArchiLogger.LogNullError(amount);
 
 				return;
 			}
@@ -119,13 +119,13 @@ public sealed class Asset {
 
 		set {
 			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(nameof(value));
+				ASF.ArchiLogger.LogNullError(value);
 
 				return;
 			}
 
 			if (!ulong.TryParse(value, out ulong assetID) || (assetID == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(assetID));
+				ASF.ArchiLogger.LogNullError(assetID);
 
 				return;
 			}
@@ -138,7 +138,7 @@ public sealed class Asset {
 	private string ClassIDText {
 		set {
 			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(nameof(value));
+				ASF.ArchiLogger.LogNullError(value);
 
 				return;
 			}
@@ -157,13 +157,13 @@ public sealed class Asset {
 
 		set {
 			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(nameof(value));
+				ASF.ArchiLogger.LogNullError(value);
 
 				return;
 			}
 
 			if (!ulong.TryParse(value, out ulong contextID) || (contextID == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(contextID));
+				ASF.ArchiLogger.LogNullError(contextID);
 
 				return;
 			}
@@ -185,7 +185,7 @@ public sealed class Asset {
 			}
 
 			if (!ulong.TryParse(value, out ulong instanceID)) {
-				ASF.ArchiLogger.LogNullError(nameof(instanceID));
+				ASF.ArchiLogger.LogNullError(instanceID);
 
 				return;
 			}

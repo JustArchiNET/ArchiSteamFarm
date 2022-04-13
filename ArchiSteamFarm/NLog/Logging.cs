@@ -366,7 +366,7 @@ internal static class Logging {
 						string? response = await targetBot.Commands.Response(EAccess.Owner, command!).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(response)) {
-							ASF.ArchiLogger.LogNullError(nameof(response));
+							ASF.ArchiLogger.LogNullError(response);
 							Console.WriteLine(Strings.ErrorIsEmpty, nameof(response));
 
 							continue;

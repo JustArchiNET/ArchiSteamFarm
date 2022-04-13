@@ -322,7 +322,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		KeyValue pointsInfo = response["summary"]["points"];
 
 		if (pointsInfo == KeyValue.Invalid) {
-			Bot.ArchiLogger.LogNullError(nameof(pointsInfo));
+			Bot.ArchiLogger.LogNullError(pointsInfo);
 
 			return null;
 		}
@@ -330,7 +330,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		uint result = pointsInfo.AsUnsignedInteger(uint.MaxValue);
 
 		if (result == uint.MaxValue) {
-			Bot.ArchiLogger.LogNullError(nameof(result));
+			Bot.ArchiLogger.LogNullError(result);
 
 			return null;
 		}
@@ -451,7 +451,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			if (response.Content.TradeOfferID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(response.Content.TradeOfferID));
+				Bot.ArchiLogger.LogNullError(response.Content.TradeOfferID);
 
 				return (false, mobileTradeOfferIDs);
 			}
@@ -785,7 +785,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			string? sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
 
 			if (string.IsNullOrEmpty(sessionID)) {
-				Bot.ArchiLogger.LogNullError(nameof(sessionID));
+				Bot.ArchiLogger.LogNullError(sessionID);
 
 				return null;
 			}
@@ -899,7 +899,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			string? sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
 
 			if (string.IsNullOrEmpty(sessionID)) {
-				Bot.ArchiLogger.LogNullError(nameof(sessionID));
+				Bot.ArchiLogger.LogNullError(sessionID);
 
 				return null;
 			}
@@ -1013,7 +1013,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			string? sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
 
 			if (string.IsNullOrEmpty(sessionID)) {
-				Bot.ArchiLogger.LogNullError(nameof(sessionID));
+				Bot.ArchiLogger.LogNullError(sessionID);
 
 				return null;
 			}
@@ -1129,7 +1129,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			string? sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
 
 			if (string.IsNullOrEmpty(sessionID)) {
-				Bot.ArchiLogger.LogNullError(nameof(sessionID));
+				Bot.ArchiLogger.LogNullError(sessionID);
 
 				return false;
 			}
@@ -1510,7 +1510,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			uint appID = description["appid"].AsUnsignedInteger();
 
 			if (appID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(appID));
+				Bot.ArchiLogger.LogNullError(appID);
 
 				return null;
 			}
@@ -1518,7 +1518,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			ulong classID = description["classid"].AsUnsignedLong();
 
 			if (classID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(classID));
+				Bot.ArchiLogger.LogNullError(classID);
 
 				return null;
 			}
@@ -1548,7 +1548,7 @@ public sealed class ArchiWebHandler : IDisposable {
 					string? identifier = tag["category"].AsString();
 
 					if (string.IsNullOrEmpty(identifier)) {
-						Bot.ArchiLogger.LogNullError(nameof(identifier));
+						Bot.ArchiLogger.LogNullError(identifier);
 
 						return null;
 					}
@@ -1557,7 +1557,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 					// Apparently, name can be empty, but not null
 					if (value == null) {
-						Bot.ArchiLogger.LogNullError(nameof(value));
+						Bot.ArchiLogger.LogNullError(value);
 
 						return null;
 					}
@@ -1578,7 +1578,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			ETradeOfferState state = trade["trade_offer_state"].AsEnum<ETradeOfferState>();
 
 			if (!Enum.IsDefined(state)) {
-				Bot.ArchiLogger.LogNullError(nameof(state));
+				Bot.ArchiLogger.LogNullError(state);
 
 				return null;
 			}
@@ -1590,7 +1590,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			ulong tradeOfferID = trade["tradeofferid"].AsUnsignedLong();
 
 			if (tradeOfferID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(tradeOfferID));
+				Bot.ArchiLogger.LogNullError(tradeOfferID);
 
 				return null;
 			}
@@ -1598,7 +1598,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			uint otherSteamID3 = trade["accountid_other"].AsUnsignedInteger();
 
 			if (otherSteamID3 == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(otherSteamID3));
+				Bot.ArchiLogger.LogNullError(otherSteamID3);
 
 				return null;
 			}
@@ -1675,7 +1675,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		foreach (uint appID in apps.Select(static app => app["appid"].AsUnsignedInteger())) {
 			if (appID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(appID));
+				Bot.ArchiLogger.LogNullError(appID);
 
 				return null;
 			}
@@ -1710,7 +1710,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		using IDocument? htmlDocument = await GetGameCardsPage(appID).ConfigureAwait(false);
 
 		if (htmlDocument == null) {
-			Bot.ArchiLogger.LogNullError(nameof(htmlDocument));
+			Bot.ArchiLogger.LogNullError(htmlDocument);
 
 			return 0;
 		}
@@ -1720,7 +1720,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		result = (byte) htmlNodes.Count();
 
 		if (result == 0) {
-			Bot.ArchiLogger.LogNullError(nameof(result));
+			Bot.ArchiLogger.LogNullError(result);
 
 			return 0;
 		}
@@ -1779,7 +1779,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		foreach (string? giftCardIDText in htmlNodes.Select(static node => node.GetAttribute("id"))) {
 			if (string.IsNullOrEmpty(giftCardIDText)) {
-				Bot.ArchiLogger.LogNullError(nameof(giftCardIDText));
+				Bot.ArchiLogger.LogNullError(giftCardIDText);
 
 				return null;
 			}
@@ -1825,13 +1825,13 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		foreach (string? miniProfile in htmlNodes.Select(static htmlNode => htmlNode.GetAttribute("data-miniprofile"))) {
 			if (string.IsNullOrEmpty(miniProfile)) {
-				Bot.ArchiLogger.LogNullError(nameof(miniProfile));
+				Bot.ArchiLogger.LogNullError(miniProfile);
 
 				return null;
 			}
 
 			if (!uint.TryParse(miniProfile, out uint steamID3) || (steamID3 == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID3));
+				Bot.ArchiLogger.LogNullError(steamID3);
 
 				return null;
 			}
@@ -1890,7 +1890,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		uint result = response["server_time"].AsUnsignedInteger();
 
 		if (result == 0) {
-			Bot.ArchiLogger.LogNullError(nameof(result));
+			Bot.ArchiLogger.LogNullError(result);
 
 			return 0;
 		}
@@ -1917,7 +1917,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		string text = htmlNode.TextContent;
 
 		if (string.IsNullOrEmpty(text)) {
-			Bot.ArchiLogger.LogNullError(nameof(text));
+			Bot.ArchiLogger.LogNullError(text);
 
 			return null;
 		}
@@ -1926,7 +1926,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		int index = text.IndexOf(daysTheirVariableName, StringComparison.Ordinal);
 
 		if (index < 0) {
-			Bot.ArchiLogger.LogNullError(nameof(index));
+			Bot.ArchiLogger.LogNullError(index);
 
 			return null;
 		}
@@ -1937,7 +1937,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		index = text.IndexOf(';', StringComparison.Ordinal);
 
 		if (index < 0) {
-			Bot.ArchiLogger.LogNullError(nameof(index));
+			Bot.ArchiLogger.LogNullError(index);
 
 			return null;
 		}
@@ -1945,7 +1945,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		text = text[..index];
 
 		if (!byte.TryParse(text, out byte result)) {
-			Bot.ArchiLogger.LogNullError(nameof(result));
+			Bot.ArchiLogger.LogNullError(result);
 
 			return null;
 		}
@@ -2010,7 +2010,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		uint resultInSeconds = response["their_escrow"]["escrow_end_duration_seconds"].AsUnsignedInteger(uint.MaxValue);
 
 		if (resultInSeconds == uint.MaxValue) {
-			Bot.ArchiLogger.LogNullError(nameof(resultInSeconds));
+			Bot.ArchiLogger.LogNullError(resultInSeconds);
 
 			return null;
 		}
@@ -2130,7 +2130,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		byte[]? publicKey = KeyDictionary.GetPublicKey(universe);
 
 		if ((publicKey == null) || (publicKey.Length == 0)) {
-			Bot.ArchiLogger.LogNullError(nameof(publicKey));
+			Bot.ArchiLogger.LogNullError(publicKey);
 
 			return false;
 		}
@@ -2189,7 +2189,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		string? steamLogin = response["token"].AsString();
 
 		if (string.IsNullOrEmpty(steamLogin)) {
-			Bot.ArchiLogger.LogNullError(nameof(steamLogin));
+			Bot.ArchiLogger.LogNullError(steamLogin);
 
 			return false;
 		}
@@ -2197,7 +2197,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		string? steamLoginSecure = response["tokensecure"].AsString();
 
 		if (string.IsNullOrEmpty(steamLoginSecure)) {
-			Bot.ArchiLogger.LogNullError(nameof(steamLoginSecure));
+			Bot.ArchiLogger.LogNullError(steamLoginSecure);
 
 			return false;
 		}
@@ -2300,7 +2300,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		// ASF should redeem wallet key only in case of existing wallet
 		if (Bot.WalletCurrency == ECurrencyCode.Invalid) {
-			Bot.ArchiLogger.LogNullError(nameof(Bot.WalletCurrency));
+			Bot.ArchiLogger.LogNullError(Bot.WalletCurrency);
 
 			return null;
 		}
@@ -2366,7 +2366,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		IElement? titleNode = response.Content.SelectSingleNode("//div[@id='mainContents']/h2");
 
 		if (titleNode == null) {
-			Bot.ArchiLogger.LogNullError(nameof(titleNode));
+			Bot.ArchiLogger.LogNullError(titleNode);
 
 			return (ESteamApiKeyState.Error, null);
 		}
@@ -2374,7 +2374,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		string title = titleNode.TextContent;
 
 		if (string.IsNullOrEmpty(title)) {
-			Bot.ArchiLogger.LogNullError(nameof(title));
+			Bot.ArchiLogger.LogNullError(title);
 
 			return (ESteamApiKeyState.Error, null);
 		}
@@ -2386,7 +2386,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		IElement? htmlNode = response.Content.SelectSingleNode("//div[@id='bodyContents_ex']/p");
 
 		if (htmlNode == null) {
-			Bot.ArchiLogger.LogNullError(nameof(htmlNode));
+			Bot.ArchiLogger.LogNullError(htmlNode);
 
 			return (ESteamApiKeyState.Error, null);
 		}
@@ -2394,7 +2394,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		string text = htmlNode.TextContent;
 
 		if (string.IsNullOrEmpty(text)) {
-			Bot.ArchiLogger.LogNullError(nameof(text));
+			Bot.ArchiLogger.LogNullError(text);
 
 			return (ESteamApiKeyState.Error, null);
 		}
@@ -2406,7 +2406,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		int keyIndex = text.IndexOf("Key: ", StringComparison.Ordinal);
 
 		if (keyIndex < 0) {
-			Bot.ArchiLogger.LogNullError(nameof(keyIndex));
+			Bot.ArchiLogger.LogNullError(keyIndex);
 
 			return (ESteamApiKeyState.Error, null);
 		}
@@ -2414,7 +2414,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		keyIndex += 5;
 
 		if (text.Length <= keyIndex) {
-			Bot.ArchiLogger.LogNullError(nameof(text));
+			Bot.ArchiLogger.LogNullError(text);
 
 			return (ESteamApiKeyState.Error, null);
 		}
@@ -2422,7 +2422,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		text = text[keyIndex..];
 
 		if ((text.Length != 32) || !Utilities.IsValidHexadecimalText(text)) {
-			Bot.ArchiLogger.LogNullError(nameof(text));
+			Bot.ArchiLogger.LogNullError(text);
 
 			return (ESteamApiKeyState.Error, null);
 		}
@@ -2513,7 +2513,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			uint appID = item["appid"].AsUnsignedInteger();
 
 			if (appID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(appID));
+				ASF.ArchiLogger.LogNullError(appID);
 
 				return false;
 			}
@@ -2521,7 +2521,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			ulong contextID = item["contextid"].AsUnsignedLong();
 
 			if (contextID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(contextID));
+				ASF.ArchiLogger.LogNullError(contextID);
 
 				return false;
 			}
@@ -2529,7 +2529,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			ulong classID = item["classid"].AsUnsignedLong();
 
 			if (classID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(classID));
+				ASF.ArchiLogger.LogNullError(classID);
 
 				return false;
 			}
@@ -2541,7 +2541,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			uint amount = item["amount"].AsUnsignedInteger();
 
 			if (amount == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(amount));
+				ASF.ArchiLogger.LogNullError(amount);
 
 				return false;
 			}
@@ -2727,7 +2727,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		string? sessionID = WebBrowser.CookieContainer.GetCookieValue(service, "sessionid");
 
 		if (string.IsNullOrEmpty(sessionID)) {
-			Bot.ArchiLogger.LogNullError(nameof(sessionID));
+			Bot.ArchiLogger.LogNullError(sessionID);
 
 			return false;
 		}

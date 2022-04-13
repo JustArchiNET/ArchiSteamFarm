@@ -115,7 +115,7 @@ public sealed class ArchiLogger {
 	}
 
 	[PublicAPI]
-	public void LogNullError(string nullObjectName, [CallerMemberName] string? previousMethodName = null) {
+	public void LogNullError(object? nullObject, [CallerArgumentExpression("nullObject")] string? nullObjectName = null, [CallerMemberName] string? previousMethodName = null) {
 		if (string.IsNullOrEmpty(nullObjectName)) {
 			throw new ArgumentNullException(nameof(nullObjectName));
 		}

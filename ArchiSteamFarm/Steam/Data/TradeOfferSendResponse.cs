@@ -39,13 +39,13 @@ internal sealed class TradeOfferSendResponse {
 	private string TradeOfferIDText {
 		set {
 			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(nameof(value));
+				ASF.ArchiLogger.LogNullError(value);
 
 				return;
 			}
 
 			if (!ulong.TryParse(value, out ulong tradeOfferID) || (tradeOfferID == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(tradeOfferID));
+				ASF.ArchiLogger.LogNullError(tradeOfferID);
 
 				return;
 			}

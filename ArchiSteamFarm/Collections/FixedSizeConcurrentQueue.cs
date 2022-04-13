@@ -35,7 +35,7 @@ internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> {
 
 		set {
 			if (value == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(value));
+				ASF.ArchiLogger.LogNullError(value);
 
 				return;
 			}

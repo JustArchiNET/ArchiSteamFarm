@@ -227,7 +227,7 @@ public sealed class GlobalDatabase : SerializableFile {
 		}
 
 		if (globalDatabase == null) {
-			ASF.ArchiLogger.LogNullError(nameof(globalDatabase));
+			ASF.ArchiLogger.LogNullError(globalDatabase);
 
 			return null;
 		}

@@ -48,7 +48,7 @@ internal static class SteamUtilities {
 				packageID = lineItem["ItemAppID"].AsUnsignedInteger();
 
 				if (packageID == 0) {
-					ASF.ArchiLogger.LogNullError(nameof(packageID));
+					ASF.ArchiLogger.LogNullError(packageID);
 
 					return null;
 				}
@@ -57,7 +57,7 @@ internal static class SteamUtilities {
 			string? gameName = lineItem["ItemDescription"].AsString();
 
 			if (string.IsNullOrEmpty(gameName)) {
-				ASF.ArchiLogger.LogNullError(nameof(gameName));
+				ASF.ArchiLogger.LogNullError(gameName);
 
 				return null;
 			}

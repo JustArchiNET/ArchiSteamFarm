@@ -568,7 +568,7 @@ public sealed class BotConfig {
 		}
 
 		if (botConfig == null) {
-			ASF.ArchiLogger.LogNullError(nameof(botConfig));
+			ASF.ArchiLogger.LogNullError(botConfig);
 
 			return (null, null);
 		}

@@ -187,7 +187,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable {
 			HashSet<Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
 
 			if (acceptedMatchableTypes.Count == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(acceptedMatchableTypes));
+				Bot.ArchiLogger.LogNullError(acceptedMatchableTypes);
 				LastAnnouncementCheck = DateTime.UtcNow;
 				ShouldSendHeartBeats = false;
 
@@ -480,7 +480,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable {
 					if (inventoryStateChanges.TryGetValue(set, out Dictionary<ulong, uint>? pastChanges) && (pastChanges.Count > 0)) {
 						foreach ((ulong classID, uint amount) in pastChanges) {
 							if (!ourFullSet.TryGetValue(classID, out uint fullAmount) || (fullAmount == 0) || (fullAmount < amount)) {
-								Bot.ArchiLogger.LogNullError(nameof(fullAmount));
+								Bot.ArchiLogger.LogNullError(fullAmount);
 
 								return (false, skippedSetsThisRound.Count > 0);
 							}
@@ -492,7 +492,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable {
 							}
 
 							if (!ourTradableSet.TryGetValue(classID, out uint tradableAmount) || (tradableAmount == 0) || (tradableAmount < amount)) {
-								Bot.ArchiLogger.LogNullError(nameof(tradableAmount));
+								Bot.ArchiLogger.LogNullError(tradableAmount);
 
 								return (false, skippedSetsThisRound.Count > 0);
 							}

@@ -94,7 +94,7 @@ internal static class GitHub {
 			IElement? versionNode = revisionNode.SelectSingleElementNode(".//input/@value");
 
 			if (versionNode == null) {
-				ASF.ArchiLogger.LogNullError(nameof(versionNode));
+				ASF.ArchiLogger.LogNullError(versionNode);
 
 				return null;
 			}
@@ -102,7 +102,7 @@ internal static class GitHub {
 			string versionText = versionNode.GetAttribute("value");
 
 			if (string.IsNullOrEmpty(versionText)) {
-				ASF.ArchiLogger.LogNullError(nameof(versionText));
+				ASF.ArchiLogger.LogNullError(versionText);
 
 				return null;
 			}
@@ -110,7 +110,7 @@ internal static class GitHub {
 			IElement? dateTimeNode = revisionNode.SelectSingleElementNode(".//relative-time/@datetime");
 
 			if (dateTimeNode == null) {
-				ASF.ArchiLogger.LogNullError(nameof(dateTimeNode));
+				ASF.ArchiLogger.LogNullError(dateTimeNode);
 
 				return null;
 			}
@@ -118,13 +118,13 @@ internal static class GitHub {
 			string dateTimeText = dateTimeNode.GetAttribute("datetime");
 
 			if (string.IsNullOrEmpty(dateTimeText)) {
-				ASF.ArchiLogger.LogNullError(nameof(dateTimeText));
+				ASF.ArchiLogger.LogNullError(dateTimeText);
 
 				return null;
 			}
 
 			if (!DateTime.TryParse(dateTimeText, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out DateTime dateTime)) {
-				ASF.ArchiLogger.LogNullError(nameof(dateTime));
+				ASF.ArchiLogger.LogNullError(dateTime);
 
 				return null;
 			}
@@ -223,7 +223,7 @@ internal static class GitHub {
 				}
 
 				if (Changelog == null) {
-					ASF.ArchiLogger.LogNullError(nameof(Changelog));
+					ASF.ArchiLogger.LogNullError(Changelog);
 
 					return null;
 				}
@@ -246,7 +246,7 @@ internal static class GitHub {
 				}
 
 				if (Changelog == null) {
-					ASF.ArchiLogger.LogNullError(nameof(Changelog));
+					ASF.ArchiLogger.LogNullError(Changelog);
 
 					return null;
 				}
@@ -276,7 +276,7 @@ internal static class GitHub {
 				}
 
 				if (string.IsNullOrEmpty(MarkdownBody)) {
-					ASF.ArchiLogger.LogNullError(nameof(MarkdownBody));
+					ASF.ArchiLogger.LogNullError(MarkdownBody);
 
 					return null;
 				}

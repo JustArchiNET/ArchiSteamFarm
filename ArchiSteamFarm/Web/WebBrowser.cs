@@ -809,7 +809,7 @@ public sealed class WebBrowser : IDisposable {
 				Uri? redirectUri = response.Headers.Location;
 
 				if (redirectUri == null) {
-					ArchiLogger.LogNullError(nameof(redirectUri));
+					ArchiLogger.LogNullError(redirectUri);
 
 					return null;
 				}

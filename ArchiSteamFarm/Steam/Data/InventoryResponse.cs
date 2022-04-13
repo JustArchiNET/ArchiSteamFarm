@@ -53,13 +53,13 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	private string LastAssetIDText {
 		set {
 			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(nameof(value));
+				ASF.ArchiLogger.LogNullError(value);
 
 				return;
 			}
 
 			if (!ulong.TryParse(value, out ulong lastAssetID) || (lastAssetID == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(lastAssetID));
+				ASF.ArchiLogger.LogNullError(lastAssetID);
 
 				return;
 			}
@@ -117,7 +117,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 							string appIDText = tag.Value[4..];
 
 							if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
-								ASF.ArchiLogger.LogNullError(nameof(appID));
+								ASF.ArchiLogger.LogNullError(appID);
 
 								break;
 							}
@@ -217,13 +217,13 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		private string ClassIDText {
 			set {
 				if (string.IsNullOrEmpty(value)) {
-					ASF.ArchiLogger.LogNullError(nameof(value));
+					ASF.ArchiLogger.LogNullError(value);
 
 					return;
 				}
 
 				if (!ulong.TryParse(value, out ulong classID) || (classID == 0)) {
-					ASF.ArchiLogger.LogNullError(nameof(classID));
+					ASF.ArchiLogger.LogNullError(classID);
 
 					return;
 				}
@@ -240,7 +240,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 				}
 
 				if (!ulong.TryParse(value, out ulong instanceID)) {
-					ASF.ArchiLogger.LogNullError(nameof(instanceID));
+					ASF.ArchiLogger.LogNullError(instanceID);
 
 					return;
 				}
