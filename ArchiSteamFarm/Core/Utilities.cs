@@ -113,16 +113,10 @@ public static class Utilities {
 	}
 
 	[PublicAPI]
-	public static async void InBackground<T>(Func<T> function, bool longRunning = false) {
+	public static void InBackground<T>(Func<T> function, bool longRunning = false) {
 		ArgumentNullException.ThrowIfNull(function);
 
-		TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
-
-		if (longRunning) {
-			options |= TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness;
-		}
-
-		await Task.Factory.StartNew(function, CancellationToken.None, options, TaskScheduler.Default).ConfigureAwait(false);
+		InBackground(void() => function(), longRunning);
 	}
 
 	[PublicAPI]
