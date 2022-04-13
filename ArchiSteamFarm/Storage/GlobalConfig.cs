@@ -488,7 +488,7 @@ public sealed class GlobalConfig {
 		}
 
 		if (globalConfig == null) {
-			ASF.ArchiLogger.LogNullError(nameof(globalConfig));
+			ASF.ArchiLogger.LogNullError(globalConfig);
 
 			return (null, null);
 		}

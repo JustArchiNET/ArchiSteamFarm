@@ -327,7 +327,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			}
 
 			if (GamesToFarm.Count == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(GamesToFarm));
+				Bot.ArchiLogger.LogNullError(GamesToFarm);
 
 				return;
 			}
@@ -461,7 +461,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			string? appIDText = appIDNode.GetAttribute("id");
 
 			if (string.IsNullOrEmpty(appIDText)) {
-				Bot.ArchiLogger.LogNullError(nameof(appIDText));
+				Bot.ArchiLogger.LogNullError(appIDText);
 
 				continue;
 			}
@@ -469,7 +469,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			string[] appIDSplitted = appIDText.Split('_');
 
 			if (appIDSplitted.Length < 5) {
-				Bot.ArchiLogger.LogNullError(nameof(appIDSplitted));
+				Bot.ArchiLogger.LogNullError(appIDSplitted);
 
 				continue;
 			}
@@ -477,7 +477,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			appIDText = appIDSplitted[4];
 
 			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(appID));
+				Bot.ArchiLogger.LogNullError(appID);
 
 				continue;
 			}
@@ -518,7 +518,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			IElement? progressNode = statsNode?.SelectSingleElementNode(".//span[@class='progress_info_bold']");
 
 			if (progressNode == null) {
-				Bot.ArchiLogger.LogNullError(nameof(progressNode));
+				Bot.ArchiLogger.LogNullError(progressNode);
 
 				continue;
 			}
@@ -526,7 +526,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			string progressText = progressNode.TextContent;
 
 			if (string.IsNullOrEmpty(progressText)) {
-				Bot.ArchiLogger.LogNullError(nameof(progressText));
+				Bot.ArchiLogger.LogNullError(progressText);
 
 				continue;
 			}
@@ -537,7 +537,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			// This might fail if we have no card drops remaining, 0 is not printed in this case - that's fine
 			if (progressMatch.Success) {
 				if (!ushort.TryParse(progressMatch.Value, out cardsRemaining) || (cardsRemaining == 0)) {
-					Bot.ArchiLogger.LogNullError(nameof(cardsRemaining));
+					Bot.ArchiLogger.LogNullError(cardsRemaining);
 
 					continue;
 				}
@@ -557,7 +557,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 				IElement? cardsEarnedNode = statsNode?.SelectSingleElementNode(".//div[@class='card_drop_info_header']");
 
 				if (cardsEarnedNode == null) {
-					Bot.ArchiLogger.LogNullError(nameof(cardsEarnedNode));
+					Bot.ArchiLogger.LogNullError(cardsEarnedNode);
 
 					continue;
 				}
@@ -565,7 +565,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 				string cardsEarnedText = cardsEarnedNode.TextContent;
 
 				if (string.IsNullOrEmpty(cardsEarnedText)) {
-					Bot.ArchiLogger.LogNullError(nameof(cardsEarnedText));
+					Bot.ArchiLogger.LogNullError(cardsEarnedText);
 
 					continue;
 				}
@@ -573,13 +573,13 @@ public sealed class CardsFarmer : IAsyncDisposable {
 				Match cardsEarnedMatch = Regex.Match(cardsEarnedText, @"\d+");
 
 				if (!cardsEarnedMatch.Success) {
-					Bot.ArchiLogger.LogNullError(nameof(cardsEarnedMatch));
+					Bot.ArchiLogger.LogNullError(cardsEarnedMatch);
 
 					continue;
 				}
 
 				if (!ushort.TryParse(cardsEarnedMatch.Value, out ushort cardsEarned)) {
-					Bot.ArchiLogger.LogNullError(nameof(cardsEarned));
+					Bot.ArchiLogger.LogNullError(cardsEarned);
 
 					continue;
 				}
@@ -602,7 +602,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			IElement? timeNode = statsNode?.SelectSingleElementNode(".//div[@class='badge_title_stats_playtime']");
 
 			if (timeNode == null) {
-				Bot.ArchiLogger.LogNullError(nameof(timeNode));
+				Bot.ArchiLogger.LogNullError(timeNode);
 
 				continue;
 			}
@@ -610,7 +610,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			string hoursText = timeNode.TextContent;
 
 			if (string.IsNullOrEmpty(hoursText)) {
-				Bot.ArchiLogger.LogNullError(nameof(hoursText));
+				Bot.ArchiLogger.LogNullError(hoursText);
 
 				continue;
 			}
@@ -621,7 +621,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			// This might fail if we have exactly 0.0 hours played, as it's not printed in that case - that's fine
 			if (hoursMatch.Success) {
 				if (!float.TryParse(hoursMatch.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out hours) || (hours <= 0.0F)) {
-					Bot.ArchiLogger.LogNullError(nameof(hours));
+					Bot.ArchiLogger.LogNullError(hours);
 
 					continue;
 				}
@@ -631,7 +631,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			IElement? nameNode = statsNode?.SelectSingleElementNode("(.//div[@class='card_drop_info_body'])[last()]");
 
 			if (nameNode == null) {
-				Bot.ArchiLogger.LogNullError(nameof(nameNode));
+				Bot.ArchiLogger.LogNullError(nameNode);
 
 				continue;
 			}
@@ -639,7 +639,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			string name = nameNode.TextContent;
 
 			if (string.IsNullOrEmpty(name)) {
-				Bot.ArchiLogger.LogNullError(nameof(name));
+				Bot.ArchiLogger.LogNullError(name);
 
 				continue;
 			}
@@ -651,7 +651,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 				nameStartIndex = name.IndexOf("You don't have any more drops remaining for ", StringComparison.Ordinal);
 
 				if (nameStartIndex <= 0) {
-					Bot.ArchiLogger.LogNullError(nameof(nameStartIndex));
+					Bot.ArchiLogger.LogNullError(nameStartIndex);
 
 					continue;
 				}
@@ -664,7 +664,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			int nameEndIndex = name.LastIndexOf('.');
 
 			if (nameEndIndex <= nameStartIndex) {
-				Bot.ArchiLogger.LogNullError(nameof(nameEndIndex));
+				Bot.ArchiLogger.LogNullError(nameEndIndex);
 
 				continue;
 			}
@@ -672,7 +672,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			name = WebUtility.HtmlDecode(name[nameStartIndex..nameEndIndex]);
 
 			if (string.IsNullOrEmpty(name)) {
-				Bot.ArchiLogger.LogNullError(nameof(name));
+				Bot.ArchiLogger.LogNullError(name);
 
 				continue;
 			}
@@ -687,7 +687,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 				string levelText = levelNode.TextContent;
 
 				if (string.IsNullOrEmpty(levelText)) {
-					Bot.ArchiLogger.LogNullError(nameof(levelText));
+					Bot.ArchiLogger.LogNullError(levelText);
 
 					continue;
 				}
@@ -695,7 +695,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 				int levelStartIndex = levelText.IndexOf("Level ", StringComparison.OrdinalIgnoreCase);
 
 				if (levelStartIndex < 0) {
-					Bot.ArchiLogger.LogNullError(nameof(levelStartIndex));
+					Bot.ArchiLogger.LogNullError(levelStartIndex);
 
 					continue;
 				}
@@ -703,7 +703,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 				levelStartIndex += 6;
 
 				if (levelText.Length <= levelStartIndex) {
-					Bot.ArchiLogger.LogNullError(nameof(levelStartIndex));
+					Bot.ArchiLogger.LogNullError(levelStartIndex);
 
 					continue;
 				}
@@ -711,7 +711,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 				int levelEndIndex = levelText.IndexOf(',', levelStartIndex);
 
 				if (levelEndIndex <= levelStartIndex) {
-					Bot.ArchiLogger.LogNullError(nameof(levelEndIndex));
+					Bot.ArchiLogger.LogNullError(levelEndIndex);
 
 					continue;
 				}
@@ -719,7 +719,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 				levelText = levelText[levelStartIndex..levelEndIndex];
 
 				if (!byte.TryParse(levelText, out badgeLevel) || badgeLevel is 0 or > 5) {
-					Bot.ArchiLogger.LogNullError(nameof(badgeLevel));
+					Bot.ArchiLogger.LogNullError(badgeLevel);
 
 					continue;
 				}
@@ -911,7 +911,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 		float maxHour = games.Max(static game => game.HoursPlayed);
 
 		if (maxHour < 0) {
-			Bot.ArchiLogger.LogNullError(nameof(maxHour));
+			Bot.ArchiLogger.LogNullError(maxHour);
 
 			return false;
 		}
@@ -1011,7 +1011,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 		string progress = progressNode.TextContent;
 
 		if (string.IsNullOrEmpty(progress)) {
-			Bot.ArchiLogger.LogNullError(nameof(progress));
+			Bot.ArchiLogger.LogNullError(progress);
 
 			return null;
 		}
@@ -1023,7 +1023,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 		}
 
 		if (!ushort.TryParse(match.Value, out ushort cardsRemaining) || (cardsRemaining == 0)) {
-			Bot.ArchiLogger.LogNullError(nameof(cardsRemaining));
+			Bot.ArchiLogger.LogNullError(cardsRemaining);
 
 			return null;
 		}
@@ -1051,13 +1051,13 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			string lastPage = htmlNode.TextContent;
 
 			if (string.IsNullOrEmpty(lastPage)) {
-				Bot.ArchiLogger.LogNullError(nameof(lastPage));
+				Bot.ArchiLogger.LogNullError(lastPage);
 
 				return null;
 			}
 
 			if (!byte.TryParse(lastPage, out maxPages) || (maxPages == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(maxPages));
+				Bot.ArchiLogger.LogNullError(maxPages);
 
 				return null;
 			}
@@ -1229,7 +1229,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 						if (packageIDs != null) {
 							foreach (uint packageID in packageIDs) {
 								if (!Bot.OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
-									Bot.ArchiLogger.LogNullError(nameof(packageData));
+									Bot.ArchiLogger.LogNullError(packageData);
 
 									return;
 								}

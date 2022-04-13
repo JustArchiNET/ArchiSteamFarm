@@ -105,7 +105,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		string? confirmationHash = GenerateConfirmationHash(time, "conf");
 
 		if (string.IsNullOrEmpty(confirmationHash)) {
-			Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
+			Bot.ArchiLogger.LogNullError(confirmationHash);
 
 			return null;
 		}
@@ -129,13 +129,13 @@ public sealed class MobileAuthenticator : IDisposable {
 			string? idText = confirmationNode.GetAttribute("data-confid");
 
 			if (string.IsNullOrEmpty(idText)) {
-				Bot.ArchiLogger.LogNullError(nameof(idText));
+				Bot.ArchiLogger.LogNullError(idText);
 
 				return null;
 			}
 
 			if (!ulong.TryParse(idText, out ulong id) || (id == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(id));
+				Bot.ArchiLogger.LogNullError(id);
 
 				return null;
 			}
@@ -143,13 +143,13 @@ public sealed class MobileAuthenticator : IDisposable {
 			string? keyText = confirmationNode.GetAttribute("data-key");
 
 			if (string.IsNullOrEmpty(keyText)) {
-				Bot.ArchiLogger.LogNullError(nameof(keyText));
+				Bot.ArchiLogger.LogNullError(keyText);
 
 				return null;
 			}
 
 			if (!ulong.TryParse(keyText, out ulong key) || (key == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(key));
+				Bot.ArchiLogger.LogNullError(key);
 
 				return null;
 			}
@@ -157,13 +157,13 @@ public sealed class MobileAuthenticator : IDisposable {
 			string? creatorText = confirmationNode.GetAttribute("data-creator");
 
 			if (string.IsNullOrEmpty(creatorText)) {
-				Bot.ArchiLogger.LogNullError(nameof(creatorText));
+				Bot.ArchiLogger.LogNullError(creatorText);
 
 				return null;
 			}
 
 			if (!ulong.TryParse(creatorText, out ulong creator) || (creator == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(creator));
+				Bot.ArchiLogger.LogNullError(creator);
 
 				return null;
 			}
@@ -171,13 +171,13 @@ public sealed class MobileAuthenticator : IDisposable {
 			string? typeText = confirmationNode.GetAttribute("data-type");
 
 			if (string.IsNullOrEmpty(typeText)) {
-				Bot.ArchiLogger.LogNullError(nameof(typeText));
+				Bot.ArchiLogger.LogNullError(typeText);
 
 				return null;
 			}
 
 			if (!Enum.TryParse(typeText, out Confirmation.EType type) || (type == Confirmation.EType.Unknown)) {
-				Bot.ArchiLogger.LogNullError(nameof(type));
+				Bot.ArchiLogger.LogNullError(type);
 
 				return null;
 			}
@@ -220,7 +220,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		string? confirmationHash = GenerateConfirmationHash(time, "conf");
 
 		if (string.IsNullOrEmpty(confirmationHash)) {
-			Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
+			Bot.ArchiLogger.LogNullError(confirmationHash);
 
 			return false;
 		}

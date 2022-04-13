@@ -263,7 +263,7 @@ public static class ASF {
 			}
 
 			if (binaryAsset.DownloadURL == null) {
-				ArchiLogger.LogNullError(nameof(binaryAsset.DownloadURL));
+				ArchiLogger.LogNullError(binaryAsset.DownloadURL);
 
 				return null;
 			}
@@ -973,7 +973,7 @@ public static class ASF {
 			string fileName = Path.GetFileName(file);
 
 			if (string.IsNullOrEmpty(fileName)) {
-				ArchiLogger.LogNullError(nameof(fileName));
+				ArchiLogger.LogNullError(fileName);
 
 				return false;
 			}
@@ -981,7 +981,7 @@ public static class ASF {
 			string relativeFilePath = Path.GetRelativePath(targetDirectory, file);
 
 			if (string.IsNullOrEmpty(relativeFilePath)) {
-				ArchiLogger.LogNullError(nameof(relativeFilePath));
+				ArchiLogger.LogNullError(relativeFilePath);
 
 				return false;
 			}
@@ -990,7 +990,7 @@ public static class ASF {
 
 			switch (relativeDirectoryName) {
 				case null:
-					ArchiLogger.LogNullError(nameof(relativeDirectoryName));
+					ArchiLogger.LogNullError(relativeDirectoryName);
 
 					return false;
 				case "":
@@ -1054,7 +1054,7 @@ public static class ASF {
 				string? directory = Path.GetDirectoryName(file);
 
 				if (string.IsNullOrEmpty(directory)) {
-					ArchiLogger.LogNullError(nameof(directory));
+					ArchiLogger.LogNullError(directory);
 
 					return false;
 				}

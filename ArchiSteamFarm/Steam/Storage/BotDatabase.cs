@@ -194,7 +194,7 @@ internal sealed class BotDatabase : SerializableFile {
 		}
 
 		if (botDatabase == null) {
-			ASF.ArchiLogger.LogNullError(nameof(botDatabase));
+			ASF.ArchiLogger.LogNullError(botDatabase);
 
 			return null;
 		}

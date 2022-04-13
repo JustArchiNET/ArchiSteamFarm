@@ -299,7 +299,7 @@ public static class Utilities {
 		ResourceSet? defaultResourceSet = resourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
 
 		if (defaultResourceSet == null) {
-			ASF.ArchiLogger.LogNullError(nameof(defaultResourceSet));
+			ASF.ArchiLogger.LogNullError(defaultResourceSet);
 
 			return;
 		}
@@ -307,7 +307,7 @@ public static class Utilities {
 		HashSet<DictionaryEntry> defaultStringObjects = defaultResourceSet.Cast<DictionaryEntry>().ToHashSet();
 
 		if (defaultStringObjects.Count == 0) {
-			ASF.ArchiLogger.LogNullError(nameof(defaultStringObjects));
+			ASF.ArchiLogger.LogNullError(defaultStringObjects);
 
 			return;
 		}
@@ -316,7 +316,7 @@ public static class Utilities {
 		ResourceSet? currentResourceSet = resourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
 		if (currentResourceSet == null) {
-			ASF.ArchiLogger.LogNullError(nameof(currentResourceSet));
+			ASF.ArchiLogger.LogNullError(currentResourceSet);
 
 			return;
 		}

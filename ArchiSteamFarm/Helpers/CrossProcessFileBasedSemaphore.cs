@@ -162,7 +162,7 @@ internal sealed class CrossProcessFileBasedSemaphore : ICrossProcessSemaphore, I
 		string? directoryPath = Path.GetDirectoryName(FilePath);
 
 		if (string.IsNullOrEmpty(directoryPath)) {
-			ASF.ArchiLogger.LogNullError(nameof(directoryPath));
+			ASF.ArchiLogger.LogNullError(directoryPath);
 
 			return;
 		}

@@ -120,7 +120,7 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		if (globalCache == null) {
-			ASF.ArchiLogger.LogNullError(nameof(globalCache));
+			ASF.ArchiLogger.LogNullError(globalCache);
 
 			return null;
 		}

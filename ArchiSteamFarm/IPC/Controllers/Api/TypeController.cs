@@ -95,7 +95,7 @@ public sealed class TypeController : ArchiController {
 				string? valueText = value?.ToString();
 
 				if (string.IsNullOrEmpty(valueText)) {
-					ASF.ArchiLogger.LogNullError(nameof(valueText));
+					ASF.ArchiLogger.LogNullError(valueText);
 
 					return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(valueText))));
 				}

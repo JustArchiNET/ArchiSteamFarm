@@ -104,7 +104,7 @@ internal sealed class SteamSaleEvent : IAsyncDisposable {
 		string text = htmlNode.TextContent;
 
 		if (string.IsNullOrEmpty(text)) {
-			Bot.ArchiLogger.LogNullError(nameof(text));
+			Bot.ArchiLogger.LogNullError(text);
 
 			return null;
 		}
