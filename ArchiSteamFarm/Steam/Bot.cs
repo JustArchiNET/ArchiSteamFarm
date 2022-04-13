@@ -2193,8 +2193,14 @@ public sealed class Bot : IAsyncDisposable {
 	}
 
 	private static async Task LimitLoginRequestsAsync() {
-		if ((ASF.LoginSemaphore == null) || (ASF.LoginRateLimitingSemaphore == null)) {
-			ASF.ArchiLogger.LogNullError(null, $"{nameof(ASF.LoginSemaphore)} || {nameof(ASF.LoginRateLimitingSemaphore)}");
+		if (ASF.LoginSemaphore == null) {
+			ASF.ArchiLogger.LogNullError(ASF.LoginSemaphore);
+
+			return;
+		}
+
+		if (ASF.LoginRateLimitingSemaphore == null) {
+			ASF.ArchiLogger.LogNullError(ASF.LoginRateLimitingSemaphore);
 
 			return;
 		}
@@ -2517,8 +2523,20 @@ public sealed class Bot : IAsyncDisposable {
 	private async Task OnIncomingChatMessage(CChatRoom_IncomingChatMessage_Notification notification) {
 		ArgumentNullException.ThrowIfNull(notification);
 
-		if ((notification.chat_group_id == 0) || (notification.chat_id == 0) || (notification.steamid_sender == 0)) {
-			ArchiLogger.LogNullError(null, $"{nameof(notification.chat_group_id)} || {nameof(notification.chat_id)} || {nameof(notification.steamid_sender)}");
+		if (notification.chat_group_id == 0) {
+			ArchiLogger.LogNullError(notification.chat_group_id);
+
+			return;
+		}
+
+		if (notification.chat_id == 0) {
+			ArchiLogger.LogNullError(notification.chat_id);
+
+			return;
+		}
+
+		if (notification.steamid_sender == 0) {
+			ArchiLogger.LogNullError(notification.steamid_sender);
 
 			return;
 		}
@@ -3153,8 +3171,14 @@ public sealed class Bot : IAsyncDisposable {
 			while (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
 				(string? key, string? name) = BotDatabase.GetGameToRedeemInBackground();
 
-				if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(name)) {
-					ArchiLogger.LogNullError(null, $"{nameof(key)} || {nameof(name)}");
+				if (string.IsNullOrEmpty(key)) {
+					ArchiLogger.LogNullError(key);
+
+					break;
+				}
+
+				if (string.IsNullOrEmpty(name)) {
+					ArchiLogger.LogNullError(name);
 
 					break;
 				}
