@@ -482,7 +482,7 @@ StackTrace:
 		<value>Verbinde...</value>
 	</data>
 	<data name="BotHeartBeatFailed" xml:space="preserve">
-		<value>Die Verbindung zum Client konnte nicht getrennt werden. Verzicht auf diese Bot-Instanz!</value>
+		<value>Die Verbindung zum Client konnte nicht getrennt werden. Auf diese Bot-Instanz wird verzichtet!</value>
 	</data>
 	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
 		<value>SteamDirectory konnte nicht initialisiert werden: Die Verbindung mit dem Steam-Netzwerk könnte viel länger dauern als sonst!</value>
@@ -509,7 +509,7 @@ StackTrace:
 		<value>Es sieht so aus, als ob Sie das Programm zum ersten Mal gestartet haben. Willkommen!</value>
 	</data>
 	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-		<value>Ihre angegebene CurrentCulture ist ungültig, ASF wird weiterhin mit dem Standard laufen!</value>
+		<value>Ihre angegebene CurrentCulture ist ungültig, ASF wird weiterhin mit dem Standard ausgeführt!</value>
 	</data>
 	<data name="TranslationIncomplete" xml:space="preserve">
 		<value>ASF wird versuchen, Ihre bevorzugte Sprache {0} zu verwenden, jedoch wurde die Übersetzung in dieser Sprache nur zu {1} abgeschlossen. Können Sie uns vielleicht helfen, die ASF-Übersetzung in Ihrer Sprache zu verbessern?</value>
@@ -531,7 +531,7 @@ StackTrace:
 		<value>Das Benutzerkonto ist gesperrt, der Sammelprozess ist permanent unmöglich!</value>
 	</data>
 	<data name="BotStatusLocked" xml:space="preserve">
-		<value>Benutzerkonto ist gesperrt und kann keine Sammelkarten erhalten.</value>
+		<value>Der Bot ist gesperrt und kann keine Sammelkarten erhalten.</value>
 	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
 		<value>Diese Funktion steht nur im Headless-Modus zur Verfügung!</value>
