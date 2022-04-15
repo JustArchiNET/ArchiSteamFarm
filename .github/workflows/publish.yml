@@ -177,7 +177,7 @@ jobs:
             # Create the final zip file
             case "$(uname -s)" in
                 "Darwin")
-                    # We prefer to use zip on OS X as 7z implementation on that OS doesn't handle file permissions (chmod +x)
+                    # We prefer to use zip on macOS as 7z implementation on that OS doesn't handle file permissions (chmod +x)
                     if command -v zip >/dev/null; then
                         (
                             cd "${GITHUB_WORKSPACE}/out/${1}"
