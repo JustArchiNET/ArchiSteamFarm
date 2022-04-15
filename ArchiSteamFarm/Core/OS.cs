@@ -274,7 +274,7 @@ internal static class OS {
 		}
 
 		if (SharedInfo.BuildInfo.Variant.StartsWith("osx-", StringComparison.Ordinal)) {
-			// OS-specific OS X build is supported only on OS X
+			// OS-specific macOS build is supported only on macOS
 			return OperatingSystem.IsMacOS();
 		}
 
