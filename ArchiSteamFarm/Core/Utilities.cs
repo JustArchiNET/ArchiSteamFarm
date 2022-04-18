@@ -292,7 +292,7 @@ public static class Utilities {
 			for (byte i = 0; i < suggestions.Count; i++) {
 				string suggestion = suggestions[i];
 
-				if (suggestion.EndsWith('.')) {
+				if ((suggestion.Length == 0) || (suggestion[^1] == '.')) {
 					continue;
 				}
 
@@ -300,7 +300,7 @@ public static class Utilities {
 			}
 		}
 
-		return (result.Score < 4, suggestions is { Count: > 0 } ? string.Join(" ", suggestions) : null);
+		return (result.Score < 4, suggestions is { Count: > 0 } ? string.Join(" ", suggestions.Where(static suggestion => suggestion.Length > 0)) : null);
 	}
 
 	internal static void WarnAboutIncompleteTranslation(ResourceManager resourceManager) {
