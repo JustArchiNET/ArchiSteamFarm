@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ArchiSteamFarm.Core.Utilities;
@@ -35,7 +36,26 @@ public sealed class Utilities {
 	public void ContextSpecificWordsWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("archisteamfarmpassword").IsWeak);
 
 	[TestMethod]
+	public void EasyPasswordsHaveMeaningfulReason() {
+		(bool isWeak, string? reason) = TestPasswordStrength("CorrectHorse");
+
+		Assert.IsTrue(isWeak);
+		Assert.IsTrue(reason?.Contains("Capitalization doesn't help very much", StringComparison.OrdinalIgnoreCase));
+	}
+
+	[TestMethod]
 	public void LongPassphraseIsNotWeak() => Assert.IsFalse(TestPasswordStrength("10chars<!>asdf").IsWeak);
+
+	[TestMethod]
+	public void MemePasswordIsNotWeak() => Assert.IsFalse(TestPasswordStrength("correcthorsebatterystaple").IsWeak);
+
+	[TestMethod]
+	public void RepeatedPasswordsHaveMeaningfulReason() {
+		(bool isWeak, string? reason) = TestPasswordStrength("abcabcabc");
+
+		Assert.IsTrue(isWeak);
+		Assert.IsTrue(reason?.Contains("Avoid repeated words and characters", StringComparison.OrdinalIgnoreCase));
+	}
 
 	[TestMethod]
 	public void RepetitiveCharactersWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("testaaaatest").IsWeak);
@@ -48,5 +68,13 @@ public sealed class Utilities {
 
 	[TestMethod]
 	public void ShortPassphraseIsWeak() => Assert.IsTrue(TestPasswordStrength("four").IsWeak);
+
+	[TestMethod]
+	public void StraightRowsPasswordsHaveMeaningfulReason() {
+		(bool isWeak, string? reason) = TestPasswordStrength("`1234567890-=");
+
+		Assert.IsTrue(isWeak);
+		Assert.IsTrue(reason?.Contains("Straight rows of keys are easy to guess", StringComparison.OrdinalIgnoreCase));
+	}
 }
 #pragma warning restore CA1724 // We don't care about the potential conflict, as ASF class name has a priority

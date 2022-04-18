@@ -279,9 +279,28 @@ public static class Utilities {
 		}
 
 		Result result = Zxcvbn.Core.EvaluatePassword(password, forbiddenPhrases);
-		FeedbackItem feedback = result.Feedback;
 
-		return (result.Score < 4, string.IsNullOrEmpty(feedback.Warning) ? feedback.Suggestions.FirstOrDefault() : feedback.Warning);
+		IList<string>? suggestions = result.Feedback.Suggestions;
+
+		if (!string.IsNullOrEmpty(result.Feedback.Warning)) {
+			suggestions ??= new List<string>(1);
+
+			suggestions.Insert(0, result.Feedback.Warning);
+		}
+
+		if (suggestions != null) {
+			for (byte i = 0; i < suggestions.Count; i++) {
+				string suggestion = suggestions[i];
+
+				if (suggestion.EndsWith('.')) {
+					continue;
+				}
+
+				suggestions[i] = $"{suggestion}.";
+			}
+		}
+
+		return (result.Score < 4, suggestions is { Count: > 0 } ? string.Join(" ", suggestions) : null);
 	}
 
 	internal static void WarnAboutIncompleteTranslation(ResourceManager resourceManager) {
