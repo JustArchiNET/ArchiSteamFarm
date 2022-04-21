@@ -209,7 +209,9 @@ StackTrace:
 	<data name="IPCReady" xml:space="preserve">
 		<value>שרת IPC מוכן!</value>
 	</data>
-	
+	<data name="IPCStarting" xml:space="preserve">
+		<value>מתחיל שרת IPC...</value>
+	</data>
 	<data name="BotAlreadyStopped" xml:space="preserve">
 		<value>בוט זה כבר הפסיק!</value>
 	</data>
@@ -283,10 +285,18 @@ StackTrace:
 		<value>אסימון 2FA: {0}</value>
 		<comment>{0} will be replaced by generated 2FA token (string)</comment>
 	</data>
-	
-	
-	
-	
+	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+		<value>החקלאות האוטומטית נעצרה!</value>
+	</data>
+	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+		<value>החציבה האוטומטית שבה לפעול!</value>
+	</data>
+	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+		<value>החציבה האוטומטית כבר בהשהיה!</value>
+	</data>
+	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+		<value>החציבה האוטומטית כבר שבה לפעול!</value>
+	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>מחובר לסטים!</value>
 	</data>
@@ -474,7 +484,10 @@ StackTrace:
 		<comment>{0} will be replaced by the bug's name provided by ASF</comment>
 	</data>
 	
-	
+	<data name="BotWalletBalance" xml:space="preserve">
+		<value>יתרה בארנק: {1}{0}</value>
+		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+	</data>
 	
 	
 	

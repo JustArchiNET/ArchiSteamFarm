@@ -82,14 +82,35 @@
 	
 	
 	
+	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+		<value>יישומים חדשים: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+		<value>יישומים מאומתים: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+		<value>חבילות חדשות: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+		<value>חבילות מאומתות: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginSecretListInitialized" xml:space="preserve">
+		<value>{0} אותחל, הפלאגין לא יפתור אף אחד מאלה: {1}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>טוען מטמון עולמי מסוג STD...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>מאמת את שלמות מטמון ה-STD העולמי...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>נכשל אימות שלמות מטמון ה-STD העולמי. זה מרמז על פגיעה פוטנציאלית בקובץ/זיכרון, במקום זה הוא יאותחל מחדש.</value>
+	</data>
 </root>
