@@ -195,7 +195,7 @@ StackTrace:
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Bitte gebe den SteamGuard Authentifizierungstoken ein, der an Ihre E-Mail Adresse geschickt wurde: </value>
+		<value>Bitte geben Sie den SteamGuard Authentifizierungstoken ein, der an Ihre E-Mail Adresse geschickt wurde: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
@@ -370,7 +370,7 @@ StackTrace:
 		<value>Bot-Instanz nicht gestartet, weil diese in der Konfigurationsdatei deaktiviert ist!</value>
 	</data>
 	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-		<value>Der TwoFactorCodeMismatch-Fehlercode wurde {0} Mal in Folge empfangen. Entweder sind Ihre 2FA-Anmeldeinformationen nicht mehr gültig oder die Systemuhr ist nicht synchronisiert. Der Vorgang wird abgebrochen!</value>
+		<value>Der TwoFactorCodeMismatch-Fehlercode wurde {0} Mal in Folge empfangen. Entweder sind Ihre 2FA-Anmedeinformationen nicht mehr gültig oder die Systemuhr ist nicht synchronisiert. Der Vorgang wird abgebrochen!</value>
 		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
 	</data>
 	<data name="BotLoggedOff" xml:space="preserve">
@@ -491,7 +491,7 @@ StackTrace:
 		<value>Anhalten...</value>
 	</data>
 	<data name="ErrorBotConfigInvalid" xml:space="preserve">
-		<value>Deine Bot-Konfiguration ist ungültig. Bitte überprüfen Sie den Inhalt von {0} und versuchen Sie es erneut!</value>
+		<value>Ihre Bot-Konfiguration ist ungültig. Bitte überprüfen Sie den Inhalt von {0} und versuchen Sie es erneut!</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="ErrorDatabaseInvalid" xml:space="preserve">
@@ -556,7 +556,7 @@ Prozesslaufzeit: {1}</value>
 		<comment>{0} will be replaced by queue number</comment>
 	</data>
 	<data name="DoneClearingDiscoveryQueue" xml:space="preserve">
-		<value>Fertig mit dem Löschen der Steam-Entdeckungsliste #{0}.</value>
+		<value>Steam-Entdeckungsliste #{0} wurde erfolgreich geleert.</value>
 		<comment>{0} will be replaced by queue number</comment>
 	</data>
 	<data name="BotOwnsOverviewPerGame" xml:space="preserve">
@@ -623,10 +623,10 @@ Prozesslaufzeit: {1}</value>
 		<value>Nichts gefunden!</value>
 	</data>
 	<data name="PluginsWarning" xml:space="preserve">
-		<value>Sie haben ein oder mehrere benutzerdefinierte Plugins in ASF geladen. Da wir keine Unterstützung für modifizierte Setups anbieten können, bitten wir Sie sich im Falle von Problemen an die entsprechenden Entwickler der Plugins zu wenden.</value>
+		<value>Sie haben ein oder mehrere benutzerdefinierte Plugins in ASF geladen. Da wir keine Unterstützung für modifizierte Setups anbieten können, bitten wir Sie, sich im Falle von Problemen an die entsprechenden Entwickler der Plugins zu wenden.</value>
 	</data>
 	<data name="PleaseWait" xml:space="preserve">
-		<value>Bitte warte...</value>
+		<value>Bitte warten...</value>
 	</data>
 	<data name="EnterCommand" xml:space="preserve">
 		<value>Befehl eingeben: </value>
@@ -649,14 +649,14 @@ Prozesslaufzeit: {1}</value>
 		<comment>{0} will be replaced by number of confirmations</comment>
 	</data>
 	<data name="BotExtraIdlingCooldown" xml:space="preserve">
-		<value>Wir warten bis zu {0} um sicherzustellen, dass es möglich ist, den Sammelprozess zu starten...</value>
+		<value>Wir warten bis zu {0}, um sicherzustellen, dass der Sammelprozess gestartet werden kann...</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
 	</data>
 	<data name="UpdateCleanup" xml:space="preserve">
 		<value>Alte Dateien nach dem Update bereinigen...</value>
 	</data>
 	<data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-		<value>Erstelle Steam-Jugendschutz-Code, das kann einige Zeit dauern. Eventuell solltest du stattdessen den Code in der Konfiguration hinterlegen...</value>
+		<value>Erstelle Steam-Jugendschutz-Code, das kann einige Zeit dauern. Eventuell sollten Sie stattdessen den Code in der Konfiguration hinterlegen...</value>
 	</data>
 	<data name="IPCConfigChanged" xml:space="preserve">
 		<value>Die IPC-Konfiguration wurde geändert!</value>
@@ -692,48 +692,48 @@ Prozesslaufzeit: {1}</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
 	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Dein IPC-Passwort scheint schwach zu sein. Für erhöhte Sicherheit solltest du überlegen, ein Stärkeres auszusuchen. Details: {0}</value>
+		<value>Ihr IPC-Passwort scheint schwach zu sein. Für erhöhte Sicherheit sollten Sie überlegen, ein Stärkeres auszusuchen. Details: {0}Ihr</value>
 		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Dein Steam-Passwort für '{0}' scheint schwach zu sein. Für erhöhte Sicherheit solltest du überlegen, ein Stärkeres auszusuchen. Details: {1}</value>
+		<value>Ihr Steam-Passwort für '{0}' scheint schwach zu sein. Für erhöhte Sicherheit sollten Sie überlegen, ein Stärkeres auszusuchen. Details: {1}</value>
 		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Dein kryptografischer Schlüssel scheint schwach zu sein. Für erhöhte Sicherheit solltest du überlegen, einen Stärkeren auszusuchen. Details: {0}</value>
+		<value>Ihr kryptografischer Schlüssel scheint schwach zu sein. Für erhöhte Sicherheit sollten Sie überlegen, einen Stärkeren auszusuchen. Details: {0}</value>
 		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
 	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
-		<value>Dein kryptografischer Schlüssel ist zu kurz. Wir empfehlen einen zu verwenden, der mindestens {0} Bytes (Zeichen) lang ist.</value>
+		<value>Ihr kryptografischer Schlüssel ist zu kurz. Wir empfehlen einen zu verwenden, der mindestens {0} Bytes (Zeichen) lang ist.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Du verwendest {0} für {1}, hast aber keinen eigenen kryptografischen Schlüssel mit --cryptkey spezifiziert. Für erhöhte Sicherheit solltest du einen eigenen kryptografischen Schlüssel verwenden.</value>
+		<value>Sie verwenden {0} für {1}, haben aber keinen eigenen kryptografischen Schlüssel mit --cryptkey spezifiziert. Für erhöhte Sicherheit sollten Sie einen eigenen kryptografischen Schlüssel verwenden.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
-		<value>Du verwendest {0} für {1}, hast aber keinen eigenen kryptografischen Schlüssel mit --cryptkey spezifiziert. Dies umgeht den Schutz komplett, da ASF gezwungen ist den internen (öffentlich bekannten) Schlüssel zu verwenden. Du solltest einen eigenen kryptografischen Schlüssel verwenden, um Nutzen von dieser Einstellung zu haben.</value>
+		<value>Sie verwenden {0} für {1}, haben aber keinen eigenen kryptografischen Schlüssel mit --cryptkey spezifiziert. Dies umgeht den Schutz komplett, da ASF gezwungen ist den internen (öffentlich bekannten) Schlüssel zu verwenden. Sie sollten einen eigenen kryptografischen Schlüssel verwenden, um Nutzen von dieser Einstellung zu haben.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
 	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>Du versuchst ASF als Administrator (root) auszuführen. Dies stellt ein signifikantes Sicherheitsrisiko für dein Gerät dar und da ASF diese Rechte nicht benötigt, unterstützen wir dieses Szenario nicht. Verwende das Kommandozeilenargument --ignore-unsupported-environment, wenn du wirklich weißt, was du tust.</value>
+		<value>Sie versuchen ASF als Administrator (root) auszuführen. Dies stellt ein signifikantes Sicherheitsrisiko für Ihr Gerät dar und da ASF diese Rechte nicht benötigt, unterstützen wir dieses Szenario nicht. Verwenden Sie das Kommandozeilenargument --ignore-unsupported-environment, wenn Sie wirklich wissen, was Sie tun.</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
-		<value>Du verwendest ASF in einer nicht unterstützten Umgebung und verwendest das Argument --ignore-unsupported-environment. Bitte beachte, dass wir für dieses Szenario keinerlei Unterstützung anbieten und du das Risiko vollständig auf dich selber nehmen musst. Du wurdest gewarnt.</value>
+		<value>Sie nutzen ASF in einer nicht unterstützten Umgebung und verwenden das Argument --ignore-unsupported-environment. Bitte beachten Sie, dass wir für dieses Szenario keinerlei Unterstützung anbieten und Sie das Risiko vollständig bei Ihnen liegt. Sie wurden gewarnt.</value>
 	</data>
 	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
-		<value>Rufe Prüfsumme vom ASF Server ab...</value>
+		<value>Rufe Prüfsumme vom ASF-Server ab...</value>
 	</data>
 	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
-		<value>Verifiziere Prüfsumme der heruntergeladenen Datei mmit der des ASF Servers...</value>
+		<value>Verifiziere Prüfsumme der heruntergeladenen Datei mit der des ASF Servers...</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>Der Server weiß nichts von der Version, zu der wir versuchen zu aktualisieren. Diese Situation ist möglich wenn die Version erst kürzlich veröffentlicht wurde - Wir weigern uns als zusätzliche Sicherheitsmaßnahme das Updateprozedere zum jetzigen Zeitpunkt durchzuführen.</value>
+		<value>Die angeforderte Version, zu der wir versuchen zu aktualisieren, ist auf dem Server nicht Verfügbar. Diese Situation ist möglich, wenn die Version erst kürzlich veröffentlicht wurde. Als zusätzliche Sicherheitsmaßnahme wird das Updateprozedere zum jetzigen Zeitpunkt nicht fortgesetzt.</value>
 	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
-		<value>Der Server antwortete mit einer unterschiedlichen Prüfsumme. Dies kann einen korrupten Download oder eine MITM-Attacke indizieren; Wir weigern uns mit dem Update fortzufahren!</value>
+		<value>Der Server antwortete mit einer unterschiedlichen Prüfsumme. Dies kann einen korrupten Download oder eine MITM-Attacke indizieren; Das Update wird abgebrochen!</value>
 	</data>
 	<data name="PatchingFiles" xml:space="preserve">
-		<value>Update ASF-Dateien...</value>
+		<value>Aktualisiere ASF-Dateien...</value>
 	</data>
 </root>
