@@ -260,7 +260,11 @@ internal sealed class Startup {
 					}
 				);
 
-				options.CustomSchemaIds(static type => type.GetUnifiedName());
+				// We require custom schema IDs due to conflicting type names, choosing the proper one is tricky as there is no good answer and any kind of convention has a potential to create conflict
+				// FullName and Name both do, ToString() for unknown to me reason doesn't, and I don't have courage to call our WebUtilities.GetUnifiedName() better than what .NET ships with (because it isn't)
+				// Let's use ToString() until we find a good enough reason to change it
+				options.CustomSchemaIds(static type => type.ToString());
+
 				options.EnableAnnotations(true, true);
 
 				options.SchemaFilter<CustomAttributesSchemaFilter>();
