@@ -355,7 +355,7 @@ StackTrace:
 		<value>A coleta automática já está pausada!</value>
 	</data>
 	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-		<value>A coleta automática já está pausada!</value>
+		<value>A coleta automática já está retomada!</value>
 	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>Conectado ao Steam!</value>
