@@ -156,7 +156,9 @@ internal static class Program {
 		AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 		TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
-#if !NETFRAMEWORK
+#if NETFRAMEWORK
+		RuntimeMadness.Initialize();
+#else
 		if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 			foreach (PosixSignal signal in SupportedPosixSignals) {
 				RegisteredPosixSignals[signal] = PosixSignalRegistration.Create(signal, OnPosixSignal);
