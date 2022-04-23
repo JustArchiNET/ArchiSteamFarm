@@ -44,7 +44,7 @@ public sealed class SteamTokenDumperConfig {
 	public ImmutableHashSet<uint> SecretPackageIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	public bool SkipAutoGrantPackages { get; private set; }
+	public bool SkipAutoGrantPackages { get; private set; } = true;
 
 	[JsonConstructor]
 	internal SteamTokenDumperConfig() { }
