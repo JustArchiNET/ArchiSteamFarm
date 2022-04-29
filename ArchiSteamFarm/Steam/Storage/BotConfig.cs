@@ -196,7 +196,7 @@ public sealed class BotConfig {
 	public EPersonaState OnlineStatus { get; private set; } = DefaultOnlineStatus;
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	public ArchiCryptoHelper.ECryptoMethod PasswordFormat { get; private set; } = DefaultPasswordFormat;
+	public ArchiCryptoHelper.ECryptoMethod PasswordFormat { get; internal set; } = DefaultPasswordFormat;
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	public bool Paused { get; private set; } = DefaultPaused;
@@ -524,7 +524,7 @@ public sealed class BotConfig {
 			return null;
 		}
 
-		if (PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText) {
+		if (!PasswordFormat.HasTransformation()) {
 			return SteamPassword;
 		}
 
@@ -629,15 +629,6 @@ public sealed class BotConfig {
 		botConfig.Saving = false;
 
 		return (botConfig, json != latestJson ? latestJson : null);
-	}
-
-	internal void SetDecryptedSteamPassword(string? decryptedSteamPassword) {
-		if (!string.IsNullOrEmpty(decryptedSteamPassword) && PasswordFormat.HasTransformation()) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			decryptedSteamPassword = ArchiCryptoHelper.Encrypt(PasswordFormat, decryptedSteamPassword!);
-		}
-
-		SteamPassword = decryptedSteamPassword;
 	}
 
 	public enum EAccess : byte {

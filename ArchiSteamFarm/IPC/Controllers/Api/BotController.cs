@@ -123,7 +123,10 @@ public sealed class BotController : ArchiController {
 				}
 
 				if (!request.BotConfig.IsSteamPasswordSet && bot.BotConfig.IsSteamPasswordSet) {
-					request.BotConfig.SetDecryptedSteamPassword(await bot.BotConfig.GetDecryptedSteamPassword().ConfigureAwait(false));
+					request.BotConfig.SteamPassword = bot.BotConfig.SteamPassword;
+
+					// Since we're inheriting the password, we should also inherit the format, whatever that might be
+					request.BotConfig.PasswordFormat = bot.BotConfig.PasswordFormat;
 				}
 
 				if (!request.BotConfig.IsSteamParentalCodeSet && bot.BotConfig.IsSteamParentalCodeSet) {

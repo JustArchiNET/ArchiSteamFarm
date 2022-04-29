@@ -860,12 +860,19 @@ public sealed class Bot : IAsyncDisposable {
 		switch (inputType) {
 			case ASF.EUserInputType.Login:
 				BotConfig.SteamLogin = inputValue;
+
+				// Do not allow saving this account credential
 				BotConfig.IsSteamLoginSet = false;
 
 				break;
 			case ASF.EUserInputType.Password:
-				BotConfig.SetDecryptedSteamPassword(inputValue);
+				BotConfig.SteamPassword = inputValue;
+
+				// Do not allow saving this account credential
 				BotConfig.IsSteamPasswordSet = false;
+
+				// If by any chance user has wrongly configured password format, we reset it back to plaintext
+				BotConfig.PasswordFormat = ArchiCryptoHelper.ECryptoMethod.PlainText;
 
 				break;
 			case ASF.EUserInputType.SteamGuard:
@@ -882,6 +889,8 @@ public sealed class Bot : IAsyncDisposable {
 				}
 
 				BotConfig.SteamParentalCode = inputValue;
+
+				// Do not allow saving this account credential
 				BotConfig.IsSteamParentalCodeSet = false;
 
 				break;
