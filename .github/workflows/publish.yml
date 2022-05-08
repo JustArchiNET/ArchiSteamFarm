@@ -339,14 +339,12 @@ jobs:
         Get-Job | Receive-Job -Wait
 
     - name: Upload ASF-generic
-      continue-on-error: true
       uses: actions/upload-artifact@v3.0.0
       with:
         name: ${{ matrix.os }}_ASF-generic
         path: out/ASF-generic.zip
 
     - name: Upload ASF-generic-netf
-      continue-on-error: true
       if: startsWith(matrix.os, 'windows-')
       uses: actions/upload-artifact@v3.0.0
       with:
@@ -354,42 +352,36 @@ jobs:
         path: out/ASF-generic-netf.zip
 
     - name: Upload ASF-linux-arm
-      continue-on-error: true
       uses: actions/upload-artifact@v3.0.0
       with:
         name: ${{ matrix.os }}_ASF-linux-arm
         path: out/ASF-linux-arm.zip
 
     - name: Upload ASF-linux-arm64
-      continue-on-error: true
       uses: actions/upload-artifact@v3.0.0
       with:
         name: ${{ matrix.os }}_ASF-linux-arm64
         path: out/ASF-linux-arm64.zip
 
     - name: Upload ASF-linux-x64
-      continue-on-error: true
       uses: actions/upload-artifact@v3.0.0
       with:
         name: ${{ matrix.os }}_ASF-linux-x64
         path: out/ASF-linux-x64.zip
 
     - name: Upload ASF-osx-arm64
-      continue-on-error: true
       uses: actions/upload-artifact@v3.0.0
       with:
         name: ${{ matrix.os }}_ASF-osx-arm64
         path: out/ASF-osx-arm64.zip
 
     - name: Upload ASF-osx-x64
-      continue-on-error: true
       uses: actions/upload-artifact@v3.0.0
       with:
         name: ${{ matrix.os }}_ASF-osx-x64
         path: out/ASF-osx-x64.zip
 
     - name: Upload ASF-win-x64
-      continue-on-error: true
       uses: actions/upload-artifact@v3.0.0
       with:
         name: ${{ matrix.os }}_ASF-win-x64
@@ -473,14 +465,12 @@ jobs:
         )
 
     - name: Upload SHA512SUMS
-      continue-on-error: true
       uses: actions/upload-artifact@v3.0.0
       with:
         name: SHA512SUMS
         path: out/SHA512SUMS
 
     - name: Upload SHA512SUMS.sign
-      continue-on-error: true
       uses: actions/upload-artifact@v3.0.0
       with:
         name: SHA512SUMS.sign

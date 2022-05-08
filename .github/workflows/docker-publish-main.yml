@@ -70,7 +70,6 @@ jobs:
         push: true
 
     - name: Update DockerHub repository description
-      continue-on-error: true
       uses: peter-evans/dockerhub-description@v3.0.0
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
