@@ -524,7 +524,8 @@ public sealed class BotConfig {
 			return null;
 		}
 
-		if (!PasswordFormat.HasTransformation()) {
+		if (PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText) {
+			// We can return SteamPassword only with PlainText, as despite no transformation other password formats still require decryption process
 			return SteamPassword;
 		}
 

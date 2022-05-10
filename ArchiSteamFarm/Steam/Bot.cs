@@ -2952,7 +2952,7 @@ public sealed class Bot : IAsyncDisposable {
 
 		string? loginKey = callback.LoginKey;
 
-		if (BotConfig.PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText) {
+		if (BotConfig.PasswordFormat.HasTransformation()) {
 			loginKey = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, loginKey);
 		}
 
