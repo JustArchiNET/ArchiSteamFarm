@@ -73,7 +73,7 @@
 
 	<!-- .NET Framework is a special snowflake -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Release' AND '$(TargetFramework)' == 'net48'">
-		<WarningsNotAsErrors>$(WarningsNotAsErrors),NU1507</WarningsNotAsErrors>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<!-- Enable public signing if not part of Visual Studio, which is too stupid to understand what public signing is -->
