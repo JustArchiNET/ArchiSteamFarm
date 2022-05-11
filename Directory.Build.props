@@ -33,6 +33,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 		<PackageReference Include="JustArchiNET.Madness" />
+
 		<Using Include="JustArchiNET.Madness" />
 		<Using Include="JustArchiNET.Madness.ArgumentNullExceptionMadness.ArgumentNullException" Alias="ArgumentNullException" />
 		<Using Include="JustArchiNET.Madness.ArrayMadness.Array" Alias="Array" />
@@ -68,6 +69,11 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
 		<WarningsNotAsErrors>CS8002,IL2026,IL2057,IL2072,IL2075,IL2104</WarningsNotAsErrors>
+	</PropertyGroup>
+
+	<!-- .NET Framework is a special snowflake -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Release' AND '$(TargetFramework)' == 'net48'">
+		<WarningsNotAsErrors>$(WarningsNotAsErrors),NU1507</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<!-- Enable public signing if not part of Visual Studio, which is too stupid to understand what public signing is -->
