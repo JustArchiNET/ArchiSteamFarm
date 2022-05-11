@@ -32,6 +32,7 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+		<NoWarn>$(NoWarn),NU1507</NoWarn>
 		<PackageReference Include="JustArchiNET.Madness" />
 
 		<Using Include="JustArchiNET.Madness" />
@@ -68,7 +69,7 @@
 		<DebugType>none</DebugType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
-		<WarningsNotAsErrors>CS8002,IL2026,IL2057,IL2072,IL2075,IL2104,NU1507</WarningsNotAsErrors>
+		<WarningsNotAsErrors>CS8002,IL2026,IL2057,IL2072,IL2075,IL2104</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<!-- Enable public signing if not part of Visual Studio, which is too stupid to understand what public signing is -->
