@@ -16,7 +16,7 @@
 		<LangVersion>latest</LangVersion>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<NeutralLanguage>en</NeutralLanguage>
-		<NoWarn>1591,NU1507</NoWarn>
+		<NoWarn>1591</NoWarn>
 		<Nullable>enable</Nullable>
 		<PackageIcon>../resources/ASF.ico</PackageIcon>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -32,6 +32,7 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+		<NoWarn>$(NoWarn),NU1507</NoWarn>
 		<PackageReference Include="JustArchiNET.Madness" />
 
 		<Using Include="JustArchiNET.Madness" />
