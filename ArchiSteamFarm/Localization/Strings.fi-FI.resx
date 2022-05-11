@@ -104,7 +104,9 @@ StackTrace:
 		<value>{0} on virheellinen!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Yhtään bottia ei ole määritelty. Unohditko määrittää ASF:n asetuksesi? Noudata 'Setting up' -opasta wikissä, jos olet hämmentynyt.</value>
+	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} on ei mitään!</value>
 		<comment>{0} will be replaced by object's name</comment>
@@ -192,7 +194,10 @@ StackTrace:
 		<value>Syötä 2FA koodi Steam varmennus sovelluksesta: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Syötä SteamGuard -varmennuskoodi, joka lähetettiin sähköpostiisi: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Syötä Steam-tilisi käyttäjätunnus: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -222,7 +227,10 @@ StackTrace:
 		<value>Bottia nimeltä {0} ei voitu löytää!</value>
 		<comment>{0} will be replaced by bot's name query (string)</comment>
 	</data>
-	
+	<data name="BotStatusOverview" xml:space="preserve">
+		<value>Tällä hetkellä on käytössä {0}/{1} bottia, joilla on {2} peliä ({3} korttia) jäljellä idlattavaksi.</value>
+		<comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
+	</data>
 	
 	
 	<data name="CheckingFirstBadgePage" xml:space="preserve">
