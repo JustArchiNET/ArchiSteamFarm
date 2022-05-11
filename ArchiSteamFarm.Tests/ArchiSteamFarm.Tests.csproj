@@ -11,6 +11,10 @@
 		<PackageReference Include="MSTest.TestFramework" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+		<PackageReference Include="JustArchiNET.Madness" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\ArchiSteamFarm\ArchiSteamFarm.csproj" />
 	</ItemGroup>
