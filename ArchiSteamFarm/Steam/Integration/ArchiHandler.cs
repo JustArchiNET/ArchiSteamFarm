@@ -509,7 +509,8 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 		ClientMsgProtobuf<CMsgClientGamesPlayed> request = new(EMsg.ClientGamesPlayedWithDataBlob) {
 			Body = {
-				client_os_type = (uint) Bot.OSType
+				// Underflow here is to be expected, this is Steam's logic
+				client_os_type = unchecked((uint) Bot.OSType)
 			}
 		};
 
