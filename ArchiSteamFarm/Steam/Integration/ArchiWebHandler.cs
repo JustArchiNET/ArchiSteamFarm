@@ -1395,51 +1395,9 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(tradeID));
 		}
 
-		(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
+		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/decline");
 
-		if (!success || string.IsNullOrEmpty(steamApiKey)) {
-			return false;
-		}
-
-		Dictionary<string, object?> arguments = new(2, StringComparer.Ordinal) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "key", steamApiKey! },
-
-			{ "tradeofferid", tradeID }
-		};
-
-		KeyValue? response = null;
-
-		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			if ((i > 0) && (WebLimiterDelay > 0)) {
-				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
-			}
-
-			using WebAPI.AsyncInterface econService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(EconService);
-
-			econService.Timeout = WebBrowser.Timeout;
-
-			try {
-				response = await WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
-
-					// ReSharper disable once AccessToDisposedClosure
-					async () => await econService.CallAsync(HttpMethod.Post, "DeclineTradeOffer", args: arguments).ConfigureAwait(false)
-				).ConfigureAwait(false);
-			} catch (TaskCanceledException e) {
-				Bot.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-			}
-		}
-
-		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-
-			return false;
-		}
-
-		return true;
+		return await UrlPostWithSession(request).ConfigureAwait(false);
 	}
 
 	internal HttpClient GenerateDisposableHttpClient() => WebBrowser.GenerateDisposableHttpClient();
