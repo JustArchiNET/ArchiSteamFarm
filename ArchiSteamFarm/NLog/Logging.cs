@@ -179,7 +179,6 @@ internal static class Logging {
 				ArchiveNumbering = ArchiveNumberingMode.Rolling,
 				ArchiveOldFileOnStartup = true,
 				CleanupFileName = false,
-				ConcurrentWrites = false,
 				DeleteOldFileOnStartup = true,
 				FileName = Path.Combine("${currentdir}", SharedInfo.LogFile),
 				Layout = GeneralLayout,
