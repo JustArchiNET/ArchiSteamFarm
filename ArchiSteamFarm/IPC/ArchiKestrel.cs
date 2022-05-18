@@ -34,7 +34,6 @@ using ArchiSteamFarm.NLog.Targets;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog.Web;
@@ -76,14 +75,6 @@ internal static class ArchiKestrel {
 		// Set default content root
 		builder.UseContentRoot(SharedInfo.HomeDirectory);
 
-		// Firstly initialize settings that user is free to override
-		builder.ConfigureLogging(
-			static logging => {
-				logging.ClearProviders();
-				logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning);
-			}
-		);
-
 		// Check if custom config is available
 		string absoluteConfigDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.ConfigDirectory);
 		string customConfigPath = Path.Combine(absoluteConfigDirectory, SharedInfo.IPCConfigFile);
@@ -104,9 +95,6 @@ internal static class ArchiKestrel {
 					ASF.ArchiLogger.LogGenericException(e);
 				}
 			}
-
-			// Use custom config for logging configuration
-			builder.ConfigureLogging(static (hostingContext, logging) => logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging")));
 		}
 
 		// Enable NLog integration for logging

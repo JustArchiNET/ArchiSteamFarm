@@ -186,8 +186,7 @@ internal static class Logging {
 			};
 #pragma warning restore CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
 
-			LogManager.Configuration.AddTarget(fileTarget);
-			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
+			InitializeTarget(LogManager.Configuration, fileTarget);
 
 			LogManager.ReconfigExistingLoggers();
 		}
@@ -210,8 +209,7 @@ internal static class Logging {
 		ColoredConsoleTarget coloredConsoleTarget = new("ColoredConsole") { Layout = GeneralLayout };
 #pragma warning restore CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
 
-		config.AddTarget(coloredConsoleTarget);
-		config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, coloredConsoleTarget));
+		InitializeTarget(config, coloredConsoleTarget);
 
 		LogManager.Configuration = config;
 	}
@@ -229,8 +227,7 @@ internal static class Logging {
 				MaxCount = 20
 			};
 
-			LogManager.Configuration.AddTarget(historyTarget);
-			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, historyTarget));
+			InitializeTarget(LogManager.Configuration, historyTarget);
 
 			LogManager.ReconfigExistingLoggers();
 		}
@@ -394,6 +391,22 @@ internal static class Logging {
 		foreach (LoggingRule loggingRule in LogManager.Configuration.LoggingRules.Where(static loggingRule => loggingRule.Targets.Any(static target => target is ColoredConsoleTarget or ConsoleTarget))) {
 			ConsoleLoggingRules.Add(loggingRule);
 		}
+	}
+
+	private static void InitializeTarget(LoggingConfiguration config, Target target) {
+		ArgumentNullException.ThrowIfNull(config);
+		ArgumentNullException.ThrowIfNull(target);
+
+		config.AddTarget(target);
+
+		if (!Debugging.IsUserDebugging) {
+			// Silence default ASP.NET logging
+			config.LoggingRules.Add(new LoggingRule("Microsoft*", target) { FinalMinLevel = LogLevel.Warn });
+			config.LoggingRules.Add(new LoggingRule("Microsoft.Hosting.Lifetime*", target) { FinalMinLevel = LogLevel.Info });
+			config.LoggingRules.Add(new LoggingRule("System*", target) { FinalMinLevel = LogLevel.Warn });
+		}
+
+		config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, target));
 	}
 
 	private static void OnConfigurationChanged(object? sender, LoggingConfigurationChangedEventArgs e) {
