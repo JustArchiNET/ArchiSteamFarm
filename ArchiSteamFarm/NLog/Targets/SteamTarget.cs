@@ -61,7 +61,7 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 	protected override async Task WriteAsyncTask(LogEventInfo logEvent, CancellationToken cancellationToken) {
 		ArgumentNullException.ThrowIfNull(logEvent);
 
-		base.Write(logEvent);
+		Write(logEvent);
 
 		if ((SteamID == 0) || (Bot.Bots == null) || Bot.Bots.IsEmpty) {
 			return;

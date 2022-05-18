@@ -311,6 +311,8 @@ internal static class Logging {
 		while (!Program.ShutdownSequenceInitialized) {
 			try {
 				if (IsWaitingForUserInput || !Console.KeyAvailable) {
+					await Task.Delay(ConsoleResponsivenessDelay).ConfigureAwait(false);
+
 					continue;
 				}
 
@@ -379,8 +381,6 @@ internal static class Logging {
 				ASF.ArchiLogger.LogGenericException(e);
 
 				return;
-			} finally {
-				await Task.Delay(ConsoleResponsivenessDelay).ConfigureAwait(false);
 			}
 		}
 	}
