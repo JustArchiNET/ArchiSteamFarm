@@ -81,19 +81,17 @@ internal static class ArchiKestrel {
 
 		bool customConfigExists = File.Exists(customConfigPath);
 
-		if (customConfigExists) {
-			if (Debugging.IsDebugConfigured) {
-				try {
-					string json = await File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
+		if (customConfigExists && Debugging.IsDebugConfigured) {
+			try {
+				string json = await File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
 
-					if (!string.IsNullOrEmpty(json)) {
-						JObject jObject = JObject.Parse(json);
+				if (!string.IsNullOrEmpty(json)) {
+					JObject jObject = JObject.Parse(json);
 
-						ASF.ArchiLogger.LogGenericDebug($"{SharedInfo.IPCConfigFile}: {jObject.ToString(Formatting.Indented)}");
-					}
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
+					ASF.ArchiLogger.LogGenericDebug($"{SharedInfo.IPCConfigFile}: {jObject.ToString(Formatting.Indented)}");
 				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
 
