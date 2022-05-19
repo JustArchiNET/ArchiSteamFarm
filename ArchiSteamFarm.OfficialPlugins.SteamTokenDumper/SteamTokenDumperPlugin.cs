@@ -23,6 +23,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Composition;
 using System.Globalization;
 using System.Linq;
@@ -43,7 +44,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
 [Export(typeof(IPlugin))]
-internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotSteamClient, ISteamPICSChanges {
+internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotCommand2, IBotSteamClient, ISteamPICSChanges {
 	[JsonProperty]
 	internal static SteamTokenDumperConfig? Config { get; private set; }
 
@@ -53,6 +54,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 	private static readonly Timer SubmissionTimer = new(SubmitData);
 
 	private static GlobalCache? GlobalCache;
+	private static DateTimeOffset LastUploadAt = DateTimeOffset.MinValue;
 
 	[JsonProperty]
 	public override string Name => nameof(SteamTokenDumperPlugin);
@@ -138,10 +140,42 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 
 		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 		lock (SubmissionSemaphore) {
-			SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.MinimumHoursBetweenUploads));
+			SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.HoursBetweenUploads));
 		}
 
 		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginInitializedAndEnabled, nameof(SteamTokenDumperPlugin), startIn.ToHumanReadable()));
+	}
+
+	public Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		if ((args == null) || (args.Length == 0)) {
+			throw new ArgumentNullException(nameof(args));
+		}
+
+		switch (args[0].ToUpperInvariant()) {
+			case "STD" when access >= EAccess.Owner:
+				TimeSpan minimumTimeBetweenUpload = TimeSpan.FromMinutes(SharedInfo.MinimumMinutesBetweenUploads);
+
+				if (LastUploadAt + minimumTimeBetweenUpload > DateTimeOffset.UtcNow) {
+					return Task.FromResult((string?) string.Format(CultureInfo.CurrentCulture, Strings.SubmissionFailedTooManyRequests, minimumTimeBetweenUpload.ToHumanReadable()));
+				}
+
+				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+				lock (SubmissionSemaphore) {
+					SubmissionTimer.Change(TimeSpan.Zero, TimeSpan.FromHours(SharedInfo.HoursBetweenUploads));
+				}
+
+				return Task.FromResult((string?) ArchiSteamFarm.Localization.Strings.Done);
+			case "STD" when access > EAccess.None:
+				return Task.FromResult((string?) ArchiSteamFarm.Localization.Strings.ErrorAccessDenied);
+			default:
+				return Task.FromResult((string?) null);
+		}
 	}
 
 	public async Task OnBotDestroy(Bot bot) {
@@ -460,6 +494,10 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
 
+		if (LastUploadAt + TimeSpan.FromMinutes(SharedInfo.MinimumMinutesBetweenUploads) > DateTimeOffset.UtcNow) {
+			return;
+		}
+
 		if (!await SubmissionSemaphore.WaitAsync(0).ConfigureAwait(false)) {
 			return;
 		}
@@ -510,7 +548,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 
 					// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 					lock (SubmissionSemaphore) {
-						SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.MinimumHoursBetweenUploads));
+						SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.HoursBetweenUploads));
 					}
 
 					ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionFailedTooManyRequests, startIn.ToHumanReadable()));
@@ -530,6 +568,8 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 
 				return;
 			}
+
+			LastUploadAt = DateTimeOffset.UtcNow;
 
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionSuccessful, response.Content.Data.NewApps.Count, response.Content.Data.VerifiedApps.Count, response.Content.Data.NewPackages.Count, response.Content.Data.VerifiedPackages.Count, response.Content.Data.NewDepots.Count, response.Content.Data.VerifiedDepots.Count));
 
