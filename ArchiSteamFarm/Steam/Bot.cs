@@ -65,8 +65,7 @@ public sealed class Bot : IAsyncDisposable {
 	private const char DefaultBackgroundKeysRedeemerSeparator = '\t';
 	private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 	private const uint LoginID = 1242; // This must be the same for all ASF bots and all ASF processes
-	private const byte MaxInvalidPasswordFailures = WebBrowser.MaxTries; // Max InvalidPassword failures in a row before we determine that our password is invalid (because Steam wrongly returns those, of course)
-	private const byte MaxTwoFactorCodeFailures = WebBrowser.MaxTries; // Max TwoFactorCodeMismatch failures in a row before we determine that our 2FA credentials are invalid (because Steam wrongly returns those, of course)
+	private const byte MaxLoginFailures = WebBrowser.MaxTries; // Max login failures in a row before we determine that our credentials are invalid (because Steam wrongly returns those, of course)course)
 	private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
 
 	[PublicAPI]
@@ -238,10 +237,10 @@ public sealed class Bot : IAsyncDisposable {
 #pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 
 	private byte HeartBeatFailures;
-	private byte InvalidPasswordFailures;
 	private EResult LastLogOnResult;
 	private DateTime LastLogonSessionReplaced;
 	private bool LibraryLocked;
+	private byte LoginFailures;
 	private ulong MasterChatGroupID;
 
 #pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
@@ -259,7 +258,6 @@ public sealed class Bot : IAsyncDisposable {
 	private bool SteamParentalActive;
 	private SteamSaleEvent? SteamSaleEvent;
 	private string? TwoFactorCode;
-	private byte TwoFactorCodeFailures;
 
 	private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
 		BotName = !string.IsNullOrEmpty(botName) ? botName : throw new ArgumentNullException(nameof(botName));
@@ -2746,6 +2744,7 @@ public sealed class Bot : IAsyncDisposable {
 
 				break;
 			case EResult.AccountLogonDenied:
+			case EResult.InvalidLoginAuthCode:
 				RequiredInput = ASF.EUserInputType.SteamGuard;
 
 				string? authCode = await Logging.GetUserInput(ASF.EUserInputType.SteamGuard, BotName).ConfigureAwait(false);
@@ -2758,18 +2757,17 @@ public sealed class Bot : IAsyncDisposable {
 				}
 
 				break;
-			case EResult.AccountLoginDeniedNeedTwoFactor:
-				if (!HasMobileAuthenticator) {
-					RequiredInput = ASF.EUserInputType.TwoFactorAuthentication;
+			case EResult.AccountLoginDeniedNeedTwoFactor when !HasMobileAuthenticator:
+			case EResult.TwoFactorCodeMismatch when !HasMobileAuthenticator:
+				RequiredInput = ASF.EUserInputType.TwoFactorAuthentication;
 
-					string? twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName).ConfigureAwait(false);
+				string? twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName).ConfigureAwait(false);
 
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode!)) {
-						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(twoFactorCode)));
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode!)) {
+					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(twoFactorCode)));
 
-						Stop();
-					}
+					Stop();
 				}
 
 				break;
@@ -2780,7 +2778,7 @@ public sealed class Bot : IAsyncDisposable {
 				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOn, $"{SteamID}{(!string.IsNullOrEmpty(callback.VanityURL) ? $"/{callback.VanityURL}" : "")}"));
 
 				// Old status for these doesn't matter, we'll update them if needed
-				InvalidPasswordFailures = TwoFactorCodeFailures = 0;
+				LoginFailures = 0;
 				LibraryLocked = PlayingBlocked = false;
 
 				if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
@@ -2897,6 +2895,7 @@ public sealed class Bot : IAsyncDisposable {
 				await PluginsCore.OnBotLoggedOn(this).ConfigureAwait(false);
 
 				break;
+			case EResult.AccountLoginDeniedNeedTwoFactor:
 			case EResult.InvalidPassword:
 			case EResult.NoConnection:
 			case EResult.PasswordRequiredToKickSession: // Not sure about this one, it seems to be just generic "try again"? #694
@@ -2908,22 +2907,23 @@ public sealed class Bot : IAsyncDisposable {
 				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
 
 				switch (callback.Result) {
-					case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.LoginKey) && (++InvalidPasswordFailures >= MaxInvalidPasswordFailures):
-						InvalidPasswordFailures = 0;
-						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidPasswordDuringLogin, MaxInvalidPasswordFailures));
-						Stop();
-
-						break;
-					case EResult.TwoFactorCodeMismatch when HasMobileAuthenticator:
+					case EResult.AccountLoginDeniedNeedTwoFactor:
+					case EResult.TwoFactorCodeMismatch:
 						// There is a possibility that our cached time is no longer appropriate, so we should reset the cache in this case in order to fetch it upon the next login attempt
-						// Yes, this might as well be just invalid 2FA credentials, but we can't be sure about that, and we have MaxTwoFactorCodeFailures designed to verify that for us
+						// Yes, this might as well be just invalid 2FA credentials, but we can't be sure about that, and we have LoginFailures designed to verify that for us
 						await MobileAuthenticator.ResetSteamTimeDifference().ConfigureAwait(false);
 
-						if (++TwoFactorCodeFailures >= MaxTwoFactorCodeFailures) {
-							TwoFactorCodeFailures = 0;
-							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidAuthenticatorDuringLogin, MaxTwoFactorCodeFailures));
+						if (++LoginFailures >= MaxLoginFailures) {
+							LoginFailures = 0;
+							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidAuthenticatorDuringLogin, MaxLoginFailures));
 							Stop();
 						}
+
+						break;
+					case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.LoginKey) && (++LoginFailures >= MaxLoginFailures):
+						LoginFailures = 0;
+						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidPasswordDuringLogin, MaxLoginFailures));
+						Stop();
 
 						break;
 				}
