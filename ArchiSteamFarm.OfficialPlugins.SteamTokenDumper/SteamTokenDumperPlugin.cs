@@ -534,6 +534,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				return;
 			}
 
+			// We've communicated with the server and didn't timeout, regardless of the success, this was the last upload attempt
+			LastUploadAt = DateTimeOffset.UtcNow;
+
 			if (response.StatusCode.IsClientErrorCode()) {
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, response.StatusCode));
 
@@ -568,8 +571,6 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 				return;
 			}
-
-			LastUploadAt = DateTimeOffset.UtcNow;
 
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionSuccessful, response.Content.Data.NewApps.Count, response.Content.Data.VerifiedApps.Count, response.Content.Data.NewPackages.Count, response.Content.Data.VerifiedPackages.Count, response.Content.Data.NewDepots.Count, response.Content.Data.VerifiedDepots.Count));
 
