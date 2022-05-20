@@ -129,7 +129,7 @@ StackTrace:
 		<value>Não foi possível prosseguir com uma atualização, pois essa versão não inclui nenhum recurso!</value>
 	</data>
 	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-		<value>Solitação para input do utilizador foi recebida mas o processo está a ser executado em modo 'headless'!</value>
+		<value>Solicitação para entrada do utilizador foi recebida, mas o processo está a ser executado em modo 'headless'!</value>
 	</data>
 	<data name="Exiting" xml:space="preserve">
 		<value>A sair...</value>
