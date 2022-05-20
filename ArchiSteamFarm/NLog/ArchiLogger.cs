@@ -50,12 +50,20 @@ public sealed class ArchiLogger {
 			throw new ArgumentNullException(nameof(message));
 		}
 
+		if (string.IsNullOrEmpty(previousMethodName)) {
+			throw new ArgumentNullException(nameof(previousMethodName));
+		}
+
 		Logger.Debug($"{previousMethodName}() {message}");
 	}
 
 	[PublicAPI]
 	public void LogGenericDebuggingException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
 		ArgumentNullException.ThrowIfNull(exception);
+
+		if (string.IsNullOrEmpty(previousMethodName)) {
+			throw new ArgumentNullException(nameof(previousMethodName));
+		}
 
 		if (!Debugging.IsUserDebugging) {
 			return;
@@ -70,12 +78,20 @@ public sealed class ArchiLogger {
 			throw new ArgumentNullException(nameof(message));
 		}
 
+		if (string.IsNullOrEmpty(previousMethodName)) {
+			throw new ArgumentNullException(nameof(previousMethodName));
+		}
+
 		Logger.Error($"{previousMethodName}() {message}");
 	}
 
 	[PublicAPI]
 	public void LogGenericException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
 		ArgumentNullException.ThrowIfNull(exception);
+
+		if (string.IsNullOrEmpty(previousMethodName)) {
+			throw new ArgumentNullException(nameof(previousMethodName));
+		}
 
 		Logger.Error(exception, $"{previousMethodName}()");
 	}
@@ -84,6 +100,10 @@ public sealed class ArchiLogger {
 	public void LogGenericInfo(string message, [CallerMemberName] string? previousMethodName = null) {
 		if (string.IsNullOrEmpty(message)) {
 			throw new ArgumentNullException(nameof(message));
+		}
+
+		if (string.IsNullOrEmpty(previousMethodName)) {
+			throw new ArgumentNullException(nameof(previousMethodName));
 		}
 
 		Logger.Info($"{previousMethodName}() {message}");
@@ -95,6 +115,10 @@ public sealed class ArchiLogger {
 			throw new ArgumentNullException(nameof(message));
 		}
 
+		if (string.IsNullOrEmpty(previousMethodName)) {
+			throw new ArgumentNullException(nameof(previousMethodName));
+		}
+
 		Logger.Trace($"{previousMethodName}() {message}");
 	}
 
@@ -104,12 +128,20 @@ public sealed class ArchiLogger {
 			throw new ArgumentNullException(nameof(message));
 		}
 
+		if (string.IsNullOrEmpty(previousMethodName)) {
+			throw new ArgumentNullException(nameof(previousMethodName));
+		}
+
 		Logger.Warn($"{previousMethodName}() {message}");
 	}
 
 	[PublicAPI]
 	public void LogGenericWarningException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
 		ArgumentNullException.ThrowIfNull(exception);
+
+		if (string.IsNullOrEmpty(previousMethodName)) {
+			throw new ArgumentNullException(nameof(previousMethodName));
+		}
 
 		Logger.Warn(exception, $"{previousMethodName}()");
 	}
@@ -120,12 +152,20 @@ public sealed class ArchiLogger {
 			throw new ArgumentNullException(nameof(nullObjectName));
 		}
 
+		if (string.IsNullOrEmpty(previousMethodName)) {
+			throw new ArgumentNullException(nameof(previousMethodName));
+		}
+
 		LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nullObjectName), previousMethodName);
 	}
 
 	internal void LogChatMessage(bool echo, string message, ulong chatGroupID = 0, ulong chatID = 0, ulong steamID = 0, [CallerMemberName] string? previousMethodName = null) {
 		if (string.IsNullOrEmpty(message)) {
 			throw new ArgumentNullException(nameof(message));
+		}
+
+		if (string.IsNullOrEmpty(previousMethodName)) {
+			throw new ArgumentNullException(nameof(previousMethodName));
 		}
 
 		if (((chatGroupID == 0) || (chatID == 0)) && (steamID == 0)) {
@@ -159,6 +199,10 @@ public sealed class ArchiLogger {
 
 	internal async Task LogFatalException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
 		ArgumentNullException.ThrowIfNull(exception);
+
+		if (string.IsNullOrEmpty(previousMethodName)) {
+			throw new ArgumentNullException(nameof(previousMethodName));
+		}
 
 		Logger.Fatal(exception, $"{previousMethodName}()");
 
@@ -210,6 +254,10 @@ public sealed class ArchiLogger {
 	internal void LogInvite(SteamID steamID, bool? handled = null, [CallerMemberName] string? previousMethodName = null) {
 		if ((steamID == null) || (steamID.AccountType == EAccountType.Invalid)) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		if (string.IsNullOrEmpty(previousMethodName)) {
+			throw new ArgumentNullException(nameof(previousMethodName));
 		}
 
 		ulong steamID64 = steamID;
