@@ -28,9 +28,10 @@ namespace ArchiSteamFarm.Web.Responses;
 
 public class BasicResponse {
 	[PublicAPI]
-	public HttpStatusCode StatusCode { get; }
+	public Uri FinalUri { get; }
 
-	internal readonly Uri FinalUri;
+	[PublicAPI]
+	public HttpStatusCode StatusCode { get; }
 
 	internal BasicResponse(HttpResponseMessage httpResponseMessage) {
 		ArgumentNullException.ThrowIfNull(httpResponseMessage);
