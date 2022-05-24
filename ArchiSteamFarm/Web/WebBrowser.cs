@@ -141,7 +141,12 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			await using (response.ConfigureAwait(false)) {
-				if (response.StatusCode.IsClientErrorCode()) {
+				if (response.StatusCode.IsRedirectionCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						// We're not handling this error, do not try again
+						break;
+					}
+				} else if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
@@ -245,7 +250,12 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			await using (response.ConfigureAwait(false)) {
-				if (response.StatusCode.IsClientErrorCode()) {
+				if (response.StatusCode.IsRedirectionCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						// We're not handling this error, do not try again
+						break;
+					}
+				} else if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
@@ -301,7 +311,12 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			await using (response.ConfigureAwait(false)) {
-				if (response.StatusCode.IsClientErrorCode()) {
+				if (response.StatusCode.IsRedirectionCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						// We're not handling this error, do not try again
+						break;
+					}
+				} else if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
@@ -373,7 +388,12 @@ public sealed class WebBrowser : IDisposable {
 				continue;
 			}
 
-			if (response.StatusCode.IsClientErrorCode()) {
+			if (response.StatusCode.IsRedirectionCode()) {
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					// We're not handling this error, do not try again
+					break;
+				}
+			} else if (response.StatusCode.IsClientErrorCode()) {
 				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 					// We're not handling this error, do not try again
 					break;
@@ -421,6 +441,14 @@ public sealed class WebBrowser : IDisposable {
 
 			if (response == null) {
 				continue;
+			}
+
+			if (response.StatusCode.IsRedirectionCode()) {
+				if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					result = new BasicResponse(response);
+				}
+
+				break;
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {
@@ -477,6 +505,14 @@ public sealed class WebBrowser : IDisposable {
 				continue;
 			}
 
+			if (response.StatusCode.IsRedirectionCode()) {
+				if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					result = new BasicResponse(response);
+				}
+
+				break;
+			}
+
 			if (response.StatusCode.IsClientErrorCode()) {
 				if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 					result = new BasicResponse(response);
@@ -531,7 +567,12 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			await using (response.ConfigureAwait(false)) {
-				if (response.StatusCode.IsClientErrorCode()) {
+				if (response.StatusCode.IsRedirectionCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						// We're not handling this error, do not try again
+						break;
+					}
+				} else if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
@@ -587,7 +628,12 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			await using (response.ConfigureAwait(false)) {
-				if (response.StatusCode.IsClientErrorCode()) {
+				if (response.StatusCode.IsRedirectionCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						// We're not handling this error, do not try again
+						break;
+					}
+				} else if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
@@ -659,7 +705,12 @@ public sealed class WebBrowser : IDisposable {
 				continue;
 			}
 
-			if (response.StatusCode.IsClientErrorCode()) {
+			if (response.StatusCode.IsRedirectionCode()) {
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					// We're not handling this error, do not try again
+					break;
+				}
+			} else if (response.StatusCode.IsClientErrorCode()) {
 				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 					// We're not handling this error, do not try again
 					break;
@@ -805,7 +856,12 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			// WARNING: We still have not disposed response by now, make sure to dispose it ASAP if we're not returning it!
-			if (response.StatusCode is >= HttpStatusCode.Ambiguous and < HttpStatusCode.BadRequest && (maxRedirections > 0)) {
+			if (response.StatusCode.IsRedirectionCode() && (maxRedirections > 0)) {
+				if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					// User wants to handle it manually, that's alright
+					return response;
+				}
+
 				Uri? redirectUri = response.Headers.Location;
 
 				if (redirectUri == null) {
@@ -897,6 +953,7 @@ public sealed class WebBrowser : IDisposable {
 	public enum ERequestOptions : byte {
 		None = 0,
 		ReturnClientErrors = 1,
-		ReturnServerErrors = 2
+		ReturnServerErrors = 2,
+		ReturnRedirections = 4
 	}
 }
