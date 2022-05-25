@@ -476,10 +476,7 @@ internal static class Program {
 
 	private static async void OnUnhandledException(object? sender, UnhandledExceptionEventArgs e) {
 		ArgumentNullException.ThrowIfNull(e);
-
-		if (e.ExceptionObject == null) {
-			throw new ArgumentNullException(nameof(e));
-		}
+		ArgumentNullException.ThrowIfNull(e.ExceptionObject);
 
 		await ASF.ArchiLogger.LogFatalException((Exception) e.ExceptionObject).ConfigureAwait(false);
 		await Exit(1).ConfigureAwait(false);
@@ -487,10 +484,7 @@ internal static class Program {
 
 	private static async void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e) {
 		ArgumentNullException.ThrowIfNull(e);
-
-		if (e.Exception == null) {
-			throw new ArgumentNullException(nameof(e));
-		}
+		ArgumentNullException.ThrowIfNull(e.Exception);
 
 		await ASF.ArchiLogger.LogFatalException(e.Exception).ConfigureAwait(false);
 
