@@ -196,7 +196,8 @@ public sealed class Trading : IDisposable {
 			// Neutrality can't reach value below 0 at any single point of calculation, as that would imply a loss of progress even if we'd end up with a positive value by the end
 			int neutrality = 0;
 
-			for (byte i = 0; i < afterAmounts.Count; i++) {
+			// Skip initial 0 index, as we already checked it above and it doesn't change neutrality from 0
+			for (byte i = 1; i < afterAmounts.Count; i++) {
 				// We assume that the difference between amounts will be within int range, therefore we accept underflow here (for subtraction), and since we cast that result to int afterwards, we also accept overflow for the cast itself
 				neutrality += unchecked((int) (afterAmounts[i] - beforeAmounts[i]));
 
