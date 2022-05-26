@@ -2632,7 +2632,6 @@ public sealed class Bot : IAsyncDisposable {
 	private async void OnLicenseList(SteamApps.LicenseListCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 		ArgumentNullException.ThrowIfNull(callback.LicenseList);
-		ArgumentNullException.ThrowIfNull(callback);
 
 		if (ASF.GlobalDatabase == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
