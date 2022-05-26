@@ -34,10 +34,7 @@ public sealed class UserNotificationsCallback : CallbackMsg {
 	internal readonly Dictionary<EUserNotification, uint> Notifications;
 
 	internal UserNotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
-		if (jobID == null) {
-			throw new ArgumentNullException(nameof(jobID));
-		}
-
+		ArgumentNullException.ThrowIfNull(jobID);
 		ArgumentNullException.ThrowIfNull(msg);
 
 		JobID = jobID;
@@ -76,10 +73,7 @@ public sealed class UserNotificationsCallback : CallbackMsg {
 	}
 
 	internal UserNotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
-		if (jobID == null) {
-			throw new ArgumentNullException(nameof(jobID));
-		}
-
+		ArgumentNullException.ThrowIfNull(jobID);
 		ArgumentNullException.ThrowIfNull(msg);
 
 		JobID = jobID;
@@ -87,10 +81,7 @@ public sealed class UserNotificationsCallback : CallbackMsg {
 	}
 
 	internal UserNotificationsCallback(JobID jobID, CMsgClientCommentNotifications msg) {
-		if (jobID == null) {
-			throw new ArgumentNullException(nameof(jobID));
-		}
-
+		ArgumentNullException.ThrowIfNull(jobID);
 		ArgumentNullException.ThrowIfNull(msg);
 
 		JobID = jobID;

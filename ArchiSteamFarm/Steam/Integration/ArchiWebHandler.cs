@@ -473,9 +473,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (maxTries == 0) {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
@@ -558,9 +556,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (maxTries == 0) {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
@@ -643,9 +639,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<bool> UrlHeadWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (maxTries == 0) {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
@@ -728,9 +722,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
@@ -842,9 +834,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
@@ -956,9 +946,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, ICollection<KeyValuePair<string, string>>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
@@ -1072,9 +1060,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<bool> UrlPostWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
@@ -1186,10 +1172,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public static async Task<T> WebLimitRequest<T>(Uri service, Func<Task<T>> function) {
-		if (service == null) {
-			throw new ArgumentNullException(nameof(service));
-		}
-
+		ArgumentNullException.ThrowIfNull(service);
 		ArgumentNullException.ThrowIfNull(function);
 
 		if (ASF.RateLimitingSemaphore == null) {
@@ -2389,9 +2372,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	private async Task<bool> IsProfileUri(Uri uri, bool waitForInitialization = true) {
-		if (uri == null) {
-			throw new ArgumentNullException(nameof(uri));
-		}
+		ArgumentNullException.ThrowIfNull(uri);
 
 		string? profileURL = await GetAbsoluteProfileURL(waitForInitialization).ConfigureAwait(false);
 
@@ -2451,9 +2432,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	private static bool IsSessionExpiredUri(Uri uri) {
-		if (uri == null) {
-			throw new ArgumentNullException(nameof(uri));
-		}
+		ArgumentNullException.ThrowIfNull(uri);
 
 		return uri.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase) || uri.Host.Equals("lostauth", StringComparison.OrdinalIgnoreCase);
 	}
@@ -2665,9 +2644,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	private async Task<bool> UnlockParentalAccountForService(Uri service, string parentalCode, byte maxTries = WebBrowser.MaxTries) {
-		if (service == null) {
-			throw new ArgumentNullException(nameof(service));
-		}
+		ArgumentNullException.ThrowIfNull(service);
 
 		if (string.IsNullOrEmpty(parentalCode)) {
 			throw new ArgumentNullException(nameof(parentalCode));

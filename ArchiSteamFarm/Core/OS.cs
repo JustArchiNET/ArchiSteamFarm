@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -122,7 +123,7 @@ internal static class OS {
 
 	internal static void Init(GlobalConfig.EOptimizationMode optimizationMode) {
 		if (!Enum.IsDefined(optimizationMode)) {
-			throw new ArgumentNullException(nameof(optimizationMode));
+			throw new InvalidEnumArgumentException(nameof(optimizationMode), (int) optimizationMode, typeof(GlobalConfig.EOptimizationMode));
 		}
 
 		switch (optimizationMode) {

@@ -78,10 +78,7 @@ public static class Utilities {
 	[PublicAPI]
 	public static string? GetCookieValue(this CookieContainer cookieContainer, Uri uri, string name) {
 		ArgumentNullException.ThrowIfNull(cookieContainer);
-
-		if (uri == null) {
-			throw new ArgumentNullException(nameof(uri));
-		}
+		ArgumentNullException.ThrowIfNull(uri);
 
 		if (string.IsNullOrEmpty(name)) {
 			throw new ArgumentNullException(nameof(name));

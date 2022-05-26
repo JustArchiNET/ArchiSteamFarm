@@ -2430,10 +2430,7 @@ public sealed class Bot : IAsyncDisposable {
 
 	private async void OnFriendsList(SteamFriends.FriendsListCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
-
-		if (callback.FriendList == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback.FriendList);
 
 		foreach (SteamFriends.FriendsListCallback.Friend friend in callback.FriendList.Where(static friend => friend.Relationship == EFriendRelationship.RequestRecipient)) {
 			switch (friend.SteamID.AccountType) {
@@ -2509,10 +2506,7 @@ public sealed class Bot : IAsyncDisposable {
 
 	private async void OnGuestPassList(SteamApps.GuestPassListCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
-
-		if (callback.GuestPasses == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback.GuestPasses);
 
 		if ((callback.CountGuestPassesToRedeem == 0) || (callback.GuestPasses.Count == 0) || !BotConfig.AcceptGifts) {
 			return;
@@ -2637,10 +2631,8 @@ public sealed class Bot : IAsyncDisposable {
 
 	private async void OnLicenseList(SteamApps.LicenseListCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
-
-		if (callback.LicenseList == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback.LicenseList);
+		ArgumentNullException.ThrowIfNull(callback);
 
 		if (ASF.GlobalDatabase == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
@@ -2941,10 +2933,7 @@ public sealed class Bot : IAsyncDisposable {
 
 	private void OnLoginKey(SteamUser.LoginKeyCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
-
-		if (string.IsNullOrEmpty(callback.LoginKey)) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback.LoginKey);
 
 		if (!ShouldUseLoginKeys) {
 			return;
@@ -3099,10 +3088,7 @@ public sealed class Bot : IAsyncDisposable {
 
 	private void OnUserNotifications(UserNotificationsCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
-
-		if (callback.Notifications == null) {
-			throw new ArgumentNullException(nameof(callback));
-		}
+		ArgumentNullException.ThrowIfNull(callback.Notifications);
 
 		if (callback.Notifications.Count == 0) {
 			return;

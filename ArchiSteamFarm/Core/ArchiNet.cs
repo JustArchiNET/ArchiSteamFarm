@@ -79,9 +79,7 @@ internal static class ArchiNet {
 	}
 
 	internal static async Task<string?> FetchBuildChecksum(Version version, string variant) {
-		if (version == null) {
-			throw new ArgumentNullException(nameof(version));
-		}
+		ArgumentNullException.ThrowIfNull(version);
 
 		if (string.IsNullOrEmpty(variant)) {
 			throw new ArgumentNullException(nameof(variant));

@@ -37,21 +37,14 @@ namespace ArchiSteamFarm.IPC;
 internal static class WebUtilities {
 #if NETFRAMEWORK
 	internal static IMvcCoreBuilder AddControllers(this IServiceCollection services) {
-		if (services == null) {
-			throw new ArgumentNullException(nameof(services));
-		}
+		ArgumentNullException.ThrowIfNull(services);
 
 		return services.AddMvcCore();
 	}
 
 	internal static IMvcCoreBuilder AddNewtonsoftJson(this IMvcCoreBuilder mvc, Action<MvcJsonOptions> setupAction) {
-		if (mvc == null) {
-			throw new ArgumentNullException(nameof(mvc));
-		}
-
-		if (setupAction == null) {
-			throw new ArgumentNullException(nameof(setupAction));
-		}
+		ArgumentNullException.ThrowIfNull(mvc);
+		ArgumentNullException.ThrowIfNull(setupAction);
 
 		// Add JSON formatters that will be used as default ones if no specific formatters are asked for
 		mvc.AddJsonFormatters();
