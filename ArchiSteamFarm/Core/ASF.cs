@@ -475,9 +475,7 @@ public static class ASF {
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	private static void LoadAssembliesRecursively(Assembly assembly, ISet<string> loadedAssembliesNames) {
-		if (assembly == null) {
-			throw new ArgumentNullException(nameof(assembly));
-		}
+		ArgumentNullException.ThrowIfNull(assembly);
 
 		if ((loadedAssembliesNames == null) || (loadedAssembliesNames.Count == 0)) {
 			throw new ArgumentNullException(nameof(loadedAssembliesNames));
@@ -863,7 +861,7 @@ public static class ASF {
 
 	private static async Task RegisterBots() {
 		if ((GlobalConfig == null) || (GlobalDatabase == null) || (WebBrowser == null)) {
-			throw new ArgumentNullException($"{nameof(GlobalConfig)} || {nameof(GlobalDatabase)} || {nameof(WebBrowser)}");
+			throw new InvalidOperationException($"{nameof(GlobalConfig)} || {nameof(GlobalDatabase)} || {nameof(WebBrowser)}");
 		}
 
 		// Ensure that we ask for a list of servers if we don't have any saved servers available
@@ -910,7 +908,7 @@ public static class ASF {
 
 	private static async Task UpdateAndRestart() {
 		if (GlobalConfig == null) {
-			throw new ArgumentNullException(nameof(GlobalConfig));
+			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
 
 		if (!SharedInfo.BuildInfo.CanUpdate || (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {

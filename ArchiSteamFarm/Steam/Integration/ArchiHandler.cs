@@ -797,10 +797,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		internal readonly bool PlayingBlocked;
 
 		internal PlayingSessionStateCallback(JobID jobID, CMsgClientPlayingSessionState msg) {
-			if (jobID == null) {
-				throw new ArgumentNullException(nameof(jobID));
-			}
-
+			ArgumentNullException.ThrowIfNull(jobID);
 			ArgumentNullException.ThrowIfNull(msg);
 
 			JobID = jobID;
@@ -812,10 +809,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		internal readonly ulong LibraryLockedBySteamID;
 
 		internal SharedLibraryLockStatusCallback(JobID jobID, CMsgClientSharedLibraryLockStatus msg) {
-			if (jobID == null) {
-				throw new ArgumentNullException(nameof(jobID));
-			}
-
+			ArgumentNullException.ThrowIfNull(jobID);
 			ArgumentNullException.ThrowIfNull(msg);
 
 			JobID = jobID;

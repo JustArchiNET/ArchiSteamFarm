@@ -591,9 +591,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnUpdateFinished(Version newVersion) {
-		if (newVersion == null) {
-			throw new ArgumentNullException(nameof(newVersion));
-		}
+		ArgumentNullException.ThrowIfNull(newVersion);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;
@@ -607,9 +605,7 @@ internal static class PluginsCore {
 	}
 
 	internal static async Task OnUpdateProceeding(Version newVersion) {
-		if (newVersion == null) {
-			throw new ArgumentNullException(nameof(newVersion));
-		}
+		ArgumentNullException.ThrowIfNull(newVersion);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;

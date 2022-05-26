@@ -175,9 +175,7 @@ internal static class GitHub {
 	}
 
 	private static async Task<ReleaseResponse?> GetReleaseFromURL(Uri request) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
@@ -189,9 +187,7 @@ internal static class GitHub {
 	}
 
 	private static async Task<ImmutableList<ReleaseResponse>?> GetReleasesFromURL(Uri request) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
+		ArgumentNullException.ThrowIfNull(request);
 
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));

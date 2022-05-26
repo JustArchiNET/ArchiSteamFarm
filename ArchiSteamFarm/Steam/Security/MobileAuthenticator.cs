@@ -452,7 +452,7 @@ public sealed class MobileAuthenticator : IDisposable {
 
 	private async Task<(bool Success, string? Result)> ResolveDeviceID() {
 		if (Bot == null) {
-			throw new ArgumentNullException(nameof(Bot));
+			throw new InvalidOperationException(nameof(Bot));
 		}
 
 		string? deviceID = await Bot.ArchiHandler.GetTwoFactorDeviceIdentifier(Bot.SteamID).ConfigureAwait(false);
