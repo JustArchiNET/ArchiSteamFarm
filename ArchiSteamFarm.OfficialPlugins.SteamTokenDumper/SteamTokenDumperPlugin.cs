@@ -159,6 +159,10 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 		switch (args[0].ToUpperInvariant()) {
 			case "STD" when access >= EAccess.Owner:
+				if (Config is not { Enabled: true }) {
+					return Task.FromResult((string?) string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(Config)));
+				}
+
 				TimeSpan minimumTimeBetweenUpload = TimeSpan.FromMinutes(SharedInfo.MinimumMinutesBetweenUploads);
 
 				if (LastUploadAt + minimumTimeBetweenUpload > DateTimeOffset.UtcNow) {
