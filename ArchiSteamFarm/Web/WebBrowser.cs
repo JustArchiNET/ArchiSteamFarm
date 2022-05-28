@@ -331,15 +331,15 @@ public sealed class WebBrowser : IDisposable {
 					JsonSerializer serializer = new();
 
 					obj = serializer.Deserialize<T>(jsonReader);
-
-					if (obj is null) {
-						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
-
-						continue;
-					}
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+
+					continue;
+				}
+
+				if (obj is null) {
+					ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
 
 					continue;
 				}
@@ -638,12 +638,6 @@ public sealed class WebBrowser : IDisposable {
 					JsonSerializer serializer = new();
 
 					obj = serializer.Deserialize<TResult>(jsonReader);
-
-					if (obj is null) {
-						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
-
-						continue;
-					}
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
@@ -651,7 +645,97 @@ public sealed class WebBrowser : IDisposable {
 					continue;
 				}
 
+				if (obj is null) {
+					ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
+
+					continue;
+				}
+
 				return new ObjectResponse<TResult>(response, obj);
+			}
+		}
+
+		if (maxTries > 1) {
+			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+			ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+		}
+
+		return null;
+	}
+
+	[PublicAPI]
+	public async Task<OptionalObjectResponse<TResult>?> UrlPostToOptionalJsonObject<TResult, TData>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, TData? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0) where TData : class {
+		ArgumentNullException.ThrowIfNull(request);
+
+		if (maxTries == 0) {
+			throw new ArgumentOutOfRangeException(nameof(maxTries));
+		}
+
+		if (rateLimitingDelay < 0) {
+			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
+		}
+
+		for (byte i = 0; i < maxTries; i++) {
+			if ((i > 0) && (rateLimitingDelay > 0)) {
+				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+			}
+
+			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
+
+			if (response == null) {
+				// Request timed out, try again
+				continue;
+			}
+
+			await using (response.ConfigureAwait(false)) {
+				if (response.StatusCode.IsRedirectionCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						// We're not handling this error, do not try again
+						break;
+					}
+				} else if (response.StatusCode.IsClientErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						// We're not handling this error, do not try again
+						break;
+					}
+				} else if (response.StatusCode.IsServerErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						// We're not handling this error, try again
+						continue;
+					}
+				}
+
+				TResult? obj;
+
+				try {
+					using StreamReader steamReader = new(response.Content);
+					using JsonReader jsonReader = new JsonTextReader(steamReader);
+
+					JsonSerializer serializer = new();
+
+					obj = serializer.Deserialize<TResult>(jsonReader);
+				} catch (Exception e) {
+					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
+						return new OptionalObjectResponse<TResult>(response);
+					}
+
+					ArchiLogger.LogGenericWarningException(e);
+					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+
+					continue;
+				}
+
+				if (obj is null) {
+					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
+						return new OptionalObjectResponse<TResult>(response);
+					}
+
+					ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
+
+					continue;
+				}
+
+				return new OptionalObjectResponse<TResult>(response, obj);
 			}
 		}
 
@@ -925,6 +1009,8 @@ public sealed class WebBrowser : IDisposable {
 		None = 0,
 		ReturnClientErrors = 1,
 		ReturnServerErrors = 2,
-		ReturnRedirections = 4
+		ReturnRedirections = 4,
+		AllowInvalidBodyOnSuccess = 8,
+		AllowInvalidBodyOnErrors = 16
 	}
 }
