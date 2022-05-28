@@ -2570,7 +2570,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request).ConfigureAwait(false);
 
 		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		return !string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken) ? (true, response!.Content.Data.WebAPIToken) : (false, null);
+		return !string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken) ? (true, response!.Content!.Data.WebAPIToken) : (false, null);
 	}
 
 	private async Task<(bool Success, string? Result)> ResolveApiKey() {
