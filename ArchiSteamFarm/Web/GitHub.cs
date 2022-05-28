@@ -73,17 +73,17 @@ internal static class GitHub {
 
 		Uri request = new($"{SharedInfo.ProjectURL}/wiki/{page}/_history");
 
-		using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
 
-		if (response == null) {
-			return null;
-		}
-
-		if (response.StatusCode.IsClientErrorCode()) {
+		if (response?.StatusCode.IsClientErrorCode() == true) {
 			return response.StatusCode switch {
 				HttpStatusCode.NotFound => new Dictionary<string, DateTime>(0),
 				_ => null
 			};
+		}
+
+		if (response?.Content == null) {
+			return null;
 		}
 
 		IEnumerable<IElement> revisionNodes = response.Content.SelectNodes("//li[contains(@class, 'wiki-history-revision')]");
@@ -148,7 +148,7 @@ internal static class GitHub {
 
 		using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request).ConfigureAwait(false);
 
-		if (response == null) {
+		if (response?.Content == null) {
 			return null;
 		}
 

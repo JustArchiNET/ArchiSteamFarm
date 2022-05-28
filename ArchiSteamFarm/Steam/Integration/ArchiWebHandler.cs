@@ -181,7 +181,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
 
-					if (response == null) {
+					if (response?.Content == null) {
 						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
 					}
 
@@ -210,7 +210,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 			}
 
-			if (response == null) {
+			if (response?.Content == null) {
 				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
 			}
 
@@ -434,7 +434,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 				response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
 
-				if (response == null) {
+				if (response?.Content == null) {
 					return (false, mobileTradeOfferIDs);
 				}
 
@@ -453,7 +453,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 			}
 
-			if (response == null) {
+			if (response?.Content == null) {
 				return (false, mobileTradeOfferIDs);
 			}
 
@@ -1231,7 +1231,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
 
-		if (response == null) {
+		if (response?.Content == null) {
 			return false;
 		}
 
@@ -1263,7 +1263,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 			response = await UrlPostToJsonObjectWithSession<TradeOfferAcceptResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
 
-			if (response == null) {
+			if (response?.Content == null) {
 				return (false, false);
 			}
 
@@ -1282,7 +1282,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		}
 
-		return response != null ? (true, response.Content.RequiresMobileConfirmation) : (false, false);
+		return response?.Content != null ? (true, response.Content.RequiresMobileConfirmation) : (false, false);
 	}
 
 	internal async Task<(EResult Result, EPurchaseResultDetail PurchaseResult)> AddFreeLicense(uint subID) {
@@ -1354,7 +1354,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
 
-		if (response == null) {
+		if (response?.Content == null) {
 			return false;
 		}
 
@@ -1400,7 +1400,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		ObjectResponse<NewDiscoveryQueueResponse>? response = await UrlPostToJsonObjectWithSession<NewDiscoveryQueueResponse>(request, data: data).ConfigureAwait(false);
 
-		return response?.Content.Queue;
+		return response?.Content?.Queue;
 	}
 
 	internal async Task<HashSet<TradeOffer>?> GetActiveTradeOffers() {
@@ -1717,7 +1717,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
-		if (response == null) {
+		if (response?.Content == null) {
 			return null;
 		}
 
@@ -1763,7 +1763,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
-		if (response == null) {
+		if (response?.Content == null) {
 			return null;
 		}
 
@@ -1855,7 +1855,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
-		IElement? htmlNode = response?.Content.SelectSingleNode("//div[@class='pagecontent']/script");
+		IElement? htmlNode = response?.Content?.SelectSingleNode("//div[@class='pagecontent']/script");
 
 		if (htmlNode == null) {
 			// Trade can be no longer valid
@@ -2005,7 +2005,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		ObjectResponse<BooleanResponse>? response = await UrlGetToJsonObjectWithSession<BooleanResponse>(request).ConfigureAwait(false);
 
-		return response?.Content.Success;
+		return response?.Content?.Success;
 	}
 
 	internal async Task<bool?> HandleConfirmations(string deviceID, string confirmationHash, uint time, IReadOnlyCollection<Confirmation> confirmations, bool accept) {
@@ -2059,7 +2059,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		ObjectResponse<BooleanResponse>? response = await UrlPostToJsonObjectWithSession<BooleanResponse>(request, data: data).ConfigureAwait(false);
 
-		return response?.Content.Success;
+		return response?.Content?.Success;
 	}
 
 	internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string? parentalCode = null) {
@@ -2253,7 +2253,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		ObjectResponse<RedeemWalletResponse>? response = await UrlPostToJsonObjectWithSession<RedeemWalletResponse>(request, data: data).ConfigureAwait(false);
 
-		if (response == null) {
+		if (response?.Content == null) {
 			return null;
 		}
 
@@ -2292,7 +2292,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
 
-		return response?.Content.Result == EResult.OK;
+		return response?.Content?.Result == EResult.OK;
 	}
 
 	private async Task<(ESteamApiKeyState State, string? Key)> GetApiKeyState() {
@@ -2300,7 +2300,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
-		if (response == null) {
+		if (response?.Content == null) {
 			return (ESteamApiKeyState.Timeout, null);
 		}
 
@@ -2570,7 +2570,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request).ConfigureAwait(false);
 
 		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		return !string.IsNullOrEmpty(response?.Content.Data.WebAPIToken) ? (true, response!.Content.Data.WebAPIToken) : (false, null);
+		return !string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken) ? (true, response!.Content.Data.WebAPIToken) : (false, null);
 	}
 
 	private async Task<(bool Success, string? Result)> ResolveApiKey() {

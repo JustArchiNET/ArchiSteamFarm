@@ -93,7 +93,7 @@ internal static class ArchiNet {
 
 		ObjectResponse<ChecksumResponse>? response = await ASF.WebBrowser.UrlGetToJsonObject<ChecksumResponse>(request).ConfigureAwait(false);
 
-		if (response == null) {
+		if (response?.Content == null) {
 			return null;
 		}
 

@@ -41,7 +41,7 @@ internal static class CatAPI {
 
 		ObjectResponse<MeowResponse>? response = await webBrowser.UrlGetToJsonObject<MeowResponse>(request).ConfigureAwait(false);
 
-		if (response == null) {
+		if (response?.Content == null) {
 			return null;
 		}
 
