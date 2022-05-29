@@ -33,11 +33,7 @@ public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
 
 	public HtmlDocumentResponse(BasicResponse basicResponse) : base(basicResponse) => ArgumentNullException.ThrowIfNull(basicResponse);
 
-	private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : base(basicResponse) {
-		ArgumentNullException.ThrowIfNull(basicResponse);
-
-		Content = content ?? throw new ArgumentNullException(nameof(content));
-	}
+	private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : this(basicResponse) => Content = content ?? throw new ArgumentNullException(nameof(content));
 
 	public void Dispose() => Content?.Dispose();
 
