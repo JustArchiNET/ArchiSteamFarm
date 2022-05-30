@@ -1678,7 +1678,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return result;
 	}
 
-	internal async Task<IDocument?> GetConfirmationsPage(string deviceID, string confirmationHash, uint time) {
+	internal async Task<IDocument?> GetConfirmationsPage(string deviceID, string confirmationHash, ulong time) {
 		if (string.IsNullOrEmpty(deviceID)) {
 			throw new ArgumentNullException(nameof(deviceID));
 		}
@@ -1803,7 +1803,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return response?.Content;
 	}
 
-	internal async Task<uint> GetServerTime() {
+	internal async Task<ulong> GetServerTime() {
 		KeyValue? response = null;
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
@@ -1835,7 +1835,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return 0;
 		}
 
-		uint result = response["server_time"].AsUnsignedInteger();
+		ulong result = response["server_time"].AsUnsignedLong();
 
 		if (result == 0) {
 			Bot.ArchiLogger.LogNullError(result);
@@ -1966,7 +1966,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return resultInSeconds == 0 ? (byte) 0 : (byte) (resultInSeconds / 86400);
 	}
 
-	internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, uint time, ulong confirmationID, ulong confirmationKey, bool accept) {
+	internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, ulong time, ulong confirmationID, ulong confirmationKey, bool accept) {
 		if (string.IsNullOrEmpty(deviceID)) {
 			throw new ArgumentNullException(nameof(deviceID));
 		}
@@ -2008,7 +2008,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return response?.Content.Success;
 	}
 
-	internal async Task<bool?> HandleConfirmations(string deviceID, string confirmationHash, uint time, IReadOnlyCollection<Confirmation> confirmations, bool accept) {
+	internal async Task<bool?> HandleConfirmations(string deviceID, string confirmationHash, ulong time, IReadOnlyCollection<Confirmation> confirmations, bool accept) {
 		if (string.IsNullOrEmpty(deviceID)) {
 			throw new ArgumentNullException(nameof(deviceID));
 		}

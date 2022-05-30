@@ -94,7 +94,7 @@ public static class Utilities {
 	}
 
 	[PublicAPI]
-	public static uint GetUnixTime() => (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+	public static ulong GetUnixTime() => (ulong) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
 	[PublicAPI]
 	public static async void InBackground(Action action, bool longRunning = false) {
@@ -251,6 +251,16 @@ public static class Utilities {
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
+	}
+
+	internal static ulong MathAdd(ulong first, int second) {
+		if (second >= 0) {
+			first += (uint) second;
+		} else {
+			first -= (uint) -second;
+		}
+
+		return first;
 	}
 
 	internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
