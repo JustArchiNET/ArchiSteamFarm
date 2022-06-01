@@ -34,6 +34,7 @@ using ArchiSteamFarm.NLog.Targets;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog.Web;
@@ -96,6 +97,13 @@ internal static class ArchiKestrel {
 		}
 
 		// Enable NLog integration for logging
+		builder.ConfigureLogging(
+			static logging => {
+				logging.ClearProviders();
+				logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning);
+			}
+		);
+
 		builder.UseNLog();
 
 		builder.ConfigureWebHostDefaults(
