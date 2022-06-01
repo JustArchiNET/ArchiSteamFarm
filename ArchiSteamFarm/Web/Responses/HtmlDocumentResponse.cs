@@ -23,22 +23,19 @@ using System;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
-using ArchiSteamFarm.Core;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Web.Responses;
 
 public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
 	[PublicAPI]
-	public IDocument Content { get; }
+	public IDocument? Content { get; }
 
-	private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : base(basicResponse) {
-		ArgumentNullException.ThrowIfNull(basicResponse);
+	public HtmlDocumentResponse(BasicResponse basicResponse) : base(basicResponse) => ArgumentNullException.ThrowIfNull(basicResponse);
 
-		Content = content ?? throw new ArgumentNullException(nameof(content));
-	}
+	private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : this(basicResponse) => Content = content ?? throw new ArgumentNullException(nameof(content));
 
-	public void Dispose() => Content.Dispose();
+	public void Dispose() => Content?.Dispose();
 
 	[PublicAPI]
 	public static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse) {
@@ -46,14 +43,8 @@ public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
 
 		IBrowsingContext context = BrowsingContext.New();
 
-		try {
-			IDocument document = await context.OpenAsync(req => req.Content(streamResponse.Content, true)).ConfigureAwait(false);
+		IDocument document = await context.OpenAsync(request => request.Content(streamResponse.Content, true)).ConfigureAwait(false);
 
-			return new HtmlDocumentResponse(streamResponse, document);
-		} catch (Exception e) {
-			ASF.ArchiLogger.LogGenericWarningException(e);
-
-			return null;
-		}
+		return new HtmlDocumentResponse(streamResponse, document);
 	}
 }
