@@ -1900,7 +1900,8 @@ public sealed class Bot : IAsyncDisposable {
 			}
 
 			// URIs to foil badges are the same as for normal badges except they end with "?border=1"
-			string appIDText = badgeUri.Split('?', StringSplitOptions.RemoveEmptyEntries)[0].Split('/', StringSplitOptions.RemoveEmptyEntries)[^1];
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			string appIDText = badgeUri!.Split('?', StringSplitOptions.RemoveEmptyEntries)[0].Split('/', StringSplitOptions.RemoveEmptyEntries)[^1];
 
 			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 				ArchiLogger.LogNullError(appID);

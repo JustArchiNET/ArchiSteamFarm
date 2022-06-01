@@ -1732,7 +1732,8 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			if (giftCardIDText.Length <= 13) {
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			if (giftCardIDText!.Length <= 13) {
 				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(giftCardIDText)));
 
 				return null;

@@ -176,7 +176,8 @@ public sealed class MobileAuthenticator : IDisposable {
 				return null;
 			}
 
-			if (!Enum.TryParse(typeText, out Confirmation.EType type) || (type == Confirmation.EType.Unknown)) {
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			if (!Enum.TryParse(typeText!, out Confirmation.EType type) || (type == Confirmation.EType.Unknown)) {
 				Bot.ArchiLogger.LogNullError(type);
 
 				return null;
