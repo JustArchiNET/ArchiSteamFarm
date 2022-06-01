@@ -74,7 +74,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			throw new InvalidOperationException(nameof(Bot));
 		}
 
-		uint time = await GetSteamTime().ConfigureAwait(false);
+		ulong time = await GetSteamTime().ConfigureAwait(false);
 
 		if (time == 0) {
 			throw new InvalidOperationException(nameof(time));
@@ -96,7 +96,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			return null;
 		}
 
-		uint time = await GetSteamTime().ConfigureAwait(false);
+		ulong time = await GetSteamTime().ConfigureAwait(false);
 
 		if (time == 0) {
 			throw new InvalidOperationException(nameof(time));
@@ -211,7 +211,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			return false;
 		}
 
-		uint time = await GetSteamTime().ConfigureAwait(false);
+		ulong time = await GetSteamTime().ConfigureAwait(false);
 
 		if (time == 0) {
 			throw new InvalidOperationException(nameof(time));
@@ -281,7 +281,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		}
 	}
 
-	private string? GenerateConfirmationHash(uint time, string? tag = null) {
+	private string? GenerateConfirmationHash(ulong time, string? tag = null) {
 		if (time == 0) {
 			throw new ArgumentOutOfRangeException(nameof(time));
 		}
@@ -312,7 +312,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			bufferSize += (byte) Math.Min(32, tag!.Length);
 		}
 
-		byte[] timeArray = BitConverter.GetBytes((ulong) time);
+		byte[] timeArray = BitConverter.GetBytes(time);
 
 		if (BitConverter.IsLittleEndian) {
 			Array.Reverse(timeArray);
@@ -334,7 +334,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		return Convert.ToBase64String(hash);
 	}
 
-	private string? GenerateTokenForTime(uint time) {
+	private string? GenerateTokenForTime(ulong time) {
 		if (time == 0) {
 			throw new ArgumentOutOfRangeException(nameof(time));
 		}
@@ -358,7 +358,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			return null;
 		}
 
-		byte[] timeArray = BitConverter.GetBytes((ulong) (time / CodeInterval));
+		byte[] timeArray = BitConverter.GetBytes(time / CodeInterval);
 
 		if (BitConverter.IsLittleEndian) {
 			Array.Reverse(timeArray);
@@ -394,7 +394,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		);
 	}
 
-	private async Task<uint> GetSteamTime() {
+	private async Task<ulong> GetSteamTime() {
 		if (Bot == null) {
 			throw new InvalidOperationException(nameof(Bot));
 		}
@@ -402,7 +402,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		int? steamTimeDifference = SteamTimeDifference;
 
 		if (steamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalHours < SteamTimeTTL)) {
-			return (uint) (Utilities.GetUnixTime() + steamTimeDifference.Value);
+			return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
 		}
 
 		await TimeSemaphore.WaitAsync().ConfigureAwait(false);
@@ -411,19 +411,21 @@ public sealed class MobileAuthenticator : IDisposable {
 			steamTimeDifference = SteamTimeDifference;
 
 			if (steamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalHours < SteamTimeTTL)) {
-				return (uint) (Utilities.GetUnixTime() + steamTimeDifference.Value);
+				return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
 			}
 
-			uint serverTime = await Bot.ArchiWebHandler.GetServerTime().ConfigureAwait(false);
+			ulong serverTime = await Bot.ArchiWebHandler.GetServerTime().ConfigureAwait(false);
 
 			if (serverTime == 0) {
 				return Utilities.GetUnixTime();
 			}
 
-			SteamTimeDifference = (int) (serverTime - Utilities.GetUnixTime());
+			// We assume that the difference between times will be within int range, therefore we accept underflow here (for subtraction), and since we cast that result to int afterwards, we also accept overflow for the cast itself
+			SteamTimeDifference = unchecked((int) (serverTime - Utilities.GetUnixTime()));
+
 			LastSteamTimeCheck = DateTime.UtcNow;
 
-			return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.Value);
+			return Utilities.MathAdd(Utilities.GetUnixTime(), SteamTimeDifference.Value);
 		} finally {
 			TimeSemaphore.Release();
 		}
