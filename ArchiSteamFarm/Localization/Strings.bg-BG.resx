@@ -79,7 +79,7 @@
 		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-		<value>ASF V{0} претърпя критичен срив, преди основния записващ модул, да стартира!</value>
+		<value>ASF V{0} претърпя критичен срив, преди основния записващ модул да стартира!</value>
 		<comment>{0} will be replaced by version number</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -662,12 +662,17 @@
 		<value>Предложението за размяна {0} е определено като {1} поради {2}.</value>
 		<comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
 	</data>
-	
+	<data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
+		<value>Получили сте код за грешна парола {0} пъти поред. Вашата парола за този акаунт най-вероятно е грешна, прекратяване!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
+	</data>
 	<data name="Result" xml:space="preserve">
 		<value>Резултат: {0}</value>
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
-	
+	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
+		<value>Опитвате се да подкарате {0} вариант на ASF в неподдържана страна: {1}. Осигурете аргумент за отхвърляне на това твърдение ако наистина знаете какво правите.</value>
+	</data>
 	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
 		<value>Непознат аргумент в командната линия: {0}</value>
 		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
@@ -679,19 +684,52 @@
 		<value>Играят се избраните {0}: {1}</value>
 		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="AutomaticFileMigration" xml:space="preserve">
+		<value>{0} config file ще бъде прехвърлен на последния синтаксис...</value>
+		<comment>{0} will be replaced with the relative path to the affected config file</comment>
+	</data>
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>Вашата IPC парола изглежда много слаба. Помислете за избиране на по-сложна за увеличаване на сигурността. Детайли: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>Вашата Steam парола за {0} изглежда много слаба. Помислете за избиране на по-сложна за увеличаване на сигурността. Детайли: {1}</value>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Вашият криптиращ ключ изглежда много слаб. Помислете за избиране на по-сложна за увеличаване на сигурността. Детайли: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Вашият криптиращ ключ е много къс. Препоръчваме да ползвате някой, който е поне {0} байта (символа) голям.</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Ползвате {0} настройка от {1} стойност, но не сте осигурили персонализиран крипто-ключ. Трябва да осигурите персонализиран крипто-ключ за увеличена защита.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>Ползвате {0} настройка от {1} стойност, но не сте осигурили персонализиран крипто-ключ. Това напълно нарушава защитата, тъй като ASF е принуден да ползва собствен (познат) ключ. Трябва да осигурите персонализиран крипто-ключ, за да ползвате предлаганата защита от тези настройки.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Опитвате се да стартирате ASF като администратор. Това предполага значителен риск за защитата на вашата машина, и тъй като ASF не изисква административен достъп, за да работи, Ви препоръчваме да я стартирате като потребител, който НЕ Е администратор, по възможност.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Стартирали сте ASF| в неподдържана среда, осигурявайки аргумент, който отхвърля това твърдение. Имайте в предвид, че не осигуряваме никаква подръжка при подобен сценарий и вършите всичко на свой риск. Предупредени сте.</value>
+	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Извлича се checksum от отдалечения сървър...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>Потвърждава се checksum на сваления файл срещу този на отдалечения сървър...</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>Отдалечения сървър не знае нищо за версията до която се опитвате да ъпгрейднете. Подобна ситуация е възможна ако версията е публикувана скоро - отказване да се продължи с ъпдейта като допълнителна мярка за сигурност.</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>Отдалечения сървър отговори с различен checksum, това може да показва корумпирано сваляне или MITM атака - отказване да се продължи с ъпдейта!</value>
+	</data>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Пачват се ASF файлове...</value>
 	</data>
