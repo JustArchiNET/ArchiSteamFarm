@@ -466,7 +466,8 @@ public sealed class CardsFarmer : IAsyncDisposable {
 				continue;
 			}
 
-			string[] appIDSplitted = appIDText.Split('_');
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			string[] appIDSplitted = appIDText!.Split('_');
 
 			if (appIDSplitted.Length < 5) {
 				Bot.ArchiLogger.LogNullError(appIDSplitted);

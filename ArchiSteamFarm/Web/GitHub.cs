@@ -99,7 +99,7 @@ internal static class GitHub {
 				return null;
 			}
 
-			string versionText = versionNode.GetAttribute("value");
+			string? versionText = versionNode.GetAttribute("value");
 
 			if (string.IsNullOrEmpty(versionText)) {
 				ASF.ArchiLogger.LogNullError(versionText);
@@ -115,7 +115,7 @@ internal static class GitHub {
 				return null;
 			}
 
-			string dateTimeText = dateTimeNode.GetAttribute("datetime");
+			string? dateTimeText = dateTimeNode.GetAttribute("datetime");
 
 			if (string.IsNullOrEmpty(dateTimeText)) {
 				ASF.ArchiLogger.LogNullError(dateTimeText);
@@ -129,7 +129,8 @@ internal static class GitHub {
 				return null;
 			}
 
-			result[versionText] = dateTime.ToUniversalTime();
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			result[versionText!] = dateTime.ToUniversalTime();
 		}
 
 		return result;
