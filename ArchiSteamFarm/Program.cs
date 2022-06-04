@@ -468,6 +468,8 @@ internal static class Program {
 				await Exit().ConfigureAwait(false);
 
 				break;
+			default:
+				throw new InvalidOperationException(nameof(signal.Signal));
 		}
 	}
 #endif
