@@ -196,7 +196,11 @@ public static class Utilities {
 	}
 
 	[PublicAPI]
-	public static IElement? SelectSingleElementNode(this IElement element, string xpath) => (IElement?) element.SelectSingleNode(xpath);
+	public static IElement? SelectSingleElementNode(this IElement element, string xpath) {
+		ArgumentNullException.ThrowIfNull(element);
+
+		return (IElement?) element.SelectSingleNode(xpath);
+	}
 
 	[PublicAPI]
 	public static IElement? SelectSingleNode(this IDocument document, string xpath) {
