@@ -44,8 +44,8 @@ public sealed class MobileAuthenticator : IDisposable {
 
 	private const byte CodeInterval = 30;
 
-	// For how many hours we can assume that SteamTimeDifference is correct
-	private const byte SteamTimeTTL = 24;
+	// For how many minutes we can assume that SteamTimeDifference is correct
+	private const byte SteamTimeTTL = 10;
 
 	internal static readonly ImmutableSortedSet<char> CodeCharacters = ImmutableSortedSet.Create('2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'V', 'W', 'X', 'Y');
 
@@ -402,7 +402,7 @@ public sealed class MobileAuthenticator : IDisposable {
 
 		int? steamTimeDifference = SteamTimeDifference;
 
-		if (steamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalHours < SteamTimeTTL)) {
+		if (steamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalMinutes < SteamTimeTTL)) {
 			return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
 		}
 
@@ -411,7 +411,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		try {
 			steamTimeDifference = SteamTimeDifference;
 
-			if (steamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalHours < SteamTimeTTL)) {
+			if (steamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalMinutes < SteamTimeTTL)) {
 				return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
 			}
 
@@ -422,14 +422,15 @@ public sealed class MobileAuthenticator : IDisposable {
 			}
 
 			// We assume that the difference between times will be within int range, therefore we accept underflow here (for subtraction), and since we cast that result to int afterwards, we also accept overflow for the cast itself
-			SteamTimeDifference = unchecked((int) (serverTime - Utilities.GetUnixTime()));
+			steamTimeDifference = unchecked((int) (serverTime - Utilities.GetUnixTime()));
 
+			SteamTimeDifference = steamTimeDifference;
 			LastSteamTimeCheck = DateTime.UtcNow;
-
-			return Utilities.MathAdd(Utilities.GetUnixTime(), SteamTimeDifference.Value);
 		} finally {
 			TimeSemaphore.Release();
 		}
+
+		return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
 	}
 
 	private static async Task LimitConfirmationsRequestsAsync() {

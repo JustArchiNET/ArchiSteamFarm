@@ -259,12 +259,10 @@ public static class Utilities {
 
 	internal static ulong MathAdd(ulong first, int second) {
 		if (second >= 0) {
-			first += (uint) second;
-		} else {
-			first -= (uint) -second;
+			return first + (uint) second;
 		}
 
-		return first;
+		return first - (uint) -second;
 	}
 
 	internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
