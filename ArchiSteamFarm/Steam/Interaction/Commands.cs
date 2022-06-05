@@ -191,11 +191,9 @@ public sealed class Commands {
 						return await Response2FAConfirm(access, Utilities.GetArgsAsText(args, 1, ","), false, steamID).ConfigureAwait(false);
 					case "2FAOK":
 						return await Response2FAConfirm(access, Utilities.GetArgsAsText(args, 1, ","), true, steamID).ConfigureAwait(false);
-					case "ADDLICENCE" when args.Length > 2:
-					case "ADDLICENSE" when args.Length > 2:
+					case "ADDLICENCE" or "ADDLICENSE" when args.Length > 2:
 						return await ResponseAddLicense(access, args[1], Utilities.GetArgsAsText(args, 2, ","), steamID).ConfigureAwait(false);
-					case "ADDLICENCE":
-					case "ADDLICENSE":
+					case "ADDLICENCE" or "ADDLICENSE":
 						return await ResponseAddLicense(access, args[1]).ConfigureAwait(false);
 					case "BALANCE":
 						return await ResponseWalletBalance(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
@@ -285,17 +283,13 @@ public sealed class Commands {
 						return await ResponsePrivacy(access, args[1], Utilities.GetArgsAsText(args, 2, ","), steamID).ConfigureAwait(false);
 					case "PRIVACY":
 						return await ResponsePrivacy(access, args[1]).ConfigureAwait(false);
-					case "R" when args.Length > 2:
-					case "REDEEM" when args.Length > 2:
+					case "R" or "REDEEM" when args.Length > 2:
 						return await ResponseRedeem(access, args[1], Utilities.GetArgsAsText(args, 2, ","), steamID: steamID).ConfigureAwait(false);
-					case "R":
-					case "REDEEM":
+					case "R" or "REDEEM":
 						return await ResponseRedeem(access, args[1], steamID).ConfigureAwait(false);
-					case "R^" when args.Length > 3:
-					case "REDEEM^" when args.Length > 3:
+					case "R^" or  "REDEEM^" when args.Length > 3:
 						return await ResponseAdvancedRedeem(access, args[1], args[2], Utilities.GetArgsAsText(args, 3, ","), steamID).ConfigureAwait(false);
-					case "R^" when args.Length > 2:
-					case "REDEEM^" when args.Length > 2:
+					case "R^" or "REDEEM^" when args.Length > 2:
 						return await ResponseAdvancedRedeem(access, args[1], args[2], steamID).ConfigureAwait(false);
 					case "RESET":
 						return await ResponseReset(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
@@ -654,8 +648,7 @@ public sealed class Commands {
 			}
 
 			switch (type.ToUpperInvariant()) {
-				case "A":
-				case "APP":
+				case "A" or "APP":
 					SteamApps.FreeLicenseCallback callback;
 
 					try {
@@ -799,53 +792,43 @@ public sealed class Commands {
 
 		foreach (string flag in flags) {
 			switch (flag.ToUpperInvariant()) {
-				case "FAWK":
-				case "FORCEASSUMEWALLETKEY":
+				case "FAWK" or "FORCEASSUMEWALLETKEY":
 					redeemFlags |= ERedeemFlags.ForceAssumeWalletKeyOnBadActivationCode;
 
 					break;
-				case "FD":
-				case "FORCEDISTRIBUTING":
+				case "FD" or "FORCEDISTRIBUTING":
 					redeemFlags |= ERedeemFlags.ForceDistributing;
 
 					break;
-				case "FF":
-				case "FORCEFORWARDING":
+				case "FF" or "FORCEFORWARDING":
 					redeemFlags |= ERedeemFlags.ForceForwarding;
 
 					break;
-				case "FKMG":
-				case "FORCEKEEPMISSINGGAMES":
+				case "FKMG" or "FORCEKEEPMISSINGGAMES":
 					redeemFlags |= ERedeemFlags.ForceKeepMissingGames;
 
 					break;
-				case "SAWK":
-				case "SKIPASSUMEWALLETKEY":
+				case "SAWK" or "SKIPASSUMEWALLETKEY":
 					redeemFlags |= ERedeemFlags.SkipAssumeWalletKeyOnBadActivationCode;
 
 					break;
-				case "SD":
-				case "SKIPDISTRIBUTING":
+				case "SD" or "SKIPDISTRIBUTING":
 					redeemFlags |= ERedeemFlags.SkipDistributing;
 
 					break;
-				case "SF":
-				case "SKIPFORWARDING":
+				case "SF" or "SKIPFORWARDING":
 					redeemFlags |= ERedeemFlags.SkipForwarding;
 
 					break;
-				case "SI":
-				case "SKIPINITIAL":
+				case "SI" or "SKIPINITIAL":
 					redeemFlags |= ERedeemFlags.SkipInitial;
 
 					break;
-				case "SKMG":
-				case "SKIPKEEPMISSINGGAMES":
+				case "SKMG" or "SKIPKEEPMISSINGGAMES":
 					redeemFlags |= ERedeemFlags.SkipKeepMissingGames;
 
 					break;
-				case "V":
-				case "VALIDATE":
+				case "V" or "VALIDATE":
 					redeemFlags |= ERedeemFlags.Validate;
 
 					break;
@@ -1954,8 +1937,7 @@ public sealed class Commands {
 			}
 
 			switch (type.ToUpperInvariant()) {
-				case "A" when uint.TryParse(game, out uint appID) && (appID > 0):
-				case "APP" when uint.TryParse(game, out appID) && (appID > 0):
+				case "A" or "APP" when uint.TryParse(game, out uint appID) && (appID > 0):
 					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(appID, Bot.OwnedPackageIDs.Keys);
 
 					if (packageIDs?.Count > 0) {
@@ -1986,8 +1968,7 @@ public sealed class Commands {
 					}
 
 					break;
-				case "R":
-				case "REGEX":
+				case "R" or "REGEX":
 					Regex regex;
 
 					try {
@@ -2023,8 +2004,7 @@ public sealed class Commands {
 					}
 
 					continue;
-				case "S" when uint.TryParse(game, out uint packageID) && (packageID > 0):
-				case "SUB" when uint.TryParse(game, out packageID) && (packageID > 0):
+				case "S" or "SUB" when uint.TryParse(game, out uint packageID) && (packageID > 0):
 					if (Bot.OwnedPackageIDs.ContainsKey(packageID)) {
 						result[$"sub/{packageID}"] = packageID.ToString(CultureInfo.InvariantCulture);
 						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlready, $"sub/{packageID}")));

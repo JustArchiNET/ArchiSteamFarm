@@ -1100,8 +1100,7 @@ public sealed class Bot : IAsyncDisposable {
 				switch (releaseState!.ToUpperInvariant()) {
 					case "RELEASED":
 						break;
-					case "PRELOADONLY":
-					case "PRERELEASE":
+					case "PRELOADONLY" or "PRERELEASE":
 						return (0, DateTime.MaxValue, true);
 					default:
 						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
@@ -1119,22 +1118,10 @@ public sealed class Bot : IAsyncDisposable {
 			// We must convert this to uppercase, since Valve doesn't stick to any convention and we can have a case mismatch
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			switch (type!.ToUpperInvariant()) {
-				case "APPLICATION":
-				case "EPISODE":
-				case "GAME":
-				case "MOD":
-				case "MOVIE":
-				case "SERIES":
-				case "TOOL":
-				case "VIDEO":
+				case "APPLICATION" or "EPISODE" or "GAME" or "MOD" or "MOVIE" or "SERIES" or "TOOL" or "VIDEO":
 					// Types that can be idled
 					return (appID, DateTime.MinValue, true);
-				case "ADVERTISING":
-				case "DEMO":
-				case "DLC":
-				case "GUIDE":
-				case "HARDWARE":
-				case "MUSIC":
+				case "ADVERTISING" or "DEMO" or "DLC" or "GUIDE" or "HARDWARE" or "MUSIC":
 					// Types that can't be idled
 					break;
 				default:

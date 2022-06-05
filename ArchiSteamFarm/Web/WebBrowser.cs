@@ -867,8 +867,7 @@ public sealed class WebBrowser : IDisposable {
 
 				if (redirectUri.IsAbsoluteUri) {
 					switch (redirectUri.Scheme) {
-						case "http":
-						case "https":
+						case "http" or "https":
 							break;
 						case "steammobile":
 							// Those redirections are invalid, but we're aware of that and we have extra logic for them
