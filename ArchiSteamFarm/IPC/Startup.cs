@@ -107,8 +107,7 @@ internal sealed class Startup {
 						CacheControlHeaderValue cacheControl = new();
 
 						switch (extension.ToUpperInvariant()) {
-							case ".CSS":
-							case ".JS":
+							case ".CSS" or ".JS":
 								// Add support for SRI-protected static files
 								// SRI requires from us to notify the caller (especially proxy) to avoid modifying the data
 								cacheControl.NoTransform = true;

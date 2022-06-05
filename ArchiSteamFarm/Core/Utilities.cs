@@ -320,9 +320,7 @@ public static class Utilities {
 
 		// Skip translation progress for English and invariant (such as "C") cultures
 		switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {
-			case "en":
-			case "iv":
-			case "qps":
+			case "en" or "iv" or "qps":
 				return;
 		}
 
