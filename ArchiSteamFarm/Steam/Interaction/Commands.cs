@@ -191,8 +191,10 @@ public sealed class Commands {
 						return await Response2FAConfirm(access, Utilities.GetArgsAsText(args, 1, ","), false, steamID).ConfigureAwait(false);
 					case "2FAOK":
 						return await Response2FAConfirm(access, Utilities.GetArgsAsText(args, 1, ","), true, steamID).ConfigureAwait(false);
+					case "ADDLICENCE" when args.Length > 2:
 					case "ADDLICENSE" when args.Length > 2:
 						return await ResponseAddLicense(access, args[1], Utilities.GetArgsAsText(args, 2, ","), steamID).ConfigureAwait(false);
+					case "ADDLICENCE":
 					case "ADDLICENSE":
 						return await ResponseAddLicense(access, args[1]).ConfigureAwait(false);
 					case "BALANCE":
