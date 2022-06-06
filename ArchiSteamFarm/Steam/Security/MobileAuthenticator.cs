@@ -45,7 +45,7 @@ public sealed class MobileAuthenticator : IDisposable {
 	private const byte CodeInterval = 30;
 
 	// For how many minutes we can assume that SteamTimeDifference is correct
-	private const byte SteamTimeTTL = 10;
+	private const byte SteamTimeTTL = 15;
 
 	internal static readonly ImmutableSortedSet<char> CodeCharacters = ImmutableSortedSet.Create('2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'V', 'W', 'X', 'Y');
 
@@ -96,6 +96,8 @@ public sealed class MobileAuthenticator : IDisposable {
 			return null;
 		}
 
+		await LimitConfirmationsRequestsAsync().ConfigureAwait(false);
+
 		ulong time = await GetSteamTime().ConfigureAwait(false);
 
 		if (time == 0) {
@@ -109,8 +111,6 @@ public sealed class MobileAuthenticator : IDisposable {
 
 			return null;
 		}
-
-		await LimitConfirmationsRequestsAsync().ConfigureAwait(false);
 
 		// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
 		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetConfirmationsPage(deviceID!, confirmationHash!, time).ConfigureAwait(false);
