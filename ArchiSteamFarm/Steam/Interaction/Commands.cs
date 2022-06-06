@@ -287,7 +287,7 @@ public sealed class Commands {
 						return await ResponseRedeem(access, args[1], Utilities.GetArgsAsText(args, 2, ","), steamID: steamID).ConfigureAwait(false);
 					case "R" or "REDEEM":
 						return await ResponseRedeem(access, args[1], steamID).ConfigureAwait(false);
-					case "R^" or  "REDEEM^" when args.Length > 3:
+					case "R^" or "REDEEM^" when args.Length > 3:
 						return await ResponseAdvancedRedeem(access, args[1], args[2], Utilities.GetArgsAsText(args, 3, ","), steamID).ConfigureAwait(false);
 					case "R^" or "REDEEM^" when args.Length > 2:
 						return await ResponseAdvancedRedeem(access, args[1], args[2], steamID).ConfigureAwait(false);
