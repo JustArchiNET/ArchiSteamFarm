@@ -538,7 +538,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 			return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries, rateLimitingDelay).ConfigureAwait(false);
@@ -621,7 +621,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 			return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries, rateLimitingDelay).ConfigureAwait(false);
@@ -704,7 +704,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 			return await UrlHeadWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries, rateLimitingDelay).ConfigureAwait(false);
@@ -816,7 +816,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 			return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries, rateLimitingDelay).ConfigureAwait(false);
@@ -928,7 +928,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 			return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries, rateLimitingDelay).ConfigureAwait(false);
@@ -1042,7 +1042,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 			return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries, rateLimitingDelay).ConfigureAwait(false);
@@ -1154,7 +1154,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 			return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries, rateLimitingDelay).ConfigureAwait(false);
