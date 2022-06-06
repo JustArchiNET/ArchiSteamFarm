@@ -29,22 +29,24 @@ namespace ArchiSteamFarm.Web.Responses;
 
 public sealed class StreamResponse : BasicResponse, IAsyncDisposable {
 	[PublicAPI]
-	public Stream Content { get; }
+	public Stream? Content { get; }
 
 	[PublicAPI]
 	public long Length { get; }
 
 	private readonly HttpResponseMessage ResponseMessage;
 
-	internal StreamResponse(HttpResponseMessage httpResponseMessage, Stream content) : base(httpResponseMessage) {
-		ResponseMessage = httpResponseMessage ?? throw new ArgumentNullException(nameof(httpResponseMessage));
-		Content = content ?? throw new ArgumentNullException(nameof(content));
+	internal StreamResponse(HttpResponseMessage httpResponseMessage, Stream content) : this(httpResponseMessage) => Content = content ?? throw new ArgumentNullException(nameof(content));
 
+	internal StreamResponse(HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) {
+		ResponseMessage = httpResponseMessage ?? throw new ArgumentNullException(nameof(httpResponseMessage));
 		Length = httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
 	}
 
 	public async ValueTask DisposeAsync() {
-		await Content.DisposeAsync().ConfigureAwait(false);
+		if (Content != null) {
+			await Content.DisposeAsync().ConfigureAwait(false);
+		}
 
 		ResponseMessage.Dispose();
 	}

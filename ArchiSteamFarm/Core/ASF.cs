@@ -301,7 +301,7 @@ public static class ASF {
 				progressReporter.ProgressChanged -= OnProgressChanged;
 			}
 
-			if (response == null) {
+			if (response?.Content == null) {
 				return null;
 			}
 

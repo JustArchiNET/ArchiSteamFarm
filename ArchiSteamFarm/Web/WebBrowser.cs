@@ -133,27 +133,34 @@ public sealed class WebBrowser : IDisposable {
 
 			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
-			if (response == null) {
+			if (response?.Content == null) {
 				// Request timed out, try again
 				continue;
 			}
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-						// We're not handling this error, do not try again
-						break;
+					if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						return new BinaryResponse(response);
 					}
-				} else if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, do not try again
-						break;
+
+					break;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						return new BinaryResponse(response);
 					}
-				} else if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						// We're not handling this error, try again
-						continue;
+
+					break;
+				}
+
+				if (response.StatusCode.IsServerErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						return new BinaryResponse(response);
 					}
+
+					continue;
 				}
 
 				if (response.Length > Array.MaxLength) {
@@ -213,10 +220,8 @@ public sealed class WebBrowser : IDisposable {
 			}
 		}
 
-		if (maxTries > 1) {
-			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
-		}
+		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 		return null;
 	}
@@ -240,27 +245,34 @@ public sealed class WebBrowser : IDisposable {
 
 			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
-			if (response == null) {
+			if (response?.Content == null) {
 				// Request timed out, try again
 				continue;
 			}
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-						// We're not handling this error, do not try again
-						break;
+					if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						return new HtmlDocumentResponse(response);
 					}
-				} else if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, do not try again
-						break;
+
+					break;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						return new HtmlDocumentResponse(response);
 					}
-				} else if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						// We're not handling this error, try again
-						continue;
+
+					break;
+				}
+
+				if (response.StatusCode.IsServerErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						return new HtmlDocumentResponse(response);
 					}
+
+					continue;
 				}
 
 				try {
@@ -276,10 +288,8 @@ public sealed class WebBrowser : IDisposable {
 			}
 		}
 
-		if (maxTries > 1) {
-			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
-		}
+		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 		return null;
 	}
@@ -303,27 +313,34 @@ public sealed class WebBrowser : IDisposable {
 
 			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
-			if (response == null) {
+			if (response?.Content == null) {
 				// Request timed out, try again
 				continue;
 			}
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-						// We're not handling this error, do not try again
-						break;
+					if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						return new ObjectResponse<T>(response);
 					}
-				} else if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, do not try again
-						break;
+
+					break;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						return new ObjectResponse<T>(response);
 					}
-				} else if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						// We're not handling this error, try again
-						continue;
+
+					break;
+				}
+
+				if (response.StatusCode.IsServerErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						return new ObjectResponse<T>(response);
 					}
+
+					continue;
 				}
 
 				T? obj;
@@ -360,10 +377,8 @@ public sealed class WebBrowser : IDisposable {
 			}
 		}
 
-		if (maxTries > 1) {
-			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
-		}
+		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 		return null;
 	}
@@ -393,29 +408,34 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			if (response.StatusCode.IsRedirectionCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-					// We're not handling this error, do not try again
-					break;
+				if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					return new StreamResponse(response);
 				}
-			} else if (response.StatusCode.IsClientErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-					// We're not handling this error, do not try again
-					break;
+
+				break;
+			}
+
+			if (response.StatusCode.IsClientErrorCode()) {
+				if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+					return new StreamResponse(response);
 				}
-			} else if (response.StatusCode.IsServerErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-					// We're not handling this error, try again
-					continue;
+
+				break;
+			}
+
+			if (response.StatusCode.IsServerErrorCode()) {
+				if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+					return new StreamResponse(response);
 				}
+
+				continue;
 			}
 
 			return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
 		}
 
-		if (maxTries > 1) {
-			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
-		}
+		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 		return null;
 	}
@@ -432,8 +452,6 @@ public sealed class WebBrowser : IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
 		}
 
-		BasicResponse? result = null;
-
 		for (byte i = 0; i < maxTries; i++) {
 			if ((i > 0) && (rateLimitingDelay > 0)) {
 				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
@@ -447,7 +465,7 @@ public sealed class WebBrowser : IDisposable {
 
 			if (response.StatusCode.IsRedirectionCode()) {
 				if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-					result = new BasicResponse(response);
+					return new BasicResponse(response);
 				}
 
 				break;
@@ -455,7 +473,7 @@ public sealed class WebBrowser : IDisposable {
 
 			if (response.StatusCode.IsClientErrorCode()) {
 				if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-					result = new BasicResponse(response);
+					return new BasicResponse(response);
 				}
 
 				break;
@@ -463,7 +481,7 @@ public sealed class WebBrowser : IDisposable {
 
 			if (response.StatusCode.IsServerErrorCode()) {
 				if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-					result = new BasicResponse(response);
+					return new BasicResponse(response);
 				}
 
 				continue;
@@ -472,12 +490,10 @@ public sealed class WebBrowser : IDisposable {
 			return new BasicResponse(response);
 		}
 
-		if (maxTries > 1) {
-			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
-		}
+		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
-		return result;
+		return null;
 	}
 
 	[PublicAPI]
@@ -492,8 +508,6 @@ public sealed class WebBrowser : IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
 		}
 
-		BasicResponse? result = null;
-
 		for (byte i = 0; i < maxTries; i++) {
 			if ((i > 0) && (rateLimitingDelay > 0)) {
 				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
@@ -507,7 +521,7 @@ public sealed class WebBrowser : IDisposable {
 
 			if (response.StatusCode.IsRedirectionCode()) {
 				if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-					result = new BasicResponse(response);
+					return new BasicResponse(response);
 				}
 
 				break;
@@ -515,7 +529,7 @@ public sealed class WebBrowser : IDisposable {
 
 			if (response.StatusCode.IsClientErrorCode()) {
 				if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-					result = new BasicResponse(response);
+					return new BasicResponse(response);
 				}
 
 				break;
@@ -523,7 +537,7 @@ public sealed class WebBrowser : IDisposable {
 
 			if (response.StatusCode.IsServerErrorCode()) {
 				if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-					result = new BasicResponse(response);
+					return new BasicResponse(response);
 				}
 
 				continue;
@@ -532,12 +546,10 @@ public sealed class WebBrowser : IDisposable {
 			return new BasicResponse(response);
 		}
 
-		if (maxTries > 1) {
-			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
-		}
+		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
-		return result;
+		return null;
 	}
 
 	[PublicAPI]
@@ -559,27 +571,34 @@ public sealed class WebBrowser : IDisposable {
 
 			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
-			if (response == null) {
+			if (response?.Content == null) {
 				// Request timed out, try again
 				continue;
 			}
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-						// We're not handling this error, do not try again
-						break;
+					if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						return new HtmlDocumentResponse(response);
 					}
-				} else if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, do not try again
-						break;
+
+					break;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						return new HtmlDocumentResponse(response);
 					}
-				} else if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						// We're not handling this error, try again
-						continue;
+
+					break;
+				}
+
+				if (response.StatusCode.IsServerErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						return new HtmlDocumentResponse(response);
 					}
+
+					continue;
 				}
 
 				try {
@@ -595,10 +614,8 @@ public sealed class WebBrowser : IDisposable {
 			}
 		}
 
-		if (maxTries > 1) {
-			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
-		}
+		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 		return null;
 	}
@@ -622,27 +639,34 @@ public sealed class WebBrowser : IDisposable {
 
 			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
-			if (response == null) {
+			if (response?.Content == null) {
 				// Request timed out, try again
 				continue;
 			}
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-						// We're not handling this error, do not try again
-						break;
+					if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						return new ObjectResponse<TResult>(response);
 					}
-				} else if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, do not try again
-						break;
+
+					break;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						return new ObjectResponse<TResult>(response);
 					}
-				} else if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						// We're not handling this error, try again
-						continue;
+
+					break;
+				}
+
+				if (response.StatusCode.IsServerErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						return new ObjectResponse<TResult>(response);
 					}
+
+					continue;
 				}
 
 				TResult? obj;
@@ -679,10 +703,8 @@ public sealed class WebBrowser : IDisposable {
 			}
 		}
 
-		if (maxTries > 1) {
-			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
-		}
+		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 		return null;
 	}
@@ -712,29 +734,34 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			if (response.StatusCode.IsRedirectionCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-					// We're not handling this error, do not try again
-					break;
+				if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					return new StreamResponse(response);
 				}
-			} else if (response.StatusCode.IsClientErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-					// We're not handling this error, do not try again
-					break;
+
+				break;
+			}
+
+			if (response.StatusCode.IsClientErrorCode()) {
+				if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+					return new StreamResponse(response);
 				}
-			} else if (response.StatusCode.IsServerErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-					// We're not handling this error, try again
-					continue;
+
+				break;
+			}
+
+			if (response.StatusCode.IsServerErrorCode()) {
+				if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+					return new StreamResponse(response);
 				}
+
+				continue;
 			}
 
 			return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
 		}
 
-		if (maxTries > 1) {
-			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
-		}
+		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 		return null;
 	}

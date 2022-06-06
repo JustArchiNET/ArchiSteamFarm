@@ -27,13 +27,11 @@ namespace ArchiSteamFarm.Web.Responses;
 
 public sealed class BinaryResponse : BasicResponse {
 	[PublicAPI]
-	public IReadOnlyCollection<byte> Content => Bytes;
+	public IReadOnlyCollection<byte>? Content => Bytes;
 
-	private readonly byte[] Bytes;
+	private readonly byte[]? Bytes;
 
-	public BinaryResponse(BasicResponse basicResponse, byte[] bytes) : base(basicResponse) {
-		ArgumentNullException.ThrowIfNull(basicResponse);
+	public BinaryResponse(BasicResponse basicResponse, byte[] bytes) : this(basicResponse) => Bytes = bytes ?? throw new ArgumentNullException(nameof(bytes));
 
-		Bytes = bytes ?? throw new ArgumentNullException(nameof(bytes));
-	}
+	public BinaryResponse(BasicResponse basicResponse) : base(basicResponse) => ArgumentNullException.ThrowIfNull(basicResponse);
 }
