@@ -514,14 +514,28 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			}
 		};
 
-		byte maxGamesCount = MaxGamesPlayedConcurrently;
-
 		if (!string.IsNullOrEmpty(gameName)) {
 			// If we have custom name to display, we must workaround the Steam network broken behaviour and send request on clean non-playing session
 			// This ensures that custom name will in fact display properly
 			Client.Send(request);
 			await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
+		}
 
+		if (gameIDs.Count > 0) {
+#pragma warning disable CA1508 // False positive, not every IReadOnlyCollection is ISet
+			IEnumerable<uint> uniqueValidGameIDs = (gameIDs as ISet<uint> ?? gameIDs.Distinct()).Where(static gameID => gameID > 0);
+#pragma warning restore CA1508 // False positive, not every IReadOnlyCollection is ISet
+
+			foreach (uint gameID in uniqueValidGameIDs) {
+				if (request.Body.games_played.Count >= MaxGamesPlayedConcurrently) {
+					throw new ArgumentOutOfRangeException(nameof(gameIDs));
+				}
+
+				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
+			}
+		}
+
+		if (!string.IsNullOrEmpty(gameName)) {
 			request.Body.games_played.Add(
 				new CMsgClientGamesPlayed.GamePlayed {
 					game_extra_info = gameName,
@@ -531,23 +545,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 					}
 				}
 			);
-
-			// Max games count is affected by valid AppIDs only, therefore gameName alone doesn't need exclusive slot
-			maxGamesCount++;
-		}
-
-		if (gameIDs.Count > 0) {
-#pragma warning disable CA1508 // False positive, not every IReadOnlyCollection is ISet
-			IEnumerable<uint> uniqueValidGameIDs = (gameIDs as ISet<uint> ?? gameIDs.Distinct()).Where(static gameID => gameID > 0);
-#pragma warning restore CA1508 // False positive, not every IReadOnlyCollection is ISet
-
-			foreach (uint gameID in uniqueValidGameIDs) {
-				if (request.Body.games_played.Count >= maxGamesCount) {
-					throw new ArgumentOutOfRangeException(nameof(gameIDs));
-				}
-
-				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
-			}
 		}
 
 		Client.Send(request);
