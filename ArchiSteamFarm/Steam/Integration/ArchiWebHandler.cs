@@ -1864,8 +1864,8 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		const string daysTheirVariableName = "g_daysTheirEscrow = ";
-		int index = text.IndexOf(daysTheirVariableName, StringComparison.Ordinal);
+		const string daysEscrowVariableName = "g_daysBothEscrow = ";
+		int index = text.IndexOf(daysEscrowVariableName, StringComparison.Ordinal);
 
 		if (index < 0) {
 			Bot.ArchiLogger.LogNullError(index);
@@ -1873,7 +1873,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		index += daysTheirVariableName.Length;
+		index += daysEscrowVariableName.Length;
 		text = text[index..];
 
 		index = text.IndexOf(';', StringComparison.Ordinal);
