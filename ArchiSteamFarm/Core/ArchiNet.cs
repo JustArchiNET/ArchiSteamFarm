@@ -31,6 +31,7 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
+using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
 using Newtonsoft.Json;
@@ -61,13 +62,14 @@ internal static class ArchiNet {
 
 		Uri request = new(URL, "/Api/Announce");
 
-		Dictionary<string, string> data = new(9, StringComparer.Ordinal) {
+		Dictionary<string, string> data = new(10, StringComparer.Ordinal) {
 			{ "AvatarHash", avatarHash ?? "" },
 			{ "GamesCount", inventory.Select(static item => item.RealAppID).Distinct().Count().ToString(CultureInfo.InvariantCulture) },
 			{ "Guid", (ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid()).ToString("N") },
 			{ "ItemsCount", inventory.Count.ToString(CultureInfo.InvariantCulture) },
 			{ "MatchableTypes", JsonConvert.SerializeObject(acceptedMatchableTypes) },
 			{ "MatchEverything", bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" },
+			{ "MaxTradeHoldDuration", (ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration).ToString(CultureInfo.InvariantCulture) },
 			{ "Nickname", nickname ?? "" },
 			{ "SteamID", bot.SteamID.ToString(CultureInfo.InvariantCulture) },
 			{ "TradeToken", tradeToken }
@@ -127,17 +129,16 @@ internal static class ArchiNet {
 
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class ListedUser {
-#pragma warning disable CS0649 // False positive, it's a field set during json deserialization
 		[JsonProperty("items_count", Required = Required.Always)]
 		internal readonly ushort ItemsCount;
-#pragma warning restore CS0649 // False positive, it's a field set during json deserialization
 
 		internal readonly HashSet<Asset.EType> MatchableTypes = new();
 
-#pragma warning disable CS0649 // False positive, it's a field set during json deserialization
+		[JsonProperty("max_trade_hold_duration", Required = Required.Always)]
+		internal readonly byte MaxTradeHoldDuration;
+
 		[JsonProperty("steam_id", Required = Required.Always)]
 		internal readonly ulong SteamID;
-#pragma warning restore CS0649 // False positive, it's a field set during json deserialization
 
 		[JsonProperty("trade_token", Required = Required.Always)]
 		internal readonly string TradeToken = "";

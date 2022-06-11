@@ -1895,7 +1895,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return result;
 	}
 
-	internal async Task<byte?> GetTradeHoldDurationForUser(ulong steamID, string? tradeToken = null) {
+	internal async Task<byte?> GetCombinedTradeHoldDurationAgainstUser(ulong steamID, string? tradeToken = null) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -1949,7 +1949,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		uint resultInSeconds = response["their_escrow"]["escrow_end_duration_seconds"].AsUnsignedInteger(uint.MaxValue);
+		uint resultInSeconds = response["both_escrow"]["escrow_end_duration_seconds"].AsUnsignedInteger(uint.MaxValue);
 
 		if (resultInSeconds == uint.MaxValue) {
 			Bot.ArchiLogger.LogNullError(resultInSeconds);

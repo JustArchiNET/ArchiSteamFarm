@@ -725,10 +725,10 @@ public sealed class Bot : IAsyncDisposable {
 		}
 
 		if (SteamFriends.GetFriendRelationship(steamID) == EFriendRelationship.Friend) {
-			byte? tradeHoldDurationForUser = await ArchiWebHandler.GetTradeHoldDurationForUser(steamID).ConfigureAwait(false);
+			byte? tradeHoldDuration = await ArchiWebHandler.GetCombinedTradeHoldDurationAgainstUser(steamID).ConfigureAwait(false);
 
-			if (tradeHoldDurationForUser.HasValue) {
-				return tradeHoldDurationForUser;
+			if (tradeHoldDuration.HasValue) {
+				return tradeHoldDuration;
 			}
 		}
 
@@ -738,10 +738,10 @@ public sealed class Bot : IAsyncDisposable {
 			string? targetTradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
 
 			if (!string.IsNullOrEmpty(targetTradeToken)) {
-				byte? tradeHoldDurationForUser = await ArchiWebHandler.GetTradeHoldDurationForUser(steamID, targetTradeToken).ConfigureAwait(false);
+				byte? tradeHoldDuration = await ArchiWebHandler.GetCombinedTradeHoldDurationAgainstUser(steamID, targetTradeToken).ConfigureAwait(false);
 
-				if (tradeHoldDurationForUser.HasValue) {
-					return tradeHoldDurationForUser;
+				if (tradeHoldDuration.HasValue) {
+					return tradeHoldDuration;
 				}
 			}
 		}
@@ -2094,7 +2094,7 @@ public sealed class Bot : IAsyncDisposable {
 			RemoteCommunication = null;
 		}
 
-		if (!Debugging.IsDebugBuild && (BotConfig.RemoteCommunication > BotConfig.ERemoteCommunication.None)) {
+		if ((BotConfig.RemoteCommunication > BotConfig.ERemoteCommunication.None)) {
 			RemoteCommunication = new RemoteCommunication(this);
 		}
 
