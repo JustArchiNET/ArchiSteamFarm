@@ -2094,7 +2094,7 @@ public sealed class Bot : IAsyncDisposable {
 			RemoteCommunication = null;
 		}
 
-		if ((BotConfig.RemoteCommunication > BotConfig.ERemoteCommunication.None)) {
+		if (!Debugging.IsDebugBuild && (BotConfig.RemoteCommunication > BotConfig.ERemoteCommunication.None)) {
 			RemoteCommunication = new RemoteCommunication(this);
 		}
 
