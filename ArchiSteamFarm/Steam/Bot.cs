@@ -1406,7 +1406,9 @@ public sealed class Bot : IAsyncDisposable {
 				return;
 			}
 
-			Stop(botConfig.Enabled);
+			// Skip shutdown event as we're actually reinitializing the bot, not fully stopping it
+			Stop(true);
+
 			BotConfig = botConfig;
 
 			await InitModules().ConfigureAwait(false);
