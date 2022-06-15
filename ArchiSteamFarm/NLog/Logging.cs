@@ -388,6 +388,10 @@ internal static class Logging {
 	private static void InitConsoleLoggers() {
 		ConsoleLoggingRules.Clear();
 
+		if (LogManager.Configuration == null) {
+			return;
+		}
+
 		foreach (LoggingRule loggingRule in LogManager.Configuration.LoggingRules.Where(static loggingRule => loggingRule.Targets.Any(static target => target is ColoredConsoleTarget or ConsoleTarget))) {
 			ConsoleLoggingRules.Add(loggingRule);
 		}
@@ -418,14 +422,14 @@ internal static class Logging {
 			OnUserInputStart();
 		}
 
-		HistoryTarget? historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
+		HistoryTarget? historyTarget = LogManager.Configuration?.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
 		ArchiKestrel.OnNewHistoryTarget(historyTarget);
 	}
 
 	private static void OnUserInputEnd() {
 		IsWaitingForUserInput = false;
 
-		if (ConsoleLoggingRules.Count == 0) {
+		if ((ConsoleLoggingRules.Count == 0) || (LogManager.Configuration == null)) {
 			return;
 		}
 
@@ -444,7 +448,7 @@ internal static class Logging {
 	private static void OnUserInputStart() {
 		IsWaitingForUserInput = true;
 
-		if (ConsoleLoggingRules.Count == 0) {
+		if ((ConsoleLoggingRules.Count == 0) || (LogManager.Configuration == null)) {
 			return;
 		}
 

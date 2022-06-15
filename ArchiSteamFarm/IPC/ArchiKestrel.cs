@@ -104,7 +104,7 @@ internal static class ArchiKestrel {
 			}
 		);
 
-		builder.UseNLog();
+		builder.UseNLog(new NLogAspNetCoreOptions { ShutdownOnDispose = false });
 
 		builder.ConfigureWebHostDefaults(
 			webBuilder => {
