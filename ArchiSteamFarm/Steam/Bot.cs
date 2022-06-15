@@ -2646,8 +2646,14 @@ public sealed class Bot : IAsyncDisposable {
 		Dictionary<uint, ulong> packageAccessTokens = new();
 		Dictionary<uint, uint> packagesToRefresh = new();
 
+		bool hasNewEntries = false;
+
 		foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.GroupBy(static license => license.PackageID, static (_, licenses) => licenses.OrderByDescending(static license => license.TimeCreated).First())) {
 			ownedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
+
+			if (!OwnedPackageIDs.ContainsKey(license.PackageID)) {
+				hasNewEntries = true;
+			}
 
 			if (!ASF.GlobalDatabase.PackageAccessTokensReadOnly.TryGetValue(license.PackageID, out ulong packageAccessToken) || (packageAccessToken != license.AccessToken)) {
 				packageAccessTokens[license.PackageID] = license.AccessToken;
@@ -2658,9 +2664,6 @@ public sealed class Bot : IAsyncDisposable {
 				packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
 			}
 		}
-
-		HashSet<uint> newEntries = ownedPackageIDs.Keys.ToHashSet();
-		newEntries.ExceptWith(OwnedPackageIDs.Keys);
 
 		OwnedPackageIDs = ownedPackageIDs.ToImmutableDictionary();
 
@@ -2674,7 +2677,7 @@ public sealed class Bot : IAsyncDisposable {
 			ArchiLogger.LogGenericTrace(Strings.Done);
 		}
 
-		if (newEntries.Count > 0) {
+		if (hasNewEntries) {
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 		}
 	}
