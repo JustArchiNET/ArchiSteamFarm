@@ -2659,7 +2659,8 @@ public sealed class Bot : IAsyncDisposable {
 			}
 		}
 
-		bool hasNewEntries = ownedPackageIDs.Count > OwnedPackageIDs.Count;
+		HashSet<uint> newEntries = ownedPackageIDs.Keys.ToHashSet();
+		newEntries.ExceptWith(OwnedPackageIDs.Keys);
 
 		OwnedPackageIDs = ownedPackageIDs.ToImmutableDictionary();
 
@@ -2673,7 +2674,7 @@ public sealed class Bot : IAsyncDisposable {
 			ArchiLogger.LogGenericTrace(Strings.Done);
 		}
 
-		if (hasNewEntries) {
+		if (newEntries.Count > 0) {
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 		}
 	}
