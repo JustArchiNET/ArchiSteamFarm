@@ -2128,7 +2128,7 @@ public sealed class Bot : IAsyncDisposable {
 
 	private void InitStart() {
 		if (!BotConfig.Enabled) {
-			ArchiLogger.LogGenericInfo(Strings.BotInstanceNotStartingBecauseDisabled);
+			ArchiLogger.LogGenericWarning(Strings.BotInstanceNotStartingBecauseDisabled);
 
 			return;
 		}
