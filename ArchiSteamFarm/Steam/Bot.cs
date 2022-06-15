@@ -2371,6 +2371,7 @@ public sealed class Bot : IAsyncDisposable {
 		Trading.OnDisconnected();
 
 		FirstTradeSent = false;
+		OwnedPackageIDs = ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
 
 		await PluginsCore.OnBotDisconnected(this, callback.UserInitiated ? EResult.OK : lastLogOnResult).ConfigureAwait(false);
 
@@ -2658,6 +2659,8 @@ public sealed class Bot : IAsyncDisposable {
 			}
 		}
 
+		bool hasNewEntries = ownedPackageIDs.Count > OwnedPackageIDs.Count;
+
 		OwnedPackageIDs = ownedPackageIDs.ToImmutableDictionary();
 
 		if (packageAccessTokens.Count > 0) {
@@ -2670,7 +2673,9 @@ public sealed class Bot : IAsyncDisposable {
 			ArchiLogger.LogGenericTrace(Strings.Done);
 		}
 
-		await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
+		if (hasNewEntries) {
+			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
+		}
 	}
 
 	private void OnLoggedOff(SteamUser.LoggedOffCallback callback) {
