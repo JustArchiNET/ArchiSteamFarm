@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -670,7 +669,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 				continue;
 			}
 
-			name = WebUtility.HtmlDecode(name[nameStartIndex..nameEndIndex]);
+			name = Uri.UnescapeDataString(name[nameStartIndex..nameEndIndex]);
 
 			if (string.IsNullOrEmpty(name)) {
 				Bot.ArchiLogger.LogNullError(name);

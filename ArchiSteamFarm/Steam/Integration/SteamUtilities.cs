@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 using ArchiSteamFarm.Core;
 using SteamKit2;
 
@@ -63,7 +62,7 @@ internal static class SteamUtilities {
 			}
 
 			// Apparently steam expects client to decode sent HTML
-			gameName = WebUtility.HtmlDecode(gameName);
+			gameName = Uri.UnescapeDataString(gameName);
 			result[packageID] = gameName;
 		}
 
