@@ -133,7 +133,7 @@ public sealed class WebBrowser : IDisposable {
 
 			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
-			if (response?.Content == null) {
+			if (response == null) {
 				// Request timed out, try again
 				continue;
 			}
@@ -161,6 +161,10 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					continue;
+				}
+
+				if (response.Content == null) {
+					throw new InvalidOperationException(nameof(response.Content));
 				}
 
 				if (response.Length > Array.MaxLength) {
@@ -245,7 +249,7 @@ public sealed class WebBrowser : IDisposable {
 
 			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
-			if (response?.Content == null) {
+			if (response == null) {
 				// Request timed out, try again
 				continue;
 			}
@@ -273,6 +277,10 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					continue;
+				}
+
+				if (response.Content == null) {
+					throw new InvalidOperationException(nameof(response.Content));
 				}
 
 				try {
@@ -313,7 +321,7 @@ public sealed class WebBrowser : IDisposable {
 
 			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
-			if (response?.Content == null) {
+			if (response == null) {
 				// Request timed out, try again
 				continue;
 			}
@@ -341,6 +349,10 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					continue;
+				}
+
+				if (response.Content == null) {
+					throw new InvalidOperationException(nameof(response.Content));
 				}
 
 				T? obj;
@@ -571,7 +583,7 @@ public sealed class WebBrowser : IDisposable {
 
 			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
-			if (response?.Content == null) {
+			if (response == null) {
 				// Request timed out, try again
 				continue;
 			}
@@ -599,6 +611,10 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					continue;
+				}
+
+				if (response.Content == null) {
+					throw new InvalidOperationException(nameof(response.Content));
 				}
 
 				try {
@@ -639,7 +655,7 @@ public sealed class WebBrowser : IDisposable {
 
 			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
 
-			if (response?.Content == null) {
+			if (response == null) {
 				// Request timed out, try again
 				continue;
 			}
@@ -667,6 +683,10 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					continue;
+				}
+
+				if (response.Content == null) {
+					throw new InvalidOperationException(nameof(response.Content));
 				}
 
 				TResult? obj;
