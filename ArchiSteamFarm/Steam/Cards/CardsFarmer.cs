@@ -42,7 +42,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Cards;
 
-public sealed class CardsFarmer : IAsyncDisposable {
+public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	internal const byte DaysForRefund = 14; // In how many days since payment we're allowed to refund
 	internal const byte HoursForRefund = 2; // Up to how many hours we're allowed to play for refund
 
@@ -120,10 +120,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 	private readonly SemaphoreSlim FarmingInitializationSemaphore = new(1, 1);
 	private readonly SemaphoreSlim FarmingResetSemaphore = new(0, 1);
 	private readonly ConcurrentList<Game> GamesToFarm = new();
-
-#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 	private readonly Timer? IdleFarmingTimer;
-#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 
 	private readonly ConcurrentDictionary<uint, DateTime> LocallyIgnoredAppIDs = new();
 
@@ -158,6 +155,16 @@ public sealed class CardsFarmer : IAsyncDisposable {
 				TimeSpan.FromHours(idleFarmingPeriod) // Period
 			);
 		}
+	}
+
+	public void Dispose() {
+		// Those are objects that are always being created if constructor doesn't throw exception
+		EventSemaphore.Dispose();
+		FarmingInitializationSemaphore.Dispose();
+		FarmingResetSemaphore.Dispose();
+
+		// Those are objects that might be null and the check should be in-place
+		IdleFarmingTimer?.Dispose();
 	}
 
 	public async ValueTask DisposeAsync() {

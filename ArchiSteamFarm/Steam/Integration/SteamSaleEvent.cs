@@ -30,14 +30,11 @@ using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm.Steam.Integration;
 
-internal sealed class SteamSaleEvent : IAsyncDisposable {
+internal sealed class SteamSaleEvent : IAsyncDisposable, IDisposable {
 	private const byte MaxSingleQueuesDaily = 3; // This is only a failsafe for infinite queue clearing (in case IsDiscoveryQueueAvailable() would fail us)
 
 	private readonly Bot Bot;
-
-#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 	private readonly Timer SaleEventTimer;
-#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 
 	internal SteamSaleEvent(Bot bot) {
 		Bot = bot ?? throw new ArgumentNullException(nameof(bot));
@@ -49,6 +46,8 @@ internal sealed class SteamSaleEvent : IAsyncDisposable {
 			TimeSpan.FromHours(8.1) // Period
 		);
 	}
+
+	public void Dispose() => SaleEventTimer.Dispose();
 
 	public ValueTask DisposeAsync() => SaleEventTimer.DisposeAsync();
 

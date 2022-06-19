@@ -41,7 +41,7 @@ using ArchiSteamFarm.Web;
 
 namespace ArchiSteamFarm.Core;
 
-internal sealed class RemoteCommunication : IAsyncDisposable {
+internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const ushort MaxItemsForFairBots = ArchiWebHandler.MaxItemsInSingleInventoryRequest * WebBrowser.MaxTries; // Determines which fair bots we'll deprioritize when matching due to excessive number of inventory requests they need to make, which are likely to fail in the process or cause excessive delays
 	private const byte MaxMatchedBotsHard = 40; // Determines how many bots we can attempt to match in total, where match attempt is equal to analyzing bot's inventory
 	private const byte MaxMatchingRounds = 10; // Determines maximum amount of matching rounds we're going to consider before leaving the rest of work for the next batch
@@ -59,11 +59,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable {
 
 	private readonly Bot Bot;
 	private readonly SemaphoreSlim MatchActivelySemaphore = new(1, 1);
-
-#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 	private readonly Timer? MatchActivelyTimer;
-#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
-
 	private readonly SemaphoreSlim RequestsSemaphore = new(1, 1);
 
 	private DateTime LastAnnouncementCheck;
@@ -84,10 +80,21 @@ internal sealed class RemoteCommunication : IAsyncDisposable {
 		}
 	}
 
-	public async ValueTask DisposeAsync() {
+	public void Dispose() {
+		// Those are objects that are always being created if constructor doesn't throw exception
 		MatchActivelySemaphore.Dispose();
 		RequestsSemaphore.Dispose();
 
+		// Those are objects that might be null and the check should be in-place
+		MatchActivelyTimer?.Dispose();
+	}
+
+	public async ValueTask DisposeAsync() {
+		// Those are objects that are always being created if constructor doesn't throw exception
+		MatchActivelySemaphore.Dispose();
+		RequestsSemaphore.Dispose();
+
+		// Those are objects that might be null and the check should be in-place
 		if (MatchActivelyTimer != null) {
 			await MatchActivelyTimer.DisposeAsync().ConfigureAwait(false);
 		}

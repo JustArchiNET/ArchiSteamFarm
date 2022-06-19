@@ -58,7 +58,7 @@ using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.Steam;
 
-public sealed class Bot : IAsyncDisposable {
+public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal const ushort CallbackSleep = 500; // In milliseconds
 	internal const byte MinCardsPerBadge = 5;
 
@@ -144,11 +144,7 @@ public sealed class Bot : IAsyncDisposable {
 	private readonly CallbackManager CallbackManager;
 	private readonly SemaphoreSlim CallbackSemaphore = new(1, 1);
 	private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new(1, 1);
-
-#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 	private readonly Timer HeartBeatTimer;
-#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
-
 	private readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
 	private readonly SemaphoreSlim MessagingSemaphore = new(1, 1);
 	private readonly ConcurrentDictionary<UserNotificationsCallback.EUserNotification, uint> PastNotifications = new();
@@ -226,35 +222,20 @@ public sealed class Bot : IAsyncDisposable {
 	[JsonProperty]
 	private string? AvatarHash;
 
-#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 	private Timer? ConnectionFailureTimer;
-#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
-
 	private bool FirstTradeSent;
-
-#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 	private Timer? GamesRedeemerInBackgroundTimer;
-#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
-
 	private byte HeartBeatFailures;
 	private EResult LastLogOnResult;
 	private DateTime LastLogonSessionReplaced;
 	private bool LibraryLocked;
 	private byte LoginFailures;
 	private ulong MasterChatGroupID;
-
-#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 	private Timer? PlayingWasBlockedTimer;
-#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
-
 	private bool ReconnectOnUserInitiated;
 	private RemoteCommunication? RemoteCommunication;
 	private bool SendCompleteTypesScheduled;
-
-#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 	private Timer? SendItemsTimer;
-#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
-
 	private bool SteamParentalActive;
 	private SteamSaleEvent? SteamSaleEvent;
 	private string? TwoFactorCode;
@@ -345,15 +326,39 @@ public sealed class Bot : IAsyncDisposable {
 		);
 	}
 
+	public void Dispose() {
+		// Those are objects that are always being created if constructor doesn't throw exception
+		ArchiWebHandler.Dispose();
+		BotDatabase.Dispose();
+		CallbackSemaphore.Dispose();
+		GamesRedeemerInBackgroundSemaphore.Dispose();
+		InitializationSemaphore.Dispose();
+		MessagingSemaphore.Dispose();
+		SendCompleteTypesSemaphore.Dispose();
+		Trading.Dispose();
+
+		Actions.Dispose();
+		CardsFarmer.Dispose();
+		HeartBeatTimer.Dispose();
+
+		// Those are objects that might be null and the check should be in-place
+		ConnectionFailureTimer?.Dispose();
+		GamesRedeemerInBackgroundTimer?.Dispose();
+		PlayingWasBlockedTimer?.Dispose();
+		RemoteCommunication?.Dispose();
+		SendItemsTimer?.Dispose();
+		SteamSaleEvent?.Dispose();
+	}
+
 	public async ValueTask DisposeAsync() {
 		// Those are objects that are always being created if constructor doesn't throw exception
 		ArchiWebHandler.Dispose();
 		BotDatabase.Dispose();
 		CallbackSemaphore.Dispose();
 		GamesRedeemerInBackgroundSemaphore.Dispose();
-		SendCompleteTypesSemaphore.Dispose();
 		InitializationSemaphore.Dispose();
 		MessagingSemaphore.Dispose();
+		SendCompleteTypesSemaphore.Dispose();
 		Trading.Dispose();
 
 		await Actions.DisposeAsync().ConfigureAwait(false);

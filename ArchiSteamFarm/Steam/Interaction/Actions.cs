@@ -42,21 +42,26 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Interaction;
 
-public sealed class Actions : IAsyncDisposable {
+public sealed class Actions : IAsyncDisposable, IDisposable {
 	private static readonly SemaphoreSlim GiftCardsSemaphore = new(1, 1);
 
 	private readonly Bot Bot;
 	private readonly ConcurrentHashSet<ulong> HandledGifts = new();
 	private readonly SemaphoreSlim TradingSemaphore = new(1, 1);
 
-#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 	private Timer? CardsFarmerResumeTimer;
-#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
-
 	private bool ProcessingGiftsScheduled;
 	private bool TradingScheduled;
 
 	internal Actions(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+
+	public void Dispose() {
+		// Those are objects that are always being created if constructor doesn't throw exception
+		TradingSemaphore.Dispose();
+
+		// Those are objects that might be null and the check should be in-place
+		CardsFarmerResumeTimer?.Dispose();
+	}
 
 	public async ValueTask DisposeAsync() {
 		// Those are objects that are always being created if constructor doesn't throw exception

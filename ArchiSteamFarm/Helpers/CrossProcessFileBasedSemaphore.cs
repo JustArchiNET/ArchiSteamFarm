@@ -29,7 +29,7 @@ using ArchiSteamFarm.Core;
 
 namespace ArchiSteamFarm.Helpers;
 
-internal sealed class CrossProcessFileBasedSemaphore : ICrossProcessSemaphore, IDisposable {
+internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossProcessSemaphore, IDisposable {
 	private const ushort SpinLockDelay = 1000; // In milliseconds
 
 	private readonly string FilePath;
@@ -48,9 +48,21 @@ internal sealed class CrossProcessFileBasedSemaphore : ICrossProcessSemaphore, I
 	}
 
 	public void Dispose() {
+		// Those are objects that are always being created if constructor doesn't throw exception
 		LocalSemaphore.Dispose();
 
+		// Those are objects that might be null and the check should be in-place
 		FileLock?.Dispose();
+	}
+
+	public async ValueTask DisposeAsync() {
+		// Those are objects that are always being created if constructor doesn't throw exception
+		LocalSemaphore.Dispose();
+
+		// Those are objects that might be null and the check should be in-place
+		if (FileLock != null) {
+			await FileLock.DisposeAsync().ConfigureAwait(false);
+		}
 	}
 
 	void ICrossProcessSemaphore.Release() {

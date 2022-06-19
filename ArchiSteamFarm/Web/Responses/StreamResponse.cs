@@ -27,7 +27,7 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Web.Responses;
 
-public sealed class StreamResponse : BasicResponse, IAsyncDisposable {
+public sealed class StreamResponse : BasicResponse, IAsyncDisposable, IDisposable {
 	[PublicAPI]
 	public Stream? Content { get; }
 
@@ -41,6 +41,11 @@ public sealed class StreamResponse : BasicResponse, IAsyncDisposable {
 	internal StreamResponse(HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) {
 		ResponseMessage = httpResponseMessage ?? throw new ArgumentNullException(nameof(httpResponseMessage));
 		Length = httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
+	}
+
+	public void Dispose() {
+		Content?.Dispose();
+		ResponseMessage.Dispose();
 	}
 
 	public async ValueTask DisposeAsync() {
