@@ -2185,7 +2185,7 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(games)));
 		}
 
-		HashSet<uint> gamesToPlay = new();
+		HashSet<uint> gamesToPlay = new(Math.Min(games.Length, ArchiHandler.MaxGamesPlayedConcurrently));
 		StringBuilder gameName = new();
 
 		foreach (string game in games) {
