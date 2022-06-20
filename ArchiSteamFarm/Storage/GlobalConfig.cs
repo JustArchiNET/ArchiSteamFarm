@@ -258,6 +258,7 @@ public sealed class GlobalConfig {
 
 	[JsonProperty]
 	[MaxLength(SteamChatMessage.MaxMessagePrefixBytes / SteamChatMessage.ReservedEscapeMessageBytes)]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
 	public string? SteamMessagePrefix { get; private set; } = DefaultSteamMessagePrefix;
 
 	[JsonProperty(Required = Required.DisallowNull)]

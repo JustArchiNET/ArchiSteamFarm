@@ -177,6 +177,7 @@ public sealed class BotConfig {
 	[JsonProperty(Required = Required.DisallowNull)]
 	[MaxLength(ArchiHandler.MaxGamesPlayedConcurrently)]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
 	public ImmutableList<uint> GamesPlayedWhileIdle { get; private set; } = DefaultGamesPlayedWhileIdle;
 
 	[JsonProperty(Required = Required.DisallowNull)]
@@ -239,6 +240,7 @@ public sealed class BotConfig {
 	[MaxLength(SteamParentalCodeLength)]
 	[MinLength(SteamParentalCodeLength)]
 	[SwaggerValidValues(ValidStringValues = new[] { "0" })]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
 	public string? SteamParentalCode {
 		get => BackingSteamParentalCode;
 
@@ -261,6 +263,7 @@ public sealed class BotConfig {
 	[JsonProperty]
 	[MaxLength(SteamTradeTokenLength)]
 	[MinLength(SteamTradeTokenLength)]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
 	public string? SteamTradeToken { get; private set; } = DefaultSteamTradeToken;
 
 	[JsonProperty(Required = Required.DisallowNull)]
