@@ -132,7 +132,7 @@ public sealed class BotConfig {
 	public static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<uint> DefaultGamesPlayedWhileIdle = ImmutableHashSet<uint>.Empty;
+	public static readonly ImmutableList<uint> DefaultGamesPlayedWhileIdle = ImmutableList<uint>.Empty;
 
 	[PublicAPI]
 	public static readonly ImmutableHashSet<Asset.EType> DefaultLootableTypes = ImmutableHashSet.Create(Asset.EType.BoosterPack, Asset.EType.FoilTradingCard, Asset.EType.TradingCard);
@@ -177,7 +177,7 @@ public sealed class BotConfig {
 	[JsonProperty(Required = Required.DisallowNull)]
 	[MaxLength(ArchiHandler.MaxGamesPlayedConcurrently)]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> GamesPlayedWhileIdle { get; private set; } = DefaultGamesPlayedWhileIdle;
+	public ImmutableList<uint> GamesPlayedWhileIdle { get; private set; } = DefaultGamesPlayedWhileIdle;
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	[Range(byte.MinValue, byte.MaxValue)]
@@ -340,7 +340,7 @@ public sealed class BotConfig {
 	public bool ShouldSerializeFarmPriorityQueueOnly() => !Saving || (FarmPriorityQueueOnly != DefaultFarmPriorityQueueOnly);
 
 	[UsedImplicitly]
-	public bool ShouldSerializeGamesPlayedWhileIdle() => !Saving || ((GamesPlayedWhileIdle != DefaultGamesPlayedWhileIdle) && !GamesPlayedWhileIdle.SetEquals(DefaultGamesPlayedWhileIdle));
+	public bool ShouldSerializeGamesPlayedWhileIdle() => !Saving || ((GamesPlayedWhileIdle != DefaultGamesPlayedWhileIdle) && !GamesPlayedWhileIdle.SequenceEqual(DefaultGamesPlayedWhileIdle));
 
 	[UsedImplicitly]
 	public bool ShouldSerializeHoursUntilCardDrops() => !Saving || (HoursUntilCardDrops != DefaultHoursUntilCardDrops);
