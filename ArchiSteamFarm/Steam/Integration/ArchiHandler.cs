@@ -516,7 +516,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 		if (!string.IsNullOrEmpty(gameName)) {
 			// If we have custom name to display, we must workaround the Steam network broken behaviour and send request on clean non-playing session
-			// This ensures that custom name will in fact display properly
+			// This ensures that custom name will in fact display properly (if it's not omitted due to MaxGamesPlayedConcurrently, that is)
 			Client.Send(request);
 			await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
 		}
