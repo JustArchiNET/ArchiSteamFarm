@@ -92,9 +92,9 @@ internal sealed class ExamplePlugin : IASF, IBot, IBotCommand2, IBotConnection, 
 			case "CAT" when access >= EAccess.FamilySharing:
 				// Notice how we can decide whether to use bot's AWH WebBrowser or ASF's one. For Steam-related requests, AWH's one should always be used, for third-party requests like those it doesn't really matter
 				// Still, it makes sense to pass AWH's one, so in case you get some errors or alike, you know from which bot instance they come from. It's similar to using Bot's ArchiLogger compared to ASF's one
-				string? randomCatURL = await CatAPI.GetRandomCatURL(bot.ArchiWebHandler.WebBrowser).ConfigureAwait(false);
+				Uri? randomCatURL = await CatAPI.GetRandomCatURL(bot.ArchiWebHandler.WebBrowser).ConfigureAwait(false);
 
-				return !string.IsNullOrEmpty(randomCatURL) ? randomCatURL : "God damn it, we're out of cats, care to notify my master? Thanks!";
+				return randomCatURL != null ? randomCatURL.ToString() : "God damn it, we're out of cats, care to notify my master? Thanks!";
 			default:
 				return null;
 		}

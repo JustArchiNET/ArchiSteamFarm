@@ -38,15 +38,15 @@ public sealed class CatController : ArchiController {
 	///     Fetches URL of a random cat picture.
 	/// </summary>
 	[HttpGet]
-	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType(typeof(GenericResponse<Uri>), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> CatGet() {
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
 
-		string? link = await CatAPI.GetRandomCatURL(ASF.WebBrowser).ConfigureAwait(false);
+		Uri? url = await CatAPI.GetRandomCatURL(ASF.WebBrowser).ConfigureAwait(false);
 
-		return !string.IsNullOrEmpty(link) ? Ok(new GenericResponse<string>(link)) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false));
+		return url != null ? Ok(new GenericResponse<Uri>(url)) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false));
 	}
 }

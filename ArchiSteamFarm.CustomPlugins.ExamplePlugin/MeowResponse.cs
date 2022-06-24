@@ -21,26 +21,17 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using ArchiSteamFarm.Web;
-using ArchiSteamFarm.Web.Responses;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin;
 
-// This is example class that shows how you can call third-party services within your plugin
-// You've always wanted from your ASF to post cats, right? Now is your chance!
-// P.S. The code is almost 1:1 copy from the one I use in ArchiBot, you can thank me later
-internal static class CatAPI {
-	private const string URL = "https://aws.random.cat";
+#pragma warning disable CA1812 // False positive, the class is used during json deserialization
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+internal sealed class MeowResponse {
+	[JsonProperty("file", Required = Required.Always)]
+	internal readonly Uri URL = null!;
 
-	internal static async Task<Uri?> GetRandomCatURL(WebBrowser webBrowser) {
-		ArgumentNullException.ThrowIfNull(webBrowser);
-
-		Uri request = new($"{URL}/meow");
-
-		ObjectResponse<MeowResponse>? response = await webBrowser.UrlGetToJsonObject<MeowResponse>(request).ConfigureAwait(false);
-
-		return response?.Content?.URL;
-	}
+	[JsonConstructor]
+	private MeowResponse() { }
 }
+#pragma warning restore CA1812 // False positive, the class is used during json deserialization
