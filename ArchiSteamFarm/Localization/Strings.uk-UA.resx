@@ -345,9 +345,15 @@
 		<value>2FA токен: {0}</value>
 		<comment>{0} will be replaced by generated 2FA token (string)</comment>
 	</data>
-	
-	
-	
+	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+		<value>Автоматичний фарм призупинено!</value>
+	</data>
+	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+		<value>Автоматичний фарм продовжено!</value>
+	</data>
+	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+		<value>Автоматичний фарм вже на паузі!</value>
+	</data>
 	
 	<data name="BotConnected" xml:space="preserve">
 		<value>Підключено до Steam!</value>
