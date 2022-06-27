@@ -63,7 +63,7 @@
 		</value>
 	</resheader>
 	<data name="AcceptingTrade" xml:space="preserve">
-		<value>Chấp nhận giao dịch: {0}</value>
+		<value>Chấp nhận trao đổi: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -144,7 +144,7 @@ StackTrace:
 		<value>Tập tin cấu hình chung đã được gỡ bỏ!</value>
 	</data>
 	<data name="IgnoringTrade" xml:space="preserve">
-		<value>Bỏ qua giao dịch: {0}</value>
+		<value>Bỏ qua trao đổi: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="LoggingIn" xml:space="preserve">
@@ -318,7 +318,7 @@ StackTrace:
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="BotAcceptingGift" xml:space="preserve">
-		<value>Chấp nhận quà tặng: {0}...</value>
+		<value>Đang chấp nhận quà tặng: {0}...</value>
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
 	<data name="BotAccountLimited" xml:space="preserve">

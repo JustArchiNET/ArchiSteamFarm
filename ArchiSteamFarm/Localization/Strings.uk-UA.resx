@@ -105,7 +105,7 @@
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Не налаштовано жодного боту. Можливо ви забули налаштувати ASF? Скористуйтеся розділом 'налаштування' у нашій wiki, якщо не знаєте, що робити.</value>
+		<value>Не налаштовано жодного боту. Можливо ви забули налаштувати ASF? Скористуйтеся розділом 'setting up' у нашій wiki, якщо не знаєте, що робити.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} має значення null!</value>
@@ -162,7 +162,7 @@
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="Restarting" xml:space="preserve">
-		<value>Перезавантаження...</value>
+		<value>Перезапуск...</value>
 	</data>
 	<data name="Starting" xml:space="preserve">
 		<value>Запуск...</value>
@@ -187,7 +187,7 @@
 		<value>Доступна нова версія ASF! Ви можете оновитися на неї самостійно!</value>
 	</data>
 	<data name="UpdateVersionInfo" xml:space="preserve">
-		<value>Ваша версія: {0} |Остання версія: {1}</value>
+		<value>Ваша версія: {0} | Остання версія: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
@@ -199,7 +199,7 @@
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
-		<value>Будь ласка, введіть свій Steam логін: </value>
+		<value>Будь ласка, введіть свій логін Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamParentalCode" xml:space="preserve">
@@ -207,7 +207,7 @@
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamPassword" xml:space="preserve">
-		<value>Будь ласка, введіть ваш Steam пароль: </value>
+		<value>Будь ласка, введіть ваш пароль Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="WarningUnknownValuePleaseReport" xml:space="preserve">
@@ -349,12 +349,14 @@
 		<value>Автоматичний фарм призупинено!</value>
 	</data>
 	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-		<value>Автоматичний фарм продовжено!</value>
+		<value>Автоматичний фарм відновлено!</value>
 	</data>
 	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
 		<value>Автоматичний фарм вже на паузі!</value>
 	</data>
-	
+	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+		<value>Автоматичний фарм вже відновлено!</value>
+	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>Підключено до Steam!</value>
 	</data>
@@ -411,7 +413,10 @@
 		<value>Вже має: {0} | {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
-	
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>Поточний баланс: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
 	<data name="BotRateLimitExceeded" xml:space="preserve">
 		<value>Перевищений ліміт частоти запросів, ми спробуємо знову через {0} очікування...</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
@@ -430,8 +435,12 @@
 	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
 		<value>Видалений прострочений ключ авторизації!</value>
 	</data>
-	
-	
+	<data name="BotStatusNotIdling" xml:space="preserve">
+		<value>Бот нічого не фармить.</value>
+	</data>
+	<data name="BotStatusLimited" xml:space="preserve">
+		<value>Бот обмежений і не може отримувати карти від фарму.</value>
+	</data>
 	<data name="BotStatusConnecting" xml:space="preserve">
 		<value>Бот підключається до мережі Steam.</value>
 	</data>
@@ -463,7 +472,9 @@
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Підключення до мережі Steam втрачено. Підключаємось повторно...</value>
 	</data>
-	
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>Акаунт більше не зайнятий: фарм відновлено!</value>
+	</data>
 	
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Підключення...</value>
@@ -672,10 +683,22 @@
 	
 	
 	
-	
-	
-	
-	
-	
-	
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Ви запускаєте ASF у непідтримуваному середовищі, з допомогою параметру -ignore-unsupported-environment. Зверніть увагу, що ми не надаємо будь-якої допомоги у такій ситуації, і ви робите це цілком на власний ризик. Ми попереджали.</value>
+	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Отримуємо контрольну суму з віддаленого сервера...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>Перевіряємо контрольну суму завантаженого файлу з отриманою з віддаленого сервера...</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>Віддалений сервер нічого не знає про версію, на яку ми оновлюємось. Це можливо якщо ця версія нещодавно опублікована - відмовляємось від оновлення в якості додаткового заходу безпеки.</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>Віддалений сервер відповів з іншою контрольною сумою, це може свідчити про пошкоджене завантаження або атаку MITM, відмовляємось від процедури оновлення!</value>
+	</data>
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>Виправлення файлів ASF...</value>
+	</data>
 </root>
