@@ -187,7 +187,8 @@ public sealed class ArchiWebHandler : IDisposable {
 						}
 
 						// This is actually client error with a reason, so it doesn't make sense to retry
-						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Error));
+						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.Error));
 					}
 				}
 			} finally {
@@ -440,7 +441,8 @@ public sealed class ArchiWebHandler : IDisposable {
 					}
 
 					// This is actually client error with a reason, so it doesn't make sense to retry
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText));
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
 
 					return (false, mobileTradeOfferIDs);
 				}
@@ -1269,7 +1271,8 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				// This is actually client error with a reason, so it doesn't make sense to retry
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText));
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
 
 				return (false, false);
 			}
