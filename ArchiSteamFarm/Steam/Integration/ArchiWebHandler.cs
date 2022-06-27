@@ -174,12 +174,12 @@ public sealed class ArchiWebHandler : IDisposable {
 
 					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
 
-					if (response?.Content == null) {
+					if (response == null) {
 						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
 					}
 
 					if (response.StatusCode.IsServerErrorCode()) {
-						if (string.IsNullOrEmpty(response.Content.Error)) {
+						if (string.IsNullOrEmpty(response.Content?.Error)) {
 							// This is a generic server error without a reason, try again
 							response = null;
 
@@ -427,12 +427,12 @@ public sealed class ArchiWebHandler : IDisposable {
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 				response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
 
-				if (response?.Content == null) {
+				if (response == null) {
 					return (false, mobileTradeOfferIDs);
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
-					if (string.IsNullOrEmpty(response.Content.ErrorText)) {
+					if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
 						// This is a generic server error without a reason, try again
 						response = null;
 
@@ -1256,12 +1256,12 @@ public sealed class ArchiWebHandler : IDisposable {
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 			response = await UrlPostToJsonObjectWithSession<TradeOfferAcceptResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
 
-			if (response?.Content == null) {
+			if (response == null) {
 				return (false, false);
 			}
 
 			if (response.StatusCode.IsServerErrorCode()) {
-				if (string.IsNullOrEmpty(response.Content.ErrorText)) {
+				if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
 					// This is a generic server error without a reason, try again
 					response = null;
 
