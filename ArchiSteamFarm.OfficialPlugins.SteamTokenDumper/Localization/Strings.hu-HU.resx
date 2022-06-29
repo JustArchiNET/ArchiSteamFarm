@@ -88,9 +88,15 @@
 	
 	
 	
+	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+		<value>Új appok: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
 	
-	
-	
+	<data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+		<value>Új csomagok: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
 	
 	
 	
