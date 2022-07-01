@@ -2396,7 +2396,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (triggeredAt <= SessionValidUntil) {
 			// Assume session is still valid
-			return true;
+			return false;
 		}
 
 		await SessionSemaphore.WaitAsync().ConfigureAwait(false);
@@ -2404,12 +2404,12 @@ public sealed class ArchiWebHandler : IDisposable {
 		try {
 			if (triggeredAt <= SessionValidUntil) {
 				// Other request already checked the session for us in the meantime, nice
-				return true;
+				return false;
 			}
 
 			if (triggeredAt <= LastSessionCheck) {
 				// Other request already checked the session for us in the meantime and failed, pointless to try again
-				return false;
+				return true;
 			}
 
 			// Choosing proper URL to check against is actually much harder than it initially looks like, we must abide by several rules to make this function as lightweight and reliable as possible
