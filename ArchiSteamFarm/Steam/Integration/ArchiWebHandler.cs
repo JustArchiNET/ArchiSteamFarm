@@ -52,6 +52,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	private const string EconService = "IEconService";
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
+	private const byte MinimumSessionValidityInSeconds = 10;
 	private const string SteamAppsService = "ISteamApps";
 	private const string SteamUserAuthService = "ISteamUserAuth";
 	private const string TwoFactorService = "ITwoFactorService";
@@ -81,8 +82,8 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	private bool Initialized;
 	private DateTime LastSessionCheck;
-	private DateTime LastSessionRefresh;
 	private bool MarkingInventoryScheduled;
+	private DateTime SessionValidUntil;
 	private string? VanityURL;
 
 	internal ArchiWebHandler(Bot bot) {
@@ -1674,6 +1675,71 @@ public sealed class ArchiWebHandler : IDisposable {
 		return result;
 	}
 
+	internal async Task<byte?> GetCombinedTradeHoldDurationAgainstUser(ulong steamID, string? tradeToken = null) {
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
+
+		if (!success || string.IsNullOrEmpty(steamApiKey)) {
+			return null;
+		}
+
+		Dictionary<string, object?> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 3 : 2, StringComparer.Ordinal) {
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			{ "key", steamApiKey! },
+
+			{ "steamid_target", steamID }
+		};
+
+		if (!string.IsNullOrEmpty(tradeToken)) {
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			arguments["trade_offer_access_token"] = tradeToken!;
+		}
+
+		KeyValue? response = null;
+
+		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+			if ((i > 0) && (WebLimiterDelay > 0)) {
+				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
+			}
+
+			using WebAPI.AsyncInterface econService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(EconService);
+
+			econService.Timeout = WebBrowser.Timeout;
+
+			try {
+				response = await WebLimitRequest(
+					WebAPI.DefaultBaseAddress,
+
+					// ReSharper disable once AccessToDisposedClosure
+					async () => await econService.CallAsync(HttpMethod.Get, "GetTradeHoldDurations", args: arguments).ConfigureAwait(false)
+				).ConfigureAwait(false);
+			} catch (TaskCanceledException e) {
+				Bot.ArchiLogger.LogGenericDebuggingException(e);
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericWarningException(e);
+			}
+		}
+
+		if (response == null) {
+			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+
+			return null;
+		}
+
+		uint resultInSeconds = response["both_escrow"]["escrow_end_duration_seconds"].AsUnsignedInteger(uint.MaxValue);
+
+		if (resultInSeconds == uint.MaxValue) {
+			Bot.ArchiLogger.LogNullError(resultInSeconds);
+
+			return null;
+		}
+
+		return resultInSeconds == 0 ? (byte) 0 : (byte) (resultInSeconds / 86400);
+	}
+
 	internal async Task<IDocument?> GetConfirmationsPage(string deviceID, string confirmationHash, ulong time) {
 		if (string.IsNullOrEmpty(deviceID)) {
 			throw new ArgumentNullException(nameof(deviceID));
@@ -1898,71 +1964,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		return result;
 	}
 
-	internal async Task<byte?> GetCombinedTradeHoldDurationAgainstUser(ulong steamID, string? tradeToken = null) {
-		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
-		(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
-
-		if (!success || string.IsNullOrEmpty(steamApiKey)) {
-			return null;
-		}
-
-		Dictionary<string, object?> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 3 : 2, StringComparer.Ordinal) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "key", steamApiKey! },
-
-			{ "steamid_target", steamID }
-		};
-
-		if (!string.IsNullOrEmpty(tradeToken)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			arguments["trade_offer_access_token"] = tradeToken!;
-		}
-
-		KeyValue? response = null;
-
-		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			if ((i > 0) && (WebLimiterDelay > 0)) {
-				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
-			}
-
-			using WebAPI.AsyncInterface econService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(EconService);
-
-			econService.Timeout = WebBrowser.Timeout;
-
-			try {
-				response = await WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
-
-					// ReSharper disable once AccessToDisposedClosure
-					async () => await econService.CallAsync(HttpMethod.Get, "GetTradeHoldDurations", args: arguments).ConfigureAwait(false)
-				).ConfigureAwait(false);
-			} catch (TaskCanceledException e) {
-				Bot.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-			}
-		}
-
-		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-
-			return null;
-		}
-
-		uint resultInSeconds = response["both_escrow"]["escrow_end_duration_seconds"].AsUnsignedInteger(uint.MaxValue);
-
-		if (resultInSeconds == uint.MaxValue) {
-			Bot.ArchiLogger.LogNullError(resultInSeconds);
-
-			return null;
-		}
-
-		return resultInSeconds == 0 ? (byte) 0 : (byte) (resultInSeconds / 86400);
-	}
-
 	internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, ulong time, ulong confirmationID, ulong confirmationKey, bool accept) {
 		if (string.IsNullOrEmpty(deviceID)) {
 			throw new ArgumentNullException(nameof(deviceID));
@@ -2178,7 +2179,8 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		}
 
-		LastSessionCheck = LastSessionRefresh = DateTime.UtcNow;
+		LastSessionCheck = DateTime.UtcNow;
+		SessionValidUntil = LastSessionCheck.AddSeconds(MinimumSessionValidityInSeconds);
 		Initialized = true;
 
 		return true;
@@ -2392,15 +2394,22 @@ public sealed class ArchiWebHandler : IDisposable {
 	private async Task<bool?> IsSessionExpired() {
 		DateTime triggeredAt = DateTime.UtcNow;
 
-		if (triggeredAt <= LastSessionCheck) {
-			return LastSessionCheck != LastSessionRefresh;
+		if (triggeredAt <= SessionValidUntil) {
+			// Assume session is still valid
+			return true;
 		}
 
 		await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
+			if (triggeredAt <= SessionValidUntil) {
+				// Other request already checked the session for us in the meantime, nice
+				return true;
+			}
+
 			if (triggeredAt <= LastSessionCheck) {
-				return LastSessionCheck != LastSessionRefresh;
+				// Other request already checked the session for us in the meantime and failed, pointless to try again
+				return false;
 			}
 
 			// Choosing proper URL to check against is actually much harder than it initially looks like, we must abide by several rules to make this function as lightweight and reliable as possible
@@ -2423,8 +2432,9 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (result) {
 				Initialized = false;
+				SessionValidUntil = DateTime.MinValue;
 			} else {
-				LastSessionRefresh = now;
+				SessionValidUntil = now.AddSeconds(MinimumSessionValidityInSeconds);
 			}
 
 			LastSessionCheck = now;
@@ -2517,20 +2527,25 @@ public sealed class ArchiWebHandler : IDisposable {
 			return false;
 		}
 
-		DateTime triggeredAt = DateTime.UtcNow;
+		DateTime previousSessionValidUntil = SessionValidUntil;
 
-		if (triggeredAt <= LastSessionCheck) {
-			return LastSessionCheck == LastSessionRefresh;
-		}
+		DateTime triggeredAt = DateTime.UtcNow;
 
 		await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
+			if ((triggeredAt <= SessionValidUntil) && (SessionValidUntil > previousSessionValidUntil)) {
+				// Other request already refreshed the session for us in the meantime, nice
+				return true;
+			}
+
 			if (triggeredAt <= LastSessionCheck) {
-				return LastSessionCheck == LastSessionRefresh;
+				// Other request already checked the session for us in the meantime and failed, pointless to try again
+				return false;
 			}
 
 			Initialized = false;
+			SessionValidUntil = DateTime.MinValue;
 
 			if (!Bot.IsConnectedAndLoggedOn) {
 				return false;
@@ -2542,7 +2557,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			DateTime now = DateTime.UtcNow;
 
 			if (result) {
-				LastSessionRefresh = now;
+				SessionValidUntil = now.AddSeconds(MinimumSessionValidityInSeconds);
 			}
 
 			LastSessionCheck = now;
