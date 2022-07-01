@@ -519,23 +519,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			// This ensures that custom name will in fact display properly (if it's not omitted due to MaxGamesPlayedConcurrently, that is)
 			Client.Send(request);
 			await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
-		}
 
-		if (gameIDs.Count > 0) {
-#pragma warning disable CA1508 // False positive, not every IReadOnlyCollection is ISet
-			IEnumerable<uint> uniqueValidGameIDs = (gameIDs as ISet<uint> ?? gameIDs.Distinct()).Where(static gameID => gameID > 0);
-#pragma warning restore CA1508 // False positive, not every IReadOnlyCollection is ISet
-
-			foreach (uint gameID in uniqueValidGameIDs) {
-				if (request.Body.games_played.Count >= MaxGamesPlayedConcurrently) {
-					throw new ArgumentOutOfRangeException(nameof(gameIDs));
-				}
-
-				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
-			}
-		}
-
-		if (!string.IsNullOrEmpty(gameName)) {
 			request.Body.games_played.Add(
 				new CMsgClientGamesPlayed.GamePlayed {
 					game_extra_info = gameName,
@@ -545,6 +529,27 @@ public sealed class ArchiHandler : ClientMsgHandler {
 					}
 				}
 			);
+		}
+
+		if (gameIDs.Count > 0) {
+#pragma warning disable CA1508 // False positive, not every IReadOnlyCollection is ISet
+			IEnumerable<uint> uniqueValidGameIDs = (gameIDs as ISet<uint> ?? gameIDs.Distinct()).Where(static gameID => gameID > 0);
+#pragma warning restore CA1508 // False positive, not every IReadOnlyCollection is ISet
+
+			foreach (uint gameID in uniqueValidGameIDs) {
+				if (request.Body.games_played.Count >= MaxGamesPlayedConcurrently) {
+					if (string.IsNullOrEmpty(gameName)) {
+						throw new ArgumentOutOfRangeException(nameof(gameIDs));
+					}
+
+					// Make extra space by ditching custom gameName
+					gameName = null;
+
+					request.Body.games_played.RemoveAt(0);
+				}
+
+				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
+			}
 		}
 
 		Client.Send(request);
