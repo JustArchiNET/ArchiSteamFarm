@@ -181,17 +181,19 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				handledConfirmations[confirmation.Creator] = confirmation;
 			}
 
-			if (acceptedCreatorIDs?.Count > 0) {
-				// Check if those are all that we were expected to confirm
-				if ((handledConfirmations.Count >= acceptedCreatorIDs.Count) && acceptedCreatorIDs.All(handledConfirmations.ContainsKey)) {
-					return (true, handledConfirmations.Values, string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations.Count));
-				}
+			// We've accepted *something*, if caller didn't specify the IDs, that's enough for us
+			if ((acceptedCreatorIDs == null) || (acceptedCreatorIDs.Count == 0)) {
+				return (true, handledConfirmations.Values, string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations.Count));
+			}
+
+			// If he did, check if we've already found everything we were supposed to
+			if ((handledConfirmations.Count >= acceptedCreatorIDs.Count) && acceptedCreatorIDs.All(handledConfirmations.ContainsKey)) {
+				return (true, handledConfirmations.Values, string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations.Count));
 			}
 		}
 
-		bool success = !waitIfNeeded || ((handledConfirmations?.Count > 0) && ((acceptedCreatorIDs == null) || (acceptedCreatorIDs.Count == 0)));
-
-		return (success, handledConfirmations?.Values, success ? string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations?.Count ?? 0) : string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+		// If we've reached this point, then it's a failure for waitIfNeeded, and success otherwise
+		return (!waitIfNeeded, handledConfirmations?.Values, !waitIfNeeded ? string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations?.Count ?? 0) : string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 	}
 
 	[PublicAPI]
