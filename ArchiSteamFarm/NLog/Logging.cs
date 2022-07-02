@@ -181,6 +181,10 @@ internal static class Logging {
 				CleanupFileName = false,
 				DeleteOldFileOnStartup = true,
 				FileName = Path.Combine("${currentdir}", SharedInfo.LogFile),
+
+				// For GET /Api/NLog/File ASF API usage on Windows (sigh)
+				KeepFileOpen = !OperatingSystem.IsWindows(),
+
 				Layout = GeneralLayout,
 				MaxArchiveFiles = 10
 			};
