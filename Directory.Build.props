@@ -36,20 +36,48 @@
 		<PackageReference Include="TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray" />
 
 		<Using Include="JustArchiNET.Madness" />
+
 		<Using Include="JustArchiNET.Madness.ArgumentNullExceptionMadness.ArgumentNullException" Alias="ArgumentNullException" />
+		<Using Include="JustArchiNET.Madness.ArgumentNullExceptionMadness.ArgumentNullException" Alias="System.ArgumentNullException" />
+
 		<Using Include="JustArchiNET.Madness.ArrayMadness.Array" Alias="Array" />
+		<Using Include="JustArchiNET.Madness.ArrayMadness.Array" Alias="System.Array" />
+
 		<Using Include="JustArchiNET.Madness.ConvertMadness.Convert" Alias="Convert" />
+		<Using Include="JustArchiNET.Madness.ConvertMadness.Convert" Alias="System.Convert" />
+
 		<Using Include="JustArchiNET.Madness.EnumMadness.Enum" Alias="Enum" />
+		<Using Include="JustArchiNET.Madness.EnumMadness.Enum" Alias="System.Enum" />
+
 		<Using Include="JustArchiNET.Madness.EnvironmentMadness.Environment" Alias="Environment" />
+		<Using Include="JustArchiNET.Madness.EnvironmentMadness.Environment" Alias="System.Environment" />
+
 		<Using Include="JustArchiNET.Madness.FileMadness.File" Alias="File" />
+		<Using Include="JustArchiNET.Madness.FileMadness.File" Alias="System.IO.File" />
+
 		<Using Include="JustArchiNET.Madness.HashCodeMadness.HashCode" Alias="HashCode" />
+		<Using Include="JustArchiNET.Madness.HashCodeMadness.HashCode" Alias="System.HashCode" />
+
 		<Using Include="JustArchiNET.Madness.HMACSHA1Madness.HMACSHA1" Alias="HMACSHA1" />
+		<Using Include="JustArchiNET.Madness.HMACSHA1Madness.HMACSHA1" Alias="System.Security.Cryptography.HMACSHA1" />
+
 		<Using Include="JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem" Alias="OperatingSystem" />
+		<Using Include="JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem" Alias="System.OperatingSystem" />
+
 		<Using Include="JustArchiNET.Madness.PathMadness.Path" Alias="Path" />
+		<Using Include="JustArchiNET.Madness.PathMadness.Path" Alias="System.IO.Path" />
+
 		<Using Include="JustArchiNET.Madness.RandomMadness.Random" Alias="Random" />
+		<Using Include="JustArchiNET.Madness.RandomMadness.Random" Alias="System.Random" />
+
 		<Using Include="JustArchiNET.Madness.SHA256Madness.SHA256" Alias="SHA256" />
+		<Using Include="JustArchiNET.Madness.SHA256Madness.SHA256" Alias="System.Security.Cryptography.SHA256" />
+
 		<Using Include="JustArchiNET.Madness.SHA512Madness.SHA512" Alias="SHA512" />
+		<Using Include="JustArchiNET.Madness.SHA512Madness.SHA512" Alias="System.Security.Cryptography.SHA512" />
+
 		<Using Include="JustArchiNET.Madness.StringMadness.String" Alias="String" />
+		<Using Include="JustArchiNET.Madness.StringMadness.String" Alias="System.String" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(ASFVariant)' != ''">
