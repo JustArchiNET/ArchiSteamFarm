@@ -27,7 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-		<PackageVersion Include="JustArchiNET.Madness" Version="3.6.0" />
+		<PackageVersion Include="JustArchiNET.Madness" Version="3.7.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
@@ -38,5 +38,6 @@
 		<PackageVersion Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />
 		<PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="3.1.26" />
 		<PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.26" />
+		<PackageVersion Include="TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray" Version="1.0.1" />
 	</ItemGroup>
 </Project>

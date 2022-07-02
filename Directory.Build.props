@@ -33,6 +33,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 		<PackageReference Include="JustArchiNET.Madness" />
+		<PackageReference Include="TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray" />
 
 		<Using Include="JustArchiNET.Madness" />
 		<Using Include="JustArchiNET.Madness.ArgumentNullExceptionMadness.ArgumentNullException" Alias="ArgumentNullException" />
