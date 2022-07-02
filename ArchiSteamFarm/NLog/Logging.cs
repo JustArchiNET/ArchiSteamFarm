@@ -47,6 +47,8 @@ internal static class Logging {
 	private const string GeneralLayout = $@"${{date:format=yyyy-MM-dd HH\:mm\:ss}}|${{processname}}-${{processid}}|${{level:uppercase=true}}|{LayoutMessage}";
 	private const string LayoutMessage = @"${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}";
 
+	internal static bool LogFileExists => File.Exists(SharedInfo.LogFile);
+
 	private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = new();
 	private static readonly SemaphoreSlim ConsoleSemaphore = new(1, 1);
 
@@ -181,6 +183,10 @@ internal static class Logging {
 				CleanupFileName = false,
 				DeleteOldFileOnStartup = true,
 				FileName = Path.Combine("${currentdir}", SharedInfo.LogFile),
+
+				// For GET /Api/NLog/File ASF API usage on Windows (sigh)
+				KeepFileOpen = !OperatingSystem.IsWindows(),
+
 				Layout = GeneralLayout,
 				MaxArchiveFiles = 10
 			};
@@ -233,6 +239,16 @@ internal static class Logging {
 		}
 
 		ArchiKestrel.OnNewHistoryTarget(historyTarget);
+	}
+
+	internal static async Task<string[]?> ReadLogFileLines() {
+		try {
+			return await File.ReadAllLinesAsync(SharedInfo.LogFile).ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return null;
+		}
 	}
 
 	internal static void StartInteractiveConsole() {

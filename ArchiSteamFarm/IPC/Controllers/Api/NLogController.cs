@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.NLog.Targets;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,43 @@ public sealed class NLogController : ArchiController {
 	private static readonly ConcurrentDictionary<WebSocket, (SemaphoreSlim Semaphore, CancellationToken CancellationToken)> ActiveLogWebSockets = new();
 
 	/// <summary>
+	///     Fetches ASF log file, this works on assumption that the log file is in fact generated, as user could disable it through custom configuration.
+	/// </summary>
+	/// <param name="count">Maximum amount of lines from the log file returned. The respone naturally might have less amount than specified, if you've read whole file already.</param>
+	/// <param name="lastAt">Ending index, used for pagination. Omit it for the first request, then initialize to TotalLines returned, and on every following request subtract count that you've used in the previous request from it until you hit 0 or less, which means you've read whole file already.</param>
+	[HttpGet("File")]
+	[ProducesResponseType(typeof(GenericResponse<GenericResponse<LogResponse>>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
+	public async Task<ActionResult<GenericResponse>> FileGet(int count = 100, int lastAt = 0) {
+		if (count <= 0) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(count))));
+		}
+
+		if (lastAt < 0) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(lastAt))));
+		}
+
+		if (!Logging.LogFileExists) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(SharedInfo.LogFile))));
+		}
+
+		string[]? lines = await Logging.ReadLogFileLines().ConfigureAwait(false);
+
+		if ((lines == null) || (lines.Length == 0)) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(SharedInfo.LogFile))));
+		}
+
+		if ((lastAt == 0) || (lastAt > lines.Length)) {
+			lastAt = lines.Length;
+		}
+
+		int startFrom = Math.Max(lastAt - count, 0);
+
+		return Ok(new GenericResponse<LogResponse>(new LogResponse(lines.Length, lines[startFrom..lastAt])));
+	}
+
+	/// <summary>
 	///     Fetches ASF log in realtime.
 	/// </summary>
 	/// <remarks>
@@ -52,7 +90,7 @@ public sealed class NLogController : ArchiController {
 	[HttpGet]
 	[ProducesResponseType(typeof(IEnumerable<GenericResponse<string>>), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult> NLogGet(CancellationToken cancellationToken) {
+	public async Task<ActionResult> Get(CancellationToken cancellationToken) {
 		if (HttpContext == null) {
 			throw new InvalidOperationException(nameof(HttpContext));
 		}
