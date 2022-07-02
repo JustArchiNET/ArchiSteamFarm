@@ -36,18 +36,18 @@ public sealed class LogController : ArchiController {
 	///     Fetches ASF log file, this works on assumption that the log file is in fact generated, as user could disable it through custom configuration.
 	/// </summary>
 	/// <param name="count">Maximum amount of lines from the log file returned. The respone naturally might have less amount than specified, if you've read whole file already.</param>
-	/// <param name="last">Ending index, used for pagination. Omit it for the first request, then initialize to TotalLines, and on every following request subtract <see cref="count"/> from it until you hit 0 or less, which means you've read whole file already.</param>
+	/// <param name="lastAt">Ending index, used for pagination. Omit it for the first request, then initialize to TotalLines returned, and on every following request subtract count that you've used in the previous request from it until you hit 0 or less, which means you've read whole file already.</param>
 	[HttpGet]
 	[ProducesResponseType(typeof(GenericResponse<GenericResponse<LogResponse>>), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
-	public async Task<ActionResult<GenericResponse>> Get(int count = 100, int last = 0) {
+	public async Task<ActionResult<GenericResponse>> Get(int count = 100, int lastAt = 0) {
 		if (count <= 0) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(count))));
 		}
 
-		if (last < 0) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(last))));
+		if (lastAt < 0) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(lastAt))));
 		}
 
 		if (!System.IO.File.Exists(SharedInfo.LogFile)) {
@@ -68,16 +68,16 @@ public sealed class LogController : ArchiController {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(SharedInfo.LogFile))));
 		}
 
-		if (last > lines.Length) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(last))));
+		if (lastAt > lines.Length) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(lastAt))));
 		}
 
-		if (last == 0) {
-			last = lines.Length;
+		if (lastAt == 0) {
+			lastAt = lines.Length;
 		}
 
-		int startFrom = Math.Max(last - count, 0);
+		int startFrom = Math.Max(lastAt - count, 0);
 
-		return Ok(new GenericResponse<LogResponse>(new LogResponse(lines.Length, lines[startFrom..last])));
+		return Ok(new GenericResponse<LogResponse>(new LogResponse(lines.Length, lines[startFrom..lastAt])));
 	}
 }
