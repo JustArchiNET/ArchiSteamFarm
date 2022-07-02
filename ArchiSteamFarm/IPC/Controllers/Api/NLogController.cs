@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.NLog.Targets;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
@@ -61,21 +62,13 @@ public sealed class NLogController : ArchiController {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(lastAt))));
 		}
 
-		if (!System.IO.File.Exists(SharedInfo.LogFile)) {
+		if (!Logging.LogFileExists) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(SharedInfo.LogFile))));
 		}
 
-		string[] lines;
+		string[]? lines = await Logging.ReadLogFileLines().ConfigureAwait(false);
 
-		try {
-			lines = await System.IO.File.ReadAllLinesAsync(SharedInfo.LogFile).ConfigureAwait(false);
-		} catch (Exception e) {
-			ASF.ArchiLogger.LogGenericException(e);
-
-			return StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, e.Message));
-		}
-
-		if (lines.Length == 0) {
+		if ((lines == null) || (lines.Length == 0)) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(SharedInfo.LogFile))));
 		}
 
