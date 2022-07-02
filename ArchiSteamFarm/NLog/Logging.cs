@@ -184,7 +184,8 @@ internal static class Logging {
 				DeleteOldFileOnStartup = true,
 				FileName = Path.Combine("${currentdir}", SharedInfo.LogFile),
 
-				// For GET /Api/NLog/File ASF API usage on Windows (sigh)
+				// Windows OS prevents other apps from reading file when actively holding exclusive (write) lock over it
+				// We require read access for GET /Api/NLog/File ASF API usage, therefore we shouldn't keep the lock all the time
 				KeepFileOpen = !OperatingSystem.IsWindows(),
 
 				Layout = GeneralLayout,
