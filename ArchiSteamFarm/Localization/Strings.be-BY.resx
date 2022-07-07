@@ -70,7 +70,11 @@
 		<value>ASF будзе аўтаматычна правяраць абнаўленні кожныя {0}.</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
 	</data>
-	
+	<data name="Content" xml:space="preserve">
+		<value>Змест:
+{0}</value>
+		<comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+	</data>
 	<data name="ErrorConfigPropertyInvalid" xml:space="preserve">
 		<value>Сканфігураваная {0} уласцівасць няправільная {1}</value>
 		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
@@ -80,12 +84,28 @@
 		<comment>{0} will be replaced by version number</comment>
 	</data>
 	
-	
-	
-	
-	
-	
-	
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Выхад з ненулявым кодам памылкі!</value>
+	</data>
+	<data name="ErrorFailingRequest" xml:space="preserve">
+		<value>Памылка запыту да: {0}</value>
+		<comment>{0} will be replaced by URL of the request</comment>
+	</data>
+	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+		<value>Не ўдалося загрузіць глабальную канфігурацыю. Пераканайцеся, што {0} існуе і з'яўляецца сапраўдным! Выконвайце інструкцыю па наладжванні на вікі, калі вы заблыталіся.</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="ErrorIsInvalid" xml:space="preserve">
+		<value>{0} няверны!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Боты не вызначаны. Можа вы забыліся наладзіць ASF? Выконвайце інструкцыю па наладжванні на вікі, калі вы заблыталіся.</value>
+	</data>
+	<data name="ErrorObjectIsNull" xml:space="preserve">
+		<value>{0} мае значэнне нуль!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
 	
 	
 	
@@ -101,17 +121,42 @@
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="LoggingIn" xml:space="preserve">
+		<value>Уваход у {0}...</value>
+		<comment>{0} will be replaced by service's name</comment>
+	</data>
+	<data name="NoBotsAreRunning" xml:space="preserve">
+		<value>Няма працуючых ботаў, выхад...</value>
+	</data>
+	<data name="RefreshingOurSession" xml:space="preserve">
+		<value>Абнаўленне нашай сесіі!</value>
+	</data>
+	<data name="RejectingTrade" xml:space="preserve">
+		<value>Адхіленне абмену: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="Restarting" xml:space="preserve">
+		<value>Перазапуск...</value>
+	</data>
+	<data name="Starting" xml:space="preserve">
+		<value>Запуск...</value>
+	</data>
+	<data name="Success" xml:space="preserve">
+		<value>Паспяхова завершана!</value>
+	</data>
+	<data name="UnlockingParentalAccount" xml:space="preserve">
+		<value>Разблакіраванне бацькоўскага кантролю...</value>
+	</data>
+	<data name="UpdateCheckingNewVersion" xml:space="preserve">
+		<value>Ідзе праверка наяўнасці новай версіі...</value>
+	</data>
+	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
+		<value>Спампоўка новай версіі: {0} ({1} МБ)... Пакуль чакаеце, падумайце аб ахвяраванні, калі вы шануеце праробленую працу! :)</value>
+		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+	</data>
+	<data name="UpdateFinished" xml:space="preserve">
+		<value>Працэс абнаўлення завершаны!</value>
+	</data>
 	
 	
 	
