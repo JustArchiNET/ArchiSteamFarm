@@ -42,7 +42,6 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
-using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
