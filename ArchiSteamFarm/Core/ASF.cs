@@ -417,10 +417,6 @@ public static class ASF {
 	}
 
 	private static async Task InitRateLimiters() {
-		if (GlobalConfig == null) {
-			throw new InvalidOperationException(nameof(GlobalConfig));
-		}
-
 		ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(ConfirmationsSemaphore)).ConfigureAwait(false);
 		GiftsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(GiftsSemaphore)).ConfigureAwait(false);
 		InventorySemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(InventorySemaphore)).ConfigureAwait(false);
