@@ -31,6 +31,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
@@ -40,6 +42,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
+using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
@@ -58,7 +61,21 @@ internal static class PluginsCore {
 			throw new ArgumentNullException(nameof(objectName));
 		}
 
+		if (ASF.GlobalConfig == null) {
+			throw new InvalidOperationException(nameof(ASF.GlobalConfig));
+		}
+
 		string resourceName = OS.GetOsResourceName(objectName);
+
+		// The only purpose of using hashing here is to cut on a potential size of the resource name - paths can be really long, and we almost certainly have some upper limit on the resource name we can allocate
+		// At the same time it'd be the best if we avoided all special characters, such as '/' found e.g. in base64, as we can't be sure that it's not a prohibited character in regards to native OS implementation
+		// Because of that, SHA256 is sufficient for our case, as it generates alphanumeric characters only, and is barely 256-bit long. We don't need any kind of complex cryptography or collision detection here, any hashing will do, and the shorter the better
+		if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			resourceName += $"-{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(Program.NetworkGroup!)))}";
+		} else if (!string.IsNullOrEmpty(ASF.GlobalConfig.WebProxyText)) {
+			resourceName += $"-{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(ASF.GlobalConfig.WebProxyText!)))}";
+		}
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return new CrossProcessFileBasedSemaphore(resourceName);

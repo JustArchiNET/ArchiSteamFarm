@@ -422,30 +422,18 @@ public static class ASF {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
 
-		// The only purpose of using hashing here is to cut on a potential size of the resource name - paths can be really long, and we almost certainly have some upper limit on the resource name we can allocate
-		// At the same time it'd be the best if we avoided all special characters, such as '/' found e.g. in base64, as we can't be sure that it's not a prohibited character in regards to native OS implementation
-		// Because of that, SHA256 is sufficient for our case, as it generates alphanumeric characters only, and is barely 256-bit long. We don't need any kind of complex cryptography or collision detection here, any hashing will do, and the shorter the better
-		string networkGroupText = "";
-
-		if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			networkGroupText = $"-{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(Program.NetworkGroup!)))}";
-		} else if (!string.IsNullOrEmpty(GlobalConfig.WebProxyText)) {
-			networkGroupText = $"-{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(GlobalConfig.WebProxyText!)))}";
-		}
-
-		ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(ConfirmationsSemaphore)}{networkGroupText}").ConfigureAwait(false);
-		GiftsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(GiftsSemaphore)}{networkGroupText}").ConfigureAwait(false);
-		InventorySemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(InventorySemaphore)}{networkGroupText}").ConfigureAwait(false);
-		LoginRateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(LoginRateLimitingSemaphore)}{networkGroupText}").ConfigureAwait(false);
-		LoginSemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(LoginSemaphore)}{networkGroupText}").ConfigureAwait(false);
-		RateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(RateLimitingSemaphore)}{networkGroupText}").ConfigureAwait(false);
+		ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(ConfirmationsSemaphore)).ConfigureAwait(false);
+		GiftsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(GiftsSemaphore)).ConfigureAwait(false);
+		InventorySemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(InventorySemaphore)).ConfigureAwait(false);
+		LoginRateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore)).ConfigureAwait(false);
+		LoginSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginSemaphore)).ConfigureAwait(false);
+		RateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(RateLimitingSemaphore)).ConfigureAwait(false);
 
 		WebLimitingSemaphores ??= new Dictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4) {
-			{ ArchiWebHandler.SteamCommunityURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}{networkGroupText}-{nameof(ArchiWebHandler.SteamCommunityURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-			{ ArchiWebHandler.SteamHelpURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}{networkGroupText}-{nameof(ArchiWebHandler.SteamHelpURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-			{ ArchiWebHandler.SteamStoreURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}{networkGroupText}-{nameof(ArchiWebHandler.SteamStoreURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-			{ WebAPI.DefaultBaseAddress, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}{networkGroupText}-{nameof(WebAPI)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
+			{ ArchiWebHandler.SteamCommunityURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamCommunityURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ ArchiWebHandler.SteamHelpURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamHelpURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ ArchiWebHandler.SteamStoreURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamStoreURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ WebAPI.DefaultBaseAddress, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(WebAPI)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
 		}.ToImmutableDictionary();
 	}
 
