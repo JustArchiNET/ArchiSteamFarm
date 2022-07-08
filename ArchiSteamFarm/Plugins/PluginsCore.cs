@@ -40,6 +40,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
 
@@ -50,6 +51,31 @@ internal static class PluginsCore {
 
 	[ImportMany]
 	internal static ImmutableHashSet<IPlugin>? ActivePlugins { get; private set; }
+
+	[PublicAPI]
+	public static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName) {
+		if (string.IsNullOrEmpty(objectName)) {
+			throw new ArgumentNullException(nameof(objectName));
+		}
+
+		string resourceName = OS.GetOsResourceName(objectName);
+
+		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			return new CrossProcessFileBasedSemaphore(resourceName);
+		}
+
+		IList<ICrossProcessSemaphore?> responses;
+
+		try {
+			responses = await Utilities.InParallel(ActivePlugins.OfType<ICrossProcessSemaphoreProvider>().Select(plugin => plugin.GetCrossProcessSemaphore(resourceName))).ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return new CrossProcessFileBasedSemaphore(resourceName);
+		}
+
+		return responses.FirstOrDefault(static response => response != null) ?? new CrossProcessFileBasedSemaphore(resourceName);
+	}
 
 	internal static async Task<StringComparer> GetBotsComparer() {
 		if (ActivePlugins == null) {
@@ -93,30 +119,6 @@ internal static class PluginsCore {
 		}
 
 		return lastChangeNumber;
-	}
-
-	internal static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName) {
-		if (string.IsNullOrEmpty(objectName)) {
-			throw new ArgumentNullException(nameof(objectName));
-		}
-
-		string resourceName = OS.GetOsResourceName(objectName);
-
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
-			return new CrossProcessFileBasedSemaphore(resourceName);
-		}
-
-		IList<ICrossProcessSemaphore?> responses;
-
-		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<ICrossProcessSemaphoreProvider>().Select(plugin => plugin.GetCrossProcessSemaphore(resourceName))).ConfigureAwait(false);
-		} catch (Exception e) {
-			ASF.ArchiLogger.LogGenericException(e);
-
-			return new CrossProcessFileBasedSemaphore(resourceName);
-		}
-
-		return responses.FirstOrDefault(static response => response != null) ?? new CrossProcessFileBasedSemaphore(resourceName);
 	}
 
 	internal static async Task<IMachineInfoProvider?> GetCustomMachineInfoProvider() {
