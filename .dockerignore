@@ -22,7 +22,6 @@ ArchiSteamFarm/logs
 # /_/   \_\____/|_|       |____/ \___/ \___|_|\_\___|_|
 
 # Additional folders that aren't used during image building:
-
 **/.git*
 **/[Bb]in/
 **/[Oo]bj/
@@ -30,6 +29,9 @@ ArchiSteamFarm/logs
 ArchiSteamFarm.CustomPlugins.*
 ASF-ui/dist
 wiki
+
+# Add exception for .git used in ASF-ui, it's used for calculating commit hash during build
+!ASF-ui/.git
 
 #  _      _
 # | |    (_) _ __   _   _ __  __
