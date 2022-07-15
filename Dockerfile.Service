@@ -1,8 +1,9 @@
 ARG IMAGESUFFIX
 
 FROM --platform=$BUILDPLATFORM node:lts${IMAGESUFFIX} AS build-node
-WORKDIR /app
+WORKDIR /app/ASF-ui
 COPY ASF-ui .
+COPY .git/modules/ASF-ui /app/.git/modules/ASF-ui
 RUN echo "node: $(node --version)" && \
     echo "npm: $(npm --version)" && \
     npm ci --no-progress && \
@@ -18,7 +19,7 @@ ENV DOTNET_NOLOGO true
 ENV NET_CORE_VERSION net6.0
 ENV STEAM_TOKEN_DUMPER_NAME ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 WORKDIR /app
-COPY --from=build-node /app/dist ASF-ui/dist
+COPY --from=build-node /app/ASF-ui/dist ASF-ui/dist
 COPY ArchiSteamFarm ArchiSteamFarm
 COPY ArchiSteamFarm.OfficialPlugins.SteamTokenDumper ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 COPY resources resources
