@@ -11,7 +11,7 @@
 		<PackageVersion Include="MSTest.TestFramework" Version="2.2.10" />
 		<PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
-		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.0.0" />
+		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.1.0" />
 		<PackageVersion Include="SteamKit2" Version="2.4.1" />
 		<PackageVersion Include="Swashbuckle.AspNetCore" Version="6.3.2" />
 		<PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="6.3.2" />
