@@ -6,13 +6,6 @@
 trigger:
 - main
 
-schedules:
-- cron: "*/5  * * * *"
-  displayName: Daily midnight build
-  branches:
-    include:
-    - main
-
 pool:
   Azure Pipelines
 
