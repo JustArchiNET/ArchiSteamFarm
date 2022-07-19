@@ -133,17 +133,6 @@ jobs:
 
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" "-p:ASFVariant=$1" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
 
-            # If we're including any overlay for this variant, copy it to output directory
-            variant_os="$(echo "$1" | cut -d '-' -f 1)"
-
-            if [ -d "ArchiSteamFarm/overlay/${variant_os}" ]; then
-                cp -pR "ArchiSteamFarm/overlay/${variant_os}/"* "out/${1}"
-            fi
-
-            if [ "$1" != "$variant_os" ] && [ -d "ArchiSteamFarm/overlay/${1}" ]; then
-                cp -pR "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
-            fi
-
             # If we're including SteamTokenDumper plugin for this framework, copy it to output directory
             if [ -d "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" ]; then
                 mkdir -p "out/${1}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
@@ -252,17 +241,6 @@ jobs:
 
             if ($LastExitCode -ne 0) {
                 throw "Last command failed."
-            }
-
-            # If we're including any overlay for this variant, copy it to output directory
-            $variant_os = $variant.Split('-', 2)[0];
-
-            if (Test-Path "ArchiSteamFarm\overlay\$variant_os" -PathType Container) {
-                Copy-Item "ArchiSteamFarm\overlay\$variant_os\*" "out\$variant" -Recurse
-            }
-
-            if (($variant -ne $variant_os) -and (Test-Path "ArchiSteamFarm\overlay\$variant" -PathType Container)) {
-                Copy-Item "ArchiSteamFarm\overlay\$variant\*" "out\$variant" -Recurse
             }
 
             # If we're including SteamTokenDumper plugin for this framework, copy it to output directory

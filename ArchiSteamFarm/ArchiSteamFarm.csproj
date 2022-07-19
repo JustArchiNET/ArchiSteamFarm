@@ -78,4 +78,20 @@
 			<Link>www\%(RecursiveDir)%(Filename)%(Extension)</Link>
 		</Content>
 	</ItemGroup>
+
+	<ItemGroup Condition="Exists($([System.IO.Path]::Combine('overlay', $(ASFVariant.Split('-')[0]))))">
+		<Content Include="overlay/$(ASFVariant.Split('-')[0])/**/*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup Condition="Exists($([System.IO.Path]::Combine('overlay', $(ASFVariant))))">
+		<Content Include="overlay/$(ASFVariant)/**/*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+	</ItemGroup>
 </Project>
