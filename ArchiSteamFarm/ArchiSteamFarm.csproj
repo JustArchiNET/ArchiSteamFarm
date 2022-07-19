@@ -79,8 +79,8 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup Condition="Exists($([System.IO.Path]::Combine('overlay', 'os', $(RuntimeIdentifier.Split('-')[0]))))">
-		<Content Include="overlay/os/$(RuntimeIdentifier.Split('-')[0])/**/*.*">
+	<ItemGroup Condition="Exists($([System.IO.Path]::Combine('overlay', 'os', $(ASFVariant.Split('-')[0]))))">
+		<Content Include="overlay/os/$(ASFVariant.Split('-')[0])/**/*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
