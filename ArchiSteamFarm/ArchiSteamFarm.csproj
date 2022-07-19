@@ -94,4 +94,8 @@
 			<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
 		</Content>
 	</ItemGroup>
+
+	<PropertyGroup Condition="Exists($([System.IO.Path]::Combine('overlay', $(ASFVariant.Split('-')[0])))) And Exists($([System.IO.Path]::Combine('overlay', $(ASFVariant))))">
+		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+	</PropertyGroup>
 </Project>
