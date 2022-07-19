@@ -79,23 +79,19 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup Condition="Exists($([System.IO.Path]::Combine('overlay', $(ASFVariant.Split('-')[0]))))">
-		<Content Include="overlay/$(ASFVariant.Split('-')[0])/**/*.*">
+	<ItemGroup Condition="Exists("overlay\os\$(ASFVariant.Split('-')[0])")">
+		<Content Include="overlay\os\$(ASFVariant.Split('-')[0])\**\*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup Condition="Exists($([System.IO.Path]::Combine('overlay', $(ASFVariant))))">
-		<Content Include="overlay/$(ASFVariant)/**/*.*">
+	<ItemGroup Condition="Exists("overlay\variant\$(ASFVariant)")">
+		<Content Include="overlay\variant\$(ASFVariant)\**\*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
 		</Content>
 	</ItemGroup>
-
-	<PropertyGroup Condition="Exists($([System.IO.Path]::Combine('overlay', $(ASFVariant.Split('-')[0])))) And Exists($([System.IO.Path]::Combine('overlay', $(ASFVariant))))">
-		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
-	</PropertyGroup>
 </Project>
