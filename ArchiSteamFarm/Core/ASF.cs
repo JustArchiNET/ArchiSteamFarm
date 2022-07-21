@@ -87,7 +87,7 @@ public static class ASF {
 
 	[PublicAPI]
 	public static bool IsOwner(ulong steamID) {
-		if (steamID == 0) {
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
