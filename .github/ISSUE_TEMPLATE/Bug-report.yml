@@ -85,6 +85,7 @@ body:
       description: |
         Every command or action that happened after launching ASF, which leads to the bug.
         If launching ASF with provided configs (below) is everything that is needed, then this section is not mandatory.
+        Screenshots of the problem and/or steps leading to it could be very useful in particular.
       placeholder: |
         1. Put cup below the machine hosting ASF.
         2. Send `PUT /Api/Coffee` request selecting latte macchiato.
