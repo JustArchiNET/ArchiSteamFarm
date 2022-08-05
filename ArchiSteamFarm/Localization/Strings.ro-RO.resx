@@ -148,7 +148,7 @@ StackTrace:
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="LoggingIn" xml:space="preserve">
-		<value>Se autentifică la {0}...</value>
+		<value>Autentificare la {0}...</value>
 		<comment>{0} will be replaced by service's name</comment>
 	</data>
 	<data name="NoBotsAreRunning" xml:space="preserve">
@@ -162,7 +162,7 @@ StackTrace:
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="Restarting" xml:space="preserve">
-		<value>Repornește...</value>
+		<value>Se repornește...</value>
 	</data>
 	<data name="Starting" xml:space="preserve">
 		<value>Pornește...</value>
@@ -174,14 +174,14 @@ StackTrace:
 		<value>Se deblochează contul parental...</value>
 	</data>
 	<data name="UpdateCheckingNewVersion" xml:space="preserve">
-		<value>Se caută versiune nouă...</value>
+		<value>Verificam pentru o versiune noua a aplicației...</value>
 	</data>
 	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
 		<value>Se descarcă versiunea nouă: {0} ({1} MB)... Cât timp aștepți, ia în cosiderare donarea dacă apreciezi munca depusă! :)</value>
 		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
 	</data>
 	<data name="UpdateFinished" xml:space="preserve">
-		<value>Proces de actualizare finalizat!</value>
+		<value>Procesul de actualizare a fost finalizat!</value>
 	</data>
 	<data name="UpdateNewVersionAvailable" xml:space="preserve">
 		<value>O nouă versiune ASF este disponibilă! Ia în considerare actualizarea!</value>
@@ -194,7 +194,10 @@ StackTrace:
 		<value>Te rog să introduci codul 2FA de pe autentificatorul Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Introduceți codul SteamGuard primit pe email: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Te rugăm să introduci datele de autentificare Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -688,17 +691,35 @@ Proces: {1}</value>
 		<value>Fișierul de configurare {0} va fi migrat la cea mai recentă sintaxă...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>Parola dvs. IPC pare a fi slaba. Va rugam sa considerați sa alegeți o parola mai complexa. Detail: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>Parola dvs. de Steam este slaba. Va rugam sa considerați sa alegeți o parola mai complexa. Detail</value>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Cheia dvs. de encripție este slaba. Va rugam sa considerați sa alegeți o cheie mai complexa. Detail: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Cheia dvs. de encripție este prea scurta. Va recomandam sa folosii o parola cu minim {0} caractere.</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	
+	
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Dvs încercați sa rulați ASF ca administrator, ASF nu are nevoie de elevație la nivel de administrator. Pentru securitatea calculatorului dvs, va recomandam sa rulați aplicația fără permisi de administrator.</value>
+	</data>
+	
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Se preia "checksum" de la serverul de la distanta...</value>
+	</data>
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>Se repara fișierele ASF...</value>
+	</data>
 </root>

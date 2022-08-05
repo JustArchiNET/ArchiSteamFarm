@@ -105,7 +105,7 @@ StackTrace:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Żadne boty nie są zdefiniowane. Czy ASF został skonfigurowany? Postępuj zgodnie z przewodnikiem konfiguracji na wiki, jeśli odczuwasz zdezorientowanie.</value>
+		<value>Brak zdefiniowanych botów. Czy ASF został pomyślnie skonfigurowany? Jeśli nie wiesz co zrobić, postępuj zgodnie z przewodnikiem na Wiki.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} jest puste!</value>
@@ -352,7 +352,7 @@ StackTrace:
 		<value>Automatyczne farmienie zostało wznowione!</value>
 	</data>
 	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-		<value>Automatyczne farmienie jest już zatrzymane!</value>
+		<value>Automatyczne farmienie jest już wstrzymane!</value>
 	</data>
 	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
 		<value>Automatyczne farmienie jest już wznowione!</value>
