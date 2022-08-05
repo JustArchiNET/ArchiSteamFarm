@@ -21,7 +21,7 @@
 			"matchPackageNames": [ "Microsoft.Extensions.Configuration.Json", "Microsoft.Extensions.Logging.Configuration" ]
 		},
 		{
-			// TODO: https://github.com/AngleSharp/AngleSharp.XPath/issues/36
+			// TODO: https://github.com/AngleSharp/AngleSharp.XPath/issues/40
 			"allowedVersions": "< 2.0",
 			"matchManagers": [ "nuget" ],
 			"matchPackageNames": [ "AngleSharp.XPath" ]
