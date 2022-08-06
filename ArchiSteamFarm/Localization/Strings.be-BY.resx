@@ -107,20 +107,36 @@
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	
+	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+		<value>Запыт не атрымаўся пасля {0} спроб!</value>
+		<comment>{0} will be replaced by maximum number of tries</comment>
+	</data>
+	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
+		<value>Не атрымалася праверыць наяўнасць новай версіі!</value>
+	</data>
+	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+		<value>Немагчыма працягнуць абнаўленне, таму што няма файлаў, звязаных з запушчанай зараз версіяй! Аўтаматычнае абнаўленне да гэтай версіі немагчыма.</value>
+	</data>
 	
-	
-	
-	
-	
+	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+		<value>Атрыманы запыт на ўвод карыстальнікам, але працэс працуе ў рэжыме без інтэрфейсу!</value>
+	</data>
 	<data name="Exiting" xml:space="preserve">
 		<value>Выхад...</value>
 	</data>
 	<data name="WarningFailed" xml:space="preserve">
 		<value>Не атрымалася!</value>
 	</data>
-	
-	
-	
+	<data name="GlobalConfigChanged" xml:space="preserve">
+		<value>Файл глабальнай канфігурацыі быў зменены!</value>
+	</data>
+	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+		<value>Файл глабальнай канфігурацыі быў выдалены!</value>
+	</data>
+	<data name="IgnoringTrade" xml:space="preserve">
+		<value>Ігнараванне абмену: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
 	<data name="LoggingIn" xml:space="preserve">
 		<value>Уваход у {0}...</value>
 		<comment>{0} will be replaced by service's name</comment>
@@ -157,6 +173,9 @@
 	<data name="UpdateFinished" xml:space="preserve">
 		<value>Працэс абнаўлення завершаны!</value>
 	</data>
+	<data name="UpdateNewVersionAvailable" xml:space="preserve">
+		<value>Даступна новая версія ASF! Вы можаце абнавіцца да яе самастойна!</value>
+	</data>
 	
 	
 	
@@ -164,9 +183,12 @@
 	
 	
 	
-	
-	
-	
+	<data name="IPCReady" xml:space="preserve">
+		<value>Сервер IPC гатовы!</value>
+	</data>
+	<data name="IPCStarting" xml:space="preserve">
+		<value>Запуск сервера IPC...</value>
+	</data>
 	
 	
 	
