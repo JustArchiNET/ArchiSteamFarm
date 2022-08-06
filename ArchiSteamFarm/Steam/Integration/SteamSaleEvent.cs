@@ -93,7 +93,7 @@ internal sealed class SteamSaleEvent : IAsyncDisposable, IDisposable {
 			return null;
 		}
 
-		IElement? htmlNode = htmlDocument.SelectSingleNode("//div[@class='subtext']");
+		INode? htmlNode = htmlDocument.SelectSingleNode("//div[@class='subtext']");
 
 		if (htmlNode == null) {
 			// Valid, no cards for exploring the queue available

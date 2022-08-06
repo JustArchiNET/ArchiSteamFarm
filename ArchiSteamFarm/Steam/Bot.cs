@@ -651,7 +651,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		byte maxPages = 1;
-		IElement? htmlNode = badgePage.SelectSingleNode("(//a[@class='pagelink'])[last()]");
+		INode? htmlNode = badgePage.SelectSingleNode("(//a[@class='pagelink'])[last()]");
 
 		if (htmlNode != null) {
 			string lastPage = htmlNode.TextContent;
@@ -1882,11 +1882,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		// We select badges that are ready to craft, as well as those that are already crafted to a maximum level, as those will not display with a craft button
 		// Level 5 is maximum level for card badges according to https://steamcommunity.com/tradingcards/faq
-		IEnumerable<IElement> linkElements = badgePage.SelectNodes("//a[@class='badge_craft_button'] | //div[@class='badges_sheet']/div[contains(@class, 'badge_row') and .//div[@class='badge_info_description']/div[contains(text(), 'Level 5')]]/a[@class='badge_row_overlay']");
+		IEnumerable<IAttr> linkElements = badgePage.SelectNodes<IAttr>("//a[@class='badge_craft_button'] | //div[@class='badges_sheet']/div[contains(@class, 'badge_row') and .//div[@class='badge_info_description']/div[contains(text(), 'Level 5')]]/a[@class='badge_row_overlay']/@href");
 
 		HashSet<uint> result = new();
 
-		foreach (string? badgeUri in linkElements.Select(static htmlNode => htmlNode.GetAttribute("href"))) {
+		foreach (string? badgeUri in linkElements.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(badgeUri)) {
 				ArchiLogger.LogNullError(badgeUri);
 

@@ -1695,15 +1695,15 @@ public sealed class ArchiWebHandler : IDisposable {
 			return 0;
 		}
 
-		IEnumerable<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_card_set_cards']/div[starts-with(@class, 'badge_card_set_card')]");
+		IList<INode> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_card_set_cards']/div[starts-with(@class, 'badge_card_set_card')]");
 
-		result = (byte) htmlNodes.Count();
-
-		if (result == 0) {
-			Bot.ArchiLogger.LogNullError(result);
+		if (htmlNodes.Count == 0) {
+			Bot.ArchiLogger.LogNullError(htmlNodes);
 
 			return 0;
 		}
+
+		result = (byte) htmlNodes.Count;
 
 		ASF.GlobalDatabase?.CardCountsPerGame.TryAdd(appID, result);
 
@@ -1818,11 +1818,11 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		IEnumerable<IElement> htmlNodes = response.Content.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
+		IEnumerable<IAttr> htmlNodes = response.Content.SelectNodes<IAttr>("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
 
 		HashSet<ulong> results = new();
 
-		foreach (string? giftCardIDText in htmlNodes.Select(static node => node.GetAttribute("id"))) {
+		foreach (string? giftCardIDText in htmlNodes.Select(static node => node.Value)) {
 			if (string.IsNullOrEmpty(giftCardIDText)) {
 				Bot.ArchiLogger.LogNullError(giftCardIDText);
 
@@ -1865,11 +1865,11 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		IEnumerable<IElement> htmlNodes = response.Content.SelectNodes("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
+		IEnumerable<IAttr> htmlNodes = response.Content.SelectNodes<IAttr>("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
 
 		HashSet<ulong> result = new();
 
-		foreach (string? miniProfile in htmlNodes.Select(static htmlNode => htmlNode.GetAttribute("data-miniprofile"))) {
+		foreach (string? miniProfile in htmlNodes.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(miniProfile)) {
 				Bot.ArchiLogger.LogNullError(miniProfile);
 
@@ -1953,7 +1953,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
-		IElement? htmlNode = response?.Content?.SelectSingleNode("//div[@class='pagecontent']/script");
+		INode? htmlNode = response?.Content?.SelectSingleNode("//div[@class='pagecontent']/script");
 
 		if (htmlNode == null) {
 			// Trade can be no longer valid
@@ -2345,7 +2345,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return (ESteamApiKeyState.Timeout, null);
 		}
 
-		IElement? titleNode = response.Content.SelectSingleNode("//div[@id='mainContents']/h2");
+		INode? titleNode = response.Content.SelectSingleNode("//div[@id='mainContents']/h2");
 
 		if (titleNode == null) {
 			Bot.ArchiLogger.LogNullError(titleNode);
@@ -2365,7 +2365,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return (ESteamApiKeyState.AccessDenied, null);
 		}
 
-		IElement? htmlNode = response.Content.SelectSingleNode("//div[@id='bodyContents_ex']/p");
+		INode? htmlNode = response.Content.SelectSingleNode("//div[@id='bodyContents_ex']/p");
 
 		if (htmlNode == null) {
 			Bot.ArchiLogger.LogNullError(htmlNode);

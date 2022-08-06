@@ -189,24 +189,45 @@ public static class Utilities {
 	}
 
 	[PublicAPI]
-	public static IEnumerable<IElement> SelectNodes(this IDocument document, string xpath) {
+	public static IList<INode> SelectNodes(this IDocument document, string xpath) {
 		ArgumentNullException.ThrowIfNull(document);
 
-		return document.Body.SelectNodes(xpath).OfType<IElement>();
+		return document.Body.SelectNodes(xpath);
 	}
 
 	[PublicAPI]
-	public static IElement? SelectSingleElementNode(this IElement element, string xpath) {
+	public static IEnumerable<T> SelectNodes<T>(this IDocument document, string xpath) where T : class, INode {
+		ArgumentNullException.ThrowIfNull(document);
+
+		return document.SelectNodes(xpath).OfType<T>();
+	}
+
+	[PublicAPI]
+	public static IEnumerable<T> SelectNodes<T>(this IElement element, string xpath) where T : class, INode {
 		ArgumentNullException.ThrowIfNull(element);
 
-		return (IElement?) element.SelectSingleNode(xpath);
+		return element.SelectNodes(xpath).OfType<T>();
 	}
 
 	[PublicAPI]
-	public static IElement? SelectSingleNode(this IDocument document, string xpath) {
+	public static INode? SelectSingleNode(this IDocument document, string xpath) {
 		ArgumentNullException.ThrowIfNull(document);
 
-		return (IElement?) document.Body.SelectSingleNode(xpath);
+		return document.Body.SelectSingleNode(xpath);
+	}
+
+	[PublicAPI]
+	public static T? SelectSingleNode<T>(this IDocument document, string xpath) where T : class, INode {
+		ArgumentNullException.ThrowIfNull(document);
+
+		return document.Body.SelectSingleNode(xpath) as T;
+	}
+
+	[PublicAPI]
+	public static T? SelectSingleNode<T>(this IElement element, string xpath) where T : class, INode {
+		ArgumentNullException.ThrowIfNull(element);
+
+		return element.SelectSingleNode(xpath) as T;
 	}
 
 	[PublicAPI]

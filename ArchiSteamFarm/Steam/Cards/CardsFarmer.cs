@@ -29,6 +29,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
+using AngleSharp.XPath;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -451,20 +452,20 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		ArgumentNullException.ThrowIfNull(htmlDocument);
 		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
-		IEnumerable<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_row_inner']");
+		IEnumerable<IElement> htmlNodes = htmlDocument.SelectNodes<IElement>("//div[@class='badge_row_inner']");
 
 		HashSet<Task>? backgroundTasks = null;
 
 		foreach (IElement htmlNode in htmlNodes) {
-			IElement? statsNode = htmlNode.SelectSingleElementNode(".//div[@class='badge_title_stats_content']");
-			IElement? appIDNode = statsNode?.SelectSingleElementNode(".//div[@class='card_drop_info_dialog']");
+			IElement? statsNode = htmlNode.SelectSingleNode<IElement>(".//div[@class='badge_title_stats_content']");
+			IAttr? appIDNode = statsNode?.SelectSingleNode<IAttr>(".//div[@class='card_drop_info_dialog']/@id");
 
 			if (appIDNode == null) {
 				// It's just a badge, nothing more
 				continue;
 			}
 
-			string? appIDText = appIDNode.GetAttribute("id");
+			string appIDText = appIDNode.Value;
 
 			if (string.IsNullOrEmpty(appIDText)) {
 				Bot.ArchiLogger.LogNullError(appIDText);
@@ -522,7 +523,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			// Cards
-			IElement? progressNode = statsNode?.SelectSingleElementNode(".//span[@class='progress_info_bold']");
+			INode? progressNode = statsNode?.SelectSingleNode(".//span[@class='progress_info_bold']");
 
 			if (progressNode == null) {
 				Bot.ArchiLogger.LogNullError(progressNode);
@@ -561,7 +562,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				}
 
 				// To save us on extra work, check cards earned so far first
-				IElement? cardsEarnedNode = statsNode?.SelectSingleElementNode(".//div[@class='card_drop_info_header']");
+				INode? cardsEarnedNode = statsNode?.SelectSingleNode(".//div[@class='card_drop_info_header']");
 
 				if (cardsEarnedNode == null) {
 					Bot.ArchiLogger.LogNullError(cardsEarnedNode);
@@ -606,7 +607,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			// Hours
-			IElement? timeNode = statsNode?.SelectSingleElementNode(".//div[@class='badge_title_stats_playtime']");
+			INode? timeNode = statsNode?.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
 
 			if (timeNode == null) {
 				Bot.ArchiLogger.LogNullError(timeNode);
@@ -635,7 +636,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			// Names
-			IElement? nameNode = statsNode?.SelectSingleElementNode("(.//div[@class='card_drop_info_body'])[last()]");
+			INode? nameNode = statsNode?.SelectSingleNode("(.//div[@class='card_drop_info_body'])[last()]");
 
 			if (nameNode == null) {
 				Bot.ArchiLogger.LogNullError(nameNode);
@@ -687,7 +688,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			// Levels
 			byte badgeLevel = 0;
 
-			IElement? levelNode = htmlNode.SelectSingleElementNode(".//div[@class='badge_info_description']/div[2]");
+			INode? levelNode = htmlNode.SelectSingleNode(".//div[@class='badge_info_description']/div[2]");
 
 			if (levelNode != null) {
 				// There is no levelNode if we didn't craft that badge yet (level 0)
@@ -1009,7 +1010,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
 
-		IElement? progressNode = htmlDocument?.SelectSingleNode("//span[@class='progress_info_bold']");
+		INode? progressNode = htmlDocument?.SelectSingleNode("//span[@class='progress_info_bold']");
 
 		if (progressNode == null) {
 			return null;
@@ -1052,7 +1053,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		byte maxPages = 1;
 
-		IElement? htmlNode = htmlDocument.SelectSingleNode("(//a[@class='pagelink'])[last()]");
+		INode? htmlNode = htmlDocument.SelectSingleNode("(//a[@class='pagelink'])[last()]");
 
 		if (htmlNode != null) {
 			string lastPage = htmlNode.TextContent;

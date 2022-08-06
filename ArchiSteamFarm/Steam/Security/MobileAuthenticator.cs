@@ -121,7 +121,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			return null;
 		}
 
-		IEnumerable<IElement> confirmationNodes = htmlDocument.SelectNodes("//div[@class='mobileconf_list_entry']");
+		IEnumerable<IElement> confirmationNodes = htmlDocument.SelectNodes<IElement>("//div[@class='mobileconf_list_entry']");
 
 		HashSet<Confirmation> result = new();
 
