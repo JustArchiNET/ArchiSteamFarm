@@ -1822,7 +1822,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		HashSet<ulong> results = new();
 
-		foreach (string? giftCardIDText in htmlNodes.Select(static node => node.Value)) {
+		foreach (string giftCardIDText in htmlNodes.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(giftCardIDText)) {
 				Bot.ArchiLogger.LogNullError(giftCardIDText);
 
@@ -1869,7 +1869,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		HashSet<ulong> result = new();
 
-		foreach (string? miniProfile in htmlNodes.Select(static htmlNode => htmlNode.Value)) {
+		foreach (string miniProfile in htmlNodes.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(miniProfile)) {
 				Bot.ArchiLogger.LogNullError(miniProfile);
 

@@ -1886,7 +1886,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		HashSet<uint> result = new();
 
-		foreach (string? badgeUri in linkElements.Select(static htmlNode => htmlNode.Value)) {
+		foreach (string badgeUri in linkElements.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(badgeUri)) {
 				ArchiLogger.LogNullError(badgeUri);
 
