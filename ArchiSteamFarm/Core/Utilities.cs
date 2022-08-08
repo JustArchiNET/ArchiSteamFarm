@@ -199,7 +199,7 @@ public static class Utilities {
 	public static IEnumerable<T> SelectNodes<T>(this IDocument document, string xpath) where T : class, INode {
 		ArgumentNullException.ThrowIfNull(document);
 
-		return document.SelectNodes(xpath).OfType<T>();
+		return document.Body.SelectNodes(xpath).OfType<T>();
 	}
 
 	[PublicAPI]
