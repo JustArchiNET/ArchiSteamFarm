@@ -12,7 +12,6 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-		<PackageReference Include="JustArchiNET.Madness" IncludeAssets="compile" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" IncludeAssets="compile" />
 	</ItemGroup>
 
