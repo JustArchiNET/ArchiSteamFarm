@@ -1170,7 +1170,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	internal Task<HashSet<uint>?> GetMarketableAppIDs() => ArchiWebHandler.GetAppList();
 
-	internal async Task<Dictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)>?> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
+	internal async Task<Dictionary<uint, PackageData>?> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
 		if ((packageIDs == null) || (packageIDs.Count == 0)) {
 			throw new ArgumentNullException(nameof(packageIDs));
 		}
@@ -1190,7 +1190,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (packageRequests.Count == 0) {
-			return new Dictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)>(0);
+			return new Dictionary<uint, PackageData>(0);
 		}
 
 		AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet? productInfoResultSet = null;
@@ -1207,7 +1207,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return null;
 		}
 
-		Dictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)> result = new();
+		DateTime validUntil = DateTime.UtcNow.AddDays(7);
+
+		Dictionary<uint, PackageData> result = new();
 
 		foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo productInfo in productInfoResultSet.Results.SelectMany(static productInfoResult => productInfoResult.Packages).Where(static productInfoPackages => productInfoPackages.Key != 0).Select(static productInfoPackages => productInfoPackages.Value)) {
 			if (productInfo.KeyValues == KeyValue.Invalid) {
@@ -1238,7 +1240,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					appIDs.Add(appID);
 				}
 			} finally {
-				result[productInfo.ID] = (changeNumber, appIDs?.ToImmutableHashSet());
+				result[productInfo.ID] = new PackageData(changeNumber, validUntil, appIDs?.ToImmutableHashSet());
 			}
 		}
 
@@ -2665,7 +2667,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				// Package is always due to refresh with access token change
 				packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
-			} else if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(license.PackageID, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packageData) || (packageData.ChangeNumber < license.LastChangeNumber)) {
+			} else if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(license.PackageID, out PackageData? packageData) || (packageData.ChangeNumber < license.LastChangeNumber)) {
 				packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
 			}
 		}

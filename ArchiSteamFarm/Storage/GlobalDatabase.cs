@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -47,7 +46,7 @@ public sealed class GlobalDatabase : SerializableFile {
 
 	[JsonIgnore]
 	[PublicAPI]
-	public IReadOnlyDictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)> PackagesDataReadOnly => PackagesData;
+	public IReadOnlyDictionary<uint, PackageData> PackagesDataReadOnly => PackagesData;
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly ObservableConcurrentDictionary<uint, byte> CardCountsPerGame = new();
@@ -62,7 +61,7 @@ public sealed class GlobalDatabase : SerializableFile {
 	private readonly ConcurrentDictionary<uint, ulong> PackagesAccessTokens = new();
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentDictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)> PackagesData = new();
+	private readonly ConcurrentDictionary<uint, PackageData> PackagesData = new();
 
 	private readonly SemaphoreSlim PackagesRefreshSemaphore = new(1, 1);
 
@@ -247,7 +246,7 @@ public sealed class GlobalDatabase : SerializableFile {
 		HashSet<uint> result = new();
 
 		foreach (uint packageID in packageIDs.Where(static packageID => packageID != 0)) {
-			if (!PackagesData.TryGetValue(packageID, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packagesData) || (packagesData.AppIDs?.Contains(appID) != true)) {
+			if (!PackagesData.TryGetValue(packageID, out PackageData? packageEntry) || (packageEntry.AppIDs?.Contains(appID) != true)) {
 				continue;
 			}
 
@@ -316,13 +315,15 @@ public sealed class GlobalDatabase : SerializableFile {
 		await PackagesRefreshSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
-			HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) previousData) || (previousData.ChangeNumber < package.Value))).Select(static package => package.Key).ToHashSet();
+			DateTime now = DateTime.UtcNow;
+
+			HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out PackageData? previousData) || (previousData.ChangeNumber < package.Value) || (previousData.ValidUntil < now))).Select(static package => package.Key).ToHashSet();
 
 			if (packageIDs.Count == 0) {
 				return;
 			}
 
-			Dictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)>? packagesData = await bot.GetPackagesData(packageIDs).ConfigureAwait(false);
+			Dictionary<uint, PackageData>? packagesData = await bot.GetPackagesData(packageIDs).ConfigureAwait(false);
 
 			if (packagesData == null) {
 				bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -330,20 +331,11 @@ public sealed class GlobalDatabase : SerializableFile {
 				return;
 			}
 
-			bool save = false;
-
-			foreach ((uint packageID, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packageData) in packagesData) {
-				if (PackagesData.TryGetValue(packageID, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) previousData) && (packageData.ChangeNumber <= previousData.ChangeNumber)) {
-					continue;
-				}
-
+			foreach ((uint packageID, PackageData packageData) in packagesData) {
 				PackagesData[packageID] = packageData;
-				save = true;
 			}
 
-			if (save) {
-				Utilities.InBackground(Save);
-			}
+			Utilities.InBackground(Save);
 		} finally {
 			PackagesRefreshSemaphore.Release();
 		}

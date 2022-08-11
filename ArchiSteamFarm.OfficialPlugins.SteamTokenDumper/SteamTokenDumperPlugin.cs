@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Composition;
 using System.Globalization;
@@ -35,6 +34,7 @@ using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
 using Newtonsoft.Json;
@@ -341,7 +341,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			HashSet<uint> appIDsToRefresh = new();
 
 			foreach (uint packageID in packageIDs.Where(static packageID => !Config.SecretPackageIDs.Contains(packageID))) {
-				if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packageData) || (packageData.AppIDs == null)) {
+				if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out PackageData? packageData) || (packageData.AppIDs == null)) {
 					// ASF might not have the package info for us at the moment, we'll retry later
 					continue;
 				}
