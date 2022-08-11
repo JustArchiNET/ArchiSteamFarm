@@ -53,7 +53,7 @@ public sealed class PackageData {
 			throw new ArgumentOutOfRangeException(nameof(changeNumber));
 		}
 
-		if (validUntil <= DateTime.UnixEpoch) {
+		if (validUntil == DateTime.MinValue) {
 			throw new ArgumentOutOfRangeException(nameof(validUntil));
 		}
 
