@@ -104,7 +104,9 @@ StackTrace:
 		<value>{0} ir nederīgs!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Nav definētu botu. Vai tu aizmirsi sakonfigurēt ASF? Seko 'setting up' pamācībai iekš wiki, ja esi apmulsis.</value>
+	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} ir null!</value>
 		<comment>{0} will be replaced by object's name</comment>
@@ -192,7 +194,10 @@ StackTrace:
 		<value>Lūdzu, ievadi savu 2FA kodu no Steam autentifikatora aplikācijas: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Lūdzu, ievadi SteamGuard autentifikācijas kodu, kas tika aizsūtīts uz Jūsu e-pastu: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Lūdzu, ievadiet savu Steam lietotājvārdu: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -222,20 +227,35 @@ StackTrace:
 		<value>Nevar atrast nevienu botu vārdā {0}!</value>
 		<comment>{0} will be replaced by bot's name query (string)</comment>
 	</data>
-	
-	
-	
+	<data name="BotStatusOverview" xml:space="preserve">
+		<value>Pašlaik ir aktīvi {0} no {1} botiem. Kopumā notiek vākšana no {2} spēlēm (atlikušas {3} kārtis).</value>
+		<comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
+	</data>
+	<data name="BotStatusIdling" xml:space="preserve">
+		<value>Notiek vākšana spēlei: {0} ({1}, atlikušas {2} kārtis) no kopumā {3} spēlēm ({4} kārtis). Atlikušais laiks: ~{5}.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="BotStatusIdlingList" xml:space="preserve">
+		<value>Notiek vākšana spēlēm: {0} no kopumā {1} spēlēm ({2} kārtis). Atlikušais laiks ~{3}.</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
 	<data name="CheckingFirstBadgePage" xml:space="preserve">
 		<value>Pārbauda žetonu pirmo lapu...</value>
 	</data>
 	<data name="CheckingOtherBadgePages" xml:space="preserve">
 		<value>Pārbauda žetonu pārējās lapas...</value>
 	</data>
-	
+	<data name="ChosenFarmingAlgorithm" xml:space="preserve">
+		<value>Izvēlētais vākšanas algoritms: {0}</value>
+		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+	</data>
 	<data name="Done" xml:space="preserve">
 		<value>Darīts!</value>
 	</data>
-	
+	<data name="GamesToIdle" xml:space="preserve">
+		<value>Kopumā vākšanai ir pieejamas {0} spēles ({1} kārtis). Atlikušais laiks ~{2}...</value>
+		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
 	<data name="IdlingFinished" xml:space="preserve">
 		<value>Vākšana pabeigta!</value>
 	</data>
@@ -257,16 +277,36 @@ StackTrace:
 	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
 		<value>Pieprasījums tiek ignorēts, jo pastāvīgā pauze ir ieslēgta!</value>
 	</data>
-	
-	
-	
+	<data name="NothingToIdle" xml:space="preserve">
+		<value>Šim kontam nav nepieciešama vākšana!</value>
+	</data>
+	<data name="NowIdling" xml:space="preserve">
+		<value>Šobrīd vāc: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="NowIdlingList" xml:space="preserve">
+		<value>Šobrīd vāc: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="PlayingNotAvailable" xml:space="preserve">
 		<value>Šobrīd nav iespējams neko spēlēt, vēlāk mēģināsim atkal!</value>
 	</data>
-	
-	
-	
-	
+	<data name="StillIdling" xml:space="preserve">
+		<value>Notiek vākšana: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StillIdlingList" xml:space="preserve">
+		<value>Notiek vākšana: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="StoppedIdling" xml:space="preserve">
+		<value>Vākšana apturēta: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StoppedIdlingList" xml:space="preserve">
+		<value>Vākšana apturēta: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="UnknownCommand" xml:space="preserve">
 		<value>Nezināma komanda!</value>
 	</data>
@@ -281,7 +321,9 @@ StackTrace:
 		<value>Dāvanas pieņemšana: {0}...</value>
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
-	
+	<data name="BotAccountLimited" xml:space="preserve">
+		<value>Šim kontam ir ierobežotas tiesības un tas nevar veikt vākšanu līdz ko ierobežojumi netiks noņemti!</value>
+	</data>
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID: {0} | Statuss: {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -303,10 +345,18 @@ StackTrace:
 		<value>2FA marķieris: {0}</value>
 		<comment>{0} will be replaced by generated 2FA token (string)</comment>
 	</data>
-	
-	
-	
-	
+	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+		<value>Automāiskā vākšana ir apturēta!</value>
+	</data>
+	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+		<value>Automātiskā vākšana ir atsākta!</value>
+	</data>
+	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+		<value>Automāiskā vākšana ir jau apturēta!</value>
+	</data>
+	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+		<value>Automātiskā vākšana ir jau atsākusies!</value>
+	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>Savienots ar Steam!</value>
 	</data>
@@ -346,7 +396,9 @@ StackTrace:
 	<data name="BotLootingSuccess" xml:space="preserve">
 		<value>Darījuma piedāvājums veiksmīgi nosūtīts!</value>
 	</data>
-	
+	<data name="BotSendingTradeToYourself" xml:space="preserve">
+		<value>Tu nevar veikt darījumu pats ar sevi!</value>
+	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
 		<value>Šim botam nav ieslāgta ASF 2FA! Vai aizmirsi importēt savu autentifikatoru kā ASF 2FA?</value>
 	</data>
@@ -361,7 +413,10 @@ StackTrace:
 		<value>Jau pieder: {0} | {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
-	
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>Uzkrātie punkti: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
 	<data name="BotRateLimitExceeded" xml:space="preserve">
 		<value>Pierakstīšanās reižu limits ir izsmelts, mēģināsim atkal pēc {2}...</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
@@ -380,8 +435,12 @@ StackTrace:
 	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
 		<value>Noņemta novecojusī pierakstīšanās atslēga!</value>
 	</data>
-	
-	
+	<data name="BotStatusNotIdling" xml:space="preserve">
+		<value>Bots pašlaik neko nevāc.</value>
+	</data>
+	<data name="BotStatusLimited" xml:space="preserve">
+		<value>Botam ir ierobežotas tiesības un tas nevar veikt kāršu vākšanu.</value>
+	</data>
 	<data name="BotStatusConnecting" xml:space="preserve">
 		<value>Bots savienojas ar Steam Network.</value>
 	</data>
@@ -413,8 +472,12 @@ StackTrace:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Pazudis savienojums ar Steam Network. Atjauno savienojumu...</value>
 	</data>
-	
-	
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>Konts ir atbrīvojies: tiek atsākts vākšanas process!</value>
+	</data>
+	<data name="BotAccountOccupied" xml:space="preserve">
+		<value>Konts šobrīd tiek lietots: ASF turpinās vākšanu, kad tas atbrīvosies...</value>
+	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Savienojas...</value>
 	</data>
@@ -448,8 +511,14 @@ StackTrace:
 	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
 		<value>Tavs piedāvātais CurrentCulture nav derīgs, ASF izmantos noklusējuma vērtību!</value>
 	</data>
-	
-	
+	<data name="TranslationIncomplete" xml:space="preserve">
+		<value>ASF izmanto izvēlēto {0} valodu, bet tulkojums ir tikai daļēji pabeigts ({1}). Varbūt vari palīdzēt pārtulkot ASF līdz galam?</value>
+		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+	</data>
+	<data name="IdlingGameNotPossible" xml:space="preserve">
+		<value>Vākšana spēlei {0} ({1}) ir atspējota, jo ASF nevar spēlēt šo spēli dotajā momentā.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="WarningIdlingGameMismatch" xml:space="preserve">
 		<value>ASF atradis ID {0} ({1}) nesakritības un izmantos ID {2}.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -458,8 +527,12 @@ StackTrace:
 		<value>{0} V{1}</value>
 		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
 	</data>
-	
-	
+	<data name="BotAccountLocked" xml:space="preserve">
+		<value>Šis konts ir bloķēts, vākšanas process nav pieejams!</value>
+	</data>
+	<data name="BotStatusLocked" xml:space="preserve">
+		<value>Bots ir aizslēgts un nevar veikt kāršu vākšanu.</value>
+	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
 		<value>Šī funkcija ir pieejama tikai 'headless' režīmā!</value>
 	</data>
@@ -470,7 +543,9 @@ StackTrace:
 	<data name="ErrorAccessDenied" xml:space="preserve">
 		<value>Pieeja aizliegta!</value>
 	</data>
-	
+	<data name="WarningPreReleaseVersion" xml:space="preserve">
+		<value>Tiek izmantota versija, kas ir jaunāka par pašlaik pieejamo esošajā atjauninājumu kanālā. Lūdzu, ņem vērā, ka pirmsizlaides programmatūras versija ir domāta lietotājiem, kas zin kā ziņot par kļūdām, saskarties ar problēmām un dot atsauksmes. Nekāds tehniskais atbalsts nav pieejams šīm versijām.</value>
+	</data>
 	<data name="BotStats" xml:space="preserve">
 		<value>Izmantotā atmiņa: {0} MB
 Darbspējas laiks: {1}</value>
@@ -547,7 +622,9 @@ Darbspējas laiks: {1}</value>
 	<data name="NothingFound" xml:space="preserve">
 		<value>Nekas netika atrasts!</value>
 	</data>
-	
+	<data name="PluginsWarning" xml:space="preserve">
+		<value>Ir ielādīts viens vai vairāki ASF paplašinājumi. Tā kā mēs nepiedāvājam atbalstu specializētām konfigurācijām, tad, lūdzu, sazinies ar paplašinājuma izstrādājumu, ja saskaries ar kādām kļūdām.</value>
+	</data>
 	<data name="PleaseWait" xml:space="preserve">
 		<value>Lūdzu, uzgaidiet...</value>
 	</data>
@@ -571,7 +648,10 @@ Darbspējas laiks: {1}</value>
 		<value>Veiksmīgi tikts galā ar {0} apstiprinājumiem!</value>
 		<comment>{0} will be replaced by number of confirmations</comment>
 	</data>
-	
+	<data name="BotExtraIdlingCooldown" xml:space="preserve">
+		<value>Gaidām ap {0} lai varētu atsākt vākšanu...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+	</data>
 	<data name="UpdateCleanup" xml:space="preserve">
 		<value>Tiek tīrīti vecie faili, kas palikuši pēc atjaunināšanas...</value>
 	</data>
@@ -593,25 +673,67 @@ Darbspējas laiks: {1}</value>
 		<value>Rezultāts: {0}</value>
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
-	
+	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
+		<value>Tiek mēģināts palaist {0} ASF versiju neatbalstītā vidē: {1}. Pievieno '---ignore-unsupported-environment argument' ja zini ko dari.</value>
+	</data>
 	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
 		<value>Nezināms komandrindas arguments: {0}</value>
 		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+		<value>Konfigurācijas atrašanās vieta nav atrasta - pārtrauc!</value>
+	</data>
+	<data name="BotIdlingSelectedGames" xml:space="preserve">
+		<value>Spēlē izvēlēto {0}: {1}</value>
+		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+	</data>
+	<data name="AutomaticFileMigration" xml:space="preserve">
+		<value>{0} konfigurācijas fails tiks migrēts uz jaunāko sintaksi...</value>
+		<comment>{0} will be replaced with the relative path to the affected config file</comment>
+	</data>
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>IPC parole ir vāja. Apsver iespēju izvēlēties stiprāku paroli papildu drošībai. Detaļas: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>Steam parole lietotājam '{0}' ir vāja. Apsver iespēju izvēlēties stiprāku paroli papildu drošībai. Detaļas: {1}</value>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Šifrēšanas atslēga ir vāja. Apsver iespēju izvēlēties stiprāku paroli papildu drošībai. Detaļas: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Šifrēšanas atslēga ir pārāk īsa. Mēs iesakām izmantot tādu, kas ir vismaz {0} baitus (simbolus) gara.</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Tu lieto {0} iestatījumu {1} vērtībai, bet neesi nodrošinājis speciālu -cryptkey. Tev vajag nodrošinās speciālo -cryptkey paaugstinātai drošībai.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>Tu lieto {0} iestatījumu {1} vērtībai, bet neesi nodrošinājis speciālu -cryptkey. Šī dēļ šim iestatījumam nav jēga, jo ASF ir spiests lietots pats savu (zināmu) atslēgu. Tev vajag nodrošinās speciālo -cryptkey lai šis iestatījums varētu nodrošināt papildu drošību.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Tu mēģini laist ASF kā administrators (root). Šis rada nopietnu drošības risku mašīnai, jo ASF nav vajadzīga root līmeņa tiesības, lai tas strādātu. Mēs iesakām pārslēgties un laist ASF ne-administratora režīmā cik ātri vien iespējams.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Tu laid ASF neatbalstītā vidē izmantojot --ignore-unsupported-environment argumentu. Lūdzu ņem vērā, ka mēs nepiedāvājam nekādu atbalstu šādiem scenārijiem un tas viss ir uz tavu pašu risku. Tu esi ticis brīdināts.</value>
+	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Lasa kontrolsummu no attālinātā servera...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>Salīdzina lejupielādētā faila kontrolsummu ar attālinātā servera kontrolsummu...</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>Attālinātais serveris neko nezin par versiju uz kuru tiek veikta atjaunināšana. Šāda situācija ir iespējama, ja versija ir svaigi publicēta. Drošības apsvērumu dēļ atjaunināšanas procedūra tiek pārtraukta.</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>Attālinātais serveris atbildēja ar citādāku kontrolsummu, tas nozīmē, ka lejupielāde ir bojāta vai ir noticis MITM uzbrukums. Atjaunināšanas procedūra tiek pārtraukta!</value>
+	</data>
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>Atjauno ASF failus...</value>
+	</data>
 </root>
