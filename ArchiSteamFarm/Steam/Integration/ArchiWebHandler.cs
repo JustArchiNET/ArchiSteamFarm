@@ -173,7 +173,7 @@ public sealed class ArchiWebHandler : IDisposable {
 						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 					}
 
-					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
+					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
 
 					if (response == null) {
 						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
@@ -427,7 +427,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			ObjectResponse<TradeOfferSendResponse>? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
+				response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
 
 				if (response == null) {
 					return (false, mobileTradeOfferIDs);
@@ -1292,7 +1292,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		ObjectResponse<TradeOfferAcceptResponse>? response = null;
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			response = await UrlPostToJsonObjectWithSession<TradeOfferAcceptResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
+			response = await UrlPostToJsonObjectWithSession<TradeOfferAcceptResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
 
 			if (response == null) {
 				return (false, false);
@@ -1329,7 +1329,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "ajax", "true" }
 		};
 
-		ObjectResponse<JToken>? response = await UrlPostToJsonObjectWithSession<JToken>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
+		ObjectResponse<JToken>? response = await UrlPostToJsonObjectWithSession<JToken>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
 
 		if (response == null) {
 			return (EResult.Fail, EPurchaseResultDetail.Timeout);

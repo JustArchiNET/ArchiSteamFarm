@@ -140,27 +140,21 @@ public sealed class WebBrowser : IDisposable {
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-						return new BinaryResponse(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						break;
 					}
-
-					break;
 				}
 
 				if (response.StatusCode.IsClientErrorCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						return new BinaryResponse(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						break;
 					}
-
-					break;
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						return new BinaryResponse(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						continue;
 					}
-
-					continue;
 				}
 
 				if (response.Content == null) {
@@ -256,27 +250,21 @@ public sealed class WebBrowser : IDisposable {
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-						return new HtmlDocumentResponse(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						break;
 					}
-
-					break;
 				}
 
 				if (response.StatusCode.IsClientErrorCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						return new HtmlDocumentResponse(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						break;
 					}
-
-					break;
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						return new HtmlDocumentResponse(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						continue;
 					}
-
-					continue;
 				}
 
 				if (response.Content == null) {
@@ -328,27 +316,21 @@ public sealed class WebBrowser : IDisposable {
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-						return new ObjectResponse<T>(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						break;
 					}
-
-					break;
 				}
 
 				if (response.StatusCode.IsClientErrorCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						return new ObjectResponse<T>(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						break;
 					}
-
-					break;
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						return new ObjectResponse<T>(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						continue;
 					}
-
-					continue;
 				}
 
 				if (response.Content == null) {
@@ -420,27 +402,21 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			if (response.StatusCode.IsRedirectionCode()) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-					return new StreamResponse(response);
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					break;
 				}
-
-				break;
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-					return new StreamResponse(response);
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+					break;
 				}
-
-				break;
 			}
 
 			if (response.StatusCode.IsServerErrorCode()) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-					return new StreamResponse(response);
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+					continue;
 				}
-
-				continue;
 			}
 
 			return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
@@ -476,27 +452,21 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			if (response.StatusCode.IsRedirectionCode()) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-					return new BasicResponse(response);
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					break;
 				}
-
-				break;
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-					return new BasicResponse(response);
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+					break;
 				}
-
-				break;
 			}
 
 			if (response.StatusCode.IsServerErrorCode()) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-					return new BasicResponse(response);
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+					continue;
 				}
-
-				continue;
 			}
 
 			return new BasicResponse(response);
@@ -532,27 +502,21 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			if (response.StatusCode.IsRedirectionCode()) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-					return new BasicResponse(response);
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					break;
 				}
-
-				break;
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-					return new BasicResponse(response);
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+					break;
 				}
-
-				break;
 			}
 
 			if (response.StatusCode.IsServerErrorCode()) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-					return new BasicResponse(response);
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+					continue;
 				}
-
-				continue;
 			}
 
 			return new BasicResponse(response);
@@ -590,27 +554,21 @@ public sealed class WebBrowser : IDisposable {
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-						return new HtmlDocumentResponse(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						break;
 					}
-
-					break;
 				}
 
 				if (response.StatusCode.IsClientErrorCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						return new HtmlDocumentResponse(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						break;
 					}
-
-					break;
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						return new HtmlDocumentResponse(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						continue;
 					}
-
-					continue;
 				}
 
 				if (response.Content == null) {
@@ -662,27 +620,21 @@ public sealed class WebBrowser : IDisposable {
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-						return new ObjectResponse<TResult>(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+						break;
 					}
-
-					break;
 				}
 
 				if (response.StatusCode.IsClientErrorCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						return new ObjectResponse<TResult>(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						break;
 					}
-
-					break;
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						return new ObjectResponse<TResult>(response);
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						continue;
 					}
-
-					continue;
 				}
 
 				if (response.Content == null) {
@@ -754,27 +706,21 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			if (response.StatusCode.IsRedirectionCode()) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
-					return new StreamResponse(response);
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					break;
 				}
-
-				break;
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-					return new StreamResponse(response);
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+					break;
 				}
-
-				break;
 			}
 
 			if (response.StatusCode.IsServerErrorCode()) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-					return new StreamResponse(response);
+				if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+					continue;
 				}
-
-				continue;
 			}
 
 			return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
