@@ -1359,9 +1359,18 @@ public sealed class ArchiWebHandler : IDisposable {
 				// Attempt to do limited parsing from error message, if it exists that is
 				string? errorMessage = jObject["error"]?.Value<string>();
 
-				EPurchaseResultDetail purchaseResultDetail = errorMessage?.Contains("rate limited", StringComparison.OrdinalIgnoreCase) == true ? EPurchaseResultDetail.RateLimited : EPurchaseResultDetail.NoDetail;
+				switch (errorMessage) {
+					case null:
+					case "":
+						// Thanks Steam, very useful
+						return (result, EPurchaseResultDetail.NoDetail);
+					case "You got rate limited, try again in an hour.":
+						return (result, EPurchaseResultDetail.RateLimited);
+					default:
+						Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorMessage), errorMessage));
 
-				return (result, purchaseResultDetail);
+						return (result, EPurchaseResultDetail.ContactSupport);
+				}
 			case HttpStatusCode.Unauthorized:
 				// Let's convert this into something reasonable
 				return (EResult.AccessDenied, EPurchaseResultDetail.NoDetail);
