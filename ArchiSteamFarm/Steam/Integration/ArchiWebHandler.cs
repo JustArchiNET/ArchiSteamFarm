@@ -1341,19 +1341,27 @@ public sealed class ArchiWebHandler : IDisposable {
 				return (EResult.AccessDenied, EPurchaseResultDetail.InvalidPackage);
 			case HttpStatusCode.InternalServerError:
 			case HttpStatusCode.OK:
-				// This API is total nuts, it returns sometimes [ ], sometimes { "purchaseresultdetail": int } and sometimes null because f**k you, that's why, I wouldn't be surprised if it returned XML one day
+				// This API is total nuts, it returns sometimes [ ], sometimes { "purchaseresultdetail": int }, sometimes { "error": "stuff" } and sometimes null because f**k you, that's why, I wouldn't be surprised if it returned XML one day
 				// There is not much we can do apart from trying to extract the result and returning it along with the OK and non-OK response, it's also why it doesn't make any sense to strong-type it
-				EPurchaseResultDetail purchaseResult = EPurchaseResultDetail.NoDetail;
+				EResult result = response.StatusCode.IsSuccessCode() ? EResult.OK : EResult.Fail;
 
-				if (response.Content is JObject jObject) {
-					byte? numberResult = jObject["purchaseresultdetail"]?.Value<byte>();
-
-					if (numberResult.HasValue) {
-						purchaseResult = (EPurchaseResultDetail) numberResult.Value;
-					}
+				if (response.Content is not JObject jObject) {
+					// Who knows what piece of crap that is?
+					return (result, EPurchaseResultDetail.NoDetail);
 				}
 
-				return (response.StatusCode.IsSuccessCode() ? EResult.OK : EResult.Fail, purchaseResult);
+				byte? numberResult = jObject["purchaseresultdetail"]?.Value<byte>();
+
+				if (numberResult.HasValue) {
+					return (result, (EPurchaseResultDetail) numberResult.Value);
+				}
+
+				// Attempt to do limited parsing from error message, if it exists that is
+				string? errorMessage = jObject["error"]?.Value<string>();
+
+				EPurchaseResultDetail purchaseResultDetail = errorMessage?.Contains("rate limited", StringComparison.OrdinalIgnoreCase) == true ? EPurchaseResultDetail.RateLimited : EPurchaseResultDetail.NoDetail;
+
+				return (result, purchaseResultDetail);
 			case HttpStatusCode.Unauthorized:
 				// Let's convert this into something reasonable
 				return (EResult.AccessDenied, EPurchaseResultDetail.NoDetail);
