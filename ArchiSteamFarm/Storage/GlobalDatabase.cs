@@ -236,7 +236,7 @@ public sealed class GlobalDatabase : SerializableFile {
 		return globalDatabase;
 	}
 
-	internal HashSet<uint> GetPackageIDs(uint appID, IEnumerable<uint> packageIDs) {
+	internal HashSet<uint> GetPackageIDs(uint appID, IEnumerable<uint> packageIDs, int limit = int.MaxValue) {
 		if (appID == 0) {
 			throw new ArgumentOutOfRangeException(nameof(appID));
 		}
@@ -251,6 +251,10 @@ public sealed class GlobalDatabase : SerializableFile {
 			}
 
 			result.Add(packageID);
+
+			if (result.Count >= limit) {
+				return result;
+			}
 		}
 
 		return result;

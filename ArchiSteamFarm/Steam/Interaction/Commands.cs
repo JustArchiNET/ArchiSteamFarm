@@ -649,6 +649,14 @@ public sealed class Commands {
 
 			switch (type.ToUpperInvariant()) {
 				case "A" or "APP":
+					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(gameID, Bot.OwnedPackageIDs.Keys, 1);
+
+					if (packageIDs is { Count: > 0 }) {
+						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"app/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
+
+						break;
+					}
+
 					SteamApps.FreeLicenseCallback callback;
 
 					try {
@@ -664,6 +672,12 @@ public sealed class Commands {
 
 					break;
 				default:
+					if (Bot.OwnedPackageIDs.ContainsKey(gameID)) {
+						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"sub/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
+
+						break;
+					}
+
 					(EResult result, EPurchaseResultDetail purchaseResult) = await Bot.ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false);
 
 					response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"sub/{gameID}", $"{result}/{purchaseResult}")));
@@ -1938,7 +1952,7 @@ public sealed class Commands {
 
 			switch (type.ToUpperInvariant()) {
 				case "A" or "APP" when uint.TryParse(game, out uint appID) && (appID > 0):
-					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(appID, Bot.OwnedPackageIDs.Keys);
+					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(appID, Bot.OwnedPackageIDs.Keys, 1);
 
 					if (packageIDs?.Count > 0) {
 						if ((gamesOwned != null) && gamesOwned.TryGetValue(appID, out string? cachedGameName)) {
