@@ -79,7 +79,7 @@
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
 	</data>
 	<data name="BotNoAppsToRefresh" xml:space="preserve">
-		<value>此 Bot 中沒有需要再刷新的應用程式。</value>
+		<value>此 Bot 中沒有需要重新整理的應用程式。</value>
 	</data>
 	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
 		<value>正在檢索共 {0} 個應用程式存取權杖…</value>
@@ -125,7 +125,7 @@
 		<value>沒有要提交的新資料，一切都是最新狀態。</value>
 	</data>
 	<data name="SubmissionNoContributorSet" xml:space="preserve">
-		<value>無法提交資料，因為沒有可以讓我們歸類為貢獻者的有效 SteamID 集。 考慮設定 {0} 屬性。</value>
+		<value>因為沒有可以讓我們歸類為貢獻者的有效 SteamID 集合，而無法提交資料。考慮設定 {0} 的屬性。</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
 	</data>
 	<data name="SubmissionInProgress" xml:space="preserve">
@@ -137,7 +137,7 @@
 		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
 	</data>
 	<data name="SubmissionSuccessful" xml:space="preserve">
-		<value>已成功提交資料。伺服器共已註冊了新的應用程式/程式包/Depot 共：{0} ({1} 個已驗證)/{2} ({3} 個已驗證)/{4} ({5} 個已驗證)。</value>
+		<value>已成功提交資料。伺服器共已註冊了新的應用程式/程式包/Depot 共：{0}（{1} 個已驗證）/{2}（{3} 個已驗證）/{4}（{5} 個已驗證）。</value>
 		<comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
 	</data>
 	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
@@ -165,7 +165,7 @@
 		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="PluginSecretListInitialized" xml:space="preserve">
-		<value>{0} 已被初始化，外掛程式將無法解析其中任何一個：{1}。</value>
+		<value>已初始化 {0} ，外掛程式將無法解析其中任何一個：{1}。</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="LoadingGlobalCache" xml:space="preserve">
@@ -175,6 +175,6 @@
 		<value>正在驗證 STD 全域快取完整性…</value>
 	</data>
 	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
-		<value>無法驗證 STD 全域快取完整性。這表示可能有檔案/記憶損壞，將初始化一個新實例。</value>
+		<value>無法驗證 STD 全域快取完整性。這表示可能有檔案/記憶體損壞，將初始化一個新實例。</value>
 	</data>
 </root>

@@ -67,7 +67,7 @@
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="AutoUpdateCheckInfo" xml:space="preserve">
-		<value>ASF 將會在每 {0} 自動檢查新版本。</value>
+		<value>ASF 將每隔 {0} 自動檢查新版本。</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
 	</data>
 	<data name="Content" xml:space="preserve">
@@ -89,7 +89,7 @@
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
 	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>正在以非零錯誤代碼退出！</value>
+		<value>以非零錯誤代碼退出！</value>
 	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>請求失敗︰ {0}</value>
@@ -111,7 +111,7 @@
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorParsingObject" xml:space="preserve">
-		<value>解析 {0} 失敗！</value>
+		<value>剖析 {0} 失敗！</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -122,10 +122,10 @@
 		<value>無法檢查最新版本！</value>
 	</data>
 	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-		<value>無法進行更新，因為沒有與目前執行中的版本相關的資源檔案！無法自動更新到該版本。</value>
+		<value>無法繼續進行更新，因為沒有與目前執行中的版本相關的資源檔案！無法自動更新到該版本。</value>
 	</data>
 	<data name="ErrorUpdateNoAssets" xml:space="preserve">
-		<value>無法進行更新，因為此版本沒有提供任何資源檔案！</value>
+		<value>無法繼續進行更新，因為該版本並未提供任何資源檔案！</value>
 	</data>
 	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
 		<value>收到一個使用者輸入請求，但進程目前正以無介面模式執行！</value>
@@ -140,10 +140,10 @@
 		<value>已變更全域設定檔！</value>
 	</data>
 	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-		<value>全域設定檔已被刪除！</value>
+		<value>已刪除全域設定檔！</value>
 	</data>
 	<data name="IgnoringTrade" xml:space="preserve">
-		<value>忽略交易：{0}</value>
+		<value>正在忽略交易：{0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="LoggingIn" xml:space="preserve">
@@ -154,10 +154,10 @@
 		<value>沒有執行中的 Bot，正在退出…</value>
 	</data>
 	<data name="RefreshingOurSession" xml:space="preserve">
-		<value>更新工作階段 ！</value>
+		<value>更新工作階段！</value>
 	</data>
 	<data name="RejectingTrade" xml:space="preserve">
-		<value>拒絕交易︰ {0}</value>
+		<value>正在拒絕交易︰{0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="Restarting" xml:space="preserve">
@@ -176,7 +176,7 @@
 		<value>正在檢查新版本…</value>
 	</data>
 	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
-		<value>正在下載新版本：{0} ({1} MB)…等待期間，如果喜歡這個軟體，請考慮捐助 ASF！:)</value>
+		<value>正在下載新版本：{0}（{1} MB）…等待期間，若您喜歡這個軟體，請考慮捐助 ASF！:)</value>
 		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
 	</data>
 	<data name="UpdateFinished" xml:space="preserve">
@@ -202,7 +202,7 @@
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamParentalCode" xml:space="preserve">
-		<value>請輸入 Steam 家庭監護 PIN 碼：</value>
+		<value>請輸入 Steam 家庭監護碼： </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamPassword" xml:space="preserve">
@@ -210,7 +210,7 @@
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-		<value>收到 {0} 的未知值，請回報：{1}</value>
+		<value>收到 {0} 的未知值，請回報這個問題：{1}</value>
 		<comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
 	</data>
 	<data name="IPCReady" xml:space="preserve">
@@ -227,15 +227,15 @@
 		<comment>{0} will be replaced by bot's name query (string)</comment>
 	</data>
 	<data name="BotStatusOverview" xml:space="preserve">
-		<value>有 {0}/{1} 個 Bot 正在執行，總共有 {2} 個遊戲 ({3} 張卡片) 等待掛卡。</value>
+		<value>正在執行 {0}/{1} 個 Bot，共有 {2} 個遊戲（{3} 張卡片）等待掛卡。</value>
 		<comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
 	</data>
 	<data name="BotStatusIdling" xml:space="preserve">
-		<value>Bot 正在掛卡的遊戲：{0} ({1}，還剩 {2} 張卡片可以掉落)，總共有 {3} 個遊戲 ( {4} 張卡片) 等待掛卡 (仍需約 {5})。</value>
+		<value>Bot 正在掛卡的遊戲：{0}（{1}，還剩 {2} 張卡片可以掉落），共有 {3} 個遊戲（{4} 張卡片）等待掛卡（仍需約 {5}）。</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
 	<data name="BotStatusIdlingList" xml:space="preserve">
-		<value>Bot 正在掛卡的遊戲：{0}，總共有 {1} 個遊戲 ({2} 張卡片) 等待掛卡 (仍需約 {3})。</value>
+		<value>Bot 正在掛卡的遊戲：{0}，共有 {1} 個遊戲（{2} 張卡片）等待掛卡（仍需約 {3}）。</value>
 		<comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
 	<data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -245,21 +245,21 @@
 		<value>正在檢查其他徽章頁面…</value>
 	</data>
 	<data name="ChosenFarmingAlgorithm" xml:space="preserve">
-		<value>選擇的掛卡演算法為：{0}</value>
+		<value>選擇的掛卡演算法：{0}</value>
 		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
 	</data>
 	<data name="Done" xml:space="preserve">
 		<value>完成！</value>
 	</data>
 	<data name="GamesToIdle" xml:space="preserve">
-		<value>總共有 {0} 個遊戲 ({1} 張卡片) 需要掛卡 (仍需約 {2})…</value>
+		<value>共有 {0} 個遊戲（{1} 張卡片）需要掛卡（仍需約 {2}）…</value>
 		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
 	<data name="IdlingFinished" xml:space="preserve">
 		<value>完成掛卡！</value>
 	</data>
 	<data name="IdlingFinishedForGame" xml:space="preserve">
-		<value>完成掛卡：{0} ({1})，總共耗時 {2}！</value>
+		<value>完成掛卡：{0}（{1}），共耗時 {2}！</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
 	<data name="IdlingFinishedForGames" xml:space="preserve">
@@ -267,7 +267,7 @@
 		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="IdlingStatusForGame" xml:space="preserve">
-		<value>{0} ({1}) 的掛卡狀態：還剩 {2} 張卡片</value>
+		<value>{0}（{1}）的掛卡狀態：還剩 {2} 張卡片</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm</comment>
 	</data>
 	<data name="IdlingStopped" xml:space="preserve">
@@ -280,7 +280,7 @@
 		<value>本帳號目前沒有需要掛卡的遊戲！</value>
 	</data>
 	<data name="NowIdling" xml:space="preserve">
-		<value>正在掛卡：{0} ({1})</value>
+		<value>正在掛卡：{0}（{1}）</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="NowIdlingList" xml:space="preserve">
@@ -291,7 +291,7 @@
 		<value>目前無法執行，我們將稍後再試！</value>
 	</data>
 	<data name="StillIdling" xml:space="preserve">
-		<value>仍在掛卡：{0} ({1})</value>
+		<value>仍在掛卡：{0}（{1}）</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="StillIdlingList" xml:space="preserve">
@@ -299,7 +299,7 @@
 		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="StoppedIdling" xml:space="preserve">
-		<value>停止掛卡：{0} ({1})</value>
+		<value>停止掛卡：{0}（{1}）</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="StoppedIdlingList" xml:space="preserve">
@@ -313,11 +313,11 @@
 		<value>無法取得徽章資訊，我們將稍後再試！</value>
 	</data>
 	<data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-		<value>無法檢查卡片狀態：{0} ({1})，我們將稍後再試！</value>
+		<value>無法檢查卡片狀態：{0}（{1}），我們將稍後再試！</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="BotAcceptingGift" xml:space="preserve">
-		<value>接受禮物：{0}…</value>
+		<value>正在接受禮物：{0}…</value>
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
 	<data name="BotAccountLimited" xml:space="preserve">
@@ -357,7 +357,7 @@
 		<value>已經恢復自動掛卡！</value>
 	</data>
 	<data name="BotConnected" xml:space="preserve">
-		<value>已連線到 Steam！</value>
+		<value>已連線至 Steam！</value>
 	</data>
 	<data name="BotDisconnected" xml:space="preserve">
 		<value>已與 Steam 中斷連線！</value>
@@ -377,17 +377,17 @@
 		<comment>{0} will be replaced by logging off reason (string)</comment>
 	</data>
 	<data name="BotLoggedOn" xml:space="preserve">
-		<value>{0} 已成功登入。</value>
+		<value>已成功登入 {0}。</value>
 		<comment>{0} will be replaced by steam ID (number)</comment>
 	</data>
 	<data name="BotLoggingIn" xml:space="preserve">
 		<value>正在登入…</value>
 	</data>
 	<data name="BotLogonSessionReplaced" xml:space="preserve">
-		<value>這個帳號似乎正被另一個 ASF 使用中，這是未定義的行為，拒絕讓它繼續執行！</value>
+		<value>這個帳號似乎正被另一個 ASF 使用著，這是個未定義的行為，拒絕讓它繼續執行！</value>
 	</data>
 	<data name="BotLootingFailed" xml:space="preserve">
-		<value>交易提案已失敗！</value>
+		<value>交易提案失敗！</value>
 	</data>
 	<data name="BotLootingMasterNotDefined" xml:space="preserve">
 		<value>無法發送交易提案，因為沒有帳號設有 master 權限！</value>
@@ -402,7 +402,7 @@
 		<value>這個 Bot 並未啟用 ASF 雙重驗證！您是否忘記將雙重驗證導入至 ASF？</value>
 	</data>
 	<data name="BotNotConnected" xml:space="preserve">
-		<value>此 Bot 尚未連線！</value>
+		<value>這個 Bot 尚未連線！</value>
 	</data>
 	<data name="BotNotOwnedYet" xml:space="preserve">
 		<value>未擁有：{0}</value>
@@ -424,11 +424,11 @@
 		<value>正在重新連線…</value>
 	</data>
 	<data name="BotRedeem" xml:space="preserve">
-		<value>序號：{0} | 狀態：{1}</value>
+		<value>產品序號：{0} | 狀態：{1}</value>
 		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
 	</data>
 	<data name="BotRedeemWithItems" xml:space="preserve">
-		<value>序號：{0} | 狀態：{1} | 物品：{2}</value>
+		<value>產品序號：{0} | 狀態：{1} | 物品：{2}</value>
 		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
 	</data>
 	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
@@ -444,7 +444,7 @@
 		<value>Bot 正在連線到 Steam 網路。</value>
 	</data>
 	<data name="BotStatusNotRunning" xml:space="preserve">
-		<value>Bot 未執行。</value>
+		<value>Bot 未在執行。</value>
 	</data>
 	<data name="BotStatusPaused" xml:space="preserve">
 		<value>Bot 已暫停或正以手動模式執行。</value>
@@ -515,11 +515,11 @@
 		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
 	</data>
 	<data name="IdlingGameNotPossible" xml:space="preserve">
-		<value>{0} ({1}) 的掛卡暫時停用，因 ASF 目前無法執行該遊戲。</value>
+		<value>{0}（{1}）的掛卡暫時停用，因 ASF 目前無法執行該遊戲。</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="WarningIdlingGameMismatch" xml:space="preserve">
-		<value>ASF 偵測到 {0} ({1}) 的 ID 不相符，且將改為使用 ID {2}。</value>
+		<value>ASF 偵測到 {0}（{1}）的 ID 不相符，將改為使用 ID {2}。</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
 	</data>
 	<data name="BotVersion" xml:space="preserve">
@@ -543,7 +543,7 @@
 		<value>存取被拒！</value>
 	</data>
 	<data name="WarningPreReleaseVersion" xml:space="preserve">
-		<value>您目前使用的版本高於最新的正式版本。請注意：預覽版本是專門給了解如何回報錯誤、處理問題並提供回饋的使用者使用 (將不會提供任何技術支援)。</value>
+		<value>您目前使用的版本高於最新的正式版本。請注意：預覽版本是專門給了解如何回報錯誤、處理問題並提供回饋的使用者使用（將不會提供任何技術支援）。</value>
 	</data>
 	<data name="BotStats" xml:space="preserve">
 		<value>目前記憶體使用量：{0} MB。
@@ -566,7 +566,7 @@
 		<value>更新套件資料中…</value>
 	</data>
 	<data name="WarningDeprecated" xml:space="preserve">
-		<value>{0} 的用法已棄用，並且將在未來的版本中移除，請改用 {1}。</value>
+		<value>{0} 的用法已被棄用，並且將在未來的版本中移除，請改用 {1}。</value>
 		<comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
 	</data>
 	<data name="BotAcceptedDonationTrade" xml:space="preserve">
@@ -607,7 +607,7 @@
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
-		<value>您執行的個人 Bot 帳號數量超過我們的建議上限 ({0})。請留意，此設定不受支援，且可能會導致各種 Steam 相關問題，包括帳號停權。請參閱常見問答了解詳情。</value>
+		<value>您執行的個人 Bot 帳號數量超過我們的建議上限（{0}）。請留意，此設定不受支援，且可能會導致各種 Steam 相關問題，包括帳號停權。請參閱常見問答了解詳情。</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
 	</data>
 	<data name="PluginLoaded" xml:space="preserve">
@@ -622,7 +622,7 @@
 		<value>未找到任何內容！</value>
 	</data>
 	<data name="PluginsWarning" xml:space="preserve">
-		<value>你已載入一個以上的自訂外掛程式。由於我們無法支援修改過的配置，如遭遇任何問題，請向相關外掛程式的開發人員尋求協助。</value>
+		<value>您已載入一個以上的自訂外掛程式。由於我們無法支援修改過的配置，如遭遇任何問題，請向相關外掛程式的開發人員尋求協助。</value>
 	</data>
 	<data name="PleaseWait" xml:space="preserve">
 		<value>請稍候…</value>
@@ -634,14 +634,14 @@
 		<value>正在執行…</value>
 	</data>
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
-		<value>已開啟互動式主控台，按「C」進入指令模式</value>
+		<value>已開啟互動式主控台，按「C」進入指令模式。</value>
 	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Bot 的背景佇列中剩下 {0} 個遊戲。</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
 	</data>
 	<data name="ErrorSingleInstanceRequired" xml:space="preserve">
-		<value>ASF 行程已執行於此工作目錄，正在中止！</value>
+		<value>ASF 程序已執行於此工作目錄，正在中止！</value>
 	</data>
 	<data name="BotHandledConfirmations" xml:space="preserve">
 		<value>成功處理 {0} 個確認！</value>
@@ -655,7 +655,7 @@
 		<value>正在清理更新後的過時檔案…</value>
 	</data>
 	<data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-		<value>正在產生 Steam 家庭監護代碼，這會需要一段時間，請考慮將它寫入設定檔中…</value>
+		<value>正在產生 Steam 家庭監護碼，這會需要一段時間，請考慮將它寫入設定檔中…</value>
 	</data>
 	<data name="IPCConfigChanged" xml:space="preserve">
 		<value>IPC 設定檔已變更！</value>
@@ -665,7 +665,7 @@
 		<comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
 	</data>
 	<data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
-		<value>連續收到 InvalidPassword 錯誤代碼 {0} 次。您的帳號密碼大概是錯的，中止！</value>
+		<value>連續收到 InvalidPassword 錯誤代碼 {0} 次。您的帳號密碼大概是錯的，正在中止！</value>
 		<comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
 	</data>
 	<data name="Result" xml:space="preserve">
@@ -673,17 +673,17 @@
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
 	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
-		<value>您正嘗試執行 {0} 不同的 ASF 於不支援的環境中：{1}。如果您真的知道您在做什麼的話，請加上 --ignore-unsupported-environment 參數。</value>
+		<value>您正嘗試執行 {0} 不同的 ASF 於不支援的環境中：{1}。如果您真的知道您在做什麼的話，請加上 --ignore-unsupported-environment 引數。</value>
 	</data>
 	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
-		<value>未知的命令列參數：{0}</value>
+		<value>未知的命令列引數：{0}</value>
 		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
 	</data>
 	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
 		<value>無法找到設定檔所在目錄，正在中止！</value>
 	</data>
 	<data name="BotIdlingSelectedGames" xml:space="preserve">
-		<value>指定掛卡 {0}：{1}</value>
+		<value>正在執行指定掛時數的程式 {0}：{1}</value>
 		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
 	</data>
 	<data name="AutomaticFileMigration" xml:space="preserve">
@@ -691,19 +691,19 @@
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
 	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>您的 IPC 密碼看起來很弱。請考慮換一個強度更高的密碼來增加安全性。詳細資訊： {0}</value>
+		<value>您的 IPC 密碼看起來很弱。請考慮換一個強度更高的密碼來增加安全性。詳細資訊：{0}</value>
 		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>你的 Steam 密碼「{0}」看起來很弱。請考慮換一個強度更高的密碼來增加安全性。詳細資訊： {1}</value>
+		<value>你的 Steam 密碼「{0}」看起來很弱。請考慮換一個強度更高的密碼來增加安全性。詳細資訊：{1}</value>
 		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>您的加密金鑰看起來很弱。請考慮換一個強度更高的金鑰來增加安全性。詳細資訊： {0}</value>
+		<value>您的加密金鑰看起來很弱。請考慮換一個強度更高的金鑰來增加安全性。詳細資訊：{0}</value>
 		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
 	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
-		<value>您的加密金鑰太短。我們推薦使用 {0} 位元組 (字元) 以上長度的金鑰。</value>
+		<value>您的加密金鑰太短。我們推薦使用 {0} 位元組（字元）以上長度的金鑰。</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
@@ -711,14 +711,14 @@
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
-		<value>您正在使用 {0} 設定 {1} 屬性。但您沒有提供一個自定義的 --cryptkey。這完全破壞了保護，因為 ASF 被迫使用自己的 (已知) 金鑰。您應該提供自定義 --cryptkey 用於使用此設定提供的安全優勢。</value>
+		<value>您正在使用 {0} 設定 {1} 屬性。但您沒有提供一個自定義的 --cryptkey。這完全破壞了保護，因為 ASF 被迫使用自己的（已知）金鑰。您應該提供自定義 --cryptkey 用於使用此設定提供的安全優勢。</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
 	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>您正在以管理員權限 (Root) 執行 ASF。這會給您的機器帶來重大的安全風險，且由於 ASF 的操作不需要 Root 權限，我們建議盡可能以非管理員使用者身份執行它。</value>
+		<value>您正在以管理員權限（Root）執行 ASF。這會給您的機器帶來重大的安全風險，且由於 ASF 的操作不需要 Root 權限，我們建議盡可能以非管理員使用者身份執行它。</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
-		<value>您在不受支援的環境中執行 ASF，並提供 --ignore-unsupported-environment 引數。請注意，我們不對這種情況提供任何形式的支援，您完全需要自行承擔風險。你已經被警告過了。</value>
+		<value>您在不受支援的環境中執行 ASF，並提供 --ignore-unsupported-environment 引數。請注意，我們不對這種情況提供任何形式的支援，您完全需要自行承擔風險。您已經被警告過了。</value>
 	</data>
 	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
 		<value>正在從遠端伺服器擷取核對和…</value>
