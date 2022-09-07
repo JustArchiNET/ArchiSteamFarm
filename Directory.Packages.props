@@ -22,11 +22,11 @@
 		<PackageVersion Include="zxcvbn-core" Version="7.0.92" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' != 'net48'">
+	<ItemGroup Condition="'$(TargetFramework)' != 'net481'">
 		<PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="6.0.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net481'">
 		<PackageVersion Include="JustArchiNET.Madness" Version="3.7.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />

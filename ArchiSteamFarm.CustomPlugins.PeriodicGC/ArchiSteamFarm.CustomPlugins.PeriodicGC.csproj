@@ -9,7 +9,7 @@
 		<PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net481'">
 		<!-- Madness is already included in netf build of ASF, so we don't need to emit it ourselves -->
 		<PackageReference Update="JustArchiNET.Madness" IncludeAssets="compile" />
 	</ItemGroup>

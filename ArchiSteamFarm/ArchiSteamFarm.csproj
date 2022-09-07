@@ -25,11 +25,11 @@
 		<PackageReference Include="zxcvbn-core" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' != 'net48'">
+	<ItemGroup Condition="'$(TargetFramework)' != 'net481'">
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net481'">
 		<PackageReference Include="Microsoft.AspNetCore.Cors" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics" />
 		<PackageReference Include="Microsoft.AspNetCore.HttpOverrides" />

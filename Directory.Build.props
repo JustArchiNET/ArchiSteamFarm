@@ -31,7 +31,7 @@
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net481'">
 		<PackageReference Include="JustArchiNET.Madness" />
 		<PackageReference Include="TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray" />
 
@@ -99,7 +99,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
-		<TargetFrameworks>net6.0;net48</TargetFrameworks>
+		<TargetFrameworks>net6.0;net481</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(OS)' != 'Windows_NT' AND '$(ASFNetFramework)' == ''">
