@@ -325,6 +325,9 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return (false, Strings.BotSendingTradeToYourself);
 		}
 
+		// Marking sent trades is crucial in regards to refreshing current state on Steam side
+		// Steam might not always realize e.g. "items no longer available" trades without it, and prevent us from sending further ones
+		// A simple visit to sent trade offers page will suffice
 		if (!await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
 			return (false, Strings.BotLootingFailed);
 		}
