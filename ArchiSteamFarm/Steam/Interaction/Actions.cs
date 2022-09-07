@@ -325,19 +325,19 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return (false, Strings.BotSendingTradeToYourself);
 		}
 
-		// Marking sent trades is crucial in regards to refreshing current state on Steam side
-		// Steam might not always realize e.g. "items no longer available" trades without it, and prevent us from sending further ones
-		// A simple visit to sent trade offers page will suffice
-		if (!await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
-			return (false, Strings.BotLootingFailed);
-		}
-
 		if (string.IsNullOrEmpty(tradeToken) && (Bot.SteamFriends.GetFriendRelationship(targetSteamID) != EFriendRelationship.Friend)) {
 			Bot? targetBot = Bot.Bots?.Values.FirstOrDefault(bot => bot.SteamID == targetSteamID);
 
 			if (targetBot?.IsConnectedAndLoggedOn == true) {
 				tradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
 			}
+		}
+
+		// Marking sent trades is crucial in regards to refreshing current state on Steam side
+		// Steam might not always realize e.g. "items no longer available" trades without it, and prevent us from sending further ones
+		// A simple visit to sent trade offers page will suffice
+		if (!await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
+			return (false, Strings.BotLootingFailed);
 		}
 
 		(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, itemsPerTrade: itemsPerTrade).ConfigureAwait(false);
