@@ -2297,13 +2297,6 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentNullException(nameof(key));
 		}
 
-		// ASF should redeem wallet key only in case of existing wallet
-		if (Bot.WalletCurrency == ECurrencyCode.Invalid) {
-			Bot.ArchiLogger.LogNullError(Bot.WalletCurrency);
-
-			return null;
-		}
-
 		Uri request = new(SteamStoreURL, "/account/ajaxredeemwalletcode");
 
 		// Extra entry for sessionID

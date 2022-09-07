@@ -3190,7 +3190,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					continue;
 				}
 
-				if (((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((result.PurchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) && (WalletCurrency != ECurrencyCode.Invalid)) {
+				if ((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((result.PurchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
 					// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
 					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);

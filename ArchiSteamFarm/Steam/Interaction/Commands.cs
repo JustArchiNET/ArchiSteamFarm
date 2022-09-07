@@ -2548,21 +2548,16 @@ public sealed class Commands {
 								triedBots.Add(currentBot);
 
 								if ((purchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((purchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
-									if (Bot.WalletCurrency != ECurrencyCode.Invalid) {
-										// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
-										// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-										(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
+									// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
+									// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+									(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
 
-										if (walletResult != null) {
-											result = walletResult.Value.Result;
-											purchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.CannotRedeemCodeFromClient);
-										} else {
-											result = EResult.Timeout;
-											purchaseResultDetail = EPurchaseResultDetail.Timeout;
-										}
+									if (walletResult != null) {
+										result = walletResult.Value.Result;
+										purchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.CannotRedeemCodeFromClient);
 									} else {
-										// We're unable to redeem this code from the client due to missing currency information
-										purchaseResultDetail = EPurchaseResultDetail.CannotRedeemCodeFromClient;
+										result = EResult.Timeout;
+										purchaseResultDetail = EPurchaseResultDetail.Timeout;
 									}
 								}
 
