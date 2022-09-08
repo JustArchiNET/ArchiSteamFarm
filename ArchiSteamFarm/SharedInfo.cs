@@ -42,6 +42,7 @@ public static class SharedInfo {
 	internal const string DatabaseExtension = ".db";
 	internal const string DebugDirectory = "debug";
 	internal const string EnvironmentVariableCryptKey = $"{ASF}_CRYPTKEY";
+	internal const string EnvironmentVariableCryptKeyFile = $"{EnvironmentVariableCryptKey}_FILE";
 	internal const string EnvironmentVariableNetworkGroup = $"{ASF}_NETWORK_GROUP";
 	internal const string EnvironmentVariablePath = $"{ASF}_PATH";
 	internal const string GithubReleaseURL = $"https://api.github.com/repos/{GithubRepo}/releases";

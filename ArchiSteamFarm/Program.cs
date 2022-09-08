@@ -112,6 +112,34 @@ internal static class Program {
 		ArchiCryptoHelper.SetEncryptionKey(cryptKey);
 	}
 
+	private static async Task<bool> HandleCryptKeyFileArgument(string cryptKeyFile) {
+		if (string.IsNullOrEmpty(cryptKeyFile)) {
+			throw new ArgumentNullException(nameof(cryptKeyFile));
+		}
+
+		if (!File.Exists(cryptKeyFile)) {
+			return false;
+		}
+
+		string cryptKey;
+
+		try {
+			cryptKey = await File.ReadAllTextAsync(cryptKeyFile).ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return false;
+		}
+
+		if (string.IsNullOrEmpty(cryptKey)) {
+			return false;
+		}
+
+		HandleCryptKeyArgument(cryptKey);
+
+		return true;
+	}
+
 	private static void HandleNetworkGroupArgument(string networkGroup) {
 		if (string.IsNullOrEmpty(networkGroup)) {
 			throw new ArgumentNullException(nameof(networkGroup));
@@ -220,7 +248,7 @@ internal static class Program {
 		}
 
 		// Parse environment variables
-		if (!ParseEnvironmentVariables()) {
+		if (!await ParseEnvironmentVariables().ConfigureAwait(false)) {
 			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 			return false;
@@ -228,7 +256,7 @@ internal static class Program {
 
 		// Parse args
 		if (args?.Count > 0) {
-			if (!ParseArgs(args)) {
+			if (!await ParseArgs(args).ConfigureAwait(false)) {
 				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 				return false;
@@ -494,58 +522,63 @@ internal static class Program {
 		e.SetObserved();
 	}
 
-	private static bool ParseArgs(IReadOnlyCollection<string> args) {
+	private static async Task<bool> ParseArgs(IReadOnlyCollection<string> args) {
 		if ((args == null) || (args.Count == 0)) {
 			throw new ArgumentNullException(nameof(args));
 		}
 
 		bool cryptKeyNext = false;
+		bool cryptKeyFileNext = false;
 		bool networkGroupNext = false;
 		bool pathNext = false;
 
 		foreach (string arg in args) {
 			switch (arg.ToUpperInvariant()) {
-				case "--CRYPTKEY" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				case "--CRYPTKEY" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
 					cryptKeyNext = true;
 
 					break;
-				case "--IGNORE-UNSUPPORTED-ENVIRONMENT" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				case "--CRYPTKEY-FILE" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+					cryptKeyFileNext = true;
+
+					break;
+				case "--IGNORE-UNSUPPORTED-ENVIRONMENT" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
 					IgnoreUnsupportedEnvironment = true;
 
 					break;
-				case "--NETWORK-GROUP" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				case "--NETWORK-GROUP" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
 					networkGroupNext = true;
 
 					break;
-				case "--NO-CONFIG-MIGRATE" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				case "--NO-CONFIG-MIGRATE" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
 					ConfigMigrate = false;
 
 					break;
-				case "--NO-CONFIG-WATCH" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				case "--NO-CONFIG-WATCH" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
 					ConfigWatch = false;
 
 					break;
-				case "--NO-RESTART" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				case "--NO-RESTART" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
 					RestartAllowed = false;
 
 					break;
-				case "--NO-STEAM-PARENTAL-GENERATION" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				case "--NO-STEAM-PARENTAL-GENERATION" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
 					SteamParentalGeneration = false;
 
 					break;
-				case "--PROCESS-REQUIRED" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				case "--PROCESS-REQUIRED" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
 					ProcessRequired = true;
 
 					break;
-				case "--PATH" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				case "--PATH" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
 					pathNext = true;
 
 					break;
-				case "--SERVICE" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				case "--SERVICE" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
 					Service = true;
 
 					break;
-				case "--SYSTEM-REQUIRED" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				case "--SYSTEM-REQUIRED" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
 					SystemRequired = true;
 
 					break;
@@ -553,6 +586,12 @@ internal static class Program {
 					if (cryptKeyNext) {
 						cryptKeyNext = false;
 						HandleCryptKeyArgument(arg);
+					} else if (cryptKeyFileNext) {
+						cryptKeyFileNext = false;
+
+						if (!await HandleCryptKeyFileArgument(arg).ConfigureAwait(false)) {
+							return false;
+						}
 					} else if (networkGroupNext) {
 						networkGroupNext = false;
 						HandleNetworkGroupArgument(arg);
@@ -564,6 +603,12 @@ internal static class Program {
 						}
 					} else {
 						switch (arg.Length) {
+							case > 16 when arg.StartsWith("--CRYPTKEY-FILE=", StringComparison.OrdinalIgnoreCase):
+								if (!await HandleCryptKeyFileArgument(arg[16..]).ConfigureAwait(false)) {
+									return false;
+								}
+
+								break;
 							case > 16 when arg.StartsWith("--NETWORK-GROUP=", StringComparison.OrdinalIgnoreCase):
 								HandleNetworkGroupArgument(arg[16..]);
 
@@ -592,7 +637,7 @@ internal static class Program {
 		return true;
 	}
 
-	private static bool ParseEnvironmentVariables() {
+	private static async Task<bool> ParseEnvironmentVariables() {
 		// We're using a single try-catch block here, as a failure for getting one variable will result in the same failure for all other ones
 		try {
 			string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
@@ -600,6 +645,15 @@ internal static class Program {
 			if (!string.IsNullOrEmpty(envCryptKey)) {
 				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				HandleCryptKeyArgument(envCryptKey!);
+			}
+
+			string? envCryptKeyFile = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKeyFile);
+
+			if (!string.IsNullOrEmpty(envCryptKeyFile)) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				if (!await HandleCryptKeyFileArgument(envCryptKeyFile!).ConfigureAwait(false)) {
+					return false;
+				}
 			}
 
 			string? envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
