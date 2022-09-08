@@ -2292,7 +2292,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	internal void OnVanityURLChanged(string? vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
 
-	internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult)?> RedeemWalletKey(string key) {
+	internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)?> RedeemWalletKey(string key) {
 		if (string.IsNullOrEmpty(key)) {
 			throw new ArgumentNullException(nameof(key));
 		}
@@ -2310,10 +2310,10 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		// We can not trust EResult response, because it is OK even in the case of error, so changing it to Fail in this case
 		if ((response.Content.Result != EResult.OK) || (response.Content.PurchaseResultDetail != EPurchaseResultDetail.NoDetail)) {
-			return (response.Content.Result == EResult.OK ? EResult.Fail : response.Content.Result, response.Content.PurchaseResultDetail);
+			return (response.Content.Result == EResult.OK ? EResult.Fail : response.Content.Result, response.Content.PurchaseResultDetail, response.Content.BalanceText);
 		}
 
-		return (EResult.OK, EPurchaseResultDetail.NoDetail);
+		return (EResult.OK, EPurchaseResultDetail.NoDetail, response.Content.BalanceText);
 	}
 
 	internal async Task<bool> UnpackBooster(uint appID, ulong itemID) {
