@@ -2547,14 +2547,17 @@ public sealed class Commands {
 							} else {
 								triedBots.Add(currentBot);
 
+								string? balanceText = null;
+
 								if ((purchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((purchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
 									// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
 									// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-									(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
+									(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
 
 									if (walletResult != null) {
 										result = walletResult.Value.Result;
 										purchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.CannotRedeemCodeFromClient);
+										balanceText = walletResult.Value.BalanceText;
 									} else {
 										result = EResult.Timeout;
 										purchaseResultDetail = EPurchaseResultDetail.Timeout;
@@ -2562,9 +2565,9 @@ public sealed class Commands {
 								}
 
 								if (items?.Count > 0) {
-									response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result}/{purchaseResultDetail}", string.Join(", ", items)), currentBot.BotName));
+									response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result}/{purchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}", string.Join(", ", items)), currentBot.BotName));
 								} else if (!skipRequest) {
-									response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result}/{purchaseResultDetail}"), currentBot.BotName));
+									response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result}/{purchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}"), currentBot.BotName));
 								}
 
 								switch (purchaseResultDetail) {

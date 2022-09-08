@@ -3190,14 +3190,17 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					continue;
 				}
 
+				string? balanceText = null;
+
 				if ((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((result.PurchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
 					// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
 					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
+					(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)? walletResult = await ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
 
 					if (walletResult != null) {
 						result.Result = walletResult.Value.Result;
 						result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.BadActivationCode); // BadActivationCode is our smart guess in this case
+						balanceText = walletResult.Value.BalanceText;
 					} else {
 						result.Result = EResult.Timeout;
 						result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
@@ -3206,7 +3209,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				Dictionary<uint, string>? items = result.ParseItems();
 
-				ArchiLogger.LogGenericDebug(items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result.Result}/{result.PurchaseResultDetail}", string.Join(", ", items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result.Result}/{result.PurchaseResultDetail}"));
+				ArchiLogger.LogGenericDebug(items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result.Result}/{result.PurchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}", string.Join(", ", items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result.Result}/{result.PurchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}"));
 
 				bool rateLimited = false;
 				bool redeemed = false;
