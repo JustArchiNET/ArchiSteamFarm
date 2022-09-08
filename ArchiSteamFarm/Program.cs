@@ -118,6 +118,8 @@ internal static class Program {
 		}
 
 		if (!File.Exists(cryptKeyFile)) {
+			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(cryptKeyFile)));
+
 			return false;
 		}
 
@@ -132,6 +134,8 @@ internal static class Program {
 		}
 
 		if (string.IsNullOrEmpty(cryptKey)) {
+			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(cryptKeyFile)));
+
 			return false;
 		}
 
