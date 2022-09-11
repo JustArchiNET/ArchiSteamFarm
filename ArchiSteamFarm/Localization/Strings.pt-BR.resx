@@ -442,7 +442,7 @@ StackTrace:
 		<value>Esse bot é limitado e não pode receber cartas através da coleta.</value>
 	</data>
 	<data name="BotStatusConnecting" xml:space="preserve">
-		<value>O bot está se conectando à rede Steam.</value>
+		<value>O bot está se conectando à Rede Steam.</value>
 	</data>
 	<data name="BotStatusNotRunning" xml:space="preserve">
 		<value>O bot não está em execução.</value>
@@ -470,7 +470,7 @@ StackTrace:
 		<comment>{0} will be replaced by failure reason (string)</comment>
 	</data>
 	<data name="BotConnectionLost" xml:space="preserve">
-		<value>A conexão com a rede Steam foi perdida. Reconectando...</value>
+		<value>A conexão com a Rede Steam foi perdida. Reconectando...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
 		<value>A conta não está mais em uso: processo de coleta retomado!</value>
@@ -485,7 +485,7 @@ StackTrace:
 		<value>Falha ao desconectar o cliente. Abandonando essa instância de bot!</value>
 	</data>
 	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Não foi possível inicializar o SteamDirectory: a conexão com a rede Steam pode demorar mais do que o normal!</value>
+		<value>Não foi possível inicializar o SteamDirectory: a conexão com a Rede Steam pode demorar mais do que o normal!</value>
 	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Parando...</value>
