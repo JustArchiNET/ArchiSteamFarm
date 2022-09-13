@@ -36,8 +36,8 @@
 		<PackageVersion Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />
-		<PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="3.1.28" />
-		<PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.28" />
+		<PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="3.1.29" />
+		<PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.29" />
 		<PackageVersion Include="TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray" Version="1.0.1" />
 	</ItemGroup>
 </Project>
