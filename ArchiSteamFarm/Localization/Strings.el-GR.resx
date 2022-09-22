@@ -132,10 +132,10 @@ StackTrace:
 		<value>Λήφθηκε αίτημα για είσοδο από τον χρήστη, αλλά η διεργασία εκτελείται σε σιωπηλή λειτουργία!</value>
 	</data>
 	<data name="Exiting" xml:space="preserve">
-		<value>Έξοδος...</value>
+		<value>Γίνεται έξοδος...</value>
 	</data>
 	<data name="WarningFailed" xml:space="preserve">
-		<value>Αποτυχία!</value>
+		<value>Απέτυχε!</value>
 	</data>
 	<data name="GlobalConfigChanged" xml:space="preserve">
 		<value>Το αρχείο γενικής διαμόρφωσης έχει αλλάξει!</value>
