@@ -38,7 +38,7 @@ jobs:
       run: dotnet --info
 
     - name: Setup Node.js with npm
-      uses: actions/setup-node@v3.4.1
+      uses: actions/setup-node@v3.5.0
       with:
         check-latest: true
         node-version: ${{ env.NODE_JS_VERSION }}
