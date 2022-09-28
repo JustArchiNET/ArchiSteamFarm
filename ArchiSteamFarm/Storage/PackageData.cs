@@ -30,23 +30,11 @@ public sealed class PackageData {
 	[JsonProperty]
 	public ImmutableHashSet<uint>? AppIDs { get; private set; }
 
-	[JsonProperty]
+	[JsonProperty(Required = Required.Always)]
 	public uint ChangeNumber { get; private set; }
 
-	[JsonProperty]
+	[JsonProperty(Required = Required.Always)]
 	public DateTime ValidUntil { get; private set; }
-
-	[JsonProperty("Item2")]
-	[Obsolete("TODO: Delete me")]
-	private ImmutableHashSet<uint> AppIDsOld {
-		set => AppIDs = value;
-	}
-
-	[JsonProperty("Item1")]
-	[Obsolete("TODO: Delete me and make ChangeNumber and ValidUntil - Required.Always")]
-	private uint ChangeNumberOld {
-		set => ChangeNumber = value;
-	}
 
 	internal PackageData(uint changeNumber, DateTime validUntil, ImmutableHashSet<uint>? appIDs = null) {
 		if (changeNumber == 0) {
