@@ -10,26 +10,26 @@ SyslogIdentifier=asf-%i
 User=%i
 
 # ASF security hardening, all of the below entries are optional, but their existence improves security of your system
-LockPersonality=yes
-PrivateDevices=yes
-PrivateIPC=yes
-PrivateMounts=yes
-PrivateUsers=yes
-ProtectClock=yes
-ProtectControlGroups=yes
-ProtectHome=read-only
-ProtectHostname=yes
-ProtectKernelLogs=yes
-ProtectKernelModules=yes
-ProtectKernelTunables=yes
-ProtectProc=invisible
-ProtectSystem=strict
-ReadWritePaths=/home/%i/ArchiSteamFarm /tmp
-RemoveIPC=yes
-RestrictAddressFamilies=AF_INET AF_INET6
-RestrictNamespaces=yes
-RestrictRealtime=yes
-RestrictSUIDSGID=yes
+LockPersonality=yes                         # ASF cannot change ABI personality
+PrivateDevices=yes                          # ASF has no access to hardware devices
+PrivateIPC=yes                              # ASF has private IPC namespace.
+PrivateMounts=yes                           # ASF cannot install system mounts
+PrivateUsers=yes                            # ASF does not have access to other users
+ProtectClock=yes                            # ASF cannot write to the hardware clock or system clock
+ProtectControlGroups=yes                    # ASF cannot modify the control group file system
+ProtectHome=read-only                       # ASF has read-only access to home directories
+ProtectHostname=yes                         # ASF cannot change system host/domainname
+ProtectKernelLogs=yes                       # ASF cannot read from or write to the kernel log ring buffer
+ProtectKernelModules=yes                    # ASF cannot load or read kernel modules
+ProtectKernelTunables=yes                   # ASF cannot alter kernel tunables (/proc/sys,  ^` )
+ProtectProc=invisible                       # ASF has restricted access to process tree (/proc hidepid=)
+ProtectSystem=strict                        # ASF has strict read-only access to the OS file hierarchy
+ReadWritePaths=/home/%i/ArchiSteamFarm /tmp # ASF only has read/write privileges to these paths
+RemoveIPC=yes                               # ASF user cannot leave SysV IPC objects around
+RestrictAddressFamilies=AF_INET AF_INET6    # ASF may allocate Internet sockets
+RestrictNamespaces=yes                      # ASF cannot create namespaces
+RestrictRealtime=yes                        # ASF realtime scheduling access is restricted
+RestrictSUIDSGID=yes                        # SUID/SGID file creation by ASF is restricted
 
 [Unit]
 After=network.target
