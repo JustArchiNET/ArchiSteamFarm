@@ -70,34 +70,74 @@
 		<value>A {0} jelenleg ki van kapcsolva a konfigurációid alapján. Ha szeretnéd segíteni a SteamDB-t adatok beküldésével, kérlek nézd meg a wikit.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>A(z) {0} inicializálása sikeresen megtörtént, segítségét előre is köszönjük. Az első beküldés körülbelül {1} múlva fog megtörténni.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+		<value>A(z) {0} nem tölthető be, új példány lesz inicializálva...</value>
+		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+	</data>
+	<data name="BotNoAppsToRefresh" xml:space="preserve">
+		<value>Nincsenek olyan alkalmazások, amelyek frissítést igényelnének ezen a bot-példányon.</value>
+	</data>
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Összesen {0} alkalmazás-hozzáférési token lekérése...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+		<value>{0} alkalmazás-hozzáférési token lekérése...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>{0} alkalmazás-hozzáférési token lekérése befejeződött.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Összesen {0} alkalmazás-hozzáférési token lekérése befejeződött.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
+	
+	<data name="BotRetrievingAppInfos" xml:space="preserve">
+		<value>{0} alkalmazás információinak lekérése...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
+		<value>{0} alkalmazás adatainak lekérése befejeződött.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
+	</data>
 	
 	
 	
+	<data name="SubmissionNoNewData" xml:space="preserve">
+		<value>Nincs új beküldendő adat, minden naprakész.</value>
+	</data>
+	<data name="SubmissionNoContributorSet" xml:space="preserve">
+		<value>Nem sikerült elküldeni az adatokat, mert nincs olyan érvényes SteamID, amelyet közreműködőnek minősíthetnénk. Fontolja meg a(z) {0} tulajdon beállítását.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
+	</data>
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+		<value>A beküldés meghiúsult, mert túl sok kérés érkezett. Körülbelül {0} múlva újra megpróbáljuk.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
 	
 	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
 		<value>Új appok: {0}</value>
 		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
 	</data>
-	
+	<data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+		<value>Ellenőrzött alkalmazások: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
 		<value>Új csomagok: {0}</value>
 		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
 	</data>
-	
+	<data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+		<value>Ellenőrzött csomagok: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
 	
 	
 	
