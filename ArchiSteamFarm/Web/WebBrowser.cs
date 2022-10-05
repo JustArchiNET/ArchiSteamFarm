@@ -816,7 +816,19 @@ public sealed class WebBrowser : IDisposable {
 
 							break;
 						default:
-							requestMessage.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+							if (typeof(T).IsDefined(typeof(ProtoContractAttribute), true)) {
+								MemoryStream stream = new();
+
+								Serializer.Serialize(stream, data);
+
+								requestMessage.Content = new StreamContent(stream) {
+									Headers = {
+										ContentType = new MediaTypeHeaderValue("application/octet-stream")
+									}
+								};
+							} else {
+								requestMessage.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+							}
 
 							break;
 					}
