@@ -37,6 +37,7 @@ using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using ProtoBuf;
 
 namespace ArchiSteamFarm.Web;
 
@@ -340,12 +341,16 @@ public sealed class WebBrowser : IDisposable {
 				T? obj;
 
 				try {
-					using StreamReader streamReader = new(response.Content);
-					using JsonTextReader jsonReader = new(streamReader);
+					if (typeof(T).IsDefined(typeof(ProtoContractAttribute), true)) {
+						obj = Serializer.Deserialize<T>(response.Content);
+					} else {
+						using StreamReader streamReader = new(response.Content);
+						using JsonTextReader jsonReader = new(streamReader);
 
-					JsonSerializer serializer = new();
+						JsonSerializer serializer = new();
 
-					obj = serializer.Deserialize<T>(jsonReader);
+						obj = serializer.Deserialize<T>(jsonReader);
+					}
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new ObjectResponse<T>(response);
@@ -644,12 +649,16 @@ public sealed class WebBrowser : IDisposable {
 				TResult? obj;
 
 				try {
-					using StreamReader steamReader = new(response.Content);
-					using JsonReader jsonReader = new JsonTextReader(steamReader);
+					if (typeof(TResult).IsDefined(typeof(ProtoContractAttribute), true)) {
+						obj = Serializer.Deserialize<TResult>(response.Content);
+					} else {
+						using StreamReader streamReader = new(response.Content);
+						using JsonTextReader jsonReader = new(streamReader);
 
-					JsonSerializer serializer = new();
+						JsonSerializer serializer = new();
 
-					obj = serializer.Deserialize<TResult>(jsonReader);
+						obj = serializer.Deserialize<TResult>(jsonReader);
+					}
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new ObjectResponse<TResult>(response);
