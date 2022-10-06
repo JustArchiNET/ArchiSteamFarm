@@ -97,24 +97,42 @@ internal static class Logging {
 			OnUserInputStart();
 
 			try {
-				(bool MaskInput, string ConsoleOutput)? inputSettings = userInputType switch {
-					ASF.EUserInputType.Cryptkey => (true, Bot.FormatBotResponse(Strings.UserInputCryptkey, botName)),
-					ASF.EUserInputType.Login => (false, Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName)),
-					ASF.EUserInputType.Password => (true, Bot.FormatBotResponse(Strings.UserInputSteamPassword, botName)),
-					ASF.EUserInputType.SteamGuard => (false, Bot.FormatBotResponse(Strings.UserInputSteamGuard, botName)),
-					ASF.EUserInputType.SteamParentalCode => (true, Bot.FormatBotResponse(Strings.UserInputSteamParentalCode, botName)),
-					ASF.EUserInputType.TwoFactorAuthentication => (false, Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName)),
-					_ => null
-				};
+				switch (userInputType) {
+					case ASF.EUserInputType.Cryptkey:
+						Console.Write(Bot.FormatBotResponse(Strings.UserInputCryptkey, botName));
+						result = ConsoleReadLineMasked();
 
-				if (!inputSettings.HasValue) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
+						break;
+					case ASF.EUserInputType.Login:
+						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
+						result = ConsoleReadLine();
 
-					return null;
+						break;
+					case ASF.EUserInputType.Password:
+						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamPassword, botName));
+						result = ConsoleReadLineMasked();
+
+						break;
+					case ASF.EUserInputType.SteamGuard:
+						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamGuard, botName));
+						result = ConsoleReadLine();
+
+						break;
+					case ASF.EUserInputType.SteamParentalCode:
+						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamParentalCode, botName));
+						result = ConsoleReadLineMasked();
+
+						break;
+					case ASF.EUserInputType.TwoFactorAuthentication:
+						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName));
+						result = ConsoleReadLine();
+
+						break;
+					default:
+						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
+
+						return null;
 				}
-
-				Console.Write(inputSettings.Value.ConsoleOutput);
-				result = inputSettings.Value.MaskInput ? ConsoleReadLineMasked() : ConsoleReadLine();
 
 				if (!Console.IsOutputRedirected) {
 					Console.Clear(); // For security purposes
