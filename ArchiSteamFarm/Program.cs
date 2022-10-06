@@ -67,6 +67,7 @@ internal static class Program {
 #endif
 
 	private static bool IgnoreUnsupportedEnvironment;
+	private static bool InputCryptkeyManually;
 	private static bool SystemRequired;
 
 	internal static async Task Exit(byte exitCode = 0) {
@@ -304,6 +305,16 @@ internal static class Program {
 			if (OS.IsRunningAsRoot()) {
 				ASF.ArchiLogger.LogGenericWarning(Strings.WarningRunningAsRoot);
 				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
+			}
+		}
+
+		if (InputCryptkeyManually) {
+			string? cryptkey = await Logging.GetUserInput(ASF.EUserInputType.Cryptkey).ConfigureAwait(false);
+
+			if (string.IsNullOrEmpty(cryptkey)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(cryptkey)));
+
+				return false;
 			}
 		}
 
@@ -548,6 +559,10 @@ internal static class Program {
 					break;
 				case "--IGNORE-UNSUPPORTED-ENVIRONMENT" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
 					IgnoreUnsupportedEnvironment = true;
+
+					break;
+				case "--INPUT-CRYPTKEY" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+					InputCryptkeyManually = true;
 
 					break;
 				case "--NETWORK-GROUP" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
