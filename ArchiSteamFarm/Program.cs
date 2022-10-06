@@ -316,6 +316,8 @@ internal static class Program {
 
 				return false;
 			}
+
+			ArchiCryptoHelper.SetEncryptionKey(cryptkey!);
 		}
 
 		if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
