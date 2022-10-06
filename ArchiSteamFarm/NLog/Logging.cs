@@ -107,7 +107,7 @@ internal static class Logging {
 					_ => null
 				};
 
-				if (inputSettings == null) {
+				if (!inputSettings.HasValue) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
 
 					return null;
