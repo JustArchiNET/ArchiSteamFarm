@@ -98,6 +98,11 @@ internal static class Logging {
 
 			try {
 				switch (userInputType) {
+					case ASF.EUserInputType.Cryptkey:
+						Console.Write(Bot.FormatBotResponse(Strings.UserInputCryptkey, botName));
+						result = ConsoleReadLineMasked();
+
+						break;
 					case ASF.EUserInputType.Login:
 						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
 						result = ConsoleReadLine();

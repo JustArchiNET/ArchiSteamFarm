@@ -67,6 +67,7 @@ internal static class Program {
 #endif
 
 	private static bool IgnoreUnsupportedEnvironment;
+	private static bool InputCryptkeyManually;
 	private static bool SystemRequired;
 
 	internal static async Task Exit(byte exitCode = 0) {
@@ -307,6 +308,18 @@ internal static class Program {
 			}
 		}
 
+		if (InputCryptkeyManually) {
+			string? cryptkey = await Logging.GetUserInput(ASF.EUserInputType.Cryptkey).ConfigureAwait(false);
+
+			if (string.IsNullOrEmpty(cryptkey)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(cryptkey)));
+
+				return false;
+			}
+
+			ArchiCryptoHelper.SetEncryptionKey(cryptkey!);
+		}
+
 		if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
 			ASF.ArchiLogger.LogGenericError(Strings.ErrorConfigDirectoryNotFound);
 			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
@@ -536,53 +549,59 @@ internal static class Program {
 		bool networkGroupNext = false;
 		bool pathNext = false;
 
+		bool noArgumentValueNext() => !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext;
+
 		foreach (string arg in args) {
 			switch (arg.ToUpperInvariant()) {
-				case "--CRYPTKEY" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+				case "--CRYPTKEY" when noArgumentValueNext():
 					cryptKeyNext = true;
 
 					break;
-				case "--CRYPTKEY-FILE" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+				case "--CRYPTKEY-FILE" when noArgumentValueNext():
 					cryptKeyFileNext = true;
 
 					break;
-				case "--IGNORE-UNSUPPORTED-ENVIRONMENT" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+				case "--IGNORE-UNSUPPORTED-ENVIRONMENT" when noArgumentValueNext():
 					IgnoreUnsupportedEnvironment = true;
 
 					break;
-				case "--NETWORK-GROUP" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+				case "--INPUT-CRYPTKEY" when noArgumentValueNext():
+					InputCryptkeyManually = true;
+
+					break;
+				case "--NETWORK-GROUP" when noArgumentValueNext():
 					networkGroupNext = true;
 
 					break;
-				case "--NO-CONFIG-MIGRATE" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+				case "--NO-CONFIG-MIGRATE" when noArgumentValueNext():
 					ConfigMigrate = false;
 
 					break;
-				case "--NO-CONFIG-WATCH" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+				case "--NO-CONFIG-WATCH" when noArgumentValueNext():
 					ConfigWatch = false;
 
 					break;
-				case "--NO-RESTART" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+				case "--NO-RESTART" when noArgumentValueNext():
 					RestartAllowed = false;
 
 					break;
-				case "--NO-STEAM-PARENTAL-GENERATION" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+				case "--NO-STEAM-PARENTAL-GENERATION" when noArgumentValueNext():
 					SteamParentalGeneration = false;
 
 					break;
-				case "--PROCESS-REQUIRED" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+				case "--PROCESS-REQUIRED" when noArgumentValueNext():
 					ProcessRequired = true;
 
 					break;
-				case "--PATH" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+				case "--PATH" when noArgumentValueNext():
 					pathNext = true;
 
 					break;
-				case "--SERVICE" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+				case "--SERVICE" when noArgumentValueNext():
 					Service = true;
 
 					break;
-				case "--SYSTEM-REQUIRED" when !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext:
+				case "--SYSTEM-REQUIRED" when noArgumentValueNext():
 					SystemRequired = true;
 
 					break;
