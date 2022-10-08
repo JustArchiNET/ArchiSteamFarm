@@ -736,4 +736,8 @@ Czas procesu: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Łatanie plików ASF...</value>
 	</data>
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Wprowadź swój klucz szyfrowania: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 </root>

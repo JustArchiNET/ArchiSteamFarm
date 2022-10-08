@@ -734,4 +734,5 @@ Tempo di attività: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Patching dei file ASF...</value>
 	</data>
+	
 </root>

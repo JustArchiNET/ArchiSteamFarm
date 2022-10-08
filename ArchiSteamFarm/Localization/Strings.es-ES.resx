@@ -735,4 +735,8 @@ Tiempo de actividad del proceso: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Parchando archivos de ASF...</value>
 	</data>
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Por favor, introduce tu clave de cifrado: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 </root>

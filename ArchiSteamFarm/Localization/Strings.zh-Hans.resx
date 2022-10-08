@@ -736,4 +736,8 @@
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>修补 ASF 文件……</value>
 	</data>
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>请输入您的加密密钥：</value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 </root>

@@ -736,4 +736,5 @@ Prosessin käyttöaika: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Paikataan ASF-tiedostoja...</value>
 	</data>
+	
 </root>
