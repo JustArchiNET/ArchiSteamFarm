@@ -39,8 +39,8 @@
 		<PackageReference Include="Microsoft.AspNetCore.WebSockets" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
-		<Reference Include="System.Net.Http" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Net.Http.dll" />
-		<Reference Include="System.Security" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Security.dll" />
+		<Reference Include="System.Net.Http" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8.1\System.Net.Http.dll" />
+		<Reference Include="System.Security" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8.1\System.Security.dll" />
 	</ItemGroup>
 
 	<ItemGroup>
