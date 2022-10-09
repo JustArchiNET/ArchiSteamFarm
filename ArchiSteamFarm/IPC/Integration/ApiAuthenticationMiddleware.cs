@@ -24,6 +24,7 @@ using MvcNewtonsoftJsonOptions = Microsoft.AspNetCore.Mvc.MvcJsonOptions;
 #endif
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
@@ -88,7 +89,45 @@ internal sealed class ApiAuthenticationMiddleware {
 		await context.Response.WriteJsonAsync(new GenericResponse<StatusCodeResponse>(false, statusCodeResponse), jsonOptions.Value.SerializerSettings).ConfigureAwait(false);
 	}
 
-	private static void ClearFailedAuthorizations(object? state = null) => FailedAuthorizations.Clear();
+	internal static void ClearFailedAuthorizations(object? state = null) => FailedAuthorizations.Clear();
+
+	internal static HashSet<IPAddress> GetCurrentlyBannedIPs() => FailedAuthorizations.Where(static kv => kv.Value >= MaxFailedAuthorizationAttempts).Select(static kv => kv.Key).ToHashSet();
+
+	internal static async Task<bool> UnbanIP(IPAddress ipAddress) {
+		ArgumentNullException.ThrowIfNull(ipAddress);
+
+		if (!FailedAuthorizations.TryGetValue(ipAddress, out byte attempts) || (attempts < MaxFailedAuthorizationAttempts)) {
+			return false;
+		}
+
+		while (true) {
+			if (AuthorizationTasks.TryGetValue(ipAddress, out Task? task)) {
+				await task.ConfigureAwait(false);
+
+				continue;
+			}
+
+			TaskCompletionSource taskCompletionSource = new();
+
+			if (!AuthorizationTasks.TryAdd(ipAddress, taskCompletionSource.Task)) {
+				continue;
+			}
+
+			try {
+				bool hasFailedAuthorizations = FailedAuthorizations.TryGetValue(ipAddress, out attempts);
+
+				if (!hasFailedAuthorizations || (attempts < MaxFailedAuthorizationAttempts)) {
+					return false;
+				}
+
+				return FailedAuthorizations.TryRemove(ipAddress, out _);
+			} finally {
+				AuthorizationTasks.TryRemove(ipAddress, out _);
+
+				taskCompletionSource.SetResult();
+			}
+		}
+	}
 
 	private async Task<(HttpStatusCode StatusCode, bool Permanent)> GetAuthenticationStatus(HttpContext context) {
 		ArgumentNullException.ThrowIfNull(context);

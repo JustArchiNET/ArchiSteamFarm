@@ -982,6 +982,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The IP address {0} is not banned!.
+        /// </summary>
+        public static string ErrorIPNotBanned {
+            get {
+                return ResourceManager.GetString("ErrorIPNotBanned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} is empty!.
         /// </summary>
         public static string ErrorIsEmpty {
