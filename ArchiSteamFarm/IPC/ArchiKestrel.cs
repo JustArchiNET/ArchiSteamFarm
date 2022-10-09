@@ -122,7 +122,7 @@ internal static class ArchiKestrel {
 					webBuilder.UseKestrel(static (builderContext, options) => options.Configure(builderContext.Configuration.GetSection("Kestrel")));
 				} else {
 					// Use ASF defaults for Kestrel
-					webBuilder.UseKestrel(static options => options.ListenAnyIP(1242));
+					webBuilder.UseKestrel(static options => options.ListenLocalhost(1242));
 				}
 
 				// Specify Startup class for IPC
