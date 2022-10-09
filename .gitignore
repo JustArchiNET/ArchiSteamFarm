@@ -7,6 +7,9 @@
 # Ignore all files in custom in-tree config directory (if exists)
 ArchiSteamFarm/config
 
+# Ignore all files in custom in-tree www directory (if exists)
+ArchiSteamFarm/www
+
 # Ignore private SNK key (if exists)
 resources/ArchiSteamFarm.snk
 
