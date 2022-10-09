@@ -35,7 +35,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api;
 [Route("Api/IPC")]
 public sealed class IPCController : ArchiController {
 	/// <summary>
-	///     Clears the list of all IP addresses currently blocked by ASFs IPC module - Possible side effects include the removal of VAC bans
+	///     Clears the list of all IP addresses currently blocked by ASFs IPC module
 	/// </summary>
 	[HttpDelete("Bans")]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
