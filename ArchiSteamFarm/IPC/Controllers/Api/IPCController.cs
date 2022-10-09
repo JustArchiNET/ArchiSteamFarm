@@ -51,7 +51,7 @@ public sealed class IPCController : ArchiController {
 	[HttpDelete("Bans/{ipAddress:required}")]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> BansDeleteSpecific(string ipAddress) {
+	public ActionResult<GenericResponse> BansDeleteSpecific(string ipAddress) {
 		if (string.IsNullOrEmpty(ipAddress)) {
 			throw new ArgumentNullException(nameof(ipAddress));
 		}
@@ -60,7 +60,7 @@ public sealed class IPCController : ArchiController {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(ipAddress))));
 		}
 
-		bool result = await ApiAuthenticationMiddleware.UnbanIP(remoteAddress).ConfigureAwait(false);
+		bool result = ApiAuthenticationMiddleware.UnbanIP(remoteAddress);
 
 		if (!result) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIPNotBanned, ipAddress)));

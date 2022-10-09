@@ -93,40 +93,14 @@ internal sealed class ApiAuthenticationMiddleware {
 
 	internal static HashSet<IPAddress> GetCurrentlyBannedIPs() => FailedAuthorizations.Where(static kv => kv.Value >= MaxFailedAuthorizationAttempts).Select(static kv => kv.Key).ToHashSet();
 
-	internal static async Task<bool> UnbanIP(IPAddress ipAddress) {
+	internal static bool UnbanIP(IPAddress ipAddress) {
 		ArgumentNullException.ThrowIfNull(ipAddress);
 
 		if (!FailedAuthorizations.TryGetValue(ipAddress, out byte attempts) || (attempts < MaxFailedAuthorizationAttempts)) {
 			return false;
 		}
 
-		while (true) {
-			if (AuthorizationTasks.TryGetValue(ipAddress, out Task? task)) {
-				await task.ConfigureAwait(false);
-
-				continue;
-			}
-
-			TaskCompletionSource taskCompletionSource = new();
-
-			if (!AuthorizationTasks.TryAdd(ipAddress, taskCompletionSource.Task)) {
-				continue;
-			}
-
-			try {
-				bool hasFailedAuthorizations = FailedAuthorizations.TryGetValue(ipAddress, out attempts);
-
-				if (!hasFailedAuthorizations || (attempts < MaxFailedAuthorizationAttempts)) {
-					return false;
-				}
-
-				return FailedAuthorizations.TryRemove(ipAddress, out _);
-			} finally {
-				AuthorizationTasks.TryRemove(ipAddress, out _);
-
-				taskCompletionSource.SetResult();
-			}
-		}
+		return FailedAuthorizations.TryRemove(ipAddress, out _);
 	}
 
 	private async Task<(HttpStatusCode StatusCode, bool Permanent)> GetAuthenticationStatus(HttpContext context) {
