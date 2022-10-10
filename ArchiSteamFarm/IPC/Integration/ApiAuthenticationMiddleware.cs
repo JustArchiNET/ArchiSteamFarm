@@ -91,7 +91,7 @@ internal sealed class ApiAuthenticationMiddleware {
 
 	internal static void ClearFailedAuthorizations(object? state = null) => FailedAuthorizations.Clear();
 
-	internal static HashSet<IPAddress> GetCurrentlyBannedIPs() => FailedAuthorizations.Where(static kv => kv.Value >= MaxFailedAuthorizationAttempts).Select(static kv => kv.Key).ToHashSet();
+	internal static IEnumerable<IPAddress> GetCurrentlyBannedIPs() => FailedAuthorizations.Where(static kv => kv.Value >= MaxFailedAuthorizationAttempts).Select(static kv => kv.Key);
 
 	internal static bool UnbanIP(IPAddress ipAddress) {
 		ArgumentNullException.ThrowIfNull(ipAddress);

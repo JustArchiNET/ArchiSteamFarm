@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
