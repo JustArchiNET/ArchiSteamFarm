@@ -170,7 +170,18 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		LastChangeNumber = currentChangeNumber;
+
+		Reset();
+	}
+
+	internal void Reset(bool clear = false) {
 		AppChangeNumbers.Clear();
+
+		if (clear) {
+			AppTokens.Clear();
+			DepotKeys.Clear();
+			PackageTokens.Clear();
+		}
 
 		Utilities.InBackground(Save);
 	}

@@ -544,21 +544,40 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			if (response.StatusCode.IsClientErrorCode()) {
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, response.StatusCode));
 
+				switch (response.StatusCode) {
+					// SteamDB told us to stop submitting data for now
+					case HttpStatusCode.Forbidden:
+						// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+						lock (SubmissionSemaphore) {
+							SubmissionTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+						}
+
+						break;
+
+					// SteamDB told us to reset our cache
+					case HttpStatusCode.Conflict:
+						GlobalCache.Reset(true);
+
+						break;
+
+					// SteamDB told us to try again later
 #if NETFRAMEWORK
-				if (response.StatusCode == (HttpStatusCode) 429) {
+					case (HttpStatusCode) 429:
 #else
-				if (response.StatusCode == HttpStatusCode.TooManyRequests) {
+					case HttpStatusCode.TooManyRequests:
 #endif
 #pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
-					TimeSpan startIn = TimeSpan.FromMinutes(Random.Shared.Next(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
+						TimeSpan startIn = TimeSpan.FromMinutes(Random.Shared.Next(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
 #pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
 
-					// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-					lock (SubmissionSemaphore) {
-						SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.HoursBetweenUploads));
-					}
+						// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+						lock (SubmissionSemaphore) {
+							SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.HoursBetweenUploads));
+						}
 
-					ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionFailedTooManyRequests, startIn.ToHumanReadable()));
+						ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionFailedTooManyRequests, startIn.ToHumanReadable()));
+
+						break;
 				}
 
 				return;
