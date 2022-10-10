@@ -317,7 +317,8 @@ internal static class Program {
 				return false;
 			}
 
-			ArchiCryptoHelper.SetEncryptionKey(cryptkey);
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			ArchiCryptoHelper.SetEncryptionKey(cryptkey!);
 		}
 
 		if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
