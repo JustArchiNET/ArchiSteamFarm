@@ -740,4 +740,8 @@ Czas procesu: {1}</value>
 		<value>Wprowadź swój klucz szyfrowania: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>Adres IP {0} nie jest zbanowany!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
 </root>

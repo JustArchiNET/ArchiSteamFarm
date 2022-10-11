@@ -739,4 +739,8 @@ Tiempo de actividad del proceso: {1}</value>
 		<value>Por favor, introduce tu clave de cifrado: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>¡La dirección IP {0} no está bloqueada!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
 </root>

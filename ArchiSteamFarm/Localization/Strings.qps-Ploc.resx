@@ -736,5 +736,12 @@ PROCES UPTIME: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>PATCHIN ASF FILEZ...</value>
 	</data>
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>PLZ ENTR UR CRYPTKEY: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>TEH IP ADDRES {0} IZ NOT BANND!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
 </root>
