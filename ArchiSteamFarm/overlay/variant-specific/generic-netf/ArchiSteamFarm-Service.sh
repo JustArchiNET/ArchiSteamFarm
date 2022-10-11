@@ -69,7 +69,7 @@ BINARY_PREFIX=""
 
 if [ -n "${ASF_USER-}" ] && [ "$(id -u)" -eq 0 ] && id -u "$ASF_USER" >/dev/null 2>&1; then
 	# Fix permissions first to ensure ASF has read/write access to the directory specified by --path and its own
-	chown -hR "${ASF_USER}:${ASF_USER}" . "$SCRIPT_DIR"
+	chown -hR "${ASF_USER}:${ASF_USER}" . "$SCRIPT_DIR" || true
 
 	BINARY_PREFIX="su ${ASF_USER} -c"
 fi
