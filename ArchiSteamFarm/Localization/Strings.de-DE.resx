@@ -722,7 +722,7 @@ Prozesslaufzeit: {1}</value>
 		<value>Sie nutzen ASF in einer nicht unterstützten Umgebung und verwenden das Argument --ignore-unsupported-environment. Bitte beachten Sie, dass wir für dieses Szenario keinerlei Unterstützung anbieten und Sie das Risiko vollständig bei Ihnen liegt. Sie wurden gewarnt.</value>
 	</data>
 	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
-		<value>Rufe Prüfsumme vom ASF-Server ab...</value>
+		<value>Rufe Prüfsumme vom Server ab...</value>
 	</data>
 	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
 		<value>Verifiziere Prüfsumme der heruntergeladenen Datei mit der des ASF Servers...</value>
@@ -737,7 +737,7 @@ Prozesslaufzeit: {1}</value>
 		<value>Aktualisiere ASF-Dateien...</value>
 	</data>
 	<data name="UserInputCryptkey" xml:space="preserve">
-		<value>Bitte gebe deinen Cryptkey ein: </value>
+		<value>Bitte gib deinen kryptographischen Schlüssel ein: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="ErrorIPNotBanned" xml:space="preserve">
