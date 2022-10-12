@@ -33,11 +33,15 @@ RestrictAddressFamilies=AF_INET AF_INET6
 RestrictNamespaces=yes
 RestrictRealtime=yes
 RestrictSUIDSGID=yes
-SecureBits=noroot-locked
 SystemCallArchitectures=native
 SystemCallFilter=@system-service
 SystemCallFilter=~@privileged
 UMask=0077
+
+# TODO: Requires systemd v247+ due to https://github.com/systemd/systemd/issues/16666
+# Since we don't want to enforce OS upgrade for everybody just yet, it's commented out for now
+# We'll likely enforce it when .NET switches to Debian 11+ requirement
+#SecureBits=noroot-locked
 
 [Unit]
 After=network.target
