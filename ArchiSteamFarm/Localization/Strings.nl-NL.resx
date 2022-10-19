@@ -193,7 +193,10 @@ StackTrace:
 		<value>Voer de 2FA code in van je Steam authenticator app: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Voer de SteamGuard authenticator-code in die naar je e-mail is verzonden: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>Voer je Steam gebruikersnaam in: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -263,21 +266,46 @@ StackTrace:
 		<value>Farmen is gereed voor de spellen: {0}</value>
 		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
+	<data name="IdlingStatusForGame" xml:space="preserve">
+		<value>Farming status voor {0} ({1}): {2} kaart(en) resterend</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm</comment>
+	</data>
+	<data name="IdlingStopped" xml:space="preserve">
+		<value>Farming gestopt!</value>
+	</data>
 	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
 		<value>Dit verzoek wordt genegeerd aangezien permanente pauze is ingeschakeld!</value>
 	</data>
-	
-	
-	
+	<data name="NothingToIdle" xml:space="preserve">
+		<value>Er is niets om te farmen op dit account!</value>
+	</data>
+	<data name="NowIdling" xml:space="preserve">
+		<value>Nu aan het farmen: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="NowIdlingList" xml:space="preserve">
+		<value>Nu aan het farmen: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="PlayingNotAvailable" xml:space="preserve">
 		<value>Spelen is op dit moment niet mogelijk, we proberen het later nog een keer!</value>
 	</data>
-	
-	
-	
-	
+	<data name="StillIdling" xml:space="preserve">
+		<value>Nog steeds aan het farmen: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StillIdlingList" xml:space="preserve">
+		<value>Nog steeds aan het farmen: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="StoppedIdling" xml:space="preserve">
+		<value>Gestopt met farmen: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StoppedIdlingList" xml:space="preserve">
+		<value>Gestopt met farmen: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="UnknownCommand" xml:space="preserve">
 		<value>Onbekende opdracht!</value>
 	</data>
@@ -292,7 +320,9 @@ StackTrace:
 		<value>Gift accepteren: {0}...</value>
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
-	
+	<data name="BotAccountLimited" xml:space="preserve">
+		<value>Dit account is gelimiteerd, farming proces is niet beschikbaar totdat de beperking is opgeheven!</value>
+	</data>
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID: {0} | Status: {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -314,10 +344,18 @@ StackTrace:
 		<value>2FA Code: {0}</value>
 		<comment>{0} will be replaced by generated 2FA token (string)</comment>
 	</data>
-	
-	
-	
-	
+	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+		<value>Automatisch farmen is gepauzeerd!</value>
+	</data>
+	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+		<value>Automatisch farmen is hervat!</value>
+	</data>
+	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+		<value>Automatisch farmen is al gepauzeerd!</value>
+	</data>
+	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+		<value>Automatisch farmen is al hervat!</value>
+	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>Verbonden met Steam!</value>
 	</data>
@@ -357,7 +395,9 @@ StackTrace:
 	<data name="BotLootingSuccess" xml:space="preserve">
 		<value>Ruilaanbod succesvol verzonden!</value>
 	</data>
-	
+	<data name="BotSendingTradeToYourself" xml:space="preserve">
+		<value>Je kan jezelf geen ruil aanbieden!</value>
+	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
 		<value>Deze bot heeft ASF 2FA nog niet ingeschakeld! Ben je vergeten om je authenticator als ASF 2FA te importeren?</value>
 	</data>
@@ -372,7 +412,10 @@ StackTrace:
 		<value>Al in bezit: {0} | {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
-	
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>Punten saldo: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
 	<data name="BotRateLimitExceeded" xml:space="preserve">
 		<value>Aanvraaglimiet overschreden, we zullen het na een cooldown van {0} opnieuw proberen...</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
@@ -391,8 +434,12 @@ StackTrace:
 	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
 		<value>Verlopen inlogcode verwijderd!</value>
 	</data>
-	
-	
+	<data name="BotStatusNotIdling" xml:space="preserve">
+		<value>Bot is niet aan het farmen.</value>
+	</data>
+	<data name="BotStatusLimited" xml:space="preserve">
+		<value>Bot is gelimiteerd en kan geen kaarten verzamelen.</value>
+	</data>
 	<data name="BotStatusConnecting" xml:space="preserve">
 		<value>Bot is aan het verbinden met het Steam netwerk.</value>
 	</data>
@@ -424,8 +471,12 @@ StackTrace:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Verbinding met Steam netwerk verbroken. Opnieuw verbinden...</value>
 	</data>
-	
-	
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>Account is niet meer bezet: farming proces hervat!</value>
+	</data>
+	<data name="BotAccountOccupied" xml:space="preserve">
+		<value>Account is momenteel in gebruik: ASF zal het farmen hervatten wanneer het account weer beschikbaar is...</value>
+	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Verbinden...</value>
 	</data>
@@ -459,8 +510,14 @@ StackTrace:
 	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
 		<value>De door jou ingevoerde CurrentCulture is ongeldig. ASF zal de standaardtaal blijven gebruiken!</value>
 	</data>
-	
-	
+	<data name="TranslationIncomplete" xml:space="preserve">
+		<value>ASF zal proberen de {0} taalcultuur te gebruiken, maar de vertaling in die taal is slechts {1} compleet. Misschien kun je ons helpen de ASF-vertaling voor jouw taal te verbeteren?</value>
+		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+	</data>
+	<data name="IdlingGameNotPossible" xml:space="preserve">
+		<value>Farmen {0} ({1}) is tijdelijk uitgeschakeld, omdat ASF momenteel niet in staat is om dit spel te spelen.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="WarningIdlingGameMismatch" xml:space="preserve">
 		<value>ASF heeft een foutieve ID gedetecteerd voor {0} ({1}) en zal in plaats daarvan ID {2} gaan gebruiken.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -469,8 +526,12 @@ StackTrace:
 		<value>{0} V{1}</value>
 		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
 	</data>
-	
-	
+	<data name="BotAccountLocked" xml:space="preserve">
+		<value>Dit account is vergrendeld. Farming is permanent niet beschikbaar!</value>
+	</data>
+	<data name="BotStatusLocked" xml:space="preserve">
+		<value>Bot is gelimiteerd en kan geen kaarten verzamelen.</value>
+	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
 		<value>Deze functie is alleen beschikbaar in de headless mode!</value>
 	</data>
@@ -481,7 +542,9 @@ StackTrace:
 	<data name="ErrorAccessDenied" xml:space="preserve">
 		<value>Toegang geweigerd!</value>
 	</data>
-	
+	<data name="WarningPreReleaseVersion" xml:space="preserve">
+		<value>Je gebruikt een nieuwere versie dan de laatste versie van je update kanaal. Hou er rekening mee dat pre-release versies alleen geschikt zijn voor gebruikers die weten hoe ze bugs moeten rapporteren, kunnen omgaan met problemen en feedback kunnen geven. Er wordt geen technische ondersteuning geboden.</value>
+	</data>
 	<data name="BotStats" xml:space="preserve">
 		<value>Huidig geheugengebruik: {0} MB.
 Proces uptime: {1}</value>
@@ -558,7 +621,9 @@ Proces uptime: {1}</value>
 	<data name="NothingFound" xml:space="preserve">
 		<value>Niets gevonden!</value>
 	</data>
-	
+	<data name="PluginsWarning" xml:space="preserve">
+		<value>Je hebt een of meer aangepaste plugins geladen in ASF. Neem in geval van problemen contact op met de ontwikkelaars van deze plugins, aangezien we geen ondersteuning voor aangepaste instellingen kunnen bieden.</value>
+	</data>
 	<data name="PleaseWait" xml:space="preserve">
 		<value>Een ogenblik geduld...</value>
 	</data>
@@ -582,7 +647,10 @@ Proces uptime: {1}</value>
 		<value>{0} bevestiging(en) succesvol uitgevoerd!</value>
 		<comment>{0} will be replaced by number of confirmations</comment>
 	</data>
-	
+	<data name="BotExtraIdlingCooldown" xml:space="preserve">
+		<value>{0} wachten ter controle of alles in orde is om het farmen te starten...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+	</data>
 	<data name="UpdateCleanup" xml:space="preserve">
 		<value>Oude bestanden verwijderen na de update...</value>
 	</data>
@@ -604,11 +672,24 @@ Proces uptime: {1}</value>
 		<value>Resultaat: {0}</value>
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
-	
-	
-	
-	
-	
+	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
+		<value>Je probeert {0} variant van ASF toe te voegen in een niet-ondersteunde omgeving: {1}. Voeg --ignore-unsupported-environment argument als je echt weet wat je aan het doen bent.</value>
+	</data>
+	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+		<value>Onbekend opdrachtregelargument: {0}</value>
+		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
+	</data>
+	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+		<value>Configuratiemap kon niet gevonden worden!</value>
+	</data>
+	<data name="BotIdlingSelectedGames" xml:space="preserve">
+		<value>Speelt geselecteerde af: {0} {1}</value>
+		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+	</data>
+	<data name="AutomaticFileMigration" xml:space="preserve">
+		<value>{0} configuratiebestand zal worden gemigreerd naar de laatste syntaxis...</value>
+		<comment>{0} will be replaced with the relative path to the affected config file</comment>
+	</data>
 	<data name="WarningWeakIPCPassword" xml:space="preserve">
 		<value>Uw IPC wachtwoord is zwak. Vanwege beveiliging redenen zal het veiliger zijn om een sterker wachtwoord te kiezen. Details: {0}</value>
 		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
@@ -625,19 +706,41 @@ Proces uptime: {1}</value>
 		<value>Uw encryptiesleutel is te kort. We raden u aan om er één te gebruiken die minstens {0} bytes (tekens) lang is.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>U gebruikt {0} instelling van {1} eigenschap, maar u heeft geen aangepaste --cryptkey opgegeven. U moet een aangepaste --cryptkey verstrekken voor meer veiligheid.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>U gebruikt {0} instelling van {1} eigenschap, maar u heeft geen aangepaste --cryptkey opgegeven. Dit ondermijnt de bescherming volledig, omdat ASF zijn eigen (bekend) sleutel moet gebruiken. U moet een aangepaste --cryptkey opgeven om gebruik te maken van het beveiligingsvoordeel dat deze instelling biedt.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>U probeert ASF uit te voeren als administrator (root). Dit veroorzaakt een aanzienlijk beveiligingsrisico voor uw apparaat en ASF heeft geen root toegang nodig voor de werking ervan. We raden u aan om, indien mogelijk, als niet-beheerder-gebruiker uit te voeren.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Je draait ASF in niet-ondersteunde omgeving, het bedienen --negeer geen ondersteunend milieuargument. Houd er rekening mee dat we geen enkele vorm van ondersteuning voor dit scenario bieden en dat je het helemaal op eigen risico doet. Je bent gewaarschuwd.</value>
+	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Checksum van de externe server ophalen...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>Controleert controlesom van de gedownloade binary tegen de binary van de remote server...</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>Externe server weet niets over de release waar we naar bijwerken. Deze situatie is mogelijk als de vrijlating onlangs werd gepubliceerd - door als aanvullende veiligheidsmaatregel de actualiseringsprocedure onmiddellijk te weigeren.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Externe server heeft geantwoord met een andere checksum, dit kan duiden op corrupte download of MITM aanval, de update procedure zal gestopt worden!</value>
 	</data>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Verbeteren van de ASF files...</value>
 	</data>
-	
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Voer je cryptkey in: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>Het IP adres {0} is niet gebanned!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
 </root>
