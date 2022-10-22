@@ -317,50 +317,50 @@ jobs:
         Get-Job | Receive-Job -Wait
 
     - name: Upload ASF-generic
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: ${{ matrix.os }}_ASF-generic
         path: out/ASF-generic.zip
 
     - name: Upload ASF-generic-netf
       if: startsWith(matrix.os, 'windows-')
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: ${{ matrix.os }}_ASF-generic-netf
         path: out/ASF-generic-netf.zip
 
     - name: Upload ASF-linux-arm
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: ${{ matrix.os }}_ASF-linux-arm
         path: out/ASF-linux-arm.zip
 
     - name: Upload ASF-linux-arm64
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: ${{ matrix.os }}_ASF-linux-arm64
         path: out/ASF-linux-arm64.zip
 
     - name: Upload ASF-linux-x64
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: ${{ matrix.os }}_ASF-linux-x64
         path: out/ASF-linux-x64.zip
 
     - name: Upload ASF-osx-arm64
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: ${{ matrix.os }}_ASF-osx-arm64
         path: out/ASF-osx-arm64.zip
 
     - name: Upload ASF-osx-x64
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: ${{ matrix.os }}_ASF-osx-x64
         path: out/ASF-osx-x64.zip
 
     - name: Upload ASF-win-x64
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: ${{ matrix.os }}_ASF-win-x64
         path: out/ASF-win-x64.zip
@@ -443,13 +443,13 @@ jobs:
         )
 
     - name: Upload SHA512SUMS
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: SHA512SUMS
         path: out/SHA512SUMS
 
     - name: Upload SHA512SUMS.sign
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: SHA512SUMS.sign
         path: out/SHA512SUMS.sign
