@@ -407,6 +407,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
 		byte totalMatches = 0;
+		bool rateLimited = false;
 
 		HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisRound = new();
 
@@ -442,6 +443,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				theirInventory = await Bot.ArchiWebHandler.GetInventoryAsync(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity)) && ((tradeHoldDuration.Value == 0) || !(item.Type is Asset.EType.FoilTradingCard or Asset.EType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)))).ToHashSetAsync().ConfigureAwait(false);
 			} catch (HttpRequestException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
+
+#if NETFRAMEWORK
+				if (e.StatusCode == (HttpStatusCode) 429) {
+#else
+				if (e.StatusCode == HttpStatusCode.TooManyRequests) {
+#endif
+					rateLimited = true;
+
+					break;
+				}
 
 				continue;
 			} catch (Exception e) {
@@ -702,6 +713,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ActivelyMatchingItemsRound, skippedSetsThisRound.Count));
 
 		// Keep matching when we either traded something this round (so it makes sense for a refresh) or if we didn't try all available bots yet (so it makes sense to keep going)
-		return ((totalMatches > 0) && ((skippedSetsThisRound.Count > 0) || triedSteamIDs.Values.All(static data => data.Tries < 2)), skippedSetsThisRound.Count > 0);
+		return (!rateLimited && (totalMatches > 0) && ((skippedSetsThisRound.Count > 0) || triedSteamIDs.Values.All(static data => data.Tries < 2)), skippedSetsThisRound.Count > 0);
 	}
 }

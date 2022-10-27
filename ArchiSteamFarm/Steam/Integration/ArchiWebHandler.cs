@@ -173,10 +173,14 @@ public sealed class ArchiWebHandler : IDisposable {
 						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 					}
 
-					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
+					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
 
 					if (response == null) {
 						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
+					}
+
+					if (response.StatusCode.IsClientErrorCode()) {
+						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode), null, response.StatusCode);
 					}
 
 					if (response.StatusCode.IsServerErrorCode()) {
@@ -189,7 +193,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 						// This is actually client error with a reason, so it doesn't make sense to retry
 						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.Error));
+						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.Error), null, response.StatusCode);
 					}
 				}
 			} finally {
