@@ -736,6 +736,12 @@ Thời gian hoạt động: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Đang vá tệp ASF...</value>
 	</data>
-	
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Vui lòng nhập cryptkey: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>Địa chỉ IP {0} không bị cấm!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
 </root>
