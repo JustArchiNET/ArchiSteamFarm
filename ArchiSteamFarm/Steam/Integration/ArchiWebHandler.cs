@@ -48,7 +48,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.Steam.Integration;
 
 public sealed class ArchiWebHandler : IDisposable {
-	internal const ushort MaxItemsInSingleInventoryRequest = 5000;
+	internal const ushort MaxItemsInSingleInventoryRequest = 2000;
 
 	private const string EconService = "IEconService";
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
