@@ -48,10 +48,11 @@ using SteamKit2;
 namespace ArchiSteamFarm.Steam.Integration;
 
 public sealed class ArchiWebHandler : IDisposable {
-	internal const ushort MaxItemsInSingleInventoryRequest = 2000;
+	internal const ushort RecommendedItemsInSingleInventoryRequest = 2000; // In regards to rate limits
 
 	private const string EconService = "IEconService";
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
+	private const ushort MaxItemsInSingleInventoryRequest = 5000;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const string SteamAppsService = "ISteamApps";
 	private const string SteamUserAuthService = "ISteamUserAuth";
@@ -135,6 +136,8 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new InvalidOperationException(nameof(ASF.InventorySemaphore));
 		}
 
+		ushort count = RecommendedItemsInSingleInventoryRequest;
+
 		if (steamID == 0) {
 			if (!Initialized) {
 				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
@@ -149,6 +152,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			steamID = Bot.SteamID;
+			count = MaxItemsInSingleInventoryRequest;
 		} else if (!new SteamID(steamID).IsIndividualAccount) {
 			throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(steamID)));
 		}
@@ -161,7 +165,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		int rateLimitingDelay = (ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay) * 1000;
 
 		while (true) {
-			Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?count={MaxItemsInSingleInventoryRequest}&l=english{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
+			Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?count={count}&l=english{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
 
 			await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
 

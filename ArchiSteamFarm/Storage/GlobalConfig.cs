@@ -73,7 +73,7 @@ public sealed class GlobalConfig {
 	public const byte DefaultIdleFarmingPeriod = 8;
 
 	[PublicAPI]
-	public const byte DefaultInventoryLimiterDelay = 3;
+	public const byte DefaultInventoryLimiterDelay = 4;
 
 	[PublicAPI]
 	public const bool DefaultIPC = true;
