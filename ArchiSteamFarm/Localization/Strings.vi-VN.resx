@@ -737,7 +737,7 @@ Thời gian hoạt động: {1}</value>
 		<value>Đang vá tệp ASF...</value>
 	</data>
 	<data name="UserInputCryptkey" xml:space="preserve">
-		<value>Vui lòng nhập cryptkey: </value>
+		<value>Vui lòng nhập khoá mật mã: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="ErrorIPNotBanned" xml:space="preserve">
