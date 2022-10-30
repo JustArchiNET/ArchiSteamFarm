@@ -96,12 +96,17 @@ StackTrace:
 		<value>คำขอล้มเหลว: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
 	</data>
-	
+	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+		<value>การตั้งค่าหลักไม่สามารถใช้งานได้ กรุณาตรวจสอบ {0} ว่าถูกต้องตามเงื่อนไข ศึกษาข้อมูลเพิ่มเติมจากหน้า 'setting up' จากคู่มือวิกิ</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
 	<data name="ErrorIsInvalid" xml:space="preserve">
 		<value>{0} ไม่ถูกต้อง!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>ไม่มีบอทที่ใช้งานได้ คุณลืมตั้งค่าบอทใน ASF หรือไม่? กรุณาศึกษาวิธีการใช้งานจากหน้า 'setting up' ในคู่มือวิกิ</value>
+	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} เป็นค่า null!</value>
 		<comment>{0} will be replaced by object's name</comment>
