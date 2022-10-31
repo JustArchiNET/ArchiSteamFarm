@@ -384,7 +384,7 @@
 		<value>正在登入…</value>
 	</data>
 	<data name="BotLogonSessionReplaced" xml:space="preserve">
-		<value>這個帳號似乎正被另一個 ASF 使用著，這是個未定義的行為，拒絕讓它繼續執行！</value>
+		<value>這個帳號似乎正被另一個 ASF 使用著，這是個未被定義的行為，拒絕讓它繼續執行！</value>
 	</data>
 	<data name="BotLootingFailed" xml:space="preserve">
 		<value>交易提案失敗！</value>
