@@ -5,7 +5,7 @@ on: [push, pull_request]
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_NOLOGO: true
-  DOTNET_SDK_VERSION: 6.0.x
+  DOTNET_SDK_VERSION: 7.0.x
 
 jobs:
   main:
