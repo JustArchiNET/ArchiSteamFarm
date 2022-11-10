@@ -607,7 +607,7 @@
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
-		<value>您執行的個人 Bot 帳號數量超過我們的建議上限（{0}）。請留意，此設定不受支援，且可能會導致各種 Steam 相關問題，包括帳號停權。請參閱常見問答了解詳情。</value>
+		<value>您執行的個人 Bot 帳號數量超過我們的建議上限（{0}）。請留意，此設定不受支援，且可能會造成各種 Steam 相關問題，包括帳號停權。請參閱常見問答了解詳情。</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
 	</data>
 	<data name="PluginLoaded" xml:space="preserve">
