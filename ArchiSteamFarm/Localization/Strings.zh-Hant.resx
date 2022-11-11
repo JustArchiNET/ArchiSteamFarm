@@ -703,7 +703,7 @@
 		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
 	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
-		<value>您的加密金鑰太短。我們推薦使用 {0} 位元組（字元）以上長度的金鑰。</value>
+		<value>您的加密金鑰太短。我們建議使用 {0} 位元組（字元）以上長度的金鑰。</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
