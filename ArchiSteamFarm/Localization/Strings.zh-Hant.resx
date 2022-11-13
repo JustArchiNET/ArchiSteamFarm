@@ -399,7 +399,7 @@
 		<value>您無法對自己發出交易請求！</value>
 	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
-		<value>這個 Bot 並未啟用 ASF 雙重驗證！您是否忘記將雙重驗證導入至 ASF？</value>
+		<value>這個 Bot 並未啟用 ASF 雙重驗證！您是否忘記將雙重驗證匯入至 ASF？</value>
 	</data>
 	<data name="BotNotConnected" xml:space="preserve">
 		<value>這個 Bot 尚未連線！</value>
@@ -718,7 +718,7 @@
 		<value>您正在以管理員權限（Root）執行ASF。這會給您的設備帶來重大的安全風險，且由於ASF的操作不需要管理員權限，我們建議盡可能以非管理員使用者身份執行它。</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
-		<value>您在不受支援的環境中執行 ASF，並提供 --ignore-unsupported-environment 引數。請注意，我們不對這種情況提供任何形式的支援，您完全需要自行承擔風險。您已經被警告過了。</value>
+		<value>您在不受支援的環境中執行 ASF，並提供 --ignore-unsupported-environment 引數。請注意，我們不對這種情形提供任何形式的支援，您完全需要自行承擔風險。您已經被警告過了。</value>
 	</data>
 	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
 		<value>正在從遠端伺服器擷取核對和…</value>
@@ -727,7 +727,7 @@
 		<value>正在驗證已下載的二進制檔案與來自遠端伺服器的核對和…</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>遠端伺服器對我們要更新到的版本一無所知。如果該版本是最近發布的，則可能出現這種情況──立刻拒絕進行更新程序作為額外的安全措施。</value>
+		<value>遠端伺服器對我們要更新到的版本一無所知。若該版本是最近發布的，則可能出現這種情形⸺立刻拒絕進行更新程序作為額外的安全措施。</value>
 	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>遠端伺服器回覆了不同的核對和，這可能意味著下載檔案損毀或遭受中間人攻擊，拒絕繼續更新程序！</value>
