@@ -148,7 +148,7 @@ internal static class OS {
 		}
 
 		if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-			return NativeMethods.GetEUID() == 0;
+			return NativeMethods.GetEuid() == 0;
 		}
 
 		// We can't determine whether user is running as root or not, so fallback to that not happening
@@ -343,61 +343,5 @@ internal static class OS {
 		UserWrite = 0x80,
 		UserRead = 0x100,
 		Combined777 = UserRead | UserWrite | UserExecute | GroupRead | GroupWrite | GroupExecute | OtherRead | OtherWrite | OtherExecute
-	}
-
-	private static class NativeMethods {
-		[SupportedOSPlatform("Windows")]
-		internal const EExecutionState AwakeExecutionState = EExecutionState.SystemRequired | EExecutionState.AwayModeRequired | EExecutionState.Continuous;
-
-		[SupportedOSPlatform("Windows")]
-		internal const uint EnableQuickEditMode = 0x0040;
-
-		[SupportedOSPlatform("Windows")]
-		internal const sbyte StandardInputHandle = -10;
-
-#pragma warning disable CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
-		[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-		[DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
-		[SupportedOSPlatform("FreeBSD")]
-		[SupportedOSPlatform("Linux")]
-		[SupportedOSPlatform("MacOS")]
-		internal static extern int Chmod(string path, int mode);
-#pragma warning restore CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
-
-		[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-		[DllImport("kernel32.dll")]
-		[SupportedOSPlatform("Windows")]
-		internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
-
-		[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-		[DllImport("libc", EntryPoint = "geteuid", SetLastError = true)]
-		[SupportedOSPlatform("FreeBSD")]
-		[SupportedOSPlatform("Linux")]
-		[SupportedOSPlatform("MacOS")]
-		internal static extern uint GetEUID();
-
-		[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-		[DllImport("kernel32.dll")]
-		[SupportedOSPlatform("Windows")]
-		internal static extern IntPtr GetStdHandle(int nStdHandle);
-
-		[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-		[DllImport("kernel32.dll")]
-		[SupportedOSPlatform("Windows")]
-		internal static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
-
-		[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-		[DllImport("kernel32.dll")]
-		[SupportedOSPlatform("Windows")]
-		internal static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);
-
-		[Flags]
-		[SupportedOSPlatform("Windows")]
-		internal enum EExecutionState : uint {
-			None = 0,
-			SystemRequired = 0x00000001,
-			AwayModeRequired = 0x00000040,
-			Continuous = 0x80000000
-		}
 	}
 }

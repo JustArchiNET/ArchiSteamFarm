@@ -4,6 +4,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<ApplicationIcon>../resources/ASF.ico</ApplicationIcon>
 		<Authors>JustArchi</Authors>
@@ -70,7 +71,7 @@
 		<DebugType>none</DebugType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
-		<WarningsNotAsErrors>CS8002,IL2026,IL2057,IL2072,IL2075,IL2104,SYSLIB1045,SYSLIB1054</WarningsNotAsErrors>
+		<WarningsNotAsErrors>CS8002,IL2026,IL2057,IL2072,IL2075,IL2104,SYSLIB1045</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<!-- Enable public signing if not part of Visual Studio, which is too stupid to understand what public signing is -->
