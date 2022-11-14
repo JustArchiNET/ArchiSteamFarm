@@ -307,7 +307,7 @@ jobs:
             # Limit active jobs in parallel to help with memory usage
             $jobs = $(Get-Job -State Running)
 
-            while (@($jobs).Count -ge 5) {
+            while (@($jobs).Count -ge 4) {
                 Wait-Job -Job $jobs -Any | Out-Null
 
                 $jobs = $(Get-Job -State Running)
