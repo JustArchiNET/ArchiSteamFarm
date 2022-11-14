@@ -36,40 +36,72 @@ internal static partial class NativeMethods {
 	internal const sbyte StandardInputHandle = -10;
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+	[SupportedOSPlatform("FreeBSD")]
+	[SupportedOSPlatform("Linux")]
+	[SupportedOSPlatform("MacOS")]
+#if NETFRAMEWORK
+#pragma warning disable CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
+	[DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
+	internal static extern int Chmod(string path, int mode);
+#pragma warning restore CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
+#else
 	[LibraryImport("libc", EntryPoint = "chmod", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
-	[SupportedOSPlatform("FreeBSD")]
-	[SupportedOSPlatform("Linux")]
-	[SupportedOSPlatform("MacOS")]
 	internal static partial int Chmod(string path, int mode);
+#endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-	[LibraryImport("kernel32.dll")]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
+#if NETFRAMEWORK
+	[DllImport("kernel32.dll")]
+	internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+#else
+	[LibraryImport("kernel32.dll")]
 	internal static partial bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+#endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-	[LibraryImport("libc", EntryPoint = "geteuid", SetLastError = true)]
 	[SupportedOSPlatform("FreeBSD")]
 	[SupportedOSPlatform("Linux")]
 	[SupportedOSPlatform("MacOS")]
+#if NETFRAMEWORK
+	[DllImport("libc", EntryPoint = "geteuid", SetLastError = true)]
+	internal static extern uint GetEuid();
+#else
+	[LibraryImport("libc", EntryPoint = "geteuid", SetLastError = true)]
 	internal static partial uint GetEuid();
+#endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-	[LibraryImport("kernel32.dll")]
 	[SupportedOSPlatform("Windows")]
+#if NETFRAMEWORK
+	[DllImport("kernel32.dll")]
+	internal static extern IntPtr GetStdHandle(int nStdHandle);
+#else
+	[LibraryImport("kernel32.dll")]
 	internal static partial IntPtr GetStdHandle(int nStdHandle);
+#endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-	[LibraryImport("kernel32.dll")]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
+#if NETFRAMEWORK
+	[DllImport("kernel32.dll")]
+	internal static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+#else
+	[LibraryImport("kernel32.dll")]
 	internal static partial bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+#endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-	[LibraryImport("kernel32.dll")]
 	[SupportedOSPlatform("Windows")]
+#if NETFRAMEWORK
+	[DllImport("kernel32.dll")]
+	internal static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);
+#else
+	[LibraryImport("kernel32.dll")]
 	internal static partial EExecutionState SetThreadExecutionState(EExecutionState executionState);
+#endif
 
 	[Flags]
 	[SupportedOSPlatform("Windows")]
