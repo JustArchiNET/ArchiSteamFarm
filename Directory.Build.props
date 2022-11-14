@@ -70,7 +70,7 @@
 		<DebugType>none</DebugType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
-		<WarningsNotAsErrors>CS8002,IL2026,IL2057,IL2072,IL2075,IL2104</WarningsNotAsErrors>
+		<WarningsNotAsErrors>CS8002,IL2026,IL2057,IL2072,IL2075,IL2104,SYSLIB1045,SYSLIB1054</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<!-- Enable public signing if not part of Visual Studio, which is too stupid to understand what public signing is -->
@@ -100,10 +100,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
-		<TargetFrameworks>net6.0;net481</TargetFrameworks>
+		<TargetFrameworks>net7.0;net481</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(OS)' != 'Windows_NT' AND '$(ASFNetFramework)' == ''">
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
 </Project>
