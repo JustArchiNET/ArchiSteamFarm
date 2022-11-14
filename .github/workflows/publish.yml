@@ -119,6 +119,7 @@ jobs:
     - name: Publish ArchiSteamFarm on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       env:
+        MAX_JOBS: 4
         VARIANTS: generic linux-arm linux-arm64 linux-x64 osx-arm64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
       shell: sh
       run: |
@@ -195,20 +196,20 @@ jobs:
             esac
         }
 
-        jobs=""
-
         for variant in $VARIANTS; do
+            while [ "$(jobs -p | wc -l)" -ge "$MAX_JOBS" ]; do
+                sleep 1
+            done
+
             publish "$variant" &
-            jobs="$jobs $!"
         done
 
-        for job in $jobs; do
-            wait "$job"
-        done
+        wait
 
     - name: Publish ArchiSteamFarm on Windows
       if: startsWith(matrix.os, 'windows-')
       env:
+        MAX_JOBS: 4
         VARIANTS: generic generic-netf linux-arm linux-arm64 linux-x64 osx-arm64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
       shell: pwsh
       run: |
@@ -307,7 +308,7 @@ jobs:
             # Limit active jobs in parallel to help with memory usage
             $jobs = $(Get-Job -State Running)
 
-            while (@($jobs).Count -ge 4) {
+            while (@($jobs).Count -ge $env:MAX_JOBS) {
                 Wait-Job -Job $jobs -Any | Out-Null
 
                 $jobs = $(Get-Job -State Running)
