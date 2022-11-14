@@ -35,14 +35,12 @@ internal static partial class NativeMethods {
 	[SupportedOSPlatform("Windows")]
 	internal const sbyte StandardInputHandle = -10;
 
-#pragma warning disable CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[LibraryImport("libc", EntryPoint = "chmod", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
 	[SupportedOSPlatform("FreeBSD")]
 	[SupportedOSPlatform("Linux")]
 	[SupportedOSPlatform("MacOS")]
 	internal static partial int Chmod(string path, int mode);
-#pragma warning restore CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[LibraryImport("kernel32.dll")]
