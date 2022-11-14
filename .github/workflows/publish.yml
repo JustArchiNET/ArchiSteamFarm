@@ -197,11 +197,11 @@ jobs:
         }
 
         for variant in $VARIANTS; do
+            publish "$variant" &
+
             while [ "$(jobs -p | wc -l)" -ge "$MAX_JOBS" ]; do
                 sleep 1
             done
-
-            publish "$variant" &
         done
 
         wait
