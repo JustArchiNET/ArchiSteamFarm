@@ -199,10 +199,19 @@ jobs:
         for variant in $VARIANTS; do
             publish "$variant" &
 
-            while [ "$(jobs -p | wc -l)" -ge "$MAX_JOBS" ]; do
+            while :; do
+                # We can't capture jobs -p result directly in POSIX sh
+                jobs -p > "/tmp/asf-publish-jobs.txt"
+
+                if [ "$(wc -l < "/tmp/asf-publish-jobs.txt")" -lt "$MAX_JOBS" ]; then
+                    break
+                fi
+
                 sleep 1
             done
         done
+
+        rm -f "/tmp/asf-publish-jobs.txt"
 
         wait
 
