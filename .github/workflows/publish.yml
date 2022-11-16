@@ -121,9 +121,9 @@ jobs:
       env:
         MAX_JOBS: 4
         VARIANTS: generic linux-arm linux-arm64 linux-x64 osx-arm64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
-      shell: sh
+      shell: bash
       run: |
-        set -eu
+        set -euo pipefail
 
         publish() {
             if [ "$1" = 'generic' ]; then
@@ -199,19 +199,10 @@ jobs:
         for variant in $VARIANTS; do
             publish "$variant" &
 
-            while :; do
-                # We can't capture jobs -p result directly in POSIX sh
-                jobs -p > "/tmp/asf-publish-jobs.txt"
-
-                if [ "$(wc -l < "/tmp/asf-publish-jobs.txt")" -lt "$MAX_JOBS" ]; then
-                    break
-                fi
-
-                sleep 1
+            while [ "$(jobs -p | wc -l)" -ge "$MAX_JOBS" ]; do
+                wait -n
             done
         done
-
-        rm -f "/tmp/asf-publish-jobs.txt"
 
         wait
 
