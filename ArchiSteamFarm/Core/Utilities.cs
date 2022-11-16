@@ -28,7 +28,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Resources;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
@@ -176,7 +175,7 @@ public static class Utilities {
 			throw new ArgumentNullException(nameof(key));
 		}
 
-		return Regex.IsMatch(key, @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+		return GeneratedRegexes.CdKey().IsMatch(key);
 	}
 
 	[PublicAPI]

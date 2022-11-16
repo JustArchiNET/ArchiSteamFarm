@@ -2300,9 +2300,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		// Steam login and password fields can contain ASCII characters only, including spaces
-		const string nonAsciiPattern = @"[^\u0000-\u007F]+";
-
-		string username = Regex.Replace(BotConfig.SteamLogin!, nonAsciiPattern, "", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+		string username = GeneratedRegexes.NonAscii().Replace(BotConfig.SteamLogin!, "");
 
 		if (string.IsNullOrEmpty(username)) {
 			ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(BotConfig.SteamLogin)));
@@ -2316,7 +2314,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (!string.IsNullOrEmpty(password)) {
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			password = Regex.Replace(password!, nonAsciiPattern, "", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+			password = GeneratedRegexes.NonAscii().Replace(password!, "");
 
 			if (string.IsNullOrEmpty(password)) {
 				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(BotConfig.SteamPassword)));

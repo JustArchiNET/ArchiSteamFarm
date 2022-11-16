@@ -540,7 +540,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			ushort cardsRemaining = 0;
-			Match progressMatch = Regex.Match(progressText, @"\d+");
+			Match progressMatch = GeneratedRegexes.Digits().Match(progressText);
 
 			// This might fail if we have no card drops remaining, 0 is not printed in this case - that's fine
 			if (progressMatch.Success) {
@@ -578,7 +578,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					continue;
 				}
 
-				Match cardsEarnedMatch = Regex.Match(cardsEarnedText, @"\d+");
+				Match cardsEarnedMatch = GeneratedRegexes.Digits().Match(cardsEarnedText);
 
 				if (!cardsEarnedMatch.Success) {
 					Bot.ArchiLogger.LogNullError(cardsEarnedMatch);
@@ -624,7 +624,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			float hours = 0.0F;
-			Match hoursMatch = Regex.Match(hoursText, @"[0-9\.,]+");
+			Match hoursMatch = GeneratedRegexes.Decimal().Match(hoursText);
 
 			// This might fail if we have exactly 0.0 hours played, as it's not printed in that case - that's fine
 			if (hoursMatch.Success) {
@@ -1024,7 +1024,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return null;
 		}
 
-		Match match = Regex.Match(progress, @"\d+");
+		Match match = GeneratedRegexes.Digits().Match(progress);
 
 		if (!match.Success) {
 			return 0;
