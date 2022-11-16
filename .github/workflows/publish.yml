@@ -209,7 +209,7 @@ jobs:
     - name: Publish ArchiSteamFarm on Windows
       if: startsWith(matrix.os, 'windows-')
       env:
-        MAX_JOBS: 3
+        MAX_JOBS: 2
         VARIANTS: generic generic-netf linux-arm linux-arm64 linux-x64 osx-arm64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
       shell: pwsh
       run: |
