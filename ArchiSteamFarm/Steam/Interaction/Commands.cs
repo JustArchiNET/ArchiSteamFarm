@@ -1986,7 +1986,7 @@ public sealed class Commands {
 					Regex regex;
 
 					try {
-						regex = new Regex(game);
+						regex = new Regex(game, RegexOptions.CultureInvariant);
 					} catch (ArgumentException e) {
 						Bot.ArchiLogger.LogGenericWarningException(e);
 						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(regex))));
