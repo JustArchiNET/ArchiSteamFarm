@@ -23,7 +23,7 @@ using System.Text.RegularExpressions;
 
 namespace ArchiSteamFarm.Core;
 
-internal static class GeneratedRegexes {
+internal static partial class GeneratedRegexes {
 	private const string CdKeyPattern = @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$";
 	private const string DecimalPattern = @"[0-9\.]+";
 	private const RegexOptions DefaultOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
