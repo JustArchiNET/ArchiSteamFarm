@@ -644,8 +644,8 @@ public sealed class WebBrowser : IDisposable {
 				TResult? obj;
 
 				try {
-					using StreamReader steamReader = new(response.Content);
-					using JsonReader jsonReader = new JsonTextReader(steamReader);
+					using StreamReader streamReader = new(response.Content);
+					using JsonReader jsonReader = new JsonTextReader(streamReader);
 
 					JsonSerializer serializer = new();
 
