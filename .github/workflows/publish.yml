@@ -405,16 +405,16 @@ jobs:
         name: ubuntu-latest_ASF-linux-x64
         path: out
 
-    - name: Download ASF-osx-arm64 artifact from osx-latest
+    - name: Download ASF-osx-arm64 artifact from macos-latest
       uses: actions/download-artifact@v3.0.1
       with:
-        name: osx-latest_ASF-osx-arm64
+        name: macos-latest_ASF-osx-arm64
         path: out
 
-    - name: Download ASF-osx-x64 artifact from osx-latest
+    - name: Download ASF-osx-x64 artifact from macos-latest
       uses: actions/download-artifact@v3.0.1
       with:
-        name: osx-latest_ASF-osx-x64
+        name: macos-latest_ASF-osx-x64
         path: out
 
     - name: Download ASF-win-x64 artifact from windows-latest
