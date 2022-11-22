@@ -622,7 +622,7 @@
 		<value>未找到任何內容！</value>
 	</data>
 	<data name="PluginsWarning" xml:space="preserve">
-		<value>您已載入一個以上的自訂外掛程式。由於我們無法支援修改過的配置，如遭遇任何問題，請向相關外掛程式的開發人員尋求協助。</value>
+		<value>您已載入一個以上的自訂外掛程式。由於我們無法支援修改過的設定，如遭遇任何問題，請向相關外掛程式的開發人員尋求協助。</value>
 	</data>
 	<data name="PleaseWait" xml:space="preserve">
 		<value>請稍候…</value>
