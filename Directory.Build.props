@@ -32,6 +32,14 @@
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
+		<TargetFrameworks>net7.0;net481</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(OS)' != 'Windows_NT' AND '$(ASFNetFramework)' == ''">
+		<TargetFramework>net7.0</TargetFramework>
+	</PropertyGroup>
+
 	<ItemGroup Condition="'$(TargetFramework)' == 'net481'">
 		<PackageReference Include="JustArchiNET.Madness" />
 		<PackageReference Include="TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray" />
@@ -100,13 +108,5 @@
 		<MetadataUpdaterSupport>false</MetadataUpdaterSupport>
 		<UseNativeHttpHandler>true</UseNativeHttpHandler>
 		<TrimMode>partial</TrimMode>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
-		<TargetFrameworks>net7.0;net481</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(OS)' != 'Windows_NT' AND '$(ASFNetFramework)' == ''">
-		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
 </Project>
