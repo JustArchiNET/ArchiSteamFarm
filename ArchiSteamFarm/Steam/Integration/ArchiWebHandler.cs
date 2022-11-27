@@ -188,16 +188,25 @@ public sealed class ArchiWebHandler : IDisposable {
 					}
 
 					if (response.StatusCode.IsServerErrorCode()) {
-						if (string.IsNullOrEmpty(response.Content?.Error)) {
+						if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
 							// This is a generic server error without a reason, try again
 							response = null;
 
 							continue;
 						}
 
+						// Interpret the reason and see if we should try again
+						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+						switch (response.Content!.ErrorCode) {
+							case EResult.DuplicateRequest:
+								response = null;
+
+								continue;
+						}
+
 						// This is actually client error with a reason, so it doesn't make sense to retry
 						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.Error), null, response.StatusCode);
+						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText), null, response.StatusCode);
 					}
 				}
 			} finally {
@@ -218,7 +227,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			if (response.Content.Result is not EResult.OK) {
-				throw new HttpRequestException(!string.IsNullOrEmpty(response.Content.Error) ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Error) : response.Content.Result.HasValue ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Result) : Strings.WarningFailed);
+				throw new HttpRequestException(!string.IsNullOrEmpty(response.Content.ErrorText) ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText) : response.Content.Result.HasValue ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Result) : Strings.WarningFailed);
 			}
 
 			if (response.Content.TotalInventoryCount == 0) {

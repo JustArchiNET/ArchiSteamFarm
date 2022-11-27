@@ -26,9 +26,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Steam.Integration;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Data;
 
@@ -40,14 +42,27 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonProperty("descriptions", Required = Required.DisallowNull)]
 	internal readonly ImmutableHashSet<Description> Descriptions = ImmutableHashSet<Description>.Empty;
 
-	[JsonProperty("error", Required = Required.DisallowNull)]
-	internal readonly string Error = "";
-
 	[JsonProperty("total_inventory_count", Required = Required.DisallowNull)]
 	internal readonly uint TotalInventoryCount;
 
+	internal EResult? ErrorCode { get; private set; }
+	internal string? ErrorText { get; private set; }
 	internal ulong LastAssetID { get; private set; }
 	internal bool MoreItems { get; private set; }
+
+	[JsonProperty("error", Required = Required.DisallowNull)]
+	private string Error {
+		set {
+			if (string.IsNullOrEmpty(value)) {
+				ASF.ArchiLogger.LogNullError(value);
+
+				return;
+			}
+
+			ErrorCode = SteamUtilities.InterpretError(value);
+			ErrorText = value;
+		}
+	}
 
 	[JsonProperty("last_assetid", Required = Required.DisallowNull)]
 	private string LastAssetIDText {

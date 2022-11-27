@@ -21,12 +21,52 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Localization;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Integration;
 
 internal static class SteamUtilities {
+	internal static EResult? InterpretError(string errorText) {
+		if (string.IsNullOrEmpty(errorText)) {
+			throw new ArgumentNullException(nameof(errorText));
+		}
+
+		int startIndex = errorText.LastIndexOf('(');
+
+		if (startIndex < 0) {
+			return null;
+		}
+
+		startIndex++;
+
+		int endIndex = errorText.IndexOf(')', startIndex + 1);
+
+		if (endIndex < 0) {
+			return null;
+		}
+
+		string errorCodeText = errorText[startIndex..endIndex];
+
+		if (!byte.TryParse(errorCodeText, out byte errorCode)) {
+			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorCodeText), errorCodeText));
+
+			return null;
+		}
+
+		EResult result = (EResult) errorCode;
+
+		if (!Enum.IsDefined(result)) {
+			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(EResult), result));
+
+			return null;
+		}
+
+		return result;
+	}
+
 	internal static Dictionary<uint, string>? ParseItems(this SteamApps.PurchaseResponseCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
