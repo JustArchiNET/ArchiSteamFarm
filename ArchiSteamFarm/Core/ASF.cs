@@ -819,31 +819,17 @@ public static class ASF {
 	}
 
 	private static async void OnRenamed(object sender, RenamedEventArgs e) {
+		// This function can be called with a possibility of OldName or (new) Name being null, we have to take it into account
 		ArgumentNullException.ThrowIfNull(sender);
 		ArgumentNullException.ThrowIfNull(e);
 
-		if (string.IsNullOrEmpty(e.OldFullPath)) {
-			throw new InvalidOperationException(nameof(e.OldFullPath));
+		if (!string.IsNullOrEmpty(e.OldName) && !string.IsNullOrEmpty(e.OldFullPath)) {
+			await OnDeletedFile(e.OldName, e.OldFullPath).ConfigureAwait(false);
 		}
 
-		if (string.IsNullOrEmpty(e.FullPath)) {
-			throw new InvalidOperationException(nameof(e.FullPath));
+		if (!string.IsNullOrEmpty(e.Name) && !string.IsNullOrEmpty(e.FullPath)) {
+			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
-
-		string? oldName = e.OldName;
-
-		if (string.IsNullOrEmpty(oldName)) {
-			oldName = Path.GetFileName(e.OldFullPath);
-		}
-
-		string? name = e.Name;
-
-		if (string.IsNullOrEmpty(name)) {
-			name = Path.GetFileName(e.FullPath);
-		}
-
-		await OnDeletedFile(oldName, e.OldFullPath).ConfigureAwait(false);
-		await OnCreatedFile(name, e.FullPath).ConfigureAwait(false);
 	}
 
 	private static async Task RegisterBots() {
