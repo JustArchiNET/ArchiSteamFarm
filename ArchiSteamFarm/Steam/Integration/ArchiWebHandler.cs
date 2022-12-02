@@ -180,7 +180,7 @@ public sealed class ArchiWebHandler : IDisposable {
 						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 					}
                     if (useSteamApis) {
-                        Uri request = new(SteamApisURL, $"/steam/inventory/{steamID}/{appID}/{contextID}?count={count}&l=english{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}&api_key={Bot.BotConfig.SteamApisToken}");
+                        Uri request = new(SteamApisURL, $"/steam/inventory/{steamID}/{appID}/{contextID}?l=english{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}&api_key={Bot.BotConfig.SteamApisToken}");
                         response = await WebBrowser.UrlGetToJsonObject<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
                     } else {
                         Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?count={count}&l=english{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
