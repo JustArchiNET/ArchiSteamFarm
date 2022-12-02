@@ -113,6 +113,9 @@ public sealed class BotConfig {
 	[PublicAPI]
 	public const string? DefaultSteamTradeToken = null;
 
+    [PublicAPI]
+	public const string? DefaultSteamApisToken = null;
+
 	[PublicAPI]
 	public const ETradingPreferences DefaultTradingPreferences = ETradingPreferences.None;
 
@@ -266,6 +269,10 @@ public sealed class BotConfig {
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
 	public string? SteamTradeToken { get; private set; } = DefaultSteamTradeToken;
 
+    [JsonProperty]
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
+    public string? SteamApisToken { get; private set; } = DefaultSteamApisToken;
+
 	[JsonProperty(Required = Required.DisallowNull)]
 	public ImmutableDictionary<ulong, EAccess> SteamUserPermissions { get; private set; } = DefaultSteamUserPermissions;
 
@@ -401,6 +408,9 @@ public sealed class BotConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSteamTradeToken() => !Saving || (SteamTradeToken != DefaultSteamTradeToken);
+
+    [UsedImplicitly]
+	public bool ShouldSerializeSteamApisToken() => !Saving || (SteamApisToken != DefaultSteamApisToken);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSteamUserPermissions() => !Saving || ((SteamUserPermissions != DefaultSteamUserPermissions) && ((SteamUserPermissions.Count != DefaultSteamUserPermissions.Count) || SteamUserPermissions.Except(DefaultSteamUserPermissions).Any()));

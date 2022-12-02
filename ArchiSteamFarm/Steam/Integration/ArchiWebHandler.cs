@@ -67,6 +67,9 @@ public sealed class ArchiWebHandler : IDisposable {
 	[PublicAPI]
 	public static Uri SteamStoreURL => new("https://store.steampowered.com");
 
+    [PublicAPI]
+	public static Uri SteamApisURL => new("https://api.steamapis.com");
+
 	private static ushort WebLimiterDelay => ASF.GlobalConfig?.WebLimiterDelay ?? GlobalConfig.DefaultWebLimiterDelay;
 
 	[PublicAPI]
@@ -163,9 +166,9 @@ public sealed class ArchiWebHandler : IDisposable {
 		HashSet<ulong>? assetIDs = null;
 
 		int rateLimitingDelay = (ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay) * 1000;
+        bool useSteamApis = steamID != Bot.SteamID && !string.IsNullOrEmpty(Bot.BotConfig.SteamApisToken);
 
 		while (true) {
-			Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?count={count}&l=english{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
 
 			await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
@@ -176,8 +179,13 @@ public sealed class ArchiWebHandler : IDisposable {
 					if ((i > 0) && (rateLimitingDelay > 0)) {
 						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 					}
-
-					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
+                    if (useSteamApis) {
+                        Uri request = new(SteamApisURL, $"/steam/inventory/{steamID}/{appID}/{contextID}?count={count}&l=english{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}&api_key={Bot.BotConfig.SteamApisToken}");
+                        response = await WebBrowser.UrlGetToJsonObject<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
+                    } else {
+                        Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?count={count}&l=english{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
+                        response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
+                    }
 
 					if (response == null) {
 						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
