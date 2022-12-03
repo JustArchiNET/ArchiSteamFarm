@@ -58,7 +58,7 @@ internal static class Server {
 			throw new ArgumentOutOfRangeException(nameof(tradeToken));
 		}
 
-		Uri request = new(ArchiNet.URL, "/Api/Announce");
+		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce");
 
 		AnnouncementRequestData data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, tradeToken, inventory, totalItemsCount, acceptedMatchableTypes, bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything), ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
 
@@ -70,7 +70,7 @@ internal static class Server {
 	internal static async Task<HttpStatusCode?> HeartBeatForListing(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		Uri request = new(ArchiNet.URL, "/Api/HeartBeat");
+		Uri request = new(ArchiNet.URL, "/Api/Listing/HeartBeat");
 
 		HeartBeatRequestData data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID);
 
