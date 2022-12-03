@@ -83,6 +83,26 @@ jobs:
             }
         }
 
+    - name: Prepare for publishing on Unix
+      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        dotnet restore
+        dotnet build ArchiSteamFarm -c "$CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+
+    - name: Prepare for publishing on Windows
+      if: startsWith(matrix.os, 'windows-')
+      shell: pwsh
+      run: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        $ProgressPreference = 'SilentlyContinue'
+
+        dotnet restore
+        dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       shell: sh
@@ -105,48 +125,6 @@ jobs:
         if ((Test-Path env:STEAM_TOKEN_DUMPER_TOKEN) -and ($env:STEAM_TOKEN_DUMPER_TOKEN) -and (Test-Path "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs" -PathType Leaf)) {
             (Get-Content "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs").Replace('STEAM_TOKEN_DUMPER_TOKEN', "$env:STEAM_TOKEN_DUMPER_TOKEN") | Set-Content "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs"
         }
-
-    - name: Prepare for publishing on Unix
-      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
-      shell: bash
-      run: |
-        set -euo pipefail
-
-        dotnet restore
-
-        dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
-
-    - name: Prepare for publishing on Windows
-      if: startsWith(matrix.os, 'windows-')
-      shell: pwsh
-      run: |
-        Set-StrictMode -Version Latest
-        $ErrorActionPreference = 'Stop'
-        $ProgressPreference = 'SilentlyContinue'
-
-        $PublishBlock = {
-            param($framework)
-
-            Set-StrictMode -Version Latest
-            $ErrorActionPreference = 'Stop'
-            $ProgressPreference = 'SilentlyContinue'
-
-            Set-Location "$env:GITHUB_WORKSPACE"
-
-            dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$framework" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
-
-            if ($LastExitCode -ne 0) {
-                throw "Last command failed."
-            }
-        }
-
-        dotnet restore
-
-        foreach ($framework in "$env:NET_CORE_VERSION","$env:NET_FRAMEWORK_VERSION") {
-            Start-Job -Name "$framework" $PublishBlock -ArgumentList "$framework"
-        }
-
-        Get-Job | Receive-Job -Wait
 
     - name: Publish official plugins on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
