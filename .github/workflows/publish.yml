@@ -112,7 +112,9 @@ jobs:
       run: |
         set -euo pipefail
 
-        dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+        dotnet restore
+
+        dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
 
     - name: Prepare for publishing on Windows
       if: startsWith(matrix.os, 'windows-')
@@ -131,12 +133,14 @@ jobs:
 
             Set-Location "$env:GITHUB_WORKSPACE"
 
-            dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$framework" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+            dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$framework" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
 
             if ($LastExitCode -ne 0) {
                 throw "Last command failed."
             }
         }
+
+        dotnet restore
 
         foreach ($framework in "$env:NET_CORE_VERSION","$env:NET_FRAMEWORK_VERSION") {
             Start-Job -Name "$framework" $PublishBlock -ArgumentList "$framework"
