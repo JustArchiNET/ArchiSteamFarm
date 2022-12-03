@@ -106,8 +106,43 @@ jobs:
             (Get-Content "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs").Replace('STEAM_TOKEN_DUMPER_TOKEN', "$env:STEAM_TOKEN_DUMPER_TOKEN") | Set-Content "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs"
         }
 
-    - name: Restore in preparation for publishing
-      run: dotnet restore
+    - name: Prepare for publishing on Unix
+      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+
+    - name: Prepare for publishing on Windows
+      if: startsWith(matrix.os, 'windows-')
+      shell: pwsh
+      run: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        $ProgressPreference = 'SilentlyContinue'
+
+        $PublishBlock = {
+            param($framework)
+
+            Set-StrictMode -Version Latest
+            $ErrorActionPreference = 'Stop'
+            $ProgressPreference = 'SilentlyContinue'
+
+            Set-Location "$env:GITHUB_WORKSPACE"
+
+            dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$framework" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+
+            if ($LastExitCode -ne 0) {
+                throw "Last command failed."
+            }
+        }
+
+        foreach ($framework in "$env:NET_CORE_VERSION","$env:NET_FRAMEWORK_VERSION") {
+            Start-Job -Name "$framework" $PublishBlock -ArgumentList "$framework"
+        }
+
+        Get-Job | Receive-Job -Wait
 
     - name: Publish official plugins on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
@@ -118,7 +153,7 @@ jobs:
         set -euo pipefail
 
         publish() {
-            dotnet publish "$1" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}/${NET_CORE_VERSION}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+            dotnet publish "$1" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}/${NET_CORE_VERSION}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
         }
 
         for plugin in $PLUGINS; do
@@ -150,7 +185,7 @@ jobs:
 
             Set-Location "$env:GITHUB_WORKSPACE"
 
-            dotnet publish "$plugin" -c "$env:CONFIGURATION" -f "$framework" -o "out\$plugin\$framework" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+            dotnet publish "$plugin" -c "$env:CONFIGURATION" -f "$framework" -o "out\$plugin\$framework" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
 
             if ($LastExitCode -ne 0) {
                 throw "Last command failed."
@@ -173,9 +208,6 @@ jobs:
         }
 
         Get-Job | Receive-Job -Wait
-
-    - name: Restore packages in preparation for ArchiSteamFarm publishing
-      run: dotnet restore ArchiSteamFarm -p:ContinuousIntegrationBuild=true --nologo
 
     - name: Publish ArchiSteamFarm on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
