@@ -28,6 +28,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Cards;
@@ -39,7 +40,7 @@ using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 
-namespace ArchiSteamFarm.Core;
+namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const ushort MaxItemsForFairBots = ArchiWebHandler.MaxItemsInSingleInventoryRequest * WebBrowser.MaxTries; // Determines which fair bots we'll deprioritize when matching due to excessive number of inventory requests they need to make, which are likely to fail in the process or cause excessive delays
@@ -59,6 +60,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 	private readonly Bot Bot;
 	private readonly SemaphoreSlim MatchActivelySemaphore = new(1, 1);
+	private readonly Timer? HeartBeatTimer;
 	private readonly Timer? MatchActivelyTimer;
 	private readonly SemaphoreSlim RequestsSemaphore = new(1, 1);
 
@@ -69,6 +71,15 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 	internal RemoteCommunication(Bot bot) {
 		Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+
+		if (Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
+			HeartBeatTimer = new Timer(
+				HeartBeat,
+				null,
+				TimeSpan.FromMinutes(MinHeartBeatTTL) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0), // Delay
+				TimeSpan.FromMinutes(1) // Period
+			);
+		}
 
 		if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively)) {
 			MatchActivelyTimer = new Timer(
@@ -86,6 +97,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		RequestsSemaphore.Dispose();
 
 		// Those are objects that might be null and the check should be in-place
+		HeartBeatTimer?.Dispose();
 		MatchActivelyTimer?.Dispose();
 	}
 
@@ -95,13 +107,17 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		RequestsSemaphore.Dispose();
 
 		// Those are objects that might be null and the check should be in-place
+		if (HeartBeatTimer != null) {
+			await HeartBeatTimer.DisposeAsync().ConfigureAwait(false);
+		}
+
 		if (MatchActivelyTimer != null) {
 			await MatchActivelyTimer.DisposeAsync().ConfigureAwait(false);
 		}
 	}
 
-	internal async Task OnHeartBeat() {
-		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
+	private async void HeartBeat(object? state = null) {
+		if (!Bot.IsConnectedAndLoggedOn || (Bot.HeartBeatFailures > 0)) {
 			return;
 		}
 

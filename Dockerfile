@@ -17,10 +17,12 @@ ARG TARGETOS
 ENV DOTNET_CLI_TELEMETRY_OPTOUT true
 ENV DOTNET_NOLOGO true
 ENV NET_CORE_VERSION net7.0
+ENV PLUGINS ArchiSteamFarm.OfficialPlugins.ImageMatcher
 ENV STEAM_TOKEN_DUMPER_NAME ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 WORKDIR /app
 COPY --from=build-node /app/ASF-ui/dist ASF-ui/dist
 COPY ArchiSteamFarm ArchiSteamFarm
+COPY ArchiSteamFarm.OfficialPlugins.ImageMatcher ArchiSteamFarm.OfficialPlugins.ImageMatcher
 COPY ArchiSteamFarm.OfficialPlugins.SteamTokenDumper ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 COPY resources resources
 COPY .editorconfig .editorconfig
@@ -28,19 +30,28 @@ COPY Directory.Build.props Directory.Build.props
 COPY Directory.Packages.props Directory.Packages.props
 COPY LICENSE.txt LICENSE.txt
 RUN dotnet --info && \
+    \
     case "$TARGETOS" in \
       "linux") ;; \
       *) echo "ERROR: Unsupported OS: ${TARGETOS}"; exit 1 ;; \
     esac && \
+    \
     case "$TARGETARCH" in \
       "amd64") asf_variant="${TARGETOS}-x64" ;; \
       "arm") asf_variant="${TARGETOS}-${TARGETARCH}" ;; \
       "arm64") asf_variant="${TARGETOS}-${TARGETARCH}" ;; \
       *) echo "ERROR: Unsupported CPU architecture: ${TARGETARCH}"; exit 1 ;; \
     esac && \
-    if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"; dotnet publish "${STEAM_TOKEN_DUMPER_NAME}" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained; fi && \
+    \
     dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained && \
-    if [ -d "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" ]; then mkdir -p "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; cp -pR "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/"* "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; fi
+    \
+    if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then \
+      sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" \
+      dotnet publish "${STEAM_TOKEN_DUMPER_NAME}" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained \
+    fi && \
+    for plugin in $PLUGINS; do \
+      dotnet publish "$plugin" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result/plugins/$plugin" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained \
+    done
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:7.0${IMAGESUFFIX} AS runtime
 ENV ASF_USER asf

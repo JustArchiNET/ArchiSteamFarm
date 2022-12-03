@@ -214,6 +214,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[PublicAPI]
 	public ECurrencyCode WalletCurrency { get; private set; }
 
+	internal byte HeartBeatFailures { get; private set; }
 	internal bool PlayingBlocked { get; private set; }
 	internal bool PlayingWasBlocked { get; private set; }
 
@@ -225,7 +226,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private Timer? ConnectionFailureTimer;
 	private bool FirstTradeSent;
 	private Timer? GamesRedeemerInBackgroundTimer;
-	private byte HeartBeatFailures;
 	private EResult LastLogOnResult;
 	private DateTime LastLogonSessionReplaced;
 	private bool LibraryLocked;
@@ -233,7 +233,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private ulong MasterChatGroupID;
 	private Timer? PlayingWasBlockedTimer;
 	private bool ReconnectOnUserInitiated;
-	private RemoteCommunication? RemoteCommunication;
 	private bool SendCompleteTypesScheduled;
 	private Timer? SendItemsTimer;
 	private bool SteamParentalActive;
@@ -345,7 +344,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ConnectionFailureTimer?.Dispose();
 		GamesRedeemerInBackgroundTimer?.Dispose();
 		PlayingWasBlockedTimer?.Dispose();
-		RemoteCommunication?.Dispose();
 		SendItemsTimer?.Dispose();
 		SteamSaleEvent?.Dispose();
 	}
@@ -380,10 +378,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (SendItemsTimer != null) {
 			await SendItemsTimer.DisposeAsync().ConfigureAwait(false);
-		}
-
-		if (RemoteCommunication != null) {
-			await RemoteCommunication.DisposeAsync().ConfigureAwait(false);
 		}
 
 		if (SteamSaleEvent != null) {
@@ -1946,10 +1940,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			HeartBeatFailures = 0;
-
-			if (RemoteCommunication != null) {
-				Utilities.InBackground(RemoteCommunication.OnHeartBeat);
-			}
 		} catch (Exception e) {
 			ArchiLogger.LogGenericDebuggingException(e);
 
@@ -2095,16 +2085,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (BotConfig.AutoSteamSaleEvent) {
 			SteamSaleEvent = new SteamSaleEvent(this);
-		}
-
-		if (RemoteCommunication != null) {
-			await RemoteCommunication.DisposeAsync().ConfigureAwait(false);
-
-			RemoteCommunication = null;
-		}
-
-		if (BotConfig.RemoteCommunication > BotConfig.ERemoteCommunication.None) {
-			RemoteCommunication = new RemoteCommunication(this);
 		}
 
 		await PluginsCore.OnBotInitModules(this, BotConfig.AdditionalProperties).ConfigureAwait(false);
@@ -2862,10 +2842,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				Utilities.InBackground(InitializeFamilySharing);
 
-				if (RemoteCommunication != null) {
-					Utilities.InBackground(RemoteCommunication.OnLoggedOn);
-				}
-
 				ResetPersonaState();
 
 				if (BotConfig.SteamMasterClanID != 0) {
@@ -3013,12 +2989,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		);
 	}
 
-	private void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
+	private async void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.FriendID != SteamID) {
 			return;
 		}
+
+		Nickname = callback.Name;
 
 		string? avatarHash = null;
 
@@ -3033,11 +3011,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		AvatarHash = avatarHash;
-		Nickname = callback.Name;
 
-		if (RemoteCommunication != null) {
-			Utilities.InBackground(() => RemoteCommunication.OnPersonaState(callback.Name, avatarHash));
-		}
+		await PluginsCore.OnSelfPersonaState(this, callback, Nickname, AvatarHash).ConfigureAwait(false);
 	}
 
 	private async void OnPlayingSessionState(ArchiHandler.PlayingSessionStateCallback callback) {
