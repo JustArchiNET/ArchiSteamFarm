@@ -29,28 +29,29 @@ COPY .editorconfig .editorconfig
 COPY Directory.Build.props Directory.Build.props
 COPY Directory.Packages.props Directory.Packages.props
 COPY LICENSE.txt LICENSE.txt
-RUN dotnet --info && \
+RUN set -eu; \
+    dotnet --info; \
     \
     case "$TARGETOS" in \
       "linux") ;; \
       *) echo "ERROR: Unsupported OS: ${TARGETOS}"; exit 1 ;; \
-    esac && \
+    esac; \
     \
     case "$TARGETARCH" in \
       "amd64") asf_variant="${TARGETOS}-x64" ;; \
       "arm") asf_variant="${TARGETOS}-${TARGETARCH}" ;; \
       "arm64") asf_variant="${TARGETOS}-${TARGETARCH}" ;; \
       *) echo "ERROR: Unsupported CPU architecture: ${TARGETARCH}"; exit 1 ;; \
-    esac && \
+    esac; \
     \
-    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained && \
+    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained; \
     \
     if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then \
-      sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" \
-      dotnet publish "${STEAM_TOKEN_DUMPER_NAME}" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained \
-    fi && \
+      sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"; \
+      dotnet publish "${STEAM_TOKEN_DUMPER_NAME}" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained; \
+    fi; \
     for plugin in $PLUGINS; do \
-      dotnet publish "$plugin" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result/plugins/$plugin" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained \
+      dotnet publish "$plugin" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result/plugins/$plugin" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained; \
     done
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:7.0${IMAGESUFFIX} AS runtime
@@ -73,8 +74,9 @@ EXPOSE 1242
 WORKDIR /app
 COPY --from=build-dotnet /app/out/result .
 
-RUN groupadd -r -g 1000 asf && \
-    useradd -r -d /app -g 1000 -u 1000 asf && \
+RUN set -eu; \
+    groupadd -r -g 1000 asf; \
+    useradd -r -d /app -g 1000 -u 1000 asf; \
     chown -hR asf:asf /app
 
 VOLUME ["/app/config", "/app/logs"]
