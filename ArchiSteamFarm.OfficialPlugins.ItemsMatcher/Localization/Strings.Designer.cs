@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization {
+namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Localization {
     using System;
     
     
@@ -28,7 +28,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization {
         internal static System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.Equals(null, resourceMan)) {
-                    System.Resources.ResourceManager temp = new System.Resources.ResourceManager("ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization.Strings", typeof(Strings).Assembly);
+                    System.Resources.ResourceManager temp = new System.Resources.ResourceManager("ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Localization.Strings", typeof(Strings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

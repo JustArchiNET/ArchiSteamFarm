@@ -64,15 +64,15 @@
 	</resheader>
 	<data name="PluginDisabledMissingBuildToken" xml:space="preserve">
 		<value>{0} has been disabled due to a missing build token</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "ItemsMatcher")</comment>
 	</data>
 	<data name="PluginDisabledInConfig" xml:space="preserve">
 		<value>{0} is currently disabled according to your configuration. If you'd like to help SteamDB in data submission, please check out our wiki.</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "ItemsMatcher")</comment>
 	</data>
 	<data name="PluginInitializedAndEnabled" xml:space="preserve">
 		<value>{0} has been initialized successfully, thank you in advance for your help. The first submission will happen in approximately {1} from now.</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "ItemsMatcher"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
 	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} could not be loaded, a fresh instance will be initialized...</value>

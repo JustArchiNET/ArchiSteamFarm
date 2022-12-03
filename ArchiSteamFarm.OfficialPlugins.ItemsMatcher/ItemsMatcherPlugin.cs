@@ -25,7 +25,7 @@ using System.ComponentModel;
 using System.Composition;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
+using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
