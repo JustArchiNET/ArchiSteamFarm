@@ -76,8 +76,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			HeartBeatTimer = new Timer(
 				HeartBeat,
 				null,
-				TimeSpan.FromMinutes(MinHeartBeatTTL) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0), // Delay
-				TimeSpan.FromMinutes(1) // Period
+				TimeSpan.FromMinutes(MinHeartBeatTTL) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0),
+				TimeSpan.FromMinutes(1)
 			);
 		}
 
@@ -85,8 +85,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			MatchActivelyTimer = new Timer(
 				MatchActively,
 				null,
-				TimeSpan.FromHours(1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0), // Delay
-				TimeSpan.FromHours(8) // Period
+				TimeSpan.FromHours(1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0),
+				TimeSpan.FromHours(8)
 			);
 		}
 	}
@@ -136,7 +136,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		try {
-			HttpStatusCode? response = await ArchiNet.HeartBeatForListing(Bot).ConfigureAwait(false);
+			HttpStatusCode? response = await Server.HeartBeatForListing(Bot).ConfigureAwait(false);
 
 			if (!response.HasValue) {
 				return;
@@ -220,7 +220,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			HashSet<Asset> inventory;
 
 			try {
-				inventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
+				inventory = await Bot.ArchiWebHandler.GetInventoryAsync().ToHashSetAsync().ConfigureAwait(false);
 			} catch (HttpRequestException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 
@@ -237,6 +237,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
+			int totalItemsCount = inventory.Count;
+
+			// Remove from data items that we're not willing to trade
+			inventory.RemoveWhere(item => !item.Tradable || !acceptedMatchableTypes.Contains(item.Type));
+
 			LastAnnouncementCheck = DateTime.UtcNow;
 
 			// This is actual inventory
@@ -247,15 +252,35 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			HttpStatusCode? response = await ArchiNet.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
+			HttpStatusCode? response = await Server.AnnounceForListing(Bot, inventory, totalItemsCount, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
 
 			if (!response.HasValue) {
 				return;
 			}
 
 			if (response.Value.IsClientErrorCode()) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response));
+
 				LastHeartBeat = DateTime.MinValue;
 				ShouldSendHeartBeats = false;
+
+				switch (response) {
+					case HttpStatusCode.Forbidden:
+						// ArchiNet told us to stop submitting data for now
+						LastAnnouncementCheck = DateTime.UtcNow.AddYears(1);
+
+						break;
+#if NETFRAMEWORK
+				case (HttpStatusCode) 429:
+#else
+					case HttpStatusCode.TooManyRequests:
+#endif
+
+						// ArchiNet told us to try again later
+						LastAnnouncementCheck = DateTime.UtcNow.AddDays(1);
+
+						break;
+				}
 
 				return;
 			}

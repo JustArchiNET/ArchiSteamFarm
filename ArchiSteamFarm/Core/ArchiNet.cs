@@ -24,61 +24,17 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Storage;
-using ArchiSteamFarm.Storage;
-using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Core;
 
 internal static class ArchiNet {
-	private static Uri URL => new("https://asf.JustArchi.net");
-
-	internal static async Task<HttpStatusCode?> AnnounceForListing(Bot bot, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, string tradeToken, string? nickname = null, string? avatarHash = null) {
-		ArgumentNullException.ThrowIfNull(bot);
-
-		if ((inventory == null) || (inventory.Count == 0)) {
-			throw new ArgumentNullException(nameof(inventory));
-		}
-
-		if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0)) {
-			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
-		}
-
-		if (string.IsNullOrEmpty(tradeToken)) {
-			throw new ArgumentNullException(nameof(tradeToken));
-		}
-
-		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
-			throw new ArgumentOutOfRangeException(nameof(tradeToken));
-		}
-
-		Uri request = new(URL, "/Api/Announce");
-
-		Dictionary<string, string> data = new(10, StringComparer.Ordinal) {
-			{ "AvatarHash", avatarHash ?? "" },
-			{ "GamesCount", inventory.Select(static item => item.RealAppID).Distinct().Count().ToString(CultureInfo.InvariantCulture) },
-			{ "Guid", (ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid()).ToString("N") },
-			{ "ItemsCount", inventory.Count.ToString(CultureInfo.InvariantCulture) },
-			{ "MatchableTypes", JsonConvert.SerializeObject(acceptedMatchableTypes) },
-			{ "MatchEverything", bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" },
-			{ "MaxTradeHoldDuration", (ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration).ToString(CultureInfo.InvariantCulture) },
-			{ "Nickname", nickname ?? "" },
-			{ "SteamID", bot.SteamID.ToString(CultureInfo.InvariantCulture) },
-			{ "TradeToken", tradeToken }
-		};
-
-		BasicResponse? response = await bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
-
-		return response?.StatusCode;
-	}
+	internal static Uri URL => new("https://asf-backend.JustArchi.net");
 
 	internal static async Task<string?> FetchBuildChecksum(Version version, string variant) {
 		ArgumentNullException.ThrowIfNull(version);
@@ -110,21 +66,6 @@ internal static class ArchiNet {
 		ObjectResponse<ImmutableHashSet<ListedUser>>? response = await bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
 
 		return response?.Content;
-	}
-
-	internal static async Task<HttpStatusCode?> HeartBeatForListing(Bot bot) {
-		ArgumentNullException.ThrowIfNull(bot);
-
-		Uri request = new(URL, "/Api/HeartBeat");
-
-		Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
-			{ "Guid", (ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid()).ToString("N") },
-			{ "SteamID", bot.SteamID.ToString(CultureInfo.InvariantCulture) }
-		};
-
-		BasicResponse? response = await bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
-
-		return response?.StatusCode;
 	}
 
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
