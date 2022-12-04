@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.ComponentModel;
 using System.Composition;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -36,7 +35,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 [Export(typeof(IPlugin))]
-internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotConnection, IBotIdentity {
+internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotIdentity {
 	private static readonly ConcurrentDictionary<Bot, RemoteCommunication> RemoteCommunications = new();
 
 	[JsonProperty]
@@ -51,16 +50,6 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotConnection,
 		if (RemoteCommunications.TryRemove(bot, out RemoteCommunication? remoteCommunications)) {
 			await remoteCommunications.DisposeAsync().ConfigureAwait(false);
 		}
-	}
-
-	public Task OnBotDisconnected(Bot bot, EResult reason) {
-		ArgumentNullException.ThrowIfNull(bot);
-
-		if (!Enum.IsDefined(reason)) {
-			throw new InvalidEnumArgumentException(nameof(reason), (int) reason, typeof(EResult));
-		}
-
-		return Task.CompletedTask;
 	}
 
 	public async Task OnBotInit(Bot bot) {
@@ -79,16 +68,6 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotConnection,
 		if (!RemoteCommunications.TryAdd(bot, remoteCommunication)) {
 			await remoteCommunication.DisposeAsync().ConfigureAwait(false);
 		}
-	}
-
-	public async Task OnBotLoggedOn(Bot bot) {
-		ArgumentNullException.ThrowIfNull(bot);
-
-		if (!RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication)) {
-			return;
-		}
-
-		await remoteCommunication.OnLoggedOn().ConfigureAwait(false);
 	}
 
 	public override Task OnLoaded() {
