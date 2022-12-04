@@ -387,7 +387,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Server.GetListedUsersForMatching(Bot, ourInventory, acceptedMatchableTypes, tradeToken).ConfigureAwait(false);
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Server.GetListedUsersForMatching(Bot, ourInventory, acceptedMatchableTypes, tradeToken!).ConfigureAwait(false);
 
 			if (response == null) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response)));
