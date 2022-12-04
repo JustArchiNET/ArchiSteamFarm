@@ -19,46 +19,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
+using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
 using ArchiSteamFarm.Steam.Data;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
+namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Responses;
 
-internal sealed class AssetForListing {
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+internal sealed class ListedUser {
 	[JsonProperty(Required = Required.Always)]
-	internal readonly uint Amount;
-
-	[JsonProperty(Required = Required.Always)]
-	internal readonly ulong AssetID;
+	internal readonly ImmutableHashSet<AssetForListing> Assets = ImmutableHashSet<AssetForListing>.Empty;
 
 	[JsonProperty(Required = Required.Always)]
-	internal readonly ulong ClassID;
+	internal readonly ImmutableHashSet<Asset.EType> MatchableTypes = ImmutableHashSet<Asset.EType>.Empty;
+
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
+	[JsonProperty(Required = Required.Always)]
+	internal readonly bool MatchEverything;
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
+	[JsonProperty(Required = Required.Always)]
+	internal readonly byte MaxTradeHoldDuration;
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
+	[JsonProperty(Required = Required.Always)]
+	internal readonly ulong SteamID;
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
 	[JsonProperty(Required = Required.Always)]
-	internal readonly Asset.ERarity Rarity;
-
-	[JsonProperty(Required = Required.Always)]
-	internal readonly uint RealAppID;
-
-	[JsonProperty(Required = Required.Always)]
-	internal readonly Asset.EType Type;
-
-	internal AssetForListing(Asset asset) {
-		ArgumentNullException.ThrowIfNull(asset);
-
-		AssetID = asset.AssetID;
-		Amount = asset.Amount;
-
-		ClassID = asset.ClassID;
-
-		RealAppID = asset.RealAppID;
-		Type = asset.Type;
-		Rarity = asset.Rarity;
-	}
+	internal readonly string TradeToken = "";
 
 	[JsonConstructor]
-	private AssetForListing() { }
-
-	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
+	private ListedUser() { }
 }

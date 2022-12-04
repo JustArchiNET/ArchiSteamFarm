@@ -31,7 +31,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
 
-internal sealed class AnnouncementRequestData {
+internal sealed class AnnouncementRequest {
 	[JsonProperty]
 	internal readonly string? AvatarHash;
 
@@ -62,7 +62,7 @@ internal sealed class AnnouncementRequestData {
 	[JsonProperty(Required = Required.Always)]
 	internal readonly string TradeToken;
 
-	internal AnnouncementRequestData(Guid guid, ulong steamID, string tradeToken, IReadOnlyCollection<Asset> inventory, int totalItemsCount, IReadOnlyCollection<Asset.EType> matchableTypes, bool matchEverything, byte maxTradeHoldDuration, string? nickname = null, string? avatarHash = null) {
+	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, IReadOnlyCollection<Asset> inventory, int totalItemsCount, IReadOnlyCollection<Asset.EType> matchableTypes, bool matchEverything, byte maxTradeHoldDuration, string? nickname = null, string? avatarHash = null) {
 		if (guid == Guid.Empty) {
 			throw new ArgumentOutOfRangeException(nameof(guid));
 		}

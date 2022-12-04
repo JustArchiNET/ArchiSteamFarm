@@ -21,10 +21,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
+using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Responses;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
@@ -60,11 +62,43 @@ internal static class Server {
 
 		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce");
 
-		AnnouncementRequestData data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, tradeToken, inventory, totalItemsCount, acceptedMatchableTypes, bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything), ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
+		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, tradeToken, inventory, totalItemsCount, acceptedMatchableTypes, bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything), ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
 
 		BasicResponse? response = await bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
 		return response?.StatusCode;
+	}
+
+	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Bot bot, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, string tradeToken) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		if ((inventory == null) || (inventory.Count == 0)) {
+			throw new ArgumentNullException(nameof(inventory));
+		}
+
+		if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0)) {
+			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
+		}
+
+		if (string.IsNullOrEmpty(tradeToken)) {
+			throw new ArgumentNullException(nameof(tradeToken));
+		}
+
+		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
+			throw new ArgumentOutOfRangeException(nameof(tradeToken));
+		}
+
+		Uri request = new(ArchiNet.URL, "/Api/Listing/Inventories");
+
+		InventoriesRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, tradeToken, inventory, acceptedMatchableTypes, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration);
+
+		ObjectResponse<ImmutableHashSet<ListedUser>>? response = await bot.ArchiWebHandler.WebBrowser.UrlPostToJsonObject<ImmutableHashSet<ListedUser>, InventoriesRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+
+		if (response == null) {
+			return null;
+		}
+
+		return (response.StatusCode, response.Content ?? ImmutableHashSet<ListedUser>.Empty);
 	}
 
 	internal static async Task<HttpStatusCode?> HeartBeatForListing(Bot bot) {
@@ -72,7 +106,7 @@ internal static class Server {
 
 		Uri request = new(ArchiNet.URL, "/Api/Listing/HeartBeat");
 
-		HeartBeatRequestData data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID);
+		HeartBeatRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID);
 
 		BasicResponse? response = await bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 

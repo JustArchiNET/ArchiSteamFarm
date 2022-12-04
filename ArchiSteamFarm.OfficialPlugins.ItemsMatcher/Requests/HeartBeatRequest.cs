@@ -25,14 +25,14 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
 
-internal sealed class HeartBeatRequestData {
+internal sealed class HeartBeatRequest {
 	[JsonProperty(Required = Required.Always)]
 	internal readonly Guid Guid;
 
 	[JsonProperty(Required = Required.Always)]
 	internal readonly ulong SteamID;
 
-	internal HeartBeatRequestData(Guid guid, ulong steamID) {
+	internal HeartBeatRequest(Guid guid, ulong steamID) {
 		if (guid == Guid.Empty) {
 			throw new ArgumentOutOfRangeException(nameof(guid));
 		}
