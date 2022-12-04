@@ -131,8 +131,12 @@ StackTrace:
 	<data name="WarningFailed" xml:space="preserve">
 		<value>ล้มเหลว!</value>
 	</data>
-	
-	
+	<data name="GlobalConfigChanged" xml:space="preserve">
+		<value>ไฟล์ config มีการเปลี่ยนแปลง!</value>
+	</data>
+	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+		<value>ไฟล์ config ถูกลบออกแล้ว!</value>
+	</data>
 	<data name="IgnoringTrade" xml:space="preserve">
 		<value>เพิกเฉยการแลกเปลี่ยน: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
@@ -160,10 +164,19 @@ StackTrace:
 	<data name="Success" xml:space="preserve">
 		<value>สำเร็จ!</value>
 	</data>
-	
-	
-	
-	
+	<data name="UnlockingParentalAccount" xml:space="preserve">
+		<value>กําลังปลดล็อกบัญชีของผู้ปกครอง...</value>
+	</data>
+	<data name="UpdateCheckingNewVersion" xml:space="preserve">
+		<value>กำลังตรวจสอบเวอร์ชันใหม่...</value>
+	</data>
+	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
+		<value>ดาวน์โหลดเวอร์ชันใหม่: {0} ({1} MB)... ในขณะที่รอให้พิจารณาบริจาคหากคุณชื่นชอบงานที่ทํา! :)</value>
+		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+	</data>
+	<data name="UpdateFinished" xml:space="preserve">
+		<value>กระบวนการอัปเดตเสร็จสิ้น!</value>
+	</data>
 	
 	
 	<data name="UserInputSteam2FA" xml:space="preserve">
@@ -401,7 +414,11 @@ StackTrace:
 		<value>ปฏิเสธการเข้าถึง!</value>
 	</data>
 	
-	
+	<data name="BotStats" xml:space="preserve">
+		<value>การใช้หน่วยความจําปัจจุบัน: {0} MB.
+เวลาทํางานของกระบวนการ: {1}</value>
+		<comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+	</data>
 	
 	
 	
