@@ -7,8 +7,8 @@
 		<PackageVersion Include="JetBrains.Annotations" Version="2022.3.1" />
 		<PackageVersion Include="Markdig.Signed" Version="0.30.4" />
 		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
-		<PackageVersion Include="MSTest.TestAdapter" Version="2.2.10" />
-		<PackageVersion Include="MSTest.TestFramework" Version="2.2.10" />
+		<PackageVersion Include="MSTest.TestAdapter" Version="3.0.0" />
+		<PackageVersion Include="MSTest.TestFramework" Version="3.0.0" />
 		<PackageVersion Include="Newtonsoft.Json" Version="13.0.2" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
 		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.2.0" />
