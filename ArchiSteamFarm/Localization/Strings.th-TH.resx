@@ -177,13 +177,21 @@ StackTrace:
 	<data name="UpdateFinished" xml:space="preserve">
 		<value>กระบวนการอัปเดตเสร็จสิ้น!</value>
 	</data>
-	
-	
+	<data name="UpdateNewVersionAvailable" xml:space="preserve">
+		<value>ASF เวอร์ชันใหม่พร้อมใช้งานแล้ว! โปรดอัปเดตด้วยตนเอง!</value>
+	</data>
+	<data name="UpdateVersionInfo" xml:space="preserve">
+		<value>เวอร์ชันบนเครื่อง: {0} | เวอร์ชันบนเซิร์ฟเวอร์: {1}</value>
+		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>โปรดป้อนรหัส 2FA ของคุณจากแอปยืนยันตัวตน Steam ของคุณ: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>โปรดกรอกรหัสตรวจสอบสิทธิ์ของ SteamGuard ที่ส่งไปยังอีเมลของคุณ: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>โปรดป้อนชื่อล็อกอิน Steam ของคุณ: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -212,16 +220,27 @@ StackTrace:
 	</data>
 	
 	
-	
+	<data name="BotStatusIdlingList" xml:space="preserve">
+		<value>บอตกำลังฟาร์มเกม: เหลือให้ฟาร์ม {0} จากทั้งหมด {1} เกม (การ์ด {2} ใบ) (อีก ~{3})</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
 	<data name="CheckingFirstBadgePage" xml:space="preserve">
 		<value>กำลังตรวจสอบหน้าเหรียญตราแรก…</value>
 	</data>
-	
-	
+	<data name="CheckingOtherBadgePages" xml:space="preserve">
+		<value>กำลังตรวจสอบหน้าเหรียญตราอื่น ๆ…</value>
+	</data>
+	<data name="ChosenFarmingAlgorithm" xml:space="preserve">
+		<value>อัลกอริทึมการฟาร์มที่เลือกใช้: {0}</value>
+		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+	</data>
 	<data name="Done" xml:space="preserve">
 		<value>เสร็จสิ้น!</value>
 	</data>
-	
+	<data name="GamesToIdle" xml:space="preserve">
+		<value>มีเกมเหลือให้เราฟาร์มอีก {0} เกม (การ์ด {1} ใบ) (อีก ~{2})...</value>
+		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
 	<data name="IdlingFinished" xml:space="preserve">
 		<value>การฟาร์มเสร็จแล้ว!</value>
 	</data>
@@ -241,7 +260,9 @@ StackTrace:
 		<value>การฟาร์มหยุดแล้ว!</value>
 	</data>
 	
-	
+	<data name="NothingToIdle" xml:space="preserve">
+		<value>บัญชีนี้ไม่มีอะไรให้เราฟาร์มเลย!</value>
+	</data>
 	<data name="NowIdling" xml:space="preserve">
 		<value>กำลังฟาร์ม: {0} ({1})</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -272,12 +293,27 @@ StackTrace:
 	</data>
 	
 	
-	
-	
-	
-	
-	
-	
+	<data name="BotAcceptingGift" xml:space="preserve">
+		<value>กำลังยอมรับของขวัญ: {0}...</value>
+		<comment>{0} will be replaced by giftID (number)</comment>
+	</data>
+	<data name="BotAccountLimited" xml:space="preserve">
+		<value>บัญชีนี้ถูกจำกัด ไม่สามารถเริ่มกระบวนการฟาร์มได้จนกว่าข้อจำกัดจะถูกลบออก!</value>
+	</data>
+	<data name="BotAddLicense" xml:space="preserve">
+		<value>ไอดี: {0} | สถานะ: {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotAddLicenseWithItems" xml:space="preserve">
+		<value>ไอดี: {0} | สถานะ: {1} | รายการ: {2}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+	</data>
+	<data name="BotAlreadyRunning" xml:space="preserve">
+		<value>บอตตัวนี้กำลังทำงานอยู่แล้ว!</value>
+	</data>
+	<data name="BotAuthenticatorConverting" xml:space="preserve">
+		<value>กำลังแปลง .maFile ให้เป็นฟอร์แมตสำหรับ ASF...</value>
+	</data>
 	
 	<data name="BotAuthenticatorToken" xml:space="preserve">
 		<value>โทเคน 2FA: {0}</value>
@@ -329,16 +365,33 @@ StackTrace:
 		<value>ไม่สามารถส่งข้อเสนอแลกเปลี่ยนให้ตัวเองได้!</value>
 	</data>
 	
-	
-	
-	
-	
+	<data name="BotNotConnected" xml:space="preserve">
+		<value>อินสแตนซ์ของบอตตัวนี้ไม่ได้รับการเชื่อมต่อ!</value>
+	</data>
+	<data name="BotNotOwnedYet" xml:space="preserve">
+		<value>ยังไม่ได้เป็นเจ้าของ: {0}</value>
+		<comment>{0} will be replaced by query (string)</comment>
+	</data>
+	<data name="BotOwnedAlreadyWithName" xml:space="preserve">
+		<value>เป็นเจ้าของแล้ว: {0} | {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>แต้มคงเหลือ: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
 	
 	<data name="BotReconnecting" xml:space="preserve">
 		<value>กำลังเชื่อมต่อใหม่...</value>
 	</data>
-	
-	
+	<data name="BotRedeem" xml:space="preserve">
+		<value>คีย์: {0} | สถานะ: {1}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotRedeemWithItems" xml:space="preserve">
+		<value>คีย์: {0} | สถานะ: {1} | รายการ: {2}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
+	</data>
 	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
 		<value>ลบรหัสเข้าสู่ระบบที่หมดอายุแล้ว!</value>
 	</data>
@@ -376,7 +429,9 @@ StackTrace:
 		<value>ล้มเหลวเนื่องจากข้อผิดพลาด: {0}</value>
 		<comment>{0} will be replaced by failure reason (string)</comment>
 	</data>
-	
+	<data name="BotConnectionLost" xml:space="preserve">
+		<value>สูญเสียการเชื่อมต่อกับ Steam Network กำลังเชื่อมต่อใหม่...</value>
+	</data>
 	
 	
 	<data name="BotConnecting" xml:space="preserve">
@@ -428,7 +483,9 @@ StackTrace:
 	
 	
 	
-	
+	<data name="TargetBotNotConnected" xml:space="preserve">
+		<value>อินสแตนซ์ของบอตเป้าหมายไม่ได้รับการเชื่อมต่อ!</value>
+	</data>
 	<data name="BotWalletBalance" xml:space="preserve">
 		<value>ยอดวอลเล็ต: {0} {1}</value>
 		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
@@ -447,7 +504,10 @@ StackTrace:
 	</data>
 	
 	
-	
+	<data name="PluginLoaded" xml:space="preserve">
+		<value>{0} ถูกโหลดสำเร็จแล้ว!</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+	</data>
 	<data name="PluginLoading" xml:space="preserve">
 		<value>กำลังโหลด {0} V{1}…</value>
 		<comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
@@ -468,9 +528,14 @@ StackTrace:
 	
 	
 	
+	<data name="BotHandledConfirmations" xml:space="preserve">
+		<value>จัดการการยืนยันเป็นผลสำเร็จ {0} รายการ!</value>
+		<comment>{0} will be replaced by number of confirmations</comment>
+	</data>
 	
-	
-	
+	<data name="UpdateCleanup" xml:space="preserve">
+		<value>กำลังลบไฟล์เก่าหลังการอัปเดต...</value>
+	</data>
 	
 	
 	
@@ -482,6 +547,10 @@ StackTrace:
 	
 	
 	
+	<data name="BotIdlingSelectedGames" xml:space="preserve">
+		<value>กำลังเล่นเกมที่เลือกไว้ {0}: {1}</value>
+		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+	</data>
 	
 	
 	
@@ -491,14 +560,18 @@ StackTrace:
 	
 	
 	
-	
-	
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>กำลังดึงข้อมูล checksum จากเซิร์ฟเวอร์ระยะไกล...</value>
+	</data>
 	
 	
 	
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>กำลังแพตช์ไฟล์ ASF…</value>
 	</data>
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>โปรดกรอกคีย์รหัสลับของคุณ: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	
 </root>
