@@ -20,10 +20,9 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Web.Responses;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Core;
 
@@ -43,23 +42,12 @@ internal static class ArchiNet {
 
 		Uri request = new(URL, $"/Api/Checksum/{version}/{variant}");
 
-		ObjectResponse<ChecksumResponse>? response = await ASF.WebBrowser.UrlGetToJsonObject<ChecksumResponse>(request).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<string>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<string>>(request).ConfigureAwait(false);
 
 		if (response?.Content == null) {
 			return null;
 		}
 
-		return response.Content.Checksum ?? "";
-	}
-
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	private sealed class ChecksumResponse {
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
-		[JsonProperty("checksum", Required = Required.AllowNull)]
-		internal readonly string? Checksum;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
-
-		[JsonConstructor]
-		private ChecksumResponse() { }
+		return response.Content.Result ?? "";
 	}
 }

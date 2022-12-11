@@ -39,6 +39,9 @@ public sealed class GenericResponse<T> : GenericResponse where T : class {
 	public GenericResponse(bool success, string? message) : base(success, message) { }
 	public GenericResponse(bool success, T? result) : base(success) => Result = result;
 	public GenericResponse(bool success, string? message, T? result) : base(success, message) => Result = result;
+
+	[JsonConstructor]
+	private GenericResponse() { }
 }
 
 public class GenericResponse {
@@ -49,7 +52,7 @@ public class GenericResponse {
 	///     This property will provide exact reason for majority of expected failures.
 	/// </remarks>
 	[JsonProperty]
-	public string Message { get; private set; }
+	public string? Message { get; private set; }
 
 	/// <summary>
 	///     Boolean type that specifies if the request has succeeded.
@@ -64,4 +67,7 @@ public class GenericResponse {
 		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 		Message = !string.IsNullOrEmpty(message) ? message! : success ? "OK" : Strings.WarningFailed;
 	}
+
+	[JsonConstructor]
+	protected GenericResponse() { }
 }
