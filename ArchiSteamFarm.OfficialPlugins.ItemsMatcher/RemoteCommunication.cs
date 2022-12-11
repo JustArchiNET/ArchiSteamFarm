@@ -232,7 +232,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			LastAnnouncementCheck = DateTime.UtcNow;
 
 			// This is actual inventory
-			if (inventory.Count < MinItemsCount) {
+			if (inventory.Count(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)) < MinItemsCount) {
 				ShouldSendHeartBeats = false;
 
 				return;
