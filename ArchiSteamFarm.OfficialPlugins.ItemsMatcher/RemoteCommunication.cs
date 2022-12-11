@@ -41,12 +41,10 @@ using ArchiSteamFarm.Storage;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
-	private const byte MaxMatchedBotsHard = 40; // Determines how many bots we can attempt to match in total, where match attempt is equal to analyzing bot's inventory
-	private const byte MaxMatchingRounds = 10; // Determines maximum amount of matching rounds we're going to consider before leaving the rest of work for the next batch
-	private const byte MinAnnouncementCheckTTL = 6; // Minimum amount of hours we must wait before checking eligibility for Announcement, should be lower than MinPersonaStateTTL
+	private const byte MinAnnouncementCheckTTL = 45; // Minimum amount of minutes we must wait before checking eligibility for Announcement, should be lower than MinPersonaStateTTL
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
 	private const byte MinItemsCount = 100; // Minimum amount of items to be eligible for public listing
-	private const byte MinPersonaStateTTL = 8; // Minimum amount of hours we must wait before requesting persona state update
+	private const byte MinPersonaStateTTL = 60; // Minimum amount of minutes we must wait before requesting persona state update
 
 	private static readonly ImmutableHashSet<Asset.EType> AcceptedMatchableTypes = ImmutableHashSet.Create(
 		Asset.EType.Emoticon,
@@ -119,7 +117,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		// Request persona update if needed
-		if ((DateTime.UtcNow > LastPersonaStateRequest.AddHours(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL))) {
+		if ((DateTime.UtcNow > LastPersonaStateRequest.AddMinutes(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncementCheck.AddMinutes(MinAnnouncementCheckTTL))) {
 			LastPersonaStateRequest = DateTime.UtcNow;
 			Bot.RequestPersonaStateUpdate();
 		}
@@ -157,14 +155,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		if ((DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {
+		if ((DateTime.UtcNow < LastAnnouncementCheck.AddMinutes(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {
 			return;
 		}
 
 		await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
-			if ((DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {
+			if ((DateTime.UtcNow < LastAnnouncementCheck.AddMinutes(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {
 				return;
 			}
 
@@ -408,30 +406,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			Dictionary<ulong, (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs)> triedSteamIDs = new();
-
-			bool shouldContinueMatching = true;
-			bool tradedSomething = false;
-
-			for (byte i = 0; (i < MaxMatchingRounds) && shouldContinueMatching; i++) {
-				if ((i > 0) && tradedSomething) {
-					// After each round we wait at least 5 minutes for all bots to react
-					await Task.Delay(5 * 60 * 1000).ConfigureAwait(false);
-				}
-
-				if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || (await IsEligibleForMatching().ConfigureAwait(false) != true)) {
-					Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
-
-					break;
-				}
-
 #pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-				using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
+			using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
 #pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ActivelyMatchingItems, i));
-					(shouldContinueMatching, tradedSomething) = await MatchActivelyRound(response.Value.Users, ourInventory, acceptedMatchableTypes, triedSteamIDs).ConfigureAwait(false);
-					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.DoneActivelyMatchingItems, i));
-				}
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ActivelyMatchingItems, 0));
+				await MatchActivelyRound(response.Value.Users, ourInventory, acceptedMatchableTypes).ConfigureAwait(false);
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.DoneActivelyMatchingItems, 0));
 			}
 
 			Bot.ArchiLogger.LogGenericTrace(Strings.Done);
@@ -440,7 +420,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task<(bool ShouldContinueMatching, bool TradedSomething)> MatchActivelyRound(IReadOnlyCollection<ListedUser> listedUsers, IReadOnlyCollection<Asset> ourInventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, IDictionary<ulong, (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs)> triedSteamIDs) {
+	private async Task MatchActivelyRound(IReadOnlyCollection<ListedUser> listedUsers, IReadOnlyCollection<Asset> ourInventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes) {
 		if ((listedUsers == null) || (listedUsers.Count == 0)) {
 			throw new ArgumentNullException(nameof(listedUsers));
 		}
@@ -453,31 +433,25 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
 		}
 
-		ArgumentNullException.ThrowIfNull(triedSteamIDs);
-
 		(Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> ourFullState, Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> ourTradableState) = Trading.GetDividedInventoryState(ourInventory);
 
 		if (Trading.IsEmptyForMatching(ourFullState, ourTradableState)) {
 			// User doesn't have any more dupes in the inventory
 			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, $"{nameof(ourFullState)} || {nameof(ourTradableState)}"));
 
-			return (false, false);
+			return;
 		}
 
-		byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
-		byte totalMatches = 0;
-
+		HashSet<ulong> triedSteamIDs = new();
 		HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisRound = new();
 
-		foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(static listedUser => listedUser.MatchEverything).ThenBy(static listedUser => listedUser.Assets.Count)) {
+		byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
+
+		foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && !triedSteamIDs.Contains(listedUser.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(static listedUser => listedUser.MatchEverything).ThenBy(static listedUser => listedUser.Assets.Count)) {
 			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => !skippedSetsThisRound.Contains(set) && listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
 
 			if (wantedSets.Count == 0) {
 				continue;
-			}
-
-			if (++totalMatches > MaxMatchedBotsHard) {
-				break;
 			}
 
 			Bot.ArchiLogger.LogGenericTrace($"{listedUser.SteamID}...");
@@ -530,7 +504,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 							if (!ourFullSet.TryGetValue(classID, out uint fullAmount) || (fullAmount == 0) || (fullAmount < amount)) {
 								Bot.ArchiLogger.LogNullError(fullAmount);
 
-								return (false, skippedSetsThisRound.Count > 0);
+								return;
 							}
 
 							if (fullAmount > amount) {
@@ -542,7 +516,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 							if (!ourTradableSet.TryGetValue(classID, out uint tradableAmount) || (tradableAmount == 0) || (tradableAmount < amount)) {
 								Bot.ArchiLogger.LogNullError(tradableAmount);
 
-								return (false, skippedSetsThisRound.Count > 0);
+								return;
 							}
 
 							if (fullAmount > amount) {
@@ -668,25 +642,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					// Failsafe
 					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, Strings.ErrorAborted));
 
-					return (false, skippedSetsThisRound.Count > 0);
+					return;
 				}
 
-				if (triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs) previousAttempt)) {
-					if ((previousAttempt.GivenAssetIDs == null) || (previousAttempt.ReceivedAssetIDs == null) || (itemsToGive.Select(static item => item.AssetID).All(previousAttempt.GivenAssetIDs.Contains) && itemsToReceive.Select(static item => item.AssetID).All(previousAttempt.ReceivedAssetIDs.Contains))) {
-						// This user didn't respond in our previous round, avoid him for remaining ones
-						triedSteamIDs[listedUser.SteamID] = (byte.MaxValue, previousAttempt.GivenAssetIDs, previousAttempt.ReceivedAssetIDs);
-
-						break;
-					}
-
-					previousAttempt.GivenAssetIDs.UnionWith(itemsToGive.Select(static item => item.AssetID));
-					previousAttempt.ReceivedAssetIDs.UnionWith(itemsToReceive.Select(static item => item.AssetID));
-				} else {
-					previousAttempt.GivenAssetIDs = new HashSet<ulong>(itemsToGive.Select(static item => item.AssetID));
-					previousAttempt.ReceivedAssetIDs = new HashSet<ulong>(itemsToReceive.Select(static item => item.AssetID));
-				}
-
-				triedSteamIDs[listedUser.SteamID] = (++previousAttempt.Tries, previousAttempt.GivenAssetIDs, previousAttempt.ReceivedAssetIDs);
+				triedSteamIDs.Add(listedUser.SteamID);
 
 				Bot.ArchiLogger.LogGenericTrace($"{Bot.SteamID} <- {string.Join(", ", itemsToReceive.Select(static item => $"{item.RealAppID}/{item.Type}-{item.ClassID} #{item.Amount}"))} | {string.Join(", ", itemsToGive.Select(static item => $"{item.RealAppID}/{item.Type}-{item.ClassID} #{item.Amount}"))} -> {listedUser.SteamID}");
 
@@ -698,7 +657,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					if (!twoFactorSuccess) {
 						Bot.ArchiLogger.LogGenericTrace(Strings.WarningFailed);
 
-						return (false, skippedSetsThisRound.Count > 0);
+						return;
 					}
 				}
 
@@ -716,11 +675,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			if (skippedSetsThisUser.Count == 0) {
-				if (skippedSetsThisRound.Count == 0) {
-					// If we didn't find any match on clean round, this user isn't going to have anything interesting for us anytime soon
-					triedSteamIDs[listedUser.SteamID] = (byte.MaxValue, null, null);
-				}
-
 				continue;
 			}
 
@@ -741,8 +695,5 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ActivelyMatchingItemsRound, skippedSetsThisRound.Count));
-
-		// Keep matching when we either traded something this round (so it makes sense for a refresh) or if we didn't try all available bots yet (so it makes sense to keep going)
-		return ((totalMatches > 0) && ((skippedSetsThisRound.Count > 0) || triedSteamIDs.Values.All(static data => data.Tries < 2)), skippedSetsThisRound.Count > 0);
 	}
 }
