@@ -27,7 +27,7 @@ using ArchiSteamFarm.Web.Responses;
 namespace ArchiSteamFarm.Core;
 
 internal static class ArchiNet {
-	internal static Uri URL => new("https://asf-backend.JustArchi.net");
+	internal static Uri URL => new("https://asf.JustArchi.net");
 
 	internal static async Task<string?> FetchBuildChecksum(Version version, string variant) {
 		ArgumentNullException.ThrowIfNull(version);
