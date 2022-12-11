@@ -636,7 +636,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				// Remove the items from inventories
 				HashSet<Asset> itemsToGive = Trading.GetTradableItemsFromInventory(ourInventory, classIDsToGive);
-				HashSet<Asset> itemsToReceive = Trading.GetTradableItemsFromInventory(theirInventory, classIDsToReceive);
+				HashSet<Asset> itemsToReceive = Trading.GetTradableItemsFromInventory(theirInventory, classIDsToReceive, true);
 
 				if ((itemsToGive.Count != itemsToReceive.Count) || !Trading.IsFairExchange(itemsToGive, itemsToReceive)) {
 					// Failsafe
