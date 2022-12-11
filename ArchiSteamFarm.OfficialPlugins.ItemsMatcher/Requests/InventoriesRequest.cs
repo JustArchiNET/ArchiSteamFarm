@@ -35,7 +35,7 @@ internal sealed class InventoriesRequest {
 	internal readonly Guid Guid;
 
 	[JsonProperty(Required = Required.Always)]
-	internal readonly ImmutableHashSet<AssetForListing> Inventory;
+	internal readonly ImmutableHashSet<AssetInInventory> Inventory;
 
 	[JsonProperty(Required = Required.Always)]
 	internal readonly ImmutableHashSet<Asset.EType> MatchableTypes;
@@ -77,7 +77,7 @@ internal sealed class InventoriesRequest {
 		Guid = guid;
 		SteamID = steamID;
 		TradeToken = tradeToken;
-		Inventory = inventory.Select(static asset => new AssetForListing(asset)).ToImmutableHashSet();
+		Inventory = inventory.Select(static asset => new AssetInInventory(asset)).ToImmutableHashSet();
 		MatchableTypes = matchableTypes.ToImmutableHashSet();
 		MaxTradeHoldDuration = maxTradeHoldDuration;
 	}

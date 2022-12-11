@@ -209,10 +209,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			HashSet<Asset> inventory;
+			List<Asset> inventory;
 
 			try {
-				inventory = await Bot.ArchiWebHandler.GetInventoryAsync().ToHashSetAsync().ConfigureAwait(false);
+				inventory = await Bot.ArchiWebHandler.GetInventoryAsync().ToListAsync().ConfigureAwait(false);
 			} catch (HttpRequestException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 

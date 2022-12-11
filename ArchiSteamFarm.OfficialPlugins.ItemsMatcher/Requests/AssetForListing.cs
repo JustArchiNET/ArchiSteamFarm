@@ -25,44 +25,13 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
 
-internal sealed class AssetForListing {
+internal sealed class AssetForListing : AssetInInventory {
 	[JsonProperty(Required = Required.Always)]
-	internal readonly uint Amount;
+	internal readonly uint Index;
 
-	[JsonProperty(Required = Required.Always)]
-	internal readonly ulong AssetID;
-
-	[JsonProperty(Required = Required.Always)]
-	internal readonly ulong ClassID;
-
-	[JsonProperty(Required = Required.Always)]
-	internal readonly Asset.ERarity Rarity;
-
-	[JsonProperty(Required = Required.Always)]
-	internal readonly uint RealAppID;
-
-	[JsonProperty(Required = Required.Always)]
-	internal readonly bool Tradable;
-
-	[JsonProperty(Required = Required.Always)]
-	internal readonly Asset.EType Type;
-
-	internal AssetForListing(Asset asset) {
+	internal AssetForListing(Asset asset, uint index) : base(asset) {
 		ArgumentNullException.ThrowIfNull(asset);
 
-		AssetID = asset.AssetID;
-		Amount = asset.Amount;
-
-		ClassID = asset.ClassID;
-		Tradable = asset.Tradable;
-
-		RealAppID = asset.RealAppID;
-		Type = asset.Type;
-		Rarity = asset.Rarity;
+		Index = index;
 	}
-
-	[JsonConstructor]
-	private AssetForListing() { }
-
-	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, tradable: Tradable, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
 }

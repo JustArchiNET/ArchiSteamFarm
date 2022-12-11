@@ -59,7 +59,7 @@ internal sealed class AnnouncementRequest {
 	[JsonProperty(Required = Required.Always)]
 	internal readonly string TradeToken;
 
-	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> matchableTypes, bool matchEverything, byte maxTradeHoldDuration, string? nickname = null, string? avatarHash = null) {
+	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, IReadOnlyList<Asset> inventory, IReadOnlyCollection<Asset.EType> matchableTypes, bool matchEverything, byte maxTradeHoldDuration, string? nickname = null, string? avatarHash = null) {
 		if (guid == Guid.Empty) {
 			throw new ArgumentOutOfRangeException(nameof(guid));
 		}
@@ -84,10 +84,13 @@ internal sealed class AnnouncementRequest {
 			throw new ArgumentNullException(nameof(matchableTypes));
 		}
 
+		uint index = 0;
+
 		Guid = guid;
 		SteamID = steamID;
 		TradeToken = tradeToken;
-		Inventory = inventory.Select(static asset => new AssetForListing(asset)).ToImmutableHashSet();
+		Inventory = inventory.Select(asset => new AssetForListing(asset, index++)).ToImmutableHashSet();
+
 		MatchableTypes = matchableTypes.ToImmutableHashSet();
 		MatchEverything = matchEverything;
 		MaxTradeHoldDuration = maxTradeHoldDuration;
