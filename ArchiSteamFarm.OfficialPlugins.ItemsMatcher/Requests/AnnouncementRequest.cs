@@ -90,7 +90,6 @@ internal sealed class AnnouncementRequest {
 		SteamID = steamID;
 		TradeToken = tradeToken;
 		Inventory = inventory.Select(asset => new AssetForListing(asset, index++)).ToImmutableHashSet();
-
 		MatchableTypes = matchableTypes.ToImmutableHashSet();
 		MatchEverything = matchEverything;
 		MaxTradeHoldDuration = maxTradeHoldDuration;
