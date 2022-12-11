@@ -37,7 +37,7 @@ namespace ArchiSteamFarm.Steam.Data;
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonProperty("assets", Required = Required.DisallowNull)]
-	internal readonly ImmutableHashSet<Asset> Assets = ImmutableHashSet<Asset>.Empty;
+	internal readonly ImmutableList<Asset> Assets = ImmutableList<Asset>.Empty;
 
 	[JsonProperty("descriptions", Required = Required.DisallowNull)]
 	internal readonly ImmutableHashSet<Description> Descriptions = ImmutableHashSet<Description>.Empty;
