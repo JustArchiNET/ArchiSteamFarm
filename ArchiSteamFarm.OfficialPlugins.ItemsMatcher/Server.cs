@@ -25,6 +25,7 @@ using System.Collections.Immutable;
 using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Responses;
 using ArchiSteamFarm.Steam;
@@ -100,13 +101,13 @@ internal static class Server {
 
 		InventoriesRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, tradeToken, inventory, acceptedMatchableTypes, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration);
 
-		ObjectResponse<ImmutableHashSet<ListedUser>>? response = await bot.ArchiWebHandler.WebBrowser.UrlPostToJsonObject<ImmutableHashSet<ListedUser>, InventoriesRequest>(request, headers, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<ImmutableHashSet<ListedUser>>>? response = await bot.ArchiWebHandler.WebBrowser.UrlPostToJsonObject<GenericResponse<ImmutableHashSet<ListedUser>>, InventoriesRequest>(request, headers, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
 		}
 
-		return (response.StatusCode, response.Content ?? ImmutableHashSet<ListedUser>.Empty);
+		return (response.StatusCode, response.Content?.Result ?? ImmutableHashSet<ListedUser>.Empty);
 	}
 
 	internal static async Task<HttpStatusCode?> HeartBeatForListing(Bot bot) {
