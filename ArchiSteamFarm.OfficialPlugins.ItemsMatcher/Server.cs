@@ -69,7 +69,11 @@ internal static class Server {
 		return response?.StatusCode;
 	}
 
-	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Bot bot, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, string tradeToken) {
+	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Guid licenseID, Bot bot, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, string tradeToken) {
+		if (licenseID == Guid.Empty) {
+			throw new ArgumentOutOfRangeException(nameof(licenseID));
+		}
+
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((inventory == null) || (inventory.Count == 0)) {
@@ -90,9 +94,13 @@ internal static class Server {
 
 		Uri request = new(ArchiNet.URL, "/Api/Listing/Inventories");
 
+		Dictionary<string, string> headers = new(1, StringComparer.Ordinal) {
+			{ "X-License-Key", licenseID.ToString("N") }
+		};
+
 		InventoriesRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, tradeToken, inventory, acceptedMatchableTypes, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration);
 
-		ObjectResponse<ImmutableHashSet<ListedUser>>? response = await bot.ArchiWebHandler.WebBrowser.UrlPostToJsonObject<ImmutableHashSet<ListedUser>, InventoriesRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+		ObjectResponse<ImmutableHashSet<ListedUser>>? response = await bot.ArchiWebHandler.WebBrowser.UrlPostToJsonObject<ImmutableHashSet<ListedUser>, InventoriesRequest>(request, headers, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;

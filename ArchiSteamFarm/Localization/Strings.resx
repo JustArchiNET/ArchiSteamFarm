@@ -603,10 +603,6 @@ Process uptime: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Aborted!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Matched a total of {0} sets this round.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>You're running more personal bot accounts than our upper recommended limit ({0}). Be advised that this setup is not supported and might cause various Steam-related issues, including account suspensions. Check out the FAQ for more details.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -743,5 +739,9 @@ Process uptime: {1}</value>
 	<data name="ErrorIPNotBanned" xml:space="preserve">
 		<value>The IP address {0} is not banned!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>You've attempted to use paid feature {0} but you don't have a valid LicenseID set in the ASF global config. Please review your configuration, as the functionality won't work without additional details.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
 </root>
