@@ -42,6 +42,9 @@ internal sealed class AssetForListing {
 	internal readonly uint RealAppID;
 
 	[JsonProperty(Required = Required.Always)]
+	internal readonly bool Tradable;
+
+	[JsonProperty(Required = Required.Always)]
 	internal readonly Asset.EType Type;
 
 	internal AssetForListing(Asset asset) {
@@ -51,6 +54,7 @@ internal sealed class AssetForListing {
 		Amount = asset.Amount;
 
 		ClassID = asset.ClassID;
+		Tradable = asset.Tradable;
 
 		RealAppID = asset.RealAppID;
 		Type = asset.Type;
@@ -60,5 +64,5 @@ internal sealed class AssetForListing {
 	[JsonConstructor]
 	private AssetForListing() { }
 
-	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
+	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, tradable: Tradable, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
 }

@@ -38,15 +38,11 @@ using ArchiSteamFarm.Web.Responses;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal static class Server {
-	internal static async Task<HttpStatusCode?> AnnounceForListing(Bot bot, IReadOnlyCollection<Asset> inventory, int totalItemsCount, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, string tradeToken, string? nickname = null, string? avatarHash = null) {
+	internal static async Task<HttpStatusCode?> AnnounceForListing(Bot bot, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, string tradeToken, string? nickname = null, string? avatarHash = null) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((inventory == null) || (inventory.Count == 0)) {
 			throw new ArgumentNullException(nameof(inventory));
-		}
-
-		if (totalItemsCount < inventory.Count) {
-			throw new ArgumentOutOfRangeException(nameof(totalItemsCount));
 		}
 
 		if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0)) {
@@ -63,7 +59,7 @@ internal static class Server {
 
 		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce");
 
-		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, tradeToken, inventory, totalItemsCount, acceptedMatchableTypes, bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything), ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
+		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, tradeToken, inventory, acceptedMatchableTypes, bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything), ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
 
 		BasicResponse? response = await bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 

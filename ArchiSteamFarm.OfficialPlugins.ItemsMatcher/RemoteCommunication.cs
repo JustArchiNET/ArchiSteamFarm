@@ -32,6 +32,7 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Localization;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Responses;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Cards;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Security;
@@ -228,11 +229,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			int totalItemsCount = inventory.Count;
-
-			// Remove from data items that we're not willing to trade
-			inventory.RemoveWhere(item => !item.Tradable || !acceptedMatchableTypes.Contains(item.Type));
-
 			LastAnnouncementCheck = DateTime.UtcNow;
 
 			// This is actual inventory
@@ -243,7 +239,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			HttpStatusCode? response = await Server.AnnounceForListing(Bot, inventory, totalItemsCount, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
+			HttpStatusCode? response = await Server.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
 
 			if (!response.HasValue) {
 				return;
@@ -482,7 +478,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					continue;
 			}
 
-			HashSet<Asset> theirInventory = listedUser.Assets.Select(static asset => asset.ToAsset()).ToHashSet();
+			HashSet<Asset> theirInventory = listedUser.Assets.Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity)) && ((tradeHoldDuration.Value == 0) || !(item.Type is Asset.EType.FoilTradingCard or Asset.EType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)))).Select(static asset => asset.ToAsset()).ToHashSet();
 
 			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisUser = new();
 
