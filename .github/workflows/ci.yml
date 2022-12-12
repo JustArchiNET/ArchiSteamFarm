@@ -39,7 +39,7 @@ jobs:
 
     - name: Upload latest strings for translation on Crowdin
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.configuration == 'Release' && startsWith(matrix.os, 'ubuntu-') }}
-      uses: crowdin/github-action@1.5.1
+      uses: crowdin/github-action@1.5.2
       with:
         crowdin_branch_name: main
         config: '.github/crowdin.yml'
