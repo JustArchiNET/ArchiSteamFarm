@@ -27,6 +27,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Responses;
 
+#pragma warning disable CA1812 // False positive, the class is used during json deserialization
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class ListedUser {
 	[JsonProperty(Required = Required.Always)]
@@ -56,3 +57,4 @@ internal sealed class ListedUser {
 	[JsonConstructor]
 	private ListedUser() { }
 }
+#pragma warning restore CA1812 // False positive, the class is used during json deserialization
