@@ -138,7 +138,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		try {
-			HttpStatusCode? response = await Server.HeartBeatForListing(Bot).ConfigureAwait(false);
+			HttpStatusCode? response = await Backend.HeartBeatForListing(Bot).ConfigureAwait(false);
 
 			if (!response.HasValue) {
 				return;
@@ -239,7 +239,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			HttpStatusCode? response = await Server.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
+			HttpStatusCode? response = await Backend.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
 
 			if (!response.HasValue) {
 				return;
@@ -396,7 +396,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Server.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, ourInventory, acceptedMatchableTypes, tradeToken!).ConfigureAwait(false);
+			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, ourInventory, acceptedMatchableTypes, tradeToken!).ConfigureAwait(false);
 
 			if (response == null) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(response)));

@@ -37,7 +37,7 @@ using ArchiSteamFarm.Web.Responses;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
-internal static class Server {
+internal static class Backend {
 	internal static async Task<HttpStatusCode?> AnnounceForListing(Bot bot, IReadOnlyList<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, string tradeToken, string? nickname = null, string? avatarHash = null) {
 		ArgumentNullException.ThrowIfNull(bot);
 
