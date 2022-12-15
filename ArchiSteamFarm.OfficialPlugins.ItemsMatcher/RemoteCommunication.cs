@@ -196,6 +196,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// This is actually network failure, so we'll stop sending heartbeats but not record it as valid check
 				ShouldSendHeartBeats = false;
 
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(tradeToken)));
+
 				return;
 			}
 
@@ -238,6 +240,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
+			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ListingAnnouncing, Bot.SteamID, nickname, inventory.Count));
+
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			HttpStatusCode? response = await Backend.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
 
@@ -274,6 +278,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			LastHeartBeat = DateTime.UtcNow;
 			ShouldSendHeartBeats = true;
+
+			Bot.ArchiLogger.LogGenericInfo(ArchiSteamFarm.Localization.Strings.Success);
 		} finally {
 			RequestsSemaphore.Release();
 		}
@@ -351,7 +357,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		HashSet<Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
 
 		if (acceptedMatchableTypes.Count == 0) {
-			Bot.ArchiLogger.LogGenericTrace(ArchiSteamFarm.Localization.Strings.ErrorAborted);
+			Bot.ArchiLogger.LogNullError(acceptedMatchableTypes);
 
 			return;
 		}
@@ -363,7 +369,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		try {
-			Bot.ArchiLogger.LogGenericTrace(ArchiSteamFarm.Localization.Strings.Starting);
+			Bot.ArchiLogger.LogGenericInfo(ArchiSteamFarm.Localization.Strings.Starting);
 
 			string? tradeToken = await Bot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
 
@@ -656,7 +662,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				triedSteamIDs.Add(listedUser.SteamID);
 
-				Bot.ArchiLogger.LogGenericTrace($"{Bot.SteamID} <- {string.Join(", ", itemsToReceive.Select(static item => $"{item.RealAppID}/{item.Type}-{item.ClassID} #{item.Amount}"))} | {string.Join(", ", itemsToGive.Select(static item => $"{item.RealAppID}/{item.Type}-{item.ClassID} #{item.Amount}"))} -> {listedUser.SteamID}");
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.MatchingFound, itemsToReceive.Count, listedUser.SteamID, listedUser.Nickname));
+
+				Bot.ArchiLogger.LogGenericTrace($"{Bot.SteamID} <- {string.Join(", ", itemsToReceive.Select(static item => $"{item.RealAppID}/{item.Type}/{item.Rarity}/{item.ClassID} #{item.Amount}"))} | {string.Join(", ", itemsToGive.Select(static item => $"{item.RealAppID}/{item.Type}/{item.Rarity}/{item.ClassID} #{item.Amount}"))} -> {listedUser.SteamID}");
 
 				(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, true).ConfigureAwait(false);
 
@@ -664,14 +672,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
 					if (!twoFactorSuccess) {
-						Bot.ArchiLogger.LogGenericTrace(ArchiSteamFarm.Localization.Strings.WarningFailed);
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(twoFactorSuccess)));
 
 						return;
 					}
 				}
 
 				if (!success) {
-					Bot.ArchiLogger.LogGenericTrace(ArchiSteamFarm.Localization.Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.TradeOfferFailed, listedUser.SteamID, listedUser.Nickname));
 
 					break;
 				}
@@ -680,7 +688,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				theirInventory.UnionWith(itemsToGive);
 
 				skippedSetsThisUser.UnionWith(skippedSetsThisTrade);
-				Bot.ArchiLogger.LogGenericTrace(ArchiSteamFarm.Localization.Strings.Success);
+				Bot.ArchiLogger.LogGenericInfo(ArchiSteamFarm.Localization.Strings.Success);
 			}
 
 			if (skippedSetsThisUser.Count == 0) {

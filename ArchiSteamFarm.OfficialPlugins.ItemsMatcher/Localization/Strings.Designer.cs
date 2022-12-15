@@ -50,5 +50,23 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Localization {
                 return ResourceManager.GetString("ActivelyMatchingItemsRound", resourceCulture);
             }
         }
+        
+        internal static string ListingAnnouncing {
+            get {
+                return ResourceManager.GetString("ListingAnnouncing", resourceCulture);
+            }
+        }
+        
+        internal static string MatchingFound {
+            get {
+                return ResourceManager.GetString("MatchingFound", resourceCulture);
+            }
+        }
+        
+        internal static string TradeOfferFailed {
+            get {
+                return ResourceManager.GetString("TradeOfferFailed", resourceCulture);
+            }
+        }
     }
 }

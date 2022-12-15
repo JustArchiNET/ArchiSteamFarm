@@ -47,6 +47,11 @@ internal sealed class ListedUser {
 #pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
 #pragma warning disable CS0649 // False positive, the field is used during json deserialization
+	[JsonProperty(Required = Required.AllowNull)]
+	internal readonly string? Nickname;
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonProperty(Required = Required.Always)]
 	internal readonly ulong SteamID;
 #pragma warning restore CS0649 // False positive, the field is used during json deserialization
