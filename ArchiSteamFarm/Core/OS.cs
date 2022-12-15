@@ -296,7 +296,7 @@ internal static class OS {
 			throw new PlatformNotSupportedException();
 		}
 
-		IntPtr consoleHandle = NativeMethods.GetStdHandle(NativeMethods.StandardInputHandle);
+		nint consoleHandle = NativeMethods.GetStdHandle(NativeMethods.StandardInputHandle);
 
 		if (!NativeMethods.GetConsoleMode(consoleHandle, out uint consoleMode)) {
 			ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);

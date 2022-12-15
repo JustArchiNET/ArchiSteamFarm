@@ -54,10 +54,10 @@ internal static partial class NativeMethods {
 	[return: MarshalAs(UnmanagedType.Bool)]
 #if NETFRAMEWORK
 	[DllImport("kernel32.dll")]
-	internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+	internal static extern bool GetConsoleMode(nint hConsoleHandle, out uint lpMode);
 #else
 	[LibraryImport("kernel32.dll")]
-	internal static partial bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+	internal static partial bool GetConsoleMode(nint hConsoleHandle, out uint lpMode);
 #endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -76,10 +76,10 @@ internal static partial class NativeMethods {
 	[SupportedOSPlatform("Windows")]
 #if NETFRAMEWORK
 	[DllImport("kernel32.dll")]
-	internal static extern IntPtr GetStdHandle(int nStdHandle);
+	internal static extern nint GetStdHandle(int nStdHandle);
 #else
 	[LibraryImport("kernel32.dll")]
-	internal static partial IntPtr GetStdHandle(int nStdHandle);
+	internal static partial nint GetStdHandle(int nStdHandle);
 #endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -87,10 +87,10 @@ internal static partial class NativeMethods {
 	[return: MarshalAs(UnmanagedType.Bool)]
 #if NETFRAMEWORK
 	[DllImport("kernel32.dll")]
-	internal static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+	internal static extern bool SetConsoleMode(nint hConsoleHandle, uint dwMode);
 #else
 	[LibraryImport("kernel32.dll")]
-	internal static partial bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+	internal static partial bool SetConsoleMode(nint hConsoleHandle, uint dwMode);
 #endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
