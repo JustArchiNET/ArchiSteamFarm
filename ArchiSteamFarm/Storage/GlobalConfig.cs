@@ -129,6 +129,9 @@ public sealed class GlobalConfig {
 	[PublicAPI]
 	public static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet<uint>.Empty;
 
+	[PublicAPI]
+	public static readonly Guid? DefaultLicenseID;
+
 	private static readonly ImmutableHashSet<string> ForbiddenIPCPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "ipc", "api", "gui", "asf-ui", "asf-gui");
 
 	[JsonIgnore]
@@ -236,6 +239,9 @@ public sealed class GlobalConfig {
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private set; } = DefaultIPCPasswordFormat;
+
+	[JsonProperty]
+	public Guid? LicenseID { get; private set; } = DefaultLicenseID;
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	[Range(byte.MinValue, byte.MaxValue)]
@@ -374,6 +380,9 @@ public sealed class GlobalConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeIPCPasswordFormat() => !Saving || (IPCPasswordFormat != DefaultIPCPasswordFormat);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeLicenseID() => !Saving || ((LicenseID != DefaultLicenseID) && (LicenseID != Guid.Empty));
 
 	[UsedImplicitly]
 	public bool ShouldSerializeLoginLimiterDelay() => !Saving || (LoginLimiterDelay != DefaultLoginLimiterDelay);

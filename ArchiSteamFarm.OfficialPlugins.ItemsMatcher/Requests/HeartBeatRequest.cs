@@ -20,34 +20,28 @@
 // limitations under the License.
 
 using System;
-using System.Threading.Tasks;
-using ArchiSteamFarm.IPC.Responses;
-using ArchiSteamFarm.Web.Responses;
+using Newtonsoft.Json;
+using SteamKit2;
 
-namespace ArchiSteamFarm.Core;
+namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
 
-internal static class ArchiNet {
-	internal static Uri URL => new("https://asf.JustArchi.net");
+internal sealed class HeartBeatRequest {
+	[JsonProperty(Required = Required.Always)]
+	internal readonly Guid Guid;
 
-	internal static async Task<string?> FetchBuildChecksum(Version version, string variant) {
-		ArgumentNullException.ThrowIfNull(version);
+	[JsonProperty(Required = Required.Always)]
+	internal readonly ulong SteamID;
 
-		if (string.IsNullOrEmpty(variant)) {
-			throw new ArgumentNullException(nameof(variant));
+	internal HeartBeatRequest(Guid guid, ulong steamID) {
+		if (guid == Guid.Empty) {
+			throw new ArgumentOutOfRangeException(nameof(guid));
 		}
 
-		if (ASF.WebBrowser == null) {
-			throw new InvalidOperationException(nameof(ASF.WebBrowser));
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		Uri request = new(URL, $"/Api/Checksum/{version}/{variant}");
-
-		ObjectResponse<GenericResponse<string>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<string>>(request).ConfigureAwait(false);
-
-		if (response?.Content == null) {
-			return null;
-		}
-
-		return response.Content.Result ?? "";
+		Guid = guid;
+		SteamID = steamID;
 	}
 }

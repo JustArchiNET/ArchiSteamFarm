@@ -262,7 +262,7 @@ public sealed class Trading : IDisposable {
 		return tradableState;
 	}
 
-	internal static HashSet<Asset> GetTradableItemsFromInventory(IReadOnlyCollection<Asset> inventory, IDictionary<ulong, uint> classIDs) {
+	internal static HashSet<Asset> GetTradableItemsFromInventory(IReadOnlyCollection<Asset> inventory, IDictionary<ulong, uint> classIDs, bool randomize = false) {
 		if ((inventory == null) || (inventory.Count == 0)) {
 			throw new ArgumentNullException(nameof(inventory));
 		}
@@ -273,7 +273,16 @@ public sealed class Trading : IDisposable {
 
 		HashSet<Asset> result = new();
 
-		foreach (Asset item in inventory.Where(static item => item.Tradable)) {
+		IEnumerable<Asset> items = inventory;
+
+		// Randomization helps to decrease "items no longer available" in regards to sending offers to other users
+		if (randomize) {
+#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
+			items = items.OrderBy(static _ => Random.Shared.Next());
+#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
+		}
+
+		foreach (Asset item in items.Where(static item => item.Tradable)) {
 			if (!classIDs.TryGetValue(item.ClassID, out uint amount)) {
 				continue;
 			}

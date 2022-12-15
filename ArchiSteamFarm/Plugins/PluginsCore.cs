@@ -453,6 +453,21 @@ public static class PluginsCore {
 		}
 	}
 
+	internal static async Task OnSelfPersonaState(Bot bot, SteamFriends.PersonaStateCallback data, string? nickname, string? avatarHash) {
+		ArgumentNullException.ThrowIfNull(bot);
+		ArgumentNullException.ThrowIfNull(data);
+
+		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			return;
+		}
+
+		try {
+			await Utilities.InParallel(ActivePlugins.OfType<IBotIdentity>().Select(plugin => plugin.OnSelfPersonaState(bot, data, nickname, avatarHash))).ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+		}
+	}
+
 	internal static async Task<string?> OnBotMessage(Bot bot, ulong steamID, string message) {
 		ArgumentNullException.ThrowIfNull(bot);
 

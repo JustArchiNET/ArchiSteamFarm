@@ -11,7 +11,7 @@ env:
   NET_CORE_VERSION: net7.0
   NET_FRAMEWORK_VERSION: net481
   NODE_JS_VERSION: 'lts/*'
-  STEAM_TOKEN_DUMPER_NAME: ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+  PLUGINS: ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
   STEAM_TOKEN_DUMPER_TOKEN: ${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
 
 jobs:
@@ -83,15 +83,35 @@ jobs:
             }
         }
 
+    - name: Prepare for publishing on Unix
+      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        dotnet restore
+        dotnet build ArchiSteamFarm -c "$CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+
+    - name: Prepare for publishing on Windows
+      if: startsWith(matrix.os, 'windows-')
+      shell: pwsh
+      run: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        $ProgressPreference = 'SilentlyContinue'
+
+        dotnet restore
+        dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       shell: sh
       run: |
         set -eu
 
-        if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then
-            sed "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" > "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new"
-            mv "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"
+        if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" ]; then
+            sed "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" > "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs.new"
+            mv "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs.new" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs"
         fi
 
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Windows
@@ -102,19 +122,74 @@ jobs:
         $ErrorActionPreference = 'Stop'
         $ProgressPreference = 'SilentlyContinue'
 
-        if ((Test-Path env:STEAM_TOKEN_DUMPER_TOKEN) -and ($env:STEAM_TOKEN_DUMPER_TOKEN) -and (Test-Path "$env:STEAM_TOKEN_DUMPER_NAME\SharedInfo.cs" -PathType Leaf)) {
-            (Get-Content "$env:STEAM_TOKEN_DUMPER_NAME\SharedInfo.cs").Replace('STEAM_TOKEN_DUMPER_TOKEN', "$env:STEAM_TOKEN_DUMPER_TOKEN") | Set-Content "$env:STEAM_TOKEN_DUMPER_NAME\SharedInfo.cs"
+        if ((Test-Path env:STEAM_TOKEN_DUMPER_TOKEN) -and ($env:STEAM_TOKEN_DUMPER_TOKEN) -and (Test-Path "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs" -PathType Leaf)) {
+            (Get-Content "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs").Replace('STEAM_TOKEN_DUMPER_TOKEN', "$env:STEAM_TOKEN_DUMPER_TOKEN") | Set-Content "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs"
         }
 
-    - name: Publish ArchiSteamFarm.OfficialPlugins.SteamTokenDumper for .NET Core
-      run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_CORE_VERSION }}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+    - name: Publish official plugins on Unix
+      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      env:
+        MAX_JOBS: 3
+      shell: bash
+      run: |
+        set -euo pipefail
 
-    - name: Publish ArchiSteamFarm.OfficialPlugins.SteamTokenDumper for .NET Framework
+        publish() {
+            dotnet publish "$1" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}/${NET_CORE_VERSION}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+        }
+
+        for plugin in $PLUGINS; do
+            publish "$plugin" &
+
+            while [ "$(jobs -p | wc -l)" -ge "$MAX_JOBS" ]; do
+                sleep 1
+            done
+        done
+
+        wait
+
+    - name: Publish official plugins on Windows
       if: startsWith(matrix.os, 'windows-')
-      run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_FRAMEWORK_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_FRAMEWORK_VERSION }}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+      env:
+        MAX_JOBS: 2
+      shell: pwsh
+      run: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        $ProgressPreference = 'SilentlyContinue'
 
-    - name: Restore packages in preparation for ArchiSteamFarm publishing
-      run: dotnet restore ArchiSteamFarm -p:ContinuousIntegrationBuild=true --nologo
+        $PublishBlock = {
+            param($plugin, $framework)
+
+            Set-StrictMode -Version Latest
+            $ErrorActionPreference = 'Stop'
+            $ProgressPreference = 'SilentlyContinue'
+
+            Set-Location "$env:GITHUB_WORKSPACE"
+
+            dotnet publish "$plugin" -c "$env:CONFIGURATION" -f "$framework" -o "out\$plugin\$framework" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+
+            if ($LastExitCode -ne 0) {
+                throw "Last command failed."
+            }
+        }
+
+        foreach ($plugin in $env:PLUGINS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+            foreach ($framework in "$env:NET_CORE_VERSION","$env:NET_FRAMEWORK_VERSION") {
+                Start-Job -Name "$plugin $framework" $PublishBlock -ArgumentList "$plugin","$framework"
+
+                # Limit active jobs in parallel to help with memory usage
+                $jobs = $(Get-Job -State Running)
+
+                while (@($jobs).Count -ge $env:MAX_JOBS) {
+                    Wait-Job -Job $jobs -Any | Out-Null
+
+                    $jobs = $(Get-Job -State Running)
+                }
+            }
+        }
+
+        Get-Job | Receive-Job -Wait
 
     - name: Publish ArchiSteamFarm on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
@@ -134,11 +209,13 @@ jobs:
 
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" "-p:ASFVariant=$1" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
 
-            # If we're including SteamTokenDumper plugin for this framework, copy it to output directory
-            if [ -d "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" ]; then
-                mkdir -p "out/${1}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
-                cp -pR "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/"* "out/${1}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
-            fi
+            # If we're including official plugins for this framework, copy them to output directory
+            for plugin in $PLUGINS; do
+                if [ -d "out/${plugin}/${NET_CORE_VERSION}" ]; then
+                    mkdir -p "out/${1}/plugins/${plugin}"
+                    cp -pR "out/${plugin}/${NET_CORE_VERSION}/"* "out/${1}/plugins/${plugin}"
+                fi
+            done
 
             # Include .ico file for all platforms, since only Windows script can bundle it inside the exe
             cp "resources/ASF.ico" "out/${1}/ArchiSteamFarm.ico"
@@ -244,13 +321,15 @@ jobs:
                 throw "Last command failed."
             }
 
-            # If we're including SteamTokenDumper plugin for this framework, copy it to output directory
-            if (Test-Path "out\$env:STEAM_TOKEN_DUMPER_NAME\$targetFramework" -PathType Container) {
-                if (!(Test-Path "out\$variant\plugins\$env:STEAM_TOKEN_DUMPER_NAME" -PathType Container)) {
-                    New-Item -ItemType Directory -Path "out\$variant\plugins\$env:STEAM_TOKEN_DUMPER_NAME" > $null
-                }
+            # If we're including official plugins for this framework, copy them to output directory
+            foreach ($plugin in $env:PLUGINS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+                if (Test-Path "out\$plugin\$targetFramework" -PathType Container) {
+                    if (!(Test-Path "out\$variant\plugins\$plugin" -PathType Container)) {
+                        New-Item -ItemType Directory -Path "out\$variant\plugins\$plugin" > $null
+                    }
 
-                Copy-Item "out\$env:STEAM_TOKEN_DUMPER_NAME\$targetFramework\*" "out\$variant\plugins\$env:STEAM_TOKEN_DUMPER_NAME" -Recurse
+                    Copy-Item "out\$plugin\$targetFramework\*" "out\$variant\plugins\$plugin" -Recurse
+                }
             }
 
             # Icon is available only in .NET Framework and .NET Core Windows build, we'll bundle the .ico file for other flavours

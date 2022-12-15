@@ -545,27 +545,26 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, response.StatusCode));
 
 				switch (response.StatusCode) {
-					// SteamDB told us to stop submitting data for now
 					case HttpStatusCode.Forbidden:
+						// SteamDB told us to stop submitting data for now
 						// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 						lock (SubmissionSemaphore) {
 							SubmissionTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 						}
 
 						break;
-
-					// SteamDB told us to reset our cache
 					case HttpStatusCode.Conflict:
+						// SteamDB told us to reset our cache
 						GlobalCache.Reset(true);
 
 						break;
-
-					// SteamDB told us to try again later
 #if NETFRAMEWORK
 					case (HttpStatusCode) 429:
 #else
 					case HttpStatusCode.TooManyRequests:
 #endif
+
+						// SteamDB told us to try again later
 #pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
 						TimeSpan startIn = TimeSpan.FromMinutes(Random.Shared.Next(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
 #pragma warning restore CA5394 // This call isn't used in a security-sensitive manner

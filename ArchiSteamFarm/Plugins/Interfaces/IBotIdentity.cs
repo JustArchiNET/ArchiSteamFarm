@@ -19,35 +19,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Threading.Tasks;
-using ArchiSteamFarm.IPC.Responses;
-using ArchiSteamFarm.Web.Responses;
+using ArchiSteamFarm.Steam;
+using JetBrains.Annotations;
+using SteamKit2;
 
-namespace ArchiSteamFarm.Core;
+namespace ArchiSteamFarm.Plugins.Interfaces;
 
-internal static class ArchiNet {
-	internal static Uri URL => new("https://asf.JustArchi.net");
-
-	internal static async Task<string?> FetchBuildChecksum(Version version, string variant) {
-		ArgumentNullException.ThrowIfNull(version);
-
-		if (string.IsNullOrEmpty(variant)) {
-			throw new ArgumentNullException(nameof(variant));
-		}
-
-		if (ASF.WebBrowser == null) {
-			throw new InvalidOperationException(nameof(ASF.WebBrowser));
-		}
-
-		Uri request = new(URL, $"/Api/Checksum/{version}/{variant}");
-
-		ObjectResponse<GenericResponse<string>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<string>>(request).ConfigureAwait(false);
-
-		if (response?.Content == null) {
-			return null;
-		}
-
-		return response.Content.Result ?? "";
-	}
+[PublicAPI]
+public interface IBotIdentity : IPlugin {
+	/// <summary>
+	///     ASF will call this method when bot receives its own identity information.
+	/// </summary>
+	/// <param name="bot">Bot object related to this callback.</param>
+	/// <param name="data">Full data received by ASF in the callback that relates to this bot (Steam) account.</param>
+	/// <param name="nickname">Parsed nickname set for this bot (Steam) account.</param>
+	/// <param name="avatarHash">Parsed hash of the avatar of this bot (Steam) account, as hex.</param>
+	Task OnSelfPersonaState(Bot bot, SteamFriends.PersonaStateCallback data, string? nickname, string? avatarHash);
 }

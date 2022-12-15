@@ -20,34 +20,18 @@
 // limitations under the License.
 
 using System;
-using System.Threading.Tasks;
-using ArchiSteamFarm.IPC.Responses;
-using ArchiSteamFarm.Web.Responses;
+using ArchiSteamFarm.Steam.Data;
+using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Core;
+namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
 
-internal static class ArchiNet {
-	internal static Uri URL => new("https://asf.JustArchi.net");
+internal sealed class AssetForListing : AssetInInventory {
+	[JsonProperty(Required = Required.Always)]
+	internal readonly uint Index;
 
-	internal static async Task<string?> FetchBuildChecksum(Version version, string variant) {
-		ArgumentNullException.ThrowIfNull(version);
+	internal AssetForListing(Asset asset, uint index) : base(asset) {
+		ArgumentNullException.ThrowIfNull(asset);
 
-		if (string.IsNullOrEmpty(variant)) {
-			throw new ArgumentNullException(nameof(variant));
-		}
-
-		if (ASF.WebBrowser == null) {
-			throw new InvalidOperationException(nameof(ASF.WebBrowser));
-		}
-
-		Uri request = new(URL, $"/Api/Checksum/{version}/{variant}");
-
-		ObjectResponse<GenericResponse<string>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<string>>(request).ConfigureAwait(false);
-
-		if (response?.Content == null) {
-			return null;
-		}
-
-		return response.Content.Result ?? "";
+		Index = index;
 	}
 }
