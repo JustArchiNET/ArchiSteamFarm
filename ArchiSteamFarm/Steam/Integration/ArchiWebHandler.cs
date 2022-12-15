@@ -195,6 +195,7 @@ public sealed class ArchiWebHandler : IDisposable {
 						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 						switch (response.Content!.ErrorCode) {
 							case EResult.DuplicateRequest:
+							case EResult.ServiceUnavailable:
 								response = null;
 
 								continue;

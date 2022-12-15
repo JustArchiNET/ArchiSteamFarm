@@ -34,6 +34,10 @@ internal static class SteamUtilities {
 			throw new ArgumentNullException(nameof(errorText));
 		}
 
+		if (errorText.StartsWith("EYldRefreshAppIfNecessary", StringComparison.Ordinal)) {
+			return EResult.ServiceUnavailable;
+		}
+
 		int startIndex = errorText.LastIndexOf('(');
 
 		if (startIndex < 0) {
