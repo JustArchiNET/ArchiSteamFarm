@@ -21,11 +21,10 @@
 
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
 using ArchiSteamFarm.Steam.Data;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Responses;
+namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]

@@ -27,9 +27,9 @@ using ArchiSteamFarm.Core;
 using Newtonsoft.Json;
 using SteamKit2;
 
-namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
+namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 
-internal sealed class RequestData {
+internal sealed class SubmitRequest {
 	[JsonProperty("guid", Required = Required.Always)]
 	private static string Guid => ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
 
@@ -53,7 +53,7 @@ internal sealed class RequestData {
 	[JsonProperty("steamid", Required = Required.Always)]
 	private string SteamIDText => new SteamID(SteamID).Render();
 
-	internal RequestData(ulong steamID, IReadOnlyCollection<KeyValuePair<uint, ulong>> apps, IReadOnlyCollection<KeyValuePair<uint, ulong>> accessTokens, IReadOnlyCollection<KeyValuePair<uint, string>> depots) {
+	internal SubmitRequest(ulong steamID, IReadOnlyCollection<KeyValuePair<uint, ulong>> apps, IReadOnlyCollection<KeyValuePair<uint, ulong>> accessTokens, IReadOnlyCollection<KeyValuePair<uint, string>> depots) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}

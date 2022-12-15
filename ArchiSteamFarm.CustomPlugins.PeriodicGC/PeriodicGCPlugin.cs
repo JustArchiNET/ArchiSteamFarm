@@ -27,11 +27,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Plugins.Interfaces;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.CustomPlugins.PeriodicGC;
 
 [Export(typeof(IPlugin))]
-[SuppressMessage("ReSharper", "UnusedType.Global")]
+[UsedImplicitly]
 internal sealed class PeriodicGCPlugin : IPlugin {
 	private const byte GCPeriod = 60; // In seconds
 

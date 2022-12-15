@@ -29,35 +29,35 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
-namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
+namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class AnnouncementRequest {
 	[JsonProperty]
-	internal readonly string? AvatarHash;
+	private readonly string? AvatarHash;
 
 	[JsonProperty(Required = Required.Always)]
-	internal readonly Guid Guid;
+	private readonly Guid Guid;
 
 	[JsonProperty(Required = Required.Always)]
-	internal readonly ImmutableHashSet<AssetForListing> Inventory;
+	private readonly ImmutableHashSet<AssetForListing> Inventory;
 
 	[JsonProperty(Required = Required.Always)]
-	internal readonly ImmutableHashSet<Asset.EType> MatchableTypes;
+	private readonly ImmutableHashSet<Asset.EType> MatchableTypes;
 
 	[JsonProperty(Required = Required.Always)]
-	internal readonly bool MatchEverything;
+	private readonly bool MatchEverything;
 
 	[JsonProperty(Required = Required.Always)]
-	internal readonly byte MaxTradeHoldDuration;
+	private readonly byte MaxTradeHoldDuration;
 
 	[JsonProperty]
-	internal readonly string? Nickname;
+	private readonly string? Nickname;
 
 	[JsonProperty(Required = Required.Always)]
-	internal readonly ulong SteamID;
+	private readonly ulong SteamID;
 
 	[JsonProperty(Required = Required.Always)]
-	internal readonly string TradeToken;
+	private readonly string TradeToken;
 
 	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, IReadOnlyList<Asset> inventory, IReadOnlyCollection<Asset.EType> matchableTypes, bool matchEverything, byte maxTradeHoldDuration, string? nickname = null, string? avatarHash = null) {
 		if (guid == Guid.Empty) {

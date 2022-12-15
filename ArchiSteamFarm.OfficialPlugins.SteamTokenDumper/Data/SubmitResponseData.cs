@@ -20,30 +20,28 @@
 // limitations under the License.
 
 using System.Collections.Immutable;
-using ArchiSteamFarm.IPC.Integration;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
+namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 
-public sealed class SteamTokenDumperConfig {
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool Enabled { get; internal set; }
+#pragma warning disable CA1812 // False positive, the class is used during json deserialization
+internal sealed class SubmitResponseData {
+	[JsonProperty("new_apps", Required = Required.Always)]
+	internal readonly ImmutableHashSet<uint> NewApps = ImmutableHashSet<uint>.Empty;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> SecretAppIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	[JsonProperty("new_depots", Required = Required.Always)]
+	internal readonly ImmutableHashSet<uint> NewDepots = ImmutableHashSet<uint>.Empty;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> SecretDepotIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	[JsonProperty("new_subs", Required = Required.Always)]
+	internal readonly ImmutableHashSet<uint> NewPackages = ImmutableHashSet<uint>.Empty;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> SecretPackageIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	[JsonProperty("verified_apps", Required = Required.Always)]
+	internal readonly ImmutableHashSet<uint> VerifiedApps = ImmutableHashSet<uint>.Empty;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool SkipAutoGrantPackages { get; private set; } = true;
+	[JsonProperty("verified_depots", Required = Required.Always)]
+	internal readonly ImmutableHashSet<uint> VerifiedDepots = ImmutableHashSet<uint>.Empty;
 
-	[JsonConstructor]
-	internal SteamTokenDumperConfig() { }
+	[JsonProperty("verified_subs", Required = Required.Always)]
+	internal readonly ImmutableHashSet<uint> VerifiedPackages = ImmutableHashSet<uint>.Empty;
 }
+#pragma warning restore CA1812 // False positive, the class is used during json deserialization

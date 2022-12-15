@@ -23,7 +23,7 @@ using System;
 using ArchiSteamFarm.Steam.Data;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
+namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal class AssetInInventory {
 	[JsonProperty(Required = Required.Always)]

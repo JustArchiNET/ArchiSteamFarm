@@ -28,7 +28,7 @@ using ArchiSteamFarm.Steam.Storage;
 using Newtonsoft.Json;
 using SteamKit2;
 
-namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Requests;
+namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class InventoriesRequest {
 	[JsonProperty(Required = Required.Always)]
