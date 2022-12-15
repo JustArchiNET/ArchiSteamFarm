@@ -21,7 +21,6 @@
 
 using System;
 using System.Composition;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;

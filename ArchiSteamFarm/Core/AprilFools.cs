@@ -36,7 +36,7 @@ internal static class AprilFools {
 	internal static void Init(object? state = null) {
 		DateTime now = DateTime.Now;
 
-		if ((now.Month == 4) && (now.Day == 1)) {
+		if (now is { Month: 4, Day: 1 }) {
 			try {
 				CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture(SharedInfo.LolcatCultureName);
 			} catch (Exception e) {

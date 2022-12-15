@@ -1159,7 +1159,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return (appID, DateTime.MinValue, true);
 		}
 
-		return ((productInfoResultSet.Complete && !productInfoResultSet.Failed) || optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
+		return (productInfoResultSet is { Complete: true, Failed: false } || optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
 	}
 
 	internal Task<HashSet<uint>?> GetMarketableAppIDs() => ArchiWebHandler.GetAppList();
@@ -1422,7 +1422,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal async Task OnFarmingFinished(bool farmedSomething) {
 		await OnFarmingStopped().ConfigureAwait(false);
 
-		if (BotConfig.SendOnFarmingFinished && (BotConfig.LootableTypes.Count > 0) && (farmedSomething || !FirstTradeSent)) {
+		if (BotConfig is { SendOnFarmingFinished: true, LootableTypes.Count: > 0 } && (farmedSomething || !FirstTradeSent)) {
 			FirstTradeSent = true;
 
 			await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
@@ -2068,7 +2068,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			SendItemsTimer = null;
 		}
 
-		if ((BotConfig.SendTradePeriod > 0) && (BotConfig.LootableTypes.Count > 0) && BotConfig.SteamUserPermissions.Values.Any(static permission => permission >= BotConfig.EAccess.Master)) {
+		if (BotConfig is { SendTradePeriod: > 0, LootableTypes.Count: > 0 } && BotConfig.SteamUserPermissions.Values.Any(static permission => permission >= BotConfig.EAccess.Master)) {
 			SendItemsTimer = new Timer(
 				OnSendItemsTimer,
 				null,
@@ -2563,7 +2563,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
-		if (!notification.local_echo && (notification.rtime32_server_timestamp > 0)) {
+		if (notification is { local_echo: false, rtime32_server_timestamp: > 0 }) {
 			if (ShouldAckChatMessage(notification.steamid_friend)) {
 				Utilities.InBackground(() => ArchiHandler.AckMessage(notification.steamid_friend, notification.rtime32_server_timestamp));
 			}

@@ -251,7 +251,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		// If we're not farming, and we got new items, it's likely to be a booster pack or likewise
 		// In this case, perform a loot if user wants to do so
-		if (Bot.BotConfig.SendOnFarmingFinished && (Bot.BotConfig.LootableTypes.Count > 0)) {
+		if (Bot.BotConfig is { SendOnFarmingFinished: true, LootableTypes.Count: > 0 }) {
 			await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 		}
 	}
@@ -352,7 +352,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				if (minFarmingDelayAfterBlock > 0) {
 					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotExtraIdlingCooldown, TimeSpan.FromSeconds(minFarmingDelayAfterBlock).ToHumanReadable()));
 
-					for (byte i = 0; (i < minFarmingDelayAfterBlock) && Bot.IsConnectedAndLoggedOn && Bot.IsPlayingPossible && Bot.PlayingWasBlocked; i++) {
+					for (byte i = 0; (i < minFarmingDelayAfterBlock) && Bot is { IsConnectedAndLoggedOn: true, IsPlayingPossible: true, PlayingWasBlocked: true }; i++) {
 						await Task.Delay(1000).ConfigureAwait(false);
 					}
 

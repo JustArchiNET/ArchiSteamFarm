@@ -101,7 +101,7 @@ internal sealed class Startup {
 		app.UseStaticFiles(
 			new StaticFileOptions {
 				OnPrepareResponse = static context => {
-					if (context.File.Exists && !context.File.IsDirectory && !string.IsNullOrEmpty(context.File.Name)) {
+					if (context.File is { Exists: true, IsDirectory: false } && !string.IsNullOrEmpty(context.File.Name)) {
 						string extension = Path.GetExtension(context.File.Name);
 
 						CacheControlHeaderValue cacheControl = new();

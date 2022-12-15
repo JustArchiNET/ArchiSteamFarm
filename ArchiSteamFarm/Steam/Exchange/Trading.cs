@@ -382,7 +382,7 @@ public sealed class Trading : IDisposable {
 				lootableTypesReceived = await ParseActiveTrades().ConfigureAwait(false);
 			}
 
-			if (lootableTypesReceived && Bot.BotConfig.SendOnFarmingFinished && (Bot.BotConfig.LootableTypes.Count > 0)) {
+			if (lootableTypesReceived && Bot.BotConfig is { SendOnFarmingFinished: true, LootableTypes.Count: > 0 }) {
 				await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 			}
 		} finally {

@@ -93,11 +93,15 @@ internal static class WebUtilities {
 		StreamWriter streamWriter = new(response.Body, Encoding.UTF8);
 
 		await using (streamWriter.ConfigureAwait(false)) {
-			using JsonTextWriter jsonWriter = new(streamWriter) {
+#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
+			JsonTextWriter jsonWriter = new(streamWriter) {
 				CloseOutput = false
 			};
+#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 
-			serializer.Serialize(jsonWriter, value);
+			await using (jsonWriter.ConfigureAwait(false)) {
+				serializer.Serialize(jsonWriter, value);
+			}
 		}
 	}
 }

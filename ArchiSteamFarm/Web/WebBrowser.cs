@@ -345,11 +345,16 @@ public sealed class WebBrowser : IDisposable {
 
 				try {
 					using StreamReader streamReader = new(response.Content);
-					using JsonTextReader jsonReader = new(streamReader);
 
-					JsonSerializer serializer = new();
+#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
+					JsonTextReader jsonReader = new(streamReader);
+#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 
-					obj = serializer.Deserialize<T>(jsonReader);
+					await using (jsonReader.ConfigureAwait(false)) {
+						JsonSerializer serializer = new();
+
+						obj = serializer.Deserialize<T>(jsonReader);
+					}
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new ObjectResponse<T>(response);
@@ -649,11 +654,16 @@ public sealed class WebBrowser : IDisposable {
 
 				try {
 					using StreamReader streamReader = new(response.Content);
-					using JsonReader jsonReader = new JsonTextReader(streamReader);
 
-					JsonSerializer serializer = new();
+#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
+					JsonReader jsonReader = new JsonTextReader(streamReader);
+#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 
-					obj = serializer.Deserialize<TResult>(jsonReader);
+					await using (jsonReader.ConfigureAwait(false)) {
+						JsonSerializer serializer = new();
+
+						obj = serializer.Deserialize<TResult>(jsonReader);
+					}
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new ObjectResponse<TResult>(response);

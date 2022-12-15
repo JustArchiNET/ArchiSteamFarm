@@ -73,6 +73,6 @@ public sealed class TradeOffer {
 			throw new ArgumentNullException(nameof(acceptedTypes));
 		}
 
-		return ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
+		return ItemsToGive.All(item => item is { AppID: Asset.SteamAppID, ContextID: Asset.SteamCommunityContextID } && acceptedTypes.Contains(item.Type));
 	}
 }

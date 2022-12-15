@@ -75,7 +75,7 @@ public sealed class TypeController : ArchiController {
 				}
 			}
 
-			foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(static property => property.CanRead && (property.GetMethod?.IsPrivate == false))) {
+			foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(static property => property is { CanRead: true, GetMethod.IsPrivate: false })) {
 				JsonPropertyAttribute? jsonProperty = property.GetCustomAttribute<JsonPropertyAttribute>();
 
 				if (jsonProperty != null) {
