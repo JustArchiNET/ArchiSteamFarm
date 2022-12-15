@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Composition;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -30,12 +31,13 @@ using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Storage;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 [Export(typeof(IPlugin))]
-internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotIdentity {
+internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotIdentity, IBotModules {
 	private static readonly ConcurrentDictionary<Bot, RemoteCommunication> RemoteCommunications = new();
 
 	[JsonProperty]
@@ -52,7 +54,13 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotIdentity {
 		}
 	}
 
-	public async Task OnBotInit(Bot bot) {
+	public Task OnBotInit(Bot bot) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		return Task.CompletedTask;
+	}
+
+	public async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (RemoteCommunications.TryRemove(bot, out RemoteCommunication? remoteCommunications)) {
