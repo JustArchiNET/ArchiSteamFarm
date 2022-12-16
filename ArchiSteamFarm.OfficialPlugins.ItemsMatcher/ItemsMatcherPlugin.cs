@@ -23,12 +23,14 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Integration.Callbacks;
 using ArchiSteamFarm.Steam.Storage;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -37,7 +39,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 [Export(typeof(IPlugin))]
-internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotIdentity, IBotModules {
+internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotIdentity, IBotModules, IBotUserNotifications {
 	private static readonly ConcurrentDictionary<Bot, RemoteCommunication> RemoteCommunications = new();
 
 	[JsonProperty]
@@ -49,8 +51,8 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotIdentity, I
 	public async Task OnBotDestroy(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if (RemoteCommunications.TryRemove(bot, out RemoteCommunication? remoteCommunications)) {
-			await remoteCommunications.DisposeAsync().ConfigureAwait(false);
+		if (RemoteCommunications.TryRemove(bot, out RemoteCommunication? remoteCommunication)) {
+			await remoteCommunication.DisposeAsync().ConfigureAwait(false);
 		}
 	}
 
@@ -63,19 +65,36 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotIdentity, I
 	public async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if (RemoteCommunications.TryRemove(bot, out RemoteCommunication? remoteCommunications)) {
-			await remoteCommunications.DisposeAsync().ConfigureAwait(false);
+		if (RemoteCommunications.TryRemove(bot, out RemoteCommunication? remoteCommunication)) {
+			await remoteCommunication.DisposeAsync().ConfigureAwait(false);
 		}
 
 		if (bot.BotConfig.RemoteCommunication == BotConfig.ERemoteCommunication.None) {
 			return;
 		}
 
-		RemoteCommunication remoteCommunication = new(bot);
+		remoteCommunication = new RemoteCommunication(bot);
 
 		if (!RemoteCommunications.TryAdd(bot, remoteCommunication)) {
 			await remoteCommunication.DisposeAsync().ConfigureAwait(false);
 		}
+	}
+
+	public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		if ((newNotifications == null) || (newNotifications.Count == 0)) {
+			throw new ArgumentNullException(nameof(newNotifications));
+		}
+
+		// We're interested only in Items notification for Bot that has RemoteCommunication enabled
+		if (!newNotifications.Contains(UserNotificationsCallback.EUserNotification.Items) || !RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication)) {
+			return Task.CompletedTask;
+		}
+
+		remoteCommunication.OnNewItemsNotification();
+
+		return Task.CompletedTask;
 	}
 
 	public override Task OnLoaded() {
@@ -88,6 +107,7 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotIdentity, I
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication)) {
+			// This bot doesn't have RemoteCommunication enabled
 			return;
 		}
 

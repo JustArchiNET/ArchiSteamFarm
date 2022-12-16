@@ -29,8 +29,8 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
-using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Cards;
 using ArchiSteamFarm.Steam.Data;
@@ -42,10 +42,11 @@ using ArchiSteamFarm.Storage;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
-	private const byte MinAnnouncementCheckTTL = 45; // Minimum amount of minutes we must wait before checking eligibility for Announcement, should be lower than MinPersonaStateTTL
+	private const byte MaxAnnouncementTTL = 60; // Maximum amount of minutes we can wait before the next Announcement
+	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
 	private const byte MinItemsCount = 100; // Minimum amount of items to be eligible for public listing
-	private const byte MinPersonaStateTTL = 60; // Minimum amount of minutes we must wait before requesting persona state update
+	private const byte MinPersonaStateTTL = 5; // Minimum amount of minutes we must wait before requesting persona state update
 
 	private static readonly ImmutableHashSet<Asset.EType> AcceptedMatchableTypes = ImmutableHashSet.Create(
 		Asset.EType.Emoticon,
@@ -55,14 +56,15 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	);
 
 	private readonly Bot Bot;
-	private readonly SemaphoreSlim MatchActivelySemaphore = new(1, 1);
 	private readonly Timer? HeartBeatTimer;
+	private readonly SemaphoreSlim MatchActivelySemaphore = new(1, 1);
 	private readonly Timer? MatchActivelyTimer;
 	private readonly SemaphoreSlim RequestsSemaphore = new(1, 1);
 
-	private DateTime LastAnnouncementCheck;
+	private DateTime LastAnnouncement;
 	private DateTime LastHeartBeat;
 	private DateTime LastPersonaStateRequest;
+	private bool ShouldSendAnnouncementEarlier;
 	private bool ShouldSendHeartBeats;
 
 	internal RemoteCommunication(Bot bot) {
@@ -74,7 +76,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			HeartBeatTimer = new Timer(
 				HeartBeat,
 				null,
-				TimeSpan.FromMinutes(MinHeartBeatTTL) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0),
+				TimeSpan.FromMinutes(1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0),
 				TimeSpan.FromMinutes(1)
 			);
 		}
@@ -88,7 +90,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					TimeSpan.FromHours(6)
 				);
 			} else {
-				bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningNoLicense, nameof(BotConfig.ETradingPreferences.MatchActively)));
+				bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningNoLicense, nameof(BotConfig.ETradingPreferences.MatchActively)));
 			}
 		}
 	}
@@ -118,13 +120,147 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 	}
 
+	internal void OnNewItemsNotification() => ShouldSendAnnouncementEarlier = true;
+
+	internal async Task OnPersonaState(string? nickname = null, string? avatarHash = null) {
+		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
+			return;
+		}
+
+		if ((DateTime.UtcNow < LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL)) && ShouldSendHeartBeats) {
+			return;
+		}
+
+		await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
+
+		try {
+			if ((DateTime.UtcNow < LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL)) && ShouldSendHeartBeats) {
+				return;
+			}
+
+			// Don't announce if we don't meet conditions
+			bool? eligible = await IsEligibleForListing().ConfigureAwait(false);
+
+			if (!eligible.HasValue) {
+				// This is actually network failure, so we'll stop sending heartbeats but not record it as valid check
+				ShouldSendHeartBeats = false;
+
+				return;
+			}
+
+			if (!eligible.Value) {
+				// We're not eligible, record this as a valid check
+				LastAnnouncement = DateTime.UtcNow;
+				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+
+				return;
+			}
+
+			HashSet<Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
+
+			if (acceptedMatchableTypes.Count == 0) {
+				throw new InvalidOperationException(nameof(acceptedMatchableTypes));
+			}
+
+			string? tradeToken = await Bot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
+
+			if (string.IsNullOrEmpty(tradeToken)) {
+				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+				ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(tradeToken)));
+
+				return;
+			}
+
+			List<Asset> inventory;
+
+			try {
+				inventory = await Bot.ArchiWebHandler.GetInventoryAsync().ToListAsync().ConfigureAwait(false);
+			} catch (HttpRequestException e) {
+				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+				ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericWarningException(e);
+
+				return;
+			} catch (Exception e) {
+				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+				ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericException(e);
+
+				return;
+			}
+
+			// This is actual inventory
+			if (inventory.Count(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)) < MinItemsCount) {
+				// We're not eligible, record this as a valid check
+				LastAnnouncement = DateTime.UtcNow;
+				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+
+				return;
+			}
+
+			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname, inventory.Count));
+
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			HttpStatusCode? response = await Backend.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
+
+			if (!response.HasValue) {
+				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+				ShouldSendHeartBeats = false;
+
+				return;
+			}
+
+			// We've got the response, regardless what happened, we've succeeded in a valid check
+			LastAnnouncement = DateTime.UtcNow;
+			ShouldSendAnnouncementEarlier = false;
+
+			if (response.Value.IsClientErrorCode()) {
+				// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
+				ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response));
+
+				switch (response) {
+					case HttpStatusCode.Forbidden:
+						// ArchiNet told us to stop submitting data for now
+						LastAnnouncement = DateTime.UtcNow.AddYears(1);
+
+						break;
+#if NETFRAMEWORK
+					case (HttpStatusCode) 429:
+#else
+					case HttpStatusCode.TooManyRequests:
+#endif
+
+						// ArchiNet told us to try again later
+						LastAnnouncement = DateTime.UtcNow.AddDays(1);
+
+						break;
+				}
+
+				return;
+			}
+
+			LastHeartBeat = DateTime.UtcNow;
+			ShouldSendHeartBeats = true;
+
+			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
+		} finally {
+			RequestsSemaphore.Release();
+		}
+	}
+
 	private async void HeartBeat(object? state = null) {
 		if (!Bot.IsConnectedAndLoggedOn || (Bot.HeartBeatFailures > 0)) {
 			return;
 		}
 
 		// Request persona update if needed
-		if ((DateTime.UtcNow > LastPersonaStateRequest.AddMinutes(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncementCheck.AddMinutes(MinAnnouncementCheckTTL))) {
+		if ((DateTime.UtcNow > LastPersonaStateRequest.AddMinutes(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL))) {
 			LastPersonaStateRequest = DateTime.UtcNow;
 			Bot.RequestPersonaStateUpdate();
 		}
@@ -145,141 +281,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			if (response.Value.IsClientErrorCode()) {
-				LastHeartBeat = DateTime.MinValue;
 				ShouldSendHeartBeats = false;
 
 				return;
 			}
 
 			LastHeartBeat = DateTime.UtcNow;
-		} finally {
-			RequestsSemaphore.Release();
-		}
-	}
-
-	internal async Task OnPersonaState(string? nickname = null, string? avatarHash = null) {
-		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
-			return;
-		}
-
-		if ((DateTime.UtcNow < LastAnnouncementCheck.AddMinutes(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {
-			return;
-		}
-
-		await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
-
-		try {
-			if ((DateTime.UtcNow < LastAnnouncementCheck.AddMinutes(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {
-				return;
-			}
-
-			// Don't announce if we don't meet conditions
-			bool? eligible = await IsEligibleForListing().ConfigureAwait(false);
-
-			if (!eligible.HasValue) {
-				// This is actually network failure, so we'll stop sending heartbeats but not record it as valid check
-				ShouldSendHeartBeats = false;
-
-				return;
-			}
-
-			if (!eligible.Value) {
-				LastAnnouncementCheck = DateTime.UtcNow;
-				ShouldSendHeartBeats = false;
-
-				return;
-			}
-
-			string? tradeToken = await Bot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
-
-			if (string.IsNullOrEmpty(tradeToken)) {
-				// This is actually network failure, so we'll stop sending heartbeats but not record it as valid check
-				ShouldSendHeartBeats = false;
-
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(tradeToken)));
-
-				return;
-			}
-
-			HashSet<Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
-
-			if (acceptedMatchableTypes.Count == 0) {
-				Bot.ArchiLogger.LogNullError(acceptedMatchableTypes);
-				LastAnnouncementCheck = DateTime.UtcNow;
-				ShouldSendHeartBeats = false;
-
-				return;
-			}
-
-			List<Asset> inventory;
-
-			try {
-				inventory = await Bot.ArchiWebHandler.GetInventoryAsync().ToListAsync().ConfigureAwait(false);
-			} catch (HttpRequestException e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-
-				// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
-				ShouldSendHeartBeats = false;
-
-				return;
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericException(e);
-
-				// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
-				ShouldSendHeartBeats = false;
-
-				return;
-			}
-
-			LastAnnouncementCheck = DateTime.UtcNow;
-
-			// This is actual inventory
-			if (inventory.Count(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)) < MinItemsCount) {
-				ShouldSendHeartBeats = false;
-
-				return;
-			}
-
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ListingAnnouncing, Bot.SteamID, nickname, inventory.Count));
-
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			HttpStatusCode? response = await Backend.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
-
-			if (!response.HasValue) {
-				return;
-			}
-
-			if (response.Value.IsClientErrorCode()) {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, response));
-
-				LastHeartBeat = DateTime.MinValue;
-				ShouldSendHeartBeats = false;
-
-				switch (response) {
-					case HttpStatusCode.Forbidden:
-						// ArchiNet told us to stop submitting data for now
-						LastAnnouncementCheck = DateTime.UtcNow.AddYears(1);
-
-						break;
-#if NETFRAMEWORK
-				case (HttpStatusCode) 429:
-#else
-					case HttpStatusCode.TooManyRequests:
-#endif
-
-						// ArchiNet told us to try again later
-						LastAnnouncementCheck = DateTime.UtcNow.AddDays(1);
-
-						break;
-				}
-
-				return;
-			}
-
-			LastHeartBeat = DateTime.UtcNow;
-			ShouldSendHeartBeats = true;
-
-			Bot.ArchiLogger.LogGenericInfo(ArchiSteamFarm.Localization.Strings.Success);
 		} finally {
 			RequestsSemaphore.Release();
 		}
@@ -295,7 +302,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		// Bot must have STM enabled in TradingPreferences
 		if (!Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, $"{nameof(Bot.BotConfig.TradingPreferences)}: {Bot.BotConfig.TradingPreferences}"));
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.BotConfig.TradingPreferences)}: {Bot.BotConfig.TradingPreferences}"));
 
 			return false;
 		}
@@ -304,7 +311,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		bool? hasPublicInventory = await Bot.HasPublicInventory().ConfigureAwait(false);
 
 		if (hasPublicInventory != true) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, $"{nameof(Bot.HasPublicInventory)}: {hasPublicInventory?.ToString() ?? "null"}"));
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.HasPublicInventory)}: {hasPublicInventory?.ToString() ?? "null"}"));
 
 			return hasPublicInventory;
 		}
@@ -315,14 +322,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private async Task<bool?> IsEligibleForMatching() {
 		// Bot must have ASF 2FA
 		if (!Bot.HasMobileAuthenticator) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, $"{nameof(Bot.HasMobileAuthenticator)}: {Bot.HasMobileAuthenticator}"));
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.HasMobileAuthenticator)}: {Bot.HasMobileAuthenticator}"));
 
 			return false;
 		}
 
 		// Bot must have at least one accepted matchable type set
 		if ((Bot.BotConfig.MatchableTypes.Count == 0) || Bot.BotConfig.MatchableTypes.All(static type => !AcceptedMatchableTypes.Contains(type))) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, $"{nameof(Bot.BotConfig.MatchableTypes)}: {string.Join(", ", Bot.BotConfig.MatchableTypes)}"));
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.BotConfig.MatchableTypes)}: {string.Join(", ", Bot.BotConfig.MatchableTypes)}"));
 
 			return false;
 		}
@@ -331,7 +338,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		bool? hasValidApiKey = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
 
 		if (hasValidApiKey != true) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, $"{nameof(Bot.ArchiWebHandler.HasValidApiKey)}: {hasValidApiKey?.ToString() ?? "null"}"));
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.ArchiWebHandler.HasValidApiKey)}: {hasValidApiKey?.ToString() ?? "null"}"));
 
 			return hasValidApiKey;
 		}
@@ -349,7 +356,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || (await IsEligibleForMatching().ConfigureAwait(false) != true)) {
-			Bot.ArchiLogger.LogGenericTrace(ArchiSteamFarm.Localization.Strings.ErrorAborted);
+			Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
 
 			return;
 		}
@@ -363,18 +370,18 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		if (!await MatchActivelySemaphore.WaitAsync(0).ConfigureAwait(false)) {
-			Bot.ArchiLogger.LogGenericTrace(ArchiSteamFarm.Localization.Strings.ErrorAborted);
+			Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
 
 			return;
 		}
 
 		try {
-			Bot.ArchiLogger.LogGenericInfo(ArchiSteamFarm.Localization.Strings.Starting);
+			Bot.ArchiLogger.LogGenericInfo(Strings.Starting);
 
 			string? tradeToken = await Bot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(tradeToken)) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(tradeToken)));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(tradeToken)));
 
 				return;
 			}
@@ -385,18 +392,18 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToHashSetAsync().ConfigureAwait(false);
 			} catch (HttpRequestException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(ourInventory)));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ourInventory)));
 
 				return;
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericException(e);
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(ourInventory)));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ourInventory)));
 
 				return;
 			}
 
 			if (ourInventory.Count == 0) {
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsEmpty, nameof(ourInventory)));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(ourInventory)));
 
 				return;
 			}
@@ -405,19 +412,19 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, ourInventory, acceptedMatchableTypes, tradeToken!).ConfigureAwait(false);
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(response)));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response)));
 
 				return;
 			}
 
 			if (!response.Value.StatusCode.IsSuccessCode()) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, response.Value.StatusCode));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Value.StatusCode));
 
 				return;
 			}
 
 			if (response.Value.Users.IsEmpty) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(response.Value.Users)));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response.Value.Users)));
 
 				return;
 			}
@@ -425,11 +432,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 #pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 			using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
 #pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-				Bot.ArchiLogger.LogGenericInfo(ArchiSteamFarm.Localization.Strings.Starting);
+				Bot.ArchiLogger.LogGenericInfo(Strings.Starting);
 				await MatchActivelyRound(response.Value.Users, ourInventory, acceptedMatchableTypes).ConfigureAwait(false);
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(ArchiSteamFarm.Localization.Strings.Done);
+			Bot.ArchiLogger.LogGenericInfo(Strings.Done);
 		} finally {
 			MatchActivelySemaphore.Release();
 		}
@@ -452,7 +459,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		if (Trading.IsEmptyForMatching(ourFullState, ourTradableState)) {
 			// User doesn't have any more dupes in the inventory
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsEmpty, $"{nameof(ourFullState)} || {nameof(ourTradableState)}"));
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, $"{nameof(ourFullState)} || {nameof(ourTradableState)}"));
 
 			return;
 		}
@@ -475,7 +482,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			switch (tradeHoldDuration) {
 				case null:
-					Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsEmpty, nameof(tradeHoldDuration)));
+					Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(tradeHoldDuration)));
 
 					continue;
 				case > 0 when (tradeHoldDuration.Value > maxTradeHoldDuration) || (tradeHoldDuration.Value > listedUser.MaxTradeHoldDuration):
@@ -644,7 +651,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 
 				if (skippedSetsThisTrade.Count == 0) {
-					Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsEmpty, nameof(skippedSetsThisTrade)));
+					Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(skippedSetsThisTrade)));
 
 					break;
 				}
@@ -655,14 +662,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				if ((itemsToGive.Count != itemsToReceive.Count) || !Trading.IsFairExchange(itemsToGive, itemsToReceive)) {
 					// Failsafe
-					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, ArchiSteamFarm.Localization.Strings.ErrorAborted));
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, Strings.ErrorAborted));
 
 					return;
 				}
 
 				triedSteamIDs.Add(listedUser.SteamID);
 
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.MatchingFound, itemsToReceive.Count, listedUser.SteamID, listedUser.Nickname));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.MatchingFound, itemsToReceive.Count, listedUser.SteamID, listedUser.Nickname));
 
 				Bot.ArchiLogger.LogGenericTrace($"{Bot.SteamID} <- {string.Join(", ", itemsToReceive.Select(static item => $"{item.RealAppID}/{item.Type}/{item.Rarity}/{item.ClassID} #{item.Amount}"))} | {string.Join(", ", itemsToGive.Select(static item => $"{item.RealAppID}/{item.Type}/{item.Rarity}/{item.ClassID} #{item.Amount}"))} -> {listedUser.SteamID}");
 
@@ -672,14 +679,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
 					if (!twoFactorSuccess) {
-						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(twoFactorSuccess)));
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(twoFactorSuccess)));
 
 						return;
 					}
 				}
 
 				if (!success) {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.TradeOfferFailed, listedUser.SteamID, listedUser.Nickname));
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.TradeOfferFailed, listedUser.SteamID, listedUser.Nickname));
 
 					break;
 				}
@@ -688,7 +695,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				theirInventory.UnionWith(itemsToGive);
 
 				skippedSetsThisUser.UnionWith(skippedSetsThisTrade);
-				Bot.ArchiLogger.LogGenericInfo(ArchiSteamFarm.Localization.Strings.Success);
+				Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 			}
 
 			if (skippedSetsThisUser.Count == 0) {
@@ -711,6 +718,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			ourTradableState.TrimExcess();
 		}
 
-		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ActivelyMatchingItemsRound, skippedSetsThisRound.Count));
+		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingItemsRound, skippedSetsThisRound.Count));
 	}
 }
