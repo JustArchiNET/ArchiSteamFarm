@@ -603,10 +603,6 @@ StackTrace:
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Přerušeno!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Celkem porovnáno {0} sad karet.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Používáte více osobních účtů pro boty, než je náš doporučený limit ({0}). Upozorňujeme, že takové nastavení není podporováno a může způsobovat různé problémy se službou Steam, včetně pozastavení nebo blokací účtů. Pro další informace se podívejte na FAQ.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -736,6 +732,7 @@ StackTrace:
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Aktualizace ASF souborů...</value>
 	</data>
+	
 	
 	
 </root>

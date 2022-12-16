@@ -600,10 +600,6 @@
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Прекратен</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Съвпадащи общо {0} комплекта този кръг.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Работите с повече ботове от нашите препоръчителни граници ({0}). Имайте предвид, че тази настройка не се поддържа и може да причини различни проблеми свързани със Steam, включително замразяване на акаунта. Вижте често задаваните въпроси за повече подробности.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -733,6 +729,7 @@
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Пачват се ASF файлове...</value>
 	</data>
+	
 	
 	
 </root>

@@ -603,10 +603,6 @@ PROCES UPTIME: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>ABORTD!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>MATCHD TOTAL OV {0} SETS DIS ROUND.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>URE RUNNIN MOAR PERSONAL BOT ACCOUNTS THAN R UPPR RECOMMENDD LIMIT ({0}). BE ADVISD DAT DIS SETUP IZ NOT SUPPORTD AN MITE CAUSE VARIOUS STEAM-RELATD ISSUEZ, INCLUDIN AKOWNT SUSPENSHUNS. CHECK OUT TEH FAQ 4 MOAR DETAILS.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -744,4 +740,5 @@ PROCES UPTIME: {1}</value>
 		<value>TEH IP ADDRES {0} IZ NOT BANND!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
+	
 </root>

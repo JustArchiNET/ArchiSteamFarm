@@ -601,10 +601,6 @@ Tempo di attività: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Abortito!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Abbinati un totale di {0} set questo round.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Stai eseguendo più account di bot personali del limite massimo raccomandato ({0}). Sappi che questa configurazione non è supportata e potrebbe causare diversi problemi con Steam, inclusa la sospensione dell'account. Controlla le FAQ per maggiori dettagli.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -734,6 +730,7 @@ Tempo di attività: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Patching dei file ASF...</value>
 	</data>
+	
 	
 	
 </root>

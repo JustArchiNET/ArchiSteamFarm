@@ -603,10 +603,6 @@ Durée de fonctionnement : {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Annulé !</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>{0} sets ont été matché pendant ce round.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Vous utilisez plus de comptes de bot personnels que notre limite supérieure recommandée ({0}). N'oubliez pas que cette configuration n'est pas supportée et peut causer divers problèmes liés à Steam, y compris des suspensions de compte. Consultez la FAQ pour plus de détails.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -736,6 +732,7 @@ Durée de fonctionnement : {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Patch des fichiers ASF...</value>
 	</data>
+	
 	
 	
 </root>

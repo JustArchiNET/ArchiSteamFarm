@@ -598,10 +598,6 @@ StackTrace:
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>중단됨</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>이번에 {0} 세트를 매치하였습니다.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>현재 권장 상한값인 ({0}) 보다 더 많은 봇 계정을 실행중입니다. 이 설정은 지원되지 않으며 계정 정지를 포함한 다양한 Steam 관련 이슈를 야기할 수 있습니다. 자세한 내용은 FAQ를 확인하십시오.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -683,6 +679,7 @@ StackTrace:
 		<value>{0} 설정 파일이 최신 버전으로 업데이트 됩니다</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
+	
 	
 	
 	

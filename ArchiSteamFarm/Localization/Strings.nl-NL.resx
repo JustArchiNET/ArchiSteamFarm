@@ -602,10 +602,6 @@ Proces uptime: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Afgebroken!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Deze ronde zijn in totaal {0} sets gematcht.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Je gebruikt meer botaccounts dan de door ons aanbevolen limiet ({0}). Hou er rekening mee dat deze configuratie niet wordt ondersteund en kan leiden tot verschillende Steam-gerelateerde problemen, waaronder het opschorten van accounts. Bekijk de FAQ voor meer details.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -743,4 +739,5 @@ Proces uptime: {1}</value>
 		<value>Het IP adres {0} is niet gebanned!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
+	
 </root>

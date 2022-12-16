@@ -603,10 +603,6 @@ Thời gian hoạt động: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Đã huỷ bỏ!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Đã soát tổng cộng {0} bộ trong vòng này.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Bạn đang chạy nhiều tài khoản bot cá nhân hơn giới hạn được đề xuất ({0}). Xin lưu ý rằng thiết lập này không được hỗ trợ và có thể gây ra nhiều sự cố liên quan đến Steam, bao gồm cả việc đình chỉ tài khoản. Kiểm tra FAQ để biết thêm chi tiết.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -744,4 +740,5 @@ Thời gian hoạt động: {1}</value>
 		<value>Địa chỉ IP {0} không bị cấm!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
+	
 </root>

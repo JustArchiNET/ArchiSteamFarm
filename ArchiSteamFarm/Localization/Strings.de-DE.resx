@@ -603,10 +603,6 @@ Prozesslaufzeit: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Abgebrochen!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Insgesamt wurden in diesem Durchgang {0} Set(s) abgeglichen.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Sie verwenden mehr persönliche Bot-Konten als unsere empfohlene Obergrenze ({0}). Bitte bedenken Sie, dass dieses Setup nicht unterstützt wird und verschiedene Steam-bezogene Probleme verursachen kann, einschließlich Kontosperrungen. Weitere Informationen gibt es in unseren FAQs.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -744,4 +740,5 @@ Prozesslaufzeit: {1}</value>
 		<value>Die IP-Adresse {0} ist nicht gesperrt!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
+	
 </root>

@@ -603,10 +603,6 @@ StackTrace:
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Ακυρώθηκε!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Ο τελικός αριθμός συνόλων που έχουν ταιριάξει είναι {0}, αυτόν τον γύρο.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Τρέχετε περισσότερους προσωπικούς λογαριασμούς bot από το ανώτατο συνιστώμενο όριο ({0}). Λάβετε γνώση ότι αυτή η ρύθμιση δεν υποστηρίζεται και μπορεί να προκαλέσει διάφορα προβλήματα που σχετίζονται με το Steam, συμπεριλαμβανομένων των αναστολών λογαριασμού. Ελέγξτε τις Συχνές Ερωτήσεις για περισσότερες λεπτομέρειες.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -744,4 +740,5 @@ StackTrace:
 		<value>Η διεύθυνση IP {0} δεν έχει αποκλειστεί!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
+	
 </root>

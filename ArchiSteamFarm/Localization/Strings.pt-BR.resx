@@ -603,10 +603,6 @@ Tempo de execução: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Cancelado!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>{0} conjunto(s) foi(foram) associado(s) nessa rodada.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Você está rodando mais contas individuais do que nosso limite máximo recomendado ({0}). Esteja ciente de que essa configuração não é suportada e pode causar vários problemas relacionados ao Steam, incluindo suspensões de contas. Acesse as perguntas frequentes para mais detalhes.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -736,6 +732,7 @@ Tempo de execução: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Atualizando arquivos do ASF...</value>
 	</data>
+	
 	
 	
 </root>

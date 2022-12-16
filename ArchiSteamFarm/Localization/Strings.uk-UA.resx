@@ -594,10 +594,6 @@
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Перервано!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>За цей раунд зібрано {0} наборів карток.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Ви використовуєте як ботів більше акаунтів ніж рекомендований нами ліміт ({0}). Пам'ятайте, що така конфігурація не підтримується та може призвести до різноманітних проблем, зв'язаних зі Steam, включаючи блокування акаунту. Подібніше читайте у нашому FAQ.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -701,6 +697,7 @@
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Виправлення файлів ASF...</value>
 	</data>
+	
 	
 	
 </root>

@@ -602,10 +602,6 @@ Tiempo de actividad del proceso: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>¡Cancelado!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Se emparejaron {0} sets durante esta ronda.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Estás ejecutando más cuentas bot que nuestro límite recomendado ({0}). Ten en cuenta que no se da soporte a esta configuración y puede causar varios problemas relacionados con Steam, incluyendo la suspensión de cuentas. Revisa las preguntas frecuentas para más detalles.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -742,5 +738,9 @@ Tiempo de actividad del proceso: {1}</value>
 	<data name="ErrorIPNotBanned" xml:space="preserve">
 		<value>¡La dirección IP {0} no está bloqueada!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Has intentado usar la función de pago {0}, pero no tienes un LicenseID válido establecido en la configuración global de ASF. Por favor, revisa tu configuración, ya que esta característica no funcionará sin detalles adicionales.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
 </root>

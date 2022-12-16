@@ -574,10 +574,6 @@ Processens oppetid: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Annulleret!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Matched totalt {0} sæt denne runde.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Du kører flere personlige bots end vores øverst anbefalede grænse ({0}). Vær opmærksom på at denne opsætning ikke er understøttet og kan medføre Steam-relaterede problemer, herunder eventuelt suspendering af konti. Tjek vores FAQ for flere detaljer.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -670,6 +666,7 @@ Processens oppetid: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Retter ASF-filer...</value>
 	</data>
+	
 	
 	
 </root>

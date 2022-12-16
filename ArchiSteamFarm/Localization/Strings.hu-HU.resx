@@ -601,10 +601,6 @@ Ennyi ideje fut: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Megszakítva!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Összesen {0} szett cserélve.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Több bot accountot használsz, mint a mi ajánlott felső limitünk ({0}). Tudatnunk kell veled, hogy ez nem támogatott és sokféle Steammel kapcsolatos hibát okozhat, vagy akár az accountjaidat is letilthatják. Nézd meg a gyakori kérdéseket, ha több információt szeretnél erről.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -734,6 +730,7 @@ Ennyi ideje fut: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>ASF-fájlok patchelése...</value>
 	</data>
+	
 	
 	
 </root>

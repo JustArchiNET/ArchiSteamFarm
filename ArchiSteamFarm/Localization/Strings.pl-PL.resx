@@ -603,10 +603,6 @@ Czas procesu: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Anulowano!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Dopasowano w sumie {0} setów w tej rundzie.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Używasz większej ilość botów niż nasz górny rekomendowany limit ({0}). Miej na uwadze, że ta konfiguracja nie jest wspierana i może być przyczyną różnych problemów związanych z platformą Steam, z blokadą kont włącznie. Odwiedź nasze FAQ po więcej informacji.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -743,5 +739,9 @@ Czas procesu: {1}</value>
 	<data name="ErrorIPNotBanned" xml:space="preserve">
 		<value>Adres IP {0} nie jest zbanowany!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Próbujesz użyć płatnej funkcji {0}, ale nie masz ustawionego ważnego identyfikatora licencji w globalnej konfiguracji ASF. Sprawdź swoją konfigurację, ponieważ bez dodatkowych szczegółów ta funkcja nie będzie działać.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
 </root>

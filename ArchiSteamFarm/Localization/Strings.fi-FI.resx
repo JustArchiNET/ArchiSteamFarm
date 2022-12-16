@@ -603,10 +603,6 @@ Prosessin käyttöaika: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Keskeytetty!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Vertailtiin yhteensä {0} settiä tällä kierroksella.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Ajat useampia botteja, kuin mitä suositeltumme raja, ({0}), mahdollistaa. Ota huomioon, että se ei ole tuettua ja saattaa aiheuttaa häiriöitä Steamin kanssa, mukaan lukien tilien jäähdytykset. Katso lisätietoja UKK: sta.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -744,4 +740,5 @@ Prosessin käyttöaika: {1}</value>
 		<value>IP-osoitetta {0} ei ole estetty!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
+	
 </root>

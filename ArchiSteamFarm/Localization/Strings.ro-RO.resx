@@ -603,10 +603,6 @@ Proces: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Abandonat!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Potivim un total de {0} in această rundă.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Rulezi mai multe conturi de bot decât este limita maximă recomandată de noi ({0}). Te atenționăm că această configurație nu este suportată și ar putea cauza diverse probleme legate de Steam, inclusiv suspendări ale conturi. Verificați FAQ pentru mai multe detalii.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -722,6 +718,7 @@ Proces: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Se repara fișierele ASF...</value>
 	</data>
+	
 	
 	
 </root>

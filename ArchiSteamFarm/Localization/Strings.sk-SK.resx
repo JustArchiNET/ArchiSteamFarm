@@ -600,10 +600,6 @@ Doba prevádzky procesu: {1}</value>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Prerušené!</value>
 	</data>
-	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
-		<value>Celkovo porovnaných {0} sad karet.</value>
-		<comment>{0} will be replaced by number of sets traded</comment>
-	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
 		<value>Máte spustených viac inštancií botov, ako je odporúčané maximum ({0}) botov. Upozorňujeme, že takéto nastavenie nie je podporované a môže spôsobiť rôzne problémy so Steamom, vrátanie zablokavania účtu. Pre viac informácií navštívte sekciu FAQ.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
@@ -689,6 +685,7 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
 		<value>{0} konfiguračný súbor bude prevedený na najnovšiu syntax...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
+	
 	
 	
 	
