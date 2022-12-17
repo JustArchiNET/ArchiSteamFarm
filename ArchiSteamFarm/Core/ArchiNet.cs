@@ -23,9 +23,15 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.IPC.Responses;
+using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Integration;
+using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
 using SteamKit2;
 
@@ -66,6 +72,97 @@ internal static class ArchiNet {
 		(_, IReadOnlyCollection<ulong>? badBots) = await CachedBadBots.GetValue(ArchiCacheable<IReadOnlyCollection<ulong>>.EFallback.FailedNow).ConfigureAwait(false);
 
 		return badBots?.Contains(steamID);
+	}
+
+	internal static async Task<HttpStatusCode?> SignInWithSteam(Bot bot) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		if (!bot.IsConnectedAndLoggedOn) {
+			return null;
+		}
+
+		// We expect data or redirection to Steam OpenID
+		Uri authenticateRequest = new(URL, $"/Api/Steam/Authenticate?steamID={bot.SteamID}");
+
+		ObjectResponse<GenericResponse<ulong>>? authenticateResponse = await bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<GenericResponse<ulong>>(authenticateRequest, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+
+		if (authenticateResponse == null) {
+			return null;
+		}
+
+		if (authenticateResponse.StatusCode.IsClientErrorCode()) {
+			return authenticateResponse.StatusCode;
+		}
+
+		if (authenticateResponse.StatusCode.IsSuccessCode()) {
+			return authenticateResponse.Content?.Result == bot.SteamID ? HttpStatusCode.OK : HttpStatusCode.Unauthorized;
+		}
+
+		// We've got a redirection, initiate OpenID procedure by following it
+		using HtmlDocumentResponse? challengeResponse = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(authenticateResponse.FinalUri).ConfigureAwait(false);
+
+		if (challengeResponse?.Content == null) {
+			return null;
+		}
+
+		IAttr? paramsNode = challengeResponse.Content.SelectSingleNode<IAttr>("//input[@name='openidparams']/@value");
+
+		if (paramsNode == null) {
+			ASF.ArchiLogger.LogNullError(paramsNode);
+
+			return null;
+		}
+
+		string paramsValue = paramsNode.Value;
+
+		if (string.IsNullOrEmpty(paramsValue)) {
+			ASF.ArchiLogger.LogNullError(paramsValue);
+
+			return null;
+		}
+
+		IAttr? nonceNode = challengeResponse.Content.SelectSingleNode<IAttr>("//input[@name='nonce']/@value");
+
+		if (nonceNode == null) {
+			ASF.ArchiLogger.LogNullError(nonceNode);
+
+			return null;
+		}
+
+		string nonceValue = nonceNode.Value;
+
+		if (string.IsNullOrEmpty(nonceValue)) {
+			ASF.ArchiLogger.LogNullError(nonceValue);
+
+			return null;
+		}
+
+		Uri loginRequest = new(ArchiWebHandler.SteamCommunityURL, "/openid/login");
+
+		using StringContent actionContent = new("steam_openid_login");
+		using StringContent modeContent = new("checkid_setup");
+		using StringContent paramsContent = new(paramsValue);
+		using StringContent nonceContent = new(nonceValue);
+
+		using MultipartFormDataContent data = new();
+
+		data.Add(actionContent, "action");
+		data.Add(modeContent, "openid.mode");
+		data.Add(paramsContent, "openidparams");
+		data.Add(nonceContent, "nonce");
+
+		// Accept OpenID request presented and follow redirection back to the data we initially expected
+		authenticateResponse = await bot.ArchiWebHandler.WebBrowser.UrlPostToJsonObject<GenericResponse<ulong>, MultipartFormDataContent>(loginRequest, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+
+		if (authenticateResponse == null) {
+			return null;
+		}
+
+		if (authenticateResponse.StatusCode.IsClientErrorCode()) {
+			return authenticateResponse.StatusCode;
+		}
+
+		return authenticateResponse.Content?.Result == bot.SteamID ? HttpStatusCode.OK : HttpStatusCode.Unauthorized;
 	}
 
 	private static async Task<(bool Success, IReadOnlyCollection<ulong>? Result)> ResolveCachedBadBots() {

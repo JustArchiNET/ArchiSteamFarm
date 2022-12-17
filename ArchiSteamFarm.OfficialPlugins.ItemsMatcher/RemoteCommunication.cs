@@ -35,9 +35,11 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Cards;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
+using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam.Security;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
+using ArchiSteamFarm.Web.Responses;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
@@ -66,6 +68,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private DateTime LastPersonaStateRequest;
 	private bool ShouldSendAnnouncementEarlier;
 	private bool ShouldSendHeartBeats;
+	private bool SignedInWithSteam;
 
 	internal RemoteCommunication(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
@@ -202,34 +205,66 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
+			if (!SignedInWithSteam) {
+				HttpStatusCode? signInWithSteam = await ArchiNet.SignInWithSteam(Bot).ConfigureAwait(false);
+
+				if (signInWithSteam == null) {
+					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+					ShouldSendHeartBeats = false;
+
+					return;
+				}
+
+				if (!signInWithSteam.Value.IsSuccessCode()) {
+					// SignIn procedure failed and it wasn't a network error, hold off with future tries at least for a full day
+					LastAnnouncement = DateTime.UtcNow.AddDays(1);
+					ShouldSendHeartBeats = false;
+
+					return;
+				}
+
+				SignedInWithSteam = true;
+			}
+
 			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname, inventory.Count));
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			HttpStatusCode? response = await Backend.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
+			BasicResponse? response = await Backend.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
 
-			if (!response.HasValue) {
+			if (response == null) {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
 				ShouldSendHeartBeats = false;
 
 				return;
 			}
 
-			// We've got the response, regardless what happened, we've succeeded in a valid check
-			LastAnnouncement = DateTime.UtcNow;
-			ShouldSendAnnouncementEarlier = false;
+			if (response.StatusCode.IsRedirectionCode()) {
+				ShouldSendHeartBeats = false;
 
-			if (response.Value.IsClientErrorCode()) {
+				if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
+
+					return;
+				}
+
+				// We've expected the result, not the redirection to the sign in, we need to authenticate again
+				SignedInWithSteam = false;
+
+				return;
+			}
+
+			if (response.StatusCode.IsClientErrorCode()) {
 				// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
 				ShouldSendHeartBeats = false;
 
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response));
 
-				switch (response) {
+				switch (response.StatusCode) {
 					case HttpStatusCode.Forbidden:
 						// ArchiNet told us to stop submitting data for now
 						LastAnnouncement = DateTime.UtcNow.AddYears(1);
 
-						break;
+						return;
 #if NETFRAMEWORK
 					case (HttpStatusCode) 429:
 #else
@@ -239,13 +274,17 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 						// ArchiNet told us to try again later
 						LastAnnouncement = DateTime.UtcNow.AddDays(1);
 
-						break;
-				}
+						return;
+					default:
+						// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
+						LastAnnouncement = DateTime.UtcNow.AddHours(6);
 
-				return;
+						return;
+				}
 			}
 
-			LastHeartBeat = DateTime.UtcNow;
+			LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
+			ShouldSendAnnouncementEarlier = false;
 			ShouldSendHeartBeats = true;
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);

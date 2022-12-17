@@ -25,7 +25,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
-public sealed class GenericResponse<T> : GenericResponse where T : class {
+public sealed class GenericResponse<T> : GenericResponse {
 	/// <summary>
 	///     The actual result of the request, if available.
 	/// </summary>
@@ -35,7 +35,7 @@ public sealed class GenericResponse<T> : GenericResponse where T : class {
 	[JsonProperty]
 	public T? Result { get; private set; }
 
-	public GenericResponse(T? result) : base(result != null) => Result = result;
+	public GenericResponse(T? result) : base(result is not null) => Result = result;
 	public GenericResponse(bool success, string? message) : base(success, message) { }
 	public GenericResponse(bool success, T? result) : base(success) => Result = result;
 	public GenericResponse(bool success, string? message, T? result) : base(success, message) => Result = result;
