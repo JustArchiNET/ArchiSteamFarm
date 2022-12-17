@@ -64,6 +64,9 @@ public sealed class GlobalConfig {
 	public const byte DefaultFarmingDelay = 15;
 
 	[PublicAPI]
+	public const bool DefaultFilterBadBots = true;
+
+	[PublicAPI]
 	public const byte DefaultGiftsLimiterDelay = 1;
 
 	[PublicAPI]
@@ -208,6 +211,9 @@ public sealed class GlobalConfig {
 	[JsonProperty(Required = Required.DisallowNull)]
 	[Range(1, byte.MaxValue)]
 	public byte FarmingDelay { get; private set; } = DefaultFarmingDelay;
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	public bool FilterBadBots { get; private set; } = DefaultFilterBadBots;
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	[Range(byte.MinValue, byte.MaxValue)]
@@ -359,6 +365,9 @@ public sealed class GlobalConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeFarmingDelay() => !Saving || (FarmingDelay != DefaultFarmingDelay);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeFilterBadBots() => !Saving || (FilterBadBots != DefaultFilterBadBots);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeGiftsLimiterDelay() => !Saving || (GiftsLimiterDelay != DefaultGiftsLimiterDelay);

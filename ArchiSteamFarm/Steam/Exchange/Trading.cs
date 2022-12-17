@@ -547,6 +547,17 @@ public sealed class Trading : IDisposable {
 
 				return ParseTradeResult.EResult.Blacklisted;
 			}
+
+			// Deny trades from bad steamIDs if user wishes to do so
+			if (ASF.GlobalConfig?.FilterBadBots ?? GlobalConfig.DefaultFilterBadBots) {
+				bool? isBadBot = await ArchiNet.IsBadBot(tradeOffer.OtherSteamID64).ConfigureAwait(false);
+
+				if (isBadBot == true) {
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Blacklisted, $"{nameof(tradeOffer.OtherSteamID64)} {tradeOffer.OtherSteamID64}"));
+
+					return ParseTradeResult.EResult.Blacklisted;
+				}
+			}
 		}
 
 		// Check if it's donation trade
