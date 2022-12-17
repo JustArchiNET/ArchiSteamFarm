@@ -732,7 +732,16 @@ StackTrace:
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Aktualizace ASF souborů...</value>
 	</data>
-	
-	
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Zadejte, prosím, svůj šifrovací klíč: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>IP adresa {0} není zablokována!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Pokusili jste se použít placenou funkci {0}, ale nemáte platné ID licence nastavené v globální konfiguraci ASF. Zkontrolujte prosím svou konfiguraci, protože funkce nebude fungovat bez dalších podrobností.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>
