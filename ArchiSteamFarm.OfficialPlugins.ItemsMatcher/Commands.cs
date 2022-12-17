@@ -77,20 +77,20 @@ internal static class Commands {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (access < EAccess.Master) {
-			return access > EAccess.None ? Strings.ErrorAccessDenied : null;
+			return access > EAccess.None ? bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied) : null;
 		}
 
 		if ((ASF.GlobalConfig?.LicenseID == null) || (ASF.GlobalConfig.LicenseID == Guid.Empty)) {
-			return string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ASF.GlobalConfig.LicenseID));
+			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ASF.GlobalConfig.LicenseID)));
 		}
 
 		if (!bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || !ItemsMatcherPlugin.RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication)) {
-			return string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(BotConfig.ETradingPreferences.MatchActively));
+			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(BotConfig.ETradingPreferences.MatchActively)));
 		}
 
 		remoteCommunication.TriggerMatchActivelyEarlier();
 
-		return Strings.Done;
+		return bot.Commands.FormatBotResponse(Strings.Done);
 	}
 
 	private static async Task<string?> ResponseMatch(EAccess access, string botNames, ulong steamID = 0) {
