@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Composition;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,14 +40,36 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 [Export(typeof(IPlugin))]
-internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotIdentity, IBotModules, IBotUserNotifications {
-	private static readonly ConcurrentDictionary<Bot, RemoteCommunication> RemoteCommunications = new();
+internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, IBotIdentity, IBotModules, IBotUserNotifications {
+	internal static readonly ConcurrentDictionary<Bot, RemoteCommunication> RemoteCommunications = new();
 
 	[JsonProperty]
 	public override string Name => nameof(ItemsMatcherPlugin);
 
 	[JsonProperty]
 	public override Version Version => typeof(ItemsMatcherPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
+
+	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		if (string.IsNullOrEmpty(message)) {
+			throw new ArgumentNullException(nameof(message));
+		}
+
+		if ((args == null) || (args.Length == 0)) {
+			throw new ArgumentNullException(nameof(args));
+		}
+
+		if ((steamID != 0) && !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		return await Commands.OnBotCommand(bot, access, args, steamID).ConfigureAwait(false);
+	}
 
 	public async Task OnBotDestroy(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);

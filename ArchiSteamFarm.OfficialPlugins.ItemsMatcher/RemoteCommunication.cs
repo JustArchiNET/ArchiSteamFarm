@@ -119,7 +119,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		if (MatchActivelyTimer != null) {
-			await MatchActivelyTimer.DisposeAsync().ConfigureAwait(false);
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+			lock (MatchActivelySemaphore) {
+				MatchActivelyTimer.Dispose();
+			}
 		}
 	}
 
@@ -290,6 +293,17 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 		} finally {
 			RequestsSemaphore.Release();
+		}
+	}
+
+	internal void TriggerMatchActivelyEarlier() {
+		if (MatchActivelyTimer == null) {
+			throw new InvalidOperationException(nameof(MatchActivelyTimer));
+		}
+
+		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+		lock (MatchActivelySemaphore) {
+			MatchActivelyTimer.Change(TimeSpan.Zero, TimeSpan.FromHours(6));
 		}
 	}
 
