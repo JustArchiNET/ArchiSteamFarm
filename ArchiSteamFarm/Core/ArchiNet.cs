@@ -20,7 +20,9 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.IPC.Responses;
@@ -32,7 +34,7 @@ namespace ArchiSteamFarm.Core;
 internal static class ArchiNet {
 	internal static Uri URL => new("https://asf.JustArchi.net");
 
-	private static readonly ArchiCacheable<ImmutableHashSet<ulong>> CachedBadBots = new(ResolveCachedBadBots, TimeSpan.FromDays(1));
+	private static readonly ArchiCacheable<IReadOnlyCollection<ulong>> CachedBadBots = new(ResolveCachedBadBots, TimeSpan.FromDays(1));
 
 	internal static async Task<string?> FetchBuildChecksum(Version version, string variant) {
 		ArgumentNullException.ThrowIfNull(version);
@@ -61,12 +63,16 @@ internal static class ArchiNet {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		(_, ImmutableHashSet<ulong>? badBots) = await CachedBadBots.GetValue(ArchiCacheable<ImmutableHashSet<ulong>>.EFallback.SuccessPreviously).ConfigureAwait(false);
+		(_, IReadOnlyCollection<ulong>? badBots) = await CachedBadBots.GetValue(ArchiCacheable<IReadOnlyCollection<ulong>>.EFallback.FailedNow).ConfigureAwait(false);
 
 		return badBots?.Contains(steamID);
 	}
 
-	private static async Task<(bool Success, ImmutableHashSet<ulong>? Result)> ResolveCachedBadBots() {
+	private static async Task<(bool Success, IReadOnlyCollection<ulong>? Result)> ResolveCachedBadBots() {
+		if (ASF.GlobalDatabase == null) {
+			throw new InvalidOperationException(nameof(ASF.WebBrowser));
+		}
+
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
@@ -75,6 +81,12 @@ internal static class ArchiNet {
 
 		ObjectResponse<GenericResponse<ImmutableHashSet<ulong>>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<ImmutableHashSet<ulong>>>(request).ConfigureAwait(false);
 
-		return response?.Content != null ? (true, response.Content.Result) : (false, null);
+		if (response?.Content?.Result == null) {
+			return (false, ASF.GlobalDatabase.CachedBadBots);
+		}
+
+		ASF.GlobalDatabase.CachedBadBots.ReplaceIfNeededWith(response.Content.Result);
+
+		return (true, response.Content.Result);
 	}
 }

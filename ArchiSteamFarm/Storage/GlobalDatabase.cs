@@ -49,6 +49,9 @@ public sealed class GlobalDatabase : SerializableFile {
 	public IReadOnlyDictionary<uint, PackageData> PackagesDataReadOnly => PackagesData;
 
 	[JsonProperty(Required = Required.DisallowNull)]
+	internal readonly ConcurrentHashSet<ulong> CachedBadBots = new();
+
+	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly ObservableConcurrentDictionary<uint, byte> CardCountsPerGame = new();
 
 	[JsonProperty(Required = Required.DisallowNull)]
@@ -111,6 +114,7 @@ public sealed class GlobalDatabase : SerializableFile {
 
 	[JsonConstructor]
 	private GlobalDatabase() {
+		CachedBadBots.OnModified += OnObjectModified;
 		CardCountsPerGame.OnModified += OnObjectModified;
 		ServerListProvider.ServerListUpdated += OnObjectModified;
 	}
@@ -166,6 +170,9 @@ public sealed class GlobalDatabase : SerializableFile {
 	public bool ShouldSerializeBackingLastChangeNumber() => LastChangeNumber != 0;
 
 	[UsedImplicitly]
+	public bool ShouldSerializeCachedBadBots() => CachedBadBots.Count > 0;
+
+	[UsedImplicitly]
 	public bool ShouldSerializeCardCountsPerGame() => !CardCountsPerGame.IsEmpty;
 
 	[UsedImplicitly]
@@ -183,6 +190,7 @@ public sealed class GlobalDatabase : SerializableFile {
 	protected override void Dispose(bool disposing) {
 		if (disposing) {
 			// Events we registered
+			CachedBadBots.OnModified -= OnObjectModified;
 			CardCountsPerGame.OnModified -= OnObjectModified;
 			ServerListProvider.ServerListUpdated -= OnObjectModified;
 
