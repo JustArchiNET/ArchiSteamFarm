@@ -32,7 +32,6 @@ using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
-using ArchiSteamFarm.Steam.Storage;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
@@ -90,10 +89,6 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 
 		if (RemoteCommunications.TryRemove(bot, out RemoteCommunication? remoteCommunication)) {
 			await remoteCommunication.DisposeAsync().ConfigureAwait(false);
-		}
-
-		if (bot.BotConfig.RemoteCommunication == BotConfig.ERemoteCommunication.None) {
-			return;
 		}
 
 		remoteCommunication = new RemoteCommunication(bot);
