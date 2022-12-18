@@ -435,6 +435,15 @@ public sealed class BotConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(BotBehaviour), BotBehaviour));
 		}
 
+		if (!string.IsNullOrEmpty(CustomGamePlayedWhileFarming)) {
+			try {
+				// Test CustomGamePlayedWhileFarming against supported format, otherwise we'll throw later when used
+				string _ = string.Format(CultureInfo.CurrentCulture, CustomGamePlayedWhileFarming);
+			} catch (FormatException e) {
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(CustomGamePlayedWhileFarming), e.Message));
+			}
+		}
+
 		foreach (EFarmingOrder farmingOrder in FarmingOrders.Where(static farmingOrder => !Enum.IsDefined(farmingOrder))) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrders), farmingOrder));
 		}
