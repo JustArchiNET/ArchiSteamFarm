@@ -438,7 +438,7 @@ public sealed class BotConfig {
 		if (!string.IsNullOrEmpty(CustomGamePlayedWhileFarming)) {
 			try {
 				// Test CustomGamePlayedWhileFarming against supported format, otherwise we'll throw later when used
-				string _ = string.Format(CultureInfo.CurrentCulture, CustomGamePlayedWhileFarming);
+				string _ = string.Format(CultureInfo.CurrentCulture, CustomGamePlayedWhileFarming, null, null);
 			} catch (FormatException e) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(CustomGamePlayedWhileFarming), e.Message));
 			}
