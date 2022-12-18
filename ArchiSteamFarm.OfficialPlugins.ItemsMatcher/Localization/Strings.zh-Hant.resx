@@ -71,11 +71,11 @@
 		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname, {2} will be replaced with number of items in the inventory</comment>
 	</data>
   <data name="MatchingFound" xml:space="preserve">
-		<value>與 Bot {1}（{2}）匹配到共 {0} 個物品，正在傳送交易提案…</value>
+		<value>與 Bot {1}（{2}）匹配到共 {0} 個物品，正在發送交易提案…</value>
 		<comment>{0} will be replaced by number of items matched, {1} will be replaced by steam ID (number), {2} will be replaced by user's nickname</comment>
 	</data>
   <data name="TradeOfferFailed" xml:space="preserve">
-		<value>無法向 Bot {0}（{1}）傳送交易提案，正在繼續…</value>
+		<value>無法向 Bot {0}（{1}）發送交易提案，正在繼續…</value>
 		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname'</comment>
 	</data>
 </root>

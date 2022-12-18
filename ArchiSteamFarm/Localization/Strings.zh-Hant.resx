@@ -396,7 +396,7 @@
 		<value>交易提案發送成功！</value>
 	</data>
 	<data name="BotSendingTradeToYourself" xml:space="preserve">
-		<value>您無法對自己發出交易請求！</value>
+		<value>您無法對自己發送交易請求！</value>
 	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
 		<value>這個 Bot 並未啟用 ASF 雙重驗證！您是否忘記將雙重驗證匯入至 ASF？</value>
