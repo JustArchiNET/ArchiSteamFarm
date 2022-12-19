@@ -18,8 +18,7 @@ ARG TARGETOS
 ENV DOTNET_CLI_TELEMETRY_OPTOUT true
 ENV DOTNET_NOLOGO true
 ENV NET_CORE_VERSION net7.0
-ENV PLUGINS ArchiSteamFarm.OfficialPlugins.ItemsMatcher
-ENV STEAM_TOKEN_DUMPER_NAME ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+ENV PLUGINS ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 WORKDIR /app
 COPY --from=build-node /app/ASF-ui/dist ASF-ui/dist
 COPY ArchiSteamFarm ArchiSteamFarm
@@ -47,9 +46,8 @@ RUN set -eu; \
     \
     dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained; \
     \
-    if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then \
-      sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"; \
-      dotnet publish "${STEAM_TOKEN_DUMPER_NAME}" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained; \
+    if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" ]; then \
+      sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs"; \
     fi; \
     \
     for plugin in $PLUGINS; do \
