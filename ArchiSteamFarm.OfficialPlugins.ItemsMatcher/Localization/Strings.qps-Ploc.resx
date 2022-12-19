@@ -66,4 +66,16 @@
 		<value>MATCHD TOTAL OV {0} SETS DIS ROUND.</value>
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
+  <data name="ListingAnnouncing" xml:space="preserve">
+		<value>ANNOUNCIN {0} ({1}) WIF INVENTORY MADE OUT OV {2} ITEMS IN TOTAL ON TEH LISTIN...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname, {2} will be replaced with number of items in the inventory</comment>
+	</data>
+  <data name="MatchingFound" xml:space="preserve">
+		<value>MATCHD TOTAL OV {0} ITEMS WIF BOT {1} ({2}), SENDIN TRADE OFFR...</value>
+		<comment>{0} will be replaced by number of items matched, {1} will be replaced by steam ID (number), {2} will be replaced by user's nickname</comment>
+	</data>
+  <data name="TradeOfferFailed" xml:space="preserve">
+		<value>FAILD 2 SEND TRADE OFFR 2 BOT {0} ({1}), MOVIN ON...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname'</comment>
+	</data>
 </root>
