@@ -740,5 +740,8 @@ PROCES UPTIME: {1}</value>
 		<value>TEH IP ADDRES {0} IZ NOT BANND!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
-	
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>UVE ATTEMPTD 2 USE PAID FEACHUR {0} BUT U DOAN HAS VALID LICENSEID SET IN DA ASF GLOBAL CONFIG. PLZ REVIEW UR CONFIGURASHUN, AS TEH FUNCSHUNALITY WONT WERK WITHOUT ADDISHUNAL DETAILS.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>

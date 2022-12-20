@@ -740,5 +740,8 @@ Prosessin käyttöaika: {1}</value>
 		<value>IP-osoitetta {0} ei ole estetty!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
-	
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Olet yrittänyt käyttää maksullista ominaisuutta {0}, mutta sinulla ei ole voimassa olevaa ASF:n yleisissä asetuksissa olevaa lisenssitunnusta. Tarkista asetukset, koska toiminto ei toimi ilman lisätietoja.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>
