@@ -25,7 +25,7 @@ namespace ArchiSteamFarm.Core;
 
 internal static partial class GeneratedRegexes {
 	private const string CdKeyPattern = @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$";
-	private const string DecimalPattern = @"[0-9\.]+";
+	private const string DecimalPattern = @"[0-9\.,]+";
 	private const RegexOptions DefaultOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
 	private const string DigitsPattern = @"\d+";
 	private const string NonAsciiPattern = @"[^\u0000-\u007F]+";
