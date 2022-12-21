@@ -66,4 +66,16 @@
 		<value>Bu turda {0} eşleşme oldu.</value>
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
+  <data name="ListingAnnouncing" xml:space="preserve">
+		<value>Listelemede toplam {2} öğeden oluşan envanterle {0} ({1}) duyuruldu...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname, {2} will be replaced with number of items in the inventory</comment>
+	</data>
+  <data name="MatchingFound" xml:space="preserve">
+		<value>Bot {1} ({2}) ile toplam {0} öğe eşleştirildi, takas teklifi gönderiliyor...</value>
+		<comment>{0} will be replaced by number of items matched, {1} will be replaced by steam ID (number), {2} will be replaced by user's nickname</comment>
+	</data>
+  <data name="TradeOfferFailed" xml:space="preserve">
+		<value>{0} ({1}) botuna takas teklifi gönderilemedi, devam ediliyor...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname'</comment>
+	</data>
 </root>
