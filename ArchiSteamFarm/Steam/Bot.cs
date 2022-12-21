@@ -1878,7 +1878,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		// We select badges that are ready to craft, as well as those that are already crafted to a maximum level, as those will not display with a craft button
 		// Level 5 is maximum level for card badges according to https://steamcommunity.com/tradingcards/faq
-		IEnumerable<IAttr> linkElements = badgePage.SelectNodes<IAttr>("//a[@class='badge_craft_button'] | //div[@class='badges_sheet']/div[contains(@class, 'badge_row') and .//div[@class='badge_info_description']/div[contains(text(), 'Level 5')]]/a[@class='badge_row_overlay']/@href");
+		IEnumerable<IAttr> linkElements = badgePage.SelectNodes<IAttr>("//a[@class='badge_craft_button']/@href | //div[@class='badges_sheet']/div[contains(@class, 'badge_row') and .//div[@class='badge_info_description']/div[contains(text(), 'Level 5')]]/a[@class='badge_row_overlay']/@href");
 
 		HashSet<uint> result = new();
 
