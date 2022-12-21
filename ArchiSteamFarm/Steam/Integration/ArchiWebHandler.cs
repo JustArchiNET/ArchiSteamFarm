@@ -1832,6 +1832,15 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		}
 
+		// Confirmations page is notorious for freezing, not returning confirmations and other issues
+		// It's unknown what exactly causes those problems, but restart of the bot fixes those in almost all cases
+		// Normally this wouldn't make any sense, but let's ensure that we've refreshed our session recently as a possible workaround
+		if (DateTime.UtcNow - SessionValidUntil > TimeSpan.FromMinutes(5)) {
+			if (!await RefreshSession().ConfigureAwait(false)) {
+				return null;
+			}
+		}
+
 		Uri request = new(SteamCommunityURL, $"/mobileconf/conf?a={Bot.SteamID}&k={Uri.EscapeDataString(confirmationHash)}&l=english&m=android&p={Uri.EscapeDataString(deviceID)}&t={time}&tag=conf");
 
 		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
