@@ -178,7 +178,11 @@ public static class ASF {
 		}
 	}
 
-	internal static async Task<Version?> Update(bool updateOverride = false) {
+	internal static async Task<Version?> Update(GlobalConfig.EUpdateChannel? channel = null, bool updateOverride = false) {
+		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
+			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
+		}
+
 		if (GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
@@ -187,7 +191,9 @@ public static class ASF {
 			throw new InvalidOperationException(nameof(WebBrowser));
 		}
 
-		if (!SharedInfo.BuildInfo.CanUpdate || (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
+		channel ??= GlobalConfig.UpdateChannel;
+
+		if (!SharedInfo.BuildInfo.CanUpdate || (channel == GlobalConfig.EUpdateChannel.None)) {
 			return null;
 		}
 
@@ -216,7 +222,7 @@ public static class ASF {
 
 			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
 
-			GitHub.ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
+			GitHub.ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(channel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
 
 			if (releaseResponse == null) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);

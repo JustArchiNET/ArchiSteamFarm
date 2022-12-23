@@ -173,8 +173,14 @@ public sealed class ASFController : ArchiController {
 	/// </summary>
 	[HttpPost("Update")]
 	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
-	public async Task<ActionResult<GenericResponse<string>>> UpdatePost() {
-		(bool success, string? message, Version? version) = await Actions.Update().ConfigureAwait(false);
+	public async Task<ActionResult<GenericResponse<string>>> UpdatePost([FromBody] UpdateRequest request) {
+		ArgumentNullException.ThrowIfNull(request);
+
+		if (request.Channel.HasValue && !Enum.IsDefined(request.Channel.Value)) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.Channel))));
+		}
+
+		(bool success, string? message, Version? version) = await Actions.Update(request.Channel).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(message)) {
 			message = success ? Strings.Success : Strings.WarningFailed;

@@ -329,6 +329,8 @@ public sealed class Commands {
 						return await ResponseTransferByRealAppIDs(access, args[1], args[2], true).ConfigureAwait(false);
 					case "UNPACK":
 						return await ResponseUnpackBoosters(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
+					case "UPDATE":
+						return await ResponseUpdate(access, args[1]).ConfigureAwait(false);
 					default:
 						string? pluginsResponse = await PluginsCore.OnBotCommand(Bot, access, message, args, steamID).ConfigureAwait(false);
 
@@ -3389,7 +3391,7 @@ public sealed class Commands {
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
-	private static async Task<string?> ResponseUpdate(EAccess access) {
+	private static async Task<string?> ResponseUpdate(EAccess access, string? channelText = null) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -3398,7 +3400,15 @@ public sealed class Commands {
 			return null;
 		}
 
-		(bool success, string? message, Version? version) = await Actions.Update().ConfigureAwait(false);
+		GlobalConfig.EUpdateChannel channel = ASF.GlobalConfig?.UpdateChannel ?? GlobalConfig.DefaultUpdateChannel;
+
+		if (!string.IsNullOrEmpty(channelText)) {
+			if (!Enum.TryParse(channelText, true, out channel) || (channel == GlobalConfig.EUpdateChannel.None)) {
+				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(channelText)));
+			}
+		}
+
+		(bool success, string? message, Version? version) = await Actions.Update(channel).ConfigureAwait(false);
 
 		return FormatStaticResponse($"{(success ? Strings.Success : Strings.WarningFailed)}{(!string.IsNullOrEmpty(message) ? $" {message}" : version != null ? $" {version}" : "")}");
 	}

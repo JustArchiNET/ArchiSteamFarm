@@ -431,8 +431,12 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public static async Task<(bool Success, string? Message, Version? Version)> Update() {
-		Version? version = await ASF.Update(true).ConfigureAwait(false);
+	public static async Task<(bool Success, string? Message, Version? Version)> Update(GlobalConfig.EUpdateChannel? channel = null) {
+		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
+			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
+		}
+
+		Version? version = await ASF.Update(channel, true).ConfigureAwait(false);
 
 		if (version == null) {
 			return (false, null, null);
