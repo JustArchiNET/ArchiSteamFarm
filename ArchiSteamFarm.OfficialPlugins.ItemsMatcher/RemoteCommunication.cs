@@ -461,6 +461,17 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
+			// Remove from our inventory items that can't be possibly matched due to no dupes to offer available
+			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(ourInventory);
+
+			ourInventory.RemoveWhere(item => !inventorySets.TryGetValue((item.RealAppID, item.Type, item.Rarity), out List<uint>? amounts) || (amounts.Count == 0) || amounts.All(static amount => amount < 2));
+
+			if (ourInventory.Count == 0) {
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(ourInventory)));
+
+				return;
+			}
+
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, ourInventory, acceptedMatchableTypes, tradeToken!).ConfigureAwait(false);
 
