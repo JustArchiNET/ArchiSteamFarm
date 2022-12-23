@@ -3403,7 +3403,8 @@ public sealed class Commands {
 		GlobalConfig.EUpdateChannel channel = ASF.GlobalConfig?.UpdateChannel ?? GlobalConfig.DefaultUpdateChannel;
 
 		if (!string.IsNullOrEmpty(channelText)) {
-			if (!Enum.TryParse(channelText, true, out channel) || (channel == GlobalConfig.EUpdateChannel.None)) {
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			if (!Enum.TryParse(channelText!, true, out channel) || (channel == GlobalConfig.EUpdateChannel.None)) {
 				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(channelText)));
 			}
 		}
