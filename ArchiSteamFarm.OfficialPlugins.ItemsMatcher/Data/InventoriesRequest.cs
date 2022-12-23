@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Storage;
 using Newtonsoft.Json;
 using SteamKit2;
 
@@ -41,29 +40,15 @@ internal sealed class InventoriesRequest {
 	internal readonly ImmutableHashSet<Asset.EType> MatchableTypes;
 
 	[JsonProperty(Required = Required.Always)]
-	internal readonly byte MaxTradeHoldDuration;
-
-	[JsonProperty(Required = Required.Always)]
 	internal readonly ulong SteamID;
 
-	[JsonProperty(Required = Required.Always)]
-	internal readonly string TradeToken;
-
-	internal InventoriesRequest(Guid guid, ulong steamID, string tradeToken, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> matchableTypes, byte maxTradeHoldDuration) {
+	internal InventoriesRequest(Guid guid, ulong steamID, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> matchableTypes) {
 		if (guid == Guid.Empty) {
 			throw new ArgumentOutOfRangeException(nameof(guid));
 		}
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
-		if (string.IsNullOrEmpty(tradeToken)) {
-			throw new ArgumentNullException(nameof(tradeToken));
-		}
-
-		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
-			throw new ArgumentOutOfRangeException(nameof(tradeToken));
 		}
 
 		if ((inventory == null) || (inventory.Count == 0)) {
@@ -76,9 +61,7 @@ internal sealed class InventoriesRequest {
 
 		Guid = guid;
 		SteamID = steamID;
-		TradeToken = tradeToken;
 		Inventory = inventory.Select(static asset => new AssetInInventory(asset)).ToImmutableHashSet();
 		MatchableTypes = matchableTypes.ToImmutableHashSet();
-		MaxTradeHoldDuration = maxTradeHoldDuration;
 	}
 }

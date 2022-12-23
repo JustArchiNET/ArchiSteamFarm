@@ -63,7 +63,7 @@ internal static class Backend {
 		return await bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 	}
 
-	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Guid licenseID, Bot bot, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, string tradeToken) {
+	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Guid licenseID, Bot bot, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes) {
 		if (licenseID == Guid.Empty) {
 			throw new ArgumentOutOfRangeException(nameof(licenseID));
 		}
@@ -78,21 +78,13 @@ internal static class Backend {
 			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
 		}
 
-		if (string.IsNullOrEmpty(tradeToken)) {
-			throw new ArgumentNullException(nameof(tradeToken));
-		}
-
-		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
-			throw new ArgumentOutOfRangeException(nameof(tradeToken));
-		}
-
 		Uri request = new(ArchiNet.URL, "/Api/Listing/Inventories");
 
 		Dictionary<string, string> headers = new(1, StringComparer.Ordinal) {
 			{ "X-License-Key", licenseID.ToString("N") }
 		};
 
-		InventoriesRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, tradeToken, inventory, acceptedMatchableTypes, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration);
+		InventoriesRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, inventory, acceptedMatchableTypes);
 
 		ObjectResponse<GenericResponse<ImmutableHashSet<ListedUser>>>? response = await bot.ArchiWebHandler.WebBrowser.UrlPostToJsonObject<GenericResponse<ImmutableHashSet<ListedUser>>, InventoriesRequest>(request, headers, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
 

@@ -431,14 +431,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		try {
 			Bot.ArchiLogger.LogGenericInfo(Strings.Starting);
 
-			string? tradeToken = await Bot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
-
-			if (string.IsNullOrEmpty(tradeToken)) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(tradeToken)));
-
-				return;
-			}
-
 			HashSet<Asset> ourInventory;
 
 			try {
@@ -473,7 +465,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, ourInventory, acceptedMatchableTypes, tradeToken!).ConfigureAwait(false);
+			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, ourInventory, acceptedMatchableTypes).ConfigureAwait(false);
 
 			if (response == null) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response)));
