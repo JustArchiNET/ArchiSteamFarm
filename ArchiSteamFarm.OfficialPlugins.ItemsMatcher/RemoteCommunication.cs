@@ -39,6 +39,7 @@ using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam.Security;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
+using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
@@ -62,6 +63,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private readonly SemaphoreSlim MatchActivelySemaphore = new(1, 1);
 	private readonly Timer? MatchActivelyTimer;
 	private readonly SemaphoreSlim RequestsSemaphore = new(1, 1);
+	private readonly WebBrowser? WebBrowser;
 
 	private DateTime LastAnnouncement;
 	private DateTime LastHeartBeat;
@@ -74,6 +76,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		Bot = bot;
+
+		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing) && !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively)) {
+			return;
+		}
+
+		WebBrowser = new WebBrowser(bot.ArchiLogger, extendedTimeout: true);
 
 		if (Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
 			HeartBeatTimer = new Timer(
@@ -105,7 +113,15 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		// Those are objects that might be null and the check should be in-place
 		HeartBeatTimer?.Dispose();
-		MatchActivelyTimer?.Dispose();
+
+		if (MatchActivelyTimer != null) {
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+			lock (MatchActivelySemaphore) {
+				MatchActivelyTimer.Dispose();
+			}
+		}
+
+		WebBrowser?.Dispose();
 	}
 
 	public async ValueTask DisposeAsync() {
@@ -124,6 +140,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				MatchActivelyTimer.Dispose();
 			}
 		}
+
+		WebBrowser?.Dispose();
 	}
 
 	internal void OnNewItemsNotification() => ShouldSendAnnouncementEarlier = true;
@@ -131,6 +149,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	internal async Task OnPersonaState(string? nickname = null, string? avatarHash = null) {
 		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
 			return;
+		}
+
+		if (WebBrowser == null) {
+			throw new InvalidOperationException(nameof(WebBrowser));
 		}
 
 		if ((DateTime.UtcNow < LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL)) && ShouldSendHeartBeats) {
@@ -232,7 +254,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname, inventory.Count));
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			BasicResponse? response = await Backend.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
+			BasicResponse? response = await Backend.AnnounceForListing(Bot, WebBrowser, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
 
 			if (response == null) {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -308,6 +330,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	}
 
 	private async void HeartBeat(object? state = null) {
+		if (WebBrowser == null) {
+			throw new InvalidOperationException(nameof(WebBrowser));
+		}
+
 		if (!Bot.IsConnectedAndLoggedOn || (Bot.HeartBeatFailures > 0)) {
 			return;
 		}
@@ -327,7 +353,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		try {
-			BasicResponse? response = await Backend.HeartBeatForListing(Bot).ConfigureAwait(false);
+			BasicResponse? response = await Backend.HeartBeatForListing(Bot, WebBrowser).ConfigureAwait(false);
 
 			if (response == null) {
 				// This is actually a network failure, we should keep sending heartbeats for now
@@ -416,6 +442,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	}
 
 	private async void MatchActively(object? state = null) {
+		if (WebBrowser == null) {
+			throw new InvalidOperationException(nameof(WebBrowser));
+		}
+
 		if (ASF.GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 		}
@@ -481,7 +511,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, ourInventory, acceptedMatchableTypes).ConfigureAwait(false);
+			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, WebBrowser, ourInventory, acceptedMatchableTypes).ConfigureAwait(false);
 
 			if (response == null) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response)));
