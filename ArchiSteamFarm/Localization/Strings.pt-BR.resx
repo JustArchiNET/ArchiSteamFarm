@@ -732,7 +732,16 @@ Tempo de execução: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Atualizando arquivos do ASF...</value>
 	</data>
-	
-	
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Por favor, insira sua cryptkey: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>O endereço IP {0} não está banido!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Você tentou usar o recurso pago {0}, mas você não tem uma LicenseID válida definida na configuração global do ASF. Por favor, revise sua configuração, pois essa funcionalidade não funcionará sem ela.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>
