@@ -166,7 +166,7 @@ internal static class ArchiNet {
 			return null;
 		}
 
-		if (!authenticateResponse.StatusCode.IsSuccessCode()) {
+		if (authenticateResponse.StatusCode.IsClientErrorCode()) {
 			return authenticateResponse.StatusCode;
 		}
 
