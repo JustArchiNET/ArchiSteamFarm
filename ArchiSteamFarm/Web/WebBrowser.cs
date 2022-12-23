@@ -46,7 +46,7 @@ public sealed class WebBrowser : IDisposable {
 
 	internal const byte MaxConnections = 5; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 
-	private const byte ExtendedTimeoutMultiplier = 10; // Defines multiplier of timeout for WebBrowsers dealing with huge data (ASF update)
+	private const ushort ExtendedTimeout = 600; // Defines timeout for WebBrowsers dealing with huge data (ASF update)
 	private const byte MaxIdleTime = 15; // Defines in seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 
 	[PublicAPI]
@@ -103,7 +103,7 @@ public sealed class WebBrowser : IDisposable {
 #if !NETFRAMEWORK
 			DefaultRequestVersion = HttpVersion.Version30,
 #endif
-			Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * connectionTimeout : connectionTimeout)
+			Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeout : connectionTimeout)
 		};
 
 		// Most web services expect that UserAgent is set, so we declare it globally
