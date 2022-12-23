@@ -231,7 +231,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			if (!SignedInWithSteam) {
-				HttpStatusCode? signInWithSteam = await ArchiNet.SignInWithSteam(Bot).ConfigureAwait(false);
+				HttpStatusCode? signInWithSteam = await ArchiNet.SignInWithSteam(Bot, WebBrowser).ConfigureAwait(false);
 
 				if (signInWithSteam == null) {
 					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -260,11 +260,15 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
 				ShouldSendHeartBeats = false;
 
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
+
 				return;
 			}
 
 			if (response.StatusCode.IsRedirectionCode()) {
 				ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
 
 				if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
@@ -282,7 +286,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
 				ShouldSendHeartBeats = false;
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
 
 				switch (response.StatusCode) {
 					case HttpStatusCode.Forbidden:
@@ -363,6 +367,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			if (response.StatusCode.IsRedirectionCode()) {
 				ShouldSendHeartBeats = false;
 
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
+
 				if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
 
@@ -377,6 +383,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			if (response.StatusCode.IsClientErrorCode()) {
 				ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
 
 				return;
 			}
@@ -526,7 +534,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			if (response.Value.Users.IsEmpty) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response.Value.Users)));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(response.Value.Users)));
 
 				return;
 			}

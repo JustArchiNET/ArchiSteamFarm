@@ -74,8 +74,9 @@ internal static class ArchiNet {
 		return badBots?.Contains(steamID);
 	}
 
-	internal static async Task<HttpStatusCode?> SignInWithSteam(Bot bot) {
+	internal static async Task<HttpStatusCode?> SignInWithSteam(Bot bot, WebBrowser webBrowser) {
 		ArgumentNullException.ThrowIfNull(bot);
+		ArgumentNullException.ThrowIfNull(webBrowser);
 
 		if (!bot.IsConnectedAndLoggedOn) {
 			return null;
@@ -84,7 +85,7 @@ internal static class ArchiNet {
 		// We expect data or redirection to Steam OpenID
 		Uri authenticateRequest = new(URL, $"/Api/Steam/Authenticate?steamID={bot.SteamID}");
 
-		ObjectResponse<GenericResponse<ulong>>? authenticateResponse = await bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<GenericResponse<ulong>>(authenticateRequest, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<ulong>>? authenticateResponse = await webBrowser.UrlGetToJsonObject<GenericResponse<ulong>>(authenticateRequest, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
 
 		if (authenticateResponse == null) {
 			return null;
@@ -152,13 +153,20 @@ internal static class ArchiNet {
 		data.Add(nonceContent, "nonce");
 
 		// Accept OpenID request presented and follow redirection back to the data we initially expected
-		authenticateResponse = await bot.ArchiWebHandler.WebBrowser.UrlPostToJsonObject<GenericResponse<ulong>, MultipartFormDataContent>(loginRequest, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+		BasicResponse? loginResponse = await bot.ArchiWebHandler.WebBrowser.UrlPost(loginRequest, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections).ConfigureAwait(false);
+
+		if (loginResponse == null) {
+			return null;
+		}
+
+		// We've got a final redirection, follow it and complete login procedure
+		authenticateResponse = await webBrowser.UrlGetToJsonObject<GenericResponse<ulong>>(loginResponse.FinalUri, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
 
 		if (authenticateResponse == null) {
 			return null;
 		}
 
-		if (authenticateResponse.StatusCode.IsClientErrorCode()) {
+		if (!authenticateResponse.StatusCode.IsSuccessCode()) {
 			return authenticateResponse.StatusCode;
 		}
 
