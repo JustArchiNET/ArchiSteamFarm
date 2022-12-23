@@ -95,15 +95,13 @@ internal static class Backend {
 		return (response.StatusCode, response.Content?.Result ?? ImmutableHashSet<ListedUser>.Empty);
 	}
 
-	internal static async Task<HttpStatusCode?> HeartBeatForListing(Bot bot) {
+	internal static async Task<BasicResponse?> HeartBeatForListing(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		Uri request = new(ArchiNet.URL, "/Api/Listing/HeartBeat");
 
 		HeartBeatRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID);
 
-		BasicResponse? response = await bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
-
-		return response?.StatusCode;
+		return await bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 	}
 }

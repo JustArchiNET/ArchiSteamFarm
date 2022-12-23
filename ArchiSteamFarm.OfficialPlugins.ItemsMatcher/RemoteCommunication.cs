@@ -327,13 +327,29 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		try {
-			HttpStatusCode? response = await Backend.HeartBeatForListing(Bot).ConfigureAwait(false);
+			BasicResponse? response = await Backend.HeartBeatForListing(Bot).ConfigureAwait(false);
 
-			if (!response.HasValue) {
+			if (response == null) {
+				// This is actually a network failure, we should keep sending heartbeats for now
 				return;
 			}
 
-			if (response.Value.IsClientErrorCode()) {
+			if (response.StatusCode.IsRedirectionCode()) {
+				ShouldSendHeartBeats = false;
+
+				if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
+
+					return;
+				}
+
+				// We've expected the result, not the redirection to the sign in, we need to authenticate again
+				SignedInWithSteam = false;
+
+				return;
+			}
+
+			if (response.StatusCode.IsClientErrorCode()) {
 				ShouldSendHeartBeats = false;
 
 				return;
