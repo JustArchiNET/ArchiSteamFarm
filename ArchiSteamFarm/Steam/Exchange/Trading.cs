@@ -278,7 +278,7 @@ public sealed class Trading : IDisposable {
 		// Randomization helps to decrease "items no longer available" in regards to sending offers to other users
 		if (randomize) {
 #pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
-			items = items.OrderBy(static _ => Random.Shared.Next());
+			items = items.Where(item => classIDs.ContainsKey(item.ClassID)).OrderBy(static _ => Random.Shared.Next());
 #pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
 		}
 
