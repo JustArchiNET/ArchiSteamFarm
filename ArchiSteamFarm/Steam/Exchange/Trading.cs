@@ -287,16 +287,19 @@ public sealed class Trading : IDisposable {
 				continue;
 			}
 
-			if (amount < item.Amount) {
-				item.Amount = amount;
+			Asset itemToAdd = item.CreateShallowCopy();
+
+			if (amount < itemToAdd.Amount) {
+				// We give only a fraction of this item
+				itemToAdd.Amount = amount;
 			}
 
-			result.Add(item);
+			result.Add(itemToAdd);
 
-			if (amount == item.Amount) {
-				classIDs.Remove(item.ClassID);
+			if (amount == itemToAdd.Amount) {
+				classIDs.Remove(itemToAdd.ClassID);
 			} else {
-				classIDs[item.ClassID] = amount - item.Amount;
+				classIDs[itemToAdd.ClassID] = amount - itemToAdd.Amount;
 			}
 		}
 

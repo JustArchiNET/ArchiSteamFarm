@@ -485,10 +485,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		try {
 			Bot.ArchiLogger.LogGenericInfo(Strings.Starting);
 
-			HashSet<Asset> ourInventory;
+			Dictionary<ulong, Asset> ourInventory;
 
 			try {
-				ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToHashSetAsync().ConfigureAwait(false);
+				ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToDictionaryAsync(static item => item.AssetID).ConfigureAwait(false);
 			} catch (HttpRequestException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ourInventory)));
@@ -508,9 +508,13 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			// Remove from our inventory items that can't be possibly matched due to no dupes to offer available
-			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(ourInventory);
+			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(ourInventory.Values);
 
-			ourInventory.RemoveWhere(item => !inventorySets.TryGetValue((item.RealAppID, item.Type, item.Rarity), out List<uint>? amounts) || (amounts.Count == 0) || amounts.All(static amount => amount < 2));
+			HashSet<ulong> assetIDsToRemove = ourInventory.Where(item => !inventorySets.TryGetValue((item.Value.RealAppID, item.Value.Type, item.Value.Rarity), out List<uint>? amounts) || (amounts.Count == 0) || amounts.All(static amount => amount < 2)).Select(static item => item.Key).ToHashSet();
+
+			foreach (ulong assetIDToRemove in assetIDsToRemove) {
+				ourInventory.Remove(assetIDToRemove);
+			}
 
 			if (ourInventory.Count == 0) {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(ourInventory)));
@@ -519,7 +523,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, WebBrowser, ourInventory, acceptedMatchableTypes).ConfigureAwait(false);
+			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, WebBrowser, ourInventory.Values, acceptedMatchableTypes).ConfigureAwait(false);
 
 			if (response == null) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response)));
@@ -543,7 +547,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
 #pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 				Bot.ArchiLogger.LogGenericInfo(Strings.Starting);
-				await MatchActivelyRound(response.Value.Users, ourInventory, acceptedMatchableTypes).ConfigureAwait(false);
+				await MatchActively(response.Value.Users, ourInventory, acceptedMatchableTypes).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.Done);
@@ -552,7 +556,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task MatchActivelyRound(IReadOnlyCollection<ListedUser> listedUsers, IReadOnlyCollection<Asset> ourInventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes) {
+	private async Task MatchActively(IReadOnlyCollection<ListedUser> listedUsers, Dictionary<ulong, Asset> ourInventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes) {
 		if ((listedUsers == null) || (listedUsers.Count == 0)) {
 			throw new ArgumentNullException(nameof(listedUsers));
 		}
@@ -565,7 +569,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
 		}
 
-		(Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> ourFullState, Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> ourTradableState) = Trading.GetDividedInventoryState(ourInventory);
+		(Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> ourFullState, Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> ourTradableState) = Trading.GetDividedInventoryState(ourInventory.Values);
 
 		if (Trading.IsEmptyForMatching(ourFullState, ourTradableState)) {
 			// User doesn't have any more dupes in the inventory
@@ -574,13 +578,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		HashSet<ulong> triedSteamIDs = new();
-		HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisRound = new();
-
 		byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
 
-		foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && !triedSteamIDs.Contains(listedUser.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(static listedUser => listedUser.MatchEverything).ThenBy(static listedUser => listedUser.Assets.Count)) {
-			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => !skippedSetsThisRound.Contains(set) && listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
+		uint matchedSets = 0;
+
+		foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(static listedUser => listedUser.MatchEverything).ThenBy(static listedUser => listedUser.Assets.Count)) {
+			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
 
 			if (wantedSets.Count == 0) {
 				continue;
@@ -610,7 +613,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisUser = new();
 
 			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> theirTradableState = Trading.GetTradableInventoryState(theirInventory);
-			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> inventoryStateChanges = new();
 
 			for (byte i = 0; i < Trading.MaxTradesPerAccount; i++) {
 				byte itemsInTrade = 0;
@@ -623,49 +625,23 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) set, Dictionary<ulong, uint> ourFullItems) in ourFullState.Where(set => !skippedSetsThisUser.Contains(set.Key) && listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(static count => count > 1))) {
 					if (!ourTradableState.TryGetValue(set, out Dictionary<ulong, uint>? ourTradableItems) || (ourTradableItems.Count == 0)) {
+						// We may have no more tradable items from this set
 						continue;
 					}
 
 					if (!theirTradableState.TryGetValue(set, out Dictionary<ulong, uint>? theirTradableItems) || (theirTradableItems.Count == 0)) {
+						// They may have no more tradable items from this set
 						continue;
 					}
 
-					// Those 2 collections are on user-basis since we can't be sure that the trade passes through (and therefore we need to keep original state in case of failure)
+					if (Trading.IsEmptyForMatching(ourFullItems, ourTradableItems)) {
+						// We may have no more matchable items from this set
+						continue;
+					}
+
+					// Those 2 collections are on user-basis since we can't be sure that the trade passes through (and therefore we need to keep original state in case of a failure)
 					Dictionary<ulong, uint> ourFullSet = new(ourFullItems);
 					Dictionary<ulong, uint> ourTradableSet = new(ourTradableItems);
-
-					// We also have to take into account changes that happened in previous trades with this user, so this block will adapt to that
-					if (inventoryStateChanges.TryGetValue(set, out Dictionary<ulong, uint>? pastChanges) && (pastChanges.Count > 0)) {
-						foreach ((ulong classID, uint amount) in pastChanges) {
-							if (!ourFullSet.TryGetValue(classID, out uint fullAmount) || (fullAmount == 0) || (fullAmount < amount)) {
-								Bot.ArchiLogger.LogNullError(fullAmount);
-
-								return;
-							}
-
-							if (fullAmount > amount) {
-								ourFullSet[classID] = fullAmount - amount;
-							} else {
-								ourFullSet.Remove(classID);
-							}
-
-							if (!ourTradableSet.TryGetValue(classID, out uint tradableAmount) || (tradableAmount == 0) || (tradableAmount < amount)) {
-								Bot.ArchiLogger.LogNullError(tradableAmount);
-
-								return;
-							}
-
-							if (fullAmount > amount) {
-								ourTradableSet[classID] = fullAmount - amount;
-							} else {
-								ourTradableSet.Remove(classID);
-							}
-						}
-
-						if (Trading.IsEmptyForMatching(ourFullSet, ourTradableSet)) {
-							continue;
-						}
-					}
 
 					bool match;
 
@@ -693,11 +669,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 									HashSet<Asset> fairFiltered = theirInventory.Where(item => ((item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.RealAppID, item.Type, item.Rarity))).Select(static item => item.CreateShallowCopy()).ToHashSet();
 
 									// Copy list to HashSet<Steam.Asset>
-									HashSet<Asset> fairItemsToGive = Trading.GetTradableItemsFromInventory(ourInventory.Where(item => ((item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.RealAppID, item.Type, item.Rarity))).Select(static item => item.CreateShallowCopy()).ToHashSet(), fairClassIDsToGive.ToDictionary(static classID => classID.Key, static classID => classID.Value));
+									HashSet<Asset> fairItemsToGive = Trading.GetTradableItemsFromInventory(ourInventory.Values.Where(item => ((item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.RealAppID, item.Type, item.Rarity))).Select(static item => item.CreateShallowCopy()).ToHashSet(), fairClassIDsToGive.ToDictionary(static classID => classID.Key, static classID => classID.Value));
 									HashSet<Asset> fairItemsToReceive = Trading.GetTradableItemsFromInventory(fairFiltered.Select(static item => item.CreateShallowCopy()).ToHashSet(), fairClassIDsToReceive.ToDictionary(static classID => classID.Key, static classID => classID.Value));
 
-									// Actual check:
+									// Actual check
 									if (!Trading.IsTradeNeutralOrBetter(fairFiltered, fairItemsToReceive, fairItemsToGive)) {
+										// Revert the changes
 										if (fairGivenAmount > 1) {
 											fairClassIDsToGive[ourItem] = fairGivenAmount - 1;
 										} else {
@@ -720,14 +697,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 								// Update our state based on given items
 								classIDsToGive[ourItem] = classIDsToGive.TryGetValue(ourItem, out uint ourGivenAmount) ? ourGivenAmount + 1 : 1;
 								ourFullSet[ourItem] = ourFullAmount - 1; // We don't need to remove anything here because we can guarantee that ourItem.Value is at least 2
-
-								if (inventoryStateChanges.TryGetValue(set, out Dictionary<ulong, uint>? currentChanges)) {
-									currentChanges[ourItem] = currentChanges.TryGetValue(ourItem, out uint amount) ? amount + 1 : 1;
-								} else {
-									inventoryStateChanges[set] = new Dictionary<ulong, uint> {
-										{ ourItem, 1 }
-									};
-								}
 
 								// Update our state based on received items
 								classIDsToReceive[theirItem] = classIDsToReceive.TryGetValue(theirItem, out uint ourReceivedAmount) ? ourReceivedAmount + 1 : 1;
@@ -771,7 +740,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 
 				// Remove the items from inventories
-				HashSet<Asset> itemsToGive = Trading.GetTradableItemsFromInventory(ourInventory, classIDsToGive);
+				HashSet<Asset> itemsToGive = Trading.GetTradableItemsFromInventory(ourInventory.Values, classIDsToGive);
 				HashSet<Asset> itemsToReceive = Trading.GetTradableItemsFromInventory(theirInventory, classIDsToReceive, true);
 
 				if ((itemsToGive.Count != itemsToReceive.Count) || !Trading.IsFairExchange(itemsToGive, itemsToReceive)) {
@@ -780,8 +749,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 					return;
 				}
-
-				triedSteamIDs.Add(listedUser.SteamID);
 
 				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.MatchingFound, itemsToReceive.Count, listedUser.SteamID, listedUser.Nickname));
 
@@ -805,33 +772,80 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					break;
 				}
 
-				// Add itemsToGive to theirInventory to reflect their current state if we're over MaxItemsPerTrade
-				theirInventory.UnionWith(itemsToGive);
+				Bot.ArchiLogger.LogGenericInfo(Strings.Success);
+
+				// Assume the trade offer has went through and was accepted, this will allow us to keep matching the same set with different users as if we've got what we wanted
+				foreach (Asset itemToGive in itemsToGive) {
+					if (!ourInventory.TryGetValue(itemToGive.AssetID, out Asset? item) || (itemToGive.Amount > item.Amount)) {
+						throw new InvalidOperationException(nameof(item));
+					}
+
+					if (itemToGive.Amount == item.Amount) {
+						ourInventory.Remove(itemToGive.AssetID);
+					} else {
+						item.Amount -= itemToGive.Amount;
+					}
+
+					if (!ourFullState.TryGetValue((itemToGive.RealAppID, itemToGive.Type, itemToGive.Rarity), out Dictionary<ulong, uint>? fullAmounts) || !fullAmounts.TryGetValue(itemToGive.ClassID, out uint fullAmount) || (itemToGive.Amount > fullAmount)) {
+						// We're giving items we don't even have?
+						throw new InvalidOperationException(nameof(fullAmounts));
+					}
+
+					if (itemToGive.Amount == fullAmount) {
+						fullAmounts.Remove(itemToGive.ClassID);
+					} else {
+						fullAmounts[itemToGive.ClassID] = fullAmount - itemToGive.Amount;
+					}
+
+					if (!ourTradableState.TryGetValue((itemToGive.RealAppID, itemToGive.Type, itemToGive.Rarity), out Dictionary<ulong, uint>? tradableAmounts) || !tradableAmounts.TryGetValue(itemToGive.ClassID, out uint tradableAmount) || (itemToGive.Amount > tradableAmount)) {
+						// We're giving items we don't even have?
+						throw new InvalidOperationException(nameof(tradableAmounts));
+					}
+
+					if (itemToGive.Amount == tradableAmount) {
+						tradableAmounts.Remove(itemToGive.ClassID);
+					} else {
+						tradableAmounts[itemToGive.ClassID] = tradableAmount - itemToGive.Amount;
+					}
+				}
+
+				// However, since this is only an assumption, we must mark newly acquired items as untradable so we're sure that they're not considered for trading, only for matching
+				foreach (Asset itemToReceive in itemsToReceive) {
+					if (ourInventory.TryGetValue(itemToReceive.AssetID, out Asset? item)) {
+						item.Tradable = false;
+						item.Amount += itemToReceive.Amount;
+					} else {
+						itemToReceive.Tradable = false;
+						ourInventory[itemToReceive.AssetID] = itemToReceive;
+					}
+
+					if (!ourFullState.TryGetValue((itemToReceive.RealAppID, itemToReceive.Type, itemToReceive.Rarity), out Dictionary<ulong, uint>? fullAmounts)) {
+						// We're receiving items from a set we don't even have?
+						throw new InvalidOperationException(nameof(fullAmounts));
+					}
+
+					if (!fullAmounts.TryGetValue(itemToReceive.ClassID, out uint fullAmount)) {
+						fullAmount = 0;
+					}
+
+					fullAmounts[itemToReceive.ClassID] = itemToReceive.Amount + fullAmount;
+				}
 
 				skippedSetsThisUser.UnionWith(skippedSetsThisTrade);
-				Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 			}
 
 			if (skippedSetsThisUser.Count == 0) {
 				continue;
 			}
 
-			skippedSetsThisRound.UnionWith(skippedSetsThisUser);
-
-			foreach ((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) skippedSet in skippedSetsThisUser) {
-				ourFullState.Remove(skippedSet);
-				ourTradableState.Remove(skippedSet);
-			}
+			matchedSets += (uint) skippedSetsThisUser.Count;
 
 			if (Trading.IsEmptyForMatching(ourFullState, ourTradableState)) {
 				// User doesn't have any more dupes in the inventory
 				break;
 			}
-
-			ourFullState.TrimExcess();
-			ourTradableState.TrimExcess();
 		}
 
-		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingItemsRound, skippedSetsThisRound.Count));
+		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingItemsRound, matchedSets));
 	}
 }
