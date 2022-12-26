@@ -273,7 +273,7 @@ public sealed class Trading : IDisposable {
 
 		HashSet<Asset> result = new();
 
-		IEnumerable<Asset> items = inventory;
+		IEnumerable<Asset> items = inventory.Where(static item => item.Tradable);
 
 		// Randomization helps to decrease "items no longer available" in regards to sending offers to other users
 		if (randomize) {
@@ -282,7 +282,7 @@ public sealed class Trading : IDisposable {
 #pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
 		}
 
-		foreach (Asset item in items.Where(static item => item.Tradable)) {
+		foreach (Asset item in items) {
 			if (!classIDs.TryGetValue(item.ClassID, out uint amount)) {
 				continue;
 			}
