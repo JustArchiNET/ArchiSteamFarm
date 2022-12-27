@@ -94,7 +94,7 @@ internal sealed class BotDatabase : SerializableFile {
 	[JsonProperty($"_{nameof(MobileAuthenticator)}")]
 	private MobileAuthenticator? BackingMobileAuthenticator;
 
-	private BotDatabase(string filePath) {
+	private BotDatabase(string filePath) : this() {
 		if (string.IsNullOrEmpty(filePath)) {
 			throw new ArgumentNullException(nameof(filePath));
 		}
