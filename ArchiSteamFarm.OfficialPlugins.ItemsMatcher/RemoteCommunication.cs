@@ -81,7 +81,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		WebBrowser = new WebBrowser(bot.ArchiLogger, extendedTimeout: true);
+		WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy, true);
 
 		if (Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
 			HeartBeatTimer = new Timer(
