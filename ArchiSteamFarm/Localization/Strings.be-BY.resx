@@ -83,7 +83,12 @@
 		<value>ASF V{0} сутыкнуўся з фатальнай памылкай, перш чым модуль рэгістрацыі ядра змог запусціцца!</value>
 		<comment>{0} will be replaced by version number</comment>
 	</data>
-	
+	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+		<value>Памылка: {0}() {1}
+StackTrace:
+{2}</value>
+		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+	</data>
 	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
 		<value>Выхад з ненулявым кодам памылкі!</value>
 	</data>
@@ -106,7 +111,10 @@
 		<value>{0} мае значэнне нуль!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	
+	<data name="ErrorParsingObject" xml:space="preserve">
+		<value>Не атрымалася апрацаваць {0}!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
 	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
 		<value>Запыт не атрымаўся пасля {0} спроб!</value>
 		<comment>{0} will be replaced by maximum number of tries</comment>
@@ -117,7 +125,9 @@
 	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
 		<value>Немагчыма працягнуць абнаўленне, таму што няма файлаў, звязаных з запушчанай зараз версіяй! Аўтаматычнае абнаўленне да гэтай версіі немагчыма.</value>
 	</data>
-	
+	<data name="ErrorUpdateNoAssets" xml:space="preserve">
+		<value>Немагчыма працягнуць абнаўленне, бо гэтая версія не мае ніякіх файлаў!</value>
+	</data>
 	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
 		<value>Атрыманы запыт на ўвод карыстальнікам, але працэс працуе ў рэжыме без інтэрфейсу!</value>
 	</data>
@@ -176,27 +186,69 @@
 	<data name="UpdateNewVersionAvailable" xml:space="preserve">
 		<value>Даступна новая версія ASF! Вы можаце абнавіцца да яе самастойна!</value>
 	</data>
-	
-	
-	
-	
-	
-	
-	
+	<data name="UpdateVersionInfo" xml:space="preserve">
+		<value>Ваша версія: {0} | Апошняя версія: {1}</value>
+		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+	</data>
+	<data name="UserInputSteam2FA" xml:space="preserve">
+		<value>Калі ласка, увядзіце код 2FA з з мабільнага дадатку Steam: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Калі ласка, увядзіце код аўтарызацыі SteamGuard, які быў адпраўлены на вашу электронную пошту: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamLogin" xml:space="preserve">
+		<value>Калі ласка, увядзіце свой лагін Steam: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamParentalCode" xml:space="preserve">
+		<value>Калі ласка, увядзіце код бацькоўскага кантролю Steam: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamPassword" xml:space="preserve">
+		<value>Калі ласка, увядзіце пароль Steam: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+		<value>Атрымана невядомае значэнне для {0}, калі ласка, паведаміце пра гэта: {1}</value>
+		<comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+	</data>
 	<data name="IPCReady" xml:space="preserve">
 		<value>Сервер IPC гатовы!</value>
 	</data>
 	<data name="IPCStarting" xml:space="preserve">
 		<value>Запуск сервера IPC...</value>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="BotAlreadyStopped" xml:space="preserve">
+		<value>Гэты бот ужо спынены!</value>
+	</data>
+	<data name="BotNotFound" xml:space="preserve">
+		<value>Не ўдалося знайсці бота з імем {0}!</value>
+		<comment>{0} will be replaced by bot's name query (string)</comment>
+	</data>
+	<data name="BotStatusOverview" xml:space="preserve">
+		<value>Запушчана {0}/{1} ботаў, у агульнай складанасці {2} гульняў ({3} карт) засталося сфармаваць.</value>
+		<comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
+	</data>
+	<data name="BotStatusIdling" xml:space="preserve">
+		<value>Бот фармуе гульню: {0} ({1}, засталося атрымаць {2} карт) з {3} гульняў ({4} карт), якіх трэба сфармаваць (засталося ~{5}).</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="BotStatusIdlingList" xml:space="preserve">
+		<value>Бот фармуе гульні: {0} з {1} гульняў ({2} карт) засталося сфармаваць (засталося ~{3}).</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="CheckingFirstBadgePage" xml:space="preserve">
+		<value>Праверка першай старонкі са значкамі...</value>
+	</data>
+	<data name="CheckingOtherBadgePages" xml:space="preserve">
+		<value>Праверка іншых старонак са значкамі...</value>
+	</data>
+	<data name="ChosenFarmingAlgorithm" xml:space="preserve">
+		<value>Абраны алгарытм фармавання: {0}</value>
+		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+	</data>
 	<data name="Done" xml:space="preserve">
 		<value>Гатова!</value>
 	</data>
@@ -204,10 +256,21 @@
 		<value>Усяго ў нас засталося {0} гульняў ({1} карт) для фармавання (засталося ~{2})...</value>
 		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
-	
-	
-	
-	
+	<data name="IdlingFinished" xml:space="preserve">
+		<value>Фармаванне скончана!</value>
+	</data>
+	<data name="IdlingFinishedForGame" xml:space="preserve">
+		<value>Скончана фармаванне: {0} ({1}) пасля {2} гульнявога часу!</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinishedForGames" xml:space="preserve">
+		<value>Завершана фармаваць гульні: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="IdlingStatusForGame" xml:space="preserve">
+		<value>Стан фермы для {0} ({1}): засталося карт: {2}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm</comment>
+	</data>
 	<data name="IdlingStopped" xml:space="preserve">
 		<value>Фармаванне спынена!</value>
 	</data>
@@ -387,10 +450,23 @@
 	
 	
 	
-	
-	
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>Акаўнт больш не заняты: працэс фармавання адноўлены!</value>
+	</data>
+	<data name="BotAccountOccupied" xml:space="preserve">
+		<value>Акаўнт зараз выкарыстоўваецца: ASF адновіць фармаванне, калі ён будзе вольны...</value>
+	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Падключэнне...</value>
+	</data>
+	
+	
+	<data name="BotStopping" xml:space="preserve">
+		<value>Спыненне...</value>
+	</data>
+	<data name="ErrorBotConfigInvalid" xml:space="preserve">
+		<value>Канфігурацыя вашага бота няправільная. Калі ласка, праверце змест {0} і паспрабуйце яшчэ раз!</value>
+		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	
 	
@@ -398,15 +474,18 @@
 	
 	
 	
+	<data name="IdlingGameNotPossible" xml:space="preserve">
+		<value>Фармаванне {0} ({1}) часова адключана, бо ASF зараз не можа зараз гуляць у гэтую гульню.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	
 	
-	
-	
-	
-	
-	
-	
-	
+	<data name="BotAccountLocked" xml:space="preserve">
+		<value>Гэты акаўнт заблакіраваны, працэс фармавання больш недаступны!</value>
+	</data>
+	<data name="BotStatusLocked" xml:space="preserve">
+		<value>Бот абмежаваны і не можа атрымліваць карты падчас фармавання.</value>
+	</data>
 	
 	
 	
@@ -448,7 +527,10 @@
 	
 	
 	
-	
+	<data name="BotExtraIdlingCooldown" xml:space="preserve">
+		<value>Чакаем да {0}, каб быць упэўненымі, што мы можам пачаць фармаванне...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+	</data>
 	
 	
 	
