@@ -147,12 +147,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	internal void OnNewItemsNotification() => ShouldSendAnnouncementEarlier = true;
 
 	internal async Task OnPersonaState(string? nickname = null, string? avatarHash = null) {
-		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
-			return;
-		}
-
 		if (WebBrowser == null) {
 			throw new InvalidOperationException(nameof(WebBrowser));
+		}
+
+		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
+			return;
 		}
 
 		if ((DateTime.UtcNow < LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL)) && ShouldSendHeartBeats) {
@@ -173,6 +173,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// This is actually network failure, so we'll stop sending heartbeats but not record it as valid check
 				ShouldSendHeartBeats = false;
 
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(IsEligibleForListing)}: {eligible?.ToString() ?? "null"}"));
+
 				return;
 			}
 
@@ -180,6 +182,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// We're not eligible, record this as a valid check
 				LastAnnouncement = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(IsEligibleForListing)}: {eligible.Value}"));
 
 				return;
 			}
@@ -396,21 +400,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task<bool?> IsEligibleForListing() {
-		// Bot must be eligible for matching first
+		// Bot must be eligible for matching
 		bool? isEligibleForMatching = await IsEligibleForMatching().ConfigureAwait(false);
 
 		if (isEligibleForMatching != true) {
 			return isEligibleForMatching;
 		}
 
-		// Bot must have STM enabled in TradingPreferences
-		if (!Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.BotConfig.TradingPreferences)}: {Bot.BotConfig.TradingPreferences}"));
-
-			return false;
-		}
-
-		// Bot must have public inventory
+		// Bot must have a public inventory
 		bool? hasPublicInventory = await Bot.HasPublicInventory().ConfigureAwait(false);
 
 		if (hasPublicInventory != true) {
@@ -462,8 +459,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(ASF.GlobalConfig.LicenseID));
 		}
 
-		if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || (await IsEligibleForMatching().ConfigureAwait(false) != true)) {
+		if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively)) {
 			Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
+
+			return;
+		}
+
+		bool? eligible = await IsEligibleForMatching().ConfigureAwait(false);
+
+		if (eligible != true) {
+			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(IsEligibleForMatching)}: {eligible?.ToString() ?? "null"}"));
 
 			return;
 		}
