@@ -648,11 +648,7 @@ public sealed class Trading : IDisposable {
 		}
 
 		// Get sets we're interested in
-		HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> wantedSets = new();
-
-		foreach (Asset item in tradeOffer.ItemsToGive) {
-			wantedSets.Add((item.RealAppID, item.Type, item.Rarity));
-		}
+		HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> wantedSets = tradeOffer.ItemsToGive.Select(static item => (item.RealAppID, item.Type, item.Rarity)).ToHashSet();
 
 		// Now check if it's worth for us to do the trade
 		HashSet<Asset> inventory;
