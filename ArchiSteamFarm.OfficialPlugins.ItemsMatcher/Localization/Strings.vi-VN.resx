@@ -66,4 +66,16 @@
 		<value>Đã soát tổng cộng {0} bộ trong vòng này.</value>
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
+  <data name="ListingAnnouncing" xml:space="preserve">
+		<value>Đang thông báo {0} ({1}) với kho đồ bao gồm {2} vật phẩm lên danh sách...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname, {2} will be replaced with number of items in the inventory</comment>
+	</data>
+  <data name="MatchingFound" xml:space="preserve">
+		<value>Đã soát tổng cộng {0} vật phẩm với bot {1} ({2}), đang gửi đề nghị trao đổi...</value>
+		<comment>{0} will be replaced by number of items matched, {1} will be replaced by steam ID (number), {2} will be replaced by user's nickname</comment>
+	</data>
+  <data name="TradeOfferFailed" xml:space="preserve">
+		<value>Thất bại khi gửi đề nghị trao đổi tới bot {0} ({1}), đang tiếp tục...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname'</comment>
+	</data>
 </root>

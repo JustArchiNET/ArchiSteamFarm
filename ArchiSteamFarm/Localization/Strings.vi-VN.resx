@@ -740,5 +740,8 @@ Thời gian hoạt động: {1}</value>
 		<value>Địa chỉ IP {0} không bị cấm!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
-	
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Bạn đang cố gắng sử dụng tính năng trả phí {0} nhưng bạn chưa đặt một LicenseID hợp lệ trong cấu hình chung ASF. Vui lòng kiểm tra lại cấu hình vì chức năng này yêu cầu thông tin bổ sung.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>
