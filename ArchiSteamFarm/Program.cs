@@ -451,6 +451,11 @@ internal static class Program {
 
 	private static async Task<bool> InitShutdownSequence() {
 		if (ShutdownSequenceInitialized) {
+			// We've already initialized shutdown sequence before, we won't allow the caller to init shutdown sequence again
+			// While normally this will be respected, caller might not have any say in this for example because it's the runtime terminating ASF due to fatal exception
+			// Because of that, the least we can still do, is to ensure that exception is written to any logs on our "best effort" basis
+			LogManager.Flush();
+
 			return false;
 		}
 
