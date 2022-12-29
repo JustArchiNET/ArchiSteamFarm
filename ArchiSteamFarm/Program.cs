@@ -99,7 +99,7 @@ internal static class Program {
 		}
 
 		// Give new process some time to take over the window (if needed)
-		await Task.Delay(10000).ConfigureAwait(false);
+		await Task.Delay(5000).ConfigureAwait(false);
 
 		ShutdownResetEvent.TrySetResult(0);
 		Environment.Exit(0);
