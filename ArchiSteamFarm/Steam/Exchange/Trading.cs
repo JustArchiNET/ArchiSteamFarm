@@ -537,18 +537,18 @@ public sealed class Trading : IDisposable {
 		}
 
 		if (tradeOffer.OtherSteamID64 != 0) {
-			// Always accept trades from SteamMasterID
-			if (Bot.GetAccess(tradeOffer.OtherSteamID64) >= EAccess.Master) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, $"{nameof(tradeOffer.OtherSteamID64)} {tradeOffer.OtherSteamID64}: {BotConfig.EAccess.Master}"));
-
-				return ParseTradeResult.EResult.Accepted;
-			}
-
 			// Always deny trades from blacklisted steamIDs
 			if (Bot.IsBlacklistedFromTrades(tradeOffer.OtherSteamID64)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Blacklisted, $"{nameof(tradeOffer.OtherSteamID64)} {tradeOffer.OtherSteamID64}"));
 
 				return ParseTradeResult.EResult.Blacklisted;
+			}
+
+			// Always accept trades from SteamMasterID
+			if (Bot.GetAccess(tradeOffer.OtherSteamID64) >= EAccess.Master) {
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, $"{nameof(tradeOffer.OtherSteamID64)} {tradeOffer.OtherSteamID64}: {BotConfig.EAccess.Master}"));
+
+				return ParseTradeResult.EResult.Accepted;
 			}
 
 			// Deny trades from bad steamIDs if user wishes to do so
