@@ -206,13 +206,25 @@ public static class ASF {
 			if (Directory.Exists(backupDirectory)) {
 				ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
 
-				// It's entirely possible that old process is still running, wait a short moment for eventual cleanup
-				await Task.Delay(5000).ConfigureAwait(false);
+				for (byte i = 0; (i < WebBrowser.MaxTries) && Directory.Exists(backupDirectory); i++) {
+					if (i > 0) {
+						// It's entirely possible that old process is still running, wait a short moment for eventual cleanup
+						await Task.Delay(5000).ConfigureAwait(false);
+					}
 
-				try {
-					Directory.Delete(backupDirectory, true);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
+					try {
+						Directory.Delete(backupDirectory, true);
+					} catch (Exception e) {
+						ArchiLogger.LogGenericDebuggingException(e);
+
+						continue;
+					}
+
+					break;
+				}
+
+				if (Directory.Exists(backupDirectory)) {
+					ArchiLogger.LogGenericError(Strings.WarningFailed);
 
 					return null;
 				}
