@@ -147,12 +147,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	internal void OnNewItemsNotification() => ShouldSendAnnouncementEarlier = true;
 
 	internal async Task OnPersonaState(string? nickname = null, string? avatarHash = null) {
-		if (WebBrowser == null) {
-			throw new InvalidOperationException(nameof(WebBrowser));
-		}
-
 		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
 			return;
+		}
+
+		if (WebBrowser == null) {
+			throw new InvalidOperationException(nameof(WebBrowser));
 		}
 
 		if ((DateTime.UtcNow < LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL)) && ShouldSendHeartBeats) {
