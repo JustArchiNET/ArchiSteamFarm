@@ -740,7 +740,7 @@ Tiempo de actividad del proceso: {1}</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
 	<data name="WarningNoLicense" xml:space="preserve">
-		<value>Has intentado usar la función de pago {0}, pero no tienes un LicenseID válido establecido en la configuración global de ASF. Por favor, revisa tu configuración, ya que esta característica no funcionará sin detalles adicionales.</value>
+		<value>Estás intentando usar la función de pago {0}, pero no tienes un LicenseID válido establecido en la configuración global de ASF. Revisa tu configuración, ya que esta característica no funcionará sin detalles adicionales.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
 </root>
