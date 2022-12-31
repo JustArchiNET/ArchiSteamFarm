@@ -24,7 +24,7 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
 public sealed class GlobalConfigExtension {
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonProperty]
 	public SteamTokenDumperConfig? SteamTokenDumperPlugin { get; private set; }
 
 	[JsonProperty(Required = Required.DisallowNull)]
