@@ -603,7 +603,7 @@ Tiempo de actividad del proceso: {1}</value>
 		<value>¡Cancelado!</value>
 	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
-		<value>Estás ejecutando más cuentas bot que nuestro límite recomendado ({0}). Ten en cuenta que no se da soporte a esta configuración y puede causar varios problemas relacionados con Steam, incluyendo la suspensión de cuentas. Revisa las preguntas frecuentas para más detalles.</value>
+		<value>Estás ejecutando más cuentas bot que nuestro límite recomendado ({0}). Ten en cuenta que no se da soporte a esta configuración y puede causar varios problemas relacionados con Steam, incluyendo la suspensión de cuentas. Revisa las preguntas frecuentes para más detalles.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
 	</data>
 	<data name="PluginLoaded" xml:space="preserve">
