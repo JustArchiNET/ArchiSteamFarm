@@ -66,4 +66,16 @@
 		<value>Съвпадащи общо {0} комплекта този кръг.</value>
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
+  <data name="ListingAnnouncing" xml:space="preserve">
+		<value>Обявяване на {0} ({1}) с инвентар, съставен от общо {2} артикула в обявата...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname, {2} will be replaced with number of items in the inventory</comment>
+	</data>
+  <data name="MatchingFound" xml:space="preserve">
+		<value>Съпоставихте общо {0} артикула с бот {1} ({2}), изпращайки трейд оферта...</value>
+		<comment>{0} will be replaced by number of items matched, {1} will be replaced by steam ID (number), {2} will be replaced by user's nickname</comment>
+	</data>
+  <data name="TradeOfferFailed" xml:space="preserve">
+		<value>Неуспешно изпращане на трейд оферта до бот {0} ({1}), продължаваме...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname'</comment>
+	</data>
 </root>
