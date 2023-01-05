@@ -25,7 +25,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3.2.0
+      uses: actions/checkout@v3.3.0
       with:
         submodules: recursive
 
@@ -452,7 +452,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3.2.0
+      uses: actions/checkout@v3.3.0
 
     - name: Download ASF-generic artifact from ubuntu-latest
       uses: actions/download-artifact@v3.0.1
