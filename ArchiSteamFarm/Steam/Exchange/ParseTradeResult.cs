@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2022 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,9 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
-using System.Linq;
 using ArchiSteamFarm.Steam.Data;
 using JetBrains.Annotations;
 
@@ -31,14 +29,21 @@ namespace ArchiSteamFarm.Steam.Exchange;
 
 public sealed class ParseTradeResult {
 	[PublicAPI]
+	public IReadOnlyCollection<Asset>? ItemsToGive { get; }
+
+	[PublicAPI]
+	public IReadOnlyCollection<Asset>? ItemsToReceive { get; }
+
+	[PublicAPI]
 	public EResult Result { get; }
 
 	[PublicAPI]
 	public ulong TradeOfferID { get; }
 
-	internal readonly ImmutableHashSet<Asset.EType>? ReceivedItemTypes;
+	[PublicAPI]
+	public bool Confirmed { get; internal set; }
 
-	internal ParseTradeResult(ulong tradeOfferID, EResult result, IReadOnlyCollection<Asset>? itemsToReceive = null) {
+	internal ParseTradeResult(ulong tradeOfferID, EResult result, bool requiresMobileConfirmation, IReadOnlyCollection<Asset>? itemsToGive = null, IReadOnlyCollection<Asset>? itemsToReceive = null) {
 		if (tradeOfferID == 0) {
 			throw new ArgumentOutOfRangeException(nameof(tradeOfferID));
 		}
@@ -49,10 +54,9 @@ public sealed class ParseTradeResult {
 
 		TradeOfferID = tradeOfferID;
 		Result = result;
-
-		if (itemsToReceive?.Count > 0) {
-			ReceivedItemTypes = itemsToReceive.Select(static item => item.Type).ToImmutableHashSet();
-		}
+		Confirmed = !requiresMobileConfirmation;
+		ItemsToGive = itemsToGive;
+		ItemsToReceive = itemsToReceive;
 	}
 
 	public enum EResult : byte {

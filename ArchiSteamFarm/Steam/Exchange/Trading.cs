@@ -424,46 +424,50 @@ public sealed class Trading : IDisposable {
 			HandledTradeOfferIDs.IntersectWith(tradeOffers.Select(static tradeOffer => tradeOffer.TradeOfferID));
 		}
 
-		IEnumerable<Task<(ParseTradeResult? TradeResult, bool RequiresMobileConfirmation)>> tasks = tradeOffers.Where(tradeOffer => !HandledTradeOfferIDs.Contains(tradeOffer.TradeOfferID)).Select(ParseTrade);
-		IList<(ParseTradeResult? TradeResult, bool RequiresMobileConfirmation)> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
+		IEnumerable<Task<ParseTradeResult?>> tasks = tradeOffers.Where(tradeOffer => !HandledTradeOfferIDs.Contains(tradeOffer.TradeOfferID)).Select(ParseTrade);
+		IList<ParseTradeResult?> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
+
+		HashSet<ParseTradeResult> validTradeResults = results.Where(static result => result != null).Select(static result => result!).ToHashSet();
 
 		if (Bot.HasMobileAuthenticator) {
-			HashSet<ulong> mobileTradeOfferIDs = results.Where(static result => (result.TradeResult?.Result == ParseTradeResult.EResult.Accepted) && result.RequiresMobileConfirmation).Select(static result => result.TradeResult!.TradeOfferID).ToHashSet();
+			HashSet<ParseTradeResult> mobileTradeResults = validTradeResults.Where(static result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: false }).ToHashSet();
 
-			if (mobileTradeOfferIDs.Count > 0) {
+			if (mobileTradeResults.Count > 0) {
+				HashSet<ulong> mobileTradeOfferIDs = mobileTradeResults.Select(static tradeOffer => tradeOffer.TradeOfferID).ToHashSet();
+
 				(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
-				if (!twoFactorSuccess) {
+				if (twoFactorSuccess) {
+					foreach (ParseTradeResult mobileTradeResult in mobileTradeResults) {
+						mobileTradeResult.Confirmed = true;
+					}
+				} else {
 					HandledTradeOfferIDs.ExceptWith(mobileTradeOfferIDs);
-
-					return false;
 				}
 			}
 		}
-
-		HashSet<ParseTradeResult> validTradeResults = results.Where(static result => result.TradeResult != null).Select(static result => result.TradeResult!).ToHashSet();
 
 		if (validTradeResults.Count > 0) {
 			await PluginsCore.OnBotTradeOfferResults(Bot, validTradeResults).ConfigureAwait(false);
 		}
 
-		return results.Any(result => (result.TradeResult?.Result == ParseTradeResult.EResult.Accepted) && (!result.RequiresMobileConfirmation || Bot.HasMobileAuthenticator) && (result.TradeResult.ReceivedItemTypes?.Any(receivedItemType => Bot.BotConfig.LootableTypes.Contains(receivedItemType)) == true));
+		return validTradeResults.Any(result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && (result.ItemsToReceive?.Any(receivedItem => Bot.BotConfig.LootableTypes.Contains(receivedItem.Type)) == true));
 	}
 
-	private async Task<(ParseTradeResult? TradeResult, bool RequiresMobileConfirmation)> ParseTrade(TradeOffer tradeOffer) {
+	private async Task<ParseTradeResult?> ParseTrade(TradeOffer tradeOffer) {
 		ArgumentNullException.ThrowIfNull(tradeOffer);
 
 		if (tradeOffer.State != ETradeOfferState.Active) {
 			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, tradeOffer.State));
 
-			return (null, false);
+			return null;
 		}
 
 		if (!HandledTradeOfferIDs.Add(tradeOffer.TradeOfferID)) {
 			// We've already seen this trade, this should not happen
 			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.IgnoringTrade, tradeOffer.TradeOfferID));
 
-			return (new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Ignored, tradeOffer.ItemsToReceive), false);
+			return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Ignored, false, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 		}
 
 		ParseTradeResult.EResult result = await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false);
@@ -523,10 +527,10 @@ public sealed class Trading : IDisposable {
 			default:
 				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
 
-				return (null, false);
+				return null;
 		}
 
-		return (new ParseTradeResult(tradeOffer.TradeOfferID, result, tradeOffer.ItemsToReceive), tradeRequiresMobileConfirmation);
+		return new ParseTradeResult(tradeOffer.TradeOfferID, result, tradeRequiresMobileConfirmation, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 	}
 
 	private async Task<ParseTradeResult.EResult> ShouldAcceptTrade(TradeOffer tradeOffer) {

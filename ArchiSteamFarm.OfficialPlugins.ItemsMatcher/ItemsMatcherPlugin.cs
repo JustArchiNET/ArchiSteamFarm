@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2022 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@ using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -39,7 +40,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 [Export(typeof(IPlugin))]
-internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, IBotIdentity, IBotModules, IBotUserNotifications {
+internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, IBotIdentity, IBotModules, IBotTradeOfferResults, IBotUserNotifications {
 	internal static readonly ConcurrentDictionary<Bot, RemoteCommunication> RemoteCommunications = new();
 
 	[JsonProperty]
@@ -96,6 +97,23 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 		if (!RemoteCommunications.TryAdd(bot, remoteCommunication)) {
 			await remoteCommunication.DisposeAsync().ConfigureAwait(false);
 		}
+	}
+
+	public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		if ((tradeResults == null) || (tradeResults.Count == 0)) {
+			throw new ArgumentNullException(nameof(tradeResults));
+		}
+
+		// We're interested only in Items notification for Bot that has RemoteCommunication enabled
+		if (!RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication) || !tradeResults.Any(tradeResult => tradeResult is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && ((tradeResult.ItemsToGive?.Any(item => bot.BotConfig.MatchableTypes.Contains(item.Type)) == true) || (tradeResult.ItemsToReceive?.Any(item => bot.BotConfig.MatchableTypes.Contains(item.Type)) == true)))) {
+			return Task.CompletedTask;
+		}
+
+		remoteCommunication.OnNewItemsNotification();
+
+		return Task.CompletedTask;
 	}
 
 	public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications) {
