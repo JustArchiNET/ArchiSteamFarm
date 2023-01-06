@@ -513,9 +513,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			// Remove from our inventory items that can't be possibly matched due to no dupes to offer available
-			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(ourInventory.Values);
+			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> setsToKeep = Trading.GetInventorySets(ourInventory.Values).Where(static set => set.Value.Any(static amount => amount > 1)).Select(static set => set.Key).ToHashSet();
 
-			HashSet<ulong> assetIDsToRemove = ourInventory.Where(item => !inventorySets.TryGetValue((item.Value.RealAppID, item.Value.Type, item.Value.Rarity), out List<uint>? amounts) || (amounts.Count == 0) || amounts.All(static amount => amount < 2)).Select(static item => item.Key).ToHashSet();
+			HashSet<ulong> assetIDsToRemove = ourInventory.Where(item => !setsToKeep.Contains((item.Value.RealAppID, item.Value.Type, item.Value.Rarity))).Select(static item => item.Key).ToHashSet();
 
 			foreach (ulong assetIDToRemove in assetIDsToRemove) {
 				ourInventory.Remove(assetIDToRemove);
