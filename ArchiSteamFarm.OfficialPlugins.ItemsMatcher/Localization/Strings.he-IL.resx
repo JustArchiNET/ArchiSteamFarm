@@ -62,4 +62,20 @@
 			PublicKeyToken=b77a5c561934e089
 		</value>
   </resheader>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+		<value>התאימו בסך הכל {0} ערכות בסיבוב זה.</value>
+		<comment>{0} will be replaced by number of sets traded</comment>
+	</data>
+  <data name="ListingAnnouncing" xml:space="preserve">
+		<value>מכריז על {0} ({1}) עם מלאי מורכב מ-{2} פריטים בסך הכל ברישום...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname, {2} will be replaced with number of items in the inventory</comment>
+	</data>
+  <data name="MatchingFound" xml:space="preserve">
+		<value>התאים סך של {0} פריטים לבוט {1} ({2}), שולח הצעת סחר...</value>
+		<comment>{0} will be replaced by number of items matched, {1} will be replaced by steam ID (number), {2} will be replaced by user's nickname</comment>
+	</data>
+  <data name="TradeOfferFailed" xml:space="preserve">
+		<value>נכשל שליחת הצעת סחר לבוט {0} ({1}), ממשיך הלאה...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname'</comment>
+	</data>
 </root>

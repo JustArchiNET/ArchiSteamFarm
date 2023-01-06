@@ -62,26 +62,52 @@
 			PublicKeyToken=b77a5c561934e089
 		</value>
 	</resheader>
+	<data name="PluginDisabledMissingBuildToken" xml:space="preserve">
+		<value>{0} הושבת עקב אסימון בנייה חסר</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginDisabledInConfig" xml:space="preserve">
+		<value>{0} מושבת כעת בהתאם לתצורה שלך. אם תרצה לעזור ל-SteamDB בהגשת נתונים, בדוק את המדריך שלנו.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
 	
 	
 	
 	
+	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+		<value>מאחזר {0} אסימוני גישה לאפליקציה...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>סיים לאחזר {0} אסימוני גישה לאפליקציה.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
 	
 	
 	
 	
+	<data name="BotRetrievingDepotKeys" xml:space="preserve">
+		<value>מאחזר {0} מפתחות מחסן...</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>סיים לאחזר {0} מפתחות מחסן.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
+		<value>סיים לאחזר את כל מפתחות המחסן עבור סך של {0} אפליקציות.</value>
+		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
+	</data>
+	<data name="SubmissionNoNewData" xml:space="preserve">
+		<value>אין נתונים חדשים להגיש, הכל מעודכן.</value>
+	</data>
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="SubmissionSuccessful" xml:space="preserve">
+		<value>הנתונים נשלחו בהצלחה. השרת רשם סך של יישומים/חבילות/מחסנים חדשים: {0} ({1} מאומת)/{2} ({3} מאומת)/{4} ({5} מאומת).</value>
+		<comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
+	</data>
 	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
 		<value>יישומים חדשים: {0}</value>
 		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
@@ -98,8 +124,14 @@
 		<value>חבילות מאומתות: {0}</value>
 		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
+	<data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+		<value>מחסנים חדשים: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+		<value>מחסנים מאומתים: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="PluginSecretListInitialized" xml:space="preserve">
 		<value>{0} אותחל, הפלאגין לא יפתור אף אחד מאלה: {1}.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>

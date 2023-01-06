@@ -104,7 +104,9 @@ StackTrace:
 		<value>{0} אינה חוקית!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>לא מוגדרים בוטים. שכחת להגדיר את ה-ASF שלך? עקוב אחר מדריך 'הכנה' במדריך אם אתה מבולבל.</value>
+	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} הוא ריק!</value>
 		<comment>{0} will be replaced by object's name</comment>
@@ -192,7 +194,10 @@ StackTrace:
 		<value>אנא הכנס את קוד האימות מאפליקציית המאמת של Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>אנא הזן את קוד האימות של SteamGuard אשר נשלח אליך בדואר אלקטרוני: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>נא הזינו את משתמש ה- Steam שלכם: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -238,7 +243,9 @@ StackTrace:
 	
 	
 	
-	
+	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+		<value>מתעלם מבקשה זו, כיוון שהשהיה תמידית פועלת!</value>
+	</data>
 	
 	
 	
@@ -314,7 +321,10 @@ StackTrace:
 		<value>ניתוק מסטים: {0}</value>
 		<comment>{0} will be replaced by logging off reason (string)</comment>
 	</data>
-	
+	<data name="BotLoggedOn" xml:space="preserve">
+		<value>התחבר בהצלחה בתור {0}.</value>
+		<comment>{0} will be replaced by steam ID (number)</comment>
+	</data>
 	<data name="BotLoggingIn" xml:space="preserve">
 		<value>מתחבר...</value>
 	</data>
@@ -330,7 +340,9 @@ StackTrace:
 	<data name="BotLootingSuccess" xml:space="preserve">
 		<value>הצעת סחר חליפין נשלחה בהצלחה!</value>
 	</data>
-	
+	<data name="BotSendingTradeToYourself" xml:space="preserve">
+		<value>אתה לא יכול לשלוח בקשת החלפה לעצמך!</value>
+	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
 		<value>לבוט זה אין ASF 2FA מופעל! האם שכחת להכניס את המאמת שלך כ- ASF 2FA?</value>
 	</data>
@@ -488,30 +500,57 @@ StackTrace:
 		<value>יתרה בארנק: {1}{0}</value>
 		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
 	</data>
+	<data name="BotHasNoWallet" xml:space="preserve">
+		<value>לבוט אין ארנק.</value>
+	</data>
+	<data name="BotLevel" xml:space="preserve">
+		<value>לבוט יש רמה {0}.</value>
+		<comment>{0} will be replaced by bot's level</comment>
+	</data>
+	
+	
+	<data name="ErrorAborted" xml:space="preserve">
+		<value>הופסק!</value>
+	</data>
+	
+	<data name="PluginLoaded" xml:space="preserve">
+		<value>{0} נטען בהצלחה!</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+	</data>
+	<data name="PluginLoading" xml:space="preserve">
+		<value>טוען {0} V{1}...</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+	</data>
+	<data name="NothingFound" xml:space="preserve">
+		<value>לא נמצא דבר!</value>
+	</data>
+	
+	<data name="PleaseWait" xml:space="preserve">
+		<value>אנא המתן...</value>
+	</data>
+	<data name="EnterCommand" xml:space="preserve">
+		<value>הקש פקודה: </value>
+	</data>
+	
+	
+	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+		<value>לבוט נותרו {0} משחקים בתור ברקע.</value>
+		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+	</data>
+	
+	
+	
+	<data name="UpdateCleanup" xml:space="preserve">
+		<value>מנקה קבצים ישנים לאחר עדכון...</value>
+	</data>
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="Result" xml:space="preserve">
+		<value>תוצאה: {0}</value>
+		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
+	</data>
 	
 	
 	
