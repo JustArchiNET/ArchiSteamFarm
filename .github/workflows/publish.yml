@@ -455,49 +455,49 @@ jobs:
       uses: actions/checkout@v3.3.0
 
     - name: Download ASF-generic artifact from ubuntu-latest
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v3.0.2
       with:
         name: ubuntu-latest_ASF-generic
         path: out
 
     - name: Download ASF-generic-netf artifact from windows-latest
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v3.0.2
       with:
         name: windows-latest_ASF-generic-netf
         path: out
 
     - name: Download ASF-linux-arm artifact from ubuntu-latest
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v3.0.2
       with:
         name: ubuntu-latest_ASF-linux-arm
         path: out
 
     - name: Download ASF-linux-arm64 artifact from ubuntu-latest
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v3.0.2
       with:
         name: ubuntu-latest_ASF-linux-arm64
         path: out
 
     - name: Download ASF-linux-x64 artifact from ubuntu-latest
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v3.0.2
       with:
         name: ubuntu-latest_ASF-linux-x64
         path: out
 
     - name: Download ASF-osx-arm64 artifact from macos-latest
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v3.0.2
       with:
         name: macos-latest_ASF-osx-arm64
         path: out
 
     - name: Download ASF-osx-x64 artifact from macos-latest
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v3.0.2
       with:
         name: macos-latest_ASF-osx-x64
         path: out
 
     - name: Download ASF-win-x64 artifact from windows-latest
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v3.0.2
       with:
         name: windows-latest_ASF-win-x64
         path: out
