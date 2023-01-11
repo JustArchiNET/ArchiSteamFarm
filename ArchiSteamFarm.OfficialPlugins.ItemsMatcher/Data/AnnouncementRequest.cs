@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2022 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
 using JetBrains.Annotations;
@@ -85,11 +84,21 @@ internal sealed class AnnouncementRequest {
 		}
 
 		uint index = 0;
+		ulong previousAssetID = 0;
 
 		Guid = guid;
 		SteamID = steamID;
 		TradeToken = tradeToken;
-		Inventory = inventory.Select(asset => new AssetForListing(asset, index++)).ToImmutableHashSet();
+
+		HashSet<AssetForListing> assetsForListing = new(inventory.Count);
+
+		foreach (Asset asset in inventory) {
+			assetsForListing.Add(new AssetForListing(asset, index++, previousAssetID));
+
+			previousAssetID = asset.AssetID;
+		}
+
+		Inventory = assetsForListing.ToImmutableHashSet();
 		MatchableTypes = matchableTypes.ToImmutableHashSet();
 		MatchEverything = matchEverything;
 		MaxTradeHoldDuration = maxTradeHoldDuration;
