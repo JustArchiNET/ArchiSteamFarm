@@ -26,25 +26,25 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal class AssetInInventory {
-	[JsonProperty(Required = Required.Always)]
+	[JsonProperty("a", Required = Required.Always)]
 	internal readonly uint Amount;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonProperty("d", Required = Required.Always)]
 	internal readonly ulong AssetID;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonProperty("c", Required = Required.Always)]
 	internal readonly ulong ClassID;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonProperty("r", Required = Required.Always)]
 	internal readonly Asset.ERarity Rarity;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonProperty("e", Required = Required.Always)]
 	internal readonly uint RealAppID;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonProperty("t", Required = Required.Always)]
 	internal readonly bool Tradable;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonProperty("p", Required = Required.Always)]
 	internal readonly Asset.EType Type;
 
 	internal AssetInInventory(Asset asset) {

@@ -57,7 +57,7 @@ internal static class Backend {
 			throw new ArgumentOutOfRangeException(nameof(tradeToken));
 		}
 
-		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce");
+		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce/v2");
 
 		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, tradeToken, inventory, acceptedMatchableTypes, bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything), ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
 
@@ -80,7 +80,7 @@ internal static class Backend {
 			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
 		}
 
-		Uri request = new(ArchiNet.URL, "/Api/Listing/Inventories");
+		Uri request = new(ArchiNet.URL, "/Api/Listing/Inventories/v2");
 
 		Dictionary<string, string> headers = new(1, StringComparer.Ordinal) {
 			{ "X-License-Key", licenseID.ToString("N") }
