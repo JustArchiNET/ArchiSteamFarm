@@ -337,10 +337,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				AnnouncedItems[item.AssetID] = item.Amount;
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
+			AnnouncedItems.TrimExcess();
 		} finally {
 			RequestsSemaphore.Release();
 		}
+
+		Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 	}
 
 	internal void TriggerMatchActivelyEarlier() {
