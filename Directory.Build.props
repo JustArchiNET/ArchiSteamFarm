@@ -56,6 +56,7 @@
 		<Using Include="JustArchiNET.Madness.HttpRequestExceptionMadness.HttpRequestException" Alias="HttpRequestException" />
 		<Using Include="JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem" Alias="OperatingSystem" />
 		<Using Include="JustArchiNET.Madness.PathMadness.Path" Alias="Path" />
+		<Using Include="JustArchiNET.Madness.QuicExceptionMadness.QuicException" Alias="QuicException" />
 		<Using Include="JustArchiNET.Madness.RandomMadness.Random" Alias="Random" />
 		<Using Include="JustArchiNET.Madness.SHA256Madness.SHA256" Alias="SHA256" />
 		<Using Include="JustArchiNET.Madness.SHA512Madness.SHA512" Alias="SHA512" />
