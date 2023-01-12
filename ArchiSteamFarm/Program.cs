@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Quic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -539,7 +540,10 @@ internal static class Program {
 		ArgumentNullException.ThrowIfNull(e);
 		ArgumentNullException.ThrowIfNull(e.Exception);
 
-		await ASF.ArchiLogger.LogFatalException(e.Exception).ConfigureAwait(false);
+		// TODO: Remove conditionally ignoring QuicException once https://github.com/dotnet/runtime/issues/80111 is resolved
+		if (e.Exception.InnerExceptions.All(static exception => exception is not QuicException)) {
+			await ASF.ArchiLogger.LogFatalException(e.Exception).ConfigureAwait(false);
+		}
 
 		// Normally we should abort the application, but due to the fact that unobserved exceptions do not have to do that, it's a better idea to log it and try to continue
 		e.SetObserved();
