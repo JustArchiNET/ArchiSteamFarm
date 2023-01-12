@@ -45,7 +45,7 @@ using ArchiSteamFarm.Web.Responses;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
-	private const byte MaxAnnouncementTTL = 180; // Maximum amount of minutes we can wait before the next Announcement
+	private const byte MaxAnnouncementTTL = 60; // Maximum amount of minutes we can wait before the next Announcement
 	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
 	private const byte MinItemsCount = 100; // Minimum amount of items to be eligible for public listing
@@ -57,6 +57,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		Asset.EType.ProfileBackground,
 		Asset.EType.TradingCard
 	);
+
+	// We access this collection only within a semaphore, therefore there is no need for concurrent access
+	private readonly Dictionary<ulong, uint> AnnouncedItems = new();
 
 	private readonly Bot Bot;
 	private readonly Timer? HeartBeatTimer;
@@ -234,6 +237,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
+			if ((inventory.Count == AnnouncedItems.Count) && inventory.All(item => AnnouncedItems.TryGetValue(item.AssetID, out uint amount) && (item.Amount == amount))) {
+				// There is nothing new to announce, this is fine, skip the request
+				LastAnnouncement = DateTime.UtcNow;
+				ShouldSendAnnouncementEarlier = false;
+
+				return;
+			}
+
 			if (!SignedInWithSteam) {
 				HttpStatusCode? signInWithSteam = await ArchiNet.SignInWithSteam(Bot, WebBrowser).ConfigureAwait(false);
 
@@ -319,6 +330,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
 			ShouldSendAnnouncementEarlier = false;
 			ShouldSendHeartBeats = true;
+
+			AnnouncedItems.Clear();
+
+			foreach (Asset item in inventory) {
+				AnnouncedItems[item.AssetID] = item.Amount;
+			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 		} finally {
