@@ -543,7 +543,7 @@ internal static class Program {
 		ArgumentNullException.ThrowIfNull(e.Exception);
 
 		// TODO: Remove conditionally ignoring QuicException once https://github.com/dotnet/runtime/issues/80111 is resolved
-		if (e.Exception.InnerExceptions.All(static exception => exception is not QuicException)) {
+		if ((e.Exception.InnerExceptions.Count == 0) || e.Exception.InnerExceptions.All(static exception => exception is not QuicException)) {
 			await ASF.ArchiLogger.LogFatalException(e.Exception).ConfigureAwait(false);
 		}
 
