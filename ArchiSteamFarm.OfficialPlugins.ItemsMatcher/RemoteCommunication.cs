@@ -322,7 +322,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname, assetsForListing.Count));
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			BasicResponse? response = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, assetsForListing, acceptedMatchableTypes, matchEverything, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
+			BasicResponse? response = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, assetsForListing, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
 
 			if (response == null) {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check

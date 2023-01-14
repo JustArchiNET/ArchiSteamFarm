@@ -38,7 +38,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal static class Backend {
-	internal static async Task<BasicResponse?> AnnounceForListing(ulong steamID, WebBrowser webBrowser, IReadOnlyCollection<AssetForListing> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, bool matchEverything, string tradeToken, string? nickname = null, string? avatarHash = null) {
+	internal static async Task<BasicResponse?> AnnounceForListing(ulong steamID, WebBrowser webBrowser, IReadOnlyCollection<AssetForListing> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, string? nickname = null, string? avatarHash = null) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -53,6 +53,10 @@ internal static class Backend {
 			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
 		}
 
+		if (totalInventoryCount == 0) {
+			throw new ArgumentOutOfRangeException(nameof(totalInventoryCount));
+		}
+
 		if (string.IsNullOrEmpty(tradeToken)) {
 			throw new ArgumentNullException(nameof(tradeToken));
 		}
@@ -63,7 +67,7 @@ internal static class Backend {
 
 		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce/v2");
 
-		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, tradeToken, inventory, acceptedMatchableTypes, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
+		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, tradeToken, inventory, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
 
 		return await webBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 	}
