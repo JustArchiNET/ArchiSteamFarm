@@ -236,6 +236,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
+			bool matchEverything = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything);
+
 			uint index = 0;
 			ulong previousAssetID = 0;
 
@@ -245,14 +247,20 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			foreach (Asset item in inventory) {
 				if (acceptedMatchableTypes.Contains(item.Type)) {
-					assetsForListing.Add(new AssetForListing(item, index++, previousAssetID));
+					// Only tradable assets matter for MatchEverything bots
+					if (!matchEverything || item.Tradable) {
+						assetsForListing.Add(new AssetForListing(item, index++, previousAssetID));
+					}
 
-					(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
+					// But even for Fair bots, we should track and skip sets where we don't have any item to trade with
+					if (!matchEverything) {
+						(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
-					if (tradableState.TryGetValue(key, out Dictionary<ulong, uint>? set)) {
-						set[item.ClassID] = set.TryGetValue(item.ClassID, out uint tradableAmount) ? tradableAmount + (item.Tradable ? item.Amount : 0) : item.Tradable ? item.Amount : 0;
-					} else {
-						tradableState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Tradable ? item.Amount : 0 } };
+						if (tradableState.TryGetValue(key, out Dictionary<ulong, uint>? set)) {
+							set[item.ClassID] = set.TryGetValue(item.ClassID, out uint tradableAmount) ? tradableAmount + (item.Tradable ? item.Amount : 0) : item.Tradable ? item.Amount : 0;
+						} else {
+							tradableState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Tradable ? item.Amount : 0 } };
+						}
 					}
 				}
 
@@ -267,17 +275,20 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> setsToRemove = tradableState.Where(static set => set.Value.Values.All(static amount => amount == 0)).Select(static set => set.Key).ToHashSet();
+			// We can now skip sets where we don't have any item to trade with, MatchEverything bots are already filtered to tradable only
+			if (!matchEverything) {
+				HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> setsToRemove = tradableState.Where(static set => set.Value.Values.All(static amount => amount == 0)).Select(static set => set.Key).ToHashSet();
 
-			if (setsToRemove.Count > 0) {
-				assetsForListing.RemoveWhere(item => setsToRemove.Contains((item.RealAppID, item.Type, item.Rarity)));
+				if (setsToRemove.Count > 0) {
+					assetsForListing.RemoveWhere(item => setsToRemove.Contains((item.RealAppID, item.Type, item.Rarity)));
 
-				if (assetsForListing.Count == 0) {
-					// We're not eligible, record this as a valid check
-					LastAnnouncement = DateTime.UtcNow;
-					ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+					if (assetsForListing.Count == 0) {
+						// We're not eligible, record this as a valid check
+						LastAnnouncement = DateTime.UtcNow;
+						ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
 
-					return;
+						return;
+					}
 				}
 			}
 
@@ -313,7 +324,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname, assetsForListing.Count));
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			BasicResponse? response = await Backend.AnnounceForListing(Bot, WebBrowser, assetsForListing, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
+			BasicResponse? response = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, assetsForListing, acceptedMatchableTypes, matchEverything, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
 
 			if (response == null) {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check

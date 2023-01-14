@@ -33,12 +33,16 @@ using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
+using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal static class Backend {
-	internal static async Task<BasicResponse?> AnnounceForListing(Bot bot, WebBrowser webBrowser, IReadOnlyCollection<AssetForListing> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, string tradeToken, string? nickname = null, string? avatarHash = null) {
-		ArgumentNullException.ThrowIfNull(bot);
+	internal static async Task<BasicResponse?> AnnounceForListing(ulong steamID, WebBrowser webBrowser, IReadOnlyCollection<AssetForListing> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, bool matchEverything, string tradeToken, string? nickname = null, string? avatarHash = null) {
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
 		if ((inventory == null) || (inventory.Count == 0)) {
@@ -59,7 +63,7 @@ internal static class Backend {
 
 		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce/v2");
 
-		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, tradeToken, inventory, acceptedMatchableTypes, bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything), ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
+		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, tradeToken, inventory, acceptedMatchableTypes, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
 
 		return await webBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 	}
