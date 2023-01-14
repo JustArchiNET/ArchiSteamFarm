@@ -48,7 +48,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const byte MaxAnnouncementTTL = 60; // Maximum amount of minutes we can wait if the next announcement doesn't happen naturally
 	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
-	private const byte MinItemsCount = 100; // Minimum amount of items to be eligible for public listing
 	private const byte MinPersonaStateTTL = 5; // Minimum amount of minutes we must wait before requesting persona state update
 
 	private static readonly ImmutableHashSet<Asset.EType> AcceptedMatchableTypes = ImmutableHashSet.Create(
@@ -229,7 +228,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			if (inventory.Count < MinItemsCount) {
+			if (inventory.Count == 0) {
 				// We're not eligible, record this as a valid check
 				LastAnnouncement = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
@@ -260,7 +259,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				previousAssetID = item.AssetID;
 			}
 
-			if (assetsForListing.Count < MinItemsCount) {
+			if (assetsForListing.Count == 0) {
 				// We're not eligible, record this as a valid check
 				LastAnnouncement = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
@@ -273,7 +272,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			if (setsToRemove.Count > 0) {
 				assetsForListing.RemoveWhere(item => setsToRemove.Contains((item.RealAppID, item.Type, item.Rarity)));
 
-				if (assetsForListing.Count < MinItemsCount) {
+				if (assetsForListing.Count == 0) {
 					// We're not eligible, record this as a valid check
 					LastAnnouncement = DateTime.UtcNow;
 					ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
