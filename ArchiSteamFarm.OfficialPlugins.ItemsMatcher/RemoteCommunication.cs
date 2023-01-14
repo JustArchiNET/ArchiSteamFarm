@@ -243,7 +243,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			HashSet<AssetForListing> assetsForListing = new();
 
-			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState = new();
+			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), bool> tradableSets = new();
 
 			foreach (Asset item in inventory) {
 				if (acceptedMatchableTypes.Contains(item.Type)) {
@@ -256,10 +256,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					if (!matchEverything) {
 						(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
-						if (tradableState.TryGetValue(key, out Dictionary<ulong, uint>? set)) {
-							set[item.ClassID] = set.TryGetValue(item.ClassID, out uint tradableAmount) ? tradableAmount + (item.Tradable ? item.Amount : 0) : item.Tradable ? item.Amount : 0;
+						if (tradableSets.TryGetValue(key, out bool tradable)) {
+							if (!tradable && item.Tradable) {
+								tradableSets[key] = true;
+							}
 						} else {
-							tradableState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Tradable ? item.Amount : 0 } };
+							tradableSets[key] = item.Tradable;
 						}
 					}
 				}
@@ -277,18 +279,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			// We can now skip sets where we don't have any item to trade with, MatchEverything bots are already filtered to tradable only
 			if (!matchEverything) {
-				HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> setsToRemove = tradableState.Where(static set => set.Value.Values.All(static amount => amount == 0)).Select(static set => set.Key).ToHashSet();
+				assetsForListing.RemoveWhere(item => tradableSets.TryGetValue((item.RealAppID, item.Type, item.Rarity), out bool tradable) && !tradable);
 
-				if (setsToRemove.Count > 0) {
-					assetsForListing.RemoveWhere(item => setsToRemove.Contains((item.RealAppID, item.Type, item.Rarity)));
+				if (assetsForListing.Count == 0) {
+					// We're not eligible, record this as a valid check
+					LastAnnouncement = DateTime.UtcNow;
+					ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
 
-					if (assetsForListing.Count == 0) {
-						// We're not eligible, record this as a valid check
-						LastAnnouncement = DateTime.UtcNow;
-						ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
-
-						return;
-					}
+					return;
 				}
 			}
 
