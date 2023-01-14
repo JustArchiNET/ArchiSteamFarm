@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2022 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -208,6 +208,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
+			// We require to fetch whole inventory as a list here, as we need to know the order for calculating index and previousAssetID
 			List<Asset> inventory;
 
 			try {
@@ -228,8 +229,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			// This is actual inventory
-			if (inventory.Count(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)) < MinItemsCount) {
+			if (inventory.Count < MinItemsCount) {
 				// We're not eligible, record this as a valid check
 				LastAnnouncement = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
@@ -237,7 +237,34 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			if ((inventory.Count == AnnouncedItems.Count) && inventory.All(item => AnnouncedItems.TryGetValue(item.AssetID, out uint amount) && (item.Amount == amount))) {
+			uint index = 0;
+			ulong previousAssetID = 0;
+
+			HashSet<AssetForListing> assetsForListing = new();
+
+			uint tradableCount = 0;
+
+			foreach (Asset asset in inventory) {
+				if (acceptedMatchableTypes.Contains(asset.Type)) {
+					if (asset.Tradable) {
+						tradableCount++;
+					}
+
+					assetsForListing.Add(new AssetForListing(asset, index++, previousAssetID));
+				}
+
+				previousAssetID = asset.AssetID;
+			}
+
+			if (tradableCount < MinItemsCount) {
+				// We're not eligible, record this as a valid check
+				LastAnnouncement = DateTime.UtcNow;
+				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+
+				return;
+			}
+
+			if (ShouldSendHeartBeats && (assetsForListing.Count == AnnouncedItems.Count) && assetsForListing.All(item => AnnouncedItems.TryGetValue(item.AssetID, out uint amount) && (item.Amount == amount))) {
 				// There is nothing new to announce, this is fine, skip the request
 				LastAnnouncement = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = false;
@@ -266,10 +293,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				SignedInWithSteam = true;
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname, inventory.Count));
+			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname, assetsForListing.Count));
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			BasicResponse? response = await Backend.AnnounceForListing(Bot, WebBrowser, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
+			BasicResponse? response = await Backend.AnnounceForListing(Bot, WebBrowser, assetsForListing, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
 
 			if (response == null) {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -333,7 +360,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			AnnouncedItems.Clear();
 
-			foreach (Asset item in inventory) {
+			foreach (AssetForListing item in assetsForListing) {
 				AnnouncedItems[item.AssetID] = item.Amount;
 			}
 
