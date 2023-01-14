@@ -242,26 +242,44 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			HashSet<AssetForListing> assetsForListing = new();
 
-			uint tradableCount = 0;
+			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState = new();
 
-			foreach (Asset asset in inventory) {
-				if (acceptedMatchableTypes.Contains(asset.Type)) {
-					if (asset.Tradable) {
-						tradableCount++;
+			foreach (Asset item in inventory) {
+				if (acceptedMatchableTypes.Contains(item.Type)) {
+					assetsForListing.Add(new AssetForListing(item, index++, previousAssetID));
+
+					(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
+
+					if (tradableState.TryGetValue(key, out Dictionary<ulong, uint>? set)) {
+						set[item.ClassID] = set.TryGetValue(item.ClassID, out uint tradableAmount) ? tradableAmount + (item.Tradable ? item.Amount : 0) : item.Tradable ? item.Amount : 0;
+					} else {
+						tradableState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Tradable ? item.Amount : 0 } };
 					}
-
-					assetsForListing.Add(new AssetForListing(asset, index++, previousAssetID));
 				}
 
-				previousAssetID = asset.AssetID;
+				previousAssetID = item.AssetID;
 			}
 
-			if (tradableCount < MinItemsCount) {
+			if (assetsForListing.Count < MinItemsCount) {
 				// We're not eligible, record this as a valid check
 				LastAnnouncement = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
 
 				return;
+			}
+
+			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> setsToRemove = tradableState.Where(static set => set.Value.Values.All(static amount => amount == 0)).Select(static set => set.Key).ToHashSet();
+
+			if (setsToRemove.Count > 0) {
+				assetsForListing.RemoveWhere(item => setsToRemove.Contains((item.RealAppID, item.Type, item.Rarity)));
+
+				if (assetsForListing.Count < MinItemsCount) {
+					// We're not eligible, record this as a valid check
+					LastAnnouncement = DateTime.UtcNow;
+					ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+
+					return;
+				}
 			}
 
 			if (ShouldSendHeartBeats && (assetsForListing.Count == AnnouncedItems.Count) && assetsForListing.All(item => AnnouncedItems.TryGetValue(item.AssetID, out uint amount) && (item.Amount == amount))) {
