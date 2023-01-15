@@ -825,6 +825,18 @@ public sealed class WebBrowser : IDisposable {
 
 							break;
 					}
+
+					// Compress the request if caller specified it, so he knows that the server supports it, and the content is not compressed yet
+					if (requestOptions.HasFlag(ERequestOptions.CompressRequest) && (requestMessage.Content.Headers.ContentEncoding.Count == 0)) {
+						HttpContent originalContent = requestMessage.Content;
+
+						requestMessage.Content = await CompressedContent.FromHttpContent(originalContent).ConfigureAwait(false);
+
+						if (data is not HttpContent) {
+							// We don't need to keep old HttpContent around anymore, help GC
+							originalContent.Dispose();
+						}
+					}
 				}
 
 				if (referer != null) {
@@ -957,6 +969,7 @@ public sealed class WebBrowser : IDisposable {
 		ReturnServerErrors = 2,
 		ReturnRedirections = 4,
 		AllowInvalidBodyOnSuccess = 8,
-		AllowInvalidBodyOnErrors = 16
+		AllowInvalidBodyOnErrors = 16,
+		CompressRequest = 32
 	}
 }

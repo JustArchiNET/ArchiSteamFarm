@@ -69,7 +69,7 @@ internal static class Backend {
 
 		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, tradeToken, inventory, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
 
-		return await webBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+		return await webBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
 	}
 
 	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Guid licenseID, Bot bot, WebBrowser webBrowser, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes) {
@@ -96,7 +96,7 @@ internal static class Backend {
 
 		InventoriesRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, inventory, acceptedMatchableTypes);
 
-		ObjectResponse<GenericResponse<ImmutableHashSet<ListedUser>>>? response = await webBrowser.UrlPostToJsonObject<GenericResponse<ImmutableHashSet<ListedUser>>, InventoriesRequest>(request, headers, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<ImmutableHashSet<ListedUser>>>? response = await webBrowser.UrlPostToJsonObject<GenericResponse<ImmutableHashSet<ListedUser>>, InventoriesRequest>(request, headers, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -113,6 +113,6 @@ internal static class Backend {
 
 		HeartBeatRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID);
 
-		return await webBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+		return await webBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
 	}
 }
