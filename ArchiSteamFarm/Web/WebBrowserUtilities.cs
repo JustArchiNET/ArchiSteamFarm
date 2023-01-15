@@ -28,10 +28,8 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm.Web;
 
-internal sealed class CompressedContent : StreamContent {
-	private CompressedContent(Stream content) : base(content) => ArgumentNullException.ThrowIfNull(content);
-
-	internal static async Task<CompressedContent> FromHttpContent(HttpContent content) {
+internal static class WebBrowserUtilities {
+	internal static async Task<StreamContent> CreateCompressedHttpContent(HttpContent content) {
 		ArgumentNullException.ThrowIfNull(content);
 
 		// We're going to create compressed stream and copy original content to it
@@ -46,7 +44,7 @@ internal sealed class CompressedContent : StreamContent {
 		// Reset the position back to 0, so HttpClient can read it again
 		compressionOutput.Position = 0;
 
-		CompressedContent result = new(compressionOutput);
+		StreamContent result = new(compressionOutput);
 
 		foreach ((string? key, IEnumerable<string>? value) in content.Headers) {
 			result.Headers.Add(key, value);

@@ -830,7 +830,7 @@ public sealed class WebBrowser : IDisposable {
 					if (requestOptions.HasFlag(ERequestOptions.CompressRequest) && (requestMessage.Content.Headers.ContentEncoding.Count == 0)) {
 						HttpContent originalContent = requestMessage.Content;
 
-						requestMessage.Content = await CompressedContent.FromHttpContent(originalContent).ConfigureAwait(false);
+						requestMessage.Content = await WebBrowserUtilities.CreateCompressedHttpContent(originalContent).ConfigureAwait(false);
 
 						if (data is not HttpContent) {
 							// We don't need to keep old HttpContent around anymore, help GC
