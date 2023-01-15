@@ -46,8 +46,8 @@ internal static class WebBrowserUtilities {
 
 		StreamContent result = new(compressionOutput);
 
-		foreach ((string? key, IEnumerable<string>? value) in content.Headers) {
-			result.Headers.Add(key, value);
+		foreach ((string key, IEnumerable<string> values) in content.Headers) {
+			result.Headers.Add(key, values);
 		}
 
 		// Inform the server that we're sending compressed data
