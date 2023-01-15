@@ -222,7 +222,7 @@ internal sealed class Startup {
 		}
 
 		// Add support for response compression
-		services.AddResponseCompression();
+		services.AddResponseCompression(static options => options.EnableForHttps = true);
 
 		string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
