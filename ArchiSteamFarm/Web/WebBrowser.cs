@@ -24,7 +24,6 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -831,33 +830,12 @@ public sealed class WebBrowser : IDisposable {
 					if (requestOptions.HasFlag(ERequestOptions.CompressRequest) && (requestMessage.Content.Headers.ContentEncoding.Count == 0)) {
 						HttpContent originalContent = requestMessage.Content;
 
-						// We're going to create compressed stream and copy original content to it
-						MemoryStream compressionOutput = new();
-
-#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-						BrotliStream compressionInput = new(compressionOutput, CompressionLevel.SmallestSize, true);
-#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-
-						await using (compressionInput.ConfigureAwait(false)) {
-							await originalContent.CopyToAsync(compressionInput).ConfigureAwait(false);
-						}
-
-						// Reset the position back to 0, so HttpClient can read it again
-						compressionOutput.Position = 0;
-
-						requestMessage.Content = new StreamContent(compressionOutput);
-
-						foreach ((string? key, IEnumerable<string>? value) in originalContent.Headers) {
-							requestMessage.Content.Headers.Add(key, value);
-						}
+						requestMessage.Content = await CompressedContent.FromHttpContent(originalContent).ConfigureAwait(false);
 
 						if (data is not HttpContent) {
 							// We don't need to keep old HttpContent around anymore, help GC
 							originalContent.Dispose();
 						}
-
-						// Inform the server that we're sending compressed data
-						requestMessage.Content.Headers.ContentEncoding.Add("br");
 					}
 				}
 
