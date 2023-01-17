@@ -68,5 +68,11 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Localization {
                 return ResourceManager.GetString("TradeOfferFailed", resourceCulture);
             }
         }
+        
+        internal static string ActivelyMatchingSomeConfirmationsFailed {
+            get {
+                return ResourceManager.GetString("ActivelyMatchingSomeConfirmationsFailed", resourceCulture);
+            }
+        }
     }
 }

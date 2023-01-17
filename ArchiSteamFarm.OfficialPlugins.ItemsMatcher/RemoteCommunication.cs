@@ -659,9 +659,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
 
+		byte failuresInRow = 0;
 		uint matchedSets = 0;
 
 		foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(static listedUser => listedUser.MatchEverything).ThenBy(static listedUser => listedUser.TotalInventoryCount)) {
+			if (failuresInRow >= WebBrowser.MaxTries) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(failuresInRow)} >= {WebBrowser.MaxTries}"));
+
+				break;
+			}
+
 			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
 
 			if (wantedSets.Count == 0) {
@@ -841,10 +848,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				if (!success) {
 					// The user likely no longer has the items we need, this is fine, we can continue the matching with other ones
+					failuresInRow++;
+
 					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.TradeOfferFailed, listedUser.SteamID, listedUser.Nickname));
 
 					break;
 				}
+
+				failuresInRow = 0;
 
 				Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
@@ -921,10 +932,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		if (pendingMobileTradeOfferIDs.Count > 0) {
-			(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false);
+			(bool twoFactorSuccess, IReadOnlyCollection<Confirmation>? handledConfirmations, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false);
 
 			if (!twoFactorSuccess) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(twoFactorSuccess)));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingSomeConfirmationsFailed, handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
 
 				return;
 			}
