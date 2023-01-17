@@ -655,6 +655,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return;
 		}
 
+		bool hasWorkingAuthenticator = false;
+
 		byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
 
 		uint matchedSets = 0;
@@ -833,17 +835,26 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, true).ConfigureAwait(false);
 
-				if ((mobileTradeOfferIDs?.Count > 0) && Bot.HasMobileAuthenticator) {
+				if (mobileTradeOfferIDs?.Count > 0) {
 					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
 					if (!twoFactorSuccess) {
 						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(twoFactorSuccess)));
 
+						if (hasWorkingAuthenticator) {
+							// We can assume this to be just a temporary Steam issue, and we may try to continue the matching with other users
+							break;
+						}
+
+						// User didn't confirm even one single trade, naturally this could be just a coincidence, but it's more likely that his ASF 2FA credentials are invalid and this is why we'll refuse to continue for now
 						return;
 					}
+
+					hasWorkingAuthenticator = true;
 				}
 
 				if (!success) {
+					// The user likely no longer has the items we need, this is fine, we can continue the matching with other ones
 					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.TradeOfferFailed, listedUser.SteamID, listedUser.Nickname));
 
 					break;
