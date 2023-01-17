@@ -655,7 +655,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		bool hasWorkingAuthenticator = false;
+		HashSet<ulong> pendingMobileTradeOfferIDs = new();
 
 		byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
 
@@ -836,21 +836,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, true).ConfigureAwait(false);
 
 				if (mobileTradeOfferIDs?.Count > 0) {
-					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
-
-					if (!twoFactorSuccess) {
-						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(twoFactorSuccess)));
-
-						if (hasWorkingAuthenticator) {
-							// We can assume this to be just a temporary Steam issue, and we may try to continue the matching with other users
-							break;
-						}
-
-						// User didn't confirm even one single trade, naturally this could be just a coincidence, but it's more likely that his ASF 2FA credentials are invalid and this is why we'll refuse to continue for now
-						return;
-					}
-
-					hasWorkingAuthenticator = true;
+					pendingMobileTradeOfferIDs.UnionWith(mobileTradeOfferIDs);
 				}
 
 				if (!success) {
@@ -931,6 +917,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			if (Trading.IsEmptyForMatching(ourFullState, ourTradableState)) {
 				// User doesn't have any more dupes in the inventory
 				break;
+			}
+		}
+
+		if (pendingMobileTradeOfferIDs.Count > 0) {
+			(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false);
+
+			if (!twoFactorSuccess) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(twoFactorSuccess)));
+
+				return;
 			}
 		}
 
