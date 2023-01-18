@@ -46,6 +46,7 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const byte MaxAnnouncementTTL = 60; // Maximum amount of minutes we can wait if the next announcement doesn't happen naturally
+	private const byte MaxTradeOffersActive = 10; // The actual upper limit is 30, but we should use lower amount to allow some bots to react before we hit the maximum allowed
 	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
 	private const byte MinPersonaStateTTL = 5; // Minimum amount of minutes we must wait before requesting persona state update
@@ -844,6 +845,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				if (mobileTradeOfferIDs?.Count > 0) {
 					pendingMobileTradeOfferIDs.UnionWith(mobileTradeOfferIDs);
+
+					if (pendingMobileTradeOfferIDs.Count >= MaxTradeOffersActive) {
+						(bool twoFactorSuccess, IReadOnlyCollection<Confirmation>? handledConfirmations, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false);
+
+						if (!twoFactorSuccess) {
+							Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingSomeConfirmationsFailed, handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
+						}
+
+						pendingMobileTradeOfferIDs.Clear();
+					}
 				}
 
 				if (!success) {
@@ -936,8 +947,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			if (!twoFactorSuccess) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingSomeConfirmationsFailed, handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
-
-				return;
 			}
 		}
 
