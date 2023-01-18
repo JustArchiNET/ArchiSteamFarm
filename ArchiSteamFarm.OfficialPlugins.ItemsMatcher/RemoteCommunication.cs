@@ -66,7 +66,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private readonly SemaphoreSlim MatchActivelySemaphore = new(1, 1);
 	private readonly Timer? MatchActivelyTimer;
 	private readonly SemaphoreSlim RequestsSemaphore = new(1, 1);
-	private readonly WebBrowser? WebBrowser;
+	private readonly WebBrowser WebBrowser;
 
 	private DateTime LastAnnouncement;
 	private DateTime LastHeartBeat;
@@ -79,14 +79,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		Bot = bot;
-
-		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing) && !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively)) {
-			return;
-		}
-
 		WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy, true);
 
-		if (Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
+		if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) && Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
 			HeartBeatTimer = new Timer(
 				HeartBeat,
 				null,
@@ -113,6 +108,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		// Those are objects that are always being created if constructor doesn't throw exception
 		MatchActivelySemaphore.Dispose();
 		RequestsSemaphore.Dispose();
+		WebBrowser.Dispose();
 
 		// Those are objects that might be null and the check should be in-place
 		HeartBeatTimer?.Dispose();
@@ -123,14 +119,13 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				MatchActivelyTimer.Dispose();
 			}
 		}
-
-		WebBrowser?.Dispose();
 	}
 
 	public async ValueTask DisposeAsync() {
 		// Those are objects that are always being created if constructor doesn't throw exception
 		MatchActivelySemaphore.Dispose();
 		RequestsSemaphore.Dispose();
+		WebBrowser.Dispose();
 
 		// Those are objects that might be null and the check should be in-place
 		if (HeartBeatTimer != null) {
@@ -143,8 +138,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				MatchActivelyTimer.Dispose();
 			}
 		}
-
-		WebBrowser?.Dispose();
 	}
 
 	internal void OnNewItemsNotification() => ShouldSendAnnouncementEarlier = true;
@@ -152,10 +145,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	internal async Task OnPersonaState(string? nickname = null, string? avatarHash = null) {
 		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
 			return;
-		}
-
-		if (WebBrowser == null) {
-			throw new InvalidOperationException(nameof(WebBrowser));
 		}
 
 		if ((DateTime.UtcNow < LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL)) && ShouldSendHeartBeats) {
@@ -421,16 +410,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	}
 
 	private async void HeartBeat(object? state = null) {
-		if (WebBrowser == null) {
-			throw new InvalidOperationException(nameof(WebBrowser));
-		}
-
 		if (!Bot.IsConnectedAndLoggedOn || (Bot.HeartBeatFailures > 0)) {
 			return;
 		}
 
 		// Request persona update if needed
-		if (Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing) && Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) && (DateTime.UtcNow > LastPersonaStateRequest.AddMinutes(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL))) {
+		if ((DateTime.UtcNow > LastPersonaStateRequest.AddMinutes(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL))) {
 			LastPersonaStateRequest = DateTime.UtcNow;
 			Bot.RequestPersonaStateUpdate();
 		}
@@ -530,10 +515,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	}
 
 	private async void MatchActively(object? state = null) {
-		if (WebBrowser == null) {
-			throw new InvalidOperationException(nameof(WebBrowser));
-		}
-
 		if (ASF.GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 		}
