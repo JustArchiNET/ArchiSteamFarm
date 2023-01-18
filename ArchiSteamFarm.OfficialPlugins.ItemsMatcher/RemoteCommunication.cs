@@ -162,10 +162,20 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return;
 		}
 
+		if (MatchActivelySemaphore.CurrentCount == 0) {
+			// We shouldn't bother with announcements while we're matching, it can wait until we're done
+			return;
+		}
+
 		await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
 			if ((DateTime.UtcNow < LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL)) && ShouldSendHeartBeats) {
+				return;
+			}
+
+			if (MatchActivelySemaphore.CurrentCount == 0) {
+				// We shouldn't bother with announcements while we're matching, it can wait until we're done
 				return;
 			}
 
@@ -420,7 +430,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		// Request persona update if needed
-		if ((DateTime.UtcNow > LastPersonaStateRequest.AddMinutes(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL))) {
+		if (Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing) && Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) && (DateTime.UtcNow > LastPersonaStateRequest.AddMinutes(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL))) {
 			LastPersonaStateRequest = DateTime.UtcNow;
 			Bot.RequestPersonaStateUpdate();
 		}
@@ -560,6 +570,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return;
 		}
 
+		bool tradesSent;
+
 		try {
 			Bot.ArchiLogger.LogGenericInfo(Strings.Starting);
 
@@ -625,16 +637,22 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
 #pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 				Bot.ArchiLogger.LogGenericInfo(Strings.Starting);
-				await MatchActively(response.Value.Users, ourInventory, acceptedMatchableTypes).ConfigureAwait(false);
+
+				tradesSent = await MatchActively(response.Value.Users, ourInventory, acceptedMatchableTypes).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.Done);
 		} finally {
 			MatchActivelySemaphore.Release();
 		}
+
+		if (tradesSent && ShouldSendHeartBeats && (DateTime.UtcNow > LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL))) {
+			// If we're announced, it makes sense to update our state now, at least once
+			Bot.RequestPersonaStateUpdate();
+		}
 	}
 
-	private async Task MatchActively(IReadOnlyCollection<ListedUser> listedUsers, Dictionary<ulong, Asset> ourInventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes) {
+	private async Task<bool> MatchActively(IReadOnlyCollection<ListedUser> listedUsers, Dictionary<ulong, Asset> ourInventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes) {
 		if ((listedUsers == null) || (listedUsers.Count == 0)) {
 			throw new ArgumentNullException(nameof(listedUsers));
 		}
@@ -653,7 +671,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			// User doesn't have any more dupes in the inventory
 			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, $"{nameof(ourFullState)} || {nameof(ourTradableState)}"));
 
-			return;
+			return false;
 		}
 
 		HashSet<ulong> pendingMobileTradeOfferIDs = new();
@@ -832,9 +850,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				if ((itemsToGive.Count != itemsToReceive.Count) || !Trading.IsFairExchange(itemsToGive, itemsToReceive)) {
 					// Failsafe
-					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, Strings.ErrorAborted));
-
-					return;
+					throw new InvalidOperationException($"{nameof(itemsToGive)} && {nameof(itemsToReceive)}");
 				}
 
 				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.MatchingFound, itemsToReceive.Count, listedUser.SteamID, listedUser.Nickname));
@@ -951,5 +967,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingItemsRound, matchedSets));
+
+		return matchedSets > 0;
 	}
 }
