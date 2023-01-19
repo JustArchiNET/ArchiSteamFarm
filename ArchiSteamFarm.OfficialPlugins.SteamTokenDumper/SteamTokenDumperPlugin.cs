@@ -430,7 +430,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 					if (response.Results == null) {
 						bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(response.Results)));
 
-						return;
+						appIDsThisRound.Clear();
+
+						continue;
 					}
 
 					bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingAppInfos, appIDsThisRound.Count));
@@ -465,12 +467,28 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						} catch (Exception e) {
 							bot.ArchiLogger.LogGenericWarningException(e);
 
-							continue;
+							// We can still do a recovery of tasks one-by-one if possible
+							results = new List<SteamApps.DepotKeyCallback>();
+
+							foreach (Task<SteamApps.DepotKeyCallback> depotTask in depotTasks.Where(static task => task.Status != TaskStatus.Faulted)) {
+								try {
+									SteamApps.DepotKeyCallback result = await depotTask.ConfigureAwait(false);
+
+									results.Add(result);
+								} catch {
+									// We don't care anymore, already signalized the problem
+								}
+							}
 						}
 
-						bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingDepotKeys, depotTasks.Count));
+						bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingDepotKeys, results.Count));
 
 						GlobalCache.UpdateDepotKeys(results);
+
+						if (results.Count < depotTasks.Count) {
+							// We're not going to record app change numbers, as we didn't fetch all the depot keys we wanted
+							continue;
+						}
 					}
 
 					GlobalCache.UpdateAppChangeNumbers(appChangeNumbers);
