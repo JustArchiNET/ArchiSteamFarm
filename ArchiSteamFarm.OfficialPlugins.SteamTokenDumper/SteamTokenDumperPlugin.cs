@@ -362,16 +362,16 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 			using (HashSet<uint>.Enumerator enumerator = appIDsToRefresh.GetEnumerator()) {
 				while (true) {
+					if (!bot.IsConnectedAndLoggedOn) {
+						return;
+					}
+
 					while ((appIDsThisRound.Count < SharedInfo.AppInfosPerSingleRequest) && enumerator.MoveNext()) {
 						appIDsThisRound.Add(enumerator.Current);
 					}
 
 					if (appIDsThisRound.Count == 0) {
 						break;
-					}
-
-					if (!bot.IsConnectedAndLoggedOn) {
-						return;
 					}
 
 					bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingAppAccessTokens, appIDsThisRound.Count));
@@ -383,7 +383,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 					} catch (Exception e) {
 						bot.ArchiLogger.LogGenericWarningException(e);
 
-						return;
+						appIDsThisRound.Clear();
+
+						continue;
 					}
 
 					bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingAppAccessTokens, appIDsThisRound.Count));
@@ -399,16 +401,16 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 			using (HashSet<uint>.Enumerator enumerator = appIDsToRefresh.GetEnumerator()) {
 				while (true) {
+					if (!bot.IsConnectedAndLoggedOn) {
+						return;
+					}
+
 					while ((appIDsThisRound.Count < SharedInfo.AppInfosPerSingleRequest) && enumerator.MoveNext()) {
 						appIDsThisRound.Add(enumerator.Current);
 					}
 
 					if (appIDsThisRound.Count == 0) {
 						break;
-					}
-
-					if (!bot.IsConnectedAndLoggedOn) {
-						return;
 					}
 
 					bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingAppInfos, appIDsThisRound.Count));
@@ -420,7 +422,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 					} catch (Exception e) {
 						bot.ArchiLogger.LogGenericWarningException(e);
 
-						return;
+						appIDsThisRound.Clear();
+
+						continue;
 					}
 
 					if (response.Results == null) {
@@ -461,7 +465,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						} catch (Exception e) {
 							bot.ArchiLogger.LogGenericWarningException(e);
 
-							return;
+							continue;
 						}
 
 						bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingDepotKeys, depotTasks.Count));
