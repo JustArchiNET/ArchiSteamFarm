@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=ArchiSteamFarm
+Comment=C# application with primary purpose of farming Steam cards from multiple accounts simultaneously.
+Icon=system-run-symbolic
+Exec=/usr/bin/env sh -eu -c "exec dotnet \\"\\$(dirname \\"\\$(readlink -f \\"\\$0\\")\\")/ArchiSteamFarm.dll\\"" %k
+Terminal=true
+Categories=Game;
