@@ -3,6 +3,6 @@ Type=Application
 Name=ArchiSteamFarm
 Comment=C# application with primary purpose of farming Steam cards from multiple accounts simultaneously.
 Icon=system-run-symbolic
-Exec=/usr/bin/env sh -eu -c "exec mono \\"\\$(dirname \\"\\$(readlink -f \\"\\$0\\")\\")/ArchiSteamFarm.dll\\"" %k
+Exec=/usr/bin/env sh -eu -c "exec mono \\"\\$(dirname \\"\\$(readlink -f \\"\\$0\\")\\")/ArchiSteamFarm.exe\\"" %k
 Terminal=true
 Categories=Game;
