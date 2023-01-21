@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2022 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -237,35 +237,28 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 	}
 
-	internal void UpdateDepotKeys(ICollection<SteamApps.DepotKeyCallback> depotKeyResults) {
-		ArgumentNullException.ThrowIfNull(depotKeyResults);
+	internal void UpdateDepotKey(SteamApps.DepotKeyCallback depotKeyResult) {
+		ArgumentNullException.ThrowIfNull(depotKeyResult);
 
-		bool save = false;
-
-		foreach (SteamApps.DepotKeyCallback depotKeyResult in depotKeyResults) {
-			if (depotKeyResult.Result != EResult.OK) {
-				continue;
-			}
-
-			string depotKey = Convert.ToHexString(depotKeyResult.DepotKey);
-
-			if (!IsValidDepotKey(depotKey)) {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsInvalid, nameof(depotKey)));
-
-				continue;
-			}
-
-			if (DepotKeys.TryGetValue(depotKeyResult.DepotID, out string? previousDepotKey) && (previousDepotKey == depotKey)) {
-				continue;
-			}
-
-			DepotKeys[depotKeyResult.DepotID] = depotKey;
-			save = true;
+		if (depotKeyResult.Result != EResult.OK) {
+			return;
 		}
 
-		if (save) {
-			Utilities.InBackground(Save);
+		string depotKey = Convert.ToHexString(depotKeyResult.DepotKey);
+
+		if (!IsValidDepotKey(depotKey)) {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsInvalid, nameof(depotKey)));
+
+			return;
 		}
+
+		if (DepotKeys.TryGetValue(depotKeyResult.DepotID, out string? previousDepotKey) && (previousDepotKey == depotKey)) {
+			return;
+		}
+
+		DepotKeys[depotKeyResult.DepotID] = depotKey;
+
+		Utilities.InBackground(Save);
 	}
 
 	internal void UpdatePackageTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> packageTokens) {

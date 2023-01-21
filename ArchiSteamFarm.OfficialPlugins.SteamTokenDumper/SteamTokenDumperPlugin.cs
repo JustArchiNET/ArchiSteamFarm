@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2022 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,6 +46,8 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
 [Export(typeof(IPlugin))]
 internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotCommand2, IBotSteamClient, ISteamPICSChanges {
+	private const ushort DepotsRateLimitingDelay = 500;
+
 	[JsonProperty]
 	internal static SteamTokenDumperConfig? Config { get; private set; }
 
@@ -332,6 +334,8 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			return;
 		}
 
+		SemaphoreSlim depotsRateLimitingSemaphore = new(1, 1);
+
 		try {
 			if (!bot.IsConnectedAndLoggedOn) {
 				return;
@@ -441,54 +445,74 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 					Dictionary<uint, uint> appChangeNumbers = new();
 
-					HashSet<Task<SteamApps.DepotKeyCallback>> depotTasks = new();
+					uint depotKeysSuccessful = 0;
+					uint depotKeysTotal = 0;
 
 					foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo app in response.Results.SelectMany(static result => result.Apps.Values)) {
 						appChangeNumbers[app.ID] = app.ChangeNumber;
 
 						if (GlobalCache.ShouldRefreshDepotKey(app.ID)) {
-							depotTasks.Add(bot.SteamApps.GetDepotDecryptionKey(app.ID, app.ID).ToLongRunningTask());
+							depotKeysTotal++;
+
+							await depotsRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+
+							try {
+								SteamApps.DepotKeyCallback depotResponse = await bot.SteamApps.GetDepotDecryptionKey(app.ID, app.ID).ToLongRunningTask().ConfigureAwait(false);
+
+								depotKeysSuccessful++;
+
+								GlobalCache.UpdateDepotKey(depotResponse);
+							} catch (Exception e) {
+								// We can still try other depots
+								bot.ArchiLogger.LogGenericWarningException(e);
+							} finally {
+								Utilities.InBackground(
+									async () => {
+										await Task.Delay(DepotsRateLimitingDelay).ConfigureAwait(false);
+
+										// ReSharper disable once AccessToDisposedClosure - we're waiting for the semaphore to be free before disposing it
+										depotsRateLimitingSemaphore.Release();
+									}
+								);
+							}
 						}
 
 						foreach (KeyValue depot in app.KeyValues["depots"].Children) {
-							if (uint.TryParse(depot.Name, out uint depotID) && !Config.SecretDepotIDs.Contains(depotID) && GlobalCache.ShouldRefreshDepotKey(depotID)) {
-								depotTasks.Add(bot.SteamApps.GetDepotDecryptionKey(depotID, app.ID).ToLongRunningTask());
+							if (!uint.TryParse(depot.Name, out uint depotID) || Config.SecretDepotIDs.Contains(depotID) || !GlobalCache.ShouldRefreshDepotKey(depotID)) {
+								continue;
+							}
+
+							depotKeysTotal++;
+
+							await depotsRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+
+							try {
+								SteamApps.DepotKeyCallback depotResponse = await bot.SteamApps.GetDepotDecryptionKey(depotID, app.ID).ToLongRunningTask().ConfigureAwait(false);
+
+								depotKeysSuccessful++;
+
+								GlobalCache.UpdateDepotKey(depotResponse);
+							} catch (Exception e) {
+								// We can still try other depots
+								bot.ArchiLogger.LogGenericWarningException(e);
+							} finally {
+								Utilities.InBackground(
+									async () => {
+										await Task.Delay(DepotsRateLimitingDelay).ConfigureAwait(false);
+
+										// ReSharper disable once AccessToDisposedClosure - we're waiting for the semaphore to be free before disposing it
+										depotsRateLimitingSemaphore.Release();
+									}
+								);
 							}
 						}
 					}
 
-					if (depotTasks.Count > 0) {
-						bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingDepotKeys, depotTasks.Count));
+					bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingDepotKeys, depotKeysSuccessful, depotKeysTotal));
 
-						IList<SteamApps.DepotKeyCallback> results;
-
-						try {
-							results = await Utilities.InParallel(depotTasks).ConfigureAwait(false);
-						} catch (Exception e) {
-							bot.ArchiLogger.LogGenericWarningException(e);
-
-							// We can still do a recovery of tasks one-by-one if possible
-							results = new List<SteamApps.DepotKeyCallback>();
-
-							foreach (Task<SteamApps.DepotKeyCallback> depotTask in depotTasks.Where(static task => task.Status != TaskStatus.Faulted)) {
-								try {
-									SteamApps.DepotKeyCallback result = await depotTask.ConfigureAwait(false);
-
-									results.Add(result);
-								} catch {
-									// We don't care anymore, already signalized the problem
-								}
-							}
-						}
-
-						bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingDepotKeys, results.Count));
-
-						GlobalCache.UpdateDepotKeys(results);
-
-						if (results.Count < depotTasks.Count) {
-							// We're not going to record app change numbers, as we didn't fetch all the depot keys we wanted
-							continue;
-						}
+					if (depotKeysSuccessful < depotKeysTotal) {
+						// We're not going to record app change numbers, as we didn't fetch all the depot keys we wanted
+						continue;
 					}
 
 					GlobalCache.UpdateAppChangeNumbers(appChangeNumbers);
@@ -500,7 +524,12 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			TimeSpan timeSpan = TimeSpan.FromHours(SharedInfo.MaximumHoursBetweenRefresh);
 
 			synchronization.RefreshTimer.Change(timeSpan, timeSpan);
+
+			await depotsRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+
 			synchronization.RefreshSemaphore.Release();
+
+			depotsRateLimitingSemaphore.Dispose();
 		}
 	}
 

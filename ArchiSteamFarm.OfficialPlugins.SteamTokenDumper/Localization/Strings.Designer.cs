@@ -117,12 +117,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization {
             }
         }
         
-        internal static string BotRetrievingDepotKeys {
-            get {
-                return ResourceManager.GetString("BotRetrievingDepotKeys", resourceCulture);
-            }
-        }
-        
         internal static string BotFinishedRetrievingDepotKeys {
             get {
                 return ResourceManager.GetString("BotFinishedRetrievingDepotKeys", resourceCulture);
