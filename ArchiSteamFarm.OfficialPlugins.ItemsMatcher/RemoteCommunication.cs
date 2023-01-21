@@ -238,10 +238,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			bool matchEverything = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything);
 
-			uint index = 0;
 			ulong previousAssetID = 0;
 
-			HashSet<AssetForListing> assetsForListing = new();
+			List<AssetForListing> assetsForListing = new();
 
 			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), bool> tradableSets = new();
 
@@ -249,7 +248,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				if (acceptedMatchableTypes.Contains(item.Type)) {
 					// Only tradable assets matter for MatchEverything bots
 					if (!matchEverything || item.Tradable) {
-						assetsForListing.Add(new AssetForListing(item, index++, previousAssetID));
+						assetsForListing.Add(new AssetForListing(item, previousAssetID));
 					}
 
 					// But even for Fair bots, we should track and skip sets where we don't have any item to trade with
@@ -279,7 +278,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			// We can now skip sets where we don't have any item to trade with, MatchEverything bots are already filtered to tradable only
 			if (!matchEverything) {
-				assetsForListing.RemoveWhere(item => tradableSets.TryGetValue((item.RealAppID, item.Type, item.Rarity), out bool tradable) && !tradable);
+				assetsForListing.RemoveAll(item => tradableSets.TryGetValue((item.RealAppID, item.Type, item.Rarity), out bool tradable) && !tradable);
 
 				if (assetsForListing.Count == 0) {
 					// We're not eligible, record this as a valid check

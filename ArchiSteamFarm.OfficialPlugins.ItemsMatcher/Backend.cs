@@ -38,7 +38,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal static class Backend {
-	internal static async Task<BasicResponse?> AnnounceForListing(ulong steamID, WebBrowser webBrowser, IReadOnlyCollection<AssetForListing> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, string? nickname = null, string? avatarHash = null) {
+	internal static async Task<BasicResponse?> AnnounceForListing(ulong steamID, WebBrowser webBrowser, IReadOnlyList<AssetForListing> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, string? nickname = null, string? avatarHash = null) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -65,7 +65,7 @@ internal static class Backend {
 			throw new ArgumentOutOfRangeException(nameof(tradeToken));
 		}
 
-		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce/v2");
+		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce/v3");
 
 		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, tradeToken, inventory, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
 

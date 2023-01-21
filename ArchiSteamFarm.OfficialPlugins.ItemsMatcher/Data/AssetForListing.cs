@@ -26,16 +26,12 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class AssetForListing : AssetInInventory {
-	[JsonProperty("i", Required = Required.Always)]
-	internal readonly uint Index;
-
 	[JsonProperty("l", Required = Required.Always)]
 	internal readonly ulong PreviousAssetID;
 
-	internal AssetForListing(Asset asset, uint index, ulong previousAssetID) : base(asset) {
+	internal AssetForListing(Asset asset, ulong previousAssetID) : base(asset) {
 		ArgumentNullException.ThrowIfNull(asset);
 
-		Index = index;
 		PreviousAssetID = previousAssetID;
 	}
 }
