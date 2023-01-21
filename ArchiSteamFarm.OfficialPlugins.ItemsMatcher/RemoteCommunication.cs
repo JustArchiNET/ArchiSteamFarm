@@ -58,16 +58,18 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		Asset.EType.TradingCard
 	);
 
-	// We access this collection only within a semaphore, therefore there is no need for concurrent access
-	private readonly Dictionary<ulong, uint> AnnouncedItems = new();
-
 	private readonly Bot Bot;
 	private readonly Timer? HeartBeatTimer;
+
+	// We access this collection only within a semaphore, therefore there is no need for concurrent access
+	private readonly Dictionary<ulong, uint> LastAnnouncedItems = new();
+
 	private readonly SemaphoreSlim MatchActivelySemaphore = new(1, 1);
 	private readonly Timer? MatchActivelyTimer;
 	private readonly SemaphoreSlim RequestsSemaphore = new(1, 1);
 	private readonly WebBrowser WebBrowser;
 
+	private string? LastAnnouncedTradeToken;
 	private DateTime LastAnnouncement;
 	private DateTime LastHeartBeat;
 	private DateTime LastPersonaStateRequest;
@@ -289,7 +291,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 			}
 
-			if (ShouldSendHeartBeats && (assetsForListing.Count == AnnouncedItems.Count) && assetsForListing.All(item => AnnouncedItems.TryGetValue(item.AssetID, out uint amount) && (item.Amount == amount))) {
+			if (ShouldSendHeartBeats && (tradeToken == LastAnnouncedTradeToken) && (assetsForListing.Count == LastAnnouncedItems.Count) && assetsForListing.All(item => LastAnnouncedItems.TryGetValue(item.AssetID, out uint amount) && (item.Amount == amount))) {
 				// There is nothing new to announce, this is fine, skip the request
 				LastAnnouncement = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = false;
@@ -383,13 +385,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			ShouldSendAnnouncementEarlier = false;
 			ShouldSendHeartBeats = true;
 
-			AnnouncedItems.Clear();
+			LastAnnouncedTradeToken = tradeToken;
+			LastAnnouncedItems.Clear();
 
 			foreach (AssetForListing item in assetsForListing) {
-				AnnouncedItems[item.AssetID] = item.Amount;
+				LastAnnouncedItems[item.AssetID] = item.Amount;
 			}
 
-			AnnouncedItems.TrimExcess();
+			LastAnnouncedItems.TrimExcess();
 		} finally {
 			RequestsSemaphore.Release();
 		}
