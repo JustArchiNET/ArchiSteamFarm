@@ -109,14 +109,7 @@
 		<value>Завершено получение информации {0} приложений.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	<data name="BotRetrievingDepotKeys" xml:space="preserve">
-		<value>Получение {0} ключей хранилища...</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
-	</data>
-	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
-		<value>Получение {0} ключей хранилища завершено.</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
-	</data>
+	
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Получение всех ключей хранилища {0} приложений завершено.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>

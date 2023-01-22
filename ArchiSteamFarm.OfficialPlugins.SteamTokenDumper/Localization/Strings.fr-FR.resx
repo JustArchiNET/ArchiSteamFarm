@@ -109,14 +109,7 @@
 		<value>Récupération de {0} infos d'application terminée.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	<data name="BotRetrievingDepotKeys" xml:space="preserve">
-		<value>Récupération de {0} clés de dépôts...</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
-	</data>
-	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
-		<value>Récupération de {0} clés de dépôts terminée.</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
-	</data>
+	
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Fin de la récupération de toutes les clés de dépôts pour un total de {0} applications.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>

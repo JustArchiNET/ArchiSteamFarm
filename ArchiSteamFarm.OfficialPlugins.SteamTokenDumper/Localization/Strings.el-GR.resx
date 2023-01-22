@@ -109,14 +109,7 @@
 		<value>Ολοκληρώθηκε η ανάκτηση {0} πληροφοριών εφαρμογών.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	<data name="BotRetrievingDepotKeys" xml:space="preserve">
-		<value>Ανάκτηση {0} κλειδιών αποθήκης...</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
-	</data>
-	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
-		<value>Ολοκληρώθηκε η ανάκτηση {0} κλειδιών αποθήκευσης.</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
-	</data>
+	
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Ολοκληρώθηκε η ανάκτηση όλων των κλειδιών αποθηκών για συνολικά {0} εφαρμογές.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>

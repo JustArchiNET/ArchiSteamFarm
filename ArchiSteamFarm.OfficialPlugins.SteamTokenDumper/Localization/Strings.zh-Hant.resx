@@ -109,13 +109,9 @@
 		<value>已完成檢索 {0} 個應用程式資料。</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	<data name="BotRetrievingDepotKeys" xml:space="preserve">
-		<value>正在檢索 {0} 個應用程式的 Depot 金鑰…</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
-	</data>
 	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
-		<value>已完成檢索 {0} 個應用程式的 Depot 金鑰。</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
+		<value>成功檢索 {1} 個 Depot 金鑰中的 {0} 個。</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys that were successfully retrieved, {1} will be replaced by the number (count this batch) of depot keys that were supposed to be retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>已完成檢索共 {0} 個應用程式的 Depot 金鑰。</value>

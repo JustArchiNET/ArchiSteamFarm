@@ -109,13 +109,9 @@
 		<value>Zakończono pobieranie {0} informacji o aplikacji.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	<data name="BotRetrievingDepotKeys" xml:space="preserve">
-		<value>Pobieranie {0} kluczy magazynu...</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
-	</data>
 	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
-		<value>Zakończono pobieranie {0} kluczy magazynu.</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
+		<value>Pomyślnie pobrano {0} z {1} kluczy magazynu.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys that were successfully retrieved, {1} will be replaced by the number (count this batch) of depot keys that were supposed to be retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Zakończono pobieranie wszystkich kluczy magazynu dla {0} aplikacji.</value>

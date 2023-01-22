@@ -109,14 +109,7 @@
 		<value>Recuperamos um total de {0} informações de aplicativos.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	<data name="BotRetrievingDepotKeys" xml:space="preserve">
-		<value>Recuperando {0} códigos de depots...</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
-	</data>
-	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
-		<value>Recuperamos códigos para {0} depots.</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
-	</data>
+	
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Recuperamos códigos de acesso para {0} aplicativos.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>

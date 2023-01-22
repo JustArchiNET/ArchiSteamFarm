@@ -109,14 +109,7 @@
 		<value>Dokončené získavanie informácií {0} aplikácií.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	<data name="BotRetrievingDepotKeys" xml:space="preserve">
-		<value>Získavam {0} kľúčov položiek...</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
-	</data>
-	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
-		<value>Dokončené získavanie {0} kľúčov položiek.</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
-	</data>
+	
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Dokončené získanie všetkých kľúčov položiek {0} aplikácií.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
