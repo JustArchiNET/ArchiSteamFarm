@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Composition;
 using System.Globalization;
@@ -30,6 +31,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
 using ArchiSteamFarm.Plugins;
@@ -403,6 +405,8 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingTotalAppAccessTokens, appIDsToRefresh.Count));
 			bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingTotalDepots, appIDsToRefresh.Count));
 
+			(_, ImmutableHashSet<uint>? knownDepotIDs) = await GlobalCache.KnownDepotIDs.GetValue(ArchiCacheable<ImmutableHashSet<uint>>.EFallback.SuccessPreviously).ConfigureAwait(false);
+
 			using (HashSet<uint>.Enumerator enumerator = appIDsToRefresh.GetEnumerator()) {
 				while (true) {
 					if (!bot.IsConnectedAndLoggedOn) {
@@ -454,7 +458,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						bool shouldFetchMainKey = false;
 
 						foreach (KeyValue depot in app.KeyValues["depots"].Children) {
-							if (!uint.TryParse(depot.Name, out uint depotID) || Config.SecretDepotIDs.Contains(depotID) || !GlobalCache.ShouldRefreshDepotKey(depotID)) {
+							if (!uint.TryParse(depot.Name, out uint depotID) || (knownDepotIDs?.Contains(depotID) == true) || Config.SecretDepotIDs.Contains(depotID) || !GlobalCache.ShouldRefreshDepotKey(depotID)) {
 								continue;
 							}
 
@@ -490,7 +494,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						}
 
 						// Consider fetching main appID key only if we've actually considered some new depots for resolving
-						if (shouldFetchMainKey && GlobalCache.ShouldRefreshDepotKey(app.ID)) {
+						if (shouldFetchMainKey && (knownDepotIDs?.Contains(app.ID) != true) && GlobalCache.ShouldRefreshDepotKey(app.ID)) {
 							depotKeysTotal++;
 
 							await depotsRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);

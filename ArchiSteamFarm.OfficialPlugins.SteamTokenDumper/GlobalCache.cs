@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -29,6 +30,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
+using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
@@ -36,6 +38,8 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
 internal sealed class GlobalCache : SerializableFile {
+	internal static readonly ArchiCacheable<ImmutableHashSet<uint>> KnownDepotIDs = new(ResolveKnownDepotIDs, TimeSpan.FromDays(7));
+
 	private static string SharedFilePath => Path.Combine(ArchiSteamFarm.SharedInfo.ConfigDirectory, $"{nameof(SteamTokenDumper)}.cache");
 
 	[JsonProperty(Required = Required.DisallowNull)]
@@ -325,5 +329,51 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		return (depotKey.Length == 64) && Utilities.IsValidHexadecimalText(depotKey);
+	}
+
+	private static async Task<(bool Success, ImmutableHashSet<uint>? Result)> ResolveKnownDepotIDs() {
+		if (ASF.WebBrowser == null) {
+			throw new InvalidOperationException(nameof(ASF.WebBrowser));
+		}
+
+		Uri request = new($"{SharedInfo.ServerURL}/knowndepots.csv");
+
+		StreamResponse? response = await ASF.WebBrowser.UrlGetToStream(request).ConfigureAwait(false);
+
+		if (response?.Content == null) {
+			return (false, null);
+		}
+
+		await using (response.ConfigureAwait(false)) {
+			try {
+				using StreamReader reader = new(response.Content);
+
+				string? countText = await reader.ReadLineAsync().ConfigureAwait(false);
+
+				if (string.IsNullOrEmpty(countText) || !int.TryParse(countText, out int count) || (count <= 0)) {
+					ASF.ArchiLogger.LogNullError(nameof(countText));
+
+					return (false, null);
+				}
+
+				HashSet<uint> result = new(count);
+
+				while (await reader.ReadLineAsync().ConfigureAwait(false) is { Length: > 0 } line) {
+					if (!uint.TryParse(line, out uint depotID) || (depotID == 0)) {
+						ASF.ArchiLogger.LogNullError(nameof(depotID));
+
+						continue;
+					}
+
+					result.Add(depotID);
+				}
+
+				return (result.Count > 0, result.ToImmutableHashSet());
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericWarningException(e);
+
+				return (false, null);
+			}
+		}
 	}
 }
