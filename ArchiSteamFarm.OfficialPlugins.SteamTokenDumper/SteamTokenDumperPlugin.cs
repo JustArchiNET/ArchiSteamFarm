@@ -451,6 +451,8 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 					foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo app in response.Results.SelectMany(static result => result.Apps.Values)) {
 						appChangeNumbers[app.ID] = app.ChangeNumber;
 
+						bool shouldFetchMainKey = false;
+
 						foreach (KeyValue depot in app.KeyValues["depots"].Children) {
 							if (!uint.TryParse(depot.Name, out uint depotID) || Config.SecretDepotIDs.Contains(depotID) || !GlobalCache.ShouldRefreshDepotKey(depotID)) {
 								continue;
@@ -464,6 +466,12 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 								SteamApps.DepotKeyCallback depotResponse = await bot.SteamApps.GetDepotDecryptionKey(depotID, app.ID).ToLongRunningTask().ConfigureAwait(false);
 
 								depotKeysSuccessful++;
+
+								if (depotResponse.Result != EResult.OK) {
+									continue;
+								}
+
+								shouldFetchMainKey = true;
 
 								GlobalCache.UpdateDepotKey(depotResponse);
 							} catch (Exception e) {
@@ -482,7 +490,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						}
 
 						// Consider fetching main appID key only if we've actually considered some new depots for resolving
-						if ((depotKeysSuccessful > 0) && GlobalCache.ShouldRefreshDepotKey(app.ID)) {
+						if (shouldFetchMainKey && GlobalCache.ShouldRefreshDepotKey(app.ID)) {
 							depotKeysTotal++;
 
 							await depotsRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
