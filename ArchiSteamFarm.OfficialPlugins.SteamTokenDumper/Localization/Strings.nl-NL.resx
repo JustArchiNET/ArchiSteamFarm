@@ -62,8 +62,14 @@
 			PublicKeyToken=b77a5c561934e089
 		</value>
 	</resheader>
-	
-	
+	<data name="PluginDisabledMissingBuildToken" xml:space="preserve">
+		<value>{0} is uitgeschakeld vanwege een ontbrekende build-token</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginDisabledInConfig" xml:space="preserve">
+		<value>{0} is momenteel uitgeschakeld volgens uw configuratie. Als je SteamDB wilt helpen bij het indienen van gegevens, bekijk dan onze wiki.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
 	
 	
 	

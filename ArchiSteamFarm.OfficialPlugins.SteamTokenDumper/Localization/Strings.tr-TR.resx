@@ -109,7 +109,10 @@
 		<value>{0} uygulama bilgisinin alınması tamamlandı.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>{0}/{1} depo anahtarı başarıyla alındı.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys that were successfully retrieved, {1} will be replaced by the number (count this batch) of depot keys that were supposed to be retrieved</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Toplam {0} uygulama için tüm depo anahtarlarının alınması tamamlandı.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>

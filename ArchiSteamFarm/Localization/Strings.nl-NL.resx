@@ -223,7 +223,7 @@ StackTrace:
 		<value>Deze bot is al gestopt!</value>
 	</data>
 	<data name="BotNotFound" xml:space="preserve">
-		<value>Geen bot gevonden met de naam {0}!</value>
+		<value>Kon geen enkele bot met de naam {0} vinden!</value>
 		<comment>{0} will be replaced by bot's name query (string)</comment>
 	</data>
 	<data name="BotStatusOverview" xml:space="preserve">
@@ -739,5 +739,8 @@ Proces uptime: {1}</value>
 		<value>Het IP adres {0} is niet gebanned!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
-	
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Je hebt geprobeerd om de betaalde functie {0} te gebruiken, maar je hebt geen geldige LicenseID ingesteld in de ASF global config. Controleer uw configuratie, aangezien de functie niet werkt zonder aanvullende details.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>
