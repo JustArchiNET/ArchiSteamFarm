@@ -644,6 +644,7 @@ public sealed class BotConfig {
 		return (botConfig, json != latestJson ? latestJson : null);
 	}
 
+	[PublicAPI]
 	public enum EAccess : byte {
 		None,
 		FamilySharing,
@@ -652,6 +653,7 @@ public sealed class BotConfig {
 	}
 
 	[Flags]
+	[PublicAPI]
 	public enum EBotBehaviour : byte {
 		None = 0,
 		RejectInvalidFriendInvites = 1,
@@ -663,6 +665,7 @@ public sealed class BotConfig {
 		All = RejectInvalidFriendInvites | RejectInvalidTrades | RejectInvalidGroupInvites | DismissInventoryNotifications | MarkReceivedMessagesAsRead | MarkBotMessagesAsRead
 	}
 
+	[PublicAPI]
 	public enum EFarmingOrder : byte {
 		Unordered,
 		AppIDsAscending,
@@ -683,6 +686,7 @@ public sealed class BotConfig {
 	}
 
 	[Flags]
+	[PublicAPI]
 	public enum ERedeemingPreferences : byte {
 		None = 0,
 		Forwarding = 1,
@@ -693,6 +697,7 @@ public sealed class BotConfig {
 	}
 
 	[Flags]
+	[PublicAPI]
 	public enum ERemoteCommunication : byte {
 		None = 0,
 		SteamGroup = 1,
@@ -701,6 +706,7 @@ public sealed class BotConfig {
 	}
 
 	[Flags]
+	[PublicAPI]
 	public enum ETradingPreferences : byte {
 		None = 0,
 		AcceptDonations = 1,
