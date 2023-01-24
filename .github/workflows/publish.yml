@@ -542,6 +542,16 @@ jobs:
         body_path: .github/RELEASE_TEMPLATE.md
         prerelease: true
 
+    - name: Upload SHA512SUMS to GitHub release
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.github_release.outputs.upload_url }}
+        asset_path: out/SHA512SUMS
+        asset_name: SHA512SUMS
+        asset_content_type: text/plain
+
     - name: Upload ASF-generic to GitHub release
       uses: actions/upload-release-asset@v1.0.2
       env:
@@ -621,16 +631,6 @@ jobs:
         asset_path: out/ASF-win-x64.zip
         asset_name: ASF-win-x64.zip
         asset_content_type: application/zip
-
-    - name: Upload SHA512SUMS to GitHub release
-      uses: actions/upload-release-asset@v1.0.2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.github_release.outputs.upload_url }}
-        asset_path: out/SHA512SUMS
-        asset_name: SHA512SUMS
-        asset_content_type: text/plain
 
     - name: Upload SHA512SUMS.sign to GitHub release
       uses: actions/upload-release-asset@v1.0.2
