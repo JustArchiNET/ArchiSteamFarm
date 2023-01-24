@@ -91,7 +91,7 @@ public static class ASF {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		return (steamID == GlobalConfig?.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
+		return steamID == GlobalConfig?.SteamOwnerID;
 	}
 
 	internal static string GetFilePath(EFileType fileType) {
