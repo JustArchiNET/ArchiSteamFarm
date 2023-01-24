@@ -320,7 +320,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				SignedInWithSteam = true;
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname, assetsForListing.Count));
+			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			BasicResponse? response = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, assetsForListing, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken!, nickname, avatarHash).ConfigureAwait(false);

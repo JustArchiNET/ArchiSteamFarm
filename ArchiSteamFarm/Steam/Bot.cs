@@ -3000,11 +3000,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		Nickname = callback.Name;
+		// Empty name should be converted to null, this is actually lack of value, but it's transmitted as empty in protobufs
+		Nickname = !string.IsNullOrEmpty(callback.Name) ? callback.Name : null;
 
 		string? avatarHash = null;
 
-		if ((callback.AvatarHash?.Length > 0) && callback.AvatarHash.Any(static singleByte => singleByte != 0)) {
+		if ((callback.AvatarHash?.Length > 0) && callback.AvatarHash.Any(static singleByte => singleByte > 0)) {
 #pragma warning disable CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
 			avatarHash = Convert.ToHexString(callback.AvatarHash).ToLowerInvariant();
 #pragma warning restore CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
