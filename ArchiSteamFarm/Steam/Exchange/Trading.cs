@@ -171,12 +171,12 @@ public sealed class Trading : IDisposable {
 				return false;
 			}
 
-			// If amount of unique items in the set increases, this is always a good trade (e.g. 0 2 -> 1 1)
-			if (afterAmounts.Count > beforeAmounts.Count) {
-				continue;
+			// Otherwise, fill the missing holes in our data, we actually had zero sets before
+			for (byte i = 0; i < afterAmounts.Count - beforeAmounts.Count; i++) {
+				beforeAmounts.Insert(0, 0);
 			}
 
-			// At this point we're sure that amount of unique items stays the same, so we can evaluate actual sets
+			// At this point we're sure that we're comparing across the same set (unique items count) in regards to the best effort info we actually have about it
 			// We make use of the fact that our amounts are already sorted in ascending order, so we can just take the first value instead of calculating ourselves
 			uint beforeSets = beforeAmounts[0];
 			uint afterSets = afterAmounts[0];
@@ -186,18 +186,11 @@ public sealed class Trading : IDisposable {
 				return false;
 			}
 
-			// If amount of our sets for this game increases, this is always a good trade (e.g. 3 2 1 -> 2 2 2)
-			if (afterSets > beforeSets) {
-				continue;
-			}
-
-			// At this point we're sure that both number of unique items in the set stays the same, as well as number of our actual sets
 			// We need to ensure set progress here and keep in mind overpaying, so we'll calculate neutrality as a difference in amounts at appropriate indexes
 			// Neutrality can't reach value below 0 at any single point of calculation, as that would imply a loss of progress even if we'd end up with a positive value by the end
 			int neutrality = 0;
 
-			// Skip initial 0 index, as we already checked it above and it doesn't change neutrality from 0
-			for (byte i = 1; i < afterAmounts.Count; i++) {
+			for (byte i = 0; i < afterAmounts.Count; i++) {
 				// We assume that the difference between amounts will be within int range, therefore we accept underflow here (for subtraction), and since we cast that result to int afterwards, we also accept overflow for the cast itself
 				neutrality += unchecked((int) (afterAmounts[i] - beforeAmounts[i]));
 
