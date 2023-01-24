@@ -667,7 +667,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		if (matchActivelyTradeOfferIDsToken != null) {
 			try {
-				matchActivelyTradeOfferIDs = matchActivelyTradeOfferIDsToken.Values<ulong>().ToHashSet();
+				matchActivelyTradeOfferIDs = matchActivelyTradeOfferIDsToken.ToObject<HashSet<ulong>>();
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 			}
