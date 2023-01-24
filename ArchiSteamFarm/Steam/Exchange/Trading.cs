@@ -171,22 +171,13 @@ public sealed class Trading : IDisposable {
 				return false;
 			}
 
-			// Otherwise, fill the missing holes in our data, we actually had zero sets before
+			// Otherwise, fill the missing holes in our data if needed, since we actually had zeros there
 			for (byte i = 0; i < afterAmounts.Count - beforeAmounts.Count; i++) {
 				beforeAmounts.Insert(0, 0);
 			}
 
-			// At this point we're sure that we're comparing across the same set (unique items count) in regards to the best effort info we actually have about it
-			// We make use of the fact that our amounts are already sorted in ascending order, so we can just take the first value instead of calculating ourselves
-			uint beforeSets = beforeAmounts[0];
-			uint afterSets = afterAmounts[0];
-
-			// If amount of our sets for this game decreases, this is always a bad trade (e.g. 2 2 2 -> 3 2 1)
-			if (afterSets < beforeSets) {
-				return false;
-			}
-
-			// We need to ensure set progress here and keep in mind overpaying, so we'll calculate neutrality as a difference in amounts at appropriate indexes
+			// Now we need to ensure set progress and keep in mind overpaying, so we'll calculate neutrality as a difference in amounts at appropriate indexes
+			// We start from the amounts we have the least of, our data is already sorted in ascending order, so we can just subtract and compare until we cover every amount
 			// Neutrality can't reach value below 0 at any single point of calculation, as that would imply a loss of progress even if we'd end up with a positive value by the end
 			int neutrality = 0;
 
