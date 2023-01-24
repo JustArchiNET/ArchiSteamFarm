@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2022 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,28 @@ namespace ArchiSteamFarm.Tests;
 
 [TestClass]
 public sealed class Trading {
+	[TestMethod]
+	public void ExploitingNewSetsIsFairButNotNeutral() {
+		HashSet<Asset> inventory = new() {
+			CreateItem(1, 40),
+			CreateItem(2, 10),
+			CreateItem(3, 10)
+		};
+
+		HashSet<Asset> itemsToGive = new() {
+			CreateItem(2, 5),
+			CreateItem(3, 5)
+		};
+
+		HashSet<Asset> itemsToReceive = new() {
+			CreateItem(1, 9),
+			CreateItem(4)
+		};
+
+		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
+		Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
+	}
+
 	[TestMethod]
 	public void MismatchRarityIsNotFair() {
 		HashSet<Asset> itemsToGive = new() { CreateItem(1, rarity: Asset.ERarity.Rare) };
