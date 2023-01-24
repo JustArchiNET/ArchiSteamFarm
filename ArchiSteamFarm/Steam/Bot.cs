@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2022 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -95,6 +95,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[PublicAPI]
 	public ArchiWebHandler ArchiWebHandler { get; }
 
+	[JsonIgnore]
+	[PublicAPI]
+	public BotDatabase BotDatabase { get; }
+
 	[JsonProperty]
 	[PublicAPI]
 	public string BotName { get; }
@@ -134,8 +138,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[JsonIgnore]
 	[PublicAPI]
 	public SteamFriends SteamFriends { get; }
-
-	internal readonly BotDatabase BotDatabase;
 
 	internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
 	internal bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);

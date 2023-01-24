@@ -41,10 +41,13 @@ using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
+using Newtonsoft.Json.Linq;
+using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
+	private const string MatchActivelyTradeOfferIDsStorageKey = $"{nameof(ItemsMatcher)}-{nameof(MatchActively)}-TradeOfferIDs";
 	private const byte MaxAnnouncementTTL = 60; // Maximum amount of minutes we can wait if the next announcement doesn't happen naturally
 	private const byte MaxTradeOffersActive = 10; // The actual upper limit is 30, but we should use lower amount to allow some bots to react before we hit the maximum allowed
 	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
@@ -657,6 +660,50 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return false;
 		}
 
+		// Cancel previous trade offers sent and deprioritize SteamIDs that didn't answer us in this round
+		HashSet<ulong>? matchActivelyTradeOfferIDs = null;
+
+		JToken? matchActivelyTradeOfferIDsToken = Bot.BotDatabase.LoadFromJsonStorage(MatchActivelyTradeOfferIDsStorageKey);
+
+		if (matchActivelyTradeOfferIDsToken != null) {
+			try {
+				matchActivelyTradeOfferIDs = matchActivelyTradeOfferIDsToken.Values<ulong>().ToHashSet();
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericWarningException(e);
+			}
+		}
+
+		matchActivelyTradeOfferIDs ??= new HashSet<ulong>();
+
+		HashSet<ulong> deprioritizedSteamIDs = new();
+
+		if (matchActivelyTradeOfferIDs.Count > 0) {
+			// This is not a mandatory step, we allow it to fail
+			HashSet<TradeOffer>? sentTradeOffers = await Bot.ArchiWebHandler.GetTradeOffers(true, false, true, false).ConfigureAwait(false);
+
+			if (sentTradeOffers != null) {
+				HashSet<ulong> activeTradeOfferIDs = new();
+
+				foreach (TradeOffer tradeOffer in sentTradeOffers.Where(tradeOffer => (tradeOffer.State == ETradeOfferState.Active) && matchActivelyTradeOfferIDs.Contains(tradeOffer.TradeOfferID))) {
+					deprioritizedSteamIDs.Add(tradeOffer.OtherSteamID64);
+
+					if (!await Bot.ArchiWebHandler.CancelTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false)) {
+						activeTradeOfferIDs.Add(tradeOffer.TradeOfferID);
+					}
+				}
+
+				if (!matchActivelyTradeOfferIDs.SetEquals(activeTradeOfferIDs)) {
+					matchActivelyTradeOfferIDs = activeTradeOfferIDs;
+
+					if (matchActivelyTradeOfferIDs.Count > 0) {
+						Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, JToken.FromObject(matchActivelyTradeOfferIDs));
+					} else {
+						Bot.BotDatabase.DeleteFromJsonStorage(MatchActivelyTradeOfferIDsStorageKey);
+					}
+				}
+			}
+		}
+
 		HashSet<ulong> pendingMobileTradeOfferIDs = new();
 
 		byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
@@ -664,7 +711,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		byte failuresInRow = 0;
 		uint matchedSets = 0;
 
-		foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(static listedUser => listedUser.MatchEverything).ThenBy(static listedUser => listedUser.TotalInventoryCount)) {
+		foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => deprioritizedSteamIDs.Contains(listedUser.SteamID)).ThenByDescending(static listedUser => listedUser.MatchEverything).ThenBy(static listedUser => listedUser.TotalInventoryCount)) {
 			if (failuresInRow >= WebBrowser.MaxTries) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(failuresInRow)} >= {WebBrowser.MaxTries}"));
 
@@ -840,7 +887,13 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				Bot.ArchiLogger.LogGenericTrace($"{Bot.SteamID} <- {string.Join(", ", itemsToReceive.Select(static item => $"{item.RealAppID}/{item.Type}/{item.Rarity}/{item.ClassID} #{item.Amount}"))} | {string.Join(", ", itemsToGive.Select(static item => $"{item.RealAppID}/{item.Type}/{item.Rarity}/{item.ClassID} #{item.Amount}"))} -> {listedUser.SteamID}");
 
-				(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, true).ConfigureAwait(false);
+				(bool success, HashSet<ulong>? tradeOfferIDs, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, true).ConfigureAwait(false);
+
+				if (tradeOfferIDs?.Count > 0) {
+					matchActivelyTradeOfferIDs.UnionWith(tradeOfferIDs);
+
+					Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, JToken.FromObject(matchActivelyTradeOfferIDs));
+				}
 
 				if (mobileTradeOfferIDs?.Count > 0) {
 					pendingMobileTradeOfferIDs.UnionWith(mobileTradeOfferIDs);

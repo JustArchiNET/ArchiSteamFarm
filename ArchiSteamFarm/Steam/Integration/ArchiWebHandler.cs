@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2022 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -99,6 +99,17 @@ public sealed class ArchiWebHandler : IDisposable {
 		CachedAccessToken.Dispose();
 		SessionSemaphore.Dispose();
 		WebBrowser.Dispose();
+	}
+
+	[PublicAPI]
+	public async Task<bool> CancelTradeOffer(ulong tradeID) {
+		if (tradeID == 0) {
+			throw new ArgumentOutOfRangeException(nameof(tradeID));
+		}
+
+		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/cancel");
+
+		return await UrlPostWithSession(request).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
@@ -354,6 +365,210 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<HashSet<TradeOffer>?> GetTradeOffers(bool? activeOnly = null, bool? receivedOffers = null, bool? sentOffers = null, bool? withDescriptions = null) {
+		(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
+
+		if (!success || string.IsNullOrEmpty(steamApiKey)) {
+			return null;
+		}
+
+		Dictionary<string, object?> arguments = new(StringComparer.Ordinal) {
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			{ "key", steamApiKey! }
+		};
+
+		if (activeOnly.HasValue) {
+			arguments["active_only"] = activeOnly.Value ? "true" : "false";
+
+			// This is ridiculous, active_only without historical cutoff is actually active right now + inactive ones that changed their status since our preview request, what the fuck
+			// We're going to make it work as everybody sane expects, by being active ONLY, as the name implies, not active + some shit nobody asked for
+			// https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#GetTradeOffers_.28v1.29
+			if (activeOnly.Value) {
+				arguments["time_historical_cutoff"] = uint.MaxValue;
+			}
+		}
+
+		if (receivedOffers.HasValue) {
+			arguments["get_received_offers"] = receivedOffers.Value ? "true" : "false";
+		}
+
+		if (sentOffers.HasValue) {
+			arguments["get_sent_offers"] = sentOffers.Value ? "true" : "false";
+		}
+
+		if (withDescriptions.HasValue) {
+			arguments["get_descriptions"] = withDescriptions.Value ? "true" : "false";
+		}
+
+		KeyValue? response = null;
+
+		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+			if ((i > 0) && (WebLimiterDelay > 0)) {
+				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
+			}
+
+			using WebAPI.AsyncInterface econService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(EconService);
+
+			econService.Timeout = WebBrowser.Timeout;
+
+			try {
+				response = await WebLimitRequest(
+					WebAPI.DefaultBaseAddress,
+
+					// ReSharper disable once AccessToDisposedClosure
+					async () => await econService.CallAsync(HttpMethod.Get, "GetTradeOffers", args: arguments).ConfigureAwait(false)
+				).ConfigureAwait(false);
+			} catch (TaskCanceledException e) {
+				Bot.ArchiLogger.LogGenericDebuggingException(e);
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericWarningException(e);
+			}
+		}
+
+		if (response == null) {
+			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+
+			return null;
+		}
+
+		Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryResponse.Description> descriptions = new();
+
+		foreach (KeyValue description in response["descriptions"].Children) {
+			uint appID = description["appid"].AsUnsignedInteger();
+
+			if (appID == 0) {
+				Bot.ArchiLogger.LogNullError(appID);
+
+				return null;
+			}
+
+			ulong classID = description["classid"].AsUnsignedLong();
+
+			if (classID == 0) {
+				Bot.ArchiLogger.LogNullError(classID);
+
+				return null;
+			}
+
+			ulong instanceID = description["instanceid"].AsUnsignedLong();
+
+			(uint AppID, ulong ClassID, ulong InstanceID) key = (appID, classID, instanceID);
+
+			if (descriptions.ContainsKey(key)) {
+				continue;
+			}
+
+			InventoryResponse.Description parsedDescription = new() {
+				AppID = appID,
+				ClassID = classID,
+				InstanceID = instanceID,
+				Marketable = description["marketable"].AsBoolean(),
+				Tradable = true // We're parsing active trade offers, we can assume as much
+			};
+
+			List<KeyValue> tags = description["tags"].Children;
+
+			if (tags.Count > 0) {
+				HashSet<Tag> parsedTags = new(tags.Count);
+
+				foreach (KeyValue tag in tags) {
+					string? identifier = tag["category"].AsString();
+
+					if (string.IsNullOrEmpty(identifier)) {
+						Bot.ArchiLogger.LogNullError(identifier);
+
+						return null;
+					}
+
+					string? value = tag["internal_name"].AsString();
+
+					// Apparently, name can be empty, but not null
+					if (value == null) {
+						Bot.ArchiLogger.LogNullError(value);
+
+						return null;
+					}
+
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+					parsedTags.Add(new Tag(identifier!, value));
+				}
+
+				parsedDescription.Tags = parsedTags.ToImmutableHashSet();
+			}
+
+			descriptions[key] = parsedDescription;
+		}
+
+		IEnumerable<KeyValue> trades = Enumerable.Empty<KeyValue>();
+
+		if (receivedOffers.GetValueOrDefault(true)) {
+			trades = trades.Concat(response["trade_offers_received"].Children);
+		}
+
+		if (sentOffers.GetValueOrDefault(true)) {
+			trades = trades.Concat(response["trade_offers_sent"].Children);
+		}
+
+		HashSet<TradeOffer> result = new();
+
+		foreach (KeyValue trade in trades) {
+			ETradeOfferState state = trade["trade_offer_state"].AsEnum<ETradeOfferState>();
+
+			if (!Enum.IsDefined(state)) {
+				Bot.ArchiLogger.LogNullError(state);
+
+				return null;
+			}
+
+			if (activeOnly.HasValue && ((activeOnly.Value && (state != ETradeOfferState.Active)) || (!activeOnly.Value && (state == ETradeOfferState.Active)))) {
+				continue;
+			}
+
+			ulong tradeOfferID = trade["tradeofferid"].AsUnsignedLong();
+
+			if (tradeOfferID == 0) {
+				Bot.ArchiLogger.LogNullError(tradeOfferID);
+
+				return null;
+			}
+
+			uint otherSteamID3 = trade["accountid_other"].AsUnsignedInteger();
+
+			if (otherSteamID3 == 0) {
+				Bot.ArchiLogger.LogNullError(otherSteamID3);
+
+				return null;
+			}
+
+			TradeOffer tradeOffer = new(tradeOfferID, otherSteamID3, state);
+
+			List<KeyValue> itemsToGive = trade["items_to_give"].Children;
+
+			if (itemsToGive.Count > 0) {
+				if (!ParseItems(descriptions, itemsToGive, tradeOffer.ItemsToGive)) {
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(itemsToGive)));
+
+					return null;
+				}
+			}
+
+			List<KeyValue> itemsToReceive = trade["items_to_receive"].Children;
+
+			if (itemsToReceive.Count > 0) {
+				if (!ParseItems(descriptions, itemsToReceive, tradeOffer.ItemsToReceive)) {
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(itemsToReceive)));
+
+					return null;
+				}
+			}
+
+			result.Add(tradeOffer);
+		}
+
+		return result;
+	}
+
+	[PublicAPI]
 	public async Task<bool?> HasValidApiKey() {
 		(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
 
@@ -375,7 +590,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Asset>? itemsToGive = null, IReadOnlyCollection<Asset>? itemsToReceive = null, string? token = null, bool forcedSingleOffer = false, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+	public async Task<(bool Success, HashSet<ulong>? TradeOfferIDs, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Asset>? itemsToGive = null, IReadOnlyCollection<Asset>? itemsToReceive = null, string? token = null, bool forcedSingleOffer = false, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -432,6 +647,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "tradeoffermessage", $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}" }
 		};
 
+		HashSet<ulong> tradeOfferIDs = new(trades.Count);
 		HashSet<ulong> mobileTradeOfferIDs = new(trades.Count);
 
 		foreach (TradeOfferSendRequest trade in trades) {
@@ -443,7 +659,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
 
 				if (response == null) {
-					return (false, mobileTradeOfferIDs);
+					return (false, tradeOfferIDs, mobileTradeOfferIDs);
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
@@ -458,26 +674,28 @@ public sealed class ArchiWebHandler : IDisposable {
 					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
 
-					return (false, mobileTradeOfferIDs);
+					return (false, tradeOfferIDs, mobileTradeOfferIDs);
 				}
 			}
 
 			if (response?.Content == null) {
-				return (false, mobileTradeOfferIDs);
+				return (false, tradeOfferIDs, mobileTradeOfferIDs);
 			}
 
 			if (response.Content.TradeOfferID == 0) {
 				Bot.ArchiLogger.LogNullError(response.Content.TradeOfferID);
 
-				return (false, mobileTradeOfferIDs);
+				return (false, tradeOfferIDs, mobileTradeOfferIDs);
 			}
+
+			tradeOfferIDs.Add(response.Content.TradeOfferID);
 
 			if (response.Content.RequiresMobileConfirmation) {
 				mobileTradeOfferIDs.Add(response.Content.TradeOfferID);
 			}
 		}
 
-		return (true, mobileTradeOfferIDs);
+		return (true, tradeOfferIDs, mobileTradeOfferIDs);
 	}
 
 	[PublicAPI]
@@ -1463,182 +1681,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		ObjectResponse<NewDiscoveryQueueResponse>? response = await UrlPostToJsonObjectWithSession<NewDiscoveryQueueResponse>(request, data: data).ConfigureAwait(false);
 
 		return response?.Content?.Queue;
-	}
-
-	internal async Task<HashSet<TradeOffer>?> GetActiveTradeOffers() {
-		(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
-
-		if (!success || string.IsNullOrEmpty(steamApiKey)) {
-			return null;
-		}
-
-		Dictionary<string, object?> arguments = new(5, StringComparer.Ordinal) {
-			{ "active_only", 1 },
-			{ "get_descriptions", 1 },
-			{ "get_received_offers", 1 },
-
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "key", steamApiKey! },
-
-			{ "time_historical_cutoff", uint.MaxValue }
-		};
-
-		KeyValue? response = null;
-
-		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			if ((i > 0) && (WebLimiterDelay > 0)) {
-				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
-			}
-
-			using WebAPI.AsyncInterface econService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(EconService);
-
-			econService.Timeout = WebBrowser.Timeout;
-
-			try {
-				response = await WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
-
-					// ReSharper disable once AccessToDisposedClosure
-					async () => await econService.CallAsync(HttpMethod.Get, "GetTradeOffers", args: arguments).ConfigureAwait(false)
-				).ConfigureAwait(false);
-			} catch (TaskCanceledException e) {
-				Bot.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-			}
-		}
-
-		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-
-			return null;
-		}
-
-		Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryResponse.Description> descriptions = new();
-
-		foreach (KeyValue description in response["descriptions"].Children) {
-			uint appID = description["appid"].AsUnsignedInteger();
-
-			if (appID == 0) {
-				Bot.ArchiLogger.LogNullError(appID);
-
-				return null;
-			}
-
-			ulong classID = description["classid"].AsUnsignedLong();
-
-			if (classID == 0) {
-				Bot.ArchiLogger.LogNullError(classID);
-
-				return null;
-			}
-
-			ulong instanceID = description["instanceid"].AsUnsignedLong();
-
-			(uint AppID, ulong ClassID, ulong InstanceID) key = (appID, classID, instanceID);
-
-			if (descriptions.ContainsKey(key)) {
-				continue;
-			}
-
-			InventoryResponse.Description parsedDescription = new() {
-				AppID = appID,
-				ClassID = classID,
-				InstanceID = instanceID,
-				Marketable = description["marketable"].AsBoolean(),
-				Tradable = true // We're parsing active trade offers, we can assume as much
-			};
-
-			List<KeyValue> tags = description["tags"].Children;
-
-			if (tags.Count > 0) {
-				HashSet<Tag> parsedTags = new(tags.Count);
-
-				foreach (KeyValue tag in tags) {
-					string? identifier = tag["category"].AsString();
-
-					if (string.IsNullOrEmpty(identifier)) {
-						Bot.ArchiLogger.LogNullError(identifier);
-
-						return null;
-					}
-
-					string? value = tag["internal_name"].AsString();
-
-					// Apparently, name can be empty, but not null
-					if (value == null) {
-						Bot.ArchiLogger.LogNullError(value);
-
-						return null;
-					}
-
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					parsedTags.Add(new Tag(identifier!, value));
-				}
-
-				parsedDescription.Tags = parsedTags.ToImmutableHashSet();
-			}
-
-			descriptions[key] = parsedDescription;
-		}
-
-		HashSet<TradeOffer> result = new();
-
-		foreach (KeyValue trade in response["trade_offers_received"].Children) {
-			ETradeOfferState state = trade["trade_offer_state"].AsEnum<ETradeOfferState>();
-
-			if (!Enum.IsDefined(state)) {
-				Bot.ArchiLogger.LogNullError(state);
-
-				return null;
-			}
-
-			if (state != ETradeOfferState.Active) {
-				continue;
-			}
-
-			ulong tradeOfferID = trade["tradeofferid"].AsUnsignedLong();
-
-			if (tradeOfferID == 0) {
-				Bot.ArchiLogger.LogNullError(tradeOfferID);
-
-				return null;
-			}
-
-			uint otherSteamID3 = trade["accountid_other"].AsUnsignedInteger();
-
-			if (otherSteamID3 == 0) {
-				Bot.ArchiLogger.LogNullError(otherSteamID3);
-
-				return null;
-			}
-
-			TradeOffer tradeOffer = new(tradeOfferID, otherSteamID3, state);
-
-			List<KeyValue> itemsToGive = trade["items_to_give"].Children;
-
-			if (itemsToGive.Count > 0) {
-				if (!ParseItems(descriptions, itemsToGive, tradeOffer.ItemsToGive)) {
-					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(itemsToGive)));
-
-					return null;
-				}
-			}
-
-			List<KeyValue> itemsToReceive = trade["items_to_receive"].Children;
-
-			if (itemsToReceive.Count > 0) {
-				if (!ParseItems(descriptions, itemsToReceive, tradeOffer.ItemsToReceive)) {
-					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(itemsToReceive)));
-
-					return null;
-				}
-			}
-
-			result.Add(tradeOffer);
-		}
-
-		return result;
 	}
 
 	internal async Task<HashSet<uint>?> GetAppList() {

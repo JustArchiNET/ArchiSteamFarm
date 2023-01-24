@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2022 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,17 +29,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.SteamKit2;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.Storage;
 
-public sealed class GlobalDatabase : SerializableFile {
+public sealed class GlobalDatabase : GenericDatabase {
 	[JsonIgnore]
 	[PublicAPI]
 	public IReadOnlyDictionary<uint, ulong> PackageAccessTokensReadOnly => PackagesAccessTokens;
@@ -56,9 +54,6 @@ public sealed class GlobalDatabase : SerializableFile {
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly InMemoryServerListProvider ServerListProvider = new();
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentDictionary<string, JToken> KeyValueJsonStorage = new();
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	private readonly ConcurrentDictionary<uint, ulong> PackagesAccessTokens = new();
@@ -119,50 +114,6 @@ public sealed class GlobalDatabase : SerializableFile {
 		ServerListProvider.ServerListUpdated += OnObjectModified;
 	}
 
-	[PublicAPI]
-	public void DeleteFromJsonStorage(string key) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
-
-		if (!KeyValueJsonStorage.TryRemove(key, out _)) {
-			return;
-		}
-
-		Utilities.InBackground(Save);
-	}
-
-	[PublicAPI]
-	public JToken? LoadFromJsonStorage(string key) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
-
-		return KeyValueJsonStorage.TryGetValue(key, out JToken? value) ? value : null;
-	}
-
-	[PublicAPI]
-	public void SaveToJsonStorage(string key, JToken value) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
-
-		ArgumentNullException.ThrowIfNull(value);
-
-		if (value.Type == JTokenType.Null) {
-			DeleteFromJsonStorage(key);
-
-			return;
-		}
-
-		if (KeyValueJsonStorage.TryGetValue(key, out JToken? currentValue) && JToken.DeepEquals(currentValue, value)) {
-			return;
-		}
-
-		KeyValueJsonStorage[key] = value;
-		Utilities.InBackground(Save);
-	}
-
 	[UsedImplicitly]
 	public bool ShouldSerializeBackingCellID() => BackingCellID != 0;
 
@@ -174,9 +125,6 @@ public sealed class GlobalDatabase : SerializableFile {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeCardCountsPerGame() => !CardCountsPerGame.IsEmpty;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeKeyValueJsonStorage() => !KeyValueJsonStorage.IsEmpty;
 
 	[UsedImplicitly]
 	public bool ShouldSerializePackagesAccessTokens() => !PackagesAccessTokens.IsEmpty;
