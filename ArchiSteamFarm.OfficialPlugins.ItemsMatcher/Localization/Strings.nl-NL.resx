@@ -66,4 +66,20 @@
 		<value>Deze ronde zijn in totaal {0} sets gematcht.</value>
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
+  <data name="ListingAnnouncing" xml:space="preserve">
+		<value>Mededeling van {0} ({1}) met een inventaris gemaakt van in totaal {2} items op de lijst...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname, {2} will be replaced with number of items in the inventory</comment>
+	</data>
+  <data name="MatchingFound" xml:space="preserve">
+		<value>In totaal {0} items gekoppeld aan bot {1} ({2}), handelsaanbieding verzonden...</value>
+		<comment>{0} will be replaced by number of items matched, {1} will be replaced by steam ID (number), {2} will be replaced by user's nickname</comment>
+	</data>
+  <data name="TradeOfferFailed" xml:space="preserve">
+		<value>Fout bij het verzenden van een transactie aanbod aan bot {0} ({1}), verder gaan...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname'</comment>
+	</data>
+  <data name="ActivelyMatchingSomeConfirmationsFailed" xml:space="preserve">
+		<value>Sommige bevestigingen zijn mislukt, ongeveer {0} van de {1} transacties zijn succesvol verzonden.</value>
+		<comment>{0} will be replaced by amount of the trade offers that succeeded (number), {1} will be replaced by amount of the trade offers that were supposed to be sent in total (number)</comment>
+	</data>
 </root>
