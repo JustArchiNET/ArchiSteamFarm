@@ -109,7 +109,10 @@
 		<value>Načítání informací o aplikaci {0} bylo dokončeno.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Úspěšně načteno {0} z {1} depot klíčů.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys that were successfully retrieved, {1} will be replaced by the number (count this batch) of depot keys that were supposed to be retrieved</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Načítání všech tokenbů úložišť, celkem z {0} aplikací bylo dokončeno.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
