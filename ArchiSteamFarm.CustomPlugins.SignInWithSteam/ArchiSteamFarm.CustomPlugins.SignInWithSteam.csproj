@@ -16,6 +16,7 @@
 		<PackageReference Update="JustArchiNET.Madness" IncludeAssets="compile" />
 
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" IncludeAssets="compile" />
+		<Reference Include="System.Net.Http" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8.1\System.Net.Http.dll" />
 	</ItemGroup>
 
 	<ItemGroup>
