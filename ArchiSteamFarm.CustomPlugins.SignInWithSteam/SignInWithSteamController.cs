@@ -45,7 +45,10 @@ public sealed class SignInWithSteamController : ArchiController {
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> Post(string botName, [FromBody] SignInWithSteamRequest request) {
-		ArgumentException.ThrowIfNullOrEmpty(botName);
+		if (string.IsNullOrEmpty(botName)) {
+			throw new ArgumentNullException(nameof(botName));
+		}
+
 		ArgumentNullException.ThrowIfNull(request);
 
 		Bot? bot = Bot.GetBot(botName);
