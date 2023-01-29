@@ -731,6 +731,9 @@ Ennyi ideje fut: {1}</value>
 		<value>ASF-fájlok patchelése...</value>
 	</data>
 	
-	
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>Az {0} IP cím nincs bannolva!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
 	
 </root>
