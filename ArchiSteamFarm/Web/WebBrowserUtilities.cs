@@ -60,9 +60,9 @@ internal static class WebBrowserUtilities {
 		ArgumentNullException.ThrowIfNull(output);
 
 #if NETFRAMEWORK
-		return (new GZipStream(output, CompressionLevel.Fastest, true), "gzip");
+		return (new GZipStream(output, CompressionLevel.Optimal, true), "gzip");
 #else
-		return (new BrotliStream(output, CompressionLevel.Fastest, true), "br");
+		return (new BrotliStream(output, CompressionLevel.SmallestSize, true), "br");
 #endif
 	}
 }
