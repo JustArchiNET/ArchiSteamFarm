@@ -109,7 +109,10 @@
 		<value>Abruf von {0} App-Infos abgeschlossen.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Erfolgreich {0} von {1} Depot-Schlüsseln abgerufen.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys that were successfully retrieved, {1} will be replaced by the number (count this batch) of depot keys that were supposed to be retrieved</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Abruf aller Depotschlüssel für insgesamt {0} Apps abgeschlossen.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
