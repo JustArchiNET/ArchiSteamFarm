@@ -71,10 +71,12 @@ public sealed class WebBrowser : IDisposable {
 			AutomaticDecompression = DecompressionMethods.All,
 #endif
 
+			CheckCertificateRevocationList = true,
 			CookieContainer = CookieContainer
 		};
 
 		if (webProxy != null) {
+			HttpClientHandler.PreAuthenticate = true;
 			HttpClientHandler.Proxy = webProxy;
 			HttpClientHandler.UseProxy = true;
 		}
