@@ -76,9 +76,13 @@ public sealed class WebBrowser : IDisposable {
 		};
 
 		if (webProxy != null) {
-			HttpClientHandler.PreAuthenticate = true;
 			HttpClientHandler.Proxy = webProxy;
 			HttpClientHandler.UseProxy = true;
+
+			if (webProxy.Credentials != null) {
+				// We can be pretty sure that user knows what he's doing and that proxy indeed requires authentication, save roundtrip
+				HttpClientHandler.PreAuthenticate = true;
+			}
 		}
 
 #if NETFRAMEWORK
