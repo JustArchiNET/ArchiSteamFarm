@@ -2659,9 +2659,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (packagesToRefresh.Count > 0) {
-			ArchiLogger.LogGenericTrace(Strings.BotRefreshingPackagesData);
+			ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
 			await ASF.GlobalDatabase.RefreshPackages(this, packagesToRefresh).ConfigureAwait(false);
-			ArchiLogger.LogGenericTrace(Strings.Done);
+			ArchiLogger.LogGenericInfo(Strings.Done);
 		}
 
 		if (hasNewEntries) {

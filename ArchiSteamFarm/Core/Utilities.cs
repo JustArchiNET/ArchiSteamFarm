@@ -112,7 +112,7 @@ public static class Utilities {
 	public static void InBackground<T>(Func<T> function, bool longRunning = false) {
 		ArgumentNullException.ThrowIfNull(function);
 
-		InBackground(void() => function(), longRunning);
+		InBackground(void () => function(), longRunning);
 	}
 
 	[PublicAPI]
