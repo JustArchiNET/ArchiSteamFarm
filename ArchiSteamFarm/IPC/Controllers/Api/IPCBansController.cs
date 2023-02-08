@@ -31,14 +31,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
-[Route("Api/IPC")]
-public sealed class IPCController : ArchiController {
+[Route("Api/IPC/Bans")]
+public sealed class IPCBansController : ArchiController {
 	/// <summary>
 	///     Clears the list of all IP addresses currently blocked by ASFs IPC module
 	/// </summary>
-	[HttpDelete("Bans")]
+	[HttpDelete]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
-	public ActionResult<GenericResponse> BansDelete() {
+	public ActionResult<GenericResponse> Delete() {
 		ApiAuthenticationMiddleware.ClearFailedAuthorizations();
 
 		return Ok(new GenericResponse(true));
@@ -47,10 +47,10 @@ public sealed class IPCController : ArchiController {
 	/// <summary>
 	///     Removes an IP address from the list of addresses currently blocked by ASFs IPC module
 	/// </summary>
-	[HttpDelete("Bans/{ipAddress:required}")]
+	[HttpDelete("{ipAddress:required}")]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-	public ActionResult<GenericResponse> BansDeleteSpecific(string ipAddress) {
+	public ActionResult<GenericResponse> DeleteSpecific(string ipAddress) {
 		if (string.IsNullOrEmpty(ipAddress)) {
 			throw new ArgumentNullException(nameof(ipAddress));
 		}
@@ -71,7 +71,7 @@ public sealed class IPCController : ArchiController {
 	/// <summary>
 	///     Gets all IP addresses currently blocked by ASFs IPC module
 	/// </summary>
-	[HttpGet("Bans")]
+	[HttpGet]
 	[ProducesResponseType(typeof(GenericResponse<ISet<string>>), (int) HttpStatusCode.OK)]
-	public ActionResult<GenericResponse<ISet<string>>> BansGet() => Ok(new GenericResponse<ISet<string>>(ApiAuthenticationMiddleware.GetCurrentlyBannedIPs().Select(static ip => ip.ToString()).ToHashSet()));
+	public ActionResult<GenericResponse<ISet<string>>> Get() => Ok(new GenericResponse<ISet<string>>(ApiAuthenticationMiddleware.GetCurrentlyBannedIPs().Select(static ip => ip.ToString()).ToHashSet()));
 }

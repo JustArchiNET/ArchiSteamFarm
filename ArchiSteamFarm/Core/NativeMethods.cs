@@ -111,10 +111,10 @@ internal static partial class NativeMethods {
 	[return: MarshalAs(UnmanagedType.Bool)]
 #if NETFRAMEWORK
 	[DllImport("user32.dll")]
-	internal static extern bool ShowWindow(nint hWnd, int nCmdShow);
+	internal static extern void ShowWindow(nint hWnd, int nCmdShow);
 #else
 	[LibraryImport("user32.dll")]
-	internal static partial bool ShowWindow(nint hWnd, int nCmdShow);
+	internal static partial void ShowWindow(nint hWnd, int nCmdShow);
 #endif
 
 	[Flags]
