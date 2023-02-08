@@ -92,8 +92,12 @@ internal static class OS {
 	private static string? BackingVersion;
 	private static Mutex? SingleInstance;
 
-	internal static void CoreInit(bool systemRequired) {
+	internal static void CoreInit(bool minimized, bool systemRequired) {
 		if (OperatingSystem.IsWindows()) {
+			if (minimized) {
+				WindowsMinimizeConsoleWindow();
+			}
+
 			if (systemRequired) {
 				WindowsKeepSystemActive();
 			}
@@ -325,6 +329,19 @@ internal static class OS {
 		// SetThreadExecutionState() returns NULL on failure, which is mapped to 0 (EExecutionState.None) in our case
 		if (result == NativeMethods.EExecutionState.None) {
 			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, result));
+		}
+	}
+
+	[SupportedOSPlatform("Windows")]
+	private static void WindowsMinimizeConsoleWindow() {
+		if (!OperatingSystem.IsWindows()) {
+			throw new PlatformNotSupportedException();
+		}
+
+		nint consoleHandle = NativeMethods.GetConsoleWindow();
+
+		if (!NativeMethods.ShowWindow(consoleHandle, NativeMethods.ShowWindowShowMinimized)) {
+			ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
 		}
 	}
 
