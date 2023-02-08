@@ -338,11 +338,9 @@ internal static class OS {
 			throw new PlatformNotSupportedException();
 		}
 
-		nint consoleHandle = NativeMethods.GetConsoleWindow();
+		using Process process = Process.GetCurrentProcess();
 
-		if (!NativeMethods.ShowWindow(consoleHandle, NativeMethods.ShowWindowShowMinimized)) {
-			ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
-		}
+		NativeMethods.ShowWindow(process.MainWindowHandle, NativeMethods.ShowWindowMinimize);
 	}
 
 	[Flags]

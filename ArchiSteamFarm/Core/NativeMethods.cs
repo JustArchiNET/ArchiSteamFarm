@@ -33,7 +33,7 @@ internal static partial class NativeMethods {
 	internal const uint EnableQuickEditMode = 0x0040;
 
 	[SupportedOSPlatform("Windows")]
-	internal const byte ShowWindowShowMinimized = 2;
+	internal const byte ShowWindowMinimize = 6;
 
 	[SupportedOSPlatform("Windows")]
 	internal const sbyte StandardInputHandle = -10;
@@ -61,16 +61,6 @@ internal static partial class NativeMethods {
 #else
 	[LibraryImport("kernel32.dll")]
 	internal static partial bool GetConsoleMode(nint hConsoleHandle, out uint lpMode);
-#endif
-
-	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-	[SupportedOSPlatform("Windows")]
-#if NETFRAMEWORK
-	[DllImport("kernel32.dll")]
-	internal static extern nint GetConsoleWindow();
-#else
-	[LibraryImport("kernel32.dll")]
-	internal static partial nint GetConsoleWindow();
 #endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
