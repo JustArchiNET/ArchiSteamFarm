@@ -33,6 +33,9 @@ internal static partial class NativeMethods {
 	internal const uint EnableQuickEditMode = 0x0040;
 
 	[SupportedOSPlatform("Windows")]
+	internal const byte ShowWindowMinimize = 6;
+
+	[SupportedOSPlatform("Windows")]
 	internal const sbyte StandardInputHandle = -10;
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -101,6 +104,17 @@ internal static partial class NativeMethods {
 #else
 	[LibraryImport("kernel32.dll")]
 	internal static partial EExecutionState SetThreadExecutionState(EExecutionState executionState);
+#endif
+
+	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+	[SupportedOSPlatform("Windows")]
+	[return: MarshalAs(UnmanagedType.Bool)]
+#if NETFRAMEWORK
+	[DllImport("user32.dll")]
+	internal static extern bool ShowWindow(nint hWnd, int nCmdShow);
+#else
+	[LibraryImport("user32.dll")]
+	internal static partial bool ShowWindow(nint hWnd, int nCmdShow);
 #endif
 
 	[Flags]

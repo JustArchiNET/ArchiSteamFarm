@@ -71,6 +71,7 @@ internal static class Program {
 
 	private static bool IgnoreUnsupportedEnvironment;
 	private static bool InputCryptkeyManually;
+	private static bool Minimized;
 	private static bool SystemRequired;
 
 	internal static async Task Exit(byte exitCode = 0) {
@@ -283,7 +284,7 @@ internal static class Program {
 			return false;
 		}
 
-		OS.CoreInit(SystemRequired);
+		OS.CoreInit(Minimized, SystemRequired);
 
 		Console.Title = SharedInfo.ProgramIdentifier;
 		ASF.ArchiLogger.LogGenericInfo(SharedInfo.ProgramIdentifier);
@@ -579,6 +580,10 @@ internal static class Program {
 					break;
 				case "--INPUT-CRYPTKEY" when noArgumentValueNext():
 					InputCryptkeyManually = true;
+
+					break;
+				case "--MINIMIZED" when noArgumentValueNext():
+					Minimized = true;
 
 					break;
 				case "--NETWORK-GROUP" when noArgumentValueNext():
