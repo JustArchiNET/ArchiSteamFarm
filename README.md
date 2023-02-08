@@ -5,7 +5,8 @@
 # ArchiSteamFarm
 </div>
 
-[![Build status (GitHub)](https://img.shields.io/github/actions/workflow/status/JustArchiNET/ArchiSteamFarm/ci.yml?branch=main&label=Github&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/actions?query=workflow%3AASF-ci+branch%3Amain)
+[![Build status (GitHub)](https://img.shields.io/github/actions/workflow/status/JustArchiNET/ArchiSteamFarm/ci.yml?branch=main&label=Build&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/actions?query=workflow%3AASF-ci+branch%3Amain)
+[![Quality status (GitHub)](https://img.shields.io/github/actions/workflow/status/JustArchiNET/ArchiSteamFarm/code-quality.yml?branch=main&label=Quality&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/actions?query=workflow%3AASF-code-quality+branch%3Amain)
 [![Build status (Docker)](https://img.shields.io/github/actions/workflow/status/JustArchiNET/ArchiSteamFarm/docker-publish-main.yml?branch=main&label=Docker&logo=docker&cacheSeconds=600)](https://hub.docker.com/r/justarchi/archisteamfarm)
 [![Github last commit date](https://img.shields.io/github/last-commit/JustArchiNET/ArchiSteamFarm.svg?label=Updated&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/commits)
 [![Total downloads](https://img.shields.io/github/downloads/JustArchiNET/ArchiSteamFarm/total.svg?label=Downloads&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)

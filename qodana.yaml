@@ -1,0 +1,15 @@
+version: "1.0"
+linter: jetbrains/qodana-dotnet:latest
+failThreshold: 0
+profile:
+  name: qodana.recommended
+exclude:
+  - name: All
+    paths:
+      - ArchiSteamFarm/Localization
+      - ArchiSteamFarm.OfficialPlugins.ItemsMatcher/Localization
+      - ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/Localization
+  - name: InvertIf
+  - name: SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+  - name: SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+  - name: SwitchStatementMissingSomeEnumCasesNoDefault

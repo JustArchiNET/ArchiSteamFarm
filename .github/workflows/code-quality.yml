@@ -1,0 +1,25 @@
+name: ASF-code-quality
+
+on: [push, pull_request]
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3.3.0
+
+    - name: Run Qodana scan
+      uses: JetBrains/qodana-action@v2022.3.3
+      env:
+        QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+
+    - name: Report Qodana results to GitHub
+      uses: github/codeql-action/upload-sarif@v2.2.2
+      with:
+        sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
