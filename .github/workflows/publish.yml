@@ -195,7 +195,7 @@ jobs:
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       env:
         MAX_JOBS: 3
-        VARIANTS: generic linux-arm linux-arm64 linux-x64 osx-arm64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+        VARIANTS: generic linux-arm linux-arm64 linux-x64 osx-arm64 osx-x64 win-arm64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
       shell: bash
       run: |
         set -euo pipefail
@@ -287,7 +287,7 @@ jobs:
       if: startsWith(matrix.os, 'windows-')
       env:
         MAX_JOBS: 2
-        VARIANTS: generic generic-netf linux-arm linux-arm64 linux-x64 osx-arm64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+        VARIANTS: generic generic-netf linux-arm linux-arm64 linux-x64 osx-arm64 osx-x64 win-arm64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
       shell: pwsh
       run: |
         Set-StrictMode -Version Latest
@@ -439,6 +439,12 @@ jobs:
         name: ${{ matrix.os }}_ASF-osx-x64
         path: out/ASF-osx-x64.zip
 
+    - name: Upload ASF-win-arm64
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: ${{ matrix.os }}_ASF-win-arm64
+        path: out/ASF-win-arm64.zip
+
     - name: Upload ASF-win-x64
       uses: actions/upload-artifact@v3.1.2
       with:
@@ -494,6 +500,12 @@ jobs:
       uses: actions/download-artifact@v3.0.2
       with:
         name: macos-latest_ASF-osx-x64
+        path: out
+
+    - name: Download ASF-win-arm64 artifact from windows-latest
+      uses: actions/download-artifact@v3.0.2
+      with:
+        name: windows-latest_ASF-win-arm64
         path: out
 
     - name: Download ASF-win-x64 artifact from windows-latest
@@ -620,6 +632,16 @@ jobs:
         upload_url: ${{ steps.github_release.outputs.upload_url }}
         asset_path: out/ASF-osx-x64.zip
         asset_name: ASF-osx-x64.zip
+        asset_content_type: application/zip
+
+    - name: Upload ASF-win-arm64 to GitHub release
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.github_release.outputs.upload_url }}
+        asset_path: out/ASF-win-arm64.zip
+        asset_name: ASF-win-arm64.zip
         asset_content_type: application/zip
 
     - name: Upload ASF-win-x64 to GitHub release
