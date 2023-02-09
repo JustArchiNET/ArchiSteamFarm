@@ -96,6 +96,10 @@ internal static class Commands {
 			return access > EAccess.None ? bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied) : null;
 		}
 
+		if (bot.HasMobileAuthenticator) {
+			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(bot.HasMobileAuthenticator)));
+		}
+
 		string maFilePath = bot.GetFilePath(Bot.EFileType.MobileAuthenticator);
 		string maFilePendingPath = $"{maFilePath}.PENDING";
 
@@ -171,6 +175,10 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, MaxFinalizationAttempts));
 		}
 
+		if (!bot.TryImportAuthenticator(mobileAuthenticator)) {
+			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(bot.TryImportAuthenticator)));
+		}
+
 		string maFileFinishedPath = $"{maFilePath}.NEW";
 
 		try {
@@ -223,6 +231,10 @@ internal static class Commands {
 
 		if (access < EAccess.Master) {
 			return access > EAccess.None ? bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied) : null;
+		}
+
+		if (bot.HasMobileAuthenticator) {
+			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(bot.HasMobileAuthenticator)));
 		}
 
 		MobileAuthenticatorHandler? mobileAuthenticatorHandler = bot.GetHandler<MobileAuthenticatorHandler>();
