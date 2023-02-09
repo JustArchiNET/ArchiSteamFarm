@@ -100,6 +100,10 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(bot.HasMobileAuthenticator)));
 		}
 
+		if (!bot.IsConnectedAndLoggedOn) {
+			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
+		}
+
 		string maFilePath = bot.GetFilePath(Bot.EFileType.MobileAuthenticator);
 		string maFilePendingPath = $"{maFilePath}.PENDING";
 
@@ -126,6 +130,8 @@ internal static class Commands {
 		if (mobileAuthenticator == null) {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 		}
+
+		mobileAuthenticator.Init(bot);
 
 		MobileAuthenticatorHandler? mobileAuthenticatorHandler = bot.GetHandler<MobileAuthenticatorHandler>();
 
@@ -235,6 +241,10 @@ internal static class Commands {
 
 		if (bot.HasMobileAuthenticator) {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(bot.HasMobileAuthenticator)));
+		}
+
+		if (!bot.IsConnectedAndLoggedOn) {
+			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
 		}
 
 		MobileAuthenticatorHandler? mobileAuthenticatorHandler = bot.GetHandler<MobileAuthenticatorHandler>();
