@@ -253,7 +253,9 @@ internal static class Commands {
 			throw new InvalidOperationException(nameof(mobileAuthenticatorHandler));
 		}
 
-		CTwoFactor_AddAuthenticator_Response? response = await mobileAuthenticatorHandler.AddAuthenticator(bot.SteamID).ConfigureAwait(false);
+		string deviceID = $"android:{Guid.NewGuid()}";
+
+		CTwoFactor_AddAuthenticator_Response? response = await mobileAuthenticatorHandler.AddAuthenticator(bot.SteamID, deviceID).ConfigureAwait(false);
 
 		if (response == null) {
 			return bot.Commands.FormatBotResponse(Strings.WarningFailed);
@@ -265,8 +267,10 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, result));
 		}
 
+		MaFileData maFileData = new(response, deviceID);
+
 		string maFilePendingPath = $"{bot.GetFilePath(Bot.EFileType.MobileAuthenticator)}.PENDING";
-		string json = JsonConvert.SerializeObject(response, Formatting.Indented);
+		string json = JsonConvert.SerializeObject(maFileData, Formatting.Indented);
 
 		try {
 			await File.WriteAllTextAsync(maFilePendingPath, json).ConfigureAwait(false);

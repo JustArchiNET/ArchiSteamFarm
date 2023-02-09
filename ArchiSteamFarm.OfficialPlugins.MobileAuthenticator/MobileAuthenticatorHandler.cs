@@ -41,9 +41,13 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 
 	public override void HandleMsg(IPacketMsg packetMsg) => ArgumentNullException.ThrowIfNull(packetMsg);
 
-	internal async Task<CTwoFactor_AddAuthenticator_Response?> AddAuthenticator(ulong steamID) {
+	internal async Task<CTwoFactor_AddAuthenticator_Response?> AddAuthenticator(ulong steamID, string deviceID) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		if (string.IsNullOrEmpty(deviceID)) {
+			throw new ArgumentNullException(nameof(deviceID));
 		}
 
 		if (Client == null) {
@@ -57,7 +61,7 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 		CTwoFactor_AddAuthenticator_Request request = new() {
 			authenticator_type = 1,
 			authenticator_time = Utilities.GetUnixTime(),
-			device_identifier = "android:" + Guid.NewGuid(),
+			device_identifier = deviceID,
 			sms_phone_id = "1",
 			steamid = steamID
 		};
