@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm.OfficialPlug
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm.CustomPlugins.SignInWithSteam", "ArchiSteamFarm.CustomPlugins.SignInWithSteam\ArchiSteamFarm.CustomPlugins.SignInWithSteam.csproj", "{27E35B1D-AA85-4D54-978B-520BF88DA0B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm.OfficialPlugins.MobileAuthenticator", "ArchiSteamFarm.OfficialPlugins.MobileAuthenticator\ArchiSteamFarm.OfficialPlugins.MobileAuthenticator.csproj", "{8D85BCCA-4DE6-4CC0-B015-E2E89E8E8AA3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,5 +71,11 @@ Global
 		{27E35B1D-AA85-4D54-978B-520BF88DA0B7}.DebugFast|Any CPU.Build.0 = Debug|Any CPU
 		{27E35B1D-AA85-4D54-978B-520BF88DA0B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27E35B1D-AA85-4D54-978B-520BF88DA0B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D85BCCA-4DE6-4CC0-B015-E2E89E8E8AA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D85BCCA-4DE6-4CC0-B015-E2E89E8E8AA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D85BCCA-4DE6-4CC0-B015-E2E89E8E8AA3}.DebugFast|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D85BCCA-4DE6-4CC0-B015-E2E89E8E8AA3}.DebugFast|Any CPU.Build.0 = Debug|Any CPU
+		{8D85BCCA-4DE6-4CC0-B015-E2E89E8E8AA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D85BCCA-4DE6-4CC0-B015-E2E89E8E8AA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

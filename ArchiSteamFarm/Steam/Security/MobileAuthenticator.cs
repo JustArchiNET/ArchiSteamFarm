@@ -41,8 +41,7 @@ namespace ArchiSteamFarm.Steam.Security;
 public sealed class MobileAuthenticator : IDisposable {
 	internal const byte BackupCodeDigits = 7;
 	internal const byte CodeDigits = 5;
-
-	private const byte CodeInterval = 30;
+	internal const byte CodeInterval = 30;
 
 	// For how many minutes we can assume that SteamTimeDifference is correct
 	private const byte SteamTimeTTL = 15;
@@ -81,6 +80,66 @@ public sealed class MobileAuthenticator : IDisposable {
 		}
 
 		return GenerateTokenForTime(time);
+	}
+
+	internal string? GenerateTokenForTime(ulong time) {
+		if (time == 0) {
+			throw new ArgumentOutOfRangeException(nameof(time));
+		}
+
+		if (Bot == null) {
+			throw new InvalidOperationException(nameof(Bot));
+		}
+
+		if (string.IsNullOrEmpty(SharedSecret)) {
+			throw new InvalidOperationException(nameof(SharedSecret));
+		}
+
+		byte[] sharedSecret;
+
+		try {
+			sharedSecret = Convert.FromBase64String(SharedSecret);
+		} catch (FormatException e) {
+			Bot.ArchiLogger.LogGenericException(e);
+			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SharedSecret)));
+
+			return null;
+		}
+
+		byte[] timeArray = BitConverter.GetBytes(time / CodeInterval);
+
+		if (BitConverter.IsLittleEndian) {
+			Array.Reverse(timeArray);
+		}
+
+#pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
+		byte[] hash = HMACSHA1.HashData(sharedSecret, timeArray);
+#pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
+
+		// The last 4 bits of the mac say where the code starts
+		int start = hash[^1] & 0x0f;
+
+		// Extract those 4 bytes
+		byte[] bytes = new byte[4];
+
+		Array.Copy(hash, start, bytes, 0, 4);
+
+		if (BitConverter.IsLittleEndian) {
+			Array.Reverse(bytes);
+		}
+
+		// Build the alphanumeric code
+		uint fullCode = BitConverter.ToUInt32(bytes, 0) & 0x7fffffff;
+
+		// ReSharper disable once BuiltInTypeReferenceStyleForMemberAccess - required for .NET Framework
+		return String.Create(
+			CodeDigits, fullCode, static (buffer, state) => {
+				for (byte i = 0; i < CodeDigits; i++) {
+					buffer[i] = CodeCharacters[(byte) (state % CodeCharacters.Count)];
+					state /= (byte) CodeCharacters.Count;
+				}
+			}
+		);
 	}
 
 	internal async Task<HashSet<Confirmation>?> GetConfirmations() {
@@ -193,6 +252,44 @@ public sealed class MobileAuthenticator : IDisposable {
 		}
 
 		return result;
+	}
+
+	internal async Task<ulong> GetSteamTime() {
+		if (Bot == null) {
+			throw new InvalidOperationException(nameof(Bot));
+		}
+
+		int? steamTimeDifference = SteamTimeDifference;
+
+		if (steamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalMinutes < SteamTimeTTL)) {
+			return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
+		}
+
+		await TimeSemaphore.WaitAsync().ConfigureAwait(false);
+
+		try {
+			steamTimeDifference = SteamTimeDifference;
+
+			if (steamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalMinutes < SteamTimeTTL)) {
+				return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
+			}
+
+			ulong serverTime = await Bot.ArchiWebHandler.GetServerTime().ConfigureAwait(false);
+
+			if (serverTime == 0) {
+				return Utilities.GetUnixTime();
+			}
+
+			// We assume that the difference between times will be within int range, therefore we accept underflow here (for subtraction), and since we cast that result to int afterwards, we also accept overflow for the cast itself
+			steamTimeDifference = unchecked((int) (serverTime - Utilities.GetUnixTime()));
+
+			SteamTimeDifference = steamTimeDifference;
+			LastSteamTimeCheck = DateTime.UtcNow;
+		} finally {
+			TimeSemaphore.Release();
+		}
+
+		return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
 	}
 
 	internal async Task<bool> HandleConfirmations(IReadOnlyCollection<Confirmation> confirmations, bool accept) {
@@ -333,104 +430,6 @@ public sealed class MobileAuthenticator : IDisposable {
 #pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
 
 		return Convert.ToBase64String(hash);
-	}
-
-	private string? GenerateTokenForTime(ulong time) {
-		if (time == 0) {
-			throw new ArgumentOutOfRangeException(nameof(time));
-		}
-
-		if (Bot == null) {
-			throw new InvalidOperationException(nameof(Bot));
-		}
-
-		if (string.IsNullOrEmpty(SharedSecret)) {
-			throw new InvalidOperationException(nameof(SharedSecret));
-		}
-
-		byte[] sharedSecret;
-
-		try {
-			sharedSecret = Convert.FromBase64String(SharedSecret);
-		} catch (FormatException e) {
-			Bot.ArchiLogger.LogGenericException(e);
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SharedSecret)));
-
-			return null;
-		}
-
-		byte[] timeArray = BitConverter.GetBytes(time / CodeInterval);
-
-		if (BitConverter.IsLittleEndian) {
-			Array.Reverse(timeArray);
-		}
-
-#pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-		byte[] hash = HMACSHA1.HashData(sharedSecret, timeArray);
-#pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-
-		// The last 4 bits of the mac say where the code starts
-		int start = hash[^1] & 0x0f;
-
-		// Extract those 4 bytes
-		byte[] bytes = new byte[4];
-
-		Array.Copy(hash, start, bytes, 0, 4);
-
-		if (BitConverter.IsLittleEndian) {
-			Array.Reverse(bytes);
-		}
-
-		// Build the alphanumeric code
-		uint fullCode = BitConverter.ToUInt32(bytes, 0) & 0x7fffffff;
-
-		// ReSharper disable once BuiltInTypeReferenceStyleForMemberAccess - required for .NET Framework
-		return String.Create(
-			CodeDigits, fullCode, static (buffer, state) => {
-				for (byte i = 0; i < CodeDigits; i++) {
-					buffer[i] = CodeCharacters[(byte) (state % CodeCharacters.Count)];
-					state /= (byte) CodeCharacters.Count;
-				}
-			}
-		);
-	}
-
-	private async Task<ulong> GetSteamTime() {
-		if (Bot == null) {
-			throw new InvalidOperationException(nameof(Bot));
-		}
-
-		int? steamTimeDifference = SteamTimeDifference;
-
-		if (steamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalMinutes < SteamTimeTTL)) {
-			return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
-		}
-
-		await TimeSemaphore.WaitAsync().ConfigureAwait(false);
-
-		try {
-			steamTimeDifference = SteamTimeDifference;
-
-			if (steamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalMinutes < SteamTimeTTL)) {
-				return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
-			}
-
-			ulong serverTime = await Bot.ArchiWebHandler.GetServerTime().ConfigureAwait(false);
-
-			if (serverTime == 0) {
-				return Utilities.GetUnixTime();
-			}
-
-			// We assume that the difference between times will be within int range, therefore we accept underflow here (for subtraction), and since we cast that result to int afterwards, we also accept overflow for the cast itself
-			steamTimeDifference = unchecked((int) (serverTime - Utilities.GetUnixTime()));
-
-			SteamTimeDifference = steamTimeDifference;
-			LastSteamTimeCheck = DateTime.UtcNow;
-		} finally {
-			TimeSemaphore.Release();
-		}
-
-		return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
 	}
 
 	private static async Task LimitConfirmationsRequestsAsync() {

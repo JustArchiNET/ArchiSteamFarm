@@ -8,7 +8,7 @@ env:
   NET_CORE_VERSION: net7.0
   NET_FRAMEWORK_VERSION: net481
   NODE_JS_VERSION: 'lts/*'
-  PLUGINS: ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+  PLUGINS: ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 
 jobs:
   publish-asf-ui:

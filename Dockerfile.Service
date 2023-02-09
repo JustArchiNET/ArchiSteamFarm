@@ -18,11 +18,12 @@ ARG TARGETOS
 ENV DOTNET_CLI_TELEMETRY_OPTOUT true
 ENV DOTNET_NOLOGO true
 ENV NET_CORE_VERSION net7.0
-ENV PLUGINS ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+ENV PLUGINS ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 WORKDIR /app
 COPY --from=build-node /app/ASF-ui/dist ASF-ui/dist
 COPY ArchiSteamFarm ArchiSteamFarm
 COPY ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.ItemsMatcher
+COPY ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.MobileAuthenticator
 COPY ArchiSteamFarm.OfficialPlugins.SteamTokenDumper ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 COPY resources resources
 COPY .editorconfig .editorconfig
