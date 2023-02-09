@@ -29,18 +29,19 @@
 		<RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
 		<RollForward>LatestMajor</RollForward>
 		<RuntimeIdentifiers>linux-arm;linux-arm64;linux-x64;osx-arm64;osx-x64;win-x64</RuntimeIdentifiers>
+		<TargetFrameworks>net7.0</TargetFrameworks>
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
-		<TargetFrameworks>net7.0;net481</TargetFrameworks>
+		<TargetFrameworks>$(TargetFrameworks);net481</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(OS)' != 'Windows_NT' AND '$(ASFNetFramework)' == ''">
-		<TargetFramework>net7.0</TargetFramework>
+	<PropertyGroup Condition="'$(ASFNetStandard)' != ''">
+		<TargetFrameworks>$(TargetFrameworks);netstandard2.1</TargetFrameworks>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net481'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net481' OR '$(TargetFramework)' == 'netstandard2.1'">
 		<PackageReference Include="JustArchiNET.Madness" />
 		<PackageReference Include="TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray" />
 
@@ -48,9 +49,13 @@
 		<Using Include="JustArchiNET.Madness.ArgumentNullExceptionMadness.ArgumentNullException" Alias="ArgumentNullException" />
 		<Using Include="JustArchiNET.Madness.ArrayMadness.Array" Alias="Array" />
 		<Using Include="JustArchiNET.Madness.ConvertMadness.Convert" Alias="Convert" />
+		<Using Include="JustArchiNET.Madness.DirectoryInfoMadness.DirectoryInfo" Alias="DirectoryInfo" />
+		<Using Include="JustArchiNET.Madness.DirectoryMadness.Directory" Alias="Directory" />
 		<Using Include="JustArchiNET.Madness.EnumMadness.Enum" Alias="Enum" />
 		<Using Include="JustArchiNET.Madness.EnvironmentMadness.Environment" Alias="Environment" />
+		<Using Include="JustArchiNET.Madness.FileInfoMadness.FileInfo" Alias="FileInfo" />
 		<Using Include="JustArchiNET.Madness.FileMadness.File" Alias="File" />
+		<Using Include="JustArchiNET.Madness.FileMadness.UnixFileMode" Alias="UnixFileMode" />
 		<Using Include="JustArchiNET.Madness.HashCodeMadness.HashCode" Alias="HashCode" />
 		<Using Include="JustArchiNET.Madness.HMACSHA1Madness.HMACSHA1" Alias="HMACSHA1" />
 		<Using Include="JustArchiNET.Madness.HttpRequestExceptionMadness.HttpRequestException" Alias="HttpRequestException" />
@@ -61,6 +66,11 @@
 		<Using Include="JustArchiNET.Madness.SHA256Madness.SHA256" Alias="SHA256" />
 		<Using Include="JustArchiNET.Madness.SHA512Madness.SHA512" Alias="SHA512" />
 		<Using Include="JustArchiNET.Madness.StringMadness.String" Alias="String" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+		<Using Include="JustArchiNET.Madness.NewtonsoftJsonMadness.JsonTextReader" Alias="JsonTextReader" />
+		<Using Include="JustArchiNET.Madness.NewtonsoftJsonMadness.JsonTextWriter" Alias="JsonTextWriter" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(ASFVariant)' != ''">

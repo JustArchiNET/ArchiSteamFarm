@@ -85,7 +85,7 @@ public static class Utilities {
 
 		CookieCollection cookies = cookieContainer.GetCookies(uri);
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 		return cookies.Count > 0 ? (from Cookie cookie in cookies where cookie.Name == name select cookie.Value).FirstOrDefault() : null;
 #else
 		return cookies.Count > 0 ? cookies.FirstOrDefault(cookie => cookie.Name == name)?.Value : null;

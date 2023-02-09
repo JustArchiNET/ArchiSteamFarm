@@ -179,12 +179,12 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 			return;
 		}
 
-		if (!Directory.Exists(directoryPath)) {
-			Directory.CreateDirectory(directoryPath);
+		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+		if (!Directory.Exists(directoryPath!)) {
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			DirectoryInfo directoryInfo = Directory.CreateDirectory(directoryPath!);
 
 			if (OperatingSystem.IsWindows()) {
-				DirectoryInfo directoryInfo = new(directoryPath);
-
 				try {
 					DirectorySecurity directorySecurity = new(directoryPath, AccessControlSections.All);
 
@@ -194,17 +194,16 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 					ASF.ArchiLogger.LogGenericDebuggingException(e);
 				}
 			} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				OS.UnixSetFileAccess(directoryPath!, OS.EUnixPermission.Combined777);
+				directoryInfo.UnixFileMode |= UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute | UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.GroupExecute | UnixFileMode.OtherRead | UnixFileMode.OtherWrite | UnixFileMode.OtherExecute;
 			}
 		}
 
 		try {
 			new FileStream(FilePath, FileMode.CreateNew).Dispose();
 
-			if (OperatingSystem.IsWindows()) {
-				FileInfo fileInfo = new(FilePath);
+			FileInfo fileInfo = new(FilePath);
 
+			if (OperatingSystem.IsWindows()) {
 				try {
 					FileSecurity fileSecurity = new(FilePath, AccessControlSections.All);
 
@@ -214,7 +213,7 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 					ASF.ArchiLogger.LogGenericDebuggingException(e);
 				}
 			} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-				OS.UnixSetFileAccess(FilePath, OS.EUnixPermission.Combined777);
+				fileInfo.UnixFileMode |= UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute | UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.GroupExecute | UnixFileMode.OtherRead | UnixFileMode.OtherWrite | UnixFileMode.OtherExecute;
 			}
 		} catch (IOException) {
 			// Ignored, if the file was already created in the meantime by another instance, this is fine

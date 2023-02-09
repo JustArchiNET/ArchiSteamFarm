@@ -43,7 +43,7 @@ using Newtonsoft.Json;
 using NLog;
 using NLog.Targets;
 using SteamKit2;
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD
 using System.Net.Quic;
 #endif
 
@@ -59,13 +59,13 @@ internal static class Program {
 	internal static bool ShutdownSequenceInitialized { get; private set; }
 	internal static bool SteamParentalGeneration { get; private set; } = true;
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD
 	private static readonly Dictionary<PosixSignal, PosixSignalRegistration> RegisteredPosixSignals = new();
 #endif
 
 	private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD
 	private static readonly ImmutableHashSet<PosixSignal> SupportedPosixSignals = ImmutableHashSet.Create(PosixSignal.SIGINT, PosixSignal.SIGTERM);
 #endif
 
@@ -193,7 +193,7 @@ internal static class Program {
 		AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 		TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 		RuntimeMadness.Initialize();
 #else
 		if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
@@ -465,7 +465,7 @@ internal static class Program {
 
 		ShutdownSequenceInitialized = true;
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD
 		if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 			// Unregister from registered signals
 			foreach (PosixSignalRegistration registration in RegisteredPosixSignals.Values) {
@@ -510,7 +510,7 @@ internal static class Program {
 
 	private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit(130).ConfigureAwait(false);
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD
 	private static async void OnPosixSignal(PosixSignalContext signal) {
 		ArgumentNullException.ThrowIfNull(signal);
 

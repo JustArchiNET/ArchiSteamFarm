@@ -19,7 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Converters;
 using IWebHostEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -134,7 +134,7 @@ internal sealed class Startup {
 		);
 
 		// Use routing for our API controllers, this should be called once we're done with all the static files mess
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD
 		app.UseRouting();
 #endif
 
@@ -153,7 +153,7 @@ internal sealed class Startup {
 		app.UseWebSockets();
 
 		// Finally register proper API endpoints once we're done with routing
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 		app.UseMvcWithDefaultRoute();
 #else
 		app.UseEndpoints(static endpoints => endpoints.MapControllers());
@@ -313,7 +313,7 @@ internal sealed class Startup {
 
 		mvc.AddControllersAsServices();
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 		// Use latest compatibility version for MVC
 		mvc.SetCompatibilityVersion(CompatibilityVersion.Latest);
 
@@ -333,7 +333,7 @@ internal sealed class Startup {
 					options.SerializerSettings.Formatting = Formatting.Indented;
 				}
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 				// .NET Framework serializes Version as object by default, serialize it as string just like .NET Core
 				options.SerializerSettings.Converters.Add(new VersionConverter());
 #endif

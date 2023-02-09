@@ -59,7 +59,7 @@ internal static class WebBrowserUtilities {
 	private static (Stream CompressionInput, string ContentEncoding) GetBestSupportedCompressionMethod(Stream output) {
 		ArgumentNullException.ThrowIfNull(output);
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 		return (new GZipStream(output, CompressionLevel.Optimal, true), "gzip");
 #else
 		return (new BrotliStream(output, CompressionLevel.SmallestSize, true), "br");

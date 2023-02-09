@@ -623,7 +623,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						GlobalCache.Reset(true);
 
 						break;
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 					case (HttpStatusCode) 429:
 #else
 					case HttpStatusCode.TooManyRequests:

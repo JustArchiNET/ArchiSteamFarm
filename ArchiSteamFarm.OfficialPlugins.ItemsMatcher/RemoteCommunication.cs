@@ -366,7 +366,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 						LastAnnouncement = DateTime.UtcNow.AddYears(1);
 
 						return;
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 					case (HttpStatusCode) 429:
 #else
 					case HttpStatusCode.TooManyRequests:

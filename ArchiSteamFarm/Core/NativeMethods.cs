@@ -26,48 +26,22 @@ using System.Runtime.Versioning;
 namespace ArchiSteamFarm.Core;
 
 internal static partial class NativeMethods {
-	[SupportedOSPlatform("Windows")]
-	internal const EExecutionState AwakeExecutionState = EExecutionState.SystemRequired | EExecutionState.AwayModeRequired | EExecutionState.Continuous;
-
-	[SupportedOSPlatform("Windows")]
-	internal const uint EnableQuickEditMode = 0x0040;
-
-	[SupportedOSPlatform("Windows")]
-	internal const byte ShowWindowMinimize = 6;
-
-	[SupportedOSPlatform("Windows")]
-	internal const sbyte StandardInputHandle = -10;
-
-	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-	[SupportedOSPlatform("FreeBSD")]
-	[SupportedOSPlatform("Linux")]
-	[SupportedOSPlatform("MacOS")]
-#if NETFRAMEWORK
-#pragma warning disable CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
-	[DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
-	internal static extern int Chmod(string path, int mode);
-#pragma warning restore CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
-#else
-	[LibraryImport("libc", EntryPoint = "chmod", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial int Chmod(string path, int mode);
-#endif
-
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 	[DllImport("kernel32.dll")]
-	internal static extern bool GetConsoleMode(nint hConsoleHandle, out uint lpMode);
+	internal static extern bool GetConsoleMode(nint hConsoleHandle, out EConsoleMode lpMode);
 #else
 	[LibraryImport("kernel32.dll")]
-	internal static partial bool GetConsoleMode(nint hConsoleHandle, out uint lpMode);
+	internal static partial bool GetConsoleMode(nint hConsoleHandle, out EConsoleMode lpMode);
 #endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("FreeBSD")]
 	[SupportedOSPlatform("Linux")]
 	[SupportedOSPlatform("MacOS")]
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 	[DllImport("libc", EntryPoint = "geteuid", SetLastError = true)]
 	internal static extern uint GetEuid();
 #else
@@ -77,28 +51,28 @@ internal static partial class NativeMethods {
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("Windows")]
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 	[DllImport("kernel32.dll")]
-	internal static extern nint GetStdHandle(int nStdHandle);
+	internal static extern nint GetStdHandle(EStandardHandle nStdHandle);
 #else
 	[LibraryImport("kernel32.dll")]
-	internal static partial nint GetStdHandle(int nStdHandle);
+	internal static partial nint GetStdHandle(EStandardHandle nStdHandle);
 #endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 	[DllImport("kernel32.dll")]
-	internal static extern bool SetConsoleMode(nint hConsoleHandle, uint dwMode);
+	internal static extern bool SetConsoleMode(nint hConsoleHandle, EConsoleMode dwMode);
 #else
 	[LibraryImport("kernel32.dll")]
-	internal static partial bool SetConsoleMode(nint hConsoleHandle, uint dwMode);
+	internal static partial bool SetConsoleMode(nint hConsoleHandle, EConsoleMode dwMode);
 #endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("Windows")]
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 	[DllImport("kernel32.dll")]
 	internal static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);
 #else
@@ -109,13 +83,19 @@ internal static partial class NativeMethods {
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 	[DllImport("user32.dll")]
-	internal static extern void ShowWindow(nint hWnd, int nCmdShow);
+	internal static extern void ShowWindow(nint hWnd, EShowWindow nCmdShow);
 #else
 	[LibraryImport("user32.dll")]
-	internal static partial void ShowWindow(nint hWnd, int nCmdShow);
+	internal static partial void ShowWindow(nint hWnd, EShowWindow nCmdShow);
 #endif
+
+	[Flags]
+	[SupportedOSPlatform("Windows")]
+	internal enum EConsoleMode : uint {
+		EnableQuickEditMode = 0x0040
+	}
 
 	[Flags]
 	[SupportedOSPlatform("Windows")]
@@ -123,6 +103,17 @@ internal static partial class NativeMethods {
 		None = 0,
 		SystemRequired = 0x00000001,
 		AwayModeRequired = 0x00000040,
-		Continuous = 0x80000000
+		Continuous = 0x80000000,
+		Awake = SystemRequired | AwayModeRequired | Continuous
+	}
+
+	[SupportedOSPlatform("Windows")]
+	internal enum EShowWindow : uint {
+		Minimize = 6
+	}
+
+	[SupportedOSPlatform("Windows")]
+	internal enum EStandardHandle {
+		Input = -10
 	}
 }

@@ -65,7 +65,7 @@ public sealed class WebBrowser : IDisposable {
 		HttpClientHandler = new HttpClientHandler {
 			AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile://"
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 			AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
 #else
 			AutomaticDecompression = DecompressionMethods.All,
@@ -85,7 +85,7 @@ public sealed class WebBrowser : IDisposable {
 			}
 		}
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 		if (!RuntimeMadness.IsRunningOnMono) {
 			HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
 		}
@@ -106,7 +106,7 @@ public sealed class WebBrowser : IDisposable {
 		byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 		HttpClient result = new(HttpClientHandler, false) {
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD
 			DefaultRequestVersion = HttpVersion.Version30,
 #endif
 			Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeout : connectionTimeout)
@@ -662,7 +662,7 @@ public sealed class WebBrowser : IDisposable {
 					using StreamReader streamReader = new(response.Content);
 
 #pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-					JsonReader jsonReader = new JsonTextReader(streamReader);
+					JsonTextReader jsonReader = new(streamReader);
 #pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 
 					await using (jsonReader.ConfigureAwait(false)) {
@@ -766,7 +766,7 @@ public sealed class WebBrowser : IDisposable {
 		ServicePointManager.Expect100Continue = false;
 
 		// Reuse ports if possible
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 		if (!RuntimeMadness.IsRunningOnMono) {
 			ServicePointManager.ReusePort = true;
 		}
@@ -801,7 +801,7 @@ public sealed class WebBrowser : IDisposable {
 
 		while (true) {
 			using (HttpRequestMessage requestMessage = new(httpMethod, request)) {
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && !NETSTANDARD
 				requestMessage.Version = HttpClient.DefaultRequestVersion;
 #endif
 

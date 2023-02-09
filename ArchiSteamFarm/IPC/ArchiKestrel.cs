@@ -19,7 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 using IHost = Microsoft.AspNetCore.Hosting.IWebHost;
 using HostBuilder = Microsoft.AspNetCore.Hosting.WebHostBuilder;
 #endif

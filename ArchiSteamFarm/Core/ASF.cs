@@ -1048,7 +1048,8 @@ public static class ASF {
 					return false;
 				}
 
-				if (!Directory.Exists(directory)) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				if (!Directory.Exists(directory!)) {
 					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					Directory.CreateDirectory(directory!);
 				}

@@ -13,10 +13,12 @@
 		<PackageReference Include="System.Linq.Async" IncludeAssets="compile" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net481'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net481' OR '$(TargetFramework)' == 'netstandard2.1'">
 		<!-- Madness is already included in netf build of ASF, so we don't need to emit it ourselves -->
 		<PackageReference Update="JustArchiNET.Madness" IncludeAssets="compile" />
+	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net481'">
 		<Reference Include="System.Net.Http" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8.1\System.Net.Http.dll" />
 	</ItemGroup>
 

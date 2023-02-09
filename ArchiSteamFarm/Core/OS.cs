@@ -43,7 +43,7 @@ internal static class OS {
 	internal static readonly string ProcessFileName = Environment.ProcessPath ?? throw new InvalidOperationException(nameof(ProcessFileName));
 
 	internal static DateTime ProcessStartTime {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 		get => RuntimeMadness.ProcessStartTime.ToUniversalTime();
 #else
 		get {
@@ -67,7 +67,7 @@ internal static class OS {
 				framework = "Unknown Framework";
 			}
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 			string runtime = RuntimeInformation.OSArchitecture.ToString();
 #else
 			string runtime = RuntimeInformation.RuntimeIdentifier.Trim();
@@ -195,30 +195,6 @@ internal static class OS {
 		return true;
 	}
 
-	[SupportedOSPlatform("FreeBSD")]
-	[SupportedOSPlatform("Linux")]
-	[SupportedOSPlatform("MacOS")]
-	internal static void UnixSetFileAccess(string path, EUnixPermission permission) {
-		if (string.IsNullOrEmpty(path)) {
-			throw new ArgumentNullException(nameof(path));
-		}
-
-		if (!OperatingSystem.IsFreeBSD() && !OperatingSystem.IsLinux() && !OperatingSystem.IsMacOS()) {
-			throw new PlatformNotSupportedException();
-		}
-
-		if (!File.Exists(path) && !Directory.Exists(path)) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"!{nameof(path)}"));
-
-			return;
-		}
-
-		// Chmod() returns 0 on success, -1 on failure
-		if (NativeMethods.Chmod(path, (int) permission) != 0) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, Marshal.GetLastWin32Error()));
-		}
-	}
-
 	internal static void UnregisterProcess() {
 		if (SingleInstance == null) {
 			return;
@@ -237,7 +213,7 @@ internal static class OS {
 		}
 
 		if (SharedInfo.BuildInfo.Variant.EndsWith("-netf", StringComparison.Ordinal)) {
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 			// All Windows variants (7+) have valid .NET Core build
 			if (OperatingSystem.IsWindows()) {
 				return false;
@@ -300,15 +276,15 @@ internal static class OS {
 			throw new PlatformNotSupportedException();
 		}
 
-		nint consoleHandle = NativeMethods.GetStdHandle(NativeMethods.StandardInputHandle);
+		nint consoleHandle = NativeMethods.GetStdHandle(NativeMethods.EStandardHandle.Input);
 
-		if (!NativeMethods.GetConsoleMode(consoleHandle, out uint consoleMode)) {
+		if (!NativeMethods.GetConsoleMode(consoleHandle, out NativeMethods.EConsoleMode consoleMode)) {
 			ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
 
 			return;
 		}
 
-		consoleMode &= ~NativeMethods.EnableQuickEditMode;
+		consoleMode &= ~NativeMethods.EConsoleMode.EnableQuickEditMode;
 
 		if (!NativeMethods.SetConsoleMode(consoleHandle, consoleMode)) {
 			ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
@@ -324,7 +300,7 @@ internal static class OS {
 		// This function calls unmanaged API in order to tell Windows OS that it should not enter sleep state while the program is running
 		// If user wishes to enter sleep mode, then he should use ShutdownOnFarmingFinished or manage ASF process with third-party tool or script
 		// See https://docs.microsoft.com/windows/win32/api/winbase/nf-winbase-setthreadexecutionstate for more details
-		NativeMethods.EExecutionState result = NativeMethods.SetThreadExecutionState(NativeMethods.AwakeExecutionState);
+		NativeMethods.EExecutionState result = NativeMethods.SetThreadExecutionState(NativeMethods.EExecutionState.Awake);
 
 		// SetThreadExecutionState() returns NULL on failure, which is mapped to 0 (EExecutionState.None) in our case
 		if (result == NativeMethods.EExecutionState.None) {
@@ -340,23 +316,6 @@ internal static class OS {
 
 		using Process process = Process.GetCurrentProcess();
 
-		NativeMethods.ShowWindow(process.MainWindowHandle, NativeMethods.ShowWindowMinimize);
-	}
-
-	[Flags]
-	[SupportedOSPlatform("FreeBSD")]
-	[SupportedOSPlatform("Linux")]
-	[SupportedOSPlatform("MacOS")]
-	internal enum EUnixPermission : ushort {
-		OtherExecute = 0x1,
-		OtherWrite = 0x2,
-		OtherRead = 0x4,
-		GroupExecute = 0x8,
-		GroupWrite = 0x10,
-		GroupRead = 0x20,
-		UserExecute = 0x40,
-		UserWrite = 0x80,
-		UserRead = 0x100,
-		Combined777 = UserRead | UserWrite | UserExecute | GroupRead | GroupWrite | GroupExecute | OtherRead | OtherWrite | OtherExecute
+		NativeMethods.ShowWindow(process.MainWindowHandle, NativeMethods.EShowWindow.Minimize);
 	}
 }
