@@ -119,6 +119,9 @@ public static class SharedInfo {
 #elif ASF_VARIANT_OSX_X64
 		internal static bool CanUpdate => true;
 		internal static string Variant => "osx-x64";
+#elif ASF_VARIANT_WIN_ARM64
+		internal static bool CanUpdate => true;
+		internal static string Variant => "win-arm64";
 #elif ASF_VARIANT_WIN_X64
 		internal static bool CanUpdate => true;
 		internal static string Variant => "win-x64";
