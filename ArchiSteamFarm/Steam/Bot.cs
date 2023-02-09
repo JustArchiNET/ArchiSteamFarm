@@ -578,6 +578,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
+	public T? GetHandler<T>() where T : ClientMsgHandler => SteamClient.GetHandler<T>();
+
+	[PublicAPI]
 	public static HashSet<Asset> GetItemsForFullSets(IReadOnlyCollection<Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract, ushort maxItems = Trading.MaxItemsPerTrade) {
 		if ((inventory == null) || (inventory.Count == 0)) {
 			throw new ArgumentNullException(nameof(inventory));
