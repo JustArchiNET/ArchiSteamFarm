@@ -69,7 +69,7 @@ internal static class ArchiNet {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		(_, IReadOnlyCollection<ulong>? badBots) = await CachedBadBots.GetValue(ArchiCacheable<IReadOnlyCollection<ulong>>.EFallback.FailedNow).ConfigureAwait(false);
+		(_, IReadOnlyCollection<ulong>? badBots) = await CachedBadBots.GetValue(ECacheFallback.FailedNow).ConfigureAwait(false);
 
 		return badBots?.Contains(steamID);
 	}

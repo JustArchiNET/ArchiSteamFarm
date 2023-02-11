@@ -147,9 +147,9 @@ public sealed class MobileAuthenticator : IDisposable {
 			throw new InvalidOperationException(nameof(Bot));
 		}
 
-		(bool success, string? deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
+		(_, string? deviceID) = await CachedDeviceID.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
-		if (!success || string.IsNullOrEmpty(deviceID)) {
+		if (string.IsNullOrEmpty(deviceID)) {
 			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(deviceID)));
 
 			return null;
@@ -301,9 +301,9 @@ public sealed class MobileAuthenticator : IDisposable {
 			throw new InvalidOperationException(nameof(Bot));
 		}
 
-		(bool success, string? deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
+		(_, string? deviceID) = await CachedDeviceID.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
-		if (!success || string.IsNullOrEmpty(deviceID)) {
+		if (string.IsNullOrEmpty(deviceID)) {
 			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(deviceID)));
 
 			return false;

@@ -119,6 +119,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[PublicAPI]
 	public bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 
+	[JsonIgnore]
+	[PublicAPI]
+	public bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
+
+	[JsonIgnore]
+	[PublicAPI]
+	public bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
+
 	[JsonProperty]
 	[PublicAPI]
 	public bool IsConnectedAndLoggedOn => SteamClient.SteamID != null;
@@ -140,8 +148,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	public SteamFriends SteamFriends { get; }
 
 	internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
-	internal bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
-	internal bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
 
 	private readonly CallbackManager CallbackManager;
 	private readonly SemaphoreSlim CallbackSemaphore = new(1, 1);

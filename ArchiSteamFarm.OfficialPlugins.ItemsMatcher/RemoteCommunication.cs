@@ -29,6 +29,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 using ArchiSteamFarm.Steam;
@@ -493,6 +494,20 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task<bool?> IsEligibleForMatching() {
+		// Bot can't be limited
+		if (Bot.IsAccountLimited) {
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.IsAccountLimited)}: {Bot.IsAccountLimited}"));
+
+			return false;
+		}
+
+		// Bot can't be on lockdown
+		if (Bot.IsAccountLocked) {
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.IsAccountLocked)}: {Bot.IsAccountLocked}"));
+
+			return false;
+		}
+
 		// Bot must have ASF 2FA
 		if (!Bot.HasMobileAuthenticator) {
 			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.HasMobileAuthenticator)}: {Bot.HasMobileAuthenticator}"));
@@ -513,7 +528,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		if (hasValidApiKey != true) {
 			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.ArchiWebHandler.HasValidApiKey)}: {hasValidApiKey?.ToString() ?? "null"}"));
 
-			return hasValidApiKey;
+			return hasValidApiKey.HasValue ? false : null;
+		}
+
+		// Bot can't be trade banned
+		(bool _, bool? Result) economyBan = await Bot.ArchiWebHandler.CachedEconomyBan.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+
+		if (economyBan.Result != false) {
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(economyBan)}: {economyBan.Result?.ToString() ?? "null"}"));
+
+			return economyBan.Result.HasValue ? false : null;
 		}
 
 		return true;
