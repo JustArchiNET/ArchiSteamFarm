@@ -54,7 +54,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const string SteamAppsService = "ISteamApps";
 	private const string SteamUserAuthService = "ISteamUserAuth";
-	private const string SteamUserService = "ISteamAuth";
+	private const string SteamUserService = "ISteamUser";
 	private const string TwoFactorService = "ITwoFactorService";
 
 	[PublicAPI]
