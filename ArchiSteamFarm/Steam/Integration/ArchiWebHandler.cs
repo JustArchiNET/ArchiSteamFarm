@@ -2767,6 +2767,20 @@ public sealed class ArchiWebHandler : IDisposable {
 			return (false, null);
 		}
 
+		if (!Initialized) {
+			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				await Task.Delay(1000).ConfigureAwait(false);
+			}
+
+			if (!Initialized) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+
+				return (false, null);
+			}
+		}
+
 		Dictionary<string, object?> arguments = new(2, StringComparer.Ordinal) {
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			{ "key", steamApiKey! },
