@@ -100,8 +100,8 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	public void Dispose() {
-		CachedApiKey.Dispose();
 		CachedAccessToken.Dispose();
+		CachedApiKey.Dispose();
 		CachedEconomyBan.Dispose();
 		SessionSemaphore.Dispose();
 		WebBrowser.Dispose();
