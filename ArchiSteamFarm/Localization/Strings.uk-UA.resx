@@ -475,7 +475,9 @@
 	<data name="BotAccountFree" xml:space="preserve">
 		<value>Акаунт більше не зайнятий: фарм відновлено!</value>
 	</data>
-	
+	<data name="BotAccountOccupied" xml:space="preserve">
+		<value>Обліковий запис зараз використовується: ASF відновить роботу, коли стане вільним...</value>
+	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Підключення...</value>
 	</data>
@@ -513,7 +515,10 @@
 		<value>ASF намагатиметься використовувати обрану мову {0}, але переклад цією мову завершено лише на {1}. Можливо ви б змогли допомогти в перекладі ASF вашою мовою?</value>
 		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
 	</data>
-	
+	<data name="IdlingGameNotPossible" xml:space="preserve">
+		<value>Фермерство {0} ({1}) тимчасово вимкнено, оскільки ASF наразі не може запустити цю гру.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="WarningIdlingGameMismatch" xml:space="preserve">
 		<value>ASF виявив невідповідність ID для {0} ({1}) і буде натомість використовувати ID {2}.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -522,8 +527,12 @@
 		<value>{0} V{1}</value>
 		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
 	</data>
-	
-	
+	<data name="BotAccountLocked" xml:space="preserve">
+		<value>Цей обліковий запис заблоковано, робота з ним неможлива!</value>
+	</data>
+	<data name="BotStatusLocked" xml:space="preserve">
+		<value>Бот обмежений і не може отримувати карти.</value>
+	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
 		<value>Ця функція доступна лише у безінтерфейсному режимі!</value>
 	</data>
@@ -635,7 +644,10 @@
 		<value>Успішно оброблено {0} підтверджень!</value>
 		<comment>{0} will be replaced by number of confirmations</comment>
 	</data>
-	
+	<data name="BotExtraIdlingCooldown" xml:space="preserve">
+		<value>Чекаємо до {0}, щоб переконатися, що ми можемо розпочати фарм...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+	</data>
 	<data name="UpdateCleanup" xml:space="preserve">
 		<value>Видалення старих файлів після оновлення...</value>
 	</data>
@@ -667,18 +679,41 @@
 	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
 		<value>Каталог з конфігураційними файлами не знайдено, припиняю роботу!</value>
 	</data>
-	
+	<data name="BotIdlingSelectedGames" xml:space="preserve">
+		<value>Відтворення вибраного {0}: {1}</value>
+		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+	</data>
 	<data name="AutomaticFileMigration" xml:space="preserve">
 		<value>Файл конфігурації {0} буде оновлено до поточного синтаксису...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>Ваш IPC-пароль здається слабким. Подумайте про вибір міцнішого для підвищення безпеки. Подробиці: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>Здається, ваш пароль Steam для '{0}' ненадійний. Подумайте про вибір міцнішого для підвищення безпеки. Подробиці: {1}</value>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Здається, ваш ключ шифрування слабкий. Подумайте про вибір міцнішого для підвищення безпеки. Подробиці: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Ваш ключ шифрування закороткий. Ми рекомендуємо використовувати довжину принаймні {0} байтів (символів).</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Ви використовуєте налаштування {0} властивості {1}, але не надали спеціальний --cryptkey. Вам слід надати спеціальний --cryptkey для підвищення безпеки.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>Ви використовуєте налаштування {0} властивості {1}, але не надали спеціальний --cryptkey. Це повністю втрачає захист, оскільки ASF змушений використовувати власний (відомий) ключ. Вам слід надати спеціальний --cryptkey, щоб скористатися перевагами безпеки, які пропонує цей параметр.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Ви намагаєтеся запустити ASF як адміністратор (root). Це створює значний ризик для безпеки вашої машини, і оскільки для роботи ASF не потрібен доступ root, ми рекомендуємо запускати його як користувач без прав адміністратора, якщо це можливо.</value>
+	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Ви запускаєте ASF у непідтримуваному середовищі, з допомогою параметру -ignore-unsupported-environment. Зверніть увагу, що ми не надаємо будь-якої допомоги у такій ситуації, і ви робите це цілком на власний ризик. Ми попереджали.</value>
 	</data>
@@ -697,7 +732,16 @@
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Виправлення файлів ASF...</value>
 	</data>
-	
-	
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Будь ласка, введіть свій крипто-ключ: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>IP-адреса {0} не заборонена!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Ви намагалися скористатися платною функцією {0}, але у вас не встановлено дійсний LicenseID у глобальній конфігурації ASF. Перегляньте свою конфігурацію, оскільки функція не працюватиме без додаткових деталей.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>
