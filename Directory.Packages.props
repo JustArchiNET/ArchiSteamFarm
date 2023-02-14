@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'net481'">
-		<PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="7.0.0" />
+		<PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="7.0.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net481' OR '$(TargetFramework)' == 'netstandard2.1'">
