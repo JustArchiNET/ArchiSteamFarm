@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@v3.3.0
 
     - name: Run Qodana scan
-      uses: JetBrains/qodana-action@v2022.3.3
+      uses: JetBrains/qodana-action@v2022.3.4
       env:
         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
 
