@@ -128,12 +128,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	}
 
 	public async ValueTask DisposeAsync() {
-		// Those are objects that are always being created if constructor doesn't throw exception
-		MatchActivelySemaphore.Dispose();
-		RequestsSemaphore.Dispose();
-		WebBrowser.Dispose();
-
-		// Those are objects that might be null and the check should be in-place
+		// Dispose timers first so we won't launch new events
 		if (HeartBeatTimer != null) {
 			await HeartBeatTimer.DisposeAsync().ConfigureAwait(false);
 		}
@@ -144,6 +139,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				MatchActivelyTimer.Dispose();
 			}
 		}
+
+		// Ensure the semaphores are closed, then dispose the rest
+		await MatchActivelySemaphore.WaitAsync().ConfigureAwait(false);
+		await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
+
+		MatchActivelySemaphore.Dispose();
+		RequestsSemaphore.Dispose();
+		WebBrowser.Dispose();
 	}
 
 	internal void OnNewItemsNotification() => ShouldSendAnnouncementEarlier = true;
