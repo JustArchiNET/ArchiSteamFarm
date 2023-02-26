@@ -21,13 +21,10 @@ fi
 
 cd "$SCRIPT_DIR"
 
-BINARY_ARGS=""
 PATH_NEXT=0
 SERVICE=0
 
 PARSE_ARG() {
-	BINARY_ARGS="$BINARY_ARGS $1"
-
 	case "$1" in
 		--path) PATH_NEXT=1 ;;
 		--path=*)
@@ -91,9 +88,9 @@ while :; do
 		# We're running ASF in headless mode so we don't need STDIN
 		# Start ASF in the background, trap will work properly due to non-blocking call
 		if [ -n "$BINARY_PREFIX" ]; then
-			$BINARY_PREFIX "mono ${MONO_ARGS-} $BINARY $BINARY_ARGS" &
+			$BINARY_PREFIX "mono ${MONO_ARGS-} $BINARY $*" &
 		else
-			mono ${MONO_ARGS-} "$BINARY" $BINARY_ARGS &
+			mono ${MONO_ARGS-} "$BINARY" "$@" &
 		fi
 
 		# This will forward mono error code, set -e will abort the script if it's non-zero
@@ -102,9 +99,9 @@ while :; do
 		# We're running ASF in non-headless mode, so we need STDIN to be operative
 		# Start ASF in the foreground, trap won't work until process exit
 		if [ -n "$BINARY_PREFIX" ]; then
-			$BINARY_PREFIX "mono ${MONO_ARGS-} $BINARY $BINARY_ARGS"
+			$BINARY_PREFIX "mono ${MONO_ARGS-} $BINARY $*"
 		else
-			mono ${MONO_ARGS-} "$BINARY" $BINARY_ARGS
+			mono ${MONO_ARGS-} "$BINARY" "$@"
 		fi
 	fi
 

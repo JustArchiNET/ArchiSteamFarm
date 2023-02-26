@@ -263,7 +263,26 @@ internal static class Program {
 			return false;
 		}
 
-		// Parse args
+		// Parse ASF_ARGS
+		try {
+			string[]? asfArgs = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableArguments)?.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries);
+
+			if (asfArgs?.Length > 0) {
+				if (!await ParseArgs(asfArgs).ConfigureAwait(false)) {
+					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+
+					return false;
+				}
+			}
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+
+			return false;
+		}
+
+		// Parse cmdline args
 		if (args?.Count > 0) {
 			if (!await ParseArgs(args).ConfigureAwait(false)) {
 				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
