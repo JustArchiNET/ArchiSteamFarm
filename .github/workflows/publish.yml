@@ -503,7 +503,6 @@ jobs:
         path: out/SHA512SUMS.sign
 
     - name: Create ArchiSteamFarm GitHub release
-      id: github_release
       uses: ncipollo/release-action@v1.12.0
       with:
         artifacts: "out/*"
