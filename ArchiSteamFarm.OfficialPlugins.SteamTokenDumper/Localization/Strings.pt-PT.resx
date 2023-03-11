@@ -62,15 +62,41 @@
 			PublicKeyToken=b77a5c561934e089
 		</value>
 	</resheader>
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginDisabledMissingBuildToken" xml:space="preserve">
+		<value>{0} foi desativado devido à falta de um token de compilação</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginDisabledInConfig" xml:space="preserve">
+		<value>{0} está atualmente desativado de acordo com a sua configuração. Se quiser ajudar o SteamDB na submissão de dados, por favor confira o nosso wiki.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} foi inicializado com sucesso, obrigado antecipadamente pela sua ajuda. A primeira submissão ocorrerá aproximadamente daqui a {1} a partir de agora.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+		<value>{0} não pôde ser carregado, uma instância nova será inicializada...</value>
+		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+	</data>
+	<data name="BotNoAppsToRefresh" xml:space="preserve">
+		<value>Não há aplicações que requiram uma atualização nesta instância do bot.</value>
+	</data>
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Recolhendo um total de {0} tokens de acesso a aplicações...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Recolhendo {0} tokens de acesso a aplicações...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Terminado o recolhimento de {0} tokens de acesso a aplicações.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Terminado o recolhimento de um total de {0} tokens de acesso a aplicações.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
 	
 	
 	

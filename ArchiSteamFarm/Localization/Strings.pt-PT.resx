@@ -512,7 +512,7 @@ StackTrace:
 		<value>O seu CurrentCulture fornecido é inválido, o ASF continuará executando com o valor padrão!</value>
 	</data>
 	<data name="TranslationIncomplete" xml:space="preserve">
-		<value>O ASF tentará usar o teu idioma preferido {0}, mas a traudção para essa língua está apenas {1} completa. Talvez queiras ajudar-nos a melhorar a tradução do ASF para a tua língua?</value>
+		<value>O ASF tentará usar o seu idioma preferido {0}, mas a tradução para essa língua está apenas {1} completa. Talvez nos queira ajudar a melhorar a tradução do ASF para a sua língua?</value>
 		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
 	</data>
 	<data name="IdlingGameNotPossible" xml:space="preserve">
@@ -732,7 +732,16 @@ Tempo de execução: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>A atualizar os ficheiros do ASF...</value>
 	</data>
-	
-	
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Por favor introduza a sua criptochave: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>O endereço IP {0} não está banido!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Tentou usar uma funcionalidade paga {0}, mas não tem uma LicenseID válida definida na configuração global do ASF. Por favor, reveja a sua configuração, pois as funcionalidades não funcionarão sem detalhes adicionais.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>
