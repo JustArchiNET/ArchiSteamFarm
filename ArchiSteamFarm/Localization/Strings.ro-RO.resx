@@ -718,7 +718,13 @@ Proces: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Se repara fișierele ASF...</value>
 	</data>
-	
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Introdu cheia de criptare: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>Adresa IP {0} nu este interzisă!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
 	
 </root>

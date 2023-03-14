@@ -74,18 +74,36 @@
 	
 	
 	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>{0} din {1} chei de depozit au fost recuperate cu succes.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys that were successfully retrieved, {1} will be replaced by the number (count this batch) of depot keys that were supposed to be retrieved</comment>
+	</data>
 	
 	
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
+	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+		<value>Aplicații noi: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+		<value>Aplicații verificate: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+		<value>Pachete noi: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+		<value>Pachete verificate: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+		<value>Depozite noi: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
 	
 	
 	
