@@ -759,9 +759,6 @@ public sealed class WebBrowser : IDisposable {
 		// Set max idle time from default of 100 seconds (100 * 1000) to desired value
 		ServicePointManager.MaxServicePointIdleTime = MaxIdleTime * 1000;
 
-		// Make best effort in ensuring that we're not honoring revoked certificates
-		ServicePointManager.CheckCertificateRevocationList = true;
-
 		// Don't use Expect100Continue, we're sure about our POSTs, save some TCP packets
 		ServicePointManager.Expect100Continue = false;
 
