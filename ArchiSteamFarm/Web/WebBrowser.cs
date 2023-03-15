@@ -71,7 +71,6 @@ public sealed class WebBrowser : IDisposable {
 			AutomaticDecompression = DecompressionMethods.All,
 #endif
 
-			CheckCertificateRevocationList = true,
 			CookieContainer = CookieContainer
 		};
 
