@@ -2368,7 +2368,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						IsPersistentSession = true,
 						Password = password,
 						Username = username,
-						WebsiteID = SharedInfo.PublicIdentifier
+						WebsiteID = "Client"
 					}
 				).ConfigureAwait(false);
 
