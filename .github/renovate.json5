@@ -19,6 +19,12 @@
 			"allowedVersions": "<= 3.1",
 			"matchManagers": [ "nuget" ],
 			"matchPackageNames": [ "Microsoft.Extensions.Configuration.Json", "Microsoft.Extensions.Logging.Configuration" ]
+		},
+		{
+			// TODO: Stick with SK2 version until we can remove the submodule
+			"allowedVersions": "<= 3.1.17",
+			"matchManagers": [ "nuget" ],
+			"matchPackageNames": [ "protobuf-net" ]
 		}
 	]
 }

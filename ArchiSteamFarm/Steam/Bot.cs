@@ -2307,7 +2307,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		if (!string.IsNullOrEmpty(refreshToken)) {
 			// Decrypt refreshToken if needed
 			if (BotConfig.PasswordFormat.HasTransformation()) {
-				refreshToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshToken).ConfigureAwait(false);
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				refreshToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshToken!).ConfigureAwait(false);
 			}
 		} else {
 			SteamAuthentication.AuthPollResult pollResponse;

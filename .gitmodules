@@ -8,5 +8,5 @@
 	branch = master
 [submodule "SteamKit"]
 	path = SteamKit
-	url = https://github.com/xPaw/SteamKit
+	url = https://github.com/xPaw/SteamKit.git
 	branch = authentication
