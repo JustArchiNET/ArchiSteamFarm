@@ -79,6 +79,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3.4.0
+      with:
+        submodules: recursive
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3.0.3
