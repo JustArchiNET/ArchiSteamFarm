@@ -101,4 +101,8 @@
 			<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
 		</Content>
 	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\SteamKit\SteamKit2\SteamKit2\SteamKit2.csproj" />
+	</ItemGroup>
 </Project>

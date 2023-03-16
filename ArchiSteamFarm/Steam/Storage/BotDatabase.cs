@@ -62,18 +62,37 @@ public sealed class BotDatabase : GenericDatabase {
 	[JsonProperty(Required = Required.DisallowNull)]
 	private readonly OrderedDictionary GamesToRedeemInBackground = new();
 
-	internal string? LoginKey {
-		get => BackingLoginKey;
+	internal string? SteamGuardData {
+		get => BackingSteamGuardData;
 
 		set {
-			if (BackingLoginKey == value) {
+			if (BackingSteamGuardData == value) {
 				return;
 			}
 
-			BackingLoginKey = value;
+			BackingSteamGuardData = value;
 			Utilities.InBackground(Save);
 		}
 	}
+
+	[JsonProperty]
+	private string? BackingSteamGuardData;
+
+	internal string? RefreshToken {
+		get => BackingRefreshToken;
+
+		set {
+			if (BackingRefreshToken == value) {
+				return;
+			}
+
+			BackingRefreshToken = value;
+			Utilities.InBackground(Save);
+		}
+	}
+
+	[JsonProperty]
+	private string? BackingRefreshToken;
 
 	internal MobileAuthenticator? MobileAuthenticator {
 		get => BackingMobileAuthenticator;
@@ -87,9 +106,6 @@ public sealed class BotDatabase : GenericDatabase {
 			Utilities.InBackground(Save);
 		}
 	}
-
-	[JsonProperty($"_{nameof(LoginKey)}")]
-	private string? BackingLoginKey;
 
 	[JsonProperty($"_{nameof(MobileAuthenticator)}")]
 	private MobileAuthenticator? BackingMobileAuthenticator;
@@ -109,9 +125,6 @@ public sealed class BotDatabase : GenericDatabase {
 		MatchActivelyBlacklistAppIDs.OnModified += OnObjectModified;
 		TradingBlacklistSteamIDs.OnModified += OnObjectModified;
 	}
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingLoginKey() => !string.IsNullOrEmpty(BackingLoginKey);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeBackingMobileAuthenticator() => BackingMobileAuthenticator != null;

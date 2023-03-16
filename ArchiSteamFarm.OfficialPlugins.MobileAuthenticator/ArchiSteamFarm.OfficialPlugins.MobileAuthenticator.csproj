@@ -7,6 +7,7 @@
 		<PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" />
 		<PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
 		<PackageReference Include="Newtonsoft.Json" IncludeAssets="compile" />
+		<PackageReference Include="protobuf-net" IncludeAssets="compile" />
 		<PackageReference Include="SteamKit2" IncludeAssets="compile" />
 		<PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" />
 	</ItemGroup>
@@ -18,6 +19,9 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" />
+
+		<!-- Temporary entry until newer SK2 release -->
+		<ProjectReference Include="..\SteamKit\SteamKit2\SteamKit2\SteamKit2.csproj" ExcludeAssets="all" Private="false" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -20,5 +20,8 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" />
+
+		<!-- Temporary entry until newer SK2 release -->
+		<ProjectReference Include="..\SteamKit\SteamKit2\SteamKit2\SteamKit2.csproj" ExcludeAssets="all" Private="false" />
 	</ItemGroup>
 </Project>
