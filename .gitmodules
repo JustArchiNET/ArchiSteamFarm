@@ -6,7 +6,3 @@
 	path = wiki
 	url = https://github.com/JustArchiNET/ArchiSteamFarm.wiki.git
 	branch = master
-[submodule "SteamKit"]
-	path = SteamKit
-	url = https://github.com/xPaw/SteamKit.git
-	branch = authentication

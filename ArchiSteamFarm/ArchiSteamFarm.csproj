@@ -16,13 +16,17 @@
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Nito.AsyncEx.Coordination" />
 		<PackageReference Include="NLog.Web.AspNetCore" />
-		<PackageReference Include="SteamKit2" />
+		<PackageReference Include="protobuf-net" />
 		<PackageReference Include="Swashbuckle.AspNetCore" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
 		<PackageReference Include="System.Composition" />
 		<PackageReference Include="System.Linq.Async" />
 		<PackageReference Include="zxcvbn-core" />
+
+		<Reference Include="SteamKit2">
+			<HintPath>Temp\SteamKit2.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'net481'">
@@ -100,9 +104,5 @@
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
 		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\SteamKit\SteamKit2\SteamKit2\SteamKit2.csproj" />
 	</ItemGroup>
 </Project>
