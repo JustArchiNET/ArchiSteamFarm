@@ -2308,6 +2308,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		string? refreshToken = BotDatabase.RefreshToken;
 
+		if (!string.IsNullOrEmpty(refreshToken)) {
+			// Decrypt refreshToken if needed
+			if (BotConfig.PasswordFormat.HasTransformation()) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				refreshToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshToken!).ConfigureAwait(false);
+			}
+		}
+
 		if (!await InitLoginAndPassword(string.IsNullOrEmpty(refreshToken)).ConfigureAwait(false)) {
 			Stop();
 
@@ -2348,13 +2356,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		InitConnectionFailureTimer();
 
-		if (!string.IsNullOrEmpty(refreshToken)) {
-			// Decrypt refreshToken if needed
-			if (BotConfig.PasswordFormat.HasTransformation()) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				refreshToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshToken!).ConfigureAwait(false);
-			}
-		} else {
+		if (string.IsNullOrEmpty(refreshToken)) {
 			SteamAuthentication.AuthPollResult pollResponse;
 
 			try {
