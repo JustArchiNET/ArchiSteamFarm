@@ -13,6 +13,7 @@
 		<PackageReference Include="Humanizer" />
 		<PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
 		<PackageReference Include="Markdig.Signed" />
+		<PackageReference Include="Microsoft.Win32.Registry" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Nito.AsyncEx.Coordination" />
 		<PackageReference Include="NLog.Web.AspNetCore" />

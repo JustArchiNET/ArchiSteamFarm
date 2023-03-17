@@ -22,9 +22,9 @@
 		},
 		{
 			// TODO: Stick with SK2 version until we can remove the submodule
-			"allowedVersions": "<= 3.1.17",
+			"enabled": false,
 			"matchManagers": [ "nuget" ],
-			"matchPackageNames": [ "protobuf-net" ]
+			"matchPackageNames": [ "Microsoft.Win32.Registry", "protobuf-net" ]
 		}
 	]
 }
