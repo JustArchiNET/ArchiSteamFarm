@@ -2367,8 +2367,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						GuardData = BotConfig.UseLoginKeys ? BotDatabase.SteamGuardData : null,
 						IsPersistentSession = true,
 						Password = password,
-						Username = username,
-						WebsiteID = "Client"
+						Username = username
 					}
 				).ConfigureAwait(false);
 
