@@ -1639,43 +1639,44 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
 		}
 
-		while (true) {
-			switch (inputType) {
-				case ASF.EUserInputType.SteamGuard when !string.IsNullOrEmpty(AuthCode):
-					string? savedAuthCode = AuthCode;
+		switch (inputType) {
+			case ASF.EUserInputType.SteamGuard when !string.IsNullOrEmpty(AuthCode):
+				string? savedAuthCode = AuthCode;
 
-					AuthCode = null;
+				AuthCode = null;
 
-					return savedAuthCode;
-				case ASF.EUserInputType.TwoFactorAuthentication when !string.IsNullOrEmpty(TwoFactorCode):
-					string? savedTwoFactorCode = TwoFactorCode;
+				return savedAuthCode;
+			case ASF.EUserInputType.TwoFactorAuthentication when !string.IsNullOrEmpty(TwoFactorCode):
+				string? savedTwoFactorCode = TwoFactorCode;
 
-					TwoFactorCode = null;
+				TwoFactorCode = null;
 
-					return savedTwoFactorCode;
-				case ASF.EUserInputType.TwoFactorAuthentication when BotDatabase.MobileAuthenticator != null:
-					string? generatedTwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
+				return savedTwoFactorCode;
+			case ASF.EUserInputType.TwoFactorAuthentication when BotDatabase.MobileAuthenticator != null:
+				string? generatedTwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 
-					if (!string.IsNullOrEmpty(generatedTwoFactorCode)) {
-						return generatedTwoFactorCode;
-					}
+				if (!string.IsNullOrEmpty(generatedTwoFactorCode)) {
+					return generatedTwoFactorCode;
+				}
 
-					break;
-			}
-
-			RequiredInput = inputType;
-
-			string? input = await Logging.GetUserInput(inputType, BotName).ConfigureAwait(false);
-
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (string.IsNullOrEmpty(input) || !SetUserInput(inputType, input!)) {
-				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(input)));
-
-				Stop();
-
-				return null;
-			}
+				break;
 		}
+
+		RequiredInput = inputType;
+
+		string? input = await Logging.GetUserInput(inputType, BotName).ConfigureAwait(false);
+
+		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+		if (string.IsNullOrEmpty(input) || !SetUserInput(inputType, input!)) {
+			ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(input)));
+
+			Stop();
+
+			return null;
+		}
+
+		// We keep user input set in case we need to use it again due to disconnection, OnLoggedOn() will reset it for us
+		return input;
 	}
 
 	internal void RequestPersonaStateUpdate() {
