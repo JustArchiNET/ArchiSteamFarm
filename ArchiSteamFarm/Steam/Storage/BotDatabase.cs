@@ -62,19 +62,6 @@ public sealed class BotDatabase : GenericDatabase {
 	[JsonProperty(Required = Required.DisallowNull)]
 	private readonly OrderedDictionary GamesToRedeemInBackground = new();
 
-	internal string? LoginKey {
-		get => BackingLoginKey;
-
-		set {
-			if (BackingLoginKey == value) {
-				return;
-			}
-
-			BackingLoginKey = value;
-			Utilities.InBackground(Save);
-		}
-	}
-
 	internal MobileAuthenticator? MobileAuthenticator {
 		get => BackingMobileAuthenticator;
 
@@ -88,11 +75,40 @@ public sealed class BotDatabase : GenericDatabase {
 		}
 	}
 
-	[JsonProperty($"_{nameof(LoginKey)}")]
-	private string? BackingLoginKey;
+	internal string? RefreshToken {
+		get => BackingRefreshToken;
+
+		set {
+			if (BackingRefreshToken == value) {
+				return;
+			}
+
+			BackingRefreshToken = value;
+			Utilities.InBackground(Save);
+		}
+	}
+
+	internal string? SteamGuardData {
+		get => BackingSteamGuardData;
+
+		set {
+			if (BackingSteamGuardData == value) {
+				return;
+			}
+
+			BackingSteamGuardData = value;
+			Utilities.InBackground(Save);
+		}
+	}
 
 	[JsonProperty($"_{nameof(MobileAuthenticator)}")]
 	private MobileAuthenticator? BackingMobileAuthenticator;
+
+	[JsonProperty]
+	private string? BackingRefreshToken;
+
+	[JsonProperty]
+	private string? BackingSteamGuardData;
 
 	private BotDatabase(string filePath) : this() {
 		if (string.IsNullOrEmpty(filePath)) {
@@ -111,10 +127,13 @@ public sealed class BotDatabase : GenericDatabase {
 	}
 
 	[UsedImplicitly]
-	public bool ShouldSerializeBackingLoginKey() => !string.IsNullOrEmpty(BackingLoginKey);
+	public bool ShouldSerializeBackingMobileAuthenticator() => BackingMobileAuthenticator != null;
 
 	[UsedImplicitly]
-	public bool ShouldSerializeBackingMobileAuthenticator() => BackingMobileAuthenticator != null;
+	public bool ShouldSerializeBackingRefreshToken() => !string.IsNullOrEmpty(BackingRefreshToken);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingSteamGuardData() => !string.IsNullOrEmpty(BackingSteamGuardData);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeFarmingBlacklistAppIDs() => FarmingBlacklistAppIDs.Count > 0;

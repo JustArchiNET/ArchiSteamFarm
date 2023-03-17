@@ -157,6 +157,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private readonly SemaphoreSlim MessagingSemaphore = new(1, 1);
 	private readonly ConcurrentDictionary<UserNotificationsCallback.EUserNotification, uint> PastNotifications = new();
 	private readonly SemaphoreSlim SendCompleteTypesSemaphore = new(1, 1);
+	private readonly SteamAuthentication SteamAuthentication;
 	private readonly SteamClient SteamClient;
 	private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new();
 	private readonly SteamUser SteamUser;
@@ -177,11 +178,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 	}
-
-	/// <remarks>
-	///     Login keys are not guaranteed to be valid, we should use them only if we don't have full details available from the user
-	/// </remarks>
-	private bool ShouldUseLoginKeys => BotConfig.UseLoginKeys && (!BotConfig.IsSteamPasswordSet || !HasMobileAuthenticator);
 
 	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
 	private string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
@@ -302,6 +298,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		CallbackManager.Subscribe<SteamApps.GuestPassListCallback>(OnGuestPassList);
 		CallbackManager.Subscribe<SteamApps.LicenseListCallback>(OnLicenseList);
 
+		SteamAuthentication = SteamClient.GetHandler<SteamAuthentication>() ?? throw new InvalidOperationException(nameof(SteamAuthentication));
+
 		SteamFriends = SteamClient.GetHandler<SteamFriends>() ?? throw new InvalidOperationException(nameof(SteamFriends));
 		CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 		CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
@@ -311,7 +309,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		SteamUser = SteamClient.GetHandler<SteamUser>() ?? throw new InvalidOperationException(nameof(SteamUser));
 		CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 		CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
-		CallbackManager.Subscribe<SteamUser.LoginKeyCallback>(OnLoginKey);
 		CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
 		CallbackManager.Subscribe<SteamUser.VanityURLChangedCallback>(OnVanityURLChangedCallback);
 		CallbackManager.Subscribe<SteamUser.WalletInfoCallback>(OnWalletUpdate);
@@ -1637,6 +1634,57 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
+	internal async Task<string?> RequestInput(ASF.EUserInputType inputType, bool previousCodeWasIncorrect) {
+		if ((inputType == ASF.EUserInputType.None) || !Enum.IsDefined(inputType)) {
+			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
+		}
+
+		switch (inputType) {
+			case ASF.EUserInputType.SteamGuard when !string.IsNullOrEmpty(AuthCode):
+				string? savedAuthCode = AuthCode;
+
+				AuthCode = null;
+
+				return savedAuthCode;
+			case ASF.EUserInputType.TwoFactorAuthentication when !string.IsNullOrEmpty(TwoFactorCode):
+				string? savedTwoFactorCode = TwoFactorCode;
+
+				TwoFactorCode = null;
+
+				return savedTwoFactorCode;
+			case ASF.EUserInputType.TwoFactorAuthentication when BotDatabase.MobileAuthenticator != null:
+				if (previousCodeWasIncorrect) {
+					// There is a possibility that our cached time is no longer appropriate, so we should reset the cache in this case in order to fetch it upon the next login attempt
+					// Yes, this might as well be just invalid 2FA credentials, but we can't be sure about that, and we have LoginFailures designed to verify that for us
+					await MobileAuthenticator.ResetSteamTimeDifference().ConfigureAwait(false);
+				}
+
+				string? generatedTwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
+
+				if (!string.IsNullOrEmpty(generatedTwoFactorCode)) {
+					return generatedTwoFactorCode;
+				}
+
+				break;
+		}
+
+		RequiredInput = inputType;
+
+		string? input = await Logging.GetUserInput(inputType, BotName).ConfigureAwait(false);
+
+		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+		if (string.IsNullOrEmpty(input) || !SetUserInput(inputType, input!)) {
+			ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(input)));
+
+			Stop();
+
+			return null;
+		}
+
+		// We keep user input set in case we need to use it again due to disconnection, OnLoggedOn() will reset it for us
+		return input;
+	}
+
 	internal void RequestPersonaStateUpdate() {
 		if (!IsConnectedAndLoggedOn) {
 			return;
@@ -1935,6 +1983,102 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			ArchiLogger.LogGenericException(e);
 		} finally {
 			CallbackSemaphore.Release();
+		}
+	}
+
+	private async Task HandleLoginResult(EResult result, EResult extendedResult) {
+		if (!Enum.IsDefined(result)) {
+			throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(EResult));
+		}
+
+		if (!Enum.IsDefined(extendedResult)) {
+			throw new InvalidEnumArgumentException(nameof(extendedResult), (int) extendedResult, typeof(EResult));
+		}
+
+		// Keep LastLogOnResult for OnDisconnected()
+		LastLogOnResult = result;
+
+		HeartBeatFailures = 0;
+		StopConnectionFailureTimer();
+
+		switch (result) {
+			case EResult.AccountDisabled:
+				// Those failures are permanent, we should Stop() the bot if any of those happen
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, result, extendedResult));
+				Stop();
+
+				break;
+			case EResult.AccountLogonDenied:
+			case EResult.InvalidLoginAuthCode:
+				RequiredInput = ASF.EUserInputType.SteamGuard;
+
+				string? authCode = await Logging.GetUserInput(ASF.EUserInputType.SteamGuard, BotName).ConfigureAwait(false);
+
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				if (string.IsNullOrEmpty(authCode) || !SetUserInput(ASF.EUserInputType.SteamGuard, authCode!)) {
+					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(authCode)));
+
+					Stop();
+				}
+
+				break;
+			case EResult.AccountLoginDeniedNeedTwoFactor when !HasMobileAuthenticator:
+			case EResult.TwoFactorCodeMismatch when !HasMobileAuthenticator:
+				RequiredInput = ASF.EUserInputType.TwoFactorAuthentication;
+
+				string? twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName).ConfigureAwait(false);
+
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode!)) {
+					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(twoFactorCode)));
+
+					Stop();
+				}
+
+				break;
+			case EResult.AccountLoginDeniedNeedTwoFactor:
+			case EResult.InvalidPassword:
+			case EResult.NoConnection:
+			case EResult.PasswordRequiredToKickSession: // Not sure about this one, it seems to be just generic "try again"? #694
+			case EResult.RateLimitExceeded:
+			case EResult.ServiceUnavailable:
+			case EResult.Timeout:
+			case EResult.TryAnotherCM:
+			case EResult.TwoFactorCodeMismatch:
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, result, extendedResult));
+
+				switch (result) {
+					case EResult.AccountLoginDeniedNeedTwoFactor:
+					case EResult.TwoFactorCodeMismatch:
+						// There is a possibility that our cached time is no longer appropriate, so we should reset the cache in this case in order to fetch it upon the next login attempt
+						// Yes, this might as well be just invalid 2FA credentials, but we can't be sure about that, and we have LoginFailures designed to verify that for us
+						await MobileAuthenticator.ResetSteamTimeDifference().ConfigureAwait(false);
+
+						if (++LoginFailures >= MaxLoginFailures) {
+							LoginFailures = 0;
+							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidAuthenticatorDuringLogin, MaxLoginFailures));
+							Stop();
+						}
+
+						break;
+					case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.RefreshToken) && (++LoginFailures >= MaxLoginFailures):
+						LoginFailures = 0;
+						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidPasswordDuringLogin, MaxLoginFailures));
+						Stop();
+
+						break;
+				}
+
+				break;
+			case EResult.OK:
+				break;
+			default:
+				// Unexpected result, shutdown immediately
+				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
+				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, result, extendedResult));
+				Stop();
+
+				break;
 		}
 	}
 
@@ -2265,22 +2409,17 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		string? loginKey = null;
+		string? refreshToken = BotDatabase.RefreshToken;
 
-		if (ShouldUseLoginKeys && string.IsNullOrEmpty(AuthCode) && string.IsNullOrEmpty(TwoFactorCode)) {
-			loginKey = BotDatabase.LoginKey;
-
-			// Decrypt login key if needed
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!string.IsNullOrEmpty(loginKey) && (loginKey!.Length > 19) && BotConfig.PasswordFormat.HasTransformation()) {
-				loginKey = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey).ConfigureAwait(false);
+		if (!string.IsNullOrEmpty(refreshToken)) {
+			// Decrypt refreshToken if needed
+			if (BotConfig.PasswordFormat.HasTransformation()) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				refreshToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshToken!).ConfigureAwait(false);
 			}
-		} else {
-			// If we're not using login keys, ensure we don't have any saved
-			BotDatabase.LoginKey = null;
 		}
 
-		if (!await InitLoginAndPassword(string.IsNullOrEmpty(loginKey)).ConfigureAwait(false)) {
+		if (!await InitLoginAndPassword(string.IsNullOrEmpty(refreshToken)).ConfigureAwait(false)) {
 			Stop();
 
 			return;
@@ -2318,22 +2457,57 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
 
-		if (string.IsNullOrEmpty(TwoFactorCode) && (BotDatabase.MobileAuthenticator != null)) {
-			// We should always include 2FA token, even if it's not required
-			TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
-		}
-
 		InitConnectionFailureTimer();
 
+		if (string.IsNullOrEmpty(refreshToken)) {
+			SteamAuthentication.AuthPollResult pollResponse;
+
+			try {
+				using CancellationTokenSource authCancellationTokenSource = new();
+
+				SteamAuthentication.CredentialsAuthSession authSession = await SteamAuthentication.BeginAuthSessionViaCredentials(
+					new SteamAuthentication.AuthSessionDetails {
+						Authenticator = new BotCredentialsProvider(this, authCancellationTokenSource),
+						DeviceFriendlyName = SharedInfo.PublicIdentifier,
+						GuardData = BotConfig.UseLoginKeys ? BotDatabase.SteamGuardData : null,
+						IsPersistentSession = true,
+						Password = password,
+						Username = username
+					}
+				).ConfigureAwait(false);
+
+				pollResponse = await authSession.StartPolling(authCancellationTokenSource.Token).ConfigureAwait(false);
+			} catch (AuthenticationException e) {
+				ArchiLogger.LogGenericWarningException(e);
+
+				await HandleLoginResult(e.Result, e.Result).ConfigureAwait(false);
+
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
+
+				return;
+			} catch (OperationCanceledException) {
+				// This is okay, we already took care of that and can ignore it here
+				return;
+			}
+
+			refreshToken = pollResponse.RefreshToken;
+
+			if (BotConfig.UseLoginKeys) {
+				BotDatabase.RefreshToken = BotConfig.PasswordFormat.HasTransformation() ? ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, refreshToken) : refreshToken;
+
+				if (!string.IsNullOrEmpty(pollResponse.NewGuardData)) {
+					BotDatabase.SteamGuardData = pollResponse.NewGuardData;
+				}
+			}
+		}
+
 		SteamUser.LogOnDetails logOnDetails = new() {
-			AuthCode = AuthCode,
+			AccessToken = refreshToken,
 			CellID = ASF.GlobalDatabase?.CellID,
 			LoginID = LoginID,
-			LoginKey = loginKey,
-			Password = password,
 			SentryFileHash = sentryFileHash,
-			ShouldRememberPassword = ShouldUseLoginKeys,
-			TwoFactorCode = TwoFactorCode,
+			ShouldRememberPassword = BotConfig.UseLoginKeys,
 			Username = username
 		};
 
@@ -2380,9 +2554,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			case EResult.AccountDisabled:
 				// Do not attempt to reconnect, those failures are permanent
 				return;
-			case EResult.InvalidPassword when !string.IsNullOrEmpty(BotDatabase.LoginKey):
+			case EResult.InvalidPassword when !string.IsNullOrEmpty(BotDatabase.RefreshToken):
 				// We can retry immediately
-				BotDatabase.LoginKey = null;
+				BotDatabase.RefreshToken = null;
 				ArchiLogger.LogGenericInfo(Strings.BotRemovedExpiredLoginKey);
 
 				break;
@@ -2681,6 +2855,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private void OnLoggedOff(SteamUser.LoggedOffCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
+		// Keep LastLogOnResult for OnDisconnected()
 		LastLogOnResult = callback.Result;
 
 		ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOff, callback.Result));
@@ -2716,231 +2891,133 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		// Always reset one-time-only access tokens when we get OnLoggedOn() response
 		AuthCode = TwoFactorCode = null;
 
-		// Keep LastLogOnResult for OnDisconnected()
-		LastLogOnResult = callback.Result;
+		await HandleLoginResult(callback.Result, callback.ExtendedResult).ConfigureAwait(false);
 
-		HeartBeatFailures = 0;
-		StopConnectionFailureTimer();
-
-		switch (callback.Result) {
-			case EResult.AccountDisabled:
-				// Those failures are permanent, we should Stop() the bot if any of those happen
-				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
-				Stop();
-
-				break;
-			case EResult.AccountLogonDenied:
-			case EResult.InvalidLoginAuthCode:
-				RequiredInput = ASF.EUserInputType.SteamGuard;
-
-				string? authCode = await Logging.GetUserInput(ASF.EUserInputType.SteamGuard, BotName).ConfigureAwait(false);
-
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				if (string.IsNullOrEmpty(authCode) || !SetUserInput(ASF.EUserInputType.SteamGuard, authCode!)) {
-					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(authCode)));
-
-					Stop();
-				}
-
-				break;
-			case EResult.AccountLoginDeniedNeedTwoFactor when !HasMobileAuthenticator:
-			case EResult.TwoFactorCodeMismatch when !HasMobileAuthenticator:
-				RequiredInput = ASF.EUserInputType.TwoFactorAuthentication;
-
-				string? twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName).ConfigureAwait(false);
-
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode!)) {
-					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(twoFactorCode)));
-
-					Stop();
-				}
-
-				break;
-			case EResult.OK:
-				AccountFlags = callback.AccountFlags;
-				SteamID = callback.ClientSteamID ?? throw new InvalidOperationException(nameof(callback.ClientSteamID));
-
-				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOn, $"{SteamID}{(!string.IsNullOrEmpty(callback.VanityURL) ? $"/{callback.VanityURL}" : "")}"));
-
-				// Old status for these doesn't matter, we'll update them if needed
-				LoginFailures = 0;
-				LibraryLocked = PlayingBlocked = false;
-
-				if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
-					InitPlayingWasBlockedTimer();
-				}
-
-				if (IsAccountLimited) {
-					ArchiLogger.LogGenericWarning(Strings.BotAccountLimited);
-				}
-
-				if (IsAccountLocked) {
-					ArchiLogger.LogGenericWarning(Strings.BotAccountLocked);
-				}
-
-				if ((callback.CellID != 0) && (ASF.GlobalDatabase != null) && (callback.CellID != ASF.GlobalDatabase.CellID)) {
-					ASF.GlobalDatabase.CellID = callback.CellID;
-				}
-
-				// Handle steamID-based maFile
-				if (!HasMobileAuthenticator) {
-					string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, $"{SteamID}{SharedInfo.MobileAuthenticatorExtension}");
-
-					if (File.Exists(maFilePath)) {
-						await ImportAuthenticatorFromFile(maFilePath).ConfigureAwait(false);
-					}
-				}
-
-				if (callback.ParentalSettings != null) {
-					(SteamParentalActive, string? steamParentalCode) = ValidateSteamParental(callback.ParentalSettings, BotConfig.SteamParentalCode, Program.SteamParentalGeneration);
-
-					if (SteamParentalActive) {
-						// Steam parental enabled
-						if (!string.IsNullOrEmpty(steamParentalCode)) {
-							// We were able to automatically generate it, potentially with help of the config
-							if (BotConfig.SteamParentalCode != steamParentalCode) {
-								// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-								if (!SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode!)) {
-									ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamParentalCode)));
-
-									Stop();
-
-									break;
-								}
-							}
-						} else {
-							// We failed to generate the pin ourselves, ask the user
-							RequiredInput = ASF.EUserInputType.SteamParentalCode;
-
-							steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
-
-							// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-							if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode!)) {
-								ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamParentalCode)));
-
-								Stop();
-
-								break;
-							}
-						}
-					}
-				} else {
-					// Steam parental disabled
-					SteamParentalActive = false;
-				}
-
-				ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
-
-				if (!await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.WebAPIUserNonce ?? throw new InvalidOperationException(nameof(callback.WebAPIUserNonce)), SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
-					if (!await RefreshSession().ConfigureAwait(false)) {
-						break;
-					}
-				}
-
-				// Pre-fetch API key for future usage if possible
-				Utilities.InBackground(ArchiWebHandler.HasValidApiKey);
-
-				if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground) {
-					Utilities.InBackground(() => RedeemGamesInBackground());
-				}
-
-				ArchiHandler.SetCurrentMode(BotConfig.UserInterfaceMode);
-				ArchiHandler.RequestItemAnnouncements();
-
-				// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
-				RequestPersonaStateUpdate();
-
-				Utilities.InBackground(InitializeFamilySharing);
-
-				ResetPersonaState();
-
-				if (BotConfig.SteamMasterClanID != 0) {
-					Utilities.InBackground(
-						async () => {
-							if (!await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false)) {
-								ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiWebHandler.JoinGroup)));
-							}
-
-							await JoinMasterChatGroupID().ConfigureAwait(false);
-						}
-					);
-				}
-
-				if (BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.SteamGroup)) {
-					Utilities.InBackground(() => ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID));
-				}
-
-				if (CardsFarmer.Paused) {
-					// Emit initial game playing status in this case
-					Utilities.InBackground(ResetGamesPlayed);
-				}
-
-				SteamPICSChanges.OnBotLoggedOn();
-
-				await PluginsCore.OnBotLoggedOn(this).ConfigureAwait(false);
-
-				break;
-			case EResult.AccountLoginDeniedNeedTwoFactor:
-			case EResult.InvalidPassword:
-			case EResult.NoConnection:
-			case EResult.PasswordRequiredToKickSession: // Not sure about this one, it seems to be just generic "try again"? #694
-			case EResult.RateLimitExceeded:
-			case EResult.ServiceUnavailable:
-			case EResult.Timeout:
-			case EResult.TryAnotherCM:
-			case EResult.TwoFactorCodeMismatch:
-				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
-
-				switch (callback.Result) {
-					case EResult.AccountLoginDeniedNeedTwoFactor:
-					case EResult.TwoFactorCodeMismatch:
-						// There is a possibility that our cached time is no longer appropriate, so we should reset the cache in this case in order to fetch it upon the next login attempt
-						// Yes, this might as well be just invalid 2FA credentials, but we can't be sure about that, and we have LoginFailures designed to verify that for us
-						await MobileAuthenticator.ResetSteamTimeDifference().ConfigureAwait(false);
-
-						if (++LoginFailures >= MaxLoginFailures) {
-							LoginFailures = 0;
-							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidAuthenticatorDuringLogin, MaxLoginFailures));
-							Stop();
-						}
-
-						break;
-					case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.LoginKey) && (++LoginFailures >= MaxLoginFailures):
-						LoginFailures = 0;
-						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidPasswordDuringLogin, MaxLoginFailures));
-						Stop();
-
-						break;
-				}
-
-				break;
-			default:
-				// Unexpected result, shutdown immediately
-				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(callback.Result), callback.Result));
-				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
-				Stop();
-
-				break;
-		}
-	}
-
-	private void OnLoginKey(SteamUser.LoginKeyCallback callback) {
-		ArgumentNullException.ThrowIfNull(callback);
-		ArgumentNullException.ThrowIfNull(callback.LoginKey);
-
-		if (!ShouldUseLoginKeys) {
+		if (callback.Result != EResult.OK) {
 			return;
 		}
 
-		string? loginKey = callback.LoginKey;
+		AccountFlags = callback.AccountFlags;
+		SteamID = callback.ClientSteamID ?? throw new InvalidOperationException(nameof(callback.ClientSteamID));
 
-		if (BotConfig.PasswordFormat.HasTransformation()) {
-			loginKey = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, loginKey);
+		ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOn, $"{SteamID}{(!string.IsNullOrEmpty(callback.VanityURL) ? $"/{callback.VanityURL}" : "")}"));
+
+		// Old status for these doesn't matter, we'll update them if needed
+		LoginFailures = 0;
+		LibraryLocked = PlayingBlocked = false;
+
+		if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
+			InitPlayingWasBlockedTimer();
 		}
 
-		BotDatabase.LoginKey = loginKey;
-		SteamUser.AcceptNewLoginKey(callback);
+		if (IsAccountLimited) {
+			ArchiLogger.LogGenericWarning(Strings.BotAccountLimited);
+		}
+
+		if (IsAccountLocked) {
+			ArchiLogger.LogGenericWarning(Strings.BotAccountLocked);
+		}
+
+		if ((callback.CellID != 0) && (ASF.GlobalDatabase != null) && (callback.CellID != ASF.GlobalDatabase.CellID)) {
+			ASF.GlobalDatabase.CellID = callback.CellID;
+		}
+
+		// Handle steamID-based maFile
+		if (!HasMobileAuthenticator) {
+			string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, $"{SteamID}{SharedInfo.MobileAuthenticatorExtension}");
+
+			if (File.Exists(maFilePath)) {
+				await ImportAuthenticatorFromFile(maFilePath).ConfigureAwait(false);
+			}
+		}
+
+		if (callback.ParentalSettings != null) {
+			(SteamParentalActive, string? steamParentalCode) = ValidateSteamParental(callback.ParentalSettings, BotConfig.SteamParentalCode, Program.SteamParentalGeneration);
+
+			if (SteamParentalActive) {
+				// Steam parental enabled
+				if (!string.IsNullOrEmpty(steamParentalCode)) {
+					// We were able to automatically generate it, potentially with help of the config
+					if (BotConfig.SteamParentalCode != steamParentalCode) {
+						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+						if (!SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode!)) {
+							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamParentalCode)));
+
+							Stop();
+
+							return;
+						}
+					}
+				} else {
+					// We failed to generate the pin ourselves, ask the user
+					RequiredInput = ASF.EUserInputType.SteamParentalCode;
+
+					steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
+
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+					if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode!)) {
+						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamParentalCode)));
+
+						Stop();
+
+						return;
+					}
+				}
+			}
+		} else {
+			// Steam parental disabled
+			SteamParentalActive = false;
+		}
+
+		ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
+
+		if (!await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.WebAPIUserNonce ?? throw new InvalidOperationException(nameof(callback.WebAPIUserNonce)), SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+			if (!await RefreshSession().ConfigureAwait(false)) {
+				return;
+			}
+		}
+
+		// Pre-fetch API key for future usage if possible
+		Utilities.InBackground(ArchiWebHandler.HasValidApiKey);
+
+		if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground) {
+			Utilities.InBackground(() => RedeemGamesInBackground());
+		}
+
+		ArchiHandler.SetCurrentMode(BotConfig.UserInterfaceMode);
+		ArchiHandler.RequestItemAnnouncements();
+
+		// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
+		RequestPersonaStateUpdate();
+
+		Utilities.InBackground(InitializeFamilySharing);
+
+		ResetPersonaState();
+
+		if (BotConfig.SteamMasterClanID != 0) {
+			Utilities.InBackground(
+				async () => {
+					if (!await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false)) {
+						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiWebHandler.JoinGroup)));
+					}
+
+					await JoinMasterChatGroupID().ConfigureAwait(false);
+				}
+			);
+		}
+
+		if (BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.SteamGroup)) {
+			Utilities.InBackground(() => ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID));
+		}
+
+		if (CardsFarmer.Paused) {
+			// Emit initial game playing status in this case
+			Utilities.InBackground(ResetGamesPlayed);
+		}
+
+		SteamPICSChanges.OnBotLoggedOn();
+
+		await PluginsCore.OnBotLoggedOn(this).ConfigureAwait(false);
 	}
 
 	private async void OnMachineAuth(SteamUser.UpdateMachineAuthCallback callback) {
