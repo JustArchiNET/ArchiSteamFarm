@@ -1634,7 +1634,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
-	internal async Task<string?> RequestInput(ASF.EUserInputType inputType) {
+	internal async Task<string?> RequestInput(ASF.EUserInputType inputType, bool previousCodeWasIncorrect) {
 		if ((inputType == ASF.EUserInputType.None) || !Enum.IsDefined(inputType)) {
 			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
 		}
@@ -1653,6 +1653,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				return savedTwoFactorCode;
 			case ASF.EUserInputType.TwoFactorAuthentication when BotDatabase.MobileAuthenticator != null:
+				if (previousCodeWasIncorrect) {
+					// There is a possibility that our cached time is no longer appropriate, so we should reset the cache in this case in order to fetch it upon the next login attempt
+					// Yes, this might as well be just invalid 2FA credentials, but we can't be sure about that, and we have LoginFailures designed to verify that for us
+					await MobileAuthenticator.ResetSteamTimeDifference().ConfigureAwait(false);
+				}
+
 				string? generatedTwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 
 				if (!string.IsNullOrEmpty(generatedTwoFactorCode)) {
@@ -2457,9 +2463,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			SteamAuthentication.AuthPollResult pollResponse;
 
 			try {
+				using CancellationTokenSource authCancellationTokenSource = new();
+
 				SteamAuthentication.CredentialsAuthSession authSession = await SteamAuthentication.BeginAuthSessionViaCredentials(
 					new SteamAuthentication.AuthSessionDetails {
-						Authenticator = new BotCredentialsProvider(this),
+						Authenticator = new BotCredentialsProvider(this, authCancellationTokenSource),
 						DeviceFriendlyName = SharedInfo.PublicIdentifier,
 						GuardData = BotConfig.UseLoginKeys ? BotDatabase.SteamGuardData : null,
 						IsPersistentSession = true,
@@ -2468,7 +2476,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					}
 				).ConfigureAwait(false);
 
-				pollResponse = await authSession.StartPolling().ConfigureAwait(false);
+				pollResponse = await authSession.StartPolling(authCancellationTokenSource.Token).ConfigureAwait(false);
 			} catch (AuthenticationException e) {
 				ArchiLogger.LogGenericWarningException(e);
 
@@ -2478,7 +2486,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				SteamClient.Disconnect();
 
 				return;
-			} catch (InvalidOperationException e) when (e.Message == "No code was provided by the authenticator.") {
+			} catch (OperationCanceledException) {
 				// This is okay, we already took care of that and can ignore it here
 				return;
 			}

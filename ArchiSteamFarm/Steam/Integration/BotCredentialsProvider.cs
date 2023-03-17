@@ -20,24 +20,61 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
+using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Localization;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Integration;
 
 internal sealed class BotCredentialsProvider : IAuthenticator {
-	private readonly Bot Bot;
+	private const byte MaxLoginFailures = 5;
 
-	internal BotCredentialsProvider(Bot bot) {
+	private readonly Bot Bot;
+	private readonly CancellationTokenSource CancellationTokenSource;
+
+	private byte LoginFailures;
+
+	internal BotCredentialsProvider(Bot bot, CancellationTokenSource cancellationTokenSource) {
 		ArgumentNullException.ThrowIfNull(bot);
+		ArgumentNullException.ThrowIfNull(cancellationTokenSource);
 
 		Bot = bot;
+		CancellationTokenSource = cancellationTokenSource;
 	}
 
 	public Task<bool> AcceptDeviceConfirmation() => Task.FromResult(false);
 
-	public async Task<string> ProvideDeviceCode() => await Bot.RequestInput(ASF.EUserInputType.TwoFactorAuthentication).ConfigureAwait(false) ?? "";
+	public async Task<string> ProvideDeviceCode(bool previousCodeWasIncorrect) => await ProvideInput(ASF.EUserInputType.TwoFactorAuthentication, previousCodeWasIncorrect).ConfigureAwait(false);
 
-	public async Task<string> ProvideEmailCode(string email) => await Bot.RequestInput(ASF.EUserInputType.SteamGuard).ConfigureAwait(false) ?? "";
+	public async Task<string> ProvideEmailCode(string email, bool previousCodeWasIncorrect) => await ProvideInput(ASF.EUserInputType.SteamGuard, previousCodeWasIncorrect).ConfigureAwait(false);
+
+	private async Task<string> ProvideInput(ASF.EUserInputType inputType, bool previousCodeWasIncorrect) {
+		if (!Enum.IsDefined(inputType)) {
+			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
+		}
+
+		if (previousCodeWasIncorrect && (++LoginFailures >= MaxLoginFailures)) {
+			EResult reason = inputType == ASF.EUserInputType.TwoFactorAuthentication ? EResult.TwoFactorCodeMismatch : EResult.InvalidLoginAuthCode;
+
+			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, reason, reason));
+
+			if (++LoginFailures >= MaxLoginFailures) {
+				CancellationTokenSource.Cancel();
+
+				return "";
+			}
+		}
+
+		string? result = await Bot.RequestInput(inputType, previousCodeWasIncorrect).ConfigureAwait(false);
+
+		if (string.IsNullOrEmpty(result)) {
+			CancellationTokenSource.Cancel();
+		}
+
+		return result ?? "";
+	}
 }
