@@ -257,6 +257,7 @@ public sealed class Asset {
 		MiniProfileBackground,
 		AvatarProfileFrame,
 		AnimatedAvatar,
-		KeyboardSkin
+		KeyboardSkin,
+		StartupVideo,
 	}
 }

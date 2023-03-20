@@ -197,6 +197,8 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 									return Asset.EType.AnimatedAvatar;
 								case "item_class_16":
 									return Asset.EType.KeyboardSkin;
+								case "item_class_17":
+									return Asset.EType.StartupVideo;
 								default:
 									ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
