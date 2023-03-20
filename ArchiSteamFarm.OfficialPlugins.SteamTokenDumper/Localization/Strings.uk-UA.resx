@@ -78,13 +78,21 @@
 		<value>{0} не вдалося завантажити, буде ініціалізований новий екземпляр...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
 	</data>
-	
-	
+	<data name="BotNoAppsToRefresh" xml:space="preserve">
+		<value>У цьому екземплярі бота немає додатків, які потребують оновлення.</value>
+	</data>
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Отримано {0} токенів доступу...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
 	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
 		<value>Отримання {0} токенів доступу до додатка...</value>
 		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Завершено отримання {0} токенів доступу.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
 	
 	
 	
