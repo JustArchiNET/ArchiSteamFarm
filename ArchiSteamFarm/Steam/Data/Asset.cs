@@ -258,6 +258,6 @@ public sealed class Asset {
 		AvatarProfileFrame,
 		AnimatedAvatar,
 		KeyboardSkin,
-		StartupVideo,
+		StartupVideo
 	}
 }
