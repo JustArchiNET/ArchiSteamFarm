@@ -13,21 +13,16 @@
 		<PackageReference Include="Humanizer" />
 		<PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
 		<PackageReference Include="Markdig.Signed" />
-		<PackageReference Include="Microsoft.Win32.Registry" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Nito.AsyncEx.Coordination" />
 		<PackageReference Include="NLog.Web.AspNetCore" />
-		<PackageReference Include="protobuf-net" />
+		<PackageReference Include="SteamKit2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
 		<PackageReference Include="System.Composition" />
 		<PackageReference Include="System.Linq.Async" />
 		<PackageReference Include="zxcvbn-core" />
-
-		<Reference Include="SteamKit2">
-			<HintPath>Temp\SteamKit2.dll</HintPath>
-		</Reference>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'net481'">

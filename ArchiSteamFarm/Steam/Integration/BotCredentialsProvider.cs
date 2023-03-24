@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using SteamKit2;
+using SteamKit2.Authentication;
 
 namespace ArchiSteamFarm.Steam.Integration;
 
@@ -46,11 +47,11 @@ internal sealed class BotCredentialsProvider : IAuthenticator {
 		CancellationTokenSource = cancellationTokenSource;
 	}
 
-	public Task<bool> AcceptDeviceConfirmation() => Task.FromResult(false);
+	public Task<bool> AcceptDeviceConfirmationAsync() => Task.FromResult(false);
 
-	public async Task<string> ProvideDeviceCode(bool previousCodeWasIncorrect) => await ProvideInput(ASF.EUserInputType.TwoFactorAuthentication, previousCodeWasIncorrect).ConfigureAwait(false);
+	public async Task<string> GetDeviceCodeAsync(bool previousCodeWasIncorrect) => await ProvideInput(ASF.EUserInputType.TwoFactorAuthentication, previousCodeWasIncorrect).ConfigureAwait(false);
 
-	public async Task<string> ProvideEmailCode(string email, bool previousCodeWasIncorrect) => await ProvideInput(ASF.EUserInputType.SteamGuard, previousCodeWasIncorrect).ConfigureAwait(false);
+	public async Task<string> GetEmailCodeAsync(string email, bool previousCodeWasIncorrect) => await ProvideInput(ASF.EUserInputType.SteamGuard, previousCodeWasIncorrect).ConfigureAwait(false);
 
 	private async Task<string> ProvideInput(ASF.EUserInputType inputType, bool previousCodeWasIncorrect) {
 		if (!Enum.IsDefined(inputType)) {

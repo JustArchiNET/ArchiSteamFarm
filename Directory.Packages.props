@@ -7,14 +7,12 @@
 		<PackageVersion Include="JetBrains.Annotations" Version="2022.3.1" />
 		<PackageVersion Include="Markdig.Signed" Version="0.31.0" />
 		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
-		<PackageVersion Include="Microsoft.Win32.Registry" Version="5.0.0" />
 		<PackageVersion Include="MSTest.TestAdapter" Version="3.0.2" />
 		<PackageVersion Include="MSTest.TestFramework" Version="3.0.2" />
 		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
 		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.2.2" />
-		<PackageVersion Include="protobuf-net" Version="3.1.17" />
-		<PackageVersion Include="SteamKit2" Version="2.4.1" />
+		<PackageVersion Include="SteamKit2" Version="2.5.0-Beta.1" />
 		<PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 		<PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
 		<PackageVersion Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />

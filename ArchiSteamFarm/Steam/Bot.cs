@@ -54,6 +54,7 @@ using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
+using SteamKit2.Authentication;
 using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.Steam;
@@ -157,7 +158,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private readonly SemaphoreSlim MessagingSemaphore = new(1, 1);
 	private readonly ConcurrentDictionary<UserNotificationsCallback.EUserNotification, uint> PastNotifications = new();
 	private readonly SemaphoreSlim SendCompleteTypesSemaphore = new(1, 1);
-	private readonly SteamAuthentication SteamAuthentication;
 	private readonly SteamClient SteamClient;
 	private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new();
 	private readonly SteamUser SteamUser;
@@ -297,8 +297,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		SteamApps = SteamClient.GetHandler<SteamApps>() ?? throw new InvalidOperationException(nameof(SteamApps));
 		CallbackManager.Subscribe<SteamApps.GuestPassListCallback>(OnGuestPassList);
 		CallbackManager.Subscribe<SteamApps.LicenseListCallback>(OnLicenseList);
-
-		SteamAuthentication = SteamClient.GetHandler<SteamAuthentication>() ?? throw new InvalidOperationException(nameof(SteamAuthentication));
 
 		SteamFriends = SteamClient.GetHandler<SteamFriends>() ?? throw new InvalidOperationException(nameof(SteamFriends));
 		CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
@@ -2460,13 +2458,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		InitConnectionFailureTimer();
 
 		if (string.IsNullOrEmpty(refreshToken)) {
-			SteamAuthentication.AuthPollResult pollResponse;
+			AuthPollResult pollResult;
 
 			try {
 				using CancellationTokenSource authCancellationTokenSource = new();
 
-				SteamAuthentication.CredentialsAuthSession authSession = await SteamAuthentication.BeginAuthSessionViaCredentials(
-					new SteamAuthentication.AuthSessionDetails {
+				CredentialsAuthSession authSession = await SteamClient.Authentication.BeginAuthSessionViaCredentialsAsync(
+					new AuthSessionDetails {
 						Authenticator = new BotCredentialsProvider(this, authCancellationTokenSource),
 						DeviceFriendlyName = SharedInfo.PublicIdentifier,
 						GuardData = BotConfig.UseLoginKeys ? BotDatabase.SteamGuardData : null,
@@ -2476,7 +2474,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					}
 				).ConfigureAwait(false);
 
-				pollResponse = await authSession.StartPolling(authCancellationTokenSource.Token).ConfigureAwait(false);
+				pollResult = await authSession.PollingWaitForResultAsync(authCancellationTokenSource.Token).ConfigureAwait(false);
 			} catch (AuthenticationException e) {
 				ArchiLogger.LogGenericWarningException(e);
 
@@ -2491,13 +2489,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			refreshToken = pollResponse.RefreshToken;
+			refreshToken = pollResult.RefreshToken;
 
 			if (BotConfig.UseLoginKeys) {
 				BotDatabase.RefreshToken = BotConfig.PasswordFormat.HasTransformation() ? ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, refreshToken) : refreshToken;
 
-				if (!string.IsNullOrEmpty(pollResponse.NewGuardData)) {
-					BotDatabase.SteamGuardData = pollResponse.NewGuardData;
+				if (!string.IsNullOrEmpty(pollResult.NewGuardData)) {
+					BotDatabase.SteamGuardData = pollResult.NewGuardData;
 				}
 			}
 		}
