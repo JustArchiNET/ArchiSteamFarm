@@ -307,11 +307,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		SteamUser = SteamClient.GetHandler<SteamUser>() ?? throw new InvalidOperationException(nameof(SteamUser));
 		CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 		CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
+		CallbackManager.Subscribe<SteamUser.PlayingSessionStateCallback>(OnPlayingSessionState);
 		CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
 		CallbackManager.Subscribe<SteamUser.VanityURLChangedCallback>(OnVanityURLChangedCallback);
 		CallbackManager.Subscribe<SteamUser.WalletInfoCallback>(OnWalletUpdate);
 
-		CallbackManager.Subscribe<ArchiHandler.PlayingSessionStateCallback>(OnPlayingSessionState);
 		CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 		CallbackManager.Subscribe<UserNotificationsCallback>(OnUserNotifications);
 
@@ -3106,7 +3106,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await PluginsCore.OnSelfPersonaState(this, callback, Nickname, AvatarHash).ConfigureAwait(false);
 	}
 
-	private async void OnPlayingSessionState(ArchiHandler.PlayingSessionStateCallback callback) {
+	private async void OnPlayingSessionState(SteamUser.PlayingSessionStateCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.PlayingBlocked == PlayingBlocked) {

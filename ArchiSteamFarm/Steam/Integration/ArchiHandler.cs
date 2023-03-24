@@ -181,11 +181,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, itemAnnouncements.Body));
 
 				break;
-			case EMsg.ClientPlayingSessionState:
-				ClientMsgProtobuf<CMsgClientPlayingSessionState> playingSessionState = new(packetMsg);
-				Client.PostCallback(new PlayingSessionStateCallback(packetMsg.TargetJobID, playingSessionState.Body));
-
-				break;
 			case EMsg.ClientSharedLibraryLockStatus:
 				ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus> sharedLibraryLockStatus = new(packetMsg);
 				Client.PostCallback(new SharedLibraryLockStatusCallback(packetMsg.TargetJobID, sharedLibraryLockStatus.Body));
@@ -793,18 +788,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		Default = 0,
 		BigPicture = 1,
 		Mobile = 2
-	}
-
-	internal sealed class PlayingSessionStateCallback : CallbackMsg {
-		internal readonly bool PlayingBlocked;
-
-		internal PlayingSessionStateCallback(JobID jobID, CMsgClientPlayingSessionState msg) {
-			ArgumentNullException.ThrowIfNull(jobID);
-			ArgumentNullException.ThrowIfNull(msg);
-
-			JobID = jobID;
-			PlayingBlocked = msg.playing_blocked;
-		}
 	}
 
 	internal sealed class SharedLibraryLockStatusCallback : CallbackMsg {
