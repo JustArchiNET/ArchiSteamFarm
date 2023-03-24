@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3.4.0
+      uses: actions/checkout@v3.5.0
 
     - name: Run Qodana scan
       uses: JetBrains/qodana-action@v2022.3.4
