@@ -1998,7 +1998,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		// Keep LastLogOnResult for OnDisconnected()
-		LastLogOnResult = result;
+		LastLogOnResult = result > EResult.OK ? result : EResult.Invalid;
 
 		HeartBeatFailures = 0;
 		StopConnectionFailureTimer();
@@ -2530,6 +2530,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		EResult lastLogOnResult = LastLogOnResult;
+
+		if (lastLogOnResult == EResult.Invalid) {
+			// Allow for a very short delay to initialize LastLogOnResult
+			await Task.Delay(1000).ConfigureAwait(false);
+
+			lastLogOnResult = LastLogOnResult;
+		}
+
 		LastLogOnResult = EResult.Invalid;
 		HeartBeatFailures = 0;
 		StopConnectionFailureTimer();
@@ -2860,7 +2868,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		// Keep LastLogOnResult for OnDisconnected()
-		LastLogOnResult = callback.Result;
+		LastLogOnResult = callback.Result > EResult.OK ? callback.Result : EResult.Invalid;
 
 		ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOff, callback.Result));
 
