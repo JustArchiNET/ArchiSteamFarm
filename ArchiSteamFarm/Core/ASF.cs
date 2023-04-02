@@ -1075,7 +1075,8 @@ public static class ASF {
 		SteamGuard,
 		SteamParentalCode,
 		TwoFactorAuthentication,
-		Cryptkey
+		Cryptkey,
+		DeviceConfirmation
 	}
 
 	internal enum EFileType : byte {

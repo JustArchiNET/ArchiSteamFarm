@@ -861,6 +861,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		// This switch should cover ONLY bot properties
 		switch (inputType) {
+			case ASF.EUserInputType.DeviceConfirmation:
+				// Nothing to do for us
+				break;
 			case ASF.EUserInputType.Login:
 				BotConfig.SteamLogin = inputValue;
 

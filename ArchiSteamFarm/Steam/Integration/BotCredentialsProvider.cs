@@ -47,7 +47,17 @@ internal sealed class BotCredentialsProvider : IAuthenticator {
 		CancellationTokenSource = cancellationTokenSource;
 	}
 
-	public Task<bool> AcceptDeviceConfirmationAsync() => Task.FromResult(false);
+	public async Task<bool> AcceptDeviceConfirmationAsync() {
+		if (Bot.HasMobileAuthenticator) {
+			// We don't want device confirmation under any circumstance, we can provide the code on our own
+			return false;
+		}
+
+		// Ask the user what he wants
+		string input = await ProvideInput(ASF.EUserInputType.DeviceConfirmation, false).ConfigureAwait(false);
+
+		return input.Equals("Y", StringComparison.OrdinalIgnoreCase);
+	}
 
 	public async Task<string> GetDeviceCodeAsync(bool previousCodeWasIncorrect) => await ProvideInput(ASF.EUserInputType.TwoFactorAuthentication, previousCodeWasIncorrect).ConfigureAwait(false);
 

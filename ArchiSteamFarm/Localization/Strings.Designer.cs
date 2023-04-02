@@ -261,6 +261,12 @@ namespace ArchiSteamFarm.Localization {
             }
         }
         
+        public static string UserInputDeviceConfirmation {
+            get {
+                return ResourceManager.GetString("UserInputDeviceConfirmation", resourceCulture);
+            }
+        }
+        
         public static string UserInputSteam2FA {
             get {
                 return ResourceManager.GetString("UserInputSteam2FA", resourceCulture);

@@ -103,6 +103,17 @@ internal static class Logging {
 						result = ConsoleReadLineMasked();
 
 						break;
+					case ASF.EUserInputType.DeviceConfirmation:
+						while (true) {
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceConfirmation, botName));
+							result = ConsoleReadLine();
+
+							if (string.IsNullOrEmpty(result) || result.Equals("Y", StringComparison.OrdinalIgnoreCase) || result.Equals("N", StringComparison.OrdinalIgnoreCase)) {
+								break;
+							}
+						}
+
+						break;
 					case ASF.EUserInputType.Login:
 						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
 						result = ConsoleReadLine();
