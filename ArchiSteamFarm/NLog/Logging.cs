@@ -108,7 +108,8 @@ internal static class Logging {
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceConfirmation, botName));
 							result = ConsoleReadLine();
 
-							if (string.IsNullOrEmpty(result) || result.Equals("Y", StringComparison.OrdinalIgnoreCase) || result.Equals("N", StringComparison.OrdinalIgnoreCase)) {
+							// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+							if (string.IsNullOrEmpty(result) || result!.Equals("Y", StringComparison.OrdinalIgnoreCase) || result.Equals("N", StringComparison.OrdinalIgnoreCase)) {
 								break;
 							}
 						}
