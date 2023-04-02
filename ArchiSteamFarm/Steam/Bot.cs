@@ -2038,6 +2038,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				break;
 			case EResult.AccountLoginDeniedNeedTwoFactor:
+			case EResult.DuplicateRequest: // Not sure about this one, it seems to be just generic "try again"?
 			case EResult.InvalidPassword:
 			case EResult.NoConnection:
 			case EResult.PasswordRequiredToKickSession: // Not sure about this one, it seems to be just generic "try again"? #694
