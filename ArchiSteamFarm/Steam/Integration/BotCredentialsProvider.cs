@@ -48,7 +48,7 @@ internal sealed class BotCredentialsProvider : IAuthenticator {
 	}
 
 	public async Task<bool> AcceptDeviceConfirmationAsync() {
-		if (Bot.HasMobileAuthenticator) {
+		if (Bot.HasMobileAuthenticator || Bot.HasLoginCodeReady) {
 			// We don't want device confirmation under any circumstance, we can provide the code on our own
 			return false;
 		}

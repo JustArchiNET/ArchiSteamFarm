@@ -149,6 +149,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	public SteamFriends SteamFriends { get; }
 
 	internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
+	internal bool HasLoginCodeReady => !string.IsNullOrEmpty(TwoFactorCode) || !string.IsNullOrEmpty(AuthCode);
 
 	private readonly CallbackManager CallbackManager;
 	private readonly SemaphoreSlim CallbackSemaphore = new(1, 1);
@@ -2038,7 +2039,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				break;
 			case EResult.AccountLoginDeniedNeedTwoFactor:
-			case EResult.DuplicateRequest: // Not sure about this one, it seems to be just generic "try again"?
+			case EResult.DuplicateRequest: // This will happen if user reacts to popup and tries to use the code afterwards, we have the code saved in ASF, we just need to try again
 			case EResult.InvalidPassword:
 			case EResult.NoConnection:
 			case EResult.PasswordRequiredToKickSession: // Not sure about this one, it seems to be just generic "try again"? #694
