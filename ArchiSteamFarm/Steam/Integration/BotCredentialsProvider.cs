@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Storage;
 using SteamKit2;
 using SteamKit2.Authentication;
 
@@ -48,6 +49,11 @@ internal sealed class BotCredentialsProvider : IAuthenticator {
 	}
 
 	public async Task<bool> AcceptDeviceConfirmationAsync() {
+		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
+			// In headless/service mode, we always fallback to the code instead, as user can't confirm future popup from the next login procedure, and we never wait for current one
+			return false;
+		}
+
 		if (Bot.HasMobileAuthenticator || Bot.HasLoginCodeReady) {
 			// We don't want device confirmation under any circumstance, we can provide the code on our own
 			return false;
