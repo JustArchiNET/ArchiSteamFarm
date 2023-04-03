@@ -188,6 +188,7 @@ StackTrace:
 		<value>Lokalna verzija: {0} | Dostupna verzija: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
+	
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Molimo Vas unestie vaš 2FA kod iz Vaše Steam autentikator aplikacije: </value>
 		<comment>Please note that this translation should end with space</comment>

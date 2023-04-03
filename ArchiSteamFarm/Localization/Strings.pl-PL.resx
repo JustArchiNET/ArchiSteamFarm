@@ -190,6 +190,10 @@ StackTrace:
 		<value>Lokalna wersja: {0} | Wersja zdalna: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Sprawdź swoją aplikację mobilną Steam, otrzymasz powiadomienie o zatwierdzeniu logowania. Wpisz Y, jeśli otrzymano i zatwierdzono powiadomienie, N, jeśli zamiast tego chcesz podać kod: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Wprowadź kod uwierzytelnienia dwuskładnikowego z twojego mobilnego tokena Steam: </value>
 		<comment>Please note that this translation should end with space</comment>

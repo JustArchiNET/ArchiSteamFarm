@@ -190,6 +190,7 @@ StackTrace:
 		<value>Ваша версія: {0} | Апошняя версія: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
+	
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Калі ласка, увядзіце код 2FA з з мабільнага дадатку Steam: </value>
 		<comment>Please note that this translation should end with space</comment>

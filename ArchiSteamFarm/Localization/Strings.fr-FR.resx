@@ -190,6 +190,7 @@ StackTrace :
 		<value>Version locale : {0} | Version la plus récente : {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
+	
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Veuillez entrer votre code 2FA généré par votre application d'authentification de Steam : </value>
 		<comment>Please note that this translation should end with space</comment>

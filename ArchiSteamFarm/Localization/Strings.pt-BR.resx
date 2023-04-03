@@ -190,6 +190,7 @@ StackTrace:
 		<value>Versão local: {0} | Versão remota: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
+	
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Insira o código gerado pelo autenticador móvel do Steam: </value>
 		<comment>Please note that this translation should end with space</comment>

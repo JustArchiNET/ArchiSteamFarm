@@ -184,6 +184,7 @@ StackTrace:
 		<value>เวอร์ชันบนเครื่อง: {0} | เวอร์ชันบนเซิร์ฟเวอร์: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
+	
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>โปรดป้อนรหัส 2FA ของคุณจากแอปยืนยันตัวตน Steam ของคุณ: </value>
 		<comment>Please note that this translation should end with space</comment>

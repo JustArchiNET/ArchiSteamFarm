@@ -190,6 +190,10 @@ STACKTRACE:
 		<value>LOCAL VERSHUN: {0} | REMOTE VERSHUN: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>PLZ CHECK UR STEAM MOBILE APP, U SHUD HAS RECEIVD LOGIN APPROVAL NOTIFICASHUN. TYPE Y IF U RECEIVD AN APPROVD TEH NOTIFICASHUN, N IF U WANTS 2 PROVIDE CODE INSTEAD: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>PLZ ENTR UR 2FA CODE FRUM UR STEAM AUTHENTICATOR APP: </value>
 		<comment>Please note that this translation should end with space</comment>

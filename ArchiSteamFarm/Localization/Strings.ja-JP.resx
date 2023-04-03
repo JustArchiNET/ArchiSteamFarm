@@ -187,6 +187,7 @@
 		<value>現在のバージョン: {0} | 最新バージョン: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
+	
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Steam 認証アプリの二次認証コードを入力してください: </value>
 		<comment>Please note that this translation should end with space</comment>

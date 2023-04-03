@@ -189,6 +189,10 @@ StackTrace:
 		<value>Versión local: {0} | Versión remota: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Comprueba tu aplicación móvil de Steam, deberías haber recibido una notificación para aprobar el inicio de sesión. Escribe Y si recibiste y aprobaste la notificación, N si en cambio deseas ingresar un código: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Por favor, introduce el código 2FA que aparece en tu aplicación de Steam: </value>
 		<comment>Please note that this translation should end with space</comment>

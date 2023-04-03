@@ -190,6 +190,10 @@
 		<value>当前版本：{0} | 最新版本：{1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>请查看您的 Steam 手机客户端，您应该已经收到了登录请求通知。如果您已经收到并批准，请输入 Y，如果您要提供令牌代码，请输入 N: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>请输入 Steam 手机验证器上的两步验证代码: </value>
 		<comment>Please note that this translation should end with space</comment>

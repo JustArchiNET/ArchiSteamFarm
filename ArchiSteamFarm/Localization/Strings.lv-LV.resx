@@ -190,6 +190,7 @@ StackTrace:
 		<value>Lokālā versija: {0} | Attālinātā versija: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
+	
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Lūdzu, ievadi savu 2FA kodu no Steam autentifikatora aplikācijas: </value>
 		<comment>Please note that this translation should end with space</comment>

@@ -185,6 +185,7 @@
 		<value>Versi lokal: {0} | Versi remote: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
+	
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Silakan masukkan kode 2FA dari aplikasi authenticator Steam Anda: </value>
 		<comment>Please note that this translation should end with space</comment>
