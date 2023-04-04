@@ -80,7 +80,7 @@
 		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-		<value>ASF V{0} столкнулся с фатальной ошибкой до того, как ядро модуля журналирования могло инициализироваться!</value>
+		<value>ASF V{0} столкнулся с фатальной ошибкой до того, как модуль логирования ядра успел инициализироваться!</value>
 		<comment>{0} will be replaced by version number</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -126,10 +126,10 @@
 		<value>Невозможно произвести обновление, так как нет подходящих файлов, которые относятся к текущей запущенной версии! Автоматическое обновление до этой версии невозможно.</value>
 	</data>
 	<data name="ErrorUpdateNoAssets" xml:space="preserve">
-		<value>Не могу обновиться, поскольку эта версия не содержит никаких файлов!</value>
+		<value>Не удалось обновиться, поскольку эта версия не содержит никаких файлов!</value>
 	</data>
 	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-		<value>Получен запрос на ввод данных пользователем, однако процесс идёт в без интерфейсном режиме!</value>
+		<value>Получен запрос на ввод данных пользователем, однако процесс запущен в режиме без интерфейса!</value>
 	</data>
 	<data name="Exiting" xml:space="preserve">
 		<value>Выход...</value>
@@ -190,7 +190,10 @@
 		<value>Установленная версия: {0} | Актуальная версия: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Пожалуйста, проверьте ваше мобильное приложение Steam, вы должны были получить уведомление о подтверждении входа в систему. Введите 'Y' если вы получили и одобрили уведомление, 'N' если вы хотите ввести код аутентификатора: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Пожалуйста, введите код 2FA из вашего Steam аутентификатора: </value>
 		<comment>Please note that this translation should end with space</comment>
