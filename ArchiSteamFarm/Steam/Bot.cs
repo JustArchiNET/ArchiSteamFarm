@@ -238,6 +238,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private bool ReconnectOnUserInitiated;
 	private bool SendCompleteTypesScheduled;
 	private Timer? SendItemsTimer;
+	private Timer? TradeCheckTimer;
 	private bool SteamParentalActive;
 	private SteamSaleEvent? SteamSaleEvent;
 	private string? TwoFactorCode;
@@ -349,6 +350,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		GamesRedeemerInBackgroundTimer?.Dispose();
 		PlayingWasBlockedTimer?.Dispose();
 		SendItemsTimer?.Dispose();
+		TradeCheckTimer?.Dispose();
 		SteamSaleEvent?.Dispose();
 	}
 
@@ -382,6 +384,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (SendItemsTimer != null) {
 			await SendItemsTimer.DisposeAsync().ConfigureAwait(false);
+		}
+
+		if (TradeCheckTimer != null) {
+			await TradeCheckTimer.DisposeAsync().ConfigureAwait(false);
 		}
 
 		if (SteamSaleEvent != null) {
@@ -2235,6 +2241,21 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			);
 		}
 
+		if (TradeCheckTimer != null) {
+			await TradeCheckTimer.DisposeAsync().ConfigureAwait(false);
+
+			TradeCheckTimer = null;
+		}
+
+		if (BotConfig is { TradeCheckPeriod: > 0 }) {
+			TradeCheckTimer = new Timer(
+				OnTradeCheckTimer,
+				null,
+				TimeSpan.FromMinutes(BotConfig.TradeCheckPeriod) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bots.Count), // Delay
+				TimeSpan.FromMinutes(BotConfig.TradeCheckPeriod) // Period
+			);
+		}
+
 		if (SteamSaleEvent != null) {
 			await SteamSaleEvent.DisposeAsync().ConfigureAwait(false);
 
@@ -3131,6 +3152,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private async void OnSendItemsTimer(object? state = null) => await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
+
+	private void OnTradeCheckTimer(object? state = null) => Utilities.InBackground(Trading.OnNewTrade);
 
 	private async void OnServiceMethod(SteamUnifiedMessages.ServiceMethodNotification notification) {
 		ArgumentNullException.ThrowIfNull(notification);
