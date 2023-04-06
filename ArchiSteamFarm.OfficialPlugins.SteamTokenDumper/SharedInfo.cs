@@ -29,7 +29,7 @@ internal static class SharedInfo {
 	internal const byte MaximumMinutesBeforeFirstUpload = 60; // Must be greater or equal to MinimumMinutesBeforeFirstUpload
 	internal const byte MinimumMinutesBeforeFirstUpload = 10; // Must be less or equal to MaximumMinutesBeforeFirstUpload
 	internal const byte MinimumMinutesBetweenUploads = 5; // Rate limiting for the server
-	internal const string ServerURL = "https://asf-token-dumper.xpaw.me";
+	internal const string ServerURL = "https://tokendumper-asf.steamdb.info";
 	internal const string Token = "STEAM_TOKEN_DUMPER_TOKEN"; // This is filled automatically during our CI build with API key provided by xPaw for ASF project
 
 	internal static bool HasValidToken => Token.Length == 128;
