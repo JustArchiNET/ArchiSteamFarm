@@ -190,7 +190,10 @@ StackTrace:
 		<value>Lokālā versija: {0} | Attālinātā versija: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Pārbaudi Steam mobilo aplikāciju, ir pienācis ziņojums par pierakstīšanās mēģinājumu. Raksti Y, ja saņēmi un apstiprināji pierakstīšanos, raksti N, ja gribi ievadīt pierakstīšanās kodu: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Lūdzu, ievadi savu 2FA kodu no Steam autentifikatora aplikācijas: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -733,7 +736,16 @@ Darbspējas laiks: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Atjauno ASF failus...</value>
 	</data>
-	
-	
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Ievadiet savu crytkey: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>IP adrese {0} nav aizliegta!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Jūs mēģinat izmantot maksas pakalpojumu {0}, bet jums nav derīgs LicenseID iestatīts ASF globālajā konfigurācijā. Lūdzu pārskati savu konfigurāciju, jo šī funkcionalitāte nestrādās bez papildu informācijas.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>

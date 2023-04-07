@@ -62,18 +62,50 @@
 			PublicKeyToken=b77a5c561934e089
 		</value>
 	</resheader>
+	<data name="PluginDisabledMissingBuildToken" xml:space="preserve">
+		<value>{0} ir atspējots, jo trūkst būvējuma marķieris</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginDisabledInConfig" xml:space="preserve">
+		<value>{0} šobrīd ir atspējots balstoties uz konfigurāciju. Ja tu vēlies palīdzēt SteamDB ar datu sūtīšanu, lūdzu vērsies pie mūsu wiki.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} ir veiksmīgi inicializēts, paldies jau iepriekš par palīdzību. Pirmā iesniegšana notiks aptuveni pēc {1} no šī brīža.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+		<value>{0} nevarēja tikt ielādēts, jauna instance tiks inicializēta...</value>
+		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+	</data>
+	<data name="BotNoAppsToRefresh" xml:space="preserve">
+		<value>Nav aplikāciju kas pieprasa atsvaidzināšanu šai botu instancei.</value>
+	</data>
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Iegūst kopumā {0} aplikāciju piekļuves marķierus...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Iegūst {0} aplikāciju piekļuves marķierus...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Pabeidza iegūt {0} aplikāciju piekļuves marķierus.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Pabeidza iegūt kopumā {0} aplikāciju piekļuves marķierus.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="BotRetrievingAppInfos" xml:space="preserve">
+		<value>Iegūst {0} aplikāciju informāciju...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
+		<value>Pabeidza iegūt {0} aplikāciju informāciju.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
+	</data>
 	
 	
 	
