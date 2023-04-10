@@ -45,6 +45,7 @@ using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -94,8 +95,24 @@ internal sealed class Startup {
 		// This must be called before default files, because we don't know the exact file name that will be used for index page
 		app.UseWhen(static context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), static appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
 
+		string customPluginsPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.PluginsDirectory);
+		string pluginsPath = Directory.Exists(customPluginsPath) ? customPluginsPath : Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
+
+		List<string> staticFilesDirectorys = new();
+
+		foreach (string dir in Directory.EnumerateDirectories(pluginsPath)) {
+			string staticFilesDirectory = Path.Combine(dir, SharedInfo.WebsiteDirectory);
+			if (Directory.Exists(staticFilesDirectory)) {
+				staticFilesDirectorys.Add(staticFilesDirectory);
+			}
+		}
+
 		// Add support for default root path redirection (GET / -> GET /index.html), must come before static files
 		app.UseDefaultFiles();
+
+		foreach (string staticFilesDirectory in staticFilesDirectorys) {
+			app.UseDefaultFiles("/" + Directory.GetParent(staticFilesDirectory)?.Name);
+		}
 
 		// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
 		app.UseStaticFiles(
@@ -132,6 +149,45 @@ internal sealed class Startup {
 				}
 			}
 		);
+
+		foreach (string staticFilesDirectory in staticFilesDirectorys) {
+			app.UseStaticFiles(
+				new StaticFileOptions {
+					OnPrepareResponse = static context => {
+						if (context.File is { Exists: true, IsDirectory: false } && !string.IsNullOrEmpty(context.File.Name)) {
+							string extension = Path.GetExtension(context.File.Name);
+
+							CacheControlHeaderValue cacheControl = new();
+
+							switch (extension.ToUpperInvariant()) {
+								case ".CSS" or ".JS":
+									// Add support for SRI-protected static files
+									// SRI requires from us to notify the caller (especially proxy) to avoid modifying the data
+									cacheControl.NoTransform = true;
+
+									goto default;
+								default:
+									// Instruct the caller to always ask us first about every file it requests
+									// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that his cache is still up-to-date
+									// This is used to handle ASF and user updates to WWW root, we don't want from the client to ever use outdated scripts
+									cacheControl.NoCache = true;
+
+									// All static files are public by definition, we don't have any authorization here
+									cacheControl.Public = true;
+
+									break;
+							}
+
+							ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
+
+							headers.CacheControl = cacheControl;
+						}
+					},
+					FileProvider = new PhysicalFileProvider(staticFilesDirectory),
+					RequestPath = "/" + Directory.GetParent(staticFilesDirectory)?.Name
+				}
+			);
+		}
 
 		// Use routing for our API controllers, this should be called once we're done with all the static files mess
 #if !NETFRAMEWORK && !NETSTANDARD
