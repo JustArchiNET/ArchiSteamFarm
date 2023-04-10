@@ -95,6 +95,9 @@ internal sealed class Startup {
 		// This must be called before default files, because we don't know the exact file name that will be used for index page
 		app.UseWhen(static context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), static appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
 
+		// Add support for default root path redirection (GET / -> GET /index.html), must come before static files
+		app.UseDefaultFiles();
+
 #if !NETFRAMEWORK && !NETSTANDARD
 		string customPluginsPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.PluginsDirectory);
 		string pluginsPath = Directory.Exists(customPluginsPath) ? customPluginsPath : Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
@@ -107,12 +110,7 @@ internal sealed class Startup {
 				staticFilesDirectorys.Add(staticFilesDirectory);
 			}
 		}
-#endif
 
-		// Add support for default root path redirection (GET / -> GET /index.html), must come before static files
-		app.UseDefaultFiles();
-
-#if !NETFRAMEWORK && !NETSTANDARD
 		foreach (string staticFilesDirectory in staticFilesDirectorys) {
 			app.UseDefaultFiles("/" + Directory.GetParent(staticFilesDirectory)?.Name);
 		}
@@ -193,10 +191,8 @@ internal sealed class Startup {
 				}
 			);
 		}
-#endif
 
 		// Use routing for our API controllers, this should be called once we're done with all the static files mess
-#if !NETFRAMEWORK && !NETSTANDARD
 		app.UseRouting();
 #endif
 
