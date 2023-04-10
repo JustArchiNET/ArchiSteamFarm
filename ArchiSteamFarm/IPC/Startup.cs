@@ -108,11 +108,8 @@ internal sealed class Startup {
 			string staticFilesDirectory = Path.Combine(dir, SharedInfo.WebsiteDirectory);
 			if (Directory.Exists(staticFilesDirectory)) {
 				staticFilesDirectorys.Add(staticFilesDirectory);
+				app.UseDefaultFiles("/" + Directory.GetParent(staticFilesDirectory)?.Name);
 			}
-		}
-
-		foreach (string staticFilesDirectory in staticFilesDirectorys) {
-			app.UseDefaultFiles("/" + Directory.GetParent(staticFilesDirectory)?.Name);
 		}
 #endif
 
