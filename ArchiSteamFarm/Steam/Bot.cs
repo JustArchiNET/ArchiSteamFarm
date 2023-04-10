@@ -78,8 +78,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private static readonly SemaphoreSlim BotsSemaphore = new(1, 1);
 
-	private static IMachineInfoProvider? CustomMachineInfoProvider;
-
 	[JsonIgnore]
 	[PublicAPI]
 	public Actions Actions { get; }
@@ -266,8 +264,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				builder.WithProtocolTypes(ASF.GlobalConfig?.SteamProtocols ?? GlobalConfig.DefaultSteamProtocols);
 				builder.WithServerListProvider(ASF.GlobalDatabase.ServerListProvider);
 
-				if (CustomMachineInfoProvider != null) {
-					builder.WithMachineInfoProvider(CustomMachineInfoProvider);
+				IMachineInfoProvider? customMachineInfoProvider = PluginsCore.GetCustomMachineInfoProvider(this).Result;
+
+				if (customMachineInfoProvider != null) {
+					builder.WithMachineInfoProvider(customMachineInfoProvider);
 				}
 			}
 		);
@@ -1348,14 +1348,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	internal static void Init(StringComparer botsComparer, IMachineInfoProvider? customMachineInfoProvider = null) {
+	internal static void Init(StringComparer botsComparer) {
 		if (Bots != null) {
 			throw new InvalidOperationException(nameof(Bots));
 		}
 
 		BotsComparer = botsComparer ?? throw new ArgumentNullException(nameof(botsComparer));
 
-		CustomMachineInfoProvider = customMachineInfoProvider;
 		Bots = new ConcurrentDictionary<string, Bot>(botsComparer);
 	}
 

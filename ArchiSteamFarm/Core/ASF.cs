@@ -123,9 +123,8 @@ public static class ASF {
 		await InitRateLimiters().ConfigureAwait(false);
 
 		StringComparer botsComparer = await PluginsCore.GetBotsComparer().ConfigureAwait(false);
-		IMachineInfoProvider? customMachineInfoProvider = await PluginsCore.GetCustomMachineInfoProvider().ConfigureAwait(false);
 
-		Bot.Init(botsComparer, customMachineInfoProvider);
+		Bot.Init(botsComparer);
 
 		if (!Program.Service && !GlobalConfig.Headless && !Console.IsInputRedirected) {
 			Logging.StartInteractiveConsole();

@@ -19,19 +19,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Threading.Tasks;
+using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
-[Obsolete($"Use {nameof(IBotCustomMachineInfoProvider)} instead, this interface will be removed in the future version")]
 [PublicAPI]
-public interface ICustomMachineInfoProvider : IPlugin {
+public interface IBotCustomMachineInfoProvider : IPlugin {
 	/// <summary>
-	///     ASF will use this property as the <see cref="IMachineInfoProvider" /> for the bots.
-	///     Unless you know what you're doing, you should not implement this property yourself and let ASF decide.
+	///     ASF will use this property as the <see cref="IMachineInfoProvider" /> for the specified bot.
+	///     Unless you know what you're doing, you should not implement this interface yourself and let ASF decide.
 	/// </summary>
-	/// <returns><see cref="IMachineInfoProvider" /> that will be used for the bots.</returns>
-	IMachineInfoProvider MachineInfoProvider { get; }
+	/// <remarks>This method will be called with very limited amount of bot-related data, as it's used during bot initialization. We recommend to stick with <see cref="Bot.BotName" />, <see cref="Bot.BotConfig" /> and <see cref="Bot.BotDatabase" /> exclusively.</remarks>
+	/// <param name="bot">Bot object related to this callback.</param>
+	/// <returns><see cref="IMachineInfoProvider" /> that will be used for the particular bot. You can return null if you want to use default implementation.</returns>
+	Task<IMachineInfoProvider?> GetMachineInfoProvider(Bot bot);
 }
