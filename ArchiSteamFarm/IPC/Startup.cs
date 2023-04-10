@@ -150,6 +150,7 @@ internal sealed class Startup {
 		);
 
 #if !NETFRAMEWORK && !NETSTANDARD
+		// Add support for static files from custom plugins (e.g. HTML, CSS and JS)
 		foreach (string staticFilesDirectory in staticFilesDirectorys) {
 			app.UseStaticFiles(
 				new StaticFileOptions {
