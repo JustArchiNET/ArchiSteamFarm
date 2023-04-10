@@ -138,6 +138,8 @@ public static class PluginsCore {
 	}
 
 	internal static async Task<IMachineInfoProvider?> GetCustomMachineInfoProvider(Bot bot) {
+		ArgumentNullException.ThrowIfNull(bot);
+
 		if (ActivePlugins == null) {
 			return null;
 		}
