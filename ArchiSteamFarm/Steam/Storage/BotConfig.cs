@@ -114,7 +114,7 @@ public sealed class BotConfig {
 	public const string? DefaultSteamTradeToken = null;
 
 	[PublicAPI]
-	public const byte DefaultTradeCheckPeriod = 0;
+	public const byte DefaultTradeCheckPeriod = 60;
 
 	[PublicAPI]
 	public const ETradingPreferences DefaultTradingPreferences = ETradingPreferences.None;
