@@ -99,17 +99,30 @@ internal sealed class Startup {
 		app.UseDefaultFiles();
 
 #if !NETFRAMEWORK && !NETSTANDARD
-		string customPluginsPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.PluginsDirectory);
-		string pluginsPath = Directory.Exists(customPluginsPath) ? customPluginsPath : Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
-
 		List<string> staticFilesDirectorys = new();
 
-		foreach (string dir in Directory.EnumerateDirectories(pluginsPath)) {
-			string staticFilesDirectory = Path.Combine(dir, SharedInfo.WebsiteDirectory);
-			if (Directory.Exists(staticFilesDirectory)) {
-				staticFilesDirectorys.Add(staticFilesDirectory);
-				app.UseDefaultFiles("/" + Directory.GetParent(staticFilesDirectory)?.Name);
+		string pluginsPath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
+
+		if (Directory.Exists(pluginsPath)) {
+			List<string>? staticFilesDirs = GetPluginsStaticFilesPathFrom(pluginsPath);
+
+			if (staticFilesDirs?.Count > 0) {
+				staticFilesDirectorys.AddRange(staticFilesDirs);
 			}
+		}
+
+		string customPluginsPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.PluginsDirectory);
+
+		if ((pluginsPath != customPluginsPath) && Directory.Exists(customPluginsPath)) {
+			List<string>? staticFilesDirs = GetPluginsStaticFilesPathFrom(customPluginsPath);
+
+			if (staticFilesDirs?.Count > 0) {
+				staticFilesDirectorys.AddRange(staticFilesDirs);
+			}
+		}
+
+		foreach (string staticFilesDirectory in staticFilesDirectorys) {
+			app.UseDefaultFiles("/" + Directory.GetParent(staticFilesDirectory)?.Name);
 		}
 #endif
 
@@ -163,6 +176,30 @@ internal sealed class Startup {
 			}
 		);
 	}
+
+#if !NETFRAMEWORK && !NETSTANDARD
+	private static List<string>? GetPluginsStaticFilesPathFrom(string path) {
+		if (string.IsNullOrEmpty(path)) {
+			throw new ArgumentNullException(nameof(path));
+		}
+
+		if (!Directory.Exists(path)) {
+			return null;
+		}
+
+		List<string> staticFilesDirectorys = new();
+
+		foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {
+			string staticFilesDirectory = Path.Combine(Path.GetDirectoryName(assemblyPath)!, SharedInfo.WebsiteDirectory);
+
+			if (Directory.Exists(staticFilesDirectory)) {
+				staticFilesDirectorys.Add(staticFilesDirectory);
+			}
+		}
+
+		return staticFilesDirectorys;
+	}
+#endif
 
 	private static StaticFileOptions GetNewStaticFileOptionsWithCacheControl() => new() {
 		OnPrepareResponse = static context => {
