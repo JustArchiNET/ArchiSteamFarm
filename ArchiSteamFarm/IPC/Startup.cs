@@ -114,80 +114,15 @@ internal sealed class Startup {
 #endif
 
 		// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
-		app.UseStaticFiles(
-			new StaticFileOptions {
-				OnPrepareResponse = static context => {
-					if (context.File is { Exists: true, IsDirectory: false } && !string.IsNullOrEmpty(context.File.Name)) {
-						string extension = Path.GetExtension(context.File.Name);
-
-						CacheControlHeaderValue cacheControl = new();
-
-						switch (extension.ToUpperInvariant()) {
-							case ".CSS" or ".JS":
-								// Add support for SRI-protected static files
-								// SRI requires from us to notify the caller (especially proxy) to avoid modifying the data
-								cacheControl.NoTransform = true;
-
-								goto default;
-							default:
-								// Instruct the caller to always ask us first about every file it requests
-								// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that his cache is still up-to-date
-								// This is used to handle ASF and user updates to WWW root, we don't want from the client to ever use outdated scripts
-								cacheControl.NoCache = true;
-
-								// All static files are public by definition, we don't have any authorization here
-								cacheControl.Public = true;
-
-								break;
-						}
-
-						ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
-
-						headers.CacheControl = cacheControl;
-					}
-				}
-			}
-		);
+		app.UseStaticFiles(GetNewStaticFileOptionsWithCacheControl());
 
 #if !NETFRAMEWORK && !NETSTANDARD
 		// Add support for static files from custom plugins (e.g. HTML, CSS and JS)
 		foreach (string staticFilesDirectory in staticFilesDirectorys) {
-			app.UseStaticFiles(
-				new StaticFileOptions {
-					OnPrepareResponse = static context => {
-						if (context.File is { Exists: true, IsDirectory: false } && !string.IsNullOrEmpty(context.File.Name)) {
-							string extension = Path.GetExtension(context.File.Name);
-
-							CacheControlHeaderValue cacheControl = new();
-
-							switch (extension.ToUpperInvariant()) {
-								case ".CSS" or ".JS":
-									// Add support for SRI-protected static files
-									// SRI requires from us to notify the caller (especially proxy) to avoid modifying the data
-									cacheControl.NoTransform = true;
-
-									goto default;
-								default:
-									// Instruct the caller to always ask us first about every file it requests
-									// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that his cache is still up-to-date
-									// This is used to handle ASF and user updates to WWW root, we don't want from the client to ever use outdated scripts
-									cacheControl.NoCache = true;
-
-									// All static files are public by definition, we don't have any authorization here
-									cacheControl.Public = true;
-
-									break;
-							}
-
-							ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
-
-							headers.CacheControl = cacheControl;
-						}
-					},
-					FileProvider = new PhysicalFileProvider(staticFilesDirectory),
-					RequestPath = "/" + Directory.GetParent(staticFilesDirectory)?.Name
-				}
-			);
+			StaticFileOptions staticFileOptions = GetNewStaticFileOptionsWithCacheControl();
+			staticFileOptions.FileProvider = new PhysicalFileProvider(staticFilesDirectory);
+			staticFileOptions.RequestPath = "/" + Directory.GetParent(staticFilesDirectory)?.Name;
+			app.UseStaticFiles(staticFileOptions);
 		}
 
 		// Use routing for our API controllers, this should be called once we're done with all the static files mess
@@ -228,6 +163,40 @@ internal sealed class Startup {
 			}
 		);
 	}
+
+	private static StaticFileOptions GetNewStaticFileOptionsWithCacheControl() => new() {
+		OnPrepareResponse = static context => {
+			if (context.File is { Exists: true, IsDirectory: false } && !string.IsNullOrEmpty(context.File.Name)) {
+				string extension = Path.GetExtension(context.File.Name);
+
+				CacheControlHeaderValue cacheControl = new();
+
+				switch (extension.ToUpperInvariant()) {
+					case ".CSS" or ".JS":
+						// Add support for SRI-protected static files
+						// SRI requires from us to notify the caller (especially proxy) to avoid modifying the data
+						cacheControl.NoTransform = true;
+
+						goto default;
+					default:
+						// Instruct the caller to always ask us first about every file it requests
+						// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that his cache is still up-to-date
+						// This is used to handle ASF and user updates to WWW root, we don't want from the client to ever use outdated scripts
+						cacheControl.NoCache = true;
+
+						// All static files are public by definition, we don't have any authorization here
+						cacheControl.Public = true;
+
+						break;
+				}
+
+				ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
+
+				headers.CacheControl = cacheControl;
+			}
+		}
+	};
+
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "HashSet<string> isn't a primitive, but we widely use the required features everywhere and it's unlikely to be trimmed to the best of our knowledge")]
 	public void ConfigureServices(IServiceCollection services) {
