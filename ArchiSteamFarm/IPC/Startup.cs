@@ -99,19 +99,16 @@ internal sealed class Startup {
 		app.UseDefaultFiles();
 
 #if !NETFRAMEWORK && !NETSTANDARD
+		string customPluginsPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.PluginsDirectory);
+		string pluginsPath = Directory.Exists(customPluginsPath) ? customPluginsPath : Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
+
 		List<string> staticFilesDirectorys = new();
 
-		if (PluginsCore.ActivePlugins?.Count > 0) {
-			HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
-
-			if (assemblies != null) {
-				foreach (Assembly assembly in assemblies) {
-					string staticFilesDirectory = Path.Combine(Path.GetDirectoryName(assembly.Location)!, SharedInfo.WebsiteDirectory);
-					if (Directory.Exists(staticFilesDirectory)) {
-						staticFilesDirectorys.Add(staticFilesDirectory);
-						app.UseDefaultFiles("/" + Directory.GetParent(staticFilesDirectory)?.Name);
-					}
-				}
+		foreach (string dir in Directory.EnumerateDirectories(pluginsPath)) {
+			string staticFilesDirectory = Path.Combine(dir, SharedInfo.WebsiteDirectory);
+			if (Directory.Exists(staticFilesDirectory)) {
+				staticFilesDirectorys.Add(staticFilesDirectory);
+				app.UseDefaultFiles("/" + Directory.GetParent(staticFilesDirectory)?.Name);
 			}
 		}
 #endif
