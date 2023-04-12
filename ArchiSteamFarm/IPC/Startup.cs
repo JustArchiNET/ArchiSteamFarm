@@ -103,7 +103,7 @@ internal sealed class Startup {
 		HashSet<string> staticFilesDirectories = new();
 
 		if (PluginsCore.ActivePlugins?.Count > 0) {
-			foreach (string pluginLocation in PluginsCore.ActivePlugins.Select(static plugin => plugin.GetType().Assembly.Location).ToHashSet()) {
+			foreach (string pluginLocation in PluginsCore.ActivePlugins.Select(static plugin => plugin.GetType().Assembly.Location)) {
 				string staticFilesDirectory = Path.Combine(Path.GetDirectoryName(pluginLocation)!, SharedInfo.WebsiteDirectory);
 
 				if (Directory.Exists(staticFilesDirectory)) {
