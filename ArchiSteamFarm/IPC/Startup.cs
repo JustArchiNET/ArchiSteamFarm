@@ -99,7 +99,7 @@ internal sealed class Startup {
 		app.UseDefaultFiles();
 
 #if !NETFRAMEWORK && !NETSTANDARD
-		List<string> staticFilesDirectorys = new();
+		List<string> staticFilesDirectories = new();
 
 		string pluginsPath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
 
@@ -107,7 +107,7 @@ internal sealed class Startup {
 			List<string>? staticFilesDirs = GetPluginsStaticFilesPathFrom(pluginsPath);
 
 			if (staticFilesDirs?.Count > 0) {
-				staticFilesDirectorys.AddRange(staticFilesDirs);
+				staticFilesDirectories.AddRange(staticFilesDirs);
 			}
 		}
 
@@ -117,11 +117,11 @@ internal sealed class Startup {
 			List<string>? staticFilesDirs = GetPluginsStaticFilesPathFrom(customPluginsPath);
 
 			if (staticFilesDirs?.Count > 0) {
-				staticFilesDirectorys.AddRange(staticFilesDirs);
+				staticFilesDirectories.AddRange(staticFilesDirs);
 			}
 		}
 
-		foreach (string staticFilesDirectory in staticFilesDirectorys) {
+		foreach (string staticFilesDirectory in staticFilesDirectories) {
 			app.UseDefaultFiles("/plugins/" + Directory.GetParent(staticFilesDirectory)?.Name);
 		}
 #endif
@@ -131,7 +131,7 @@ internal sealed class Startup {
 
 #if !NETFRAMEWORK && !NETSTANDARD
 		// Add support for static files from custom plugins (e.g. HTML, CSS and JS)
-		foreach (string staticFilesDirectory in staticFilesDirectorys) {
+		foreach (string staticFilesDirectory in staticFilesDirectories) {
 			StaticFileOptions staticFileOptions = GetNewStaticFileOptionsWithCacheControl();
 			staticFileOptions.FileProvider = new PhysicalFileProvider(staticFilesDirectory);
 			staticFileOptions.RequestPath = "/plugins/" + Directory.GetParent(staticFilesDirectory)?.Name;
@@ -187,17 +187,17 @@ internal sealed class Startup {
 			return null;
 		}
 
-		List<string> staticFilesDirectorys = new();
+		List<string> staticFilesDirectories = new();
 
 		foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {
 			string staticFilesDirectory = Path.Combine(Path.GetDirectoryName(assemblyPath)!, SharedInfo.WebsiteDirectory);
 
 			if (Directory.Exists(staticFilesDirectory)) {
-				staticFilesDirectorys.Add(staticFilesDirectory);
+				staticFilesDirectories.Add(staticFilesDirectory);
 			}
 		}
 
-		return staticFilesDirectorys;
+		return staticFilesDirectories;
 	}
 #endif
 
