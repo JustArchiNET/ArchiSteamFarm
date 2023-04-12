@@ -117,7 +117,7 @@ internal sealed class Startup {
 			HashSet<string>? staticFilesDirs = GetPluginsStaticFilesPathFrom(customPluginsPath);
 
 			if (staticFilesDirs?.Count > 0) {
-				if (staticFilesDirectories?.Count > 0) {
+				if (staticFilesDirectories.Count > 0) {
 					staticFilesDirectories.UnionWith(staticFilesDirs);
 				} else {
 					staticFilesDirectories = staticFilesDirs;
