@@ -126,7 +126,7 @@ internal sealed class Startup {
 		}
 
 		foreach (string staticFilesDirectory in staticFilesDirectories) {
-			app.UseDefaultFiles("/plugins/" + Directory.GetParent(staticFilesDirectory)?.Name);
+			app.UseDefaultFiles("/plugins/" + Directory.GetParent(staticFilesDirectory)!.Name);
 		}
 #endif
 
@@ -138,7 +138,7 @@ internal sealed class Startup {
 		foreach (string staticFilesDirectory in staticFilesDirectories) {
 			StaticFileOptions staticFileOptions = GetNewStaticFileOptionsWithCacheControl();
 			staticFileOptions.FileProvider = new PhysicalFileProvider(staticFilesDirectory);
-			staticFileOptions.RequestPath = "/plugins/" + Directory.GetParent(staticFilesDirectory)?.Name;
+			staticFileOptions.RequestPath = "/plugins/" + Directory.GetParent(staticFilesDirectory)!.Name;
 			app.UseStaticFiles(staticFileOptions);
 		}
 
