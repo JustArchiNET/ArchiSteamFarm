@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using ArchiSteamFarm.Core;
@@ -101,32 +102,17 @@ internal sealed class Startup {
 #if !NETFRAMEWORK && !NETSTANDARD
 		HashSet<string> staticFilesDirectories = new();
 
-		string pluginsPath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
+		if (PluginsCore.ActivePlugins?.Count > 0) {
+			HashSet<string> pluginsLocations = PluginsCore.ActivePlugins.Select(static plugin => plugin.GetType().Assembly.Location).ToHashSet();
 
-		if (Directory.Exists(pluginsPath)) {
-			HashSet<string>? staticFilesDirs = GetPluginsStaticFilesPathFrom(pluginsPath);
+			foreach (string pluginLocation in pluginsLocations) {
+				string staticFilesDirectory = Path.Combine(Path.GetDirectoryName(pluginLocation)!, SharedInfo.WebsiteDirectory);
 
-			if (staticFilesDirs?.Count > 0) {
-				staticFilesDirectories = staticFilesDirs;
-			}
-		}
-
-		string customPluginsPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.PluginsDirectory);
-
-		if ((pluginsPath != customPluginsPath) && Directory.Exists(customPluginsPath)) {
-			HashSet<string>? staticFilesDirs = GetPluginsStaticFilesPathFrom(customPluginsPath);
-
-			if (staticFilesDirs?.Count > 0) {
-				if (staticFilesDirectories.Count > 0) {
-					staticFilesDirectories.UnionWith(staticFilesDirs);
-				} else {
-					staticFilesDirectories = staticFilesDirs;
+				if (Directory.Exists(staticFilesDirectory)) {
+					staticFilesDirectories.Add(staticFilesDirectory);
+					app.UseDefaultFiles("/plugins/" + Directory.GetParent(staticFilesDirectory)!.Name);
 				}
 			}
-		}
-
-		foreach (string staticFilesDirectory in staticFilesDirectories) {
-			app.UseDefaultFiles("/plugins/" + Directory.GetParent(staticFilesDirectory)!.Name);
 		}
 #endif
 
@@ -180,30 +166,6 @@ internal sealed class Startup {
 			}
 		);
 	}
-
-#if !NETFRAMEWORK && !NETSTANDARD
-	private static HashSet<string>? GetPluginsStaticFilesPathFrom(string path) {
-		if (string.IsNullOrEmpty(path)) {
-			throw new ArgumentNullException(nameof(path));
-		}
-
-		if (!Directory.Exists(path)) {
-			return null;
-		}
-
-		HashSet<string> staticFilesDirectories = new();
-
-		foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {
-			string staticFilesDirectory = Path.Combine(Path.GetDirectoryName(assemblyPath)!, SharedInfo.WebsiteDirectory);
-
-			if (Directory.Exists(staticFilesDirectory)) {
-				staticFilesDirectories.Add(staticFilesDirectory);
-			}
-		}
-
-		return staticFilesDirectories;
-	}
-#endif
 
 	private static StaticFileOptions GetNewStaticFileOptionsWithCacheControl() => new() {
 		OnPrepareResponse = static context => {
