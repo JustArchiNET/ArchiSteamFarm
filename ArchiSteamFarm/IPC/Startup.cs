@@ -99,25 +99,29 @@ internal sealed class Startup {
 		app.UseDefaultFiles();
 
 #if !NETFRAMEWORK && !NETSTANDARD
-		List<string> staticFilesDirectories = new();
+		HashSet<string> staticFilesDirectories = new();
 
 		string pluginsPath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
 
 		if (Directory.Exists(pluginsPath)) {
-			List<string>? staticFilesDirs = GetPluginsStaticFilesPathFrom(pluginsPath);
+			HashSet<string>? staticFilesDirs = GetPluginsStaticFilesPathFrom(pluginsPath);
 
 			if (staticFilesDirs?.Count > 0) {
-				staticFilesDirectories.AddRange(staticFilesDirs);
+				staticFilesDirectories = staticFilesDirs;
 			}
 		}
 
 		string customPluginsPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.PluginsDirectory);
 
 		if ((pluginsPath != customPluginsPath) && Directory.Exists(customPluginsPath)) {
-			List<string>? staticFilesDirs = GetPluginsStaticFilesPathFrom(customPluginsPath);
+			HashSet<string>? staticFilesDirs = GetPluginsStaticFilesPathFrom(customPluginsPath);
 
 			if (staticFilesDirs?.Count > 0) {
-				staticFilesDirectories.AddRange(staticFilesDirs);
+				if (staticFilesDirectories?.Count > 0) {
+					staticFilesDirectories.UnionWith(staticFilesDirs);
+				} else {
+					staticFilesDirectories = staticFilesDirs;
+				}
 			}
 		}
 
@@ -178,7 +182,7 @@ internal sealed class Startup {
 	}
 
 #if !NETFRAMEWORK && !NETSTANDARD
-	private static List<string>? GetPluginsStaticFilesPathFrom(string path) {
+	private static HashSet<string>? GetPluginsStaticFilesPathFrom(string path) {
 		if (string.IsNullOrEmpty(path)) {
 			throw new ArgumentNullException(nameof(path));
 		}
@@ -187,7 +191,7 @@ internal sealed class Startup {
 			return null;
 		}
 
-		List<string> staticFilesDirectories = new();
+		HashSet<string> staticFilesDirectories = new();
 
 		foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {
 			string staticFilesDirectory = Path.Combine(Path.GetDirectoryName(assemblyPath)!, SharedInfo.WebsiteDirectory);
