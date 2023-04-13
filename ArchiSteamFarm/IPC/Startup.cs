@@ -114,9 +114,6 @@ internal sealed class Startup {
 		}
 #endif
 
-		// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
-		app.UseStaticFiles(GetNewStaticFileOptionsWithCacheControl());
-
 #if !NETFRAMEWORK && !NETSTANDARD
 		// Add support for static files from custom plugins (e.g. HTML, CSS and JS)
 		foreach (string staticFilesDirectory in staticFilesDirectories) {
@@ -125,7 +122,12 @@ internal sealed class Startup {
 			staticFileOptions.RequestPath = "/plugins/" + Directory.GetParent(staticFilesDirectory)!.Name;
 			app.UseStaticFiles(staticFileOptions);
 		}
+#endif
 
+		// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
+		app.UseStaticFiles(GetNewStaticFileOptionsWithCacheControl());
+
+#if !NETFRAMEWORK && !NETSTANDARD
 		// Use routing for our API controllers, this should be called once we're done with all the static files mess
 		app.UseRouting();
 #endif
