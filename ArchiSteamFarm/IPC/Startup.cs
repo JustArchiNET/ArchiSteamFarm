@@ -109,7 +109,10 @@ internal sealed class Startup {
 
 				if (Directory.Exists(staticFilesDirectory)) {
 					pluginsPaths.Add(staticFilesDirectory, plugin.WebPath);
-					app.UseDefaultFiles(plugin.WebPath);
+
+					if (!string.IsNullOrEmpty(plugin.WebPath) && (plugin.WebPath != "/")) {
+						app.UseDefaultFiles(plugin.WebPath);
+					}
 				}
 			}
 		}
