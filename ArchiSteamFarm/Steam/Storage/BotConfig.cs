@@ -415,7 +415,6 @@ public sealed class BotConfig {
 	[UsedImplicitly]
 	public bool ShouldSerializeTradeCheckPeriod() => !Saving || (TradeCheckPeriod != DefaultTradeCheckPeriod);
 
-
 	[UsedImplicitly]
 	public bool ShouldSerializeTradingPreferences() => !Saving || (TradingPreferences != DefaultTradingPreferences);
 
