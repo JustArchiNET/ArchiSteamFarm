@@ -1,10 +1,10 @@
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Plugins.Interfaces {
-	public interface IWebInterface : IPlugin {
-		string PhysicalPath { get; }
+namespace ArchiSteamFarm.Plugins.Interfaces; 
 
-		[JsonProperty]
-		string WebPath { get; }
-	}
+public interface IWebInterface : IPlugin {
+	string PhysicalPath { get; }
+
+	[JsonProperty]
+	string WebPath { get; }
 }
