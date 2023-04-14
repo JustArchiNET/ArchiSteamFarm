@@ -37,6 +37,7 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
+using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
@@ -100,15 +101,19 @@ internal sealed class Startup {
 		app.UseDefaultFiles();
 
 #if !NETFRAMEWORK && !NETSTANDARD
-		HashSet<string> staticFilesDirectories = new();
+		Dictionary<string, string> pluginsPaths = new();
 
 		if (PluginsCore.ActivePlugins?.Count > 0) {
-			foreach (string pluginLocation in PluginsCore.ActivePlugins.Select(static plugin => plugin.GetType().Assembly.Location)) {
-				string staticFilesDirectory = Path.Combine(Path.GetDirectoryName(pluginLocation)!, SharedInfo.WebsiteDirectory);
+			foreach (IWebInterface? plugin in PluginsCore.ActivePlugins.Where(static plugin => plugin is IWebInterface).Select(static plugin => plugin as IWebInterface)) {
+				if (plugin == null) {
+					continue;
+				}
+
+				string staticFilesDirectory = Path.Combine(Path.GetDirectoryName(plugin.GetType().Assembly.Location)!, plugin.PhysicalPath);
 
 				if (Directory.Exists(staticFilesDirectory)) {
-					staticFilesDirectories.Add(staticFilesDirectory);
-					app.UseDefaultFiles("/plugins/" + Directory.GetParent(staticFilesDirectory)!.Name);
+					pluginsPaths.Add(staticFilesDirectory, plugin.WebPath);
+					app.UseDefaultFiles(plugin.WebPath);
 				}
 			}
 		}
@@ -116,10 +121,10 @@ internal sealed class Startup {
 
 #if !NETFRAMEWORK && !NETSTANDARD
 		// Add support for static files from custom plugins (e.g. HTML, CSS and JS)
-		foreach (string staticFilesDirectory in staticFilesDirectories) {
+		foreach (KeyValuePair<string, string> pluginPaths in pluginsPaths) {
 			StaticFileOptions staticFileOptions = GetNewStaticFileOptionsWithCacheControl();
-			staticFileOptions.FileProvider = new PhysicalFileProvider(staticFilesDirectory);
-			staticFileOptions.RequestPath = "/plugins/" + Directory.GetParent(staticFilesDirectory)!.Name;
+			staticFileOptions.FileProvider = new PhysicalFileProvider(pluginPaths.Key);
+			staticFileOptions.RequestPath = pluginPaths.Value;
 			app.UseStaticFiles(staticFileOptions);
 		}
 #endif
