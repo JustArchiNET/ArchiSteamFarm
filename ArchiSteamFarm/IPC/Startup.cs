@@ -117,9 +117,7 @@ internal sealed class Startup {
 				}
 			}
 		}
-#endif
 
-#if !NETFRAMEWORK && !NETSTANDARD
 		// Add support for static files from custom plugins (e.g. HTML, CSS and JS)
 		foreach (KeyValuePair<string, string> pluginPaths in pluginsPaths) {
 			StaticFileOptions staticFileOptions = GetNewStaticFileOptionsWithCacheControl();
