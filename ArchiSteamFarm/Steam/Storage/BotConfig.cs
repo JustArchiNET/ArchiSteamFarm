@@ -114,6 +114,9 @@ public sealed class BotConfig {
 	public const string? DefaultSteamTradeToken = null;
 
 	[PublicAPI]
+	public const byte DefaultTradeCheckPeriod = 60;
+
+	[PublicAPI]
 	public const ETradingPreferences DefaultTradingPreferences = ETradingPreferences.None;
 
 	[PublicAPI]
@@ -270,6 +273,10 @@ public sealed class BotConfig {
 	public ImmutableDictionary<ulong, EAccess> SteamUserPermissions { get; private set; } = DefaultSteamUserPermissions;
 
 	[JsonProperty(Required = Required.DisallowNull)]
+	[Range(byte.MinValue, byte.MaxValue)]
+	public byte TradeCheckPeriod { get; private set; } = DefaultTradeCheckPeriod;
+
+	[JsonProperty(Required = Required.DisallowNull)]
 	public ETradingPreferences TradingPreferences { get; private set; } = DefaultTradingPreferences;
 
 	[JsonProperty(Required = Required.DisallowNull)]
@@ -404,6 +411,10 @@ public sealed class BotConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSteamUserPermissions() => !Saving || ((SteamUserPermissions != DefaultSteamUserPermissions) && ((SteamUserPermissions.Count != DefaultSteamUserPermissions.Count) || SteamUserPermissions.Except(DefaultSteamUserPermissions).Any()));
+
+	[UsedImplicitly]
+	public bool ShouldSerializeTradeCheckPeriod() => !Saving || (TradeCheckPeriod != DefaultTradeCheckPeriod);
+
 
 	[UsedImplicitly]
 	public bool ShouldSerializeTradingPreferences() => !Saving || (TradingPreferences != DefaultTradingPreferences);
