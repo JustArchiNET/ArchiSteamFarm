@@ -240,6 +240,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private Timer? SendItemsTimer;
 	private bool SteamParentalActive;
 	private SteamSaleEvent? SteamSaleEvent;
+	private Timer? TradeCheckTimer;
 	private string? TwoFactorCode;
 
 	private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
@@ -350,6 +351,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		PlayingWasBlockedTimer?.Dispose();
 		SendItemsTimer?.Dispose();
 		SteamSaleEvent?.Dispose();
+		TradeCheckTimer?.Dispose();
 	}
 
 	public async ValueTask DisposeAsync() {
@@ -386,6 +388,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (SteamSaleEvent != null) {
 			await SteamSaleEvent.DisposeAsync().ConfigureAwait(false);
+		}
+
+		if (TradeCheckTimer != null) {
+			await TradeCheckTimer.DisposeAsync().ConfigureAwait(false);
 		}
 	}
 
@@ -2037,6 +2043,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 
 				break;
+			case EResult.AccessDenied: // Usually means refresh token is no longer authorized to use, otherwise just try again
 			case EResult.AccountLoginDeniedNeedTwoFactor:
 			case EResult.DuplicateRequest: // This will happen if user reacts to popup and tries to use the code afterwards, we have the code saved in ASF, we just need to try again
 			case EResult.FileNotFound: // User denied approval despite telling us that he accepted it, just try again
@@ -2064,6 +2071,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						}
 
 						break;
+					case EResult.AccessDenied when string.IsNullOrEmpty(BotDatabase.RefreshToken) && (++LoginFailures >= MaxLoginFailures):
 					case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.RefreshToken) && (++LoginFailures >= MaxLoginFailures):
 						LoginFailures = 0;
 						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidPasswordDuringLogin, MaxLoginFailures));
@@ -2226,6 +2234,18 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			SendItemsTimer = null;
 		}
 
+		if (SteamSaleEvent != null) {
+			await SteamSaleEvent.DisposeAsync().ConfigureAwait(false);
+
+			SteamSaleEvent = null;
+		}
+
+		if (TradeCheckTimer != null) {
+			await TradeCheckTimer.DisposeAsync().ConfigureAwait(false);
+
+			TradeCheckTimer = null;
+		}
+
 		if (BotConfig is { SendTradePeriod: > 0, LootableTypes.Count: > 0 } && BotConfig.SteamUserPermissions.Values.Any(static permission => permission >= BotConfig.EAccess.Master)) {
 			SendItemsTimer = new Timer(
 				OnSendItemsTimer,
@@ -2235,14 +2255,17 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			);
 		}
 
-		if (SteamSaleEvent != null) {
-			await SteamSaleEvent.DisposeAsync().ConfigureAwait(false);
-
-			SteamSaleEvent = null;
-		}
-
 		if (BotConfig.AutoSteamSaleEvent) {
 			SteamSaleEvent = new SteamSaleEvent(this);
+		}
+
+		if (BotConfig.TradeCheckPeriod > 0) {
+			TradeCheckTimer = new Timer(
+				OnTradeCheckTimer,
+				null,
+				TimeSpan.FromMinutes(BotConfig.TradeCheckPeriod) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bots.Count), // Delay
+				TimeSpan.FromMinutes(BotConfig.TradeCheckPeriod) // Period
+			);
 		}
 
 		await PluginsCore.OnBotInitModules(this, BotConfig.AdditionalProperties).ConfigureAwait(false);
@@ -2565,12 +2588,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			case EResult.AccountDisabled:
 				// Do not attempt to reconnect, those failures are permanent
 				return;
+			case EResult.AccessDenied when !string.IsNullOrEmpty(BotDatabase.RefreshToken):
 			case EResult.InvalidPassword when !string.IsNullOrEmpty(BotDatabase.RefreshToken):
 				// We can retry immediately
 				BotDatabase.RefreshToken = null;
 				ArchiLogger.LogGenericInfo(Strings.BotRemovedExpiredLoginKey);
 
 				break;
+			case EResult.AccessDenied:
 			case EResult.RateLimitExceeded:
 				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(LoginCooldownInMinutes).ToHumanReadable()));
 
@@ -3168,6 +3193,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await CheckOccupationStatus().ConfigureAwait(false);
 	}
 
+	private void OnTradeCheckTimer(object? state = null) => Utilities.InBackground(Trading.OnNewTrade);
+
 	private void OnUserNotifications(UserNotificationsCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 		ArgumentNullException.ThrowIfNull(callback.Notifications);
@@ -3205,6 +3232,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 					break;
 				case UserNotificationsCallback.EUserNotification.Trading when newNotification:
+					if ((TradeCheckTimer != null) && (BotConfig.TradeCheckPeriod > 0)) {
+						TradeCheckTimer.Change(TimeSpan.FromMinutes(BotConfig.TradeCheckPeriod), TimeSpan.FromMinutes(BotConfig.TradeCheckPeriod));
+					}
+
 					Utilities.InBackground(Trading.OnNewTrade);
 
 					break;
