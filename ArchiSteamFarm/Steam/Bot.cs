@@ -2037,6 +2037,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 
 				break;
+			case EResult.AccessDenied: // Usually means refresh token is no longer authorized to use, otherwise just try again
 			case EResult.AccountLoginDeniedNeedTwoFactor:
 			case EResult.DuplicateRequest: // This will happen if user reacts to popup and tries to use the code afterwards, we have the code saved in ASF, we just need to try again
 			case EResult.FileNotFound: // User denied approval despite telling us that he accepted it, just try again
@@ -2064,6 +2065,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						}
 
 						break;
+					case EResult.AccessDenied when string.IsNullOrEmpty(BotDatabase.RefreshToken) && (++LoginFailures >= MaxLoginFailures):
 					case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.RefreshToken) && (++LoginFailures >= MaxLoginFailures):
 						LoginFailures = 0;
 						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidPasswordDuringLogin, MaxLoginFailures));
@@ -2565,12 +2567,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			case EResult.AccountDisabled:
 				// Do not attempt to reconnect, those failures are permanent
 				return;
+			case EResult.AccessDenied when !string.IsNullOrEmpty(BotDatabase.RefreshToken):
 			case EResult.InvalidPassword when !string.IsNullOrEmpty(BotDatabase.RefreshToken):
 				// We can retry immediately
 				BotDatabase.RefreshToken = null;
 				ArchiLogger.LogGenericInfo(Strings.BotRemovedExpiredLoginKey);
 
 				break;
+			case EResult.AccessDenied:
 			case EResult.RateLimitExceeded:
 				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(LoginCooldownInMinutes).ToHumanReadable()));
 
