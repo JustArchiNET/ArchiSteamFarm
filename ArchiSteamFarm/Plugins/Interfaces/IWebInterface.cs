@@ -21,11 +21,13 @@
 
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Plugins.Interfaces; 
+namespace ArchiSteamFarm.Plugins.Interfaces;
 
+#if !NETFRAMEWORK && !NETSTANDARD
 public interface IWebInterface : IPlugin {
 	string PhysicalPath => "www";
 
 	[JsonProperty]
 	string WebPath => "/";
 }
+#endif
