@@ -104,7 +104,7 @@ internal sealed class Startup {
 		Dictionary<string, string> pluginsPaths = new();
 
 		if (PluginsCore.ActivePlugins?.Count > 0) {
-			foreach (IWebInterface plugin in PluginsCore.ActivePlugins.Where(static plugin => plugin is IWebInterface).Select(static plugin => (IWebInterface) plugin)) {
+			foreach (IWebInterface plugin in PluginsCore.ActivePlugins.OfType<IWebInterface>()) {
 				string staticFilesDirectory = Path.Combine(Path.GetDirectoryName(plugin.GetType().Assembly.Location)!, plugin.PhysicalPath);
 
 				if (Directory.Exists(staticFilesDirectory)) {
