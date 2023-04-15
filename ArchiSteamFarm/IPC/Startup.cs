@@ -105,7 +105,7 @@ internal sealed class Startup {
 
 		if (PluginsCore.ActivePlugins?.Count > 0) {
 			foreach (IWebInterface plugin in PluginsCore.ActivePlugins.OfType<IWebInterface>()) {
-				if (plugin == null || string.IsNullOrEmpty(plugin.PhysicalPath) || string.IsNullOrEmpty(plugin.WebPath)) {
+				if (string.IsNullOrEmpty(plugin.PhysicalPath) || string.IsNullOrEmpty(plugin.WebPath)) {
 					continue;
 				}
 
