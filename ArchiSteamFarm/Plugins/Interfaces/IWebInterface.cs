@@ -24,8 +24,8 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.Plugins.Interfaces; 
 
 public interface IWebInterface : IPlugin {
-	string PhysicalPath { get; }
+	string PhysicalPath => "www";
 
 	[JsonProperty]
-	string WebPath { get; }
+	string WebPath => "/";
 }
