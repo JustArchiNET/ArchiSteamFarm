@@ -187,12 +187,18 @@
 		<value>現在のバージョン: {0} | 最新バージョン: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Steamモバイルアプリを確認してください。ログイン承認通知を受け取ったはずです。 通知を受け取って承認した場合はYと入力してください。代わりにコードを提供したい場合はNと入力してください。 </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Steam 認証アプリの二次認証コードを入力してください: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>あなたのメールアドレスに送信されたSteamガード認証コードを入力してください: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
 		<value>あなたの Steam アカウント名を入力してください: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -382,7 +388,9 @@
 	<data name="BotLootingSuccess" xml:space="preserve">
 		<value>トレードオファーを正常に送信しました！</value>
 	</data>
-	
+	<data name="BotSendingTradeToYourself" xml:space="preserve">
+		<value>自分自身にトレードを送信することはできません！</value>
+	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
 		<value>その bot は ASF 二次認証が有効ではありません！認証システムを ASF 二次認証としてインポートするのを忘れていませんか？</value>
 	</data>
@@ -397,7 +405,10 @@
 		<value>所有している: {0} | {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
-	
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>ポイント残高: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
 	<data name="BotRateLimitExceeded" xml:space="preserve">
 		<value>回数制限を超過しました。{0} のクールダウン後に再試行します。</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
@@ -632,20 +643,39 @@ Process uptime: {1}</value>
 	
 	
 	
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>IPCパスワードが弱いようです。セキュリティを強化するためにもっと強力なパスワードを選択してください。詳細: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>あなたのSteamパスワード '{0}' は脆弱なようです。セキュリティを強化するために、より強力なパスワードを選択することを検討してください。詳細: {1}</value>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>暗号化キーが弱いようです。セキュリティを強化するために強力なキーを選択することを検討してください。詳細: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>暗号化キーが短すぎます。少なくとも {0} バイト (文字) の長いものを使用することをお勧めします。</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
 	
 	
 	
 	
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>リモートサーバーからチェックサムを取得しています...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>リモートサーバーからダウンロードしたバイナリのチェックサムを確認しています...</value>
+	</data>
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>IPアドレス {0} は禁止されていません！</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
 	
 </root>

@@ -81,10 +81,22 @@
 	
 	
 	
-	
-	
-	
-	
+	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+		<value>新しいアプリ: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+		<value>認証済みアプリ: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+		<value>新しいパッケージ: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+		<value>認証済みパッケージ: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
 	
 	
 	
