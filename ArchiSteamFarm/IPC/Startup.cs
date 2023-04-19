@@ -109,7 +109,9 @@ internal sealed class Startup {
 					continue;
 				}
 
-				string staticFilesDirectory = Path.Combine(Path.GetDirectoryName(plugin.GetType().Assembly.Location)!, plugin.PhysicalPath);
+				string staticFilesDirectory = Path.IsPathRooted(plugin.PhysicalPath)
+					? plugin.PhysicalPath
+					: Path.Combine(Path.GetDirectoryName(plugin.GetType().Assembly.Location)!, plugin.PhysicalPath);
 
 				if (Directory.Exists(staticFilesDirectory)) {
 					pluginsPaths.Add(staticFilesDirectory, plugin.WebPath);
