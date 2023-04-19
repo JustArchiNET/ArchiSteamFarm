@@ -122,10 +122,10 @@ internal sealed class Startup {
 		}
 
 		// Add support for static files from custom plugins (e.g. HTML, CSS and JS)
-		foreach (KeyValuePair<string, string> pluginPaths in pluginsPaths) {
+		foreach ((string physicalPath, string webPath) in pluginsPaths) {
 			StaticFileOptions staticFileOptions = GetNewStaticFileOptionsWithCacheControl();
-			staticFileOptions.FileProvider = new PhysicalFileProvider(pluginPaths.Key);
-			staticFileOptions.RequestPath = pluginPaths.Value;
+			staticFileOptions.FileProvider = new PhysicalFileProvider(physicalPath);
+			staticFileOptions.RequestPath = webPath;
 			app.UseStaticFiles(staticFileOptions);
 		}
 #endif
