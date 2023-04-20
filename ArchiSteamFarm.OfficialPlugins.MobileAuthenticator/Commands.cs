@@ -60,7 +60,7 @@ internal static class Commands {
 		switch (args.Length) {
 			case 1:
 				switch (args[0].ToUpperInvariant()) {
-					case "2FAFINALIZED":
+					case "2FAFINALIZEDFORCE":
 						return await ResponseTwoFactorFinalized(access, bot).ConfigureAwait(false);
 					case "2FAINIT":
 						return await ResponseTwoFactorInit(access, bot).ConfigureAwait(false);
@@ -73,8 +73,12 @@ internal static class Commands {
 						return await ResponseTwoFactorFinalize(access, args[1], Utilities.GetArgsAsText(message, 2), steamID).ConfigureAwait(false);
 					case "2FAFINALIZE":
 						return await ResponseTwoFactorFinalize(access, bot, args[1]).ConfigureAwait(false);
+					case "2FAFINALIZED" when args.Length > 2:
+						return await ResponseTwoFactorFinalized(access, args[1], Utilities.GetArgsAsText(message, 2), steamID).ConfigureAwait(false);
 					case "2FAFINALIZED":
-						return await ResponseTwoFactorFinalized(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
+						return await ResponseTwoFactorFinalized(access, bot, args[1]).ConfigureAwait(false);
+					case "2FAFINALIZEDFORCE":
+						return await ResponseTwoFactorFinalized(access, Utilities.GetArgsAsText(args, 1, ","), steamID: steamID).ConfigureAwait(false);
 					case "2FAINIT":
 						return await ResponseTwoFactorInit(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
 				}
@@ -232,7 +236,7 @@ internal static class Commands {
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
-	private static async Task<string?> ResponseTwoFactorFinalized(EAccess access, Bot bot) {
+	private static async Task<string?> ResponseTwoFactorFinalized(EAccess access, Bot bot, string? activationCode = null) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -276,6 +280,14 @@ internal static class Commands {
 
 		mobileAuthenticator.Init(bot);
 
+		if (!string.IsNullOrEmpty(activationCode)) {
+			string? generatedCode = await mobileAuthenticator.GenerateToken().ConfigureAwait(false);
+
+			if (generatedCode != activationCode) {
+				return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{generatedCode} != {activationCode}"));
+			}
+		}
+
 		if (!bot.TryImportAuthenticator(mobileAuthenticator)) {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(bot.TryImportAuthenticator)));
 		}
@@ -293,7 +305,7 @@ internal static class Commands {
 		return bot.Commands.FormatBotResponse(Strings.Done);
 	}
 
-	private static async Task<string?> ResponseTwoFactorFinalized(EAccess access, string botNames, ulong steamID = 0) {
+	private static async Task<string?> ResponseTwoFactorFinalized(EAccess access, string botNames, string? activationCode = null, ulong steamID = 0) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -312,7 +324,7 @@ internal static class Commands {
 			return access >= EAccess.Owner ? Steam.Interaction.Commands.FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseTwoFactorFinalized(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseTwoFactorFinalized(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot, activationCode))).ConfigureAwait(false);
 
 		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
