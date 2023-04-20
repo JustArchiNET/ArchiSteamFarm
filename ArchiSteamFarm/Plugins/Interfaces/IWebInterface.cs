@@ -23,7 +23,6 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
-#if !NETFRAMEWORK && !NETSTANDARD
 public interface IWebInterface : IPlugin {
 	/// <summary>
 	///     Specifies physical path to static WWW files provided by the plugin. Can be either relative to plugin's assembly location, or absolute. Default "www" value assumes that you ship "www" directory together with your plugin's main DLL assembly, similar to ASF.
@@ -36,4 +35,3 @@ public interface IWebInterface : IPlugin {
 	[JsonProperty]
 	string WebPath => "/";
 }
-#endif

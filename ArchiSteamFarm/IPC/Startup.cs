@@ -101,7 +101,6 @@ internal sealed class Startup {
 		// Add support for default root path redirection (GET / -> GET /index.html), must come before static files
 		app.UseDefaultFiles();
 
-#if !NETFRAMEWORK && !NETSTANDARD
 		Dictionary<string, string> pluginPaths = new(StringComparer.Ordinal);
 
 		if (PluginsCore.ActivePlugins?.Count > 0) {
@@ -139,7 +138,6 @@ internal sealed class Startup {
 				}
 			);
 		}
-#endif
 
 		// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
 		app.UseStaticFiles(
