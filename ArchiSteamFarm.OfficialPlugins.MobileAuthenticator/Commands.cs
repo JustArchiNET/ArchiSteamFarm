@@ -247,10 +247,6 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(bot.HasMobileAuthenticator)));
 		}
 
-		if (!bot.IsConnectedAndLoggedOn) {
-			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
-		}
-
 		string maFilePath = bot.GetFilePath(Bot.EFileType.MobileAuthenticator);
 		string maFilePendingPath = $"{maFilePath}.PENDING";
 
