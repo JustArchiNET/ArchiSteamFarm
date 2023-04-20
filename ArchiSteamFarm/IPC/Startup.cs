@@ -110,7 +110,12 @@ internal sealed class Startup {
 					continue;
 				}
 
-				string physicalPath = Path.IsPathRooted(plugin.PhysicalPath) ? plugin.PhysicalPath : Path.Combine(Path.GetDirectoryName(plugin.GetType().Assembly.Location)!, plugin.PhysicalPath);
+				string physicalPath = plugin.PhysicalPath;
+
+				if (!Path.IsPathRooted(physicalPath)) {
+					// Relative path
+					physicalPath = Path.Combine(Path.GetDirectoryName(plugin.GetType().Assembly.Location)!, plugin.PhysicalPath);
+				}
 
 				if (!Directory.Exists(physicalPath)) {
 					continue;
