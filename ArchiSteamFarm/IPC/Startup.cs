@@ -45,6 +45,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -101,7 +102,7 @@ internal sealed class Startup {
 		app.UseDefaultFiles();
 
 #if !NETFRAMEWORK && !NETSTANDARD
-		Dictionary<string, string> pluginsPaths = new();
+		Dictionary<string, string> pluginPaths = new(StringComparer.Ordinal);
 
 		if (PluginsCore.ActivePlugins?.Count > 0) {
 			foreach (IWebInterface plugin in PluginsCore.ActivePlugins.OfType<IWebInterface>()) {
@@ -109,34 +110,41 @@ internal sealed class Startup {
 					continue;
 				}
 
-				string staticFilesDirectory = Path.IsPathRooted(plugin.PhysicalPath)
-					? plugin.PhysicalPath
-					: Path.Combine(Path.GetDirectoryName(plugin.GetType().Assembly.Location)!, plugin.PhysicalPath);
+				string physicalPath = Path.IsPathRooted(plugin.PhysicalPath) ? plugin.PhysicalPath : Path.Combine(Path.GetDirectoryName(plugin.GetType().Assembly.Location)!, plugin.PhysicalPath);
 
-				if (Directory.Exists(staticFilesDirectory)) {
-					pluginsPaths.Add(staticFilesDirectory, plugin.WebPath);
+				if (!Directory.Exists(physicalPath)) {
+					continue;
+				}
 
-					if (plugin.WebPath != "/") {
-						app.UseDefaultFiles(plugin.WebPath);
-					}
+				pluginPaths[physicalPath] = plugin.WebPath;
+
+				if (plugin.WebPath != "/") {
+					app.UseDefaultFiles(plugin.WebPath);
 				}
 			}
 		}
 
 		// Add support for static files from custom plugins (e.g. HTML, CSS and JS)
-		foreach ((string physicalPath, string webPath) in pluginsPaths) {
-			StaticFileOptions staticFileOptions = GetNewStaticFileOptionsWithCacheControl();
-			staticFileOptions.FileProvider = new PhysicalFileProvider(physicalPath);
-			staticFileOptions.RequestPath = webPath;
-			app.UseStaticFiles(staticFileOptions);
+		foreach ((string physicalPath, string webPath) in pluginPaths) {
+			app.UseStaticFiles(
+				new StaticFileOptions {
+					FileProvider = new PhysicalFileProvider(physicalPath),
+					OnPrepareResponse = OnPrepareResponse,
+					RequestPath = webPath
+				}
+			);
 		}
 #endif
 
 		// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
-		app.UseStaticFiles(GetNewStaticFileOptionsWithCacheControl());
+		app.UseStaticFiles(
+			new StaticFileOptions {
+				OnPrepareResponse = OnPrepareResponse
+			}
+		);
 
-#if !NETFRAMEWORK && !NETSTANDARD
 		// Use routing for our API controllers, this should be called once we're done with all the static files mess
+#if !NETFRAMEWORK && !NETSTANDARD
 		app.UseRouting();
 #endif
 
@@ -174,40 +182,6 @@ internal sealed class Startup {
 			}
 		);
 	}
-
-	private static StaticFileOptions GetNewStaticFileOptionsWithCacheControl() => new() {
-		OnPrepareResponse = static context => {
-			if (context.File is { Exists: true, IsDirectory: false } && !string.IsNullOrEmpty(context.File.Name)) {
-				string extension = Path.GetExtension(context.File.Name);
-
-				CacheControlHeaderValue cacheControl = new();
-
-				switch (extension.ToUpperInvariant()) {
-					case ".CSS" or ".JS":
-						// Add support for SRI-protected static files
-						// SRI requires from us to notify the caller (especially proxy) to avoid modifying the data
-						cacheControl.NoTransform = true;
-
-						goto default;
-					default:
-						// Instruct the caller to always ask us first about every file it requests
-						// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that his cache is still up-to-date
-						// This is used to handle ASF and user updates to WWW root, we don't want from the client to ever use outdated scripts
-						cacheControl.NoCache = true;
-
-						// All static files are public by definition, we don't have any authorization here
-						cacheControl.Public = true;
-
-						break;
-				}
-
-				ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
-
-				headers.CacheControl = cacheControl;
-			}
-		}
-	};
-
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "HashSet<string> isn't a primitive, but we widely use the required features everywhere and it's unlikely to be trimmed to the best of our knowledge")]
 	public void ConfigureServices(IServiceCollection services) {
@@ -375,5 +349,40 @@ internal sealed class Startup {
 #endif
 			}
 		);
+	}
+
+	private static void OnPrepareResponse(StaticFileResponseContext context) {
+		ArgumentNullException.ThrowIfNull(context);
+
+		if (context.File is not { Exists: true, IsDirectory: false } || string.IsNullOrEmpty(context.File.Name)) {
+			return;
+		}
+
+		string extension = Path.GetExtension(context.File.Name);
+
+		CacheControlHeaderValue cacheControl = new();
+
+		switch (extension.ToUpperInvariant()) {
+			case ".CSS" or ".JS":
+				// Add support for SRI-protected static files
+				// SRI requires from us to notify the caller (especially proxy) to avoid modifying the data
+				cacheControl.NoTransform = true;
+
+				goto default;
+			default:
+				// Instruct the caller to always ask us first about every file it requests
+				// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that his cache is still up-to-date
+				// This is used to handle ASF and user updates to WWW root, we don't want from the client to ever use outdated scripts
+				cacheControl.NoCache = true;
+
+				// All static files are public by definition, we don't have any authorization here
+				cacheControl.Public = true;
+
+				break;
+		}
+
+		ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
+
+		headers.CacheControl = cacheControl;
 	}
 }
