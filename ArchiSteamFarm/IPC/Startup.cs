@@ -121,7 +121,8 @@ internal sealed class Startup {
 						continue;
 					}
 
-					physicalPath = Path.Combine(assemblyDirectory, plugin.PhysicalPath);
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+					physicalPath = Path.Combine(assemblyDirectory!, plugin.PhysicalPath);
 				}
 
 				if (!Directory.Exists(physicalPath)) {
