@@ -106,6 +106,7 @@ internal sealed class Startup {
 		if (PluginsCore.ActivePlugins?.Count > 0) {
 			foreach (IWebInterface plugin in PluginsCore.ActivePlugins.OfType<IWebInterface>()) {
 				if (string.IsNullOrEmpty(plugin.PhysicalPath) || string.IsNullOrEmpty(plugin.WebPath)) {
+					// Invalid path provided
 					continue;
 				}
 
@@ -113,10 +114,18 @@ internal sealed class Startup {
 
 				if (!Path.IsPathRooted(physicalPath)) {
 					// Relative path
-					physicalPath = Path.Combine(Path.GetDirectoryName(plugin.GetType().Assembly.Location)!, plugin.PhysicalPath);
+					string? assemblyDirectory = Path.GetDirectoryName(plugin.GetType().Assembly.Location);
+
+					if (string.IsNullOrEmpty(assemblyDirectory)) {
+						// Invalid path provided
+						continue;
+					}
+
+					physicalPath = Path.Combine(assemblyDirectory, plugin.PhysicalPath);
 				}
 
 				if (!Directory.Exists(physicalPath)) {
+					// Non-existing path provided
 					continue;
 				}
 
