@@ -3195,7 +3195,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await CheckOccupationStatus().ConfigureAwait(false);
 	}
 
-	private void OnTradeCheckTimer(object? state = null) => Utilities.InBackground(Trading.OnNewTrade);
+	private void OnTradeCheckTimer(object? state = null) {
+		if (IsConnectedAndLoggedOn) {
+			Utilities.InBackground(Trading.OnNewTrade);
+		}
+	}
 
 	private void OnUserNotifications(UserNotificationsCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
