@@ -190,7 +190,10 @@ StackTrace:
 		<value>Versão local: {0} | Versão remota: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Por favor, verifique a aplicação móvel Steam, deve ter recebido uma notificação de aprovação de login. Digite Y se recebeu e aprovou a notificação, N se quiser fornecer o código: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Por favor, insere to teu código de autenticação de dois fatores (2FA) da tua app de autenticador da Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
