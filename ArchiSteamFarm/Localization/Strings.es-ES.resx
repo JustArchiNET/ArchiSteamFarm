@@ -194,23 +194,23 @@ StackTrace:
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
-		<value>Por favor, introduce el código 2FA que aparece en tu aplicación de Steam: </value>
+		<value>Introduce el código 2FA que aparece en tu aplicación de Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Por favor, introduce el código de autenticación SteamGuard que ha sido enviado a tu correo electrónico: </value>
+		<value>Introduce el código de autenticación SteamGuard que ha sido enviado a tu correo electrónico: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
-		<value>Por favor, introduce tus credenciales de Steam: </value>
+		<value>Introduce tus credenciales de Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamParentalCode" xml:space="preserve">
-		<value>Por favor, introduce el código parental de Steam: </value>
+		<value>Introduce el código parental de Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamPassword" xml:space="preserve">
-		<value>Por favor, introduce tu contraseña de Steam: </value>
+		<value>Introduce tu contraseña de Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="WarningUnknownValuePleaseReport" xml:space="preserve">
@@ -506,7 +506,7 @@ StackTrace:
 		<comment>{0} will be replaced by service name that is being initialized</comment>
 	</data>
 	<data name="WarningPrivacyPolicy" xml:space="preserve">
-		<value>¡Por favor, revisa nuestra sección de política de privacidad en la wiki si te preocupa lo que ASF está haciendo!</value>
+		<value>¡Revisa nuestra sección de política de privacidad en la wiki si te preocupa lo que ASF está haciendo!</value>
 	</data>
 	<data name="Welcome" xml:space="preserve">
 		<value>Parece ser la primera vez que inicias el programa, ¡bienvenido!</value>
@@ -547,7 +547,7 @@ StackTrace:
 		<value>¡Acceso denegado!</value>
 	</data>
 	<data name="WarningPreReleaseVersion" xml:space="preserve">
-		<value>Estás usando una versión más reciente que la última publicada para tu canal de actualizaciones. Por favor, ten en cuenta que las versiones en prelanzamiento están destinadas a usuarios que saben cómo reportar errores, tratar con problemas y proporcionar comentarios - no se dará soporte técnico.</value>
+		<value>Estás usando una versión más reciente que la última publicada para tu canal de actualizaciones. Ten en cuenta que las versiones en prelanzamiento están destinadas a usuarios que saben cómo reportar errores, tratar con problemas y proporcionar comentarios - no se dará soporte técnico.</value>
 	</data>
 	<data name="BotStats" xml:space="preserve">
 		<value>Uso de memoria actual: {0} MB.
@@ -570,7 +570,7 @@ Tiempo de actividad del proceso: {1}</value>
 		<value>Actualizando datos de los paquetes...</value>
 	</data>
 	<data name="WarningDeprecated" xml:space="preserve">
-		<value>El uso de {0} está obsoleto y se quitará en futuras versiones del programa. Por favor, en su lugar usa {1}.</value>
+		<value>El uso de {0} está obsoleto y se quitará en futuras versiones del programa. En su lugar usa {1}.</value>
 		<comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
 	</data>
 	<data name="BotAcceptedDonationTrade" xml:space="preserve">
@@ -622,7 +622,7 @@ Tiempo de actividad del proceso: {1}</value>
 		<value>¡No se encontró nada!</value>
 	</data>
 	<data name="PluginsWarning" xml:space="preserve">
-		<value>Has cargado uno o más plugins personalizados en ASF. Ya que no podemos ofrecer soporte a configuraciones modificadas, por favor, contacta a los desarrolladores de los plugins que decidiste usar en caso de algún problema.</value>
+		<value>Has cargado uno o más plugins personalizados en ASF. Ya que no podemos ofrecer soporte a configuraciones modificadas, contacta a los desarrolladores de los plugins que decidiste usar en caso de algún problema.</value>
 	</data>
 	<data name="PleaseWait" xml:space="preserve">
 		<value>Por favor, espera...</value>
@@ -736,7 +736,7 @@ Tiempo de actividad del proceso: {1}</value>
 		<value>Parchando archivos de ASF...</value>
 	</data>
 	<data name="UserInputCryptkey" xml:space="preserve">
-		<value>Por favor, introduce tu clave de cifrado: </value>
+		<value>Introduce tu clave de cifrado: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="ErrorIPNotBanned" xml:space="preserve">
