@@ -190,7 +190,10 @@ StackTrace:
 		<value>Phiên bản đang chạy: {0} | Phiên bản ngoài: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Hãy kiểm tra ứng dụng di động Steam, bạn đã nhận được thông báo chấp nhận đăng nhập. Gõ Y nếu bạn đã nhận và chấp nhận thông báo, N nếu bạn muốn cung cấp mã thay vào đó: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Xin vui lòng nhập mã 2FA từ ứng dụng Steam Authenticator của bạn: </value>
 		<comment>Please note that this translation should end with space</comment>
