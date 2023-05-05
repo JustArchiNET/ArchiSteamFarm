@@ -1848,6 +1848,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
+		LastLogOnResult = EResult.Invalid;
+
 		ArchiLogger.LogGenericInfo(Strings.BotConnecting);
 		InitConnectionFailureTimer();
 		SteamClient.Connect();
@@ -1873,6 +1875,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private void Disconnect() {
 		StopConnectionFailureTimer();
+
+		LastLogOnResult = EResult.OK;
 		SteamClient.Disconnect();
 	}
 
@@ -2578,7 +2582,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		FirstTradeSent = false;
 		OwnedPackageIDs = ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
 
-		await PluginsCore.OnBotDisconnected(this, callback.UserInitiated ? EResult.OK : lastLogOnResult).ConfigureAwait(false);
+		await PluginsCore.OnBotDisconnected(this, lastLogOnResult).ConfigureAwait(false);
 
 		// If we initiated disconnect, do not attempt to reconnect
 		if (callback.UserInitiated && !ReconnectOnUserInitiated) {
