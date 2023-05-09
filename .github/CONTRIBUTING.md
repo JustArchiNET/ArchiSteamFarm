@@ -77,9 +77,9 @@ For more info about the license, please check out **[license](https://github.com
 
 ### Code style
 
-Please stick with ASF code style when submitting PRs. In repo you can find several different files dedicated to making it easier for you:
+Please try to stick with ASF code style when submitting PRs. In repo you can find at least several different files dedicated to making it easier for you:
 
 - **[EditorConfig](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.editorconfig)** file which is supported by all major IDEs and requires no further setup. It's a good starting point, although it doesn't include all the rules that we'd like to see.
 - **[DotSettings](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/ArchiSteamFarm.sln.DotSettings)** file that is being used by JetBrains products, namely **[ReSharper](https://www.jetbrains.com/resharper)** and **[Rider](https://www.jetbrains.com/rider)**. This one is the most complete config file that is also being loaded automatically when you're using ReSharper/Rider with our code.
 
-Personally we're using **[JetBrains Rider](https://www.jetbrains.com/rider)**, so no other action is needed after opening `ArchiSteamFarm.sln` solution. If you're using VS alone, it's probably a good idea to import our code style settings, although even editor config should be enough for majority of cases. If you can save us those few extra seconds cleaning up your code after accepting it, it would be great and surely improve overall code history.
+Since above files are used automatically, in vast majority of cases, you may just need to run some cleanup operation on files that you've edited, assuming your IDE doesn't do that automatically. If you can save us those few extra seconds cleaning up your code after accepting it, it would be great and surely improve overall code history.
