@@ -16,6 +16,8 @@ jobs:
 
     - name: Run Qodana scan
       uses: JetBrains/qodana-action@v2023.1.0
+      with:
+        args: --property=idea.headless.enable.statistics=false
       env:
         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
 
