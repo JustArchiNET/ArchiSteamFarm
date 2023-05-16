@@ -44,6 +44,7 @@ using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
+using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
@@ -53,6 +54,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const byte MaxTradeOffersActive = 10; // The actual upper limit is 30, but we should use lower amount to allow some bots to react before we hit the maximum allowed
 	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
+	private const byte MinimumSteamGuardEnabledDays = 15; // As imposed by Steam limits
 	private const byte MinPersonaStateTTL = 5; // Minimum amount of minutes we must wait before requesting persona state update
 
 	private static readonly ImmutableHashSet<Asset.EType> AcceptedMatchableTypes = ImmutableHashSet.Create(
@@ -521,6 +523,29 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		// Bot must have at least one accepted matchable type set
 		if ((Bot.BotConfig.MatchableTypes.Count == 0) || Bot.BotConfig.MatchableTypes.All(static type => !AcceptedMatchableTypes.Contains(type))) {
 			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.BotConfig.MatchableTypes)}: {string.Join(", ", Bot.BotConfig.MatchableTypes)}"));
+
+			return false;
+		}
+
+		// Bot must pass some general trading requirements
+		CCredentials_GetSteamGuardDetails_Response? steamGuardStatus = await Bot.ArchiHandler.GetSteamGuardStatus().ConfigureAwait(false);
+
+		if (steamGuardStatus == null) {
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(steamGuardStatus)}: null"));
+
+			return null;
+		}
+
+		// Bot must have SteamGuard active for at least 15 days
+		if (!steamGuardStatus.is_steamguard_enabled || (steamGuardStatus.timestamp_steamguard_enabled == 0) || ((DateTimeOffset.UtcNow - DateTimeOffset.FromUnixTimeSeconds(steamGuardStatus.timestamp_steamguard_enabled)).TotalDays < MinimumSteamGuardEnabledDays)) {
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(steamGuardStatus.is_steamguard_enabled)}/{nameof(steamGuardStatus.timestamp_steamguard_enabled)}: {steamGuardStatus.is_steamguard_enabled}/{steamGuardStatus.timestamp_steamguard_enabled}"));
+
+			return false;
+		}
+
+		// Bot must have 2FA enabled for matching to work
+		if (!steamGuardStatus.is_twofactor_enabled) {
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(steamGuardStatus.is_twofactor_enabled)}: false"));
 
 			return false;
 		}

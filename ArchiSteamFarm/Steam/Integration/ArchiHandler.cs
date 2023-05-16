@@ -41,6 +41,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	private readonly ArchiLogger ArchiLogger;
 	private readonly SteamUnifiedMessages.UnifiedService<IChatRoom> UnifiedChatRoomService;
 	private readonly SteamUnifiedMessages.UnifiedService<IClanChatRooms> UnifiedClanChatRoomsService;
+	private readonly SteamUnifiedMessages.UnifiedService<ICredentials> UnifiedCredentialsService;
 	private readonly SteamUnifiedMessages.UnifiedService<IEcon> UnifiedEconService;
 	private readonly SteamUnifiedMessages.UnifiedService<IFriendMessages> UnifiedFriendMessagesService;
 	private readonly SteamUnifiedMessages.UnifiedService<IPlayer> UnifiedPlayerService;
@@ -54,6 +55,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 		UnifiedChatRoomService = steamUnifiedMessages.CreateService<IChatRoom>();
 		UnifiedClanChatRoomsService = steamUnifiedMessages.CreateService<IClanChatRooms>();
+		UnifiedCredentialsService = steamUnifiedMessages.CreateService<ICredentials>();
 		UnifiedEconService = steamUnifiedMessages.CreateService<IEcon>();
 		UnifiedFriendMessagesService = steamUnifiedMessages.CreateService<IFriendMessages>();
 		UnifiedPlayerService = steamUnifiedMessages.CreateService<IPlayer>();
@@ -128,6 +130,31 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		CPlayer_GetOwnedGames_Response body = response.GetDeserializedResponse<CPlayer_GetOwnedGames_Response>();
 
 		return body.games.ToDictionary(static game => (uint) game.appid, static game => game.name);
+	}
+
+	[PublicAPI]
+	public async Task<CCredentials_GetSteamGuardDetails_Response?> GetSteamGuardStatus() {
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return null;
+		}
+
+		CCredentials_GetSteamGuardDetails_Request request = new();
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedCredentialsService.SendMessage(x => x.GetSteamGuardDetails(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return null;
+		}
+
+		return response.Result == EResult.OK ? response.GetDeserializedResponse<CCredentials_GetSteamGuardDetails_Response>() : null;
 	}
 
 	[PublicAPI]
