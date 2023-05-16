@@ -190,7 +190,10 @@ StackTrace :
 		<value>Version locale : {0} | Version la plus récente : {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Veuillez vérifier votre application mobile Steam, vous devriez avoir reçu une notification d'approbation de connexion. Tapez-Y si vous avez reçu et approuvé la notification, N si vous voulez fournir du code à la place : </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Veuillez entrer votre code 2FA généré par votre application d'authentification de Steam : </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -587,37 +590,37 @@ Durée de fonctionnement : {1}</value>
 		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
 	</data>
 	<data name="BotHasNoWallet" xml:space="preserve">
-		<value>Le bot n'a pas de portefeuille.</value>
+		<value>Bot n'a pas de portefeuille.</value>
 	</data>
 	<data name="BotLevel" xml:space="preserve">
-		<value>Le bot a le niveau {0}.</value>
+		<value>Le bot a le niveau {0}</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
 	<data name="ActivelyMatchingItems" xml:space="preserve">
-		<value>En train de match des Items, round #{0}...</value>
+		<value>Correspondance des éléments Steam, tour #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>
 	</data>
 	<data name="DoneActivelyMatchingItems" xml:space="preserve">
-		<value>Fin de l'appariement des Items Steam, round #{0}.</value>
+		<value>Fin de la correspondance des objets Steam, tour #{0}.</value>
 		<comment>{0} will be replaced by round number</comment>
 	</data>
 	<data name="ErrorAborted" xml:space="preserve">
-		<value>Annulé !</value>
+		<value>Abandonné !</value>
 	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
-		<value>Vous utilisez plus de comptes de bot personnels que notre limite supérieure recommandée ({0}). N'oubliez pas que cette configuration n'est pas supportée et peut causer divers problèmes liés à Steam, y compris des suspensions de compte. Consultez la FAQ pour plus de détails.</value>
+		<value>Vous utilisez plus de comptes de bots personnels que notre limite supérieure recommandée ({0}). N'oubliez pas que cette configuration n'est pas supportée et peut causer divers problèmes liés à Steam, y compris des suspensions de compte. Consultez la FAQ pour plus de détails.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
 	</data>
 	<data name="PluginLoaded" xml:space="preserve">
-		<value>"{0}" a été chargée avec succès!</value>
+		<value>"{0}" a été chargée avec succès !</value>
 		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
 	</data>
 	<data name="PluginLoading" xml:space="preserve">
-		<value>Chargement {0} V{1}...</value>
+		<value>Chargement {0} V{1}... </value>
 		<comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
 	</data>
 	<data name="NothingFound" xml:space="preserve">
-		<value>Rien n'a été trouvé!</value>
+		<value>Rien n'a été trouvé !</value>
 	</data>
 	<data name="PluginsWarning" xml:space="preserve">
 		<value>Vous avez chargé un ou plusieurs plugins personnalisés dans ASF. Étant donné que nous ne pouvons pas offrir de support pour les configurations moddées, veuillez contacter les développeurs appropriés des plugins que vous avez décidé d'utiliser en cas de problème.</value>
@@ -733,7 +736,16 @@ Durée de fonctionnement : {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Patch des fichiers ASF...</value>
 	</data>
-	
-	
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Veuillez entrer votre clé de cryptage : </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>L'adresse IP {0} n'est pas interdite !</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Vous avez tenté d'utiliser la fonctionnalité payante {0} mais vous n'avez pas d'identifiant de licence valide dans la configuration globale d'ASF. Veuillez vérifier votre configuration, car la fonctionnalité ne fonctionnera pas sans des détails supplémentaires.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>
