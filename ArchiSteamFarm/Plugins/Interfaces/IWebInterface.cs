@@ -23,6 +23,9 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <summary>
+///     Implementing this interface allows you to provide your own (custom) web interface files that will be exposed by standard ASF's IPC interface. In order to achieve that, you must include a directory with your web interface (html, css, js) files together with your plugin's DLL assembly, then specify path to it in <see cref="PhysicalPath" /> and finally the path under which you want to host those files in <see cref="WebPath" />.
+/// </summary>
 public interface IWebInterface : IPlugin {
 	/// <summary>
 	///     Specifies physical path to static WWW files provided by the plugin. Can be either relative to plugin's assembly location, or absolute. If you don't know better, we recommend value of "www", which assumes that you ship "www" directory together with your plugin's main DLL assembly, similar to ASF.
