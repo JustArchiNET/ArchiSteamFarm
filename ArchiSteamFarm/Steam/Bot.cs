@@ -2484,6 +2484,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				return;
 			}
+
+			// Steam artificially cuts passwords to first 64 characters
+			if (password.Length > 64) {
+				password = password[..64];
+			}
 		}
 
 		ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
