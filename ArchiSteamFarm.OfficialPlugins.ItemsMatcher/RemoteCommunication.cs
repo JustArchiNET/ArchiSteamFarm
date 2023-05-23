@@ -770,6 +770,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				break;
 			}
 
+			if (!Bot.IsConnectedAndLoggedOn) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.BotNotConnected);
+
+				break;
+			}
+
 			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
 
 			if (wantedSets.Count == 0) {
@@ -1047,7 +1053,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		if (pendingMobileTradeOfferIDs.Count > 0) {
-			(bool twoFactorSuccess, IReadOnlyCollection<Confirmation>? handledConfirmations, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false);
+			(bool twoFactorSuccess, IReadOnlyCollection<Confirmation>? handledConfirmations, _) = Bot.IsConnectedAndLoggedOn ? await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false) : (false, null, null);
 
 			if (!twoFactorSuccess) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingSomeConfirmationsFailed, handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
