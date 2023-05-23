@@ -2561,16 +2561,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(ASF.LoginRateLimitingSemaphore));
 		}
 
-		EResult lastLogOnResult = LastLogOnResult;
-
-		if (lastLogOnResult == EResult.Invalid) {
-			// Allow for a very short delay to initialize LastLogOnResult
-			await Task.Delay(1000).ConfigureAwait(false);
-
-			lastLogOnResult = LastLogOnResult;
-		}
-
-		LastLogOnResult = EResult.Invalid;
 		HeartBeatFailures = 0;
 		StopConnectionFailureTimer();
 		StopPlayingWasBlockedTimer();
@@ -2586,6 +2576,17 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		FirstTradeSent = false;
 		OwnedPackageIDs = ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
+
+		EResult lastLogOnResult = LastLogOnResult;
+
+		if (lastLogOnResult == EResult.Invalid) {
+			// Allow for a very short delay to initialize LastLogOnResult
+			await Task.Delay(1000).ConfigureAwait(false);
+
+			lastLogOnResult = LastLogOnResult;
+		}
+
+		LastLogOnResult = EResult.Invalid;
 
 		await PluginsCore.OnBotDisconnected(this, lastLogOnResult).ConfigureAwait(false);
 
