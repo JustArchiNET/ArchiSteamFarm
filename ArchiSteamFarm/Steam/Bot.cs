@@ -1849,6 +1849,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		LastLogOnResult = EResult.Invalid;
+		ReconnectOnUserInitiated = false;
 
 		ArchiLogger.LogGenericInfo(Strings.BotConnecting);
 		InitConnectionFailureTimer();
@@ -1877,6 +1878,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		StopConnectionFailureTimer();
 
 		LastLogOnResult = EResult.OK;
+		ReconnectOnUserInitiated = false;
+
 		SteamClient.Disconnect();
 	}
 
@@ -2579,9 +2582,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		EResult lastLogOnResult = LastLogOnResult;
 
-		if (lastLogOnResult == EResult.Invalid) {
-			// Allow for a very short delay to initialize LastLogOnResult
-			await Task.Delay(1000).ConfigureAwait(false);
+		for (byte i = 0; (i < WebBrowser.MaxTries) && (lastLogOnResult == EResult.Invalid); i++) {
+			await Task.Delay(200).ConfigureAwait(false);
 
 			lastLogOnResult = LastLogOnResult;
 		}
