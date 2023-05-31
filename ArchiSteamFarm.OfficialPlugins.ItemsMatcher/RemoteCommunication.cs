@@ -51,6 +51,7 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const string MatchActivelyTradeOfferIDsStorageKey = $"{nameof(ItemsMatcher)}-{nameof(MatchActively)}-TradeOfferIDs";
 	private const byte MaxAnnouncementTTL = 60; // Maximum amount of minutes we can wait if the next announcement doesn't happen naturally
+	private const uint MaxItemsCount = 400000; // Server is unwilling to accept more items than this
 	private const byte MaxTradeOffersActive = 5; // The actual upper limit is 30, but we should use lower amount to allow some bots to react before we hit the maximum allowed
 	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
@@ -298,6 +299,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 					return;
 				}
+			}
+
+			if (assetsForListing.Count > MaxItemsCount) {
+				// We're not eligible, record this as a valid check
+				LastAnnouncement = DateTime.UtcNow;
+				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(assetsForListing)} > {MaxItemsCount}"));
+
+				return;
 			}
 
 			if (ShouldSendHeartBeats && (tradeToken == LastAnnouncedTradeToken) && (assetsForListing.Count == LastAnnouncedItems.Count) && assetsForListing.All(item => LastAnnouncedItems.TryGetValue(item.AssetID, out uint amount) && (item.Amount == amount))) {
@@ -646,6 +657,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			if (ourInventory.Count == 0) {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(ourInventory)));
+
+				return;
+			}
+
+			if (ourInventory.Count > MaxItemsCount) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(ourInventory)} > {MaxItemsCount}"));
 
 				return;
 			}
