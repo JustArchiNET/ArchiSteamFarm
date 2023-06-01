@@ -109,7 +109,10 @@
 		<value>Saatiin haettua {0} sovelluksen tiedot.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Onnistuneesti haettu {0}/{1} depot-avaimesta.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys that were successfully retrieved, {1} will be replaced by the number (count this batch) of depot keys that were supposed to be retrieved</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Saatiin haettua kaikki depot-avaimet yhteensä {0} sovellukselle.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>

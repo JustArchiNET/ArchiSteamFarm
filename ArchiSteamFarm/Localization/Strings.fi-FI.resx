@@ -190,7 +190,10 @@ StackTrace:
 		<value>Paikallinen versio: {0} | Etäkäyttöversio: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Ole hyvä ja tarkista Steam-mobiilisovellus, sinun olisi pitänyt saada kirjautumisen hyväksymisilmoitus. Kirjoita Y jos olet vastaanottanut ilmoituksen ja hyväksynyt sen, N jos haluat antaa koodin: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Syötä 2FA-koodi Steam-varmennussovelluksesta: </value>
 		<comment>Please note that this translation should end with space</comment>
