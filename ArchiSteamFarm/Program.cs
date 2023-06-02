@@ -209,8 +209,12 @@ internal static class Program {
 		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 		// Add support for custom logging targets
-		Target.Register<HistoryTarget>(HistoryTarget.TargetName);
-		Target.Register<SteamTarget>(SteamTarget.TargetName);
+		LogManager.Setup().SetupExtensions(
+			static extensions => {
+				extensions.RegisterTarget<HistoryTarget>(HistoryTarget.TargetName);
+				extensions.RegisterTarget<SteamTarget>(SteamTarget.TargetName);
+			}
+		);
 
 		if (!await InitCore(args).ConfigureAwait(false) || !await InitASF().ConfigureAwait(false)) {
 			await Exit(1).ConfigureAwait(false);
