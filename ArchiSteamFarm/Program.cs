@@ -41,7 +41,6 @@ using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using Newtonsoft.Json;
 using NLog;
-using NLog.Targets;
 using SteamKit2;
 #if !NETFRAMEWORK && !NETSTANDARD
 using System.Net.Quic;
