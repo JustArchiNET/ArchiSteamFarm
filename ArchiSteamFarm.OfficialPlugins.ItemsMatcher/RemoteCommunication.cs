@@ -56,6 +56,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
 	private const byte MinimumSteamGuardEnabledDays = 15; // As imposed by Steam limits
+	private const byte MinimumPasswordResetCooldownDays = 5; // As imposed by Steam limits
 	private const byte MinPersonaStateTTL = 5; // Minimum amount of minutes we must wait before requesting persona state update
 
 	private static readonly ImmutableHashSet<Asset.EType> AcceptedMatchableTypes = ImmutableHashSet.Create(
@@ -557,6 +558,21 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		// Bot must have 2FA enabled for matching to work
 		if (!steamGuardStatus.is_twofactor_enabled) {
 			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(steamGuardStatus.is_twofactor_enabled)}: false"));
+
+			return false;
+		}
+
+		CCredentials_LastCredentialChangeTime_Response? lastCredentialChangeTime = await Bot.ArchiHandler.GetLastCredentialChangeTime().ConfigureAwait(false);
+
+		if (lastCredentialChangeTime == null) {
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(lastCredentialChangeTime)}: null"));
+
+			return null;
+		}
+
+		// Bot didn't change password in last 5 days
+		if ((lastCredentialChangeTime.timestamp_last_password_reset > 0) && ((DateTimeOffset.UtcNow - DateTimeOffset.FromUnixTimeSeconds(lastCredentialChangeTime.timestamp_last_password_reset)).TotalDays < MinimumPasswordResetCooldownDays)) {
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(lastCredentialChangeTime.timestamp_last_password_reset)}: {lastCredentialChangeTime.timestamp_last_password_reset}"));
 
 			return false;
 		}
