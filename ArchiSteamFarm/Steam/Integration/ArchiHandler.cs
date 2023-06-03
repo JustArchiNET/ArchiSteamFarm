@@ -92,7 +92,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	[PublicAPI]
-	public async Task<CCredentials_LastCredentialChangeTime_Response?> GetLastCredentialChangeTime() {
+	public async Task<CCredentials_LastCredentialChangeTime_Response?> GetCredentialChangeTimeDetails() {
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
 		}

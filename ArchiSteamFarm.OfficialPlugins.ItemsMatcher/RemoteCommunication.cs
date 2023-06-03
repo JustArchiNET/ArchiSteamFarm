@@ -562,17 +562,17 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return false;
 		}
 
-		CCredentials_LastCredentialChangeTime_Response? lastCredentialChangeTime = await Bot.ArchiHandler.GetLastCredentialChangeTime().ConfigureAwait(false);
+		CCredentials_LastCredentialChangeTime_Response? credentialChangeTimeDetails = await Bot.ArchiHandler.GetCredentialChangeTimeDetails().ConfigureAwait(false);
 
-		if (lastCredentialChangeTime == null) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(lastCredentialChangeTime)}: null"));
+		if (credentialChangeTimeDetails == null) {
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(credentialChangeTimeDetails)}: null"));
 
 			return null;
 		}
 
 		// Bot didn't change password in last 5 days
-		if ((lastCredentialChangeTime.timestamp_last_password_reset > 0) && ((DateTimeOffset.UtcNow - DateTimeOffset.FromUnixTimeSeconds(lastCredentialChangeTime.timestamp_last_password_reset)).TotalDays < MinimumPasswordResetCooldownDays)) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(lastCredentialChangeTime.timestamp_last_password_reset)}: {lastCredentialChangeTime.timestamp_last_password_reset}"));
+		if ((credentialChangeTimeDetails.timestamp_last_password_reset > 0) && ((DateTimeOffset.UtcNow - DateTimeOffset.FromUnixTimeSeconds(credentialChangeTimeDetails.timestamp_last_password_reset)).TotalDays < MinimumPasswordResetCooldownDays)) {
+			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(credentialChangeTimeDetails.timestamp_last_password_reset)}: {credentialChangeTimeDetails.timestamp_last_password_reset}"));
 
 			return false;
 		}
