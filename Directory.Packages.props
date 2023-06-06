@@ -1,6 +1,6 @@
 <Project>
 	<ItemGroup>
-		<PackageVersion Include="AngleSharp.XPath" Version="2.0.2" />
+		<PackageVersion Include="AngleSharp.XPath" Version="2.0.3" />
 		<PackageVersion Include="ConfigureAwaitChecker.Analyzer" Version="5.0.0.1" />
 		<PackageVersion Include="CryptSharpStandard" Version="1.0.0" />
 		<PackageVersion Include="Humanizer" Version="2.14.1" />
