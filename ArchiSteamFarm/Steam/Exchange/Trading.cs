@@ -408,13 +408,11 @@ public sealed class Trading : IDisposable {
 			HandledTradeOfferIDs.IntersectWith(tradeOffers.Select(static tradeOffer => tradeOffer.TradeOfferID));
 		}
 
-		IEnumerable<Task<ParseTradeResult?>> tasks = tradeOffers.Where(tradeOffer => !HandledTradeOfferIDs.Contains(tradeOffer.TradeOfferID)).Select(ParseTrade);
-		IList<ParseTradeResult?> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
-
-		HashSet<ParseTradeResult> validTradeResults = results.Where(static result => result != null).Select(static result => result!).ToHashSet();
+		IEnumerable<Task<ParseTradeResult>> tasks = tradeOffers.Where(tradeOffer => (tradeOffer.State == ETradeOfferState.Active) && HandledTradeOfferIDs.Add(tradeOffer.TradeOfferID)).Select(ParseTrade);
+		IList<ParseTradeResult> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
 
 		if (Bot.HasMobileAuthenticator) {
-			HashSet<ParseTradeResult> mobileTradeResults = validTradeResults.Where(static result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: false }).ToHashSet();
+			HashSet<ParseTradeResult> mobileTradeResults = results.Where(static result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: false }).ToHashSet();
 
 			if (mobileTradeResults.Count > 0) {
 				HashSet<ulong> mobileTradeOfferIDs = mobileTradeResults.Select(static tradeOffer => tradeOffer.TradeOfferID).ToHashSet();
@@ -431,28 +429,15 @@ public sealed class Trading : IDisposable {
 			}
 		}
 
-		if (validTradeResults.Count > 0) {
-			await PluginsCore.OnBotTradeOfferResults(Bot, validTradeResults).ConfigureAwait(false);
+		if (results.Count > 0) {
+			await PluginsCore.OnBotTradeOfferResults(Bot, results as IReadOnlyCollection<ParseTradeResult> ?? results.ToHashSet()).ConfigureAwait(false);
 		}
 
-		return validTradeResults.Any(result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && (result.ItemsToReceive?.Any(receivedItem => Bot.BotConfig.LootableTypes.Contains(receivedItem.Type)) == true));
+		return results.Any(result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && (result.ItemsToReceive?.Any(receivedItem => Bot.BotConfig.LootableTypes.Contains(receivedItem.Type)) == true));
 	}
 
-	private async Task<ParseTradeResult?> ParseTrade(TradeOffer tradeOffer) {
+	private async Task<ParseTradeResult> ParseTrade(TradeOffer tradeOffer) {
 		ArgumentNullException.ThrowIfNull(tradeOffer);
-
-		if (tradeOffer.State != ETradeOfferState.Active) {
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, tradeOffer.State));
-
-			return null;
-		}
-
-		if (!HandledTradeOfferIDs.Add(tradeOffer.TradeOfferID)) {
-			// We've already seen this trade, this should not happen
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.IgnoringTrade, tradeOffer.TradeOfferID));
-
-			return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Ignored, false, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
-		}
 
 		ParseTradeResult.EResult result = await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false);
 		bool tradeRequiresMobileConfirmation = false;
@@ -481,6 +466,9 @@ public sealed class Trading : IDisposable {
 					goto case ParseTradeResult.EResult.TryAgain;
 				}
 
+				// We do not expect to see this trade offer again, so retry it if needed
+				HandledTradeOfferIDs.Remove(tradeOffer.TradeOfferID);
+
 				if (tradeOffer.ItemsToReceive.Sum(static item => item.Amount) > tradeOffer.ItemsToGive.Sum(static item => item.Amount)) {
 					Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.BotAcceptedDonationTrade, tradeOffer.TradeOfferID));
 				}
@@ -498,20 +486,25 @@ public sealed class Trading : IDisposable {
 					goto case ParseTradeResult.EResult.TryAgain;
 				}
 
+				// We do not expect to see this trade offer again, so retry it if needed
+				HandledTradeOfferIDs.Remove(tradeOffer.TradeOfferID);
+
 				break;
 			case ParseTradeResult.EResult.Ignored:
 			case ParseTradeResult.EResult.Rejected:
+				// We expect to see this trade offer in the future, so we keep it in HandledTradeOfferIDs if it wasn't removed as part of other result
 				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IgnoringTrade, tradeOffer.TradeOfferID));
 
 				break;
 			case ParseTradeResult.EResult.TryAgain:
+				// We expect to see this trade offer again and we intend to retry it
 				HandledTradeOfferIDs.Remove(tradeOffer.TradeOfferID);
 
 				goto case ParseTradeResult.EResult.Ignored;
 			default:
 				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
 
-				return null;
+				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Ignored, false, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 		}
 
 		return new ParseTradeResult(tradeOffer.TradeOfferID, result, tradeRequiresMobileConfirmation, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
