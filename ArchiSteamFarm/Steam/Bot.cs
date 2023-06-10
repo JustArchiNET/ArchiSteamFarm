@@ -3345,6 +3345,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					case EPurchaseResultDetail.AlreadyPurchased:
 					case EPurchaseResultDetail.CannotRedeemCodeFromClient:
 					case EPurchaseResultDetail.DoesNotOwnRequiredApp:
+					case EPurchaseResultDetail.NoWallet:
 					case EPurchaseResultDetail.RestrictedCountry:
 					case EPurchaseResultDetail.Timeout:
 						break;

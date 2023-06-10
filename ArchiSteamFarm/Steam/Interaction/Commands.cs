@@ -2597,6 +2597,7 @@ public sealed class Commands {
 									case EPurchaseResultDetail.AlreadyPurchased:
 									case EPurchaseResultDetail.CancelledByUser:
 									case EPurchaseResultDetail.DoesNotOwnRequiredApp:
+									case EPurchaseResultDetail.NoWallet:
 									case EPurchaseResultDetail.RestrictedCountry:
 										if (!forward || (keepMissingGames && (purchaseResultDetail != EPurchaseResultDetail.AlreadyPurchased))) {
 											// Next key
