@@ -187,7 +187,10 @@
 		<value>Версия на компютъра Ви: {0} | Версия на сървъра: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Моля, проверете мобилното си приложение Steam, трябва да сте получили известие за одобрение за влизане. Въведете Y, ако сте получили и одобрили известието, N, ако искате да предоставите код вместо това: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Моля въведете Вашият 2FA код от Steam authenticator приложението: </value>
 		<comment>Please note that this translation should end with space</comment>

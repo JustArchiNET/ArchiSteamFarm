@@ -109,7 +109,10 @@
 		<value>Приключи събирането на {0} информация за играта или приложението.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Успешно извлечени {0} от {1} депо ключове.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys that were successfully retrieved, {1} will be replaced by the number (count this batch) of depot keys that were supposed to be retrieved</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Приключи събирането на всички ключове за депа за общо {0} игри или проложения.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
