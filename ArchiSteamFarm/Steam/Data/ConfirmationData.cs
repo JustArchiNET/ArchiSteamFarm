@@ -23,16 +23,16 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
 
-public class ConfirmationData {
+internal sealed class ConfirmationData {
 	[JsonProperty(PropertyName = "id", Required = Required.Always)]
-	public ulong ID { get; set; }
+	internal readonly ulong ID;
 
 	[JsonProperty(PropertyName = "nonce", Required = Required.Always)]
-	public ulong Nonce { get; set; }
+	internal readonly ulong Nonce;
 
 	[JsonProperty(PropertyName = "creator_id", Required = Required.Always)]
-	public ulong CreatorID { get; set; }
+	internal readonly ulong CreatorID;
 
 	[JsonProperty(PropertyName = "type", Required = Required.Always)]
-	public string TypeText { get; set; } = "";
+	internal readonly string TypeText = "";
 }
