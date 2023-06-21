@@ -1853,7 +1853,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return resultInSeconds == 0 ? (byte) 0 : (byte) (resultInSeconds / 86400);
 	}
 
-	internal async Task<IDocument?> GetConfirmationsPage(string deviceID, string confirmationHash, ulong time) {
+	internal async Task<ConfirmationsResponse?> GetConfirmationsPage(string deviceID, string confirmationHash, ulong time) {
 		if (string.IsNullOrEmpty(deviceID)) {
 			throw new ArgumentNullException(nameof(deviceID));
 		}
@@ -1889,9 +1889,9 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		}
 
-		Uri request = new(SteamCommunityURL, $"/mobileconf/conf?a={Bot.SteamID}&k={Uri.EscapeDataString(confirmationHash)}&l=english&m=android&p={Uri.EscapeDataString(deviceID)}&t={time}&tag=conf");
+		Uri request = new(SteamCommunityURL, $"/mobileconf/getlist?a={Bot.SteamID}&k={Uri.EscapeDataString(confirmationHash)}&l=english&m=react&p={Uri.EscapeDataString(deviceID)}&t={time}&tag=conf");
 
-		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+		ObjectResponse<ConfirmationsResponse>? response = await UrlGetToJsonObjectWithSession<ConfirmationsResponse>(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
 		return response?.Content;
 	}
@@ -2121,7 +2121,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		}
 
-		Uri request = new(SteamCommunityURL, $"/mobileconf/ajaxop?a={Bot.SteamID}&cid={confirmationID}&ck={confirmationKey}&k={Uri.EscapeDataString(confirmationHash)}&l=english&m=android&op={(accept ? "allow" : "cancel")}&p={Uri.EscapeDataString(deviceID)}&t={time}&tag=conf");
+		Uri request = new(SteamCommunityURL, $"/mobileconf/ajaxop?a={Bot.SteamID}&cid={confirmationID}&ck={confirmationKey}&k={Uri.EscapeDataString(confirmationHash)}&l=english&m=react&op={(accept ? "allow" : "cancel")}&p={Uri.EscapeDataString(deviceID)}&t={time}&tag=conf");
 
 		ObjectResponse<BooleanResponse>? response = await UrlGetToJsonObjectWithSession<BooleanResponse>(request).ConfigureAwait(false);
 
@@ -2165,7 +2165,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		List<KeyValuePair<string, string>> data = new(8 + (confirmations.Count * 2)) {
 			new KeyValuePair<string, string>("a", Bot.SteamID.ToString(CultureInfo.InvariantCulture)),
 			new KeyValuePair<string, string>("k", confirmationHash),
-			new KeyValuePair<string, string>("m", "android"),
+			new KeyValuePair<string, string>("m", "react"),
 			new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"),
 			new KeyValuePair<string, string>("p", deviceID),
 			new KeyValuePair<string, string>("t", time.ToString(CultureInfo.InvariantCulture)),

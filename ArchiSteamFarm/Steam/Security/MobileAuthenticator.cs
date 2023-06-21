@@ -32,6 +32,7 @@ using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Storage;
 using Newtonsoft.Json;
 
@@ -172,71 +173,23 @@ public sealed class MobileAuthenticator : IDisposable {
 		}
 
 		// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
-		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetConfirmationsPage(deviceID!, confirmationHash!, time).ConfigureAwait(false);
+		ConfirmationsResponse? response = await Bot.ArchiWebHandler.GetConfirmationsPage(deviceID!, confirmationHash!, time).ConfigureAwait(false);
 
 		// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
 
-		if (htmlDocument == null) {
+		if (response?.Confirmations == null) {
 			return null;
 		}
 
-		IEnumerable<IElement> confirmationNodes = htmlDocument.SelectNodes<IElement>("//div[@class='mobileconf_list_entry']");
+		if (!response.Success) {
+			return null;
+		}
 
 		HashSet<Confirmation> result = new();
 
-		foreach (IElement confirmationNode in confirmationNodes) {
-			string? idText = confirmationNode.GetAttribute("data-confid");
-
-			if (string.IsNullOrEmpty(idText)) {
-				Bot.ArchiLogger.LogNullError(idText);
-
-				return null;
-			}
-
-			if (!ulong.TryParse(idText, out ulong id) || (id == 0)) {
-				Bot.ArchiLogger.LogNullError(id);
-
-				return null;
-			}
-
-			string? keyText = confirmationNode.GetAttribute("data-key");
-
-			if (string.IsNullOrEmpty(keyText)) {
-				Bot.ArchiLogger.LogNullError(keyText);
-
-				return null;
-			}
-
-			if (!ulong.TryParse(keyText, out ulong key) || (key == 0)) {
-				Bot.ArchiLogger.LogNullError(key);
-
-				return null;
-			}
-
-			string? creatorText = confirmationNode.GetAttribute("data-creator");
-
-			if (string.IsNullOrEmpty(creatorText)) {
-				Bot.ArchiLogger.LogNullError(creatorText);
-
-				return null;
-			}
-
-			if (!ulong.TryParse(creatorText, out ulong creator) || (creator == 0)) {
-				Bot.ArchiLogger.LogNullError(creator);
-
-				return null;
-			}
-
-			string? typeText = confirmationNode.GetAttribute("data-type");
-
-			if (string.IsNullOrEmpty(typeText)) {
-				Bot.ArchiLogger.LogNullError(typeText);
-
-				return null;
-			}
-
+		foreach (ConfirmationData confirmation in response.Confirmations) {
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!Enum.TryParse(typeText!, out Confirmation.EType type) || (type == Confirmation.EType.Unknown)) {
+			if (!Enum.TryParse(confirmation.TypeText!, out Confirmation.EType type) || (type == Confirmation.EType.Unknown)) {
 				Bot.ArchiLogger.LogNullError(type);
 
 				return null;
@@ -248,7 +201,7 @@ public sealed class MobileAuthenticator : IDisposable {
 				return null;
 			}
 
-			result.Add(new Confirmation(id, key, creator, type));
+			result.Add(new Confirmation(confirmation.ID, confirmation.Nonce, confirmation.CreatorID, type));
 		}
 
 		return result;
