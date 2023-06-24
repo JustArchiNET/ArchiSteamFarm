@@ -66,6 +66,9 @@ public sealed class ArchiWebHandler : IDisposable {
 	[PublicAPI]
 	public static Uri SteamStoreURL => new("https://store.steampowered.com");
 
+	[PublicAPI]
+	public static Uri SteamCheckoutURL => new("https://checkout.steampowered.com");
+
 	private static ushort WebLimiterDelay => ASF.GlobalConfig?.WebLimiterDelay ?? GlobalConfig.DefaultWebLimiterDelay;
 
 	[PublicAPI]
@@ -1559,7 +1562,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(subID));
 		}
 
-		Uri request = new(SteamStoreURL, $"/checkout/addfreelicense/{subID}");
+		Uri request = new(SteamCheckoutURL, $"/checkout/addfreelicense/{subID}");
 
 		// Extra entry for sessionID
 		Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
@@ -2275,14 +2278,17 @@ public sealed class ArchiWebHandler : IDisposable {
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamCommunityURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamHelpURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamStoreURL.Host}"));
+		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamCheckoutURL.Host}"));
 
 		WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", $".{SteamCommunityURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", $".{SteamHelpURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", $".{SteamStoreURL.Host}"));
+		WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", $".{SteamCheckoutURL.Host}"));
 
 		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamCommunityURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamHelpURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamStoreURL.Host}"));
+		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamCheckoutURL.Host}"));
 
 		// Report proper time when doing timezone-based calculations, see setTimezoneCookies() from https://steamcommunity-a.akamaihd.net/public/shared/javascript/shared_global.js
 		string timeZoneOffset = $"{(int) DateTimeOffset.Now.Offset.TotalSeconds}{Uri.EscapeDataString(",")}0";
@@ -2290,6 +2296,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", $".{SteamCommunityURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", $".{SteamHelpURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", $".{SteamStoreURL.Host}"));
+		WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", $".{SteamCheckoutURL.Host}"));
 
 		Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
