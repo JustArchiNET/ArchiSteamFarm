@@ -154,7 +154,9 @@ public static class PluginsCore {
 			return null;
 		}
 
-		return results.FirstOrDefault(static result => result != null);
+#pragma warning disable CS0612 // TODO: Fair warning, remove ?? fallback in the next release cycle
+		return results.FirstOrDefault(static result => result != null) ?? await GetCustomMachineInfoProviderFallback().ConfigureAwait(false);
+#pragma warning restore CS0612 // TODO: Fair warning, remove ?? fallback in the next release cycle
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
@@ -651,6 +653,25 @@ public static class PluginsCore {
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
+	}
+
+	[Obsolete]
+	private static async Task<IMachineInfoProvider?> GetCustomMachineInfoProviderFallback() {
+		if (ActivePlugins == null) {
+			return null;
+		}
+
+		IList<IMachineInfoProvider> results;
+
+		try {
+			results = await Utilities.InParallel(ActivePlugins.OfType<ICustomMachineInfoProvider>().Select(static plugin => Task.Run(() => plugin.MachineInfoProvider))).ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return null;
+		}
+
+		return results.FirstOrDefault();
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
