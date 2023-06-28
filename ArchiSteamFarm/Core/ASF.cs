@@ -445,6 +445,7 @@ public static class ASF {
 			{ ArchiWebHandler.SteamCommunityURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamCommunityURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ ArchiWebHandler.SteamHelpURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamHelpURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ ArchiWebHandler.SteamStoreURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamStoreURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ ArchiWebHandler.SteamCheckoutURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamCheckoutURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ WebAPI.DefaultBaseAddress, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(WebAPI)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
 		}.ToImmutableDictionary();
 	}
