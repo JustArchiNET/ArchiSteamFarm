@@ -445,6 +445,7 @@ public sealed class Trading : IDisposable {
 		switch (result) {
 			case ParseTradeResult.EResult.Ignored:
 			case ParseTradeResult.EResult.Rejected:
+			case ParseTradeResult.EResult.Blacklisted:
 				bool accept = await PluginsCore.OnBotTradeOffer(Bot, tradeOffer).ConfigureAwait(false);
 
 				if (accept) {
