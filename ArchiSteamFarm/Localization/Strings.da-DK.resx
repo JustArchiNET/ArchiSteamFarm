@@ -304,7 +304,10 @@ StackTrace:
 		<value>Stoppede med at idle: {0} ({1})</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
-	
+	<data name="StoppedIdlingList" xml:space="preserve">
+		<value>Stoppede med at farme: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="UnknownCommand" xml:space="preserve">
 		<value>Ukendt kommando!</value>
 	</data>
