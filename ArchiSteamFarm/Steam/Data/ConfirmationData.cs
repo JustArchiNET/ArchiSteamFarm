@@ -24,14 +24,14 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.Steam.Data;
 
 internal sealed class ConfirmationData {
+	[JsonProperty(PropertyName = "creator_id", Required = Required.Always)]
+	internal readonly ulong CreatorID;
+
 	[JsonProperty(PropertyName = "id", Required = Required.Always)]
 	internal readonly ulong ID;
 
 	[JsonProperty(PropertyName = "nonce", Required = Required.Always)]
 	internal readonly ulong Nonce;
-
-	[JsonProperty(PropertyName = "creator_id", Required = Required.Always)]
-	internal readonly ulong CreatorID;
 
 	[JsonProperty(PropertyName = "type", Required = Required.Always)]
 	internal readonly string TypeText = "";

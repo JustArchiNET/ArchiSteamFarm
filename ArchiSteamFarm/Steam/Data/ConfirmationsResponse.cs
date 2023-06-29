@@ -25,11 +25,11 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.Steam.Data;
 
 internal sealed class ConfirmationsResponse : BooleanResponse {
-	[JsonProperty("needauth", Required = Required.DisallowNull)]
-	internal readonly bool NeedAuthentication;
-
 	[JsonProperty("conf", Required = Required.DisallowNull)]
 	internal readonly HashSet<ConfirmationData>? Confirmations;
+
+	[JsonProperty("needauth", Required = Required.DisallowNull)]
+	internal readonly bool NeedAuthentication;
 
 	[JsonConstructor]
 	private ConfirmationsResponse() { }

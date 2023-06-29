@@ -44,6 +44,9 @@ internal class AssetForMatching {
 	[JsonProperty("p", Required = Required.Always)]
 	internal readonly Asset.EType Type;
 
+	[JsonConstructor]
+	protected AssetForMatching() { }
+
 	internal AssetForMatching(Asset asset) {
 		ArgumentNullException.ThrowIfNull(asset);
 
@@ -56,7 +59,4 @@ internal class AssetForMatching {
 		Type = asset.Type;
 		Rarity = asset.Rarity;
 	}
-
-	[JsonConstructor]
-	protected AssetForMatching() { }
 }
