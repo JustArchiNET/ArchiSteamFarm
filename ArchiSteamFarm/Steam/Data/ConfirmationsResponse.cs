@@ -19,17 +19,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 internal sealed class ConfirmationsResponse : BooleanResponse {
-	[JsonProperty("conf", Required = Required.DisallowNull)]
-	internal readonly HashSet<ConfirmationData>? Confirmations;
-
-	[JsonProperty("needauth", Required = Required.DisallowNull)]
-	internal readonly bool NeedAuthentication;
+	[JsonProperty("conf", Required = Required.Always)]
+	internal readonly ImmutableHashSet<Confirmation> Confirmations = ImmutableHashSet<Confirmation>.Empty;
 
 	[JsonConstructor]
 	private ConfirmationsResponse() { }

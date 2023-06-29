@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -33,7 +34,6 @@ using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
-using ArchiSteamFarm.Steam.Security;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
@@ -133,7 +133,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? HandledConfirmations, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, Confirmation.EType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false) {
+	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? HandledConfirmations, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, Confirmation.EConfirmationType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false) {
 		if (Bot.BotDatabase.MobileAuthenticator == null) {
 			return (false, null, Strings.BotNoASFAuthenticator);
 		}
@@ -149,36 +149,38 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				await Task.Delay(1000).ConfigureAwait(false);
 			}
 
-			HashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
+			ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
 
 			if ((confirmations == null) || (confirmations.Count == 0)) {
 				continue;
 			}
 
+			HashSet<Confirmation> remainingConfirmations = confirmations.ToHashSet();
+
 			if (acceptedType.HasValue) {
-				if (confirmations.RemoveWhere(confirmation => confirmation.Type != acceptedType.Value) > 0) {
-					if (confirmations.Count == 0) {
+				if (remainingConfirmations.RemoveWhere(confirmation => confirmation.ConfirmationType != acceptedType.Value) > 0) {
+					if (remainingConfirmations.Count == 0) {
 						continue;
 					}
 				}
 			}
 
 			if (acceptedCreatorIDs?.Count > 0) {
-				if (confirmations.RemoveWhere(confirmation => !acceptedCreatorIDs.Contains(confirmation.Creator)) > 0) {
-					if (confirmations.Count == 0) {
+				if (remainingConfirmations.RemoveWhere(confirmation => !acceptedCreatorIDs.Contains(confirmation.CreatorID)) > 0) {
+					if (remainingConfirmations.Count == 0) {
 						continue;
 					}
 				}
 			}
 
-			if (!await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false)) {
+			if (!await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(remainingConfirmations, accept).ConfigureAwait(false)) {
 				return (false, handledConfirmations?.Values, Strings.WarningFailed);
 			}
 
 			handledConfirmations ??= new Dictionary<ulong, Confirmation>();
 
-			foreach (Confirmation? confirmation in confirmations) {
-				handledConfirmations[confirmation.Creator] = confirmation;
+			foreach (Confirmation? confirmation in remainingConfirmations) {
+				handledConfirmations[confirmation.CreatorID] = confirmation;
 			}
 
 			// We've accepted *something*, if caller didn't specify the IDs, that's enough for us
@@ -343,7 +345,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		(bool success, _, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, itemsPerTrade: itemsPerTrade).ConfigureAwait(false);
 
 		if ((mobileTradeOfferIDs?.Count > 0) && Bot.HasMobileAuthenticator) {
-			(bool twoFactorSuccess, _, _) = await HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+			(bool twoFactorSuccess, _, _) = await HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
 			if (!twoFactorSuccess) {
 				return (false, Strings.BotLootingFailed);

@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -142,7 +143,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		);
 	}
 
-	internal async Task<HashSet<Confirmation>?> GetConfirmations() {
+	internal async Task<ImmutableHashSet<Confirmation>?> GetConfirmations() {
 		if (Bot == null) {
 			throw new InvalidOperationException(nameof(Bot));
 		}
@@ -172,38 +173,17 @@ public sealed class MobileAuthenticator : IDisposable {
 		}
 
 		// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
-		ConfirmationsResponse? response = await Bot.ArchiWebHandler.GetConfirmationsPage(deviceID!, confirmationHash!, time).ConfigureAwait(false);
+		ConfirmationsResponse? response = await Bot.ArchiWebHandler.GetConfirmations(deviceID!, confirmationHash!, time).ConfigureAwait(false);
 
-		// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
-
-		if (response?.Confirmations == null) {
+		if (response?.Success != true) {
 			return null;
 		}
 
-		if (!response.Success) {
-			return null;
+		foreach (Confirmation? confirmation in response.Confirmations.Where(static confirmation => (confirmation.ConfirmationType == Confirmation.EConfirmationType.Unknown) || !Enum.IsDefined(confirmation.ConfirmationType))) {
+			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(confirmation.ConfirmationType), confirmation.ConfirmationType));
 		}
 
-		HashSet<Confirmation> result = new();
-
-		foreach (ConfirmationData confirmation in response.Confirmations) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!Enum.TryParse(confirmation.TypeText!, out Confirmation.EType type) || (type == Confirmation.EType.Unknown)) {
-				Bot.ArchiLogger.LogNullError(type);
-
-				return null;
-			}
-
-			if (!Enum.IsDefined(type)) {
-				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(type), type));
-
-				return null;
-			}
-
-			result.Add(new Confirmation(confirmation.ID, confirmation.Nonce, confirmation.CreatorID, type));
-		}
-
-		return result;
+		return response.Confirmations;
 	}
 
 	internal async Task<ulong> GetSteamTime() {
@@ -295,7 +275,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		// We totally ignore actual result returned by those calls, abort only if request timed out
 		foreach (Confirmation confirmation in confirmations) {
 			// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
-			bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(deviceID!, confirmationHash!, time, confirmation.ID, confirmation.Key, accept).ConfigureAwait(false);
+			bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(deviceID!, confirmationHash!, time, confirmation.ID, confirmation.Nonce, accept).ConfigureAwait(false);
 
 			// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
 

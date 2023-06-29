@@ -19,36 +19,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Steam.Security;
+namespace ArchiSteamFarm.Steam.Data;
 
+[PublicAPI]
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class Confirmation {
-	[JsonProperty(Required = Required.Always)]
-	public ulong Creator { get; }
+	[JsonProperty(PropertyName = "nonce", Required = Required.Always)]
+	internal readonly ulong Nonce;
 
-	[JsonProperty(Required = Required.Always)]
-	public ulong ID { get; }
+	[JsonProperty(PropertyName = "type", Required = Required.Always)]
+	public EConfirmationType ConfirmationType { get; private set; }
 
-	[JsonProperty(Required = Required.Always)]
-	public ulong Key { get; }
+	[JsonProperty(PropertyName = "creator_id", Required = Required.Always)]
+	public ulong CreatorID { get; private set; }
 
-	[JsonProperty(Required = Required.Always)]
-	public EType Type { get; }
+	[JsonProperty(PropertyName = "id", Required = Required.Always)]
+	public ulong ID { get; private set; }
 
-	internal Confirmation(ulong id, ulong key, ulong creator, EType type) {
-		ID = id > 0 ? id : throw new ArgumentOutOfRangeException(nameof(id));
-		Key = key > 0 ? key : throw new ArgumentOutOfRangeException(nameof(key));
-		Creator = creator > 0 ? creator : throw new ArgumentOutOfRangeException(nameof(creator));
-		Type = Enum.IsDefined(type) ? type : throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(EType));
-	}
+	[JsonConstructor]
+	private Confirmation() { }
 
-	// REF: Internal documentation
 	[PublicAPI]
-	public enum EType : byte {
+	public enum EConfirmationType : byte {
 		Unknown,
 		Generic,
 		Trade,

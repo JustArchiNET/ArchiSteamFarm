@@ -36,7 +36,6 @@ using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
-using ArchiSteamFarm.Steam.Security;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
@@ -1856,7 +1855,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return resultInSeconds == 0 ? (byte) 0 : (byte) (resultInSeconds / 86400);
 	}
 
-	internal async Task<ConfirmationsResponse?> GetConfirmationsPage(string deviceID, string confirmationHash, ulong time) {
+	internal async Task<ConfirmationsResponse?> GetConfirmations(string deviceID, string confirmationHash, ulong time) {
 		if (string.IsNullOrEmpty(deviceID)) {
 			throw new ArgumentNullException(nameof(deviceID));
 		}
@@ -2177,7 +2176,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		foreach (Confirmation confirmation in confirmations) {
 			data.Add(new KeyValuePair<string, string>("cid[]", confirmation.ID.ToString(CultureInfo.InvariantCulture)));
-			data.Add(new KeyValuePair<string, string>("ck[]", confirmation.Key.ToString(CultureInfo.InvariantCulture)));
+			data.Add(new KeyValuePair<string, string>("ck[]", confirmation.Nonce.ToString(CultureInfo.InvariantCulture)));
 		}
 
 		ObjectResponse<BooleanResponse>? response = await UrlPostToJsonObjectWithSession<BooleanResponse>(request, data: data).ConfigureAwait(false);

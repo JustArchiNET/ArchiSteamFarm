@@ -30,6 +30,7 @@ using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Security;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,7 +52,7 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 
 		ArgumentNullException.ThrowIfNull(request);
 
-		if (request.AcceptedType.HasValue && ((request.AcceptedType.Value == Confirmation.EType.Unknown) || !Enum.IsDefined(request.AcceptedType.Value))) {
+		if (request.AcceptedType.HasValue && ((request.AcceptedType.Value == Confirmation.EConfirmationType.Unknown) || !Enum.IsDefined(request.AcceptedType.Value))) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.AcceptedType))));
 		}
 
