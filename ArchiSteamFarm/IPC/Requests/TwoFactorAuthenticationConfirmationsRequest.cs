@@ -28,7 +28,6 @@ using System.Linq;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Security;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests;
