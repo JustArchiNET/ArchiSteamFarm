@@ -2892,9 +2892,26 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (packagesToRefresh.Count > 0) {
-			ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
-			await ASF.GlobalDatabase.RefreshPackages(this, packagesToRefresh).ConfigureAwait(false);
-			ArchiLogger.LogGenericInfo(Strings.Done);
+			// Since Steam spams with this call, display message on info level only if refresh takes longer time
+			ArchiLogger.LogGenericTrace(Strings.BotRefreshingPackagesData);
+
+			bool displayFinish = false;
+
+			Task refreshTask = ASF.GlobalDatabase.RefreshPackages(this, packagesToRefresh);
+
+			if (await Task.WhenAny(refreshTask, Task.Delay(5000)).ConfigureAwait(false) != refreshTask) {
+				ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
+
+				displayFinish = true;
+			}
+
+			await refreshTask.ConfigureAwait(false);
+
+			if (displayFinish) {
+				ArchiLogger.LogGenericInfo(Strings.Done);
+			}
+
+			ArchiLogger.LogGenericTrace(Strings.Done);
 		}
 
 		if (hasNewEntries) {
