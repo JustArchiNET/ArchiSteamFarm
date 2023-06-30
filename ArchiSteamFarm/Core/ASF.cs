@@ -312,7 +312,10 @@ public static class ASF {
 			BinaryResponse? response;
 
 			try {
-				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL!, progressReporter: progressReporter).ConfigureAwait(false);
+				Uri downloadURL = CultureInfo.CurrentCulture.Equals(CultureInfo.GetCultureInfo("zh-CN"))
+					? new(SharedInfo.GithubProxyURL + binaryAsset.DownloadURL.AbsoluteUri)
+					: binaryAsset.DownloadURL;
+				response = await WebBrowser.UrlGetToBinary(downloadURL, progressReporter: progressReporter).ConfigureAwait(false);
 			} finally {
 				progressReporter.ProgressChanged -= OnProgressChanged;
 			}

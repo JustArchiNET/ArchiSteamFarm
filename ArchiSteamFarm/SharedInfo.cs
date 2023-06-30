@@ -45,6 +45,7 @@ public static class SharedInfo {
 	internal const string EnvironmentVariableCryptKeyFile = $"{EnvironmentVariableCryptKey}_FILE";
 	internal const string EnvironmentVariableNetworkGroup = $"{ASF}_NETWORK_GROUP";
 	internal const string EnvironmentVariablePath = $"{ASF}_PATH";
+	internal const string GithubProxyURL = "https://ghproxy.com/";
 	internal const string GithubReleaseURL = $"https://api.github.com/repos/{GithubRepo}/releases";
 	internal const string GithubRepo = $"JustArchiNET/{AssemblyName}";
 	internal const string GlobalConfigFileName = $"{ASF}{JsonConfigExtension}";
