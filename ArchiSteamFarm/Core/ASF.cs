@@ -313,7 +313,7 @@ public static class ASF {
 
 			try {
 				Uri downloadURL = CultureInfo.CurrentCulture.Equals(CultureInfo.GetCultureInfo("zh-CN"))
-					? new(SharedInfo.GithubProxyURL + binaryAsset.DownloadURL.AbsoluteUri)
+					? new Uri(SharedInfo.GithubProxyURL + binaryAsset.DownloadURL.AbsoluteUri)
 					: binaryAsset.DownloadURL;
 				response = await WebBrowser.UrlGetToBinary(downloadURL, progressReporter: progressReporter).ConfigureAwait(false);
 			} finally {
