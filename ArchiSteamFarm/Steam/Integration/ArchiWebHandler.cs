@@ -652,7 +652,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "partner", steamID.ToString(CultureInfo.InvariantCulture) },
 			{ "serverid", "1" },
 			{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) : "" },
-			{ "tradeoffermessage", $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}" }
+			// { "tradeoffermessage", $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}" }
 		};
 
 		HashSet<ulong> tradeOfferIDs = new(trades.Count);
