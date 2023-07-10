@@ -191,7 +191,7 @@ StackTrace:
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
 	<data name="UserInputDeviceConfirmation" xml:space="preserve">
-		<value>Por favor, verifique seu aplicativo móvel Steam pois você deve ter recebido uma notificação para aprovação do login. Digite Y se você recebeu e aprovou a notificação ou N se você preferir fornecer o código: </value>
+		<value>Por favor, verifique seu aplicativo móvel Steam, pois você deve ter recebido uma notificação para aprovação do login. Digite Y se você recebeu e aprovou a notificação ou N se você preferir fornecer o código: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
