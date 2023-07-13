@@ -2332,7 +2332,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return paymentMethod switch {
 			EPaymentMethod.ActivationCode => false,
 			EPaymentMethod.Complimentary => false,
-			EPaymentMethod.GuestPass => false,
 			EPaymentMethod.HardwarePromo => false,
 			_ => !paymentMethod.HasFlag(EPaymentMethod.Complimentary) // Complimentary can also be a flag
 		};
