@@ -195,6 +195,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		}
 
 		if (BotSynchronizations.TryRemove(bot, out (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer) synchronization)) {
+			// Ensure the semaphore is empty, otherwise we're risking disposed exceptions
+			await synchronization.RefreshSemaphore.WaitAsync().ConfigureAwait(false);
+
 			synchronization.RefreshSemaphore.Dispose();
 
 			await synchronization.RefreshTimer.DisposeAsync().ConfigureAwait(false);
