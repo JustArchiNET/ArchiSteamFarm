@@ -97,7 +97,7 @@ StackTrace:
 		<comment>{0} will be replaced by URL of the request</comment>
 	</data>
 	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-		<value>לא ניתן לטעון תצורה גלובלית. נא ודאו כי {0} קיים ותקין! ניתן לפנות למדריך ההגדרה ב-wiki להסבר נוסף.</value>
+		<value>לא ניתן לטעון config גלובלי. נא ודא כי {0} קיים ותקין! ניתן לפנות למדריך ההגדרה ב-wiki להסבר נוסף.</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="ErrorIsInvalid" xml:space="preserve">
@@ -138,10 +138,10 @@ StackTrace:
 		<value>נכשל!</value>
 	</data>
 	<data name="GlobalConfigChanged" xml:space="preserve">
-		<value>קובץ תצורה גלובלית השתנה!</value>
+		<value>קובץ config גלובלי השתנה!</value>
 	</data>
 	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-		<value>קובץ תצורה גלובלית הוסר!</value>
+		<value>קובץ config גלובלי הוסר!</value>
 	</data>
 	<data name="IgnoringTrade" xml:space="preserve">
 		<value>מתעלם מעסקת חליפין: {0}</value>
@@ -190,7 +190,10 @@ StackTrace:
 		<value>גירסה מקומית: {0} | הגירסה המרוחקת: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>אנא בדוק את אפליקציית Steam שלך, אתה אמור לקבל התראה להרשאת התחברות. לחץ Y אם קיבלת ואישרת את ההתראה, N אם אתה רוצה לספק קוד במקום: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>אנא הכנס את קוד האימות מאפליקציית המאמת של Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -203,7 +206,10 @@ StackTrace:
 		<value>נא הזינו את משתמש ה- Steam שלכם: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
-	
+	<data name="UserInputSteamParentalCode" xml:space="preserve">
+		<value>הזן בבקשה קוד הורים של Steam: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamPassword" xml:space="preserve">
 		<value>אנא הקישו את הסיסמה הנוכחית שלכם: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -225,38 +231,86 @@ StackTrace:
 		<value>לא ניתן למצוא אף בוט בשם {0}!</value>
 		<comment>{0} will be replaced by bot's name query (string)</comment>
 	</data>
-	
-	
-	
+	<data name="BotStatusOverview" xml:space="preserve">
+		<value>{1}/{0} בוטים רצים כרגע, {2} משחקים ({3} קלפים) נותרו להרצה.</value>
+		<comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
+	</data>
+	<data name="BotStatusIdling" xml:space="preserve">
+		<value>הבוט מריץ את המשחק: {0} ({1}, {2} קלפים נותרו להשגה) מתוך {3} משחקים ({4} קלפים) שנותרו להרצה ({5}~ נותרו).</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="BotStatusIdlingList" xml:space="preserve">
+		<value>הבוט מריץ את המשחקים: {0} מתוך סך כולל של {1} משחקים ({2} קלפים) שנותרו להרצה ({3}~ נותרו).</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
 	<data name="CheckingFirstBadgePage" xml:space="preserve">
 		<value>בודק עמוד תגים ראשון...</value>
 	</data>
 	<data name="CheckingOtherBadgePages" xml:space="preserve">
 		<value>בודק עמודי תגים אחרים...</value>
 	</data>
-	
+	<data name="ChosenFarmingAlgorithm" xml:space="preserve">
+		<value>אלגוריתם הרצה שנבחר: {0}</value>
+		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+	</data>
 	<data name="Done" xml:space="preserve">
 		<value>הושלם!</value>
 	</data>
-	
-	
-	
-	
-	
-	
+	<data name="GamesToIdle" xml:space="preserve">
+		<value>נותרו {0} משחקים ({1} קלפים) להרצה ({2}~ נותרו)...</value>
+		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinished" xml:space="preserve">
+		<value>ההרצה הסתיימה!</value>
+	</data>
+	<data name="IdlingFinishedForGame" xml:space="preserve">
+		<value>ההרצה הסתיימה עבור: {0} ({1}) לאחר {2} של זמן משחק!</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinishedForGames" xml:space="preserve">
+		<value>הרצת המשחקים התסיימה עבור: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="IdlingStatusForGame" xml:space="preserve">
+		<value>סטטוס ההרצה של {0} ({1}): {2} קלפים נותרו</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm</comment>
+	</data>
+	<data name="IdlingStopped" xml:space="preserve">
+		<value>הרצה נעצרה!</value>
+	</data>
 	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
 		<value>מתעלם מבקשה זו, כיוון שהשהיה תמידית פועלת!</value>
 	</data>
-	
-	
-	
+	<data name="NothingToIdle" xml:space="preserve">
+		<value>אין לנו מה להריץ על החשבון הזה!</value>
+	</data>
+	<data name="NowIdling" xml:space="preserve">
+		<value>עכשיו מריץ: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="NowIdlingList" xml:space="preserve">
+		<value>עכשיו מריץ: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="PlayingNotAvailable" xml:space="preserve">
 		<value>האפשרות לשחק אינה זמינה כעת. ננסה מאוחר יותר!</value>
 	</data>
-	
-	
-	
-	
+	<data name="StillIdling" xml:space="preserve">
+		<value>עדיין מריץ: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StillIdlingList" xml:space="preserve">
+		<value>עדיין מריץ: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="StoppedIdling" xml:space="preserve">
+		<value>נעצרה ההרצה: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StoppedIdlingList" xml:space="preserve">
+		<value>נעצרה ההרצה: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="UnknownCommand" xml:space="preserve">
 		<value>פקודה לא מוכרת!</value>
 	</data>
@@ -271,7 +325,9 @@ StackTrace:
 		<value>מאשר מתנה: {0}...</value>
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
-	
+	<data name="BotAccountLimited" xml:space="preserve">
+		<value>החשבון הזה מוגבל, תהליך ההרצה לא יתאפשר עד להסרת ההגבלה!</value>
+	</data>
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>מזהה: {0} | סטטוס: {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -317,7 +373,10 @@ StackTrace:
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>לא מריץ את הבוט הזה כי הוא אינו מופעל בקובץ ההגדרה!</value>
 	</data>
-	
+	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+		<value>התקבל קוד שגיאה TwoFactorCodeMismatch מספר של {0} פעמים ברציפות. או שפרטי האימות הדו שלבי שהכנסת לא תקפים, או שהזמן שלך לא מסונכרן, מפיל!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+	</data>
 	<data name="BotLoggedOff" xml:space="preserve">
 		<value>ניתוק מסטים: {0}</value>
 		<comment>{0} will be replaced by logging off reason (string)</comment>
@@ -358,7 +417,10 @@ StackTrace:
 		<value>בבעלותך כבר: {0} | {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
-	
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>יתרת נקודות: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
 	<data name="BotRateLimitExceeded" xml:space="preserve">
 		<value>חרגת מגבלת התעריפים, ננסה שוב לאחר {0} שניות/דקות...</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
@@ -377,8 +439,12 @@ StackTrace:
 	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
 		<value>הוסר מפתח התחברות שתוקפו פג!</value>
 	</data>
-	
-	
+	<data name="BotStatusNotIdling" xml:space="preserve">
+		<value>הבוט לא מריץ דבר.</value>
+	</data>
+	<data name="BotStatusLimited" xml:space="preserve">
+		<value>הבוט מוגבל ולא יכול להפיק קלפים דרך הרצה.</value>
+	</data>
 	<data name="BotStatusConnecting" xml:space="preserve">
 		<value>הבוט מתחבר לרשת Steam.</value>
 	</data>
@@ -410,8 +476,12 @@ StackTrace:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>החיבור לרשת Steam אבד. מתחבר מחדש...</value>
 	</data>
-	
-	
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>החשבון כבר לא תפוס: תהליך ההרצה התחדש!</value>
+	</data>
+	<data name="BotAccountOccupied" xml:space="preserve">
+		<value>החשבון נמצא בשימוש כעת: ASF ימשיך את תהליך ההרצה ברגע שהוא יתפנה...</value>
+	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>מתחבר...</value>
 	</data>
@@ -445,8 +515,14 @@ StackTrace:
 	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
 		<value>ה- CurrentCulture המסופק שלך אינו חוקי, ASF ימשיך לפעול עם אפשרות ברירת המחדל!</value>
 	</data>
-	
-	
+	<data name="TranslationIncomplete" xml:space="preserve">
+		<value>ASF ינסה להשתמש בתרבות {0} המועדפת עליך, אך התרגום לשפה זו הושלם רק ב-{1}. אולי תוכל לעזור לנו לשפר את תרגום ה-ASF עבור השפה שלך?</value>
+		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+	</data>
+	<data name="IdlingGameNotPossible" xml:space="preserve">
+		<value>ההרצה {0} ({1}) הושבתה באופן זמני, משום ש-ASF לא מסוגל להריץ את משחק זה כרגע.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="WarningIdlingGameMismatch" xml:space="preserve">
 		<value>ASF זיהה חוסר התאמה של מזהה עבור {0} ({1}) והשתמש במזהה {2} במקום זאת.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -455,8 +531,12 @@ StackTrace:
 		<value>{0} גרסה {1}</value>
 		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
 	</data>
-	
-	
+	<data name="BotAccountLocked" xml:space="preserve">
+		<value>חשבון זה נעול, תהליך ההרצה אינו זמין לצמיתות!</value>
+	</data>
+	<data name="BotStatusLocked" xml:space="preserve">
+		<value>הבוט נעול ולכן לא יכול להפיק קלפים כלל דרך הרצה.</value>
+	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
 		<value>פונקציה זו זמינה רק במצב ללא ראש!</value>
 	</data>
@@ -467,8 +547,14 @@ StackTrace:
 	<data name="ErrorAccessDenied" xml:space="preserve">
 		<value>הגישה נדחתה!</value>
 	</data>
-	
-	
+	<data name="WarningPreReleaseVersion" xml:space="preserve">
+		<value>אתה משתמש בגירסה חדשה יותר מאשר הגירסה הזמינה. אנא שים לב כי גירסאות קדם הפצה נועדו עבור משתמשים אשר יודעים כיצד לדווח על באגים, להתמודד עם בעיות ולתת משוב - תמיכה טכנית לא תינתן.</value>
+	</data>
+	<data name="BotStats" xml:space="preserve">
+		<value>זיכרון שנמצא בשימוש: {0} מגה בייטים.
+זמן פעילות התהליך: {1}</value>
+		<comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+	</data>
 	<data name="ClearingDiscoveryQueue" xml:space="preserve">
 		<value>ניקוי תור גילוי סטים #{0}...</value>
 		<comment>{0} will be replaced by queue number</comment>
@@ -496,7 +582,9 @@ StackTrace:
 		<value>הדרך לעקיפת הבעיה עבור {0} באגים הופעלה.</value>
 		<comment>{0} will be replaced by the bug's name provided by ASF</comment>
 	</data>
-	
+	<data name="TargetBotNotConnected" xml:space="preserve">
+		<value>מופע בוט זה לא מחובר!</value>
+	</data>
 	<data name="BotWalletBalance" xml:space="preserve">
 		<value>יתרה בארנק: {1}{0}</value>
 		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
@@ -508,12 +596,21 @@ StackTrace:
 		<value>לבוט יש רמה {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
-	
+	<data name="ActivelyMatchingItems" xml:space="preserve">
+		<value>מתאים פריטי Steam, שלב #{0}...</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
+	<data name="DoneActivelyMatchingItems" xml:space="preserve">
+		<value>הסתיימה ההתאמה של פריטי Steam, שלב #{0}.</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>הופסק!</value>
 	</data>
-	
+	<data name="WarningExcessiveBotsCount" xml:space="preserve">
+		<value>אתה מפעיל יותר חשבונות בוטים אישיים מהמגבלה העליונה המומלצת שלנו ({0}). שים לב שהגדרה זו אינה נתמכת ועלולה לגרום לבעיות שונות הקשורות ל-Steam, כולל השעיית חשבון. עיין בשאלות הנפוצות לפרטים נוספים.</value>
+		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+	</data>
 	<data name="PluginLoaded" xml:space="preserve">
 		<value>{0} נטען בהצלחה!</value>
 		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
@@ -525,52 +622,130 @@ StackTrace:
 	<data name="NothingFound" xml:space="preserve">
 		<value>לא נמצא דבר!</value>
 	</data>
-	
+	<data name="PluginsWarning" xml:space="preserve">
+		<value>טענת תוספים מותאמים אישית אחד או מרובים ל-ASF. מכיוון שאיננו יכולים להציע תמיכה עבור הגדרות מופרדות, אנא צור קשר עם המפתחים המתאימים של הפלאגינים שבהם החלטת להשתמש בכל מקרה של בעיות.</value>
+	</data>
 	<data name="PleaseWait" xml:space="preserve">
 		<value>אנא המתן...</value>
 	</data>
 	<data name="EnterCommand" xml:space="preserve">
 		<value>הקש פקודה: </value>
 	</data>
-	
-	
+	<data name="Executing" xml:space="preserve">
+		<value>מבצע...</value>
+	</data>
+	<data name="InteractiveConsoleEnabled" xml:space="preserve">
+		<value>המסוף האינטראקטיבי פעיל כעת, הקלד 'c' כדי להיכנס למצב פקודה.</value>
+	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>לבוט נותרו {0} משחקים בתור ברקע.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
 	</data>
-	
-	
-	
+	<data name="ErrorSingleInstanceRequired" xml:space="preserve">
+		<value>תהליך ASF כבר פועל עבור ספריית העבודה הזו, מפיל!</value>
+	</data>
+	<data name="BotHandledConfirmations" xml:space="preserve">
+		<value>טופלו בהצלחה {0} אישורים!</value>
+		<comment>{0} will be replaced by number of confirmations</comment>
+	</data>
+	<data name="BotExtraIdlingCooldown" xml:space="preserve">
+		<value>ממתין עד {0} כדי להבטיח שאנו חופשיים להתחיל בהרצה...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+	</data>
 	<data name="UpdateCleanup" xml:space="preserve">
 		<value>מנקה קבצים ישנים לאחר עדכון...</value>
 	</data>
-	
-	
-	
-	
+	<data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+		<value>יוצר קוד הורים של Steam, זה יכול לקחת זמן מה, שקול לשים אותו ב-config במקום...</value>
+	</data>
+	<data name="IPCConfigChanged" xml:space="preserve">
+		<value>תצורת IPC השתנתה!</value>
+	</data>
+	<data name="BotTradeOfferResult" xml:space="preserve">
+		<value>הצעת המסחר {0} נקבעה להיות {1} בשל {2}.</value>
+		<comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
+	</data>
+	<data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
+		<value>התקבל קוד שגיאה InvalidPassword מספר של {0} פעמים ברציפות. סביר להניח שהסיסמה שלך לחשבון זה שגויה, מפיל!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
+	</data>
 	<data name="Result" xml:space="preserve">
 		<value>תוצאה: {0}</value>
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
+		<value>אתה מנסה להפעיל {0} גרסה של ASF בסביבה לא נתמכת: {1}. ספק --התעלם מ-unsupported-environment argument אם אתה באמת יודע מה אתה עושה.</value>
+	</data>
+	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+		<value>שורת פקודה לא ידועה: {0}</value>
+		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
+	</data>
+	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+		<value>לא ניתן לאתר את תיקיית ה-config, מפיל!</value>
+	</data>
+	<data name="BotIdlingSelectedGames" xml:space="preserve">
+		<value>משחק בבחירה {0}: {1}</value>
+		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+	</data>
+	<data name="AutomaticFileMigration" xml:space="preserve">
+		<value>קובץ ה-config שמיקומו {0} יועבר לתחביר העדכני ביותר...</value>
+		<comment>{0} will be replaced with the relative path to the affected config file</comment>
+	</data>
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>נראה שסיסמת ה-IPC שלך חלשה. שקול לבחור חזק יותר להגברת האבטחה. פרטים: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>נראה שהסיסמה שלך ב-Steam עבור '{0}' חלשה. שקול לבחור חזק יותר להגברת האבטחה. פרטים: {1}</value>
+		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>מפתח ההצפנה שלך נראה חלש. שקול לבחור חזק יותר להגברת האבטחה. פרטים: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>מפתח ההצפנה שלך קצר מדי. אנו ממליצים להשתמש באחד שאורכו לפחות {0} בייטים (תווים).</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>אתה משתמש בהגדרה {0} של המאפיין {1}, אך לא סיפקת --cryptkey מותאם אישית. עליך לספק --cryptkey מותאם אישית להגברת האבטחה.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>אתה משתמש בהגדרה {0} של המאפיין {1}, אך לא סיפקת --cryptkey מותאם אישית. זה מביס לחלוטין את ההגנה, מכיוון ש-ASF נאלץ להשתמש במפתח (ידוע) משלו. עליך לספק --cryptkey מותאם אישית כדי לעשות שימוש בהטבת האבטחה שמציעה הגדרה זו.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>אתה מנסה להפעיל את ASF כמנהל המערכת (שורש). זה גורם לסיכון אבטחה משמעותי למחשב שלך, ומכיוון ש-ASF אינו דורש גישת שורש לצורך פעולתו, אנו ממליצים להפעיל אותו כמשתמש שאינו מנהל במידת האפשר.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>אתה מפעיל את ASF בסביבה לא נתמכת, מספק ארגומנט --ignore-unsupported-environment. שים לב שאיננו מציעים כל סוג של תמיכה בתרחיש זה ואתה עושה זאת על אחריותך בלבד. הוזהרת.</value>
+	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>מביא checksum מהשרת המרוחק...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>מאמת את ה-checksum של הקובץ הבינארי שהורד מול זה מהשרת המרוחק...</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>השרת המרוחק לא יודע כלום על המהדורה שאליה אנחנו מעדכנים. מצב זה אפשרי אם המהדורה פורסמה לאחרונה - מסרב להמשיך בהליך העדכון באופן מיידי כאמצעי אבטחה נוסף.</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>שרת מרוחק השיב עם סכום ביקורת אחר, זה עשוי להצביע על הורדה פגומה או התקפת MITM, מסרב להמשיך בהליך העדכון!</value>
+	</data>
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>בונה קבצי ASF...</value>
+	</data>
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>נא הכנס את המפתח הקריפטוגרפי שלך: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>כתובת IP זו {0} לא חסומה!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>ניסית להשתמש בתכונה בתשלום {0} אך אין לך מזהה רישיון חוקי שהוגדר בתצורה הגלובלית של ASF. אנא בדוק את התצורה שלך, מכיוון שהפונקציונליות לא תעבוד ללא פרטים נוספים.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>
