@@ -10,7 +10,6 @@ SOLUTION="${MAIN_PROJECT}.sln"
 CONFIGURATION="Release"
 OUT="out"
 OUT_ASF="${OUT}/result"
-OUT_STD="${OUT}/${STEAM_TOKEN_DUMPER_NAME}"
 PLUGINS="${MAIN_PROJECT}.OfficialPlugins.ItemsMatcher"
 
 ANALYSIS=1
