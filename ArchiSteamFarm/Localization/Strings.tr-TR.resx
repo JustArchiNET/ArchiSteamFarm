@@ -63,11 +63,11 @@
 		</value>
 	</resheader>
 	<data name="AcceptingTrade" xml:space="preserve">
-		<value>Takas onaylanıyor: {0}</value>
+		<value>Takas kabul ediliyor: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="AutoUpdateCheckInfo" xml:space="preserve">
-		<value>ASF, her {0} sonra yeni sürümleri kontrol edecektir.</value>
+		<value>ASF, her {0} 'da bir yeni sürümleri otomatik olarak kontrol edecektir.</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
 	</data>
 	<data name="Content" xml:space="preserve">
@@ -80,7 +80,7 @@
 		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-		<value>ASF v{0}, çekirdek kayıt günlüğü modülü bile başlatılamadan önce kritik bir hata ile karşılaştı!</value>
+		<value>ASF V{0}, çekirdek günlük modülü başlatılmadan önce kritik bir hata ile karşılaştı!</value>
 		<comment>{0} will be replaced by version number</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -105,7 +105,7 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Tanımlanmış bot yok. ASF'yi yapılandırmayı unuttunuz mu? Kafanız karıştıysa wiki'deki 'setting up / kurulum' rehberine bakın.</value>
+		<value>Hiçbir bot tanımlanmamıştır. Asf'nizi yapılandırmayı unuttunuz mu? Kafanız karıştıysa wiki'deki 'kurulum' kılavuzunu izleyin.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} boş!</value>
@@ -144,7 +144,7 @@ Yığın Kaydı:
 		<value>Genel yapılandırma dosyası kaldırıldı!</value>
 	</data>
 	<data name="IgnoringTrade" xml:space="preserve">
-		<value>Takas yoksayılıyor: {0}</value>
+		<value>Takas görmezden geliniyor: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="LoggingIn" xml:space="preserve">
@@ -158,7 +158,7 @@ Yığın Kaydı:
 		<value>Oturumumuz yenileniyor!</value>
 	</data>
 	<data name="RejectingTrade" xml:space="preserve">
-		<value>Reddedilen takas: {0}</value>
+		<value>Takas reddediliyor: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="Restarting" xml:space="preserve">
@@ -207,7 +207,7 @@ Yığın Kaydı:
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamParentalCode" xml:space="preserve">
-		<value>Lütfen Steam aile kilidini girin: </value>
+		<value>Lütfen Steam aile kodunu girin: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamPassword" xml:space="preserve">
