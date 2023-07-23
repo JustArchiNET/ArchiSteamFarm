@@ -10,7 +10,7 @@ SOLUTION="${MAIN_PROJECT}.sln"
 CONFIGURATION="Release"
 OUT="out"
 OUT_ASF="${OUT}/result"
-PLUGINS="${MAIN_PROJECT}.OfficialPlugins.ItemsMatcher"
+PLUGINS="${MAIN_PROJECT}.OfficialPlugins.ItemsMatcher ${MAIN_PROJECT}.OfficialPlugins.MobileAuthenticator"
 
 ANALYSIS=1
 ASF_UI=1
