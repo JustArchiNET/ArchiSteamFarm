@@ -129,7 +129,7 @@ Yığın Kaydı:
 		<value>Sürüm herhangi bir öğe içermediğinden güncelleme devam edemedi!</value>
 	</data>
 	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-		<value>Kullanıcı girdisi için bir istek alındı; ancak işlem headless modda çalışıyor!</value>
+		<value>Kullanıcı girişi için bir istek alındı, ancak işlem başsız modda çalışıyor!</value>
 	</data>
 	<data name="Exiting" xml:space="preserve">
 		<value>Çıkılıyor...</value>

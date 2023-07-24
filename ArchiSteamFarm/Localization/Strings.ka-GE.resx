@@ -62,6 +62,14 @@
 			PublicKeyToken=b77a5c561934e089
 		</value>
 	</resheader>
+	<data name="AcceptingTrade" xml:space="preserve">
+		<value>შემოთავაზების მიღება {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="AutoUpdateCheckInfo" xml:space="preserve">
+		<value>ASF ავტომატურად შემოწმედბა ახალ ვერსიისთვის ყველა {0}-ში.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+	</data>
 	
 	
 	
@@ -78,10 +86,12 @@
 	
 	
 	
-	
-	
-	
-	
+	<data name="Exiting" xml:space="preserve">
+		<value>გამოსვლა...</value>
+	</data>
+	<data name="WarningFailed" xml:space="preserve">
+		<value>ვერ მოხერხდა!</value>
+	</data>
 	
 	
 	
