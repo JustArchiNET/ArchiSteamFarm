@@ -356,8 +356,8 @@ public static class Utilities {
 		HashSet<DictionaryEntry> defaultStringObjects = defaultResourceSet.Cast<DictionaryEntry>().ToHashSet();
 
 		if (defaultStringObjects.Count == 0) {
-			ASF.ArchiLogger.LogNullError(defaultStringObjects);
-
+			// This means we don't have entries for English, so there is nothing to check against
+			// Can happen e.g. for plugins with no strings declared which are calling this function
 			return;
 		}
 
