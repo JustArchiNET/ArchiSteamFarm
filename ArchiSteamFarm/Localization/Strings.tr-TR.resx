@@ -97,7 +97,7 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by URL of the request</comment>
 	</data>
 	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-		<value>Genel yapılandırma yüklenemedi, lütfen {0} öğesinin var ve geçerli olduğundan emin olun! Eğer kafanız karıştıysa; wikideki 'setting up / kurulum' rehberine göz atın.</value>
+		<value>Genel yapılandırma yüklenemedi. {0} 'ın var olduğundan ve geçerli olduğundan emin olun! Kafanız karıştıysa wiki'deki 'kurulum' kılavuzunu izleyin.</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="ErrorIsInvalid" xml:space="preserve">
@@ -105,14 +105,14 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Hiçbir bot tanımlanmamıştır. Asf'nizi yapılandırmayı unuttunuz mu? Kafanız karıştıysa wiki'deki 'kurulum' kılavuzunu izleyin.</value>
+		<value>Hiçbir bot tanımlanmamıştır. ASF'nizi yapılandırmayı unuttunuz mu? Kafanız karıştıysa wiki'deki 'kurulum' kılavuzunu izleyin.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} boş!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorParsingObject" xml:space="preserve">
-		<value>{0} ayrıştırılamadı!</value>
+		<value>Ayrıştırma {0} başarısız oldu!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -126,10 +126,10 @@ Yığın Kaydı:
 		<value>Şu anda çalışan sürüme ait hiçbir dosya olmadığı için güncelleme işlemine devam edilemedi! Bu sürüme otomatik güncelleme yapmak mümkün değil.</value>
 	</data>
 	<data name="ErrorUpdateNoAssets" xml:space="preserve">
-		<value>Sürüm herhangi bir öğe içermediğinden güncelleme devam edemedi!</value>
+		<value>Bu sürüm herhangi bir varlık içermediğinden güncellemeye devam edilemedi!</value>
 	</data>
 	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-		<value>Kullanıcı girişi için bir istek alındı, ancak işlem başsız modda çalışıyor!</value>
+		<value>Kullanıcı girişi için bir istek alındı, ancak işlem başsız modunda çalışıyor!</value>
 	</data>
 	<data name="Exiting" xml:space="preserve">
 		<value>Çıkılıyor...</value>
@@ -177,7 +177,7 @@ Yığın Kaydı:
 		<value>Yeni sürüm kontrol ediliyor...</value>
 	</data>
 	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
-		<value>Yeni sürüm indiriliyor: {0} ({1} MB)... Beklerken, yaptığımız çalışmayı takdir ediyorsanız bağış yapabilirsiniz! :)</value>
+		<value>Yeni sürüm indiriliyor: {0} ({1} MB)... Beklerken, yapılan işi takdir ediyorsanız bağış yapmayı düşünün! :)</value>
 		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
 	</data>
 	<data name="UpdateFinished" xml:space="preserve">
@@ -250,7 +250,7 @@ Yığın Kaydı:
 		<value>Diğer rozet sayfaları kontrol ediliyor...</value>
 	</data>
 	<data name="ChosenFarmingAlgorithm" xml:space="preserve">
-		<value>Seçilen çalıştırma algoritması: {0}</value>
+		<value>Seçilen kart düşürme algoritması: {0}</value>
 		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
 	</data>
 	<data name="Done" xml:space="preserve">
@@ -315,7 +315,7 @@ Yığın Kaydı:
 		<value>Bilinmeyen komut!</value>
 	</data>
 	<data name="WarningCouldNotCheckBadges" xml:space="preserve">
-		<value>Rozet bilgisi alınamadı, daha sonra tekrar deneyeceğiz!</value>
+		<value>Rozetlerin bilgilerini alamadık, daha sonra tekrar deneyeceğiz!</value>
 	</data>
 	<data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
 		<value>{0} ({1}) için kartların durumunu kontrol edemedik, daha sonra tekrar deneyeceğiz!</value>
@@ -326,7 +326,7 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
 	<data name="BotAccountLimited" xml:space="preserve">
-		<value>Bu hesap sınırlıdır, çalıştırma işlemi, kısıtlama kaldırılıncaya kadar kullanılamaz!</value>
+		<value>Bu hesap sınırlıdır, kısıtlama kaldırılana kadar kart düşürmek mümkün değil!</value>
 	</data>
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID: {0} | Durum: {1}</value>
@@ -340,7 +340,7 @@ Yığın Kaydı:
 		<value>Bu bot zaten çalışıyor!</value>
 	</data>
 	<data name="BotAuthenticatorConverting" xml:space="preserve">
-		<value>.maFile biçimi ASF biçimine dönüştürüyor...</value>
+		<value>.maFile dosya türü ASF'nin kullanacağı dosya türüne dönüştürülüyor...</value>
 	</data>
 	<data name="BotAuthenticatorImportFinished" xml:space="preserve">
 		<value>Mobil kimlik doğrulayıcısının aktarılması başarıyla tamamlandı!</value>
@@ -356,10 +356,10 @@ Yığın Kaydı:
 		<value>Otomatik çalıştırma sürdürülüyor!</value>
 	</data>
 	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-		<value>Otomatik çalıştırma zaten duraklatılmış!</value>
+		<value>Otomatik kart düşürme zaten duraklatıldı!</value>
 	</data>
 	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-		<value>Otomatik çalıştırma zaten sürdürülüyor!</value>
+		<value>Otomatik çalıştırma zaten devam ediyor!</value>
 	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>Steam'e bağlandı!</value>
