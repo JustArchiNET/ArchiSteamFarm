@@ -62,12 +62,33 @@
 			PublicKeyToken=b77a5c561934e089
 		</value>
 	</resheader>
-	
-	
-	
-	
-	
-	
+	<data name="AcceptingTrade" xml:space="preserve">
+		<value>Godtar handel: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="AutoUpdateCheckInfo" xml:space="preserve">
+		<value>ASF vil automatisk se etter nye versjoner hver {0}.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+	</data>
+	<data name="Content" xml:space="preserve">
+		<value>Innhold:
+{0}</value>
+		<comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+	</data>
+	<data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+		<value>Konfigurert {0} egenskap er ugyldig: {1}</value>
+		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+	</data>
+	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+		<value>ASF V{0} har støtt på et kritisk unntak før hovedmodulen for loggføring fikk initiert!</value>
+		<comment>{0} will be replaced by version number</comment>
+	</data>
+	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+		<value>Unntak: {0}() {1}
+StackTrace:
+{2}</value>
+		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+	</data>
 	
 	
 	
