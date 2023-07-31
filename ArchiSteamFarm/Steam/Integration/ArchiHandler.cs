@@ -243,6 +243,11 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, userNotifications.Body));
 
 				break;
+			case EMsg.ClientWalletInfoUpdate:
+				ClientMsgProtobuf<CMsgClientWalletInfoUpdate> walletInfoUpdate = new(packetMsg);
+				Client.PostCallback(new WalletInfoUpdateCallback(packetMsg.TargetJobID, walletInfoUpdate.Body));
+
+				break;
 		}
 	}
 
@@ -840,23 +845,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		Default = 0,
 		BigPicture = 1,
 		Mobile = 2
-	}
-
-	internal sealed class SharedLibraryLockStatusCallback : CallbackMsg {
-		internal readonly ulong LibraryLockedBySteamID;
-
-		internal SharedLibraryLockStatusCallback(JobID jobID, CMsgClientSharedLibraryLockStatus msg) {
-			ArgumentNullException.ThrowIfNull(jobID);
-			ArgumentNullException.ThrowIfNull(msg);
-
-			JobID = jobID;
-
-			if (msg.own_library_locked_by == 0) {
-				return;
-			}
-
-			LibraryLockedBySteamID = new SteamID(msg.own_library_locked_by, EUniverse.Public, EAccountType.Individual);
-		}
 	}
 
 	internal enum EPrivacySetting : byte {

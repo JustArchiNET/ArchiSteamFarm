@@ -215,6 +215,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[JsonProperty]
 	[PublicAPI]
+	public long WalletBalanceDelayed { get; private set; }
+
+	[JsonProperty]
+	[PublicAPI]
 	public ECurrencyCode WalletCurrency { get; private set; }
 
 	internal byte HeartBeatFailures { get; private set; }
@@ -312,10 +316,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		CallbackManager.Subscribe<SteamUser.PlayingSessionStateCallback>(OnPlayingSessionState);
 		CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
 		CallbackManager.Subscribe<SteamUser.VanityURLChangedCallback>(OnVanityURLChangedCallback);
-		CallbackManager.Subscribe<SteamUser.WalletInfoCallback>(OnWalletUpdate);
 
-		CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
+		CallbackManager.Subscribe<SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 		CallbackManager.Subscribe<UserNotificationsCallback>(OnUserNotifications);
+		CallbackManager.Subscribe<WalletInfoUpdateCallback>(OnWalletInfoUpdate);
 
 		Actions = new Actions(this);
 		CardsFarmer = new CardsFarmer(this);
@@ -3203,7 +3207,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async void OnSharedLibraryLockStatus(ArchiHandler.SharedLibraryLockStatusCallback callback) {
+	private async void OnSharedLibraryLockStatus(SharedLibraryLockStatusCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		// Ignore no status updates
@@ -3288,10 +3292,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
 	}
 
-	private void OnWalletUpdate(SteamUser.WalletInfoCallback callback) {
+	private void OnWalletInfoUpdate(WalletInfoUpdateCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
-		WalletBalance = callback.LongBalance;
+		WalletBalance = callback.Balance;
+		WalletBalanceDelayed = callback.BalanceDelayed;
 		WalletCurrency = callback.Currency;
 	}
 
