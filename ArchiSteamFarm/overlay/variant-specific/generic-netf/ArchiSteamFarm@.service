@@ -18,6 +18,7 @@ PrivateDevices=yes
 PrivateIPC=yes
 PrivateMounts=yes
 PrivateUsers=yes
+ProcSubset=pid
 ProtectClock=yes
 ProtectControlGroups=yes
 ProtectHome=read-only
