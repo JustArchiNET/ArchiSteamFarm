@@ -228,9 +228,18 @@
 		<value>{0} という名前の bot を見つけられませんでした！</value>
 		<comment>{0} will be replaced by bot's name query (string)</comment>
 	</data>
-	
-	
-	
+	<data name="BotStatusOverview" xml:space="preserve">
+		<value>{0}/{1} のbotが実行されています。合計{2} つのゲーム({3} つのカード) をファームできます。</value>
+		<comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
+	</data>
+	<data name="BotStatusIdling" xml:space="preserve">
+		<value>Botはファーミングしています: {0} ({1}, 残りカード{2} つ) 合計{3} つのゲーム({4} つのカード) が残っています(あと~{5})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="BotStatusIdlingList" xml:space="preserve">
+		<value>Botはファーミングしています: {0} 合計{1} つのゲーム({2} つのカード) が残っています(あと~{3})</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
 	<data name="CheckingFirstBadgePage" xml:space="preserve">
 		<value>最初のバッジのページを確認しています...</value>
 	</data>
@@ -430,7 +439,9 @@
 	<data name="BotStatusNotIdling" xml:space="preserve">
 		<value>Botは何もファーミングしていません。</value>
 	</data>
-	
+	<data name="BotStatusLimited" xml:space="preserve">
+		<value>Botが制限中のため、ファーミングでカードを得ることができません。</value>
+	</data>
 	<data name="BotStatusConnecting" xml:space="preserve">
 		<value>bot は Steam Network に接続しています。</value>
 	</data>
@@ -462,8 +473,12 @@
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Steam Network への接続が失われました。再接続しています...</value>
 	</data>
-	
-	
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>アカウントが開放されました: ファーミング処理を再開します！</value>
+	</data>
+	<data name="BotAccountOccupied" xml:space="preserve">
+		<value>現在アカウントは使用中です: アカウントが開放されたとき、ASFはファーミングを再開します...</value>
+	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>接続中...</value>
 	</data>
@@ -497,8 +512,14 @@
 	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
 		<value>指定された CurrentCulture が有効ではありません。ASFはデフォルトで実行されます！</value>
 	</data>
-	
-	
+	<data name="TranslationIncomplete" xml:space="preserve">
+		<value>ASF はあなたの言語 {0} の使用を試みますが、この言語の翻訳の完成度は {1} です。もしかしたらあなたが翻訳の向上を助けられるかもしれませんよ？</value>
+		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+	</data>
+	<data name="IdlingGameNotPossible" xml:space="preserve">
+		<value>そのゲームをプレイ出来ないため、{0} ({1}) のファーミングは一時的に無効にされています。</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="WarningIdlingGameMismatch" xml:space="preserve">
 		<value>ASFは {0} ({1}) のIDの不一致を検出しました。代わりに {2} のIDを使用します。</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -507,8 +528,12 @@
 		<value>{0} V{1}</value>
 		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
 	</data>
-	
-	
+	<data name="BotAccountLocked" xml:space="preserve">
+		<value>このアカウントはロックされています。ファーミングプロセスは永久的に利用できません！</value>
+	</data>
+	<data name="BotStatusLocked" xml:space="preserve">
+		<value>Botがロックされているため、ファーミングでカードを得ることができません。</value>
+	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
 		<value>この機能は headless モードでのみ利用可能です！</value>
 	</data>
@@ -519,7 +544,9 @@
 	<data name="ErrorAccessDenied" xml:space="preserve">
 		<value>アクセスが拒否されました！</value>
 	</data>
-	
+	<data name="WarningPreReleaseVersion" xml:space="preserve">
+		<value>あなたの指定した更新チャンネルよりも新しいバージョンを使用しています。プレリリースバージョンはバグの報告と問題への対処、フィードバックのできるユーザー向けであることに留意してください - テクニカルサポートは行われません。</value>
+	</data>
 	<data name="BotStats" xml:space="preserve">
 		<value>Current memory usage: {0} MB.
 Process uptime: {1}</value>
@@ -592,7 +619,9 @@ Process uptime: {1}</value>
 	<data name="NothingFound" xml:space="preserve">
 		<value>何も見つかりません！</value>
 	</data>
-	
+	<data name="PluginsWarning" xml:space="preserve">
+		<value>ASFに1つ以上のカスタムプラグインをロードしました。私たちはModのセットアップのためにサポートを提供することはできません。何か問題が発生した場合はModの開発者に問い合わせてください。</value>
+	</data>
 	<data name="PleaseWait" xml:space="preserve">
 		<value>しばらくお待ちください…</value>
 	</data>
@@ -616,7 +645,10 @@ Process uptime: {1}</value>
 		<value>{0} 件の確認を正常に処理しました。</value>
 		<comment>{0} will be replaced by number of confirmations</comment>
 	</data>
-	
+	<data name="BotExtraIdlingCooldown" xml:space="preserve">
+		<value>ファームできる状態になったことを確認するために {0} まで待機しています…</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+	</data>
 	<data name="UpdateCleanup" xml:space="preserve">
 		<value>更新後に古いファイルをクリーンアップしています…</value>
 	</data>
@@ -638,11 +670,24 @@ Process uptime: {1}</value>
 		<value>結果: {0}</value>
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
-	
-	
-	
-	
-	
+	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
+		<value>サポートされていない環境: {1} で、{0} 向けのASFを実行しようとしています: もしもこれが意図通りの動作であるならば、 --ignore-unsupported-environment 引数を使用してください。</value>
+	</data>
+	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+		<value>不明なコマンドライン引数: {0}</value>
+		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
+	</data>
+	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+		<value>設定ディレクトリが見つかりませんでした。中断します！</value>
+	</data>
+	<data name="BotIdlingSelectedGames" xml:space="preserve">
+		<value>選択した {0} をプレイ中: {1}</value>
+		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+	</data>
+	<data name="AutomaticFileMigration" xml:space="preserve">
+		<value>{0} 設定ファイルは最新の構文に移行されます...</value>
+		<comment>{0} will be replaced with the relative path to the affected config file</comment>
+	</data>
 	<data name="WarningWeakIPCPassword" xml:space="preserve">
 		<value>IPCパスワードが弱いようです。セキュリティを強化するためにもっと強力なパスワードを選択してください。詳細: {0}</value>
 		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
@@ -659,23 +704,45 @@ Process uptime: {1}</value>
 		<value>暗号化キーが短すぎます。少なくとも {0} バイト (文字) の長いものを使用することをお勧めします。</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
-	
-	
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>{0} 設定の {1} プロパティを使用していますが、カスタム --cryptkeyを指定していません。セキュリティ強化のためにカスタム --cryptkey を指定する必要があります。</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>{0} 設定の {1} プロパティを使用していますが、カスタム --cryptkey が設定されていません。 ASFは独自の(既知の) キーを使用することを余儀なくされているため、この状態ではセキュリティ保護がされていないことを意味します。 この設定で提供されるセキュリティ上のメリットを利用するためには、カスタム --cryptkey を提供する必要があります。</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>あなたは管理者(root) としてASFを実行しようとしています。 これにより、マシンに重大なセキュリティリスクが発生する可能性があります。ASFは操作に管理者アクセスを必要としないため、 可能であれば管理者以外のユーザーとして実行することをお勧めします。</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>--ignore-unsupported-environment引数を使用し、サポートされていない環境でASFを実行しています。 我々は、この動作環境に対するいかなる種類のサポートも提供しておらず、自身の責任においてそれを行っていることにご注意ください。 警告はしましたよ。</value>
+	</data>
 	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
 		<value>リモートサーバーからチェックサムを取得しています...</value>
 	</data>
 	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
 		<value>リモートサーバーからダウンロードしたバイナリのチェックサムを確認しています...</value>
 	</data>
-	
-	
-	
-	
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>リモートサーバーがアップデート中のリリースを認知していません。このリリースが直近に公開された場合、この状況が起こることがあります - 万全なセキュリティ対策を期すため、このアップデートを却下します。</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>リモートサーバーがチェックサムの不一致を確認しました。これはダウンロードが破損しているか、MITM攻撃を示す可能性があります。このアップデートを却下します！</value>
+	</data>
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>ASFファイルをパッチ中...</value>
+	</data>
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>cryptkeyを入力してください: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="ErrorIPNotBanned" xml:space="preserve">
 		<value>IPアドレス {0} は禁止されていません！</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
-	
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>有償機能の{0} の使用を試みましたが、ASFグローバル設定に有効なLicenseIDが設定されていません。追加の設定が行われていない場合、この機能は動作しません。設定を確認してください。</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>
