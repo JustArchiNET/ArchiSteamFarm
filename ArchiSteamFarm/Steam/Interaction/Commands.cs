@@ -3432,7 +3432,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		return !Bot.IsConnectedAndLoggedOn ? FormatBotResponse(Strings.BotNotConnected) : FormatBotResponse(Bot.WalletCurrency != ECurrencyCode.Invalid ? string.Format(CultureInfo.CurrentCulture, Strings.BotWalletBalance, $"{Bot.WalletBalance / 100.0}{(Bot.WalletBalance != Bot.WalletBalanceDelayed ? $" ({Bot.WalletBalanceDelayed / 100.0})" : "")}", Bot.WalletCurrency.ToString()) : Strings.BotHasNoWallet);
+		return !Bot.IsConnectedAndLoggedOn ? FormatBotResponse(Strings.BotNotConnected) : FormatBotResponse(Bot.WalletCurrency != ECurrencyCode.Invalid ? string.Format(CultureInfo.CurrentCulture, Strings.BotWalletBalance, $"{Bot.WalletBalance / 100.0}{(Bot.WalletBalanceDelayed > 0 ? $" ({(Bot.WalletBalance + Bot.WalletBalanceDelayed) / 100.0})" : "")}", Bot.WalletCurrency.ToString()) : Strings.BotHasNoWallet);
 	}
 
 	private static async Task<string?> ResponseWalletBalance(EAccess access, string botNames, ulong steamID = 0) {
