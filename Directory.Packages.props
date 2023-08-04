@@ -6,7 +6,7 @@
 		<PackageVersion Include="Humanizer" Version="2.14.1" />
 		<PackageVersion Include="JetBrains.Annotations" Version="2023.2.0" />
 		<PackageVersion Include="Markdig.Signed" Version="0.32.0" />
-		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
 		<PackageVersion Include="MSTest.TestAdapter" Version="3.1.1" />
 		<PackageVersion Include="MSTest.TestFramework" Version="3.1.1" />
 		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
