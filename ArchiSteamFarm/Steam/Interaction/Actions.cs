@@ -146,7 +146,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 		bool success = confirmations != null;
 
-		return (success, null, success ? Strings.Success : Strings.WarningFailed);
+		return (success, confirmations, success ? Strings.Success : Strings.WarningFailed);
 	}
 
 	[PublicAPI]
