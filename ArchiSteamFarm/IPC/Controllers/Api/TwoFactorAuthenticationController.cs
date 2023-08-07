@@ -52,7 +52,7 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<IReadOnlyCollection<Confirmation>>>>(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
 		}
 
 		IList<(bool Success, IReadOnlyCollection<Confirmation>? Confirmations, string Message)> results = await Utilities.InParallel(bots.Select(static bot => bot.Actions.GetConfirmations())).ConfigureAwait(false);
