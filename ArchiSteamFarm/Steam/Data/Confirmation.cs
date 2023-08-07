@@ -43,6 +43,9 @@ public sealed class Confirmation {
 	[JsonConstructor]
 	private Confirmation() { }
 
+	[UsedImplicitly]
+	public static bool ShouldSerializeNonce() => false;
+
 	[PublicAPI]
 	public enum EConfirmationType : byte {
 		Unknown,
