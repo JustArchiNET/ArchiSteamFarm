@@ -39,6 +39,35 @@ namespace ArchiSteamFarm.IPC.Controllers.Api;
 [Route("Api/Bot/{botNames:required}/TwoFactorAuthentication")]
 public sealed class TwoFactorAuthenticationController : ArchiController {
 	/// <summary>
+	///     Fetches pending 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
+	/// </summary>
+	[HttpGet("Confirmations")]
+	[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<IReadOnlyCollection<Confirmation>>>>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	public async Task<ActionResult<GenericResponse>> ConfirmationsGet(string botNames) {
+		if (string.IsNullOrEmpty(botNames)) {
+			throw new ArgumentNullException(nameof(botNames));
+		}
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+		}
+
+		IList<(bool Success, IReadOnlyCollection<Confirmation>? Confirmations, string Message)> results = await Utilities.InParallel(bots.Select(static bot => bot.Actions.GetConfirmations())).ConfigureAwait(false);
+
+		Dictionary<string, GenericResponse<IReadOnlyCollection<Confirmation>>> result = new(bots.Count, Bot.BotsComparer);
+
+		foreach (Bot bot in bots) {
+			(bool success, IReadOnlyCollection<Confirmation>? confirmations, string message) = results[result.Count];
+			result[bot.BotName] = new GenericResponse<IReadOnlyCollection<Confirmation>>(success, message, confirmations);
+		}
+
+		return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<IReadOnlyCollection<Confirmation>>>>(result));
+	}
+
+	/// <summary>
 	///     Handles 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
 	/// </summary>
 	[Consumes("application/json")]

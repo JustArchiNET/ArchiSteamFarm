@@ -133,6 +133,23 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? Confirmations, string Message)> GetConfirmations() {
+		if (Bot.BotDatabase.MobileAuthenticator == null) {
+			return (false, null, Strings.BotNoASFAuthenticator);
+		}
+
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return (false, null, Strings.BotNotConnected);
+		}
+
+		ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
+
+		bool success = confirmations != null;
+
+		return (success, null, success ? Strings.Success : Strings.WarningFailed);
+	}
+
+	[PublicAPI]
 	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? HandledConfirmations, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, Confirmation.EConfirmationType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false) {
 		if (Bot.BotDatabase.MobileAuthenticator == null) {
 			return (false, null, Strings.BotNoASFAuthenticator);
