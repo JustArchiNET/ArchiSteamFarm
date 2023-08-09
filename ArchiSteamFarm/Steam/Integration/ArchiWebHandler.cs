@@ -1561,7 +1561,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(subID));
 		}
 
-		Uri request = new(SteamCheckoutURL, $"/checkout/addfreelicense/{subID}");
+		Uri request = new(SteamStoreURL, $"/freelicense/addfreelicense/{subID}");
 
 		// Extra entry for sessionID
 		Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
