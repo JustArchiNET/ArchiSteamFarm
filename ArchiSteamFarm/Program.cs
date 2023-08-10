@@ -584,8 +584,6 @@ internal static class Program {
 		bool networkGroupNext = false;
 		bool pathNext = false;
 
-		bool noArgumentValueNext() => !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext;
-
 		foreach (string arg in args) {
 			switch (arg.ToUpperInvariant()) {
 				case "--CRYPTKEY" when noArgumentValueNext():
@@ -697,6 +695,8 @@ internal static class Program {
 		}
 
 		return true;
+
+		bool noArgumentValueNext() => !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext;
 	}
 
 	private static async Task<bool> ParseEnvironmentVariables() {

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Composition;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.OfficialPlugins.MobileAuthenticator.Localization;
@@ -35,6 +36,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.MobileAuthenticator;
 
 [Export(typeof(IPlugin))]
+[SuppressMessage("ReSharper", "MemberCanBeFileLocal")]
 internal sealed class MobileAuthenticatorPlugin : OfficialPlugin, IBotCommand2, IBotSteamClient {
 	[JsonProperty]
 	public override string Name => nameof(MobileAuthenticatorPlugin);
