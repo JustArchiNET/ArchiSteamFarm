@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3.5.3
+      uses: actions/checkout@v3.6.0
       with:
         submodules: recursive
 
@@ -78,7 +78,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3.5.3
+      uses: actions/checkout@v3.6.0
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3.2.0
@@ -417,7 +417,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3.5.3
+      uses: actions/checkout@v3.6.0
 
     - name: Download ASF-generic artifact from ubuntu-latest
       uses: actions/download-artifact@v3.0.2
