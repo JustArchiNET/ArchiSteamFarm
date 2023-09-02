@@ -2639,6 +2639,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
+		// Wait with reconnection until we're done with the prompt, not earlier
+		while (RequiredInput != ASF.EUserInputType.None) {
+			await Task.Delay(1000).ConfigureAwait(false);
+
+			if (!KeepRunning || SteamClient.IsConnected) {
+				return;
+			}
+		}
+
 		ArchiLogger.LogGenericInfo(Strings.BotReconnecting);
 		await Connect().ConfigureAwait(false);
 	}
