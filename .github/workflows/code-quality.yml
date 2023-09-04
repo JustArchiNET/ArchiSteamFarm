@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@v3.6.0
 
     - name: Run Qodana scan
-      uses: JetBrains/qodana-action@v2023.2.1
+      uses: JetBrains/qodana-action@32c3156f63f31a54dece4ce3e32dbb767c38bb61 # v2023.2.6
       with:
         args: --property=idea.headless.enable.statistics=false
       env:
