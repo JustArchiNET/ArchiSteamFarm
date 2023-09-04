@@ -12,10 +12,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      uses: actions/checkout@v4.0.0
+      with:
+        show-progress: false
 
     - name: Run Qodana scan
-      uses: JetBrains/qodana-action@32c3156f63f31a54dece4ce3e32dbb767c38bb61 # v2023.2.6
+      uses: JetBrains/qodana-action@v2023.2.6
       with:
         args: --property=idea.headless.enable.statistics=false
       env:
