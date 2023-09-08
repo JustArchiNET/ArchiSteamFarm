@@ -56,7 +56,7 @@ jobs:
         echo "DH_REPOSITORY=$(echo ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
     - name: Build and publish Docker image from Dockerfile
-      uses: docker/build-push-action@v4.2.0
+      uses: docker/build-push-action@v4.2.1
       with:
         context: .
         platforms: ${{ env.PLATFORMS }}
