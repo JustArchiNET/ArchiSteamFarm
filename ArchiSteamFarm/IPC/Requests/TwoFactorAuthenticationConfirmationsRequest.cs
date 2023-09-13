@@ -57,7 +57,7 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 	/// </summary>
 	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(AcceptedCreatorIDs)}", Required = Required.DisallowNull)]
 	public ImmutableHashSet<string> SAcceptedCreatorIDs {
-		get => AcceptedCreatorIDs.Select(static creatorID => creatorID.ToString(CultureInfo.InvariantCulture)).ToImmutableHashSet();
+		get => AcceptedCreatorIDs.Select(static creatorID => creatorID.ToString(CultureInfo.InvariantCulture)).ToImmutableHashSet(StringComparer.Ordinal);
 		set {
 			ArgumentNullException.ThrowIfNull(value);
 

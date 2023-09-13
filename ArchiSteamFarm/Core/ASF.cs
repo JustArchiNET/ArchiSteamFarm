@@ -78,7 +78,7 @@ public static class ASF {
 	internal static ICrossProcessSemaphore? RateLimitingSemaphore { get; private set; }
 	internal static ImmutableDictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>? WebLimitingSemaphores { get; private set; }
 
-	private static readonly ImmutableHashSet<string> AssembliesNeededBeforeUpdate = ImmutableHashSet.Create("System.IO.Pipes");
+	private static readonly ImmutableHashSet<string> AssembliesNeededBeforeUpdate = ImmutableHashSet.Create(StringComparer.Ordinal, "System.IO.Pipes");
 	private static readonly SemaphoreSlim UpdateSemaphore = new(1, 1);
 
 	private static Timer? AutoUpdatesTimer;
