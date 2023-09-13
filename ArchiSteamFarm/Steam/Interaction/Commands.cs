@@ -625,7 +625,7 @@ public sealed class Commands {
 
 		StringBuilder response = new();
 
-		string[] entries = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] entries = query.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (string entry in entries) {
 			uint gameID;
@@ -798,7 +798,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		string[] flags = options.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] flags = options.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (flags.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(flags)));
@@ -1163,7 +1163,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetAppIDs.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
@@ -1234,7 +1234,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetAppIDs.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
@@ -1330,7 +1330,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetAppIDs.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
@@ -1408,7 +1408,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetAppIDs.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
@@ -1667,7 +1667,7 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotConfig.LootableTypes)));
 		}
 
-		string[] appIDTexts = realAppIDsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] appIDTexts = realAppIDsText.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (appIDTexts.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(appIDTexts)));
@@ -1757,7 +1757,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetAppIDs.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
@@ -1815,7 +1815,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetAppIDs.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
@@ -1933,7 +1933,7 @@ public sealed class Commands {
 		StringBuilder response = new();
 		Dictionary<string, string> result = new(StringComparer.Ordinal);
 
-		string[] entries = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] entries = query.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (string entry in entries) {
 			string game;
@@ -2195,7 +2195,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		string[] games = targetGameIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] games = targetGameIDs.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (games.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(games)));
@@ -2311,7 +2311,7 @@ public sealed class Commands {
 		// There are only 7 privacy settings
 		const byte privacySettings = 7;
 
-		string[] privacySettingsArgs = privacySettingsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] privacySettingsArgs = privacySettingsText.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		switch (privacySettingsArgs.Length) {
 			case 0:
@@ -2476,7 +2476,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		string[] keys = keysText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] keys = keysText.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (keys.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(keys)));
@@ -3027,7 +3027,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		string[] targets = targetSteamIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetSteamIDs.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
@@ -3085,7 +3085,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		string[] targets = targetSteamIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetSteamIDs.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
@@ -3255,7 +3255,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNameTo)) : null;
 		}
 
-		string[] appIDTexts = realAppIDsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] appIDTexts = realAppIDsText.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (appIDTexts.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(appIDTexts)));
@@ -3297,7 +3297,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		string[] appIDTexts = realAppIDsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] appIDTexts = realAppIDsText.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		if (appIDTexts.Length == 0) {
 			return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(appIDTexts)));

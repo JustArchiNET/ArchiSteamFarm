@@ -69,6 +69,15 @@ public static class SharedInfo {
 	internal const string UpdateDirectory = "_old";
 	internal const string WebsiteDirectory = "www";
 
+	[PublicAPI]
+	public static readonly char[] ArrayComma = { ',' };
+
+	[PublicAPI]
+	public static readonly string[] ArrayDots = { ".." };
+
+	[PublicAPI]
+	public static readonly string[] ArrayNewlines = { "\r\n", "\r", "\n" };
+
 	internal static string HomeDirectory {
 		get {
 			if (!string.IsNullOrEmpty(CachedHomeDirectory)) {

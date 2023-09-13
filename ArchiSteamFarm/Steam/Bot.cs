@@ -479,7 +479,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(Bots));
 		}
 
-		string[] botNames = args.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] botNames = args.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 		HashSet<Bot> result = new();
 
@@ -492,7 +492,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			if (botName.Contains("..", StringComparison.Ordinal)) {
-				string[] botRange = botName.Split(new[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
+				string[] botRange = botName.Split(SharedInfo.ArrayDots, StringSplitOptions.RemoveEmptyEntries);
 
 				if (botRange.Length == 2) {
 					Bot? firstBot = GetBot(botRange[0]);
@@ -1160,7 +1160,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			string[] dlcAppIDsTexts = listOfDlc!.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] dlcAppIDsTexts = listOfDlc!.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
 
 			foreach (string dlcAppIDsText in dlcAppIDsTexts) {
 				if (!uint.TryParse(dlcAppIDsText, out uint dlcAppID) || (dlcAppID == 0)) {
