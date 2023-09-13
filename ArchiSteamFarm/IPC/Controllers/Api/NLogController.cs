@@ -163,11 +163,7 @@ public sealed class NLogController : ArchiController {
 
 	private static async Task PostLoggedJsonUpdate(WebSocket webSocket, string json, SemaphoreSlim sendSemaphore, CancellationToken cancellationToken) {
 		ArgumentNullException.ThrowIfNull(webSocket);
-
-		if (string.IsNullOrEmpty(json)) {
-			throw new ArgumentNullException(nameof(json));
-		}
-
+		ArgumentException.ThrowIfNullOrEmpty(json);
 		ArgumentNullException.ThrowIfNull(sendSemaphore);
 
 		if (cancellationToken.IsCancellationRequested || (webSocket.State != WebSocketState.Open)) {
@@ -203,11 +199,7 @@ public sealed class NLogController : ArchiController {
 
 	private static async Task PostLoggedMessageUpdate(WebSocket webSocket, string loggedMessage, SemaphoreSlim sendSemaphore, CancellationToken cancellationToken) {
 		ArgumentNullException.ThrowIfNull(webSocket);
-
-		if (string.IsNullOrEmpty(loggedMessage)) {
-			throw new ArgumentNullException(nameof(loggedMessage));
-		}
-
+		ArgumentException.ThrowIfNullOrEmpty(loggedMessage);
 		ArgumentNullException.ThrowIfNull(sendSemaphore);
 
 		if (cancellationToken.IsCancellationRequested || (webSocket.State != WebSocketState.Open)) {

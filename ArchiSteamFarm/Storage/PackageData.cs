@@ -37,13 +37,8 @@ public sealed class PackageData {
 	public DateTime ValidUntil { get; private set; }
 
 	internal PackageData(uint changeNumber, DateTime validUntil, ImmutableHashSet<uint>? appIDs = null) {
-		if (changeNumber == 0) {
-			throw new ArgumentOutOfRangeException(nameof(changeNumber));
-		}
-
-		if (validUntil == DateTime.MinValue) {
-			throw new ArgumentOutOfRangeException(nameof(validUntil));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(changeNumber);
+		ArgumentOutOfRangeException.ThrowIfEqual(validUntil, DateTime.MinValue);
 
 		ChangeNumber = changeNumber;
 		ValidUntil = validUntil;

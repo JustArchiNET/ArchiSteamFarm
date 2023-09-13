@@ -51,9 +51,7 @@ internal sealed class MobileAuthenticatorPlugin : OfficialPlugin, IBotCommand2, 
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if ((args == null) || (args.Length == 0)) {
 			throw new ArgumentNullException(nameof(args));

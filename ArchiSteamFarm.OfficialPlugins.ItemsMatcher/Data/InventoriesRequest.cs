@@ -43,9 +43,7 @@ internal sealed class InventoriesRequest {
 	internal readonly ulong SteamID;
 
 	internal InventoriesRequest(Guid guid, ulong steamID, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> matchableTypes) {
-		if (guid == Guid.Empty) {
-			throw new ArgumentOutOfRangeException(nameof(guid));
-		}
+		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));

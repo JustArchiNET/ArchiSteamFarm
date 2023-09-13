@@ -84,9 +84,7 @@ public sealed class MobileAuthenticator : IDisposable {
 	}
 
 	internal string? GenerateTokenForTime(ulong time) {
-		if (time == 0) {
-			throw new ArgumentOutOfRangeException(nameof(time));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(time);
 
 		if (Bot == null) {
 			throw new InvalidOperationException(nameof(Bot));
@@ -312,9 +310,7 @@ public sealed class MobileAuthenticator : IDisposable {
 	}
 
 	private string? GenerateConfirmationHash(ulong time, string? tag = null) {
-		if (time == 0) {
-			throw new ArgumentOutOfRangeException(nameof(time));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(time);
 
 		if (Bot == null) {
 			throw new InvalidOperationException(nameof(Bot));

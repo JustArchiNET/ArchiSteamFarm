@@ -53,13 +53,8 @@ internal static class Backend {
 			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
 		}
 
-		if (totalInventoryCount == 0) {
-			throw new ArgumentOutOfRangeException(nameof(totalInventoryCount));
-		}
-
-		if (string.IsNullOrEmpty(tradeToken)) {
-			throw new ArgumentNullException(nameof(tradeToken));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(totalInventoryCount);
+		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
 
 		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
 			throw new ArgumentOutOfRangeException(nameof(tradeToken));
@@ -73,10 +68,7 @@ internal static class Backend {
 	}
 
 	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Guid licenseID, Bot bot, WebBrowser webBrowser, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes) {
-		if (licenseID == Guid.Empty) {
-			throw new ArgumentOutOfRangeException(nameof(licenseID));
-		}
-
+		ArgumentOutOfRangeException.ThrowIfEqual(licenseID, Guid.Empty);
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(webBrowser);
 

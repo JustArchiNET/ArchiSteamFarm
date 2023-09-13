@@ -112,9 +112,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<bool> CancelTradeOffer(ulong tradeID) {
-		if (tradeID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(tradeID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/cancel");
 
@@ -142,13 +140,8 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (contextID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(contextID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 
 		if (ASF.InventorySemaphore == null) {
 			throw new InvalidOperationException(nameof(ASF.InventorySemaphore));
@@ -608,9 +601,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentException($"{nameof(itemsToGive)} && {nameof(itemsToReceive)}");
 		}
 
-		if (itemsPerTrade <= 2) {
-			throw new ArgumentOutOfRangeException(nameof(itemsPerTrade));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(itemsPerTrade);
 
 		TradeOfferSendRequest singleTrade = new();
 		HashSet<TradeOfferSendRequest> trades = new() { singleTrade };
@@ -710,14 +701,8 @@ public sealed class ArchiWebHandler : IDisposable {
 	[PublicAPI]
 	public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -798,14 +783,8 @@ public sealed class ArchiWebHandler : IDisposable {
 	[PublicAPI]
 	public async Task<ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -886,14 +865,8 @@ public sealed class ArchiWebHandler : IDisposable {
 	[PublicAPI]
 	public async Task<bool> UrlHeadWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -979,13 +952,8 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 		}
 
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -1041,7 +1009,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				ESession.CamelCase => "sessionID",
 				ESession.Lowercase => "sessionid",
 				ESession.PascalCase => "SessionID",
-				_ => throw new ArgumentOutOfRangeException(nameof(session))
+				_ => throw new InvalidOperationException(nameof(session))
 			};
 
 			if (data != null) {
@@ -1096,13 +1064,8 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 		}
 
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -1158,7 +1121,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				ESession.CamelCase => "sessionID",
 				ESession.Lowercase => "sessionid",
 				ESession.PascalCase => "SessionID",
-				_ => throw new ArgumentOutOfRangeException(nameof(session))
+				_ => throw new InvalidOperationException(nameof(session))
 			};
 
 			if (data != null) {
@@ -1213,13 +1176,8 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 		}
 
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -1275,7 +1233,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				ESession.CamelCase => "sessionID",
 				ESession.Lowercase => "sessionid",
 				ESession.PascalCase => "SessionID",
-				_ => throw new ArgumentOutOfRangeException(nameof(session))
+				_ => throw new InvalidOperationException(nameof(session))
 			};
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
@@ -1332,13 +1290,8 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 		}
 
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -1394,7 +1347,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				ESession.CamelCase => "sessionID",
 				ESession.Lowercase => "sessionid",
 				ESession.PascalCase => "SessionID",
-				_ => throw new ArgumentOutOfRangeException(nameof(session))
+				_ => throw new InvalidOperationException(nameof(session))
 			};
 
 			if (data != null) {
@@ -1488,9 +1441,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool> AcceptDigitalGiftCard(ulong giftCardID) {
-		if (giftCardID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(giftCardID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(giftCardID);
 
 		Uri request = new(SteamStoreURL, "/gifts/0/resolvegiftcard");
 
@@ -1516,9 +1467,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID) {
-		if (tradeID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(tradeID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/accept");
 		Uri referer = new(SteamCommunityURL, $"/tradeoffer/{tradeID}");
@@ -1558,9 +1507,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<(EResult Result, EPurchaseResultDetail PurchaseResult)> AddFreeLicense(uint subID) {
-		if (subID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(subID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(subID);
 
 		Uri request = new(SteamStoreURL, $"/freelicense/addfreelicense/{subID}");
 
@@ -1657,9 +1604,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool> ClearFromDiscoveryQueue(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		Uri request = new(SteamStoreURL, $"/app/{appID}");
 
@@ -1670,9 +1615,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool> DeclineTradeOffer(ulong tradeID) {
-		if (tradeID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(tradeID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/decline");
 
@@ -1748,9 +1691,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<IDocument?> GetBadgePage(byte page) {
-		if (page == 0) {
-			throw new ArgumentOutOfRangeException(nameof(page));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(page);
 
 		Uri request = new(SteamCommunityURL, $"/my/badges?l=english&p={page}");
 
@@ -1760,9 +1701,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<byte> GetCardCountForGame(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		if (ASF.GlobalDatabase?.CardCountsPerGame.TryGetValue(appID, out byte result) == true) {
 			return result;
@@ -1857,17 +1796,9 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<ConfirmationsResponse?> GetConfirmations(string deviceID, string confirmationHash, ulong time) {
-		if (string.IsNullOrEmpty(deviceID)) {
-			throw new ArgumentNullException(nameof(deviceID));
-		}
-
-		if (string.IsNullOrEmpty(confirmationHash)) {
-			throw new ArgumentNullException(nameof(confirmationHash));
-		}
-
-		if (time == 0) {
-			throw new ArgumentOutOfRangeException(nameof(time));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(deviceID);
+		ArgumentException.ThrowIfNullOrEmpty(confirmationHash);
+		ArgumentOutOfRangeException.ThrowIfZero(time);
 
 		if (!Initialized) {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
@@ -1980,9 +1911,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<IDocument?> GetGameCardsPage(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		Uri request = new(SteamCommunityURL, $"/my/gamecards/{appID}?l=english");
 
@@ -2035,9 +1964,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<byte?> GetTradeHoldDurationForTrade(ulong tradeID) {
-		if (tradeID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(tradeID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}?l=english");
 
@@ -2090,25 +2017,11 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, ulong time, ulong confirmationID, ulong confirmationKey, bool accept) {
-		if (string.IsNullOrEmpty(deviceID)) {
-			throw new ArgumentNullException(nameof(deviceID));
-		}
-
-		if (string.IsNullOrEmpty(confirmationHash)) {
-			throw new ArgumentNullException(nameof(confirmationHash));
-		}
-
-		if (time == 0) {
-			throw new ArgumentOutOfRangeException(nameof(time));
-		}
-
-		if (confirmationID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(confirmationID));
-		}
-
-		if (confirmationKey == 0) {
-			throw new ArgumentOutOfRangeException(nameof(confirmationKey));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(deviceID);
+		ArgumentException.ThrowIfNullOrEmpty(confirmationHash);
+		ArgumentOutOfRangeException.ThrowIfZero(time);
+		ArgumentOutOfRangeException.ThrowIfZero(confirmationID);
+		ArgumentOutOfRangeException.ThrowIfZero(confirmationKey);
 
 		if (!Initialized) {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
@@ -2132,17 +2045,9 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool?> HandleConfirmations(string deviceID, string confirmationHash, ulong time, IReadOnlyCollection<Confirmation> confirmations, bool accept) {
-		if (string.IsNullOrEmpty(deviceID)) {
-			throw new ArgumentNullException(nameof(deviceID));
-		}
-
-		if (string.IsNullOrEmpty(confirmationHash)) {
-			throw new ArgumentNullException(nameof(confirmationHash));
-		}
-
-		if (time == 0) {
-			throw new ArgumentOutOfRangeException(nameof(time));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(deviceID);
+		ArgumentException.ThrowIfNullOrEmpty(confirmationHash);
+		ArgumentOutOfRangeException.ThrowIfZero(time);
 
 		if ((confirmations == null) || (confirmations.Count == 0)) {
 			throw new ArgumentNullException(nameof(confirmations));
@@ -2194,9 +2099,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new InvalidEnumArgumentException(nameof(universe), (int) universe, typeof(EUniverse));
 		}
 
-		if (string.IsNullOrEmpty(webAPIUserNonce)) {
-			throw new ArgumentNullException(nameof(webAPIUserNonce));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(webAPIUserNonce);
 
 		byte[]? publicKey = KeyDictionary.GetPublicKey(universe);
 
@@ -2373,9 +2276,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal void OnVanityURLChanged(string? vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
 
 	internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)?> RedeemWalletKey(string key) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		Uri request = new(SteamStoreURL, "/account/ajaxredeemwalletcode");
 
@@ -2397,13 +2298,8 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool> UnpackBooster(uint appID, ulong itemID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (itemID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(itemID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(itemID);
 
 		string? profileURL = await GetAbsoluteProfileURL().ConfigureAwait(false);
 
@@ -2853,9 +2749,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	private async Task<bool> UnlockParentalAccount(string parentalCode) {
-		if (string.IsNullOrEmpty(parentalCode)) {
-			throw new ArgumentNullException(nameof(parentalCode));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(parentalCode);
 
 		Bot.ArchiLogger.LogGenericInfo(Strings.UnlockingParentalAccount);
 
@@ -2874,10 +2768,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	private async Task<bool> UnlockParentalAccountForService(Uri service, string parentalCode, byte maxTries = WebBrowser.MaxTries) {
 		ArgumentNullException.ThrowIfNull(service);
-
-		if (string.IsNullOrEmpty(parentalCode)) {
-			throw new ArgumentNullException(nameof(parentalCode));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(parentalCode);
 
 		Uri request = new(service, "/parental/ajaxunlock");
 

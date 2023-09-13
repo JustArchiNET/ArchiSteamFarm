@@ -51,9 +51,7 @@ public sealed class IPCBansController : ArchiController {
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	public ActionResult<GenericResponse> DeleteSpecific(string ipAddress) {
-		if (string.IsNullOrEmpty(ipAddress)) {
-			throw new ArgumentNullException(nameof(ipAddress));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(ipAddress);
 
 		if (!IPAddress.TryParse(ipAddress, out IPAddress? remoteAddress)) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(ipAddress))));

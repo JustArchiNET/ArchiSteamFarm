@@ -56,18 +56,14 @@ public static class Utilities {
 			throw new InvalidOperationException($"{nameof(args.Length)} && {nameof(argsToSkip)}");
 		}
 
-		if (string.IsNullOrEmpty(delimiter)) {
-			throw new ArgumentNullException(nameof(delimiter));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(delimiter);
 
 		return string.Join(delimiter, args.Skip(argsToSkip));
 	}
 
 	[PublicAPI]
 	public static string GetArgsAsText(string text, byte argsToSkip) {
-		if (string.IsNullOrEmpty(text)) {
-			throw new ArgumentNullException(nameof(text));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(text);
 
 		string[] args = text.Split(Array.Empty<char>(), argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
 
@@ -78,10 +74,7 @@ public static class Utilities {
 	public static string? GetCookieValue(this CookieContainer cookieContainer, Uri uri, string name) {
 		ArgumentNullException.ThrowIfNull(cookieContainer);
 		ArgumentNullException.ThrowIfNull(uri);
-
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
 
 		CookieCollection cookies = cookieContainer.GetCookies(uri);
 
@@ -165,18 +158,14 @@ public static class Utilities {
 
 	[PublicAPI]
 	public static bool IsValidCdKey(string key) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		return GeneratedRegexes.CdKey().IsMatch(key);
 	}
 
 	[PublicAPI]
 	public static bool IsValidHexadecimalText(string text) {
-		if (string.IsNullOrEmpty(text)) {
-			throw new ArgumentNullException(nameof(text));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(text);
 
 		return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
 	}
@@ -250,9 +239,7 @@ public static class Utilities {
 	}
 
 	internal static void DeleteEmptyDirectoriesRecursively(string directory) {
-		if (string.IsNullOrEmpty(directory)) {
-			throw new ArgumentNullException(nameof(directory));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(directory);
 
 		if (!Directory.Exists(directory)) {
 			return;
@@ -280,9 +267,7 @@ public static class Utilities {
 	}
 
 	internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
-		if (string.IsNullOrEmpty(directory)) {
-			throw new ArgumentNullException(nameof(directory));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(directory);
 
 #pragma warning disable CA1508 // False positive, params could be null when explicitly set
 		if ((prefixes == null) || (prefixes.Length == 0)) {
@@ -294,9 +279,7 @@ public static class Utilities {
 	}
 
 	internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, ISet<string>? additionallyForbiddenPhrases = null) {
-		if (string.IsNullOrEmpty(password)) {
-			throw new ArgumentNullException(nameof(password));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(password);
 
 		HashSet<string> forbiddenPhrases = ForbiddenPasswordPhrases.ToHashSet(StringComparer.InvariantCultureIgnoreCase);
 

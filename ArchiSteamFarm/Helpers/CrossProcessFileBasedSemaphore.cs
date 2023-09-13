@@ -38,9 +38,7 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 	private FileStream? FileLock;
 
 	internal CrossProcessFileBasedSemaphore(string name) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
 
 		FilePath = Path.Combine(Path.GetTempPath(), SharedInfo.ASF, name);
 

@@ -141,10 +141,7 @@ internal sealed class GlobalCache : SerializableFile {
 	}
 
 	internal void OnPICSChanges(uint currentChangeNumber, IReadOnlyCollection<KeyValuePair<uint, SteamApps.PICSChangesCallback.PICSChangeData>> appChanges) {
-		if (currentChangeNumber == 0) {
-			throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
-		}
-
+		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 		ArgumentNullException.ThrowIfNull(appChanges);
 
 		if (currentChangeNumber <= LastChangeNumber) {
@@ -165,9 +162,7 @@ internal sealed class GlobalCache : SerializableFile {
 	}
 
 	internal void OnPICSChangesRestart(uint currentChangeNumber) {
-		if (currentChangeNumber == 0) {
-			throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 
 		if (currentChangeNumber <= LastChangeNumber) {
 			return;
@@ -324,9 +319,7 @@ internal sealed class GlobalCache : SerializableFile {
 	}
 
 	private static bool IsValidDepotKey(string depotKey) {
-		if (string.IsNullOrEmpty(depotKey)) {
-			throw new ArgumentNullException(nameof(depotKey));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(depotKey);
 
 		return (depotKey.Length == 64) && Utilities.IsValidHexadecimalText(depotKey);
 	}

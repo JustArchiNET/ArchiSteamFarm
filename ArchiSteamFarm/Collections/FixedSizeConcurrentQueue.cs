@@ -49,9 +49,7 @@ internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> {
 	private byte BackingMaxCount;
 
 	internal FixedSizeConcurrentQueue(byte maxCount) {
-		if (maxCount == 0) {
-			throw new ArgumentNullException(nameof(maxCount));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxCount);
 
 		MaxCount = maxCount;
 	}

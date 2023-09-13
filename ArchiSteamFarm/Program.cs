@@ -89,9 +89,7 @@ internal static class Program {
 
 		string executableName = Path.GetFileNameWithoutExtension(OS.ProcessFileName);
 
-		if (string.IsNullOrEmpty(executableName)) {
-			throw new ArgumentNullException(nameof(executableName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(executableName);
 
 		IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName, StringComparison.Ordinal) ? 1 : 0);
 
@@ -109,17 +107,13 @@ internal static class Program {
 	}
 
 	private static void HandleCryptKeyArgument(string cryptKey) {
-		if (string.IsNullOrEmpty(cryptKey)) {
-			throw new ArgumentNullException(nameof(cryptKey));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(cryptKey);
 
 		ArchiCryptoHelper.SetEncryptionKey(cryptKey);
 	}
 
 	private static async Task<bool> HandleCryptKeyFileArgument(string cryptKeyFile) {
-		if (string.IsNullOrEmpty(cryptKeyFile)) {
-			throw new ArgumentNullException(nameof(cryptKeyFile));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(cryptKeyFile);
 
 		if (!File.Exists(cryptKeyFile)) {
 			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(cryptKeyFile)));
@@ -148,18 +142,10 @@ internal static class Program {
 		return true;
 	}
 
-	private static void HandleNetworkGroupArgument(string networkGroup) {
-		if (string.IsNullOrEmpty(networkGroup)) {
-			throw new ArgumentNullException(nameof(networkGroup));
-		}
-
-		NetworkGroup = networkGroup;
-	}
+	private static void HandleNetworkGroupArgument(string networkGroup) => NetworkGroup = !string.IsNullOrEmpty(networkGroup) ? networkGroup : throw new ArgumentNullException(nameof(networkGroup));
 
 	private static bool HandlePathArgument(string path) {
-		if (string.IsNullOrEmpty(path)) {
-			throw new ArgumentNullException(nameof(path));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(path);
 
 		// Aid userspace and replace ~ with user's home directory if possible
 		if (path.Contains('~', StringComparison.Ordinal)) {
@@ -361,7 +347,7 @@ internal static class Program {
 		string globalConfigFile = ASF.GetFilePath(ASF.EFileType.Config);
 
 		if (string.IsNullOrEmpty(globalConfigFile)) {
-			throw new ArgumentNullException(nameof(globalConfigFile));
+			throw new InvalidOperationException(nameof(globalConfigFile));
 		}
 
 		string? latestJson = null;
@@ -420,7 +406,7 @@ internal static class Program {
 		string globalDatabaseFile = ASF.GetFilePath(ASF.EFileType.Database);
 
 		if (string.IsNullOrEmpty(globalDatabaseFile)) {
-			throw new ArgumentNullException(nameof(globalDatabaseFile));
+			throw new InvalidOperationException(nameof(globalDatabaseFile));
 		}
 
 		if (!File.Exists(globalDatabaseFile)) {

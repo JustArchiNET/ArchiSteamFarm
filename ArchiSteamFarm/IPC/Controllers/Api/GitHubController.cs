@@ -60,9 +60,7 @@ public sealed class GitHubController : ArchiController {
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> GitHubReleaseGet(string version) {
-		if (string.IsNullOrEmpty(version)) {
-			throw new ArgumentNullException(nameof(version));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(version);
 
 		GitHub.ReleaseResponse? releaseResponse;
 
@@ -95,9 +93,7 @@ public sealed class GitHubController : ArchiController {
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> GitHubWikiHistoryGet(string page) {
-		if (string.IsNullOrEmpty(page)) {
-			throw new ArgumentNullException(nameof(page));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(page);
 
 		Dictionary<string, DateTime>? revisions = await GitHub.GetWikiHistory(page).ConfigureAwait(false);
 
@@ -116,9 +112,7 @@ public sealed class GitHubController : ArchiController {
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> GitHubWikiPageGet(string page, [FromQuery] string? revision = null) {
-		if (string.IsNullOrEmpty(page)) {
-			throw new ArgumentNullException(nameof(page));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(page);
 
 		string? html = await GitHub.GetWikiPage(page, revision).ConfigureAwait(false);
 

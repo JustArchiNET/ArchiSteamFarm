@@ -79,9 +79,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ArchiCryptoHelper.ECryptoMethod));
 		}
 
-		if (string.IsNullOrEmpty(stringToEncrypt)) {
-			throw new ArgumentNullException(nameof(stringToEncrypt));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(stringToEncrypt);
 
 		return ArchiCryptoHelper.Encrypt(cryptoMethod, stringToEncrypt);
 	}
@@ -221,9 +219,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(ArchiCryptoHelper.EHashingMethod));
 		}
 
-		if (string.IsNullOrEmpty(stringToHash)) {
-			throw new ArgumentNullException(nameof(stringToHash));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(stringToHash);
 
 		return ArchiCryptoHelper.Hash(hashingMethod, stringToHash);
 	}
@@ -318,9 +314,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			throw new ArgumentNullException(nameof(items));
 		}
 
-		if (itemsPerTrade < 2) {
-			throw new ArgumentOutOfRangeException(nameof(itemsPerTrade));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(itemsPerTrade);
 
 		if (!Bot.IsConnectedAndLoggedOn) {
 			return (false, Strings.BotNotConnected);
@@ -374,13 +368,8 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 	[PublicAPI]
 	public async Task<(bool Success, string Message)> SendInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Asset, bool>? filterFunction = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (contextID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(contextID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 
 		if (!Bot.IsConnectedAndLoggedOn) {
 			return (false, Strings.BotNotConnected);

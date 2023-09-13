@@ -450,9 +450,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[PublicAPI]
 	public static Bot? GetBot(string botName) {
-		if (string.IsNullOrEmpty(botName)) {
-			throw new ArgumentNullException(nameof(botName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botName);
 
 		if (Bots == null) {
 			throw new InvalidOperationException(nameof(Bots));
@@ -471,9 +469,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[PublicAPI]
 	public static HashSet<Bot>? GetBots(string args) {
-		if (string.IsNullOrEmpty(args)) {
-			throw new ArgumentNullException(nameof(args));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(args);
 
 		if (Bots == null) {
 			throw new InvalidOperationException(nameof(Bots));
@@ -558,9 +554,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[PublicAPI]
 	public static string GetFilePath(string botName, EFileType fileType) {
-		if (string.IsNullOrEmpty(botName)) {
-			throw new ArgumentNullException(nameof(botName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botName);
 
 		if (!Enum.IsDefined(fileType)) {
 			throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EFileType));
@@ -576,7 +570,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			EFileType.KeysToRedeemUsed => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUsedExtension}",
 			EFileType.MobileAuthenticator => $"{botPath}{SharedInfo.MobileAuthenticatorExtension}",
 			EFileType.SentryFile => $"{botPath}{SharedInfo.SentryHashExtension}",
-			_ => throw new ArgumentOutOfRangeException(nameof(fileType))
+			_ => throw new InvalidOperationException(nameof(fileType))
 		};
 	}
 
@@ -602,9 +596,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new ArgumentNullException(nameof(amountsToExtract));
 		}
 
-		if (maxItems < MinCardsPerBadge) {
-			throw new ArgumentOutOfRangeException(nameof(maxItems));
-		}
+		ArgumentOutOfRangeException.ThrowIfLessThan(maxItems, MinCardsPerBadge);
 
 		HashSet<Asset> result = new();
 		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, HashSet<Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(static item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(static grouping => grouping.Key, static grouping => grouping.GroupBy(static item => item.ClassID).ToDictionary(static group => group.Key, static group => group.ToHashSet()));
@@ -732,9 +724,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (tradeID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(tradeID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		if (Bots == null) {
 			throw new InvalidOperationException(nameof(Bots));
@@ -804,9 +794,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if (!IsConnectedAndLoggedOn) {
 			return false;
@@ -829,17 +817,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[PublicAPI]
 	public async Task<bool> SendMessage(ulong chatGroupID, ulong chatID, string message) {
-		if (chatGroupID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-		}
-
-		if (chatID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatID));
-		}
-
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(chatGroupID);
+		ArgumentOutOfRangeException.ThrowIfZero(chatID);
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if (!IsConnectedAndLoggedOn) {
 			return false;
@@ -866,9 +846,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
 		}
 
-		if (string.IsNullOrEmpty(inputValue)) {
-			throw new ArgumentNullException(nameof(inputValue));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(inputValue);
 
 		// This switch should cover ONLY bot properties
 		switch (inputType) {
@@ -930,7 +908,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				break;
 			default:
-				throw new ArgumentOutOfRangeException(nameof(inputType));
+				throw new InvalidOperationException(nameof(inputType));
 		}
 
 		if (RequiredInput == inputType) {
@@ -1014,25 +992,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal static string FormatBotResponse(string response, string botName) {
-		if (string.IsNullOrEmpty(response)) {
-			throw new ArgumentNullException(nameof(response));
-		}
-
-		if (string.IsNullOrEmpty(botName)) {
-			throw new ArgumentNullException(nameof(botName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(response);
+		ArgumentException.ThrowIfNullOrEmpty(botName);
 
 		return $"{Environment.NewLine}<{botName}> {response}";
 	}
 
 	internal async Task<(uint PlayableAppID, DateTime IgnoredUntil, bool IgnoredGlobally)> GetAppDataForIdling(uint appID, float hoursPlayed, bool allowRecursiveDiscovery = true, bool optimisticDiscovery = true) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (hoursPlayed < 0) {
-			throw new ArgumentOutOfRangeException(nameof(hoursPlayed));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfNegative(hoursPlayed);
 
 		HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(appID, OwnedPackageIDs.Keys);
 
@@ -1312,8 +1280,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal async Task ImportKeysToRedeem(string filePath) {
-		if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
+
+		if (!File.Exists(filePath)) {
+			throw new FileNotFoundException(nameof(filePath), filePath);
 		}
 
 		try {
@@ -1369,9 +1339,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal bool IsBlacklistedFromIdling(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		return BotDatabase.FarmingBlacklistAppIDs.Contains(appID);
 	}
@@ -1385,9 +1353,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal bool IsPriorityIdling(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		return BotDatabase.FarmingPriorityQueueAppIDs.Contains(appID);
 	}
@@ -1491,9 +1457,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal static async Task RegisterBot(string botName) {
-		if (string.IsNullOrEmpty(botName)) {
-			throw new ArgumentNullException(nameof(botName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botName);
 
 		if (Bots == null) {
 			throw new InvalidOperationException(nameof(Bots));
@@ -1605,9 +1569,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal async Task<bool> Rename(string newBotName) {
-		if (string.IsNullOrEmpty(newBotName)) {
-			throw new ArgumentNullException(nameof(newBotName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(newBotName);
 
 		if (Bots == null) {
 			throw new InvalidOperationException(nameof(Bots));
@@ -1888,9 +1850,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task<Dictionary<string, string>?> GetKeysFromFile(string filePath) {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
 			return new Dictionary<string, string>(0, StringComparer.Ordinal);
@@ -1935,9 +1895,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs(byte page) {
-		if (page == 0) {
-			throw new ArgumentOutOfRangeException(nameof(page));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(page);
 
 		using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 
@@ -2330,7 +2288,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private static bool IsRefundable(EPaymentMethod paymentMethod) {
 		if (paymentMethod == EPaymentMethod.None) {
-			throw new ArgumentNullException(nameof(paymentMethod));
+			throw new ArgumentOutOfRangeException(nameof(paymentMethod));
 		}
 
 #pragma warning disable CA2248 // This is actually a fair warning, EPaymentMethod is not a flags enum on itself, but there is nothing we can do about Steam using it like that here
@@ -3592,9 +3550,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(messagePart)) {
-			throw new ArgumentNullException(nameof(messagePart));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(messagePart);
 
 		if (!IsConnectedAndLoggedOn) {
 			return false;

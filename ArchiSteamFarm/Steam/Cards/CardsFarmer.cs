@@ -412,17 +412,9 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task CheckGame(uint appID, string name, float hours, byte badgeLevel) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (hours < 0) {
-			throw new ArgumentOutOfRangeException(nameof(hours));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentOutOfRangeException.ThrowIfNegative(hours);
 
 		ushort? cardsRemaining = await GetCardsRemaining(appID).ConfigureAwait(false);
 
@@ -763,10 +755,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task CheckPage(byte page, ISet<uint> parsedAppIDs) {
-		if (page == 0) {
-			throw new ArgumentOutOfRangeException(nameof(page));
-		}
-
+		ArgumentOutOfRangeException.ThrowIfZero(page);
 		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
 		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
@@ -1004,9 +993,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task<ushort?> GetCardsRemaining(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
 

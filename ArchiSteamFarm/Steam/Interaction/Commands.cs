@@ -52,31 +52,22 @@ public sealed class Commands {
 
 	[PublicAPI]
 	public static string FormatBotResponse(string response, string botName) {
-		if (string.IsNullOrEmpty(response)) {
-			throw new ArgumentNullException(nameof(response));
-		}
-
-		if (string.IsNullOrEmpty(botName)) {
-			throw new ArgumentNullException(nameof(botName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(response);
+		ArgumentException.ThrowIfNullOrEmpty(botName);
 
 		return $"{Environment.NewLine}<{botName}> {response}";
 	}
 
 	[PublicAPI]
 	public string FormatBotResponse(string response) {
-		if (string.IsNullOrEmpty(response)) {
-			throw new ArgumentNullException(nameof(response));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(response);
 
 		return $"<{Bot.BotName}> {response}";
 	}
 
 	[PublicAPI]
 	public static string FormatStaticResponse(string response) {
-		if (string.IsNullOrEmpty(response)) {
-			throw new ArgumentNullException(nameof(response));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(response);
 
 		return $"<{SharedInfo.ASF}> {response}";
 	}
@@ -111,9 +102,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		string[] args = message.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries);
 
@@ -344,9 +333,7 @@ public sealed class Commands {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
@@ -411,21 +398,14 @@ public sealed class Commands {
 	}
 
 	internal async Task HandleMessage(ulong chatGroupID, ulong chatID, ulong steamID, string message) {
-		if (chatGroupID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-		}
-
-		if (chatID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(chatGroupID);
+		ArgumentOutOfRangeException.ThrowIfZero(chatID);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
@@ -545,9 +525,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -589,9 +567,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -611,9 +587,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(query)) {
-			throw new ArgumentNullException(nameof(query));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(query);
 
 		if (access < EAccess.Operator) {
 			return null;
@@ -696,13 +670,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(query)) {
-			throw new ArgumentNullException(nameof(query));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(query);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -722,13 +691,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppID)) {
-			throw new ArgumentNullException(nameof(targetAppID));
-		}
-
-		if (string.IsNullOrEmpty(targetContextID)) {
-			throw new ArgumentNullException(nameof(targetContextID));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppID);
+		ArgumentException.ThrowIfNullOrEmpty(targetContextID);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -756,17 +720,9 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(appID)) {
-			throw new ArgumentNullException(nameof(appID));
-		}
-
-		if (string.IsNullOrEmpty(contextID)) {
-			throw new ArgumentNullException(nameof(contextID));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(appID);
+		ArgumentException.ThrowIfNullOrEmpty(contextID);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -786,13 +742,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(options)) {
-			throw new ArgumentNullException(nameof(options));
-		}
-
-		if (string.IsNullOrEmpty(keys)) {
-			throw new ArgumentNullException(nameof(keys));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(options);
+		ArgumentException.ThrowIfNullOrEmpty(keys);
 
 		if (access < EAccess.Operator) {
 			return null;
@@ -861,17 +812,9 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(options)) {
-			throw new ArgumentNullException(nameof(options));
-		}
-
-		if (string.IsNullOrEmpty(keys)) {
-			throw new ArgumentNullException(nameof(keys));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(options);
+		ArgumentException.ThrowIfNullOrEmpty(keys);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -891,14 +834,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (contextID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(contextID));
-		}
-
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentNullException.ThrowIfNull(targetBot);
 
 		if (access < EAccess.Master) {
@@ -923,17 +860,9 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppID)) {
-			throw new ArgumentNullException(nameof(targetAppID));
-		}
-
-		if (string.IsNullOrEmpty(targetContextID)) {
-			throw new ArgumentNullException(nameof(targetContextID));
-		}
-
-		if (string.IsNullOrEmpty(botNameTo)) {
-			throw new ArgumentNullException(nameof(botNameTo));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppID);
+		ArgumentException.ThrowIfNullOrEmpty(targetContextID);
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
 
 		Bot? targetBot = Bot.GetBot(botNameTo);
 
@@ -957,21 +886,10 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppID)) {
-			throw new ArgumentNullException(nameof(targetAppID));
-		}
-
-		if (string.IsNullOrEmpty(targetContextID)) {
-			throw new ArgumentNullException(nameof(targetContextID));
-		}
-
-		if (string.IsNullOrEmpty(botNameTo)) {
-			throw new ArgumentNullException(nameof(botNameTo));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppID);
+		ArgumentException.ThrowIfNullOrEmpty(targetContextID);
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1019,9 +937,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1041,13 +957,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(cryptoMethodText)) {
-			throw new ArgumentNullException(nameof(cryptoMethodText));
-		}
-
-		if (string.IsNullOrEmpty(stringToEncrypt)) {
-			throw new ArgumentNullException(nameof(stringToEncrypt));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(cryptoMethodText);
+		ArgumentException.ThrowIfNullOrEmpty(stringToEncrypt);
 
 		if (access < EAccess.Owner) {
 			return null;
@@ -1103,9 +1014,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1133,9 +1042,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1155,9 +1062,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -1200,13 +1105,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1226,9 +1126,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -1266,13 +1164,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1300,9 +1193,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1322,9 +1213,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -1374,13 +1263,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1400,9 +1284,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -1445,13 +1327,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1471,13 +1348,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(hashingMethodText)) {
-			throw new ArgumentNullException(nameof(hashingMethodText));
-		}
-
-		if (string.IsNullOrEmpty(stringToHash)) {
-			throw new ArgumentNullException(nameof(stringToHash));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(hashingMethodText);
+		ArgumentException.ThrowIfNullOrEmpty(stringToHash);
 
 		if (access < EAccess.Owner) {
 			return null;
@@ -1505,13 +1377,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(propertyName)) {
-			throw new ArgumentNullException(nameof(propertyName));
-		}
-
-		if (string.IsNullOrEmpty(inputValue)) {
-			throw new ArgumentNullException(nameof(inputValue));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(propertyName);
+		ArgumentException.ThrowIfNullOrEmpty(inputValue);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -1537,17 +1404,9 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(propertyName)) {
-			throw new ArgumentNullException(nameof(propertyName));
-		}
-
-		if (string.IsNullOrEmpty(inputValue)) {
-			throw new ArgumentNullException(nameof(inputValue));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(propertyName);
+		ArgumentException.ThrowIfNullOrEmpty(inputValue);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1585,9 +1444,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1629,9 +1486,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1651,9 +1506,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(realAppIDsText)) {
-			throw new ArgumentNullException(nameof(realAppIDsText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(realAppIDsText);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -1693,13 +1546,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(realAppIDsText)) {
-			throw new ArgumentNullException(nameof(realAppIDsText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(realAppIDsText);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1727,9 +1575,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1749,9 +1595,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -1781,13 +1625,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1807,9 +1646,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -1839,13 +1676,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1865,9 +1697,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(nickname)) {
-			throw new ArgumentNullException(nameof(nickname));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(nickname);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -1890,13 +1720,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(nickname)) {
-			throw new ArgumentNullException(nameof(nickname));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(nickname);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1916,9 +1741,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(query)) {
-			throw new ArgumentNullException(nameof(query));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(query);
 
 		if (access < EAccess.Operator) {
 			return (null, null);
@@ -2065,13 +1888,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(query)) {
-			throw new ArgumentNullException(nameof(query));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(query);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2137,9 +1955,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2183,9 +1999,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetGameIDs)) {
-			throw new ArgumentNullException(nameof(targetGameIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetGameIDs);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -2230,13 +2044,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetGameIDs)) {
-			throw new ArgumentNullException(nameof(targetGameIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetGameIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2274,9 +2083,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2296,9 +2103,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(privacySettingsText)) {
-			throw new ArgumentNullException(nameof(privacySettingsText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(privacySettingsText);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -2430,13 +2235,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(privacySettingsText)) {
-			throw new ArgumentNullException(nameof(privacySettingsText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(privacySettingsText);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2456,9 +2256,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(keysText)) {
-			throw new ArgumentNullException(nameof(keysText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(keysText);
 
 		if ((steamID != 0) && !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -2714,13 +2512,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(keysText)) {
-			throw new ArgumentNullException(nameof(keysText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(keysText);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2758,9 +2551,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2808,9 +2599,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2844,9 +2633,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2923,9 +2710,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2967,9 +2752,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2997,9 +2780,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3019,9 +2800,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetSteamIDs)) {
-			throw new ArgumentNullException(nameof(targetSteamIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetSteamIDs);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -3051,13 +2830,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetSteamIDs)) {
-			throw new ArgumentNullException(nameof(targetSteamIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetSteamIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3077,9 +2851,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetSteamIDs)) {
-			throw new ArgumentNullException(nameof(targetSteamIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetSteamIDs);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -3109,13 +2881,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetSteamIDs)) {
-			throw new ArgumentNullException(nameof(targetSteamIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetSteamIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3135,9 +2902,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNameTo)) {
-			throw new ArgumentNullException(nameof(botNameTo));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -3175,13 +2940,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(botNameTo)) {
-			throw new ArgumentNullException(nameof(botNameTo));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3237,13 +2997,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(realAppIDsText)) {
-			throw new ArgumentNullException(nameof(realAppIDsText));
-		}
-
-		if (string.IsNullOrEmpty(botNameTo)) {
-			throw new ArgumentNullException(nameof(botNameTo));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(realAppIDsText);
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -3279,17 +3034,9 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(realAppIDsText)) {
-			throw new ArgumentNullException(nameof(realAppIDsText));
-		}
-
-		if (string.IsNullOrEmpty(botNameTo)) {
-			throw new ArgumentNullException(nameof(botNameTo));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(realAppIDsText);
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3375,9 +3122,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3440,9 +3185,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 

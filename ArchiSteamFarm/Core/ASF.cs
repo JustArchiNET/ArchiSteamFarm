@@ -146,9 +146,7 @@ public static class ASF {
 	}
 
 	internal static bool IsValidBotName(string botName) {
-		if (string.IsNullOrEmpty(botName)) {
-			throw new ArgumentNullException(nameof(botName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botName);
 
 		if (botName[0] == '.') {
 			return false;
@@ -386,9 +384,7 @@ public static class ASF {
 	}
 
 	private static async Task<bool> CanHandleWriteEvent(string filePath) {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (LastWriteEvents == null) {
 			throw new InvalidOperationException(nameof(LastWriteEvents));
@@ -515,21 +511,14 @@ public static class ASF {
 	}
 
 	private static async Task OnChangedConfigFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
 	}
 
 	private static async Task OnChangedConfigFile(string name) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
 
 		if (!name.Equals(SharedInfo.IPCConfigFile, StringComparison.OrdinalIgnoreCase) || (GlobalConfig?.IPC != true)) {
 			return;
@@ -545,13 +534,8 @@ public static class ASF {
 	}
 
 	private static async Task OnChangedFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		string extension = Path.GetExtension(name);
 
@@ -569,13 +553,8 @@ public static class ASF {
 	}
 
 	private static async Task OnChangedKeysFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
 	}
@@ -596,13 +575,8 @@ public static class ASF {
 	}
 
 	private static async Task OnCreatedConfigFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		string extension = Path.GetExtension(name);
 
@@ -619,13 +593,8 @@ public static class ASF {
 	}
 
 	private static async Task OnCreatedFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		string extension = Path.GetExtension(name);
 
@@ -643,13 +612,8 @@ public static class ASF {
 	}
 
 	private static async Task OnCreatedJsonFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));
@@ -688,13 +652,8 @@ public static class ASF {
 	}
 
 	private static async Task OnCreatedKeysFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));
@@ -733,13 +692,8 @@ public static class ASF {
 	}
 
 	private static async Task OnDeletedConfigFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		string extension = Path.GetExtension(name);
 
@@ -756,13 +710,8 @@ public static class ASF {
 	}
 
 	private static async Task OnDeletedFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		string extension = Path.GetExtension(name);
 
@@ -776,13 +725,8 @@ public static class ASF {
 	}
 
 	private static async Task OnDeletedJsonConfigFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));
@@ -851,8 +795,16 @@ public static class ASF {
 	}
 
 	private static async Task RegisterBots() {
-		if ((GlobalConfig == null) || (GlobalDatabase == null) || (WebBrowser == null)) {
-			throw new InvalidOperationException($"{nameof(GlobalConfig)} || {nameof(GlobalDatabase)} || {nameof(WebBrowser)}");
+		if (GlobalConfig == null) {
+			throw new InvalidOperationException(nameof(GlobalConfig));
+		}
+
+		if (GlobalDatabase == null) {
+			throw new InvalidOperationException(nameof(GlobalDatabase));
+		}
+
+		if (WebBrowser == null) {
+			throw new InvalidOperationException(nameof(WebBrowser));
 		}
 
 		// Ensure that we ask for a list of servers if we don't have any saved servers available
@@ -939,10 +891,7 @@ public static class ASF {
 
 	private static bool UpdateFromArchive(ZipArchive archive, string targetDirectory) {
 		ArgumentNullException.ThrowIfNull(archive);
-
-		if (string.IsNullOrEmpty(targetDirectory)) {
-			throw new ArgumentNullException(nameof(targetDirectory));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetDirectory);
 
 		if (SharedInfo.HomeDirectory == AppContext.BaseDirectory) {
 			// We're running a build that includes our dependencies in ASF's home

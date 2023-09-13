@@ -46,9 +46,7 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(deviceID)) {
-			throw new ArgumentNullException(nameof(deviceID));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(deviceID);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -90,17 +88,9 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(activationCode)) {
-			throw new ArgumentNullException(nameof(activationCode));
-		}
-
-		if (string.IsNullOrEmpty(authenticatorCode)) {
-			throw new ArgumentNullException(nameof(authenticatorCode));
-		}
-
-		if (authenticatorTime <= 0) {
-			throw new ArgumentOutOfRangeException(nameof(authenticatorTime));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(activationCode);
+		ArgumentException.ThrowIfNullOrEmpty(authenticatorCode);
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(authenticatorTime);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
