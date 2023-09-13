@@ -119,24 +119,18 @@ public static class Utilities {
 	public static async Task<IList<T>> InParallel<T>(IEnumerable<Task<T>> tasks) {
 		ArgumentNullException.ThrowIfNull(tasks);
 
-		IList<T> results;
-
 		switch (ASF.GlobalConfig?.OptimizationMode) {
 			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-				results = new List<T>();
+				List<T> results = new();
 
 				foreach (Task<T> task in tasks) {
 					results.Add(await task.ConfigureAwait(false));
 				}
 
-				break;
+				return results;
 			default:
-				results = await Task.WhenAll(tasks).ConfigureAwait(false);
-
-				break;
+				return await Task.WhenAll(tasks).ConfigureAwait(false);
 		}
-
-		return results;
 	}
 
 	[PublicAPI]

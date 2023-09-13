@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -2575,7 +2576,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return uri.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase) || uri.Host.Equals("lostauth", StringComparison.OrdinalIgnoreCase);
 	}
 
-	private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryResponse.Description> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Asset> output) {
+	private static bool ParseItems([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryResponse.Description> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Asset> output) {
 		ArgumentNullException.ThrowIfNull(descriptions);
 
 		if ((input == null) || (input.Count == 0)) {
