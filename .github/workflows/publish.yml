@@ -4,8 +4,8 @@ on: [push, pull_request]
 
 env:
   CONFIGURATION: Release
-  DOTNET_SDK_VERSION: 7.0.x
-  NET_CORE_VERSION: net7.0
+  DOTNET_SDK_VERSION: 8.0
+  NET_CORE_VERSION: net8.0
   NET_FRAMEWORK_VERSION: net481
   NODE_JS_VERSION: 'lts/*'
   PLUGINS: ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper

@@ -10,14 +10,14 @@ RUN set -eu; \
     npm ci --no-progress; \
     npm run deploy --no-progress
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:7.0${IMAGESUFFIX} AS build-dotnet
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0${IMAGESUFFIX} AS build-dotnet
 ARG CONFIGURATION=Release
 ARG STEAM_TOKEN_DUMPER_TOKEN
 ARG TARGETARCH
 ARG TARGETOS
 ENV DOTNET_CLI_TELEMETRY_OPTOUT true
 ENV DOTNET_NOLOGO true
-ENV NET_CORE_VERSION net7.0
+ENV NET_CORE_VERSION net8.0
 ENV PLUGINS ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 WORKDIR /app
 COPY --from=build-node /app/ASF-ui/dist ASF-ui/dist
@@ -55,7 +55,7 @@ RUN set -eu; \
       dotnet publish "$plugin" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result/plugins/$plugin" "-p:ASFVariant=${asf_variant}" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained; \
     done
 
-FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime-deps:7.0${IMAGESUFFIX} AS runtime
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime-deps:8.0${IMAGESUFFIX} AS runtime
 ENV ASF_USER asf
 ENV ASPNETCORE_URLS=
 ENV DOTNET_CLI_TELEMETRY_OPTOUT true

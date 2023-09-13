@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-TARGET_FRAMEWORK="net7.0"
+TARGET_FRAMEWORK="net8.0"
 
 MAIN_PROJECT="ArchiSteamFarm"
 STEAM_TOKEN_DUMPER_NAME="${MAIN_PROJECT}.OfficialPlugins.SteamTokenDumper"
