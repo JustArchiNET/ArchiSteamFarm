@@ -142,7 +142,11 @@ internal static class Program {
 		return true;
 	}
 
-	private static void HandleNetworkGroupArgument(string networkGroup) => NetworkGroup = !string.IsNullOrEmpty(networkGroup) ? networkGroup : throw new ArgumentNullException(nameof(networkGroup));
+	private static void HandleNetworkGroupArgument(string networkGroup) {
+		ArgumentException.ThrowIfNullOrEmpty(networkGroup);
+
+		NetworkGroup = networkGroup;
+	}
 
 	private static bool HandlePathArgument(string path) {
 		ArgumentException.ThrowIfNullOrEmpty(path);
