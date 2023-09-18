@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
@@ -38,8 +39,8 @@ internal static class CatAPI {
 
 		Uri request = new($"{URL}/v1/images/search");
 
-		ObjectResponse<List<MeowResponse>>? response = await webBrowser.UrlGetToJsonObject<List<MeowResponse>>(request).ConfigureAwait(false);
+		ObjectResponse<ImmutableList<MeowResponse>>? response = await webBrowser.UrlGetToJsonObject<ImmutableList<MeowResponse>>(request).ConfigureAwait(false);
 
-		return response?.Content?[0].URL;
+		return response?.Content?.Count > 0 ? response?.Content?[0].URL : null;
 	}
 }
