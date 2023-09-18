@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
@@ -30,15 +31,15 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin;
 // You've always wanted from your ASF to post cats, right? Now is your chance!
 // P.S. The code is almost 1:1 copy from the one I use in ArchiBot, you can thank me later
 internal static class CatAPI {
-	private const string URL = "https://aws.random.cat";
+	private const string URL = "https://api.thecatapi.com";
 
 	internal static async Task<Uri?> GetRandomCatURL(WebBrowser webBrowser) {
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
-		Uri request = new($"{URL}/meow");
+		Uri request = new($"{URL}/v1/images/search");
 
-		ObjectResponse<MeowResponse>? response = await webBrowser.UrlGetToJsonObject<MeowResponse>(request).ConfigureAwait(false);
+		ObjectResponse<List<MeowResponse>>? response = await webBrowser.UrlGetToJsonObject<List<MeowResponse>>(request).ConfigureAwait(false);
 
-		return response?.Content?.URL;
+		return response?.Content?[0].URL;
 	}
 }
