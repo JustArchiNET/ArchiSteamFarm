@@ -30,13 +30,16 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin;
 
 internal sealed class MeowResponse {
 	[JsonProperty("id")]
-	public string Id { get; set; }
+	internal string? Id { get; set; }
 	[JsonProperty("url", Required = Required.Always)]
 	internal readonly Uri URL = null!;
 	[JsonProperty("width")]
-	public int Width { get; set; }
+	internal int? Width { get; set; }
 	[JsonProperty("height")]
-	public int Height { get; set; }
+	internal int? Height { get; set; }
+
+	[JsonConstructor]
+	private MeowResponse() { }
 }
 
 #pragma warning restore CA1812 // False positive, the class is used during json deserialization
