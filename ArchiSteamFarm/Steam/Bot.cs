@@ -1402,16 +1402,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		string configFile = GetFilePath(EFileType.Config);
 
 		if (string.IsNullOrEmpty(configFile)) {
-			ArchiLogger.LogNullError(configFile);
-
-			return;
+			throw new InvalidOperationException(nameof(configFile));
 		}
 
 		(BotConfig? botConfig, _) = await BotConfig.Load(configFile, BotName).ConfigureAwait(false);
 
 		if (botConfig == null) {
-			await Destroy().ConfigureAwait(false);
-
+			// Invalid config file, we allow user to fix it without destroying the bot right away
 			return;
 		}
 
