@@ -27,19 +27,11 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin;
 
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-
 internal sealed class MeowResponse {
-	[JsonProperty("id")]
-	internal string? Id { get; set; }
-	[JsonProperty("url", Required = Required.Always)]
+	[JsonProperty("file", Required = Required.Always)]
 	internal readonly Uri URL = null!;
-	[JsonProperty("width")]
-	internal int? Width { get; set; }
-	[JsonProperty("height")]
-	internal int? Height { get; set; }
 
 	[JsonConstructor]
 	private MeowResponse() { }
 }
-
 #pragma warning restore CA1812 // False positive, the class is used during json deserialization
