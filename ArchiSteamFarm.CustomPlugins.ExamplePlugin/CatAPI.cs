@@ -20,8 +20,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
@@ -41,6 +41,6 @@ internal static class CatAPI {
 
 		ObjectResponse<ImmutableList<MeowResponse>>? response = await webBrowser.UrlGetToJsonObject<ImmutableList<MeowResponse>>(request).ConfigureAwait(false);
 
-		return response?.Content?.Count > 0 ? response?.Content?[0].URL : null;
+		return response?.Content?.FirstOrDefault()?.URL;
 	}
 }
