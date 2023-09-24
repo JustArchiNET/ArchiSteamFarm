@@ -479,6 +479,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(Bots));
 		}
 
+		if (BotsComparer == null) {
+			throw new InvalidOperationException(nameof(BotsComparer));
+		}
+
 		string[] botNames = args.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 		HashSet<Bot> result = new();
@@ -491,26 +495,41 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return result;
 			}
 
-			if (botName.Contains("..", StringComparison.Ordinal)) {
+			if ((botName.Length > 2) && botName.Contains("..", StringComparison.Ordinal)) {
 				string[] botRange = botName.Split(new[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
 
-				if (botRange.Length == 2) {
-					Bot? firstBot = GetBot(botRange[0]);
+				Bot? firstBot = GetBot(botRange[0]);
 
-					if (firstBot != null) {
-						Bot? lastBot = GetBot(botRange[1]);
+				if (firstBot != null) {
+					switch (botRange.Length) {
+						case 1:
+							// Either bot.. or ..bot
+							IEnumerable<Bot> query = Bots.OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value);
 
-						if (lastBot != null) {
-							foreach (Bot bot in Bots.OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).SkipWhile(bot => bot != firstBot)) {
+							query = botName.StartsWith("..", StringComparison.Ordinal) ? query.TakeWhile(bot => bot != firstBot) : query.SkipWhile(bot => bot != firstBot);
+
+							foreach (Bot bot in query) {
 								result.Add(bot);
-
-								if (bot == lastBot) {
-									break;
-								}
 							}
 
+							result.Add(firstBot);
+
 							continue;
-						}
+						case 2:
+							// firstBot..lastBot
+							Bot? lastBot = GetBot(botRange[1]);
+
+							if ((lastBot != null) && (BotsComparer.Compare(firstBot.BotName, lastBot.BotName) <= 0)) {
+								foreach (Bot bot in Bots.OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).SkipWhile(bot => bot != firstBot).TakeWhile(bot => bot != lastBot)) {
+									result.Add(bot);
+								}
+
+								result.Add(lastBot);
+
+								continue;
+							}
+
+							break;
 					}
 				}
 			}
