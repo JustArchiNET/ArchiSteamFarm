@@ -71,25 +71,26 @@
 		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
 	</data>
 	<data name="Content" xml:space="preserve">
-		<value>內容︰{0}</value>
+		<value>內容︰
+{0}</value>
 		<comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
 	</data>
 	<data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-		<value>設定的 {0} 屬性無效︰ {1}</value>
+		<value>設定的 {0} 屬性無效︰{1}</value>
 		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-		<value>ASF V{0} 在能初始化核心模組之前就遇到嚴重錯誤！</value>
+		<value>ASF V{0} 在能初始化核心紀錄模組之前就遇到嚴重錯誤！</value>
 		<comment>{0} will be replaced by version number</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
 		<value>例外錯誤：{0}() {1}
-堆疊追蹤：
+堆疊追踪：
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
 	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>以非零錯誤代碼退出！</value>
+		<value>以非零錯誤碼退出！</value>
 	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>請求失敗︰ {0}</value>
@@ -104,14 +105,14 @@
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>沒有設定任何 Bot。您是否忘記設定 ASF 了？如果您不明白發生了什麼，請閱讀 Wiki 上的「設定指南」。</value>
+		<value>沒有設定任何 Bot。您是否忘記設定 ASF 了？如果您不明白發生了什麼，請閱讀 Wiki 上的「新手上路」。</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} 為空值！</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorParsingObject" xml:space="preserve">
-		<value>剖析 {0} 失敗！</value>
+		<value>無法剖析 {0}！</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -128,7 +129,7 @@
 		<value>無法繼續進行更新，因為該版本並未提供任何資源檔案！</value>
 	</data>
 	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-		<value>收到一個使用者輸入請求，但進程目前正以無介面模式執行！</value>
+		<value>收到一個使用者輸入請求，但程序目前正以無頭模式執行！</value>
 	</data>
 	<data name="Exiting" xml:space="preserve">
 		<value>正在退出…</value>
@@ -137,7 +138,7 @@
 		<value>失敗！</value>
 	</data>
 	<data name="GlobalConfigChanged" xml:space="preserve">
-		<value>已變更全域設定檔！</value>
+		<value>已修改全域設定檔！</value>
 	</data>
 	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
 		<value>已刪除全域設定檔！</value>
@@ -154,7 +155,7 @@
 		<value>沒有執行中的 Bot，正在退出…</value>
 	</data>
 	<data name="RefreshingOurSession" xml:space="preserve">
-		<value>更新工作階段！</value>
+		<value>正在更新工作階段！</value>
 	</data>
 	<data name="RejectingTrade" xml:space="preserve">
 		<value>正在拒絕交易︰{0}</value>
@@ -176,7 +177,7 @@
 		<value>正在檢查新版本…</value>
 	</data>
 	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
-		<value>正在下載新版本：{0}（{1} MB）…等待期間，若您喜歡這個軟體，請考慮捐助 ASF！:)</value>
+		<value>正在下載新版本：{0} ({1} MB)…等待期間，若您喜歡這個軟體，請考慮贊助 ASF！:)</value>
 		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
 	</data>
 	<data name="UpdateFinished" xml:space="preserve">
@@ -194,23 +195,23 @@
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
-		<value>請輸入您的 Steam Guard 行動驗證器上的雙重驗證代碼： </value>
+		<value>請輸入您的 Steam 行動驗證器上的雙重驗證代碼：</value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>請輸入寄送至您的電子信箱的 Steam Guard 驗證代碼： </value>
+		<value>請輸入寄送至您的電子郵件的 Steam Guard 驗證碼：</value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
-		<value>請輸入您的 Steam 帳號： </value>
+		<value>請輸入您的 Steam 帳號：</value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamParentalCode" xml:space="preserve">
-		<value>請輸入 Steam 家庭監護碼： </value>
+		<value>請輸入 Steam 家庭監護 PIN 碼：</value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamPassword" xml:space="preserve">
-		<value>請輸入您的 Steam 密碼： </value>
+		<value>請輸入您的 Steam 密碼：</value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="WarningUnknownValuePleaseReport" xml:space="preserve">
@@ -292,7 +293,7 @@
 		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="PlayingNotAvailable" xml:space="preserve">
-		<value>目前無法執行，我們將稍後再試！</value>
+		<value>目前無法執行掛卡，我們將稍後再試！</value>
 	</data>
 	<data name="StillIdling" xml:space="preserve">
 		<value>仍在掛卡：{0}（{1}）</value>
@@ -352,13 +353,13 @@
 		<value>已暫停自動掛卡！</value>
 	</data>
 	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-		<value>已恢復自動掛卡！</value>
+		<value>已繼續自動掛卡！</value>
 	</data>
 	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
 		<value>已經暫停自動掛卡！</value>
 	</data>
 	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-		<value>已經恢復自動掛卡！</value>
+		<value>已經繼續自動掛卡！</value>
 	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>已連線至 Steam！</value>
@@ -373,7 +374,7 @@
 		<value>這個 Bot 將不會啟動，因為它在設定檔中被停用！</value>
 	</data>
 	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-		<value>已連續收到 {0} 次 TwoFactorCodeMismatch 錯誤訊息。您的雙重驗證憑證可能已失效，或者時間不同步，正在中止！</value>
+		<value>已連續收到 {0} 次 TwoFactorCodeMismatch 錯誤碼。您的雙重驗證憑證可能已失效，或者時間不同步，正在中止！</value>
 		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
 	</data>
 	<data name="BotLoggedOff" xml:space="preserve">
@@ -381,7 +382,7 @@
 		<comment>{0} will be replaced by logging off reason (string)</comment>
 	</data>
 	<data name="BotLoggedOn" xml:space="preserve">
-		<value>已成功登入 {0}。</value>
+		<value>已成功登入帳號 {0}。</value>
 		<comment>{0} will be replaced by steam ID (number)</comment>
 	</data>
 	<data name="BotLoggingIn" xml:space="preserve">
@@ -394,13 +395,13 @@
 		<value>交易提案失敗！</value>
 	</data>
 	<data name="BotLootingMasterNotDefined" xml:space="preserve">
-		<value>無法發送交易提案，因為沒有帳號設有 master 權限！</value>
+		<value>無法發送交易提案，因為沒有帳號設有 Master 權限！</value>
 	</data>
 	<data name="BotLootingSuccess" xml:space="preserve">
 		<value>交易提案發送成功！</value>
 	</data>
 	<data name="BotSendingTradeToYourself" xml:space="preserve">
-		<value>您無法對自己發送交易請求！</value>
+		<value>您無法對自己發送交易提案！</value>
 	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
 		<value>這個 Bot 並未啟用 ASF 雙重驗證！您是否忘記將雙重驗證匯入至 ASF？</value>
@@ -445,7 +446,7 @@
 		<value>Bot 為受限狀態，無法透過掛卡得到卡片。</value>
 	</data>
 	<data name="BotStatusConnecting" xml:space="preserve">
-		<value>Bot 正在連線到 Steam 網路。</value>
+		<value>Bot 正在連線至 Steam 網路。</value>
 	</data>
 	<data name="BotStatusNotRunning" xml:space="preserve">
 		<value>Bot 未在執行。</value>
@@ -512,7 +513,7 @@
 		<value>看來這是您首次使用本程式，歡迎！</value>
 	</data>
 	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-		<value>您提供的 CurrentCulture 無效，ASF 將以預設值繼續執行！</value>
+		<value>您所提供的 CurrentCulture 無效，ASF 將以預設值繼續執行！</value>
 	</data>
 	<data name="TranslationIncomplete" xml:space="preserve">
 		<value>ASF 將使用您的偏好語系 {0}，但該語言的翻譯只完成了 {1}。或許您能協助我們完善 ASF 的翻譯。</value>
@@ -537,7 +538,7 @@
 		<value>Bot 已被封鎖，無法透過掛卡得到卡片。</value>
 	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
-		<value>此功能僅能在無介面模式下使用！</value>
+		<value>此功能只能在無頭模式下使用！</value>
 	</data>
 	<data name="BotOwnedAlready" xml:space="preserve">
 		<value>已擁有：{0}</value>
@@ -567,7 +568,7 @@
 		<comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
 	</data>
 	<data name="BotRefreshingPackagesData" xml:space="preserve">
-		<value>更新套件資料中…</value>
+		<value>正在更新軟體套件資料…</value>
 	</data>
 	<data name="WarningDeprecated" xml:space="preserve">
 		<value>{0} 的用法已被棄用，並且將在未來的版本中移除，請改用 {1}。</value>
@@ -607,7 +608,7 @@
 		<value>已中止！</value>
 	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
-		<value>您執行的個人 Bot 帳號數量超過我們的建議上限（{0}）。請留意，此設定不受支援，且可能會造成各種 Steam 相關問題，包括帳號停權。請參閱常見問答了解詳情。</value>
+		<value>您執行的個人 Bot 帳號數量超過我們的建議上限（{0}）。請留意，此設定不受支援，且可能會造成各種 Steam 相關問題，包括帳號停權。請參閱常見問題以了解詳情。</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
 	</data>
 	<data name="PluginLoaded" xml:space="preserve">
@@ -628,23 +629,23 @@
 		<value>請稍候…</value>
 	</data>
 	<data name="EnterCommand" xml:space="preserve">
-		<value>輸入指令： </value>
+		<value>輸入指令：</value>
 	</data>
 	<data name="Executing" xml:space="preserve">
 		<value>正在執行…</value>
 	</data>
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
-		<value>已開啟互動式主控台，按「C」進入指令模式。</value>
+		<value>已開啟互動式控制台，按「C」進入指令模式。</value>
 	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
-		<value>Bot 的背景佇列中剩下 {0} 個遊戲。</value>
+		<value>Bot 的背景佇列中剩餘 {0} 個遊戲。</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
 	</data>
 	<data name="ErrorSingleInstanceRequired" xml:space="preserve">
-		<value>ASF 程序已執行於此工作目錄，正在中止！</value>
+		<value>ASF 程序已執行於當前的資料夾中，正在中止！</value>
 	</data>
 	<data name="BotHandledConfirmations" xml:space="preserve">
-		<value>成功處理 {0} 個確認！</value>
+		<value>成功處理 {0} 個交易確認！</value>
 		<comment>{0} will be replaced by number of confirmations</comment>
 	</data>
 	<data name="BotExtraIdlingCooldown" xml:space="preserve">
@@ -655,7 +656,7 @@
 		<value>正在清理更新後的過時檔案…</value>
 	</data>
 	<data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-		<value>正在產生 Steam 家庭監護碼，這會需要一段時間，請考慮將它寫入設定檔中…</value>
+		<value>正在產生 Steam 家庭監護 PIN 碼，這會需要一段時間，請考慮將它寫入設定檔中…</value>
 	</data>
 	<data name="IPCConfigChanged" xml:space="preserve">
 		<value>IPC 設定檔已變更！</value>
@@ -665,7 +666,7 @@
 		<comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
 	</data>
 	<data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
-		<value>連續收到 InvalidPassword 錯誤代碼 {0} 次。您的帳號密碼大概是錯的，正在中止！</value>
+		<value>連續收到 InvalidPassword 錯誤碼 {0} 次。您的帳號密碼大概是錯的，正在中止！</value>
 		<comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
 	</data>
 	<data name="Result" xml:space="preserve">
@@ -673,14 +674,14 @@
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
 	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
-		<value>您正嘗試執行 {0} 不同的 ASF 於不支援的環境中：{1}。如果您真的知道您在做什麼的話，請加上 --ignore-unsupported-environment 引數。</value>
+		<value>您正嘗試於不支援的環境（{1}）中執行 {0} 版本的 ASF。如果您真的知道您在做什麼的話，請加上 --ignore-unsupported-environment 引數。</value>
 	</data>
 	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
 		<value>未知的命令列引數：{0}</value>
 		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
 	</data>
 	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-		<value>無法找到設定檔所在目錄，正在中止！</value>
+		<value>無法找到設定檔所在的資料夾，正在中止！</value>
 	</data>
 	<data name="BotIdlingSelectedGames" xml:space="preserve">
 		<value>正在掛 {0} 指定的遊玩時數：{1}</value>
@@ -707,15 +708,15 @@
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>您正在使用 {0} 設定 {1} 屬性。但您沒有提供一個自定義的 --cryptkey。您應該提供自定義 --cryptkey 以提高安全性。</value>
+		<value>您正在使用 {0} 設定 {1} 屬性。但您沒有提供自訂的 --cryptkey。您應提供自訂 --cryptkey 以提高安全性。</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
-		<value>您正在使用 {0} 設定 {1} 屬性。但您沒有提供一個自定義的 --cryptkey。這完全破壞了保護，因為 ASF 被迫使用自己的（已知）金鑰。您應該提供自定義 --cryptkey 用於使用此設定提供的安全優勢。</value>
+		<value>您正在使用 {0} 設定 {1} 屬性。但您沒有提供自訂的 --cryptkey。這完全破壞了保護，因為 ASF 被迫使用自己的（已知）金鑰。您應提供自訂 --cryptkey 以使用本設定所提供的安全優勢。</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
 	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>您正在以管理員權限（Root）執行ASF。這會給您的設備帶來重大的安全風險，且由於ASF的操作不需要管理員權限，我們建議盡可能以非管理員使用者身份執行它。</value>
+		<value>您正以管理員權限（Root）執行 ASF。這會給您的設備帶來重大的安全風險，且由於 ASF 的操作不需要管理員權限，我們建議盡可能以非管理員使用者身份執行它。</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>您在不受支援的環境中執行 ASF，並提供 --ignore-unsupported-environment 引數。請注意，我們不對這種情形提供任何形式的支援，您完全需要自行承擔風險。您已經被警告過了。</value>
@@ -727,16 +728,16 @@
 		<value>正在驗證已下載的二進制檔案與來自遠端伺服器的核對和…</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>遠端伺服器對我們要更新到的版本一無所知。若該版本是最近發布的，則可能出現這種情形⸺立刻拒絕進行更新程序作為額外的安全措施。</value>
+		<value>遠端伺服器對我們要更新到的版本一無所知。若該版本是最近發布的，則可能出現這種情形⸺作為額外的安全措施，已立刻拒絕進行更新程序。</value>
 	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
-		<value>遠端伺服器回覆了不同的核對和，這可能意味著下載檔案損毀或遭受中間人攻擊，拒絕繼續更新程序！</value>
+		<value>遠端伺服器回覆了不同的核對和，這可能代表下載的檔案已損壞或遭到了中間人攻擊，拒絕繼續更新程序！</value>
 	</data>
 	<data name="PatchingFiles" xml:space="preserve">
-		<value>正在修補 ASF 檔案…</value>
+		<value>正在更新 ASF 檔案…</value>
 	</data>
 	<data name="UserInputCryptkey" xml:space="preserve">
-		<value>請輸入您的 cryptkey： </value>
+		<value>請輸入您的 cryptkey：</value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="ErrorIPNotBanned" xml:space="preserve">
@@ -744,7 +745,7 @@
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
 	<data name="WarningNoLicense" xml:space="preserve">
-		<value>您正在嘗試使用付費功能 {0}，但您尚未在 ASF 全域設定中設定有效的 LicenseID。請檢查您的設定，因為如果沒有其他詳細資訊，該功能將會無法運作。</value>
+		<value>您正在嘗試使用付費功能 {0}，但您尚未在 ASF 全域設定中設定有效的 LicenseID。請檢查您的設定，因為如果沒有額外資訊，該功能將會無法運作。</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
 </root>

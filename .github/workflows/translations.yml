@@ -10,7 +10,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4.0.0
+      uses: actions/checkout@v4.1.0
       with:
         show-progress: false
         submodules: recursive
@@ -27,7 +27,7 @@ jobs:
         git reset --hard origin/master
 
     - name: Download latest translations from Crowdin
-      uses: crowdin/github-action@v1.13.0
+      uses: crowdin/github-action@v1.13.1
       with:
         upload_sources: false
         download_translations: true

@@ -559,6 +559,28 @@ public static class ASF {
 		await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
 	}
 
+	private static async Task OnConfigChanged() {
+		string globalConfigFile = GetFilePath(EFileType.Config);
+
+		if (string.IsNullOrEmpty(globalConfigFile)) {
+			throw new InvalidOperationException(nameof(globalConfigFile));
+		}
+
+		(GlobalConfig? globalConfig, _) = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
+
+		if (globalConfig == null) {
+			// Invalid config file, we allow user to fix it without destroying the ASF instance right away
+			return;
+		}
+
+		if (globalConfig == GlobalConfig) {
+			return;
+		}
+
+		ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
+		await RestartOrExit().ConfigureAwait(false);
+	}
+
 	private static async void OnCreated(object sender, FileSystemEventArgs e) {
 		ArgumentNullException.ThrowIfNull(sender);
 		ArgumentNullException.ThrowIfNull(e);
@@ -630,8 +652,7 @@ public static class ASF {
 		}
 
 		if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
-			ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
-			await RestartOrExit().ConfigureAwait(false);
+			await OnConfigChanged().ConfigureAwait(false);
 
 			return;
 		}

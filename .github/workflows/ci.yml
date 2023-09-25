@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4.0.0
+      uses: actions/checkout@v4.1.0
       with:
         show-progress: false
         submodules: recursive
@@ -40,7 +40,7 @@ jobs:
 
     - name: Upload latest strings for translation on Crowdin
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.configuration == 'Release' && startsWith(matrix.os, 'ubuntu-') }}
-      uses: crowdin/github-action@v1.13.0
+      uses: crowdin/github-action@v1.13.1
       with:
         crowdin_branch_name: main
         config: '.github/crowdin.yml'
