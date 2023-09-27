@@ -3,7 +3,7 @@ WantedBy=multi-user.target
 
 [Service]
 EnvironmentFile=-/etc/asf/%i
-ExecStart=%h/ArchiSteamFarm/ArchiSteamFarm --no-restart --process-required --service --system-required
+ExecStart=/home/%i/ArchiSteamFarm/ArchiSteamFarm --no-restart --process-required --service --system-required
 Restart=on-success
 RestartSec=1s
 SyslogIdentifier=asf-%i
@@ -28,7 +28,7 @@ ProtectKernelModules=yes
 ProtectKernelTunables=yes
 ProtectProc=invisible
 ProtectSystem=strict
-ReadWritePaths=%h/ArchiSteamFarm /tmp
+ReadWritePaths=/home/%i/ArchiSteamFarm /tmp
 RemoveIPC=yes
 RestrictAddressFamilies=AF_INET AF_INET6 AF_NETLINK AF_UNIX
 RestrictNamespaces=yes
