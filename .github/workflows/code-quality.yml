@@ -24,6 +24,6 @@ jobs:
         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
 
     - name: Report Qodana results to GitHub
-      uses: github/codeql-action/upload-sarif@v2.21.8
+      uses: github/codeql-action/upload-sarif@v2.21.9
       with:
         sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
