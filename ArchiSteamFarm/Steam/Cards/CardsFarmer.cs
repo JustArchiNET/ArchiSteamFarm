@@ -49,6 +49,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	internal const byte DaysForRefund = 14; // In how many days since payment we're allowed to refund
 	internal const byte HoursForRefund = 2; // Up to how many hours we're allowed to play for refund
 
+	private const byte DaysToIgnoreRiskyAppIDs = 7; // How many days since determining that game is not candidate for idling, we assume that to still be the case, in risky approach
 	private const byte ExtraFarmingDelaySeconds = 10; // In seconds, how much time to add on top of FarmingDelay (helps fighting misc time differences of Steam network)
 	private const byte HoursToIgnore = 1; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
@@ -1253,7 +1254,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.IntersectWith(gamesToFarm);
 
-		DateTime ignoredUntil = now.AddDays(7);
+		DateTime ignoredUntil = now.AddDays(DaysToIgnoreRiskyAppIDs);
 
 		foreach (uint appID in gamesToFarm) {
 			Game? game = await GetGameCardsInfo(appID).ConfigureAwait(false);
@@ -1333,6 +1334,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingStatusForGame, game.AppID, game.GameName, game.CardsRemaining));
 
 		if (game.CardsRemaining == 0) {
+			Bot.BotDatabase.FarmingRiskyIgnoredAppIDs[game.AppID] = DateTime.UtcNow.AddDays(DaysToIgnoreRiskyAppIDs);
 			Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.Remove(game.AppID);
 
 			return false;
