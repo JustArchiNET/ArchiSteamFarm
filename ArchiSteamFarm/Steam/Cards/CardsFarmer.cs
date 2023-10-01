@@ -1204,7 +1204,12 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		if (GamesToFarm.Count == 0) {
 			ShouldResumeFarming = false;
 
-			return false;
+			// Allow changing to risky algorithm only if we failed at least some badge pages and we have the prop enabled
+			if (allTasksSucceeded || !Bot.BotConfig.EnableRiskyCardsDiscovery) {
+				return false;
+			}
+
+			return await IsAnythingToFarmRisky().ConfigureAwait(false);
 		}
 
 		ShouldResumeFarming = true;
