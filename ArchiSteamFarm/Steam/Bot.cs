@@ -1568,6 +1568,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			ASF.ArchiLogger.LogGenericDebug($"{databaseFilePath}: {JsonConvert.SerializeObject(botDatabase, Formatting.Indented)}");
 		}
 
+		botDatabase.PerformMaintenance();
+
 		Bot bot;
 
 		await BotsSemaphore.WaitAsync().ConfigureAwait(false);
