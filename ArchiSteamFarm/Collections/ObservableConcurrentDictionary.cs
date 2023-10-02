@@ -39,6 +39,9 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 
 	public bool IsReadOnly => false;
 
+	[PublicAPI]
+	public ICollection<TKey> Keys => BackingDictionary.Keys;
+
 	[JsonProperty(Required = Required.DisallowNull)]
 	private readonly ConcurrentDictionary<TKey, TValue> BackingDictionary = new();
 

@@ -1248,15 +1248,21 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		// In particular, firstly we give priority to appIDs that we already found out before, either rule them out, or prioritize
 		// Next, we apply farm priority queue right away, by both considering apps (if FarmPriorityQueueOnly) as well as giving priority to those that user specified
 		// Lastly, we forcefully apply random order to those considered the same in value, as we can't really afford massive amount of misses in a row
-#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
-		List<uint> gamesToFarm = boosterCreatorEntries.Select(static entry => entry.AppID).Where(appID => !boosterElibility.Contains(appID) && (!Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.TryGetValue(appID, out DateTime ignoredUntil) || (ignoredUntil < now)) && ShouldIdle(appID)).OrderByDescending(Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.Contains).ThenByDescending(Bot.IsPriorityIdling).ThenBy(static _ => Random.Shared.Next()).ToList();
-#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
+		HashSet<uint> gamesToFarm = boosterCreatorEntries.Select(static entry => entry.AppID).Where(appID => !boosterElibility.Contains(appID) && (!Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.TryGetValue(appID, out DateTime ignoredUntil) || (ignoredUntil < now)) && ShouldIdle(appID)).ToHashSet();
+
+		foreach (uint appID in Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.Keys.Where(appID => !gamesToFarm.Contains(appID))) {
+			Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.Remove(appID);
+		}
 
 		Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.IntersectWith(gamesToFarm);
 
+#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
+		IOrderedEnumerable<uint> gamesToFarmOrdered = gamesToFarm.OrderByDescending(Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.Contains).ThenByDescending(Bot.IsPriorityIdling).ThenBy(static _ => Random.Shared.Next());
+#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
+
 		DateTime ignoredUntil = now.AddDays(DaysToIgnoreRiskyAppIDs);
 
-		foreach (uint appID in gamesToFarm) {
+		foreach (uint appID in gamesToFarmOrdered) {
 			Game? game = await GetGameCardsInfo(appID).ConfigureAwait(false);
 
 			if (game == null) {
