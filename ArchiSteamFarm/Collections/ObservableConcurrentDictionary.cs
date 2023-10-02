@@ -39,6 +39,9 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 
 	public bool IsReadOnly => false;
 
+	[PublicAPI]
+	public ICollection<TKey> Keys => BackingDictionary.Keys;
+
 	[JsonProperty(Required = Required.DisallowNull)]
 	private readonly ConcurrentDictionary<TKey, TValue> BackingDictionary = new();
 
@@ -109,6 +112,15 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	bool IReadOnlyDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value) => BackingDictionary.TryGetValue(key, out value!);
 	bool IDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value) => BackingDictionary.TryGetValue(key, out value!);
+
+	[PublicAPI]
+	public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory) {
+		TValue result = BackingDictionary.AddOrUpdate(key, addValue, updateValueFactory);
+
+		OnModified?.Invoke(this, EventArgs.Empty);
+
+		return result;
+	}
 
 	[PublicAPI]
 	public bool TryAdd(TKey key, TValue value) {

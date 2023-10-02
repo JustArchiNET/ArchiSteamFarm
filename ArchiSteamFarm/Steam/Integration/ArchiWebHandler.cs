@@ -140,6 +140,108 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<ImmutableHashSet<BoosterCreatorEntry>?> GetBoosterCreatorEntries() {
+		Uri request = new(SteamCommunityURL, "/tradingcards/boostercreator");
+
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+
+		if (response?.Content == null) {
+			return null;
+		}
+
+		IList<INode> scriptNodes = response.Content.SelectNodes("//script[@type='text/javascript']");
+
+		if (scriptNodes.Count == 0) {
+			Bot.ArchiLogger.LogNullError(scriptNodes);
+
+			return null;
+		}
+
+		ImmutableHashSet<BoosterCreatorEntry>? result = null;
+
+		foreach (INode scriptNode in scriptNodes) {
+			int startIndex = scriptNode.TextContent.IndexOf("CBoosterCreatorPage.Init(", StringComparison.Ordinal);
+
+			if (startIndex < 0) {
+				continue;
+			}
+
+			startIndex += 25;
+
+			int endIndex = scriptNode.TextContent.IndexOf("],", startIndex, StringComparison.Ordinal);
+
+			if (endIndex <= startIndex) {
+				Bot.ArchiLogger.LogNullError(endIndex);
+
+				return null;
+			}
+
+			string json = scriptNode.TextContent[startIndex..(endIndex + 1)];
+
+			try {
+				result = JsonConvert.DeserializeObject<ImmutableHashSet<BoosterCreatorEntry>>(json);
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericException(e);
+
+				return null;
+			}
+
+			break;
+		}
+
+		if (result == null) {
+			Bot.ArchiLogger.LogNullError(result);
+
+			return null;
+		}
+
+		return result;
+	}
+
+	[PublicAPI]
+	public async Task<ImmutableHashSet<uint>?> GetBoosterEligibility() {
+		Uri request = new(SteamCommunityURL, "/my/ajaxgetboostereligibility");
+
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+
+		if (response?.Content == null) {
+			return null;
+		}
+
+		HashSet<uint> result = new();
+
+		IEnumerable<IAttr> linkNodes = response.Content.SelectNodes<IAttr>("//li[@class='booster_eligibility_game']/a/@href");
+
+		foreach (string hrefText in linkNodes.Select(static linkNode => linkNode.Value)) {
+			if (string.IsNullOrEmpty(hrefText)) {
+				Bot.ArchiLogger.LogNullError(hrefText);
+
+				return null;
+			}
+
+			int index = hrefText.LastIndexOf('/');
+
+			if ((index <= 0) || (hrefText.Length <= index + 2)) {
+				Bot.ArchiLogger.LogNullError(index);
+
+				return null;
+			}
+
+			string appIDText = hrefText[(index + 1)..];
+
+			if (string.IsNullOrEmpty(appIDText) || !uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+				Bot.ArchiLogger.LogNullError(appIDText);
+
+				return null;
+			}
+
+			result.Add(appID);
+		}
+
+		return result.ToImmutableHashSet();
+	}
+
+	[PublicAPI]
 	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
 		if (appID == 0) {
 			throw new ArgumentOutOfRangeException(nameof(appID));
