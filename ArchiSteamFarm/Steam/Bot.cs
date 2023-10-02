@@ -29,6 +29,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
@@ -133,6 +134,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[JsonProperty]
 	[PublicAPI]
 	public bool IsPlayingPossible => !PlayingBlocked && !LibraryLocked;
+
+	[JsonProperty]
+	[PublicAPI]
+	public IPAddress? PublicIP => SteamClient.PublicIP;
 
 	[JsonIgnore]
 	[PublicAPI]
