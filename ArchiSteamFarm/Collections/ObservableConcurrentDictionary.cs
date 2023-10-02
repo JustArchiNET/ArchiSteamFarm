@@ -114,15 +114,6 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 	bool IDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value) => BackingDictionary.TryGetValue(key, out value!);
 
 	[PublicAPI]
-	public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory) {
-		TValue result = BackingDictionary.AddOrUpdate(key, addValue, updateValueFactory);
-
-		OnModified?.Invoke(this, EventArgs.Empty);
-
-		return result;
-	}
-
-	[PublicAPI]
 	public bool TryAdd(TKey key, TValue value) {
 		if (!BackingDictionary.TryAdd(key, value)) {
 			return false;
