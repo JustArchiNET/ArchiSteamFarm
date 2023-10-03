@@ -137,7 +137,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[JsonProperty]
 	[PublicAPI]
-	public IPAddress? PublicIP => SteamClient.PublicIP;
+	public string? PublicIP => SteamClient.PublicIP?.ToString();
 
 	[JsonIgnore]
 	[PublicAPI]
