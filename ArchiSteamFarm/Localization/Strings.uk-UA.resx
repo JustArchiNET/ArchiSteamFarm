@@ -190,7 +190,10 @@
 		<value>Ваша версія: {0} | Остання версія: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Будь ласка, перевірте свій мобільний додаток Steam, ви мали отримати сповіщення про підтвердження входу. Введіть Y, якщо ви отримали та схвалили сповіщення, N, якщо замість цього хочете надати код: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Будь ласка, введіть ваш код 2FA з додатку для автентифікації у Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
