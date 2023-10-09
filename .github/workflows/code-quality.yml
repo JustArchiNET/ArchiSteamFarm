@@ -17,7 +17,7 @@ jobs:
         show-progress: false
 
     - name: Run Qodana scan
-      uses: JetBrains/qodana-action@v2023.2.6
+      uses: JetBrains/qodana-action@v2023.2.8
       with:
         args: --property=idea.headless.enable.statistics=false
       env:
