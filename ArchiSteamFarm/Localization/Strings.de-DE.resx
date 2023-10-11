@@ -737,7 +737,7 @@ Prozesslaufzeit: {1}</value>
 		<value>Aktualisiere ASF-Dateien...</value>
 	</data>
 	<data name="UserInputCryptkey" xml:space="preserve">
-		<value>Bitte gib deinen kryptographischen Schlüssel ein: </value>
+		<value>Bitte gib deinen kryptografiischen Schlüssel ein: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="ErrorIPNotBanned" xml:space="preserve">
