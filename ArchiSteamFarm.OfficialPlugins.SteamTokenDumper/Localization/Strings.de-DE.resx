@@ -67,11 +67,11 @@
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
 	<data name="PluginDisabledInConfig" xml:space="preserve">
-		<value>{0} ist gemäß Ihrer Konfiguration derzeit deaktiviert. Wenn Sie SteamDB bei der Daten-Sammlung helfen möchten, sehen Sie sich bitte unser Wiki an.</value>
+		<value>{0} ist gemäß ihrer Konfiguration derzeit deaktiviert. Wenn Sie SteamDB bei der Daten-Sammlung helfen möchten, sehen Sie sich bitte unser Wiki an.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
 	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} wurde erfolgreich initialisiert. Wir danken Ihnen im Voraus für Ihre Hilfe. Die erste Übermittlung wird in etwa {1} ab jetzt erfolgen.</value>
+		<value>{0} wurde erfolgreich initialisiert. Wir danken ihnen im Voraus für ihre Hilfe. Die erste Übermittlung wird in etwa {1} ab jetzt erfolgen.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
 	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">

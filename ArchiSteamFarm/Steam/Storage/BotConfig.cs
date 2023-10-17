@@ -63,6 +63,9 @@ public sealed class BotConfig {
 	public const bool DefaultEnabled = false;
 
 	[PublicAPI]
+	public const bool DefaultEnableRiskyCardsDiscovery = false;
+
+	[PublicAPI]
 	public const bool DefaultFarmPriorityQueueOnly = false;
 
 	[PublicAPI]
@@ -170,6 +173,9 @@ public sealed class BotConfig {
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	public bool Enabled { get; private set; } = DefaultEnabled;
+
+	[JsonProperty]
+	public bool EnableRiskyCardsDiscovery { get; private set; } = DefaultEnableRiskyCardsDiscovery;
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	public ImmutableList<EFarmingOrder> FarmingOrders { get; private set; } = DefaultFarmingOrders;
@@ -342,6 +348,9 @@ public sealed class BotConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeEnabled() => !Saving || (Enabled != DefaultEnabled);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeEnableRiskyCardsDiscovery() => !Saving || (EnableRiskyCardsDiscovery != DefaultEnableRiskyCardsDiscovery);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeFarmingOrders() => !Saving || ((FarmingOrders != DefaultFarmingOrders) && !FarmingOrders.SequenceEqual(DefaultFarmingOrders));

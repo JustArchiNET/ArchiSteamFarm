@@ -44,6 +44,12 @@ public sealed class BotDatabase : GenericDatabase {
 	internal readonly ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs = new();
 
 	[JsonProperty(Required = Required.DisallowNull)]
+	internal readonly ObservableConcurrentDictionary<uint, DateTime> FarmingRiskyIgnoredAppIDs = new();
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	internal readonly ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs = new();
+
+	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs = new();
 
 	[JsonProperty(Required = Required.DisallowNull)]
@@ -116,6 +122,8 @@ public sealed class BotDatabase : GenericDatabase {
 	private BotDatabase() {
 		FarmingBlacklistAppIDs.OnModified += OnObjectModified;
 		FarmingPriorityQueueAppIDs.OnModified += OnObjectModified;
+		FarmingRiskyIgnoredAppIDs.OnModified += OnObjectModified;
+		FarmingRiskyPrioritizedAppIDs.OnModified += OnObjectModified;
 		MatchActivelyBlacklistAppIDs.OnModified += OnObjectModified;
 		TradingBlacklistSteamIDs.OnModified += OnObjectModified;
 	}
@@ -136,6 +144,12 @@ public sealed class BotDatabase : GenericDatabase {
 	public bool ShouldSerializeFarmingPriorityQueueAppIDs() => FarmingPriorityQueueAppIDs.Count > 0;
 
 	[UsedImplicitly]
+	public bool ShouldSerializeFarmingRiskyIgnoredAppIDs() => !FarmingRiskyIgnoredAppIDs.IsEmpty;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeFarmingRiskyPrioritizedAppIDs() => FarmingRiskyPrioritizedAppIDs.Count > 0;
+
+	[UsedImplicitly]
 	public bool ShouldSerializeGamesToRedeemInBackground() => HasGamesToRedeemInBackground;
 
 	[UsedImplicitly]
@@ -149,6 +163,8 @@ public sealed class BotDatabase : GenericDatabase {
 			// Events we registered
 			FarmingBlacklistAppIDs.OnModified -= OnObjectModified;
 			FarmingPriorityQueueAppIDs.OnModified -= OnObjectModified;
+			FarmingRiskyIgnoredAppIDs.OnModified -= OnObjectModified;
+			FarmingRiskyPrioritizedAppIDs.OnModified -= OnObjectModified;
 			MatchActivelyBlacklistAppIDs.OnModified -= OnObjectModified;
 			TradingBlacklistSteamIDs.OnModified -= OnObjectModified;
 
@@ -223,6 +239,14 @@ public sealed class BotDatabase : GenericDatabase {
 		}
 
 		return (null, null);
+	}
+
+	internal void PerformMaintenance() {
+		DateTime now = DateTime.UtcNow;
+
+		foreach (uint appID in FarmingRiskyIgnoredAppIDs.Where(entry => entry.Value < now).Select(static entry => entry.Key)) {
+			FarmingRiskyIgnoredAppIDs.Remove(appID);
+		}
 	}
 
 	internal void RemoveGameToRedeemInBackground(string key) {

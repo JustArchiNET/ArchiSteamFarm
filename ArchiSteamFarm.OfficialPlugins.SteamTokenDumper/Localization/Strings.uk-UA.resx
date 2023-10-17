@@ -93,7 +93,10 @@
 		<value>Завершено отримання {0} токенів доступу.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Закінчено отримання всього {0} токенів доступу.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
 	
 	
 	

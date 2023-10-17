@@ -34,9 +34,11 @@ using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
+using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
+using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
@@ -47,6 +49,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	internal const byte DaysForRefund = 14; // In how many days since payment we're allowed to refund
 	internal const byte HoursForRefund = 2; // Up to how many hours we're allowed to play for refund
 
+	private const byte DaysToIgnoreRiskyAppIDs = 14; // How many days since determining that game is not candidate for idling, we assume that to still be the case, in risky approach
 	private const byte ExtraFarmingDelaySeconds = 10; // In seconds, how much time to add on top of FarmingDelay (helps fighting misc time differences of Steam network)
 	private const byte HoursToIgnore = 1; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
@@ -142,6 +145,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	private bool ParsingScheduled;
 	private bool PermanentlyPaused;
 	private bool ShouldResumeFarming;
+	private bool ShouldSkipNewGamesIfPossible;
 
 	internal CardsFarmer(Bot bot) {
 		Bot = bot ?? throw new ArgumentNullException(nameof(bot));
@@ -223,7 +227,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			// We should restart the farming if the order or efficiency of the farming could be affected by the newly-activated product
 			// The order is affected when user uses farming order that isn't independent of the game data (it could alter the order in deterministic way if the game was considered in current queue)
 			// The efficiency is affected only in complex algorithm (entirely), as it depends on hours order that is not independent (as specified above)
-			if ((Bot.BotConfig.HoursUntilCardDrops > 0) || ((Bot.BotConfig.FarmingOrders.Count > 0) && Bot.BotConfig.FarmingOrders.Any(static farmingOrder => (farmingOrder != BotConfig.EFarmingOrder.Unordered) && (farmingOrder != BotConfig.EFarmingOrder.Random)))) {
+			if (!ShouldSkipNewGamesIfPossible && ((Bot.BotConfig.HoursUntilCardDrops > 0) || ((Bot.BotConfig.FarmingOrders.Count > 0) && Bot.BotConfig.FarmingOrders.Any(static farmingOrder => (farmingOrder != BotConfig.EFarmingOrder.Unordered) && (farmingOrder != BotConfig.EFarmingOrder.Random))))) {
 				await StopFarming().ConfigureAwait(false);
 				await StartFarming().ConfigureAwait(false);
 			}
@@ -298,7 +302,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 	internal void SetInitialState(bool paused) {
 		PermanentlyPaused = Paused = paused;
-		ShouldResumeFarming = false;
+		ShouldResumeFarming = ShouldSkipNewGamesIfPossible = false;
 	}
 
 	internal async Task StartFarming() {
@@ -416,19 +420,18 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		ArgumentException.ThrowIfNullOrEmpty(name);
 		ArgumentOutOfRangeException.ThrowIfNegative(hours);
 
-		ushort? cardsRemaining = await GetCardsRemaining(appID).ConfigureAwait(false);
+		Game? game = await GetGameCardsInfo(appID).ConfigureAwait(false);
 
-		switch (cardsRemaining) {
-			case null:
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningCouldNotCheckCardsStatus, appID, name));
+		if (game == null) {
+			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningCouldNotCheckCardsStatus, appID, name));
 
-				return;
-			case 0:
-				return;
-			default:
-				GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining.Value, badgeLevel));
+			return;
+		}
 
-				break;
+		if (game.CardsRemaining > 0) {
+			Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.Add(appID);
+
+			GamesToFarm.Add(new Game(appID, name, hours, game.CardsRemaining, badgeLevel));
 		}
 	}
 
@@ -487,30 +490,8 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				continue;
 			}
 
-			if (SalesBlacklist.Contains(appID) || (ASF.GlobalConfig?.Blacklist.Contains(appID) == true) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.FarmPriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
-				// We're configured to ignore this appID, so skip it
-				continue;
-			}
-
-			bool ignored = false;
-
-			foreach (ConcurrentDictionary<uint, DateTime> sourceOfIgnoredAppIDs in SourcesOfIgnoredAppIDs) {
-				if (!sourceOfIgnoredAppIDs.TryGetValue(appID, out DateTime ignoredUntil)) {
-					continue;
-				}
-
-				if (ignoredUntil > DateTime.UtcNow) {
-					// This game is still ignored
-					ignored = true;
-
-					break;
-				}
-
-				// This game served its time as being ignored
-				sourceOfIgnoredAppIDs.TryRemove(appID, out _);
-			}
-
-			if (ignored) {
+			if (!ShouldIdle(appID)) {
+				// No point in evaluating further if we can determine that on appID alone
 				continue;
 			}
 
@@ -729,6 +710,8 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			// Either we have decent info about appID, name, hours, cardsRemaining (cardsRemaining > 0) and level
 			// OR we strongly believe that Steam lied to us, in this case we will need to check game individually (cardsRemaining == 0)
 			if (cardsRemaining > 0) {
+				Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.Add(appID);
+
 				GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining, badgeLevel));
 			} else {
 				Task task = CheckGame(appID, name, hours, badgeLevel);
@@ -754,17 +737,19 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task CheckPage(byte page, ISet<uint> parsedAppIDs) {
+	private async Task<bool> CheckPage(byte page, ISet<uint> parsedAppIDs) {
 		ArgumentOutOfRangeException.ThrowIfZero(page);
 		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
 		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 
 		if (htmlDocument == null) {
-			return;
+			return false;
 		}
 
 		await CheckPage(htmlDocument, parsedAppIDs).ConfigureAwait(false);
+
+		return true;
 	}
 
 	private async Task Farm() {
@@ -992,14 +977,56 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
-	private async Task<ushort?> GetCardsRemaining(uint appID) {
+	private async Task<Game?> GetGameCardsInfo(uint appID) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
 
-		INode? progressNode = htmlDocument?.SelectSingleNode("//span[@class='progress_info_bold']");
+		if (htmlDocument == null) {
+			return null;
+		}
+
+		INode? nameNode = htmlDocument.SelectSingleNode("(//span[@class='profile_small_header_location'])[last()]");
+
+		if (nameNode == null) {
+			Bot.ArchiLogger.LogNullError(nameNode);
+
+			return null;
+		}
+
+		string name = nameNode.TextContent;
+
+		if (string.IsNullOrEmpty(name)) {
+			Bot.ArchiLogger.LogNullError(name);
+
+			return null;
+		}
+
+		INode? hoursNode = htmlDocument.SelectSingleNode("//div[@class='badge_title_stats_playtime']");
+
+		if (hoursNode == null) {
+			Bot.ArchiLogger.LogNullError(hoursNode);
+
+			return null;
+		}
+
+		float hours = 0.0F;
+		Match hoursMatch = GeneratedRegexes.Decimal().Match(hoursNode.TextContent);
+
+		// This might fail if we have exactly 0.0 hours played, as it's not printed in that case - that's fine
+		if (hoursMatch.Success) {
+			if (!float.TryParse(hoursMatch.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out hours) || (hours <= 0.0F)) {
+				Bot.ArchiLogger.LogNullError(hours);
+
+				return null;
+			}
+		}
+
+		INode? progressNode = htmlDocument.SelectSingleNode("//span[@class='progress_info_bold']");
 
 		if (progressNode == null) {
+			Bot.ArchiLogger.LogNullError(progressNode);
+
 			return null;
 		}
 
@@ -1011,19 +1038,66 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return null;
 		}
 
+		ushort cardsRemaining = 0;
+
 		Match match = GeneratedRegexes.Digits().Match(progress);
 
-		if (!match.Success) {
-			return 0;
+		if (match.Success) {
+			if (!ushort.TryParse(match.Value, out cardsRemaining) || (cardsRemaining == 0)) {
+				Bot.ArchiLogger.LogNullError(cardsRemaining);
+
+				return null;
+			}
 		}
 
-		if (!ushort.TryParse(match.Value, out ushort cardsRemaining) || (cardsRemaining == 0)) {
-			Bot.ArchiLogger.LogNullError(cardsRemaining);
+		byte badgeLevel = 0;
 
-			return null;
+		INode? levelNode = htmlDocument.SelectSingleNode("//div[@class='badge_info_description']/div[2]");
+
+		// There is no levelNode if we didn't craft that badge yet (level 0)
+		if (levelNode != null) {
+			string levelText = levelNode.TextContent;
+
+			if (string.IsNullOrEmpty(levelText)) {
+				Bot.ArchiLogger.LogNullError(levelText);
+
+				return null;
+			}
+
+			int levelStartIndex = levelText.IndexOf("Level ", StringComparison.OrdinalIgnoreCase);
+
+			if (levelStartIndex < 0) {
+				Bot.ArchiLogger.LogNullError(levelStartIndex);
+
+				return null;
+			}
+
+			levelStartIndex += 6;
+
+			if (levelText.Length <= levelStartIndex) {
+				Bot.ArchiLogger.LogNullError(levelStartIndex);
+
+				return null;
+			}
+
+			int levelEndIndex = levelText.IndexOf(',', levelStartIndex);
+
+			if (levelEndIndex <= levelStartIndex) {
+				Bot.ArchiLogger.LogNullError(levelEndIndex);
+
+				return null;
+			}
+
+			levelText = levelText[levelStartIndex..levelEndIndex];
+
+			if (!byte.TryParse(levelText, out badgeLevel) || badgeLevel is 0 or > 5) {
+				Bot.ArchiLogger.LogNullError(badgeLevel);
+
+				return null;
+			}
 		}
 
-		return cardsRemaining;
+		return new Game(appID, name, hours, cardsRemaining, badgeLevel);
 	}
 
 	private async Task<bool?> IsAnythingToFarm() {
@@ -1035,8 +1109,14 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		if (htmlDocument == null) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
 
-			return null;
+			if (!Bot.BotConfig.EnableRiskyCardsDiscovery) {
+				return null;
+			}
+
+			return await IsAnythingToFarmRisky().ConfigureAwait(false);
 		}
+
+		ShouldSkipNewGamesIfPossible = false;
 
 		byte maxPages = 1;
 
@@ -1064,6 +1144,8 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		Task mainTask = CheckPage(htmlDocument, parsedAppIDs);
 
+		bool allTasksSucceeded = true;
+
 		switch (ASF.GlobalConfig?.OptimizationMode) {
 			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 				await mainTask.ConfigureAwait(false);
@@ -1072,36 +1154,139 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
 
 					for (byte page = 2; page <= maxPages; page++) {
-						await CheckPage(page, parsedAppIDs).ConfigureAwait(false);
+						if (!await CheckPage(page, parsedAppIDs).ConfigureAwait(false)) {
+							allTasksSucceeded = false;
+						}
 					}
 				}
 
 				break;
 			default:
-				HashSet<Task> tasks = new(maxPages) { mainTask };
-
 				if (maxPages > 1) {
 					Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
+
+					HashSet<Task<bool>> tasks = new(maxPages - 1);
 
 					for (byte page = 2; page <= maxPages; page++) {
 						// ReSharper disable once InlineTemporaryVariable - we need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
 						byte currentPage = page;
 						tasks.Add(CheckPage(currentPage, parsedAppIDs));
 					}
+
+					bool[] taskResults = await Task.WhenAll(tasks).ConfigureAwait(false);
+
+					if (taskResults.Any(static result => !result)) {
+						allTasksSucceeded = false;
+					}
 				}
 
-				await Task.WhenAll(tasks).ConfigureAwait(false);
+				await mainTask.ConfigureAwait(false);
 
 				break;
+		}
+
+		if (allTasksSucceeded) {
+			Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.IntersectWith(GamesToFarm.Select(static game => game.AppID));
 		}
 
 		if (GamesToFarm.Count == 0) {
 			ShouldResumeFarming = false;
 
-			return false;
+			// Allow changing to risky algorithm only if we failed at least some badge pages and we have the prop enabled
+			if (allTasksSucceeded || !Bot.BotConfig.EnableRiskyCardsDiscovery) {
+				return false;
+			}
+
+			return await IsAnythingToFarmRisky().ConfigureAwait(false);
 		}
 
 		ShouldResumeFarming = true;
+		await SortGamesToFarm().ConfigureAwait(false);
+
+		return true;
+	}
+
+	private async Task<bool?> IsAnythingToFarmRisky() {
+		Task<ImmutableHashSet<BoosterCreatorEntry>?> boosterCreatorEntriesTask = Bot.ArchiWebHandler.GetBoosterCreatorEntries();
+
+		ImmutableHashSet<uint>? boosterElibility = await Bot.ArchiWebHandler.GetBoosterEligibility().ConfigureAwait(false);
+
+		if (boosterElibility == null) {
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
+
+			return null;
+		}
+
+		ImmutableHashSet<BoosterCreatorEntry>? boosterCreatorEntries = await boosterCreatorEntriesTask.ConfigureAwait(false);
+
+		if (boosterCreatorEntries == null) {
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
+
+			return null;
+		}
+
+		GamesToFarm.Clear();
+
+		DateTime now = DateTime.UtcNow;
+
+		byte failuresInRow = 0;
+
+		// Normally we apply ordering after GamesToFarm are already found, but since this method is risky and greedy, we do as much as possible to allow user to optimize it
+		// In particular, firstly we give priority to appIDs that we already found out before, either rule them out, or prioritize
+		// Next, we apply farm priority queue right away, by both considering apps (if FarmPriorityQueueOnly) as well as giving priority to those that user specified
+		// Lastly, we forcefully apply random order to those considered the same in value, as we can't really afford massive amount of misses in a row
+		HashSet<uint> gamesToFarm = boosterCreatorEntries.Select(static entry => entry.AppID).Where(appID => !boosterElibility.Contains(appID) && (!Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.TryGetValue(appID, out DateTime ignoredUntil) || (ignoredUntil < now)) && ShouldIdle(appID)).ToHashSet();
+
+		foreach (uint appID in Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.Keys.Where(appID => !gamesToFarm.Contains(appID))) {
+			Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.Remove(appID);
+		}
+
+		Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.IntersectWith(gamesToFarm);
+
+#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
+		IOrderedEnumerable<uint> gamesToFarmOrdered = gamesToFarm.OrderByDescending(Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.Contains).ThenByDescending(Bot.IsPriorityIdling).ThenBy(static _ => Random.Shared.Next());
+#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
+
+		DateTime ignoredUntil = now.AddDays(DaysToIgnoreRiskyAppIDs);
+
+		foreach (uint appID in gamesToFarmOrdered) {
+			Game? game = await GetGameCardsInfo(appID).ConfigureAwait(false);
+
+			if (game == null) {
+				if (++failuresInRow >= WebBrowser.MaxTries) {
+					// We're not going to check further
+					break;
+				}
+
+				continue;
+			}
+
+			failuresInRow = 0;
+
+			if (game.CardsRemaining == 0) {
+				Bot.BotDatabase.FarmingRiskyIgnoredAppIDs[appID] = ignoredUntil;
+				Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.Remove(appID);
+
+				continue;
+			}
+
+			Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.Add(appID);
+
+			GamesToFarm.Add(game);
+
+			if ((game.HoursPlayed >= Bot.BotConfig.HoursUntilCardDrops) || (GamesToFarm.Count >= ArchiHandler.MaxGamesPlayedConcurrently)) {
+				// Avoid further parsing in this risky method, we have enough for now
+				break;
+			}
+		}
+
+		if (GamesToFarm.Count == 0) {
+			ShouldResumeFarming = ShouldSkipNewGamesIfPossible = false;
+
+			return false;
+		}
+
+		ShouldResumeFarming = ShouldSkipNewGamesIfPossible = true;
 		await SortGamesToFarm().ConfigureAwait(false);
 
 		return true;
@@ -1129,19 +1314,53 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	private async Task<bool?> ShouldFarm(Game game) {
 		ArgumentNullException.ThrowIfNull(game);
 
-		ushort? cardsRemaining = await GetCardsRemaining(game.AppID).ConfigureAwait(false);
+		Game? latestGameData = await GetGameCardsInfo(game.AppID).ConfigureAwait(false);
 
-		if (!cardsRemaining.HasValue) {
+		if (latestGameData == null) {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningCouldNotCheckCardsStatus, game.AppID, game.GameName));
 
 			return null;
 		}
 
-		game.CardsRemaining = cardsRemaining.Value;
+		game.CardsRemaining = latestGameData.CardsRemaining;
 
 		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingStatusForGame, game.AppID, game.GameName, game.CardsRemaining));
 
-		return game.CardsRemaining > 0;
+		if (game.CardsRemaining == 0) {
+			Bot.BotDatabase.FarmingRiskyIgnoredAppIDs[game.AppID] = DateTime.UtcNow.AddDays(DaysToIgnoreRiskyAppIDs);
+			Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.Remove(game.AppID);
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private bool ShouldIdle(uint appID) {
+		if (appID == 0) {
+			throw new ArgumentOutOfRangeException(nameof(appID));
+		}
+
+		if (SalesBlacklist.Contains(appID) || (ASF.GlobalConfig?.Blacklist.Contains(appID) == true) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.FarmPriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
+			// We're configured to ignore this appID, so skip it
+			return false;
+		}
+
+		foreach (ConcurrentDictionary<uint, DateTime> sourceOfIgnoredAppIDs in SourcesOfIgnoredAppIDs) {
+			if (!sourceOfIgnoredAppIDs.TryGetValue(appID, out DateTime ignoredUntil)) {
+				continue;
+			}
+
+			if (ignoredUntil > DateTime.UtcNow) {
+				// This game is still ignored
+				return false;
+			}
+
+			// This game served its time as being ignored
+			sourceOfIgnoredAppIDs.TryRemove(appID, out _);
+		}
+
+		return true;
 	}
 
 	private async Task SortGamesToFarm() {
