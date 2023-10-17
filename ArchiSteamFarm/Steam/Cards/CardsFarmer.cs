@@ -1337,9 +1337,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private bool ShouldIdle(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		if (SalesBlacklist.Contains(appID) || (ASF.GlobalConfig?.Blacklist.Contains(appID) == true) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.FarmPriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
 			// We're configured to ignore this appID, so skip it
