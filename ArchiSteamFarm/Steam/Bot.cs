@@ -1210,7 +1210,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return null;
 		}
 
-		if (!string.IsNullOrEmpty(ASF.GlobalConfig?.DefaultBot) && Bots.TryGetValue(ASF.GlobalConfig.DefaultBot, out Bot? targetBot)) {
+		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+		if (!string.IsNullOrEmpty(ASF.GlobalConfig?.DefaultBot) && Bots.TryGetValue(ASF.GlobalConfig!.DefaultBot, out Bot? targetBot)) {
 			return targetBot;
 		}
 
