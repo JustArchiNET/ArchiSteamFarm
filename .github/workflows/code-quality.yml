@@ -10,10 +10,25 @@ jobs:
   main:
     runs-on: ubuntu-latest
 
+    permissions:
+      checks: write
+      contents: write
+      pull-requests: write
+      security-events: write
+
     steps:
     - name: Checkout code
+      if: github.event_name != 'pull_request'
       uses: actions/checkout@v4.1.1
       with:
+        show-progress: false
+
+    - name: Checkout code (for PR)
+      if: github.event_name == 'pull_request'
+      uses: actions/checkout@v4.1.1
+      with:
+        fetch-depth: 100 # History is required for pull request analysis
+        ref: ${{ github.event.pull_request.head.sha }}  # To check out the actual pull request commit, not the merge commit
         show-progress: false
 
     - name: Run Qodana scan
