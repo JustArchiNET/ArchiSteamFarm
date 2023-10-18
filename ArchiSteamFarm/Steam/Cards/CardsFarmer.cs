@@ -1117,7 +1117,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		// Find the number of badge pages
 		Bot.ArchiLogger.LogGenericInfo(Strings.CheckingFirstBadgePage);
 
-		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
+		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1, Bot.BotConfig.EnableRiskyCardsDiscovery ? (byte) 2 : WebBrowser.MaxTries).ConfigureAwait(false);
 
 		if (htmlDocument == null) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);

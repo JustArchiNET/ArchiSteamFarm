@@ -1848,14 +1848,18 @@ public sealed class ArchiWebHandler : IDisposable {
 		return result;
 	}
 
-	internal async Task<IDocument?> GetBadgePage(byte page) {
+	internal async Task<IDocument?> GetBadgePage(byte page, byte maxTries = WebBrowser.MaxTries) {
 		if (page == 0) {
 			throw new ArgumentOutOfRangeException(nameof(page));
 		}
 
+		if (maxTries == 0) {
+			throw new ArgumentOutOfRangeException(nameof(maxTries));
+		}
+
 		Uri request = new(SteamCommunityURL, $"/my/badges?l=english&p={page}");
 
-		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false, maxTries: maxTries).ConfigureAwait(false);
 
 		return response?.Content;
 	}
