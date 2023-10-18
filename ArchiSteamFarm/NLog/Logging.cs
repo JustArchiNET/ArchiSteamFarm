@@ -384,7 +384,7 @@ internal static class Logging {
 							command = command[commandPrefix.Length..];
 						}
 
-						Bot? targetBot = Bot.Bots?.OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value).FirstOrDefault();
+						Bot? targetBot = Bot.GetDefaultBot();
 
 						if (targetBot == null) {
 							Console.WriteLine($@"<< {Strings.ErrorNoBotsDefined}");

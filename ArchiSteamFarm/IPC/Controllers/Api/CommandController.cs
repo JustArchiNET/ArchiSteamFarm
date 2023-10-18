@@ -21,7 +21,6 @@
 
 using System;
 using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -54,7 +53,7 @@ public sealed class CommandController : ArchiController {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.Command))));
 		}
 
-		Bot? targetBot = Bot.Bots?.OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value).FirstOrDefault();
+		Bot? targetBot = Bot.GetDefaultBot();
 
 		if (targetBot == null) {
 			return BadRequest(new GenericResponse(false, Strings.ErrorNoBotsDefined));
