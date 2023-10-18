@@ -3075,7 +3075,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
 
-		if (string.IsNullOrEmpty(callback.WebAPIUserNonce) || !await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.WebAPIUserNonce, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+		if (string.IsNullOrEmpty(callback.WebAPIUserNonce) || !await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.WebAPIUserNonce!, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 			if (!await RefreshSession().ConfigureAwait(false)) {
 				return;
 			}
