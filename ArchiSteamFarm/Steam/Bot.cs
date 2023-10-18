@@ -3075,10 +3075,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
 
-		if (!await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.WebAPIUserNonce ?? throw new InvalidOperationException(nameof(callback.WebAPIUserNonce)), SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
-			if (!await RefreshSession().ConfigureAwait(false)) {
-				return;
-			}
+		if (!await RefreshSession().ConfigureAwait(false)) {
+			return;
 		}
 
 		// Pre-fetch API key for future usage if possible
