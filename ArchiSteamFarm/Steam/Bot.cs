@@ -1205,6 +1205,19 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return (productInfoResultSet is { Complete: true, Failed: false } || optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
 	}
 
+	internal static Bot? GetDefaultBot() {
+		if ((Bots == null) || Bots.IsEmpty) {
+			return null;
+		}
+
+		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+		if (!string.IsNullOrEmpty(ASF.GlobalConfig?.DefaultBot) && Bots.TryGetValue(ASF.GlobalConfig!.DefaultBot!, out Bot? targetBot)) {
+			return targetBot;
+		}
+
+		return Bots.OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).FirstOrDefault();
+	}
+
 	internal Task<HashSet<uint>?> GetMarketableAppIDs() => ArchiWebHandler.GetAppList();
 
 	internal async Task<Dictionary<uint, PackageData>?> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {

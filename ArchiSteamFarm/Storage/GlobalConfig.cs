@@ -61,6 +61,9 @@ public sealed class GlobalConfig {
 	public const bool DefaultDebug = false;
 
 	[PublicAPI]
+	public const string? DefaultDefaultBot = null;
+
+	[PublicAPI]
 	public const byte DefaultFarmingDelay = 15;
 
 	[PublicAPI]
@@ -207,6 +210,9 @@ public sealed class GlobalConfig {
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	public bool Debug { get; private set; } = DefaultDebug;
+
+	[JsonProperty]
+	public string? DefaultBot { get; private set; } = DefaultDefaultBot;
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	[Range(1, byte.MaxValue)]
@@ -362,6 +368,9 @@ public sealed class GlobalConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeDebug() => !Saving || (Debug != DefaultDebug);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeDefaultBot() => !Saving || (DefaultBot != DefaultDefaultBot);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeFarmingDelay() => !Saving || (FarmingDelay != DefaultFarmingDelay);
