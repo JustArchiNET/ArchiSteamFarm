@@ -2295,9 +2295,10 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new InvalidEnumArgumentException(nameof(universe), (int) universe, typeof(EUniverse));
 		}
 
-		if (string.IsNullOrEmpty(webAPIUserNonce)) {
-			throw new ArgumentNullException(nameof(webAPIUserNonce));
-		}
+		//Fix https://github.com/JustArchiNET/ArchiSteamFarm/issues/3029 temporary 
+		//if (string.IsNullOrEmpty(webAPIUserNonce)) {
+		//	throw new ArgumentNullException(nameof(webAPIUserNonce));
+		//}
 
 		byte[]? publicKey = KeyDictionary.GetPublicKey(universe);
 
