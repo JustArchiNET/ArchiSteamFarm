@@ -2177,8 +2177,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						}
 
 						break;
-					case EResult.AccessDenied when string.IsNullOrEmpty(BotDatabase.RefreshToken) && (++LoginFailures >= MaxLoginFailures):
-					case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.RefreshToken) && (++LoginFailures >= MaxLoginFailures):
+					case EResult.AccessDenied when string.IsNullOrEmpty(RefreshToken) && (++LoginFailures >= MaxLoginFailures):
+					case EResult.InvalidPassword when string.IsNullOrEmpty(RefreshToken) && (++LoginFailures >= MaxLoginFailures):
 						LoginFailures = 0;
 						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidPasswordDuringLogin, MaxLoginFailures));
 						Stop();
@@ -2734,11 +2734,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			case EResult.AccountDisabled:
 				// Do not attempt to reconnect, those failures are permanent
 				return;
-			case EResult.AccessDenied when !string.IsNullOrEmpty(BotDatabase.RefreshToken):
-			case EResult.Expired when !string.IsNullOrEmpty(BotDatabase.RefreshToken):
-			case EResult.InvalidPassword when !string.IsNullOrEmpty(BotDatabase.RefreshToken):
+			case EResult.AccessDenied when !string.IsNullOrEmpty(RefreshToken):
+			case EResult.Expired when !string.IsNullOrEmpty(RefreshToken):
+			case EResult.InvalidPassword when !string.IsNullOrEmpty(RefreshToken):
 				// We can retry immediately
-				BotDatabase.RefreshToken = null;
+				BotDatabase.RefreshToken = RefreshToken = null;
 				ArchiLogger.LogGenericInfo(Strings.BotRemovedExpiredLoginKey);
 
 				break;
