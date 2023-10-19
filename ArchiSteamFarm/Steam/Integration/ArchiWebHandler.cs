@@ -52,7 +52,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	private const ushort MaxItemsInSingleInventoryRequest = 5000;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const string SteamAppsService = "ISteamApps";
-	private const string SteamUserAuthService = "ISteamUserAuth";
 	private const string SteamUserService = "ISteamUser";
 	private const string TwoFactorService = "ITwoFactorService";
 
@@ -2290,7 +2289,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return response?.Content?.Success;
 	}
 
-	internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string? parentalCode = null) {
+	internal async Task<bool> Init(ulong steamID, EUniverse universe, string accessToken, string? parentalCode = null) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -2299,83 +2298,8 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new InvalidEnumArgumentException(nameof(universe), (int) universe, typeof(EUniverse));
 		}
 
-		if (string.IsNullOrEmpty(webAPIUserNonce)) {
-			throw new ArgumentNullException(nameof(webAPIUserNonce));
-		}
-
-		byte[]? publicKey = KeyDictionary.GetPublicKey(universe);
-
-		if ((publicKey == null) || (publicKey.Length == 0)) {
-			Bot.ArchiLogger.LogNullError(publicKey);
-
-			return false;
-		}
-
-		// Generate a random 32-byte session key
-		byte[] sessionKey = CryptoHelper.GenerateRandomBlock(32);
-
-		// RSA encrypt our session key with the public key for the universe we're on
-		byte[] encryptedSessionKey;
-
-		using (RSACrypto rsa = new(publicKey)) {
-			encryptedSessionKey = rsa.Encrypt(sessionKey);
-		}
-
-		// Generate login key from the user nonce that we've received from Steam network
-		byte[] loginKey = Encoding.UTF8.GetBytes(webAPIUserNonce);
-
-		// AES encrypt our login key with our session key
-		byte[] encryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
-
-		Dictionary<string, object?> arguments = new(3, StringComparer.Ordinal) {
-			{ "encrypted_loginkey", encryptedLoginKey },
-			{ "sessionkey", encryptedSessionKey },
-			{ "steamid", steamID }
-		};
-
-		// We're now ready to send the data to Steam API
-		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.LoggingIn, SteamUserAuthService));
-
-		KeyValue? response;
-
-		// We do not use usual retry pattern here as webAPIUserNonce is valid only for a single request
-		// Even during timeout, webAPIUserNonce is most likely already invalid
-		// Instead, the caller is supposed to ask for new webAPIUserNonce and call Init() again on failure
-		using (WebAPI.AsyncInterface steamUserAuthService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamUserAuthService)) {
-			steamUserAuthService.Timeout = WebBrowser.Timeout;
-
-			try {
-				response = await WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
-
-					// ReSharper disable once AccessToDisposedClosure
-					async () => await steamUserAuthService.CallAsync(HttpMethod.Post, "AuthenticateUser", args: arguments).ConfigureAwait(false)
-				).ConfigureAwait(false);
-			} catch (TaskCanceledException e) {
-				Bot.ArchiLogger.LogGenericDebuggingException(e);
-
-				return false;
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-
-				return false;
-			}
-		}
-
-		string? steamLogin = response["token"].AsString();
-
-		if (string.IsNullOrEmpty(steamLogin)) {
-			Bot.ArchiLogger.LogNullError(steamLogin);
-
-			return false;
-		}
-
-		string? steamLoginSecure = response["tokensecure"].AsString();
-
-		if (string.IsNullOrEmpty(steamLoginSecure)) {
-			Bot.ArchiLogger.LogNullError(steamLoginSecure);
-
-			return false;
+		if (string.IsNullOrEmpty(accessToken)) {
+			throw new ArgumentNullException(nameof(accessToken));
 		}
 
 		string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString(CultureInfo.InvariantCulture)));
@@ -2385,10 +2309,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamHelpURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamStoreURL.Host}"));
 
-		WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", $".{SteamCheckoutURL.Host}"));
-		WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", $".{SteamCommunityURL.Host}"));
-		WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", $".{SteamHelpURL.Host}"));
-		WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", $".{SteamStoreURL.Host}"));
+		string steamLoginSecure = $"{steamID}||{accessToken}";
 
 		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamCheckoutURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamCommunityURL.Host}"));
@@ -2782,7 +2703,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.RefreshingOurSession);
-			bool result = await Bot.RefreshSession().ConfigureAwait(false);
+			bool result = await Bot.RefreshWebSession().ConfigureAwait(false);
 
 			DateTime now = DateTime.UtcNow;
 

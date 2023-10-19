@@ -27,6 +27,7 @@ using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -229,6 +230,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal bool PlayingBlocked { get; private set; }
 	internal bool PlayingWasBlocked { get; private set; }
 
+	private string? AccessToken;
+	private DateTime? AccessTokenValidUntil;
 	private string? AuthCode;
 
 	[JsonProperty]
@@ -244,6 +247,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private ulong MasterChatGroupID;
 	private Timer? PlayingWasBlockedTimer;
 	private bool ReconnectOnUserInitiated;
+	private string? RefreshToken;
+	private Timer? RefreshTokensTimer;
 	private bool SendCompleteTypesScheduled;
 	private Timer? SendItemsTimer;
 	private bool SteamParentalActive;
@@ -357,6 +362,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ConnectionFailureTimer?.Dispose();
 		GamesRedeemerInBackgroundTimer?.Dispose();
 		PlayingWasBlockedTimer?.Dispose();
+		RefreshTokensTimer?.Dispose();
 		SendItemsTimer?.Dispose();
 		SteamSaleEvent?.Dispose();
 		TradeCheckTimer?.Dispose();
@@ -388,6 +394,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (PlayingWasBlockedTimer != null) {
 			await PlayingWasBlockedTimer.DisposeAsync().ConfigureAwait(false);
+		}
+
+		if (RefreshTokensTimer != null) {
+			await RefreshTokensTimer.DisposeAsync().ConfigureAwait(false);
 		}
 
 		if (SendItemsTimer != null) {
@@ -1492,31 +1502,56 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await PluginsCore.OnBotFarmingStopped(this).ConfigureAwait(false);
 	}
 
-	internal async Task<bool> RefreshSession() {
+	internal async Task<bool> RefreshWebSession() {
 		if (!IsConnectedAndLoggedOn) {
 			return false;
 		}
 
-		SteamUser.WebAPIUserNonceCallback callback;
+		DateTime now = DateTime.UtcNow;
 
-		try {
-			callback = await SteamUser.RequestWebAPIUserNonce().ToLongRunningTask().ConfigureAwait(false);
-		} catch (Exception e) {
-			ArchiLogger.LogGenericWarningException(e);
+		if (!string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > now.AddMinutes(5))) {
+			// We can use the tokens we already have
+			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+				InitRefreshTokensTimer(AccessTokenValidUntil.Value);
+
+				return true;
+			}
+		}
+
+		// We need to refresh our session, access token is no longer valid
+		BotDatabase.AccessToken = AccessToken = null;
+		BotDatabase.AccessTokenValidUntil = AccessTokenValidUntil = null;
+
+		if (string.IsNullOrEmpty(RefreshToken)) {
+			// Without refresh token we can't get fresh access tokens, relog needed
 			await Connect(true).ConfigureAwait(false);
 
 			return false;
 		}
 
-		if (string.IsNullOrEmpty(callback.Nonce)) {
+		CAuthentication_AccessToken_GenerateForApp_Response? response = await ArchiHandler.GenerateAccessTokens(RefreshToken).ConfigureAwait(false);
+
+		if (response == null) {
+			// The request has failed, in almost all cases this means our refresh token is no longer valid, relog needed
+			BotDatabase.RefreshToken = RefreshToken = null;
+
 			await Connect(true).ConfigureAwait(false);
 
 			return false;
 		}
 
-		if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.Nonce, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+		// TODO: Handle update of refresh token with next SK2 release
+		UpdateTokens(response.access_token, RefreshToken);
+
+		if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.access_token, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+			InitRefreshTokensTimer(AccessTokenValidUntil ?? now.AddDays(1));
+
 			return true;
 		}
+
+		// We got the tokens, but failed to authorize? Purge them just to be sure and reconnect
+		BotDatabase.AccessToken = AccessToken = null;
+		BotDatabase.AccessTokenValidUntil = AccessTokenValidUntil = null;
 
 		await Connect(true).ConfigureAwait(false);
 
@@ -2274,6 +2309,20 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		WalletBalance = 0;
 		WalletCurrency = ECurrencyCode.Invalid;
 
+		AccessToken = BotDatabase.AccessToken;
+		AccessTokenValidUntil = BotDatabase.AccessTokenValidUntil;
+		RefreshToken = BotDatabase.RefreshToken;
+
+		if (BotConfig.PasswordFormat.HasTransformation()) {
+			if (!string.IsNullOrEmpty(AccessToken)) {
+				AccessToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, AccessToken!).ConfigureAwait(false);
+			}
+
+			if (!string.IsNullOrEmpty(RefreshToken)) {
+				AccessToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, RefreshToken!).ConfigureAwait(false);
+			}
+		}
+
 		CardsFarmer.SetInitialState(BotConfig.Paused);
 
 		if (SendItemsTimer != null) {
@@ -2342,6 +2391,40 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			TimeSpan.FromSeconds(minFarmingDelayAfterBlock), // Delay
 			Timeout.InfiniteTimeSpan // Period
 		);
+	}
+
+	private void InitRefreshTokensTimer(DateTime validUntil) {
+		if (validUntil <= DateTime.UnixEpoch) {
+			throw new ArgumentOutOfRangeException(nameof(validUntil));
+		}
+
+		if (validUntil == DateTime.MaxValue) {
+			// OK, tokens do not require refreshing
+			StopRefreshTokensTimer();
+
+			return;
+		}
+
+		TimeSpan delay = validUntil - DateTime.UtcNow;
+
+		// Start refreshing token 10 minutes before it's invalid
+		if (delay.TotalMinutes > 10) {
+			delay -= TimeSpan.FromMinutes(10);
+		}
+
+		// Timer can accept only dueTimes up to 2^32 - 2
+		uint dueTime = (uint) Math.Min(uint.MaxValue - 1, (ulong) delay.TotalMilliseconds);
+
+		if (RefreshTokensTimer == null) {
+			RefreshTokensTimer = new Timer(
+				OnRefreshTokensTimer,
+				null,
+				TimeSpan.FromMilliseconds(dueTime), // Delay
+				TimeSpan.FromMinutes(1) // Period
+			);
+		} else {
+			RefreshTokensTimer.Change(TimeSpan.FromMilliseconds(dueTime), TimeSpan.FromMinutes(1));
+		}
 	}
 
 	private void InitStart() {
@@ -2482,17 +2565,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		string? refreshToken = BotDatabase.RefreshToken;
-
-		if (!string.IsNullOrEmpty(refreshToken)) {
-			// Decrypt refreshToken if needed
-			if (BotConfig.PasswordFormat.HasTransformation()) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				refreshToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshToken!).ConfigureAwait(false);
-			}
-		}
-
-		if (!await InitLoginAndPassword(string.IsNullOrEmpty(refreshToken)).ConfigureAwait(false)) {
+		if (!await InitLoginAndPassword(string.IsNullOrEmpty(RefreshToken)).ConfigureAwait(false)) {
 			Stop();
 
 			return;
@@ -2537,7 +2610,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		InitConnectionFailureTimer();
 
-		if (string.IsNullOrEmpty(refreshToken)) {
+		if (string.IsNullOrEmpty(RefreshToken)) {
 			AuthPollResult pollResult;
 
 			try {
@@ -2569,19 +2642,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			refreshToken = pollResult.RefreshToken;
-
-			if (BotConfig.UseLoginKeys) {
-				BotDatabase.RefreshToken = BotConfig.PasswordFormat.HasTransformation() ? ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, refreshToken) : refreshToken;
-
-				if (!string.IsNullOrEmpty(pollResult.NewGuardData)) {
-					BotDatabase.SteamGuardData = pollResult.NewGuardData;
-				}
+			if (!string.IsNullOrEmpty(pollResult.NewGuardData) && BotConfig.UseLoginKeys) {
+				BotDatabase.SteamGuardData = pollResult.NewGuardData;
 			}
+
+			UpdateTokens(pollResult.AccessToken, pollResult.RefreshToken);
 		}
 
 		SteamUser.LogOnDetails logOnDetails = new() {
-			AccessToken = refreshToken,
+			AccessToken = RefreshToken,
 			CellID = ASF.GlobalDatabase?.CellID,
 			LoginID = LoginID,
 			SentryFileHash = sentryFileHash,
@@ -2606,6 +2675,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		HeartBeatFailures = 0;
 		StopConnectionFailureTimer();
 		StopPlayingWasBlockedTimer();
+		StopRefreshTokensTimer();
 
 		ArchiLogger.LogGenericInfo(Strings.BotDisconnected);
 
@@ -3087,11 +3157,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		if (string.IsNullOrEmpty(callback.WebAPIUserNonce) || !await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.WebAPIUserNonce!, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
-			if (!await RefreshSession().ConfigureAwait(false)) {
-				return;
-			}
+		// Establish web session
+		if (!await RefreshWebSession().ConfigureAwait(false)) {
+			return;
 		}
 
 		// Pre-fetch API key for future usage if possible
@@ -3234,6 +3302,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		PlayingBlocked = callback.PlayingBlocked;
 		await CheckOccupationStatus().ConfigureAwait(false);
+	}
+
+	private async void OnRefreshTokensTimer(object? state = null) {
+		if (AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > DateTime.UtcNow.AddMinutes(15))) {
+			// We don't need to refresh just yet
+			InitRefreshTokensTimer(AccessTokenValidUntil.Value);
+		}
+
+		await RefreshWebSession().ConfigureAwait(false);
 	}
 
 	private async void OnSendItemsTimer(object? state = null) => await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
@@ -3706,6 +3783,46 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		PlayingWasBlockedTimer.Dispose();
 		PlayingWasBlockedTimer = null;
+	}
+
+	private void StopRefreshTokensTimer() {
+		if (RefreshTokensTimer == null) {
+			return;
+		}
+
+		RefreshTokensTimer.Dispose();
+		RefreshTokensTimer = null;
+	}
+
+	private void UpdateTokens(string accessToken, string refreshToken) {
+		ArgumentException.ThrowIfNullOrEmpty(accessToken);
+		ArgumentException.ThrowIfNullOrEmpty(refreshToken);
+
+		AccessToken = accessToken;
+		AccessTokenValidUntil = null;
+		RefreshToken = refreshToken;
+
+		JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
+
+		try {
+			JwtSecurityToken? accessTokenJwt = jwtSecurityTokenHandler.ReadJwtToken(accessToken);
+
+			AccessTokenValidUntil = accessTokenJwt.ValidTo > DateTime.UnixEpoch ? accessTokenJwt.ValidTo : DateTime.MaxValue;
+		} catch (Exception e) {
+			ArchiLogger.LogGenericException(e);
+		}
+
+		if (BotConfig.UseLoginKeys) {
+			if (BotConfig.PasswordFormat.HasTransformation()) {
+				BotDatabase.AccessToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, accessToken);
+				BotDatabase.RefreshToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, refreshToken);
+			} else {
+				BotDatabase.AccessToken = accessToken;
+				BotDatabase.RefreshToken = refreshToken;
+			}
+
+			BotDatabase.AccessTokenValidUntil = AccessTokenValidUntil;
+		}
 	}
 
 	private (bool IsSteamParentalEnabled, string? SteamParentalCode) ValidateSteamParental(ParentalSettings settings, string? steamParentalCode = null, bool allowGeneration = true) {

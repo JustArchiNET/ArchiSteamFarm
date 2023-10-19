@@ -68,6 +68,32 @@ public sealed class BotDatabase : GenericDatabase {
 	[JsonProperty(Required = Required.DisallowNull)]
 	private readonly OrderedDictionary GamesToRedeemInBackground = new();
 
+	internal string? AccessToken {
+		get => BackingAccessToken;
+
+		set {
+			if (BackingAccessToken == value) {
+				return;
+			}
+
+			BackingAccessToken = value;
+			Utilities.InBackground(Save);
+		}
+	}
+
+	internal DateTime? AccessTokenValidUntil {
+		get => BackingAccessTokenValidUntil;
+
+		set {
+			if (BackingAccessTokenValidUntil == value) {
+				return;
+			}
+
+			BackingAccessTokenValidUntil = value;
+			Utilities.InBackground(Save);
+		}
+	}
+
 	internal MobileAuthenticator? MobileAuthenticator {
 		get => BackingMobileAuthenticator;
 
@@ -107,6 +133,12 @@ public sealed class BotDatabase : GenericDatabase {
 		}
 	}
 
+	[JsonProperty]
+	private string? BackingAccessToken;
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	private DateTime? BackingAccessTokenValidUntil;
+
 	[JsonProperty($"_{nameof(MobileAuthenticator)}")]
 	private MobileAuthenticator? BackingMobileAuthenticator;
 
@@ -133,6 +165,12 @@ public sealed class BotDatabase : GenericDatabase {
 		MatchActivelyBlacklistAppIDs.OnModified += OnObjectModified;
 		TradingBlacklistSteamIDs.OnModified += OnObjectModified;
 	}
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingAccessToken() => !string.IsNullOrEmpty(BackingAccessToken);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingAccessTokenValidUntil() => BackingAccessTokenValidUntil.HasValue;
 
 	[UsedImplicitly]
 	public bool ShouldSerializeBackingMobileAuthenticator() => BackingMobileAuthenticator != null;
