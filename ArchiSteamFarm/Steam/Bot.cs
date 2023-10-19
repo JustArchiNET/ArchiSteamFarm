@@ -68,6 +68,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 	private const uint LoginID = 1242; // This must be the same for all ASF bots and all ASF processes
 	private const byte MaxLoginFailures = WebBrowser.MaxTries; // Max login failures in a row before we determine that our credentials are invalid (because Steam wrongly returns those, of course)course)
+	private const byte MinimumAccessTokenValidityMinutes = 10;
 	private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
 
 	[PublicAPI]
@@ -1533,7 +1534,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		DateTime now = DateTime.UtcNow;
 
-		if (!force && !string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > now.AddMinutes(5))) {
+		if (!force && !string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > now.AddMinutes(MinimumAccessTokenValidityMinutes))) {
 			// We can use the tokens we already have
 			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken!, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 				InitRefreshTokensTimer(AccessTokenValidUntil.Value);
@@ -2428,9 +2429,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		TimeSpan delay = validUntil - DateTime.UtcNow;
 
-		// Start refreshing token 10 minutes before it's invalid
-		if (delay.TotalMinutes > 10) {
-			delay -= TimeSpan.FromMinutes(10);
+		// Start refreshing token before it's invalid
+		if (delay.TotalMinutes > MinimumAccessTokenValidityMinutes) {
+			delay -= TimeSpan.FromMinutes(MinimumAccessTokenValidityMinutes);
+		} else {
+			delay = TimeSpan.Zero;
 		}
 
 		// Timer can accept only dueTimes up to 2^32 - 2
@@ -3326,7 +3329,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private async void OnRefreshTokensTimer(object? state = null) {
-		if (AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > DateTime.UtcNow.AddMinutes(15))) {
+		if (AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > DateTime.UtcNow.AddMinutes(MinimumAccessTokenValidityMinutes))) {
 			// We don't need to refresh just yet
 			InitRefreshTokensTimer(AccessTokenValidUntil.Value);
 		}
