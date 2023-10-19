@@ -188,7 +188,10 @@
 		<value>Versione locale: {0} | Versione remota: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Controlla la tua app mobile Steam, potresti aver ricevuto una notifica di approvazione per il login. Premi Y se hai ricevuto e approvato la notifica, N se vuoi fornire il codice: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Inserisci il codice 2FA dell'autenticatore mobile di Steam: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -731,7 +734,16 @@ Tempo di attività: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Patching dei file ASF...</value>
 	</data>
-	
-	
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Inserisci la tua cryptkey: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>L'indirizzo IP {0} non è bannato!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Hai tentato di utilizzare la funzione a pagamento {0} ma non hai un valido LicenseID impostato nella configurazione globale di ASF. Controlla la tua configurazione, poiché la funzionalità non funzionerà senza ulteriori dettagli.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
 </root>
