@@ -267,7 +267,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			JwtSecurityToken? jwtToken = Utilities.ReadJwtToken(value);
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			JwtSecurityToken? jwtToken = Utilities.ReadJwtToken(value!);
 
 			if (jwtToken == null) {
 				return;
@@ -1534,7 +1535,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (!string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > now.AddMinutes(5))) {
 			// We can use the tokens we already have
-			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken!, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 				InitRefreshTokensTimer(AccessTokenValidUntil.Value);
 
 				return true;
@@ -1551,7 +1552,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return false;
 		}
 
-		CAuthentication_AccessToken_GenerateForApp_Response? response = await ArchiHandler.GenerateAccessTokens(RefreshToken).ConfigureAwait(false);
+		CAuthentication_AccessToken_GenerateForApp_Response? response = await ArchiHandler.GenerateAccessTokens(RefreshToken!).ConfigureAwait(false);
 
 		if (response == null) {
 			// The request has failed, in almost all cases this means our refresh token is no longer valid, relog needed
