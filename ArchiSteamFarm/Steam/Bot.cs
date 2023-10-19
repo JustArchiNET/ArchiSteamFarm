@@ -230,13 +230,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal bool PlayingBlocked { get; private set; }
 	internal bool PlayingWasBlocked { get; private set; }
 
-	private string? AccessToken;
 	private DateTime? AccessTokenValidUntil;
 	private string? AuthCode;
 
 	[JsonProperty]
 	private string? AvatarHash;
 
+	private string? BackingAccessToken;
 	private Timer? ConnectionFailureTimer;
 	private bool FirstTradeSent;
 	private Timer? GamesRedeemerInBackgroundTimer;
@@ -255,6 +255,29 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private SteamSaleEvent? SteamSaleEvent;
 	private Timer? TradeCheckTimer;
 	private string? TwoFactorCode;
+
+	private string? AccessToken {
+		get => BackingAccessToken;
+
+		set {
+			AccessTokenValidUntil = null;
+			BackingAccessToken = value;
+
+			if (string.IsNullOrEmpty(value)) {
+				return;
+			}
+
+			JwtSecurityToken? jwtToken = Utilities.ReadJwtToken(value);
+
+			if (jwtToken == null) {
+				return;
+			}
+
+			if (jwtToken.ValidTo > DateTime.MinValue) {
+				AccessTokenValidUntil = jwtToken.ValidTo;
+			}
+		}
+	}
 
 	private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
 		BotName = !string.IsNullOrEmpty(botName) ? botName : throw new ArgumentNullException(nameof(botName));
@@ -1520,7 +1543,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		// We need to refresh our session, access token is no longer valid
 		BotDatabase.AccessToken = AccessToken = null;
-		BotDatabase.AccessTokenValidUntil = AccessTokenValidUntil = null;
 
 		if (string.IsNullOrEmpty(RefreshToken)) {
 			// Without refresh token we can't get fresh access tokens, relog needed
@@ -1551,7 +1573,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		// We got the tokens, but failed to authorize? Purge them just to be sure and reconnect
 		BotDatabase.AccessToken = AccessToken = null;
-		BotDatabase.AccessTokenValidUntil = AccessTokenValidUntil = null;
 
 		await Connect(true).ConfigureAwait(false);
 
@@ -2310,7 +2331,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		WalletCurrency = ECurrencyCode.Invalid;
 
 		AccessToken = BotDatabase.AccessToken;
-		AccessTokenValidUntil = BotDatabase.AccessTokenValidUntil;
 		RefreshToken = BotDatabase.RefreshToken;
 
 		if (BotConfig.PasswordFormat.HasTransformation()) {
@@ -2394,7 +2414,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private void InitRefreshTokensTimer(DateTime validUntil) {
-		if (validUntil <= DateTime.UnixEpoch) {
+		if (validUntil == DateTime.MinValue) {
 			throw new ArgumentOutOfRangeException(nameof(validUntil));
 		}
 
@@ -3795,22 +3815,16 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private void UpdateTokens(string accessToken, string refreshToken) {
-		ArgumentException.ThrowIfNullOrEmpty(accessToken);
-		ArgumentException.ThrowIfNullOrEmpty(refreshToken);
+		if (string.IsNullOrEmpty(accessToken)) {
+			throw new ArgumentNullException(nameof(accessToken));
+		}
+
+		if (string.IsNullOrEmpty(refreshToken)) {
+			throw new ArgumentNullException(nameof(refreshToken));
+		}
 
 		AccessToken = accessToken;
-		AccessTokenValidUntil = null;
 		RefreshToken = refreshToken;
-
-		JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
-
-		try {
-			JwtSecurityToken? accessTokenJwt = jwtSecurityTokenHandler.ReadJwtToken(accessToken);
-
-			AccessTokenValidUntil = accessTokenJwt.ValidTo > DateTime.UnixEpoch ? accessTokenJwt.ValidTo : DateTime.MaxValue;
-		} catch (Exception e) {
-			ArchiLogger.LogGenericException(e);
-		}
 
 		if (BotConfig.UseLoginKeys) {
 			if (BotConfig.PasswordFormat.HasTransformation()) {
@@ -3820,8 +3834,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				BotDatabase.AccessToken = accessToken;
 				BotDatabase.RefreshToken = refreshToken;
 			}
-
-			BotDatabase.AccessTokenValidUntil = AccessTokenValidUntil;
 		}
 	}
 

@@ -361,7 +361,9 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	internal async Task<CAuthentication_AccessToken_GenerateForApp_Response?> GenerateAccessTokens(string refreshToken) {
-		ArgumentException.ThrowIfNullOrEmpty(refreshToken);
+		if (string.IsNullOrEmpty(refreshToken)) {
+			throw new ArgumentNullException(nameof(refreshToken));
+		}
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
