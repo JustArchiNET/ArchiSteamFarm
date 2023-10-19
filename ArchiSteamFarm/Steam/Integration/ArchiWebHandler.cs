@@ -2703,7 +2703,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.RefreshingOurSession);
-			bool result = await Bot.RefreshWebSession().ConfigureAwait(false);
+			bool result = await Bot.RefreshWebSession(true).ConfigureAwait(false);
 
 			DateTime now = DateTime.UtcNow;
 

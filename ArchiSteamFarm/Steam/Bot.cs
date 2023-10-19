@@ -1526,14 +1526,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await PluginsCore.OnBotFarmingStopped(this).ConfigureAwait(false);
 	}
 
-	internal async Task<bool> RefreshWebSession() {
+	internal async Task<bool> RefreshWebSession(bool force = false) {
 		if (!IsConnectedAndLoggedOn) {
 			return false;
 		}
 
 		DateTime now = DateTime.UtcNow;
 
-		if (!string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > now.AddMinutes(5))) {
+		if (!force && !string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > now.AddMinutes(5))) {
 			// We can use the tokens we already have
 			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken!, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 				InitRefreshTokensTimer(AccessTokenValidUntil.Value);
@@ -1564,7 +1564,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		// TODO: Handle update of refresh token with next SK2 release
-		UpdateTokens(response.access_token, RefreshToken);
+		UpdateTokens(response.access_token, RefreshToken!);
 
 		if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.access_token, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 			InitRefreshTokensTimer(AccessTokenValidUntil ?? now.AddDays(1));
