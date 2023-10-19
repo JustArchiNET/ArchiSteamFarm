@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -47,6 +48,8 @@ public static class Utilities {
 
 	// normally we'd just use words like "steam" and "farm", but the library we're currently using is a bit iffy about banned words, so we need to also add combinations such as "steamfarm"
 	private static readonly ImmutableHashSet<string> ForbiddenPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "archisteamfarm", "archi", "steam", "farm", "archisteam", "archifarm", "steamfarm", "asf", "asffarm", "password");
+
+	private static readonly JwtSecurityTokenHandler JwtSecurityTokenHandler = new();
 
 	[PublicAPI]
 	public static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
@@ -185,6 +188,21 @@ public static class Utilities {
 		}
 
 		return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
+	}
+
+	[PublicAPI]
+	public static JwtSecurityToken? ReadJwtToken(string token) {
+		if (string.IsNullOrEmpty(token)) {
+			throw new ArgumentNullException(nameof(token));
+		}
+
+		try {
+			return JwtSecurityTokenHandler.ReadJwtToken(token);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return null;
+		}
 	}
 
 	[PublicAPI]
