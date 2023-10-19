@@ -2332,18 +2332,23 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		WalletBalance = 0;
 		WalletCurrency = ECurrencyCode.Invalid;
 
-		AccessToken = BotDatabase.AccessToken;
-		RefreshToken = BotDatabase.RefreshToken;
+		string? accessToken = BotDatabase.AccessToken;
+		string? refreshToken = BotDatabase.RefreshToken;
 
 		if (BotConfig.PasswordFormat.HasTransformation()) {
-			if (!string.IsNullOrEmpty(AccessToken)) {
-				AccessToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, AccessToken!).ConfigureAwait(false);
+			if (!string.IsNullOrEmpty(accessToken)) {
+				// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
+				accessToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, accessToken!).ConfigureAwait(false);
 			}
 
-			if (!string.IsNullOrEmpty(RefreshToken)) {
-				AccessToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, RefreshToken!).ConfigureAwait(false);
+			if (!string.IsNullOrEmpty(refreshToken)) {
+				// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
+				refreshToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshToken!).ConfigureAwait(false);
 			}
 		}
+
+		AccessToken = accessToken;
+		RefreshToken = refreshToken;
 
 		CardsFarmer.SetInitialState(BotConfig.Paused);
 
