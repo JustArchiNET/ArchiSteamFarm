@@ -162,6 +162,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
 	private readonly SemaphoreSlim MessagingSemaphore = new(1, 1);
 	private readonly ConcurrentDictionary<UserNotificationsCallback.EUserNotification, uint> PastNotifications = new();
+	private readonly SemaphoreSlim RefreshWebSessionSemaphore = new(1, 1);
 	private readonly SemaphoreSlim SendCompleteTypesSemaphore = new(1, 1);
 	private readonly SteamClient SteamClient;
 	private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new();
@@ -376,6 +377,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		GamesRedeemerInBackgroundSemaphore.Dispose();
 		InitializationSemaphore.Dispose();
 		MessagingSemaphore.Dispose();
+		RefreshWebSessionSemaphore.Dispose();
 		SendCompleteTypesSemaphore.Dispose();
 		Trading.Dispose();
 
@@ -401,6 +403,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		GamesRedeemerInBackgroundSemaphore.Dispose();
 		InitializationSemaphore.Dispose();
 		MessagingSemaphore.Dispose();
+		RefreshWebSessionSemaphore.Dispose();
 		SendCompleteTypesSemaphore.Dispose();
 		Trading.Dispose();
 
@@ -1532,55 +1535,65 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return false;
 		}
 
-		DateTime now = DateTime.UtcNow;
+		await RefreshWebSessionSemaphore.WaitAsync().ConfigureAwait(false);
 
-		if (!force && !string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > now.AddMinutes(MinimumAccessTokenValidityMinutes))) {
-			// We can use the tokens we already have
-			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken!, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
-				InitRefreshTokensTimer(AccessTokenValidUntil.Value);
+		try {
+			if (!IsConnectedAndLoggedOn) {
+				return false;
+			}
+
+			DateTime now = DateTime.UtcNow;
+
+			if (!force && !string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > now.AddMinutes(MinimumAccessTokenValidityMinutes))) {
+				// We can use the tokens we already have
+				if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken!, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+					InitRefreshTokensTimer(AccessTokenValidUntil.Value);
+
+					return true;
+				}
+			}
+
+			// We need to refresh our session, access token is no longer valid
+			BotDatabase.AccessToken = AccessToken = null;
+
+			if (string.IsNullOrEmpty(RefreshToken)) {
+				// Without refresh token we can't get fresh access tokens, relog needed
+				await Connect(true).ConfigureAwait(false);
+
+				return false;
+			}
+
+			CAuthentication_AccessToken_GenerateForApp_Response? response = await ArchiHandler.GenerateAccessTokens(RefreshToken!).ConfigureAwait(false);
+
+			if (string.IsNullOrEmpty(response?.access_token)) {
+				// The request has failed, in almost all cases this means our refresh token is no longer valid, relog needed
+				BotDatabase.RefreshToken = RefreshToken = null;
+
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiHandler.GenerateAccessTokens)));
+
+				await Connect(true).ConfigureAwait(false);
+
+				return false;
+			}
+
+			// TODO: Handle update of refresh token with next SK2 release
+			UpdateTokens(response.access_token!, RefreshToken!);
+
+			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.access_token!, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+				InitRefreshTokensTimer(AccessTokenValidUntil ?? now.AddHours(18));
 
 				return true;
 			}
-		}
 
-		// We need to refresh our session, access token is no longer valid
-		BotDatabase.AccessToken = AccessToken = null;
-
-		if (string.IsNullOrEmpty(RefreshToken)) {
-			// Without refresh token we can't get fresh access tokens, relog needed
-			await Connect(true).ConfigureAwait(false);
-
-			return false;
-		}
-
-		CAuthentication_AccessToken_GenerateForApp_Response? response = await ArchiHandler.GenerateAccessTokens(RefreshToken!).ConfigureAwait(false);
-
-		if (string.IsNullOrEmpty(response?.access_token)) {
-			// The request has failed, in almost all cases this means our refresh token is no longer valid, relog needed
-			BotDatabase.RefreshToken = RefreshToken = null;
-
-			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiHandler.GenerateAccessTokens)));
+			// We got the tokens, but failed to authorize? Purge them just to be sure and reconnect
+			BotDatabase.AccessToken = AccessToken = null;
 
 			await Connect(true).ConfigureAwait(false);
 
 			return false;
+		} finally {
+			RefreshWebSessionSemaphore.Release();
 		}
-
-		// TODO: Handle update of refresh token with next SK2 release
-		UpdateTokens(response.access_token, RefreshToken!);
-
-		if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.access_token, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
-			InitRefreshTokensTimer(AccessTokenValidUntil ?? now.AddDays(1));
-
-			return true;
-		}
-
-		// We got the tokens, but failed to authorize? Purge them just to be sure and reconnect
-		BotDatabase.AccessToken = AccessToken = null;
-
-		await Connect(true).ConfigureAwait(false);
-
-		return false;
 	}
 
 	internal static async Task RegisterBot(string botName) {
