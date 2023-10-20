@@ -1577,7 +1577,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			// TODO: Handle update of refresh token with next SK2 release
-			UpdateTokens(response.access_token!, RefreshToken!);
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			UpdateTokens(response!.access_token, RefreshToken!);
 
 			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.access_token!, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 				InitRefreshTokensTimer(AccessTokenValidUntil ?? now.AddHours(18));
