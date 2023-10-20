@@ -1555,9 +1555,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		CAuthentication_AccessToken_GenerateForApp_Response? response = await ArchiHandler.GenerateAccessTokens(RefreshToken!).ConfigureAwait(false);
 
-		if (response == null) {
+		if (string.IsNullOrEmpty(response?.access_token)) {
 			// The request has failed, in almost all cases this means our refresh token is no longer valid, relog needed
 			BotDatabase.RefreshToken = RefreshToken = null;
+
+			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiHandler.GenerateAccessTokens)));
 
 			await Connect(true).ConfigureAwait(false);
 
