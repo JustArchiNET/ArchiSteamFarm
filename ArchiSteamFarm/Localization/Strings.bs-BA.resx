@@ -104,7 +104,9 @@
 		<comment>{0} will be replaced by service's name</comment>
 	</data>
 	
-	
+	<data name="RefreshingOurSession" xml:space="preserve">
+		<value>Osvežavanje sesije!</value>
+	</data>
 	<data name="RejectingTrade" xml:space="preserve">
 		<value>Odbijanje razmjene: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
@@ -135,7 +137,10 @@
 	
 	
 	
-	
+	<data name="UserInputSteamPassword" xml:space="preserve">
+		<value>Molimo Vas uneste vašu Steam lozinku: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	
 	<data name="IPCReady" xml:space="preserve">
 		<value>IPC server je spreman!</value>
