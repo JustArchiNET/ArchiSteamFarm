@@ -83,10 +83,18 @@
 	
 	
 	
+	<data name="ErrorObjectIsNull" xml:space="preserve">
+		<value>{0} je null!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorParsingObject" xml:space="preserve">
+		<value>Parsiranje {0} nije uspelo!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
 	
-	
-	
-	
+	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
+		<value>Neuspešno traženje nove verzije!</value>
+	</data>
 	
 	
 	
@@ -96,9 +104,16 @@
 	<data name="WarningFailed" xml:space="preserve">
 		<value>Neuspješno!</value>
 	</data>
-	
-	
-	
+	<data name="GlobalConfigChanged" xml:space="preserve">
+		<value>Globalni konfiguracioni fajl je promenjen!</value>
+	</data>
+	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+		<value>Globalni konfiguracioni fajl je uklonjen!</value>
+	</data>
+	<data name="IgnoringTrade" xml:space="preserve">
+		<value>Ignorisanje razmene: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
 	<data name="LoggingIn" xml:space="preserve">
 		<value>Prijavljivanje u {0}...</value>
 		<comment>{0} will be replaced by service's name</comment>
@@ -169,11 +184,15 @@
 		<value>Gotovo!</value>
 	</data>
 	
+	<data name="IdlingFinished" xml:space="preserve">
+		<value>Farmanje završeno!</value>
+	</data>
 	
 	
 	
-	
-	
+	<data name="IdlingStopped" xml:space="preserve">
+		<value>Farmanje zaustavljeno!</value>
+	</data>
 	
 	
 	
@@ -202,10 +221,18 @@
 		<value>2FA Token: {0}</value>
 		<comment>{0} will be replaced by generated 2FA token (string)</comment>
 	</data>
-	
-	
-	
-	
+	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+		<value>Automatsko farmanje je pauzirano!</value>
+	</data>
+	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+		<value>Automatsko farmanje je nastavljeno!</value>
+	</data>
+	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+		<value>Automatsko farmanje je već pauzirano!</value>
+	</data>
+	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+		<value>Automatsko farmanje je već nastavljeno!</value>
+	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>Povezano sa Steamom!</value>
 	</data>
@@ -223,7 +250,9 @@
 		<value>Prijavljivanje...</value>
 	</data>
 	
-	
+	<data name="BotLootingFailed" xml:space="preserve">
+		<value>Ponuda za razmjenu nije uspjela!</value>
+	</data>
 	
 	
 	
@@ -248,7 +277,9 @@
 		<value>Bot ne radi.</value>
 	</data>
 	
-	
+	<data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+		<value>Bot se trenutno koristi.</value>
+	</data>
 	
 	<data name="ErrorIsEmpty" xml:space="preserve">
 		<value>{0} je prazan!</value>
