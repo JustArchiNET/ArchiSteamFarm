@@ -175,9 +175,7 @@ public static class Utilities {
 
 	[PublicAPI]
 	public static JwtSecurityToken? ReadJwtToken(string token) {
-		if (string.IsNullOrEmpty(token)) {
-			throw new ArgumentNullException(nameof(token));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(token);
 
 		try {
 			return JwtSecurityTokenHandler.ReadJwtToken(token);

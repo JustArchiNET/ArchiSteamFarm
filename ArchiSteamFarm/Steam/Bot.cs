@@ -2395,9 +2395,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private void InitRefreshTokensTimer(DateTime validUntil) {
-		if (validUntil == DateTime.MinValue) {
-			throw new ArgumentOutOfRangeException(nameof(validUntil));
-		}
+		ArgumentOutOfRangeException.ThrowIfEqual(validUntil, DateTime.MinValue);
 
 		if (validUntil == DateTime.MaxValue) {
 			// OK, tokens do not require refreshing
@@ -3796,13 +3794,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private void UpdateTokens(string accessToken, string refreshToken) {
-		if (string.IsNullOrEmpty(accessToken)) {
-			throw new ArgumentNullException(nameof(accessToken));
-		}
-
-		if (string.IsNullOrEmpty(refreshToken)) {
-			throw new ArgumentNullException(nameof(refreshToken));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(accessToken);
+		ArgumentException.ThrowIfNullOrEmpty(refreshToken);
 
 		AccessToken = accessToken;
 		RefreshToken = refreshToken;
