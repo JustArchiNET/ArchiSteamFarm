@@ -719,7 +719,7 @@ Tempo de execução: {1}</value>
 		<value>Você está tentando executar o ASF como administrador (root). Isto causa um risco de segurança significativo à sua máquina e já que o ASF não requer acesso root para o seu funcionamento, recomendamos executá-lo como usuário não-administrador, se possível.</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
-		<value>Você está executando o ASF em um ambiente não suportado, utilizando o argumento --ignore-unported-environment. Por favor, note que não oferecemos qualquer tipo de apoio a este cenário, e você está fazendo isso inteiramente por sua conta e risco! Você foi avisado.</value>
+		<value>Você está executando o ASF em um ambiente não suportado, utilizando o argumento --ignore-unsupported-environment. Por favor, note que não oferecemos qualquer tipo de apoio a este cenário, e você está fazendo isso inteiramente por sua conta e risco. Você foi avisado.</value>
 	</data>
 	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
 		<value>Obtendo checksum do servidor remoto...</value>

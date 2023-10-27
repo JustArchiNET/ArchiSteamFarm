@@ -351,8 +351,16 @@ internal static class Logging {
 				try {
 					ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
-					if (keyInfo.Key != ConsoleKey.C) {
-						continue;
+					switch (keyInfo.Key) {
+						case 0:
+							// Linux terminal closing STDIN, we're done here
+							return;
+						case ConsoleKey.C:
+							// User hitting 'c', as expected
+							break;
+						default:
+							// Any other input, ignored
+							continue;
 					}
 
 					OnUserInputStart();
@@ -380,7 +388,7 @@ internal static class Logging {
 							command = command[commandPrefix.Length..];
 						}
 
-						Bot? targetBot = Bot.Bots?.OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value).FirstOrDefault();
+						Bot? targetBot = Bot.GetDefaultBot();
 
 						if (targetBot == null) {
 							Console.WriteLine($@"<< {Strings.ErrorNoBotsDefined}");

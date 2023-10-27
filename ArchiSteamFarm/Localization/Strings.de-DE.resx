@@ -719,7 +719,7 @@ Prozesslaufzeit: {1}</value>
 		<value>Sie versuchen ASF als Administrator (root) auszuführen. Dies stellt ein signifikantes Sicherheitsrisiko für ihr Gerät dar und da ASF diese Rechte nicht benötigt, unterstützen wir dieses Szenario nicht. Verwenden Sie das Kommandozeilenargument --ignore-unsupported-environment, wenn Sie wirklich wissen, was Sie tun.</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
-		<value>Sie nutzen ASF in einer nicht unterstützten Umgebung und verwenden das Argument --ignore-unsupported-environment. Bitte beachten Sie, dass wir für dieses Szenario keinerlei Unterstützung anbieten und Sie das Risiko vollständig bei ihnen liegt. Sie wurden gewarnt.</value>
+		<value>Sie nutzen ASF in einer nicht unterstützten Umgebung und verwenden das Argument --ignore-unsupported-environment. Bitte beachten Sie, dass wir für dieses Szenario keinerlei Unterstützung anbieten und Sie das Risiko vollständig bei Ihnen liegt. Sie wurden gewarnt.</value>
 	</data>
 	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
 		<value>Rufe Prüfsumme vom Server ab...</value>

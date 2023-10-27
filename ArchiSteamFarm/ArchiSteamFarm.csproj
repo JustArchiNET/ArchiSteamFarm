@@ -21,6 +21,7 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
 		<PackageReference Include="System.Composition" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" />
 		<PackageReference Include="System.Linq.Async" />
 		<PackageReference Include="zxcvbn-core" />
 	</ItemGroup>

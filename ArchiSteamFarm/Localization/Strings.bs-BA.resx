@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns="" id="root">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string"/>
+							<xsd:attribute name="type" type="xsd:string"/>
+							<xsd:attribute name="mimetype" type="xsd:string"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string"/>
+							<xsd:attribute name="name" type="xsd:string"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required"/>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+			PublicKeyToken=b77a5c561934e089
+		</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+			PublicKeyToken=b77a5c561934e089
+		</value>
+	</resheader>
+	<data name="AcceptingTrade" xml:space="preserve">
+		<value>Prihvatanje razmjene: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="AutoUpdateCheckInfo" xml:space="preserve">
+		<value>ASF će automatski provjeriti da li postoji nova verzija svakih {0}.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+	</data>
+	<data name="Content" xml:space="preserve">
+		<value>Sadržaj:
+{0}</value>
+		<comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	<data name="ErrorObjectIsNull" xml:space="preserve">
+		<value>{0} je null!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorParsingObject" xml:space="preserve">
+		<value>Parsiranje {0} nije uspelo!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	
+	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
+		<value>Neuspešno traženje nove verzije!</value>
+	</data>
+	
+	
+	
+	<data name="Exiting" xml:space="preserve">
+		<value>Izlaženje...</value>
+	</data>
+	<data name="WarningFailed" xml:space="preserve">
+		<value>Neuspješno!</value>
+	</data>
+	<data name="GlobalConfigChanged" xml:space="preserve">
+		<value>Globalni konfiguracioni fajl je promenjen!</value>
+	</data>
+	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+		<value>Globalni konfiguracioni fajl je uklonjen!</value>
+	</data>
+	<data name="IgnoringTrade" xml:space="preserve">
+		<value>Ignorisanje razmene: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="LoggingIn" xml:space="preserve">
+		<value>Prijavljivanje u {0}...</value>
+		<comment>{0} will be replaced by service's name</comment>
+	</data>
+	
+	<data name="RefreshingOurSession" xml:space="preserve">
+		<value>Osvežavanje sesije!</value>
+	</data>
+	<data name="RejectingTrade" xml:space="preserve">
+		<value>Odbijanje razmjene: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="Restarting" xml:space="preserve">
+		<value>Ponovno pokretanje...</value>
+	</data>
+	<data name="Starting" xml:space="preserve">
+		<value>Pokretanje...</value>
+	</data>
+	<data name="Success" xml:space="preserve">
+		<value>Uspješno!</value>
+	</data>
+	<data name="UnlockingParentalAccount" xml:space="preserve">
+		<value>Otključavanje roditeljskog naloga...</value>
+	</data>
+	<data name="UpdateCheckingNewVersion" xml:space="preserve">
+		<value>Traženje nove verzije...</value>
+	</data>
+	
+	<data name="UpdateFinished" xml:space="preserve">
+		<value>Proces ažuriranja je završen!</value>
+	</data>
+	
+	
+	
+	
+	
+	
+	
+	<data name="UserInputSteamPassword" xml:space="preserve">
+		<value>Molimo Vas uneste vašu Steam lozinku: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	
+	<data name="IPCReady" xml:space="preserve">
+		<value>IPC server je spreman!</value>
+	</data>
+	<data name="IPCStarting" xml:space="preserve">
+		<value>Pokretanje IPC servera...</value>
+	</data>
+	<data name="BotAlreadyStopped" xml:space="preserve">
+		<value>Ovaj bot je već zaustavljen!</value>
+	</data>
+	<data name="BotNotFound" xml:space="preserve">
+		<value>Nije moguće pronaći bilo kakvog bot-a nazvanog {0}!</value>
+		<comment>{0} will be replaced by bot's name query (string)</comment>
+	</data>
+	
+	
+	
+	<data name="CheckingFirstBadgePage" xml:space="preserve">
+		<value>Proveravanje prve strane bedževa...</value>
+	</data>
+	<data name="CheckingOtherBadgePages" xml:space="preserve">
+		<value>Proveravanje ostalih strana bedževa...</value>
+	</data>
+	
+	<data name="Done" xml:space="preserve">
+		<value>Gotovo!</value>
+	</data>
+	
+	<data name="IdlingFinished" xml:space="preserve">
+		<value>Farmanje završeno!</value>
+	</data>
+	
+	
+	
+	<data name="IdlingStopped" xml:space="preserve">
+		<value>Farmanje zaustavljeno!</value>
+	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<data name="UnknownCommand" xml:space="preserve">
+		<value>Nepoznata komanda!</value>
+	</data>
+	
+	
+	<data name="BotAcceptingGift" xml:space="preserve">
+		<value>Prihvatanje poklona: {0}...</value>
+		<comment>{0} will be replaced by giftID (number)</comment>
+	</data>
+	
+	
+	
+	
+	
+	
+	<data name="BotAuthenticatorToken" xml:space="preserve">
+		<value>2FA Token: {0}</value>
+		<comment>{0} will be replaced by generated 2FA token (string)</comment>
+	</data>
+	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+		<value>Automatsko farmanje je pauzirano!</value>
+	</data>
+	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+		<value>Automatsko farmanje je nastavljeno!</value>
+	</data>
+	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+		<value>Automatsko farmanje je već pauzirano!</value>
+	</data>
+	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+		<value>Automatsko farmanje je već nastavljeno!</value>
+	</data>
+	<data name="BotConnected" xml:space="preserve">
+		<value>Povezano sa Steamom!</value>
+	</data>
+	<data name="BotDisconnected" xml:space="preserve">
+		<value>Diskonektovan sa Steam-a!</value>
+	</data>
+	<data name="BotDisconnecting" xml:space="preserve">
+		<value>Prekidanje veze...</value>
+	</data>
+	
+	
+	
+	
+	<data name="BotLoggingIn" xml:space="preserve">
+		<value>Prijavljivanje...</value>
+	</data>
+	
+	<data name="BotLootingFailed" xml:space="preserve">
+		<value>Ponuda za razmjenu nije uspjela!</value>
+	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<data name="BotReconnecting" xml:space="preserve">
+		<value>Ponovno povezivanje...</value>
+	</data>
+	
+	
+	
+	
+	
+	<data name="BotStatusConnecting" xml:space="preserve">
+		<value>Bot je povezan sa Steam-om.</value>
+	</data>
+	<data name="BotStatusNotRunning" xml:space="preserve">
+		<value>Bot ne radi.</value>
+	</data>
+	
+	<data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+		<value>Bot se trenutno koristi.</value>
+	</data>
+	
+	<data name="ErrorIsEmpty" xml:space="preserve">
+		<value>{0} je prazan!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	
+	
+	
+	
+	
+	<data name="BotConnecting" xml:space="preserve">
+		<value>Povezivanje...</value>
+	</data>
+	
+	
+	<data name="BotStopping" xml:space="preserve">
+		<value>Zaustavljanje...</value>
+	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<data name="BotVersion" xml:space="preserve">
+		<value>{0} V{1}</value>
+		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
+	</data>
+	
+	
+	
+	
+	<data name="ErrorAccessDenied" xml:space="preserve">
+		<value>Pristup odbijеn!</value>
+	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<data name="ErrorAborted" xml:space="preserve">
+		<value>Obustavljeno!</value>
+	</data>
+	
+	
+	<data name="PluginLoading" xml:space="preserve">
+		<value>Učitavanje {0} V{1}...</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+	</data>
+	<data name="NothingFound" xml:space="preserve">
+		<value>Ništa nije pronađeno!</value>
+	</data>
+	
+	<data name="PleaseWait" xml:space="preserve">
+		<value>Molimo vas sačekajte...</value>
+	</data>
+	<data name="EnterCommand" xml:space="preserve">
+		<value>Unesi komandu: </value>
+	</data>
+	<data name="Executing" xml:space="preserve">
+		<value>Izvršavanje...</value>
+	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<data name="Result" xml:space="preserve">
+		<value>Rezultat: {0}</value>
+		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
+	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</root>
