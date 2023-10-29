@@ -266,7 +266,7 @@ public sealed class SteamChatMessage {
 				return;
 			}
 
-			string[] lines = messagePart.Split(SharedInfo.ArrayNewlines, StringSplitOptions.None);
+			string[] lines = messagePart.Split(SharedInfo.NewLineIndicators, StringSplitOptions.None);
 
 			int bytes = lines.Where(static line => line.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((lines.Length - 1) * NewlineWeight);
 

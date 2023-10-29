@@ -101,7 +101,7 @@ public sealed class BotController : ArchiController {
 
 		request.BotConfig.Saving = true;
 
-		HashSet<string> bots = botNames.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries).ToHashSet(Bot.BotsComparer);
+		HashSet<string> bots = botNames.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries).ToHashSet(Bot.BotsComparer);
 
 		if (bots.Any(static botName => !ASF.IsValidBotName(botName))) {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(botNames))));

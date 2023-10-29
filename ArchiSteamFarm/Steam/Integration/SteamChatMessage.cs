@@ -206,7 +206,7 @@ internal static class SteamChatMessage {
 	private static int GetMessagePrefixBytes(string escapedSteamMessagePrefix) {
 		ArgumentException.ThrowIfNullOrEmpty(escapedSteamMessagePrefix);
 
-		string[] prefixLines = escapedSteamMessagePrefix.Split(SharedInfo.ArrayNewlines, StringSplitOptions.None);
+		string[] prefixLines = escapedSteamMessagePrefix.Split(SharedInfo.NewLineIndicators, StringSplitOptions.None);
 
 		return prefixLines.Where(static prefixLine => prefixLine.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((prefixLines.Length - 1) * NewlineWeight);
 	}

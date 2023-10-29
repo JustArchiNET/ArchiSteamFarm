@@ -521,7 +521,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(BotsComparer));
 		}
 
-		string[] botNames = args.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
+		string[] botNames = args.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		HashSet<Bot> result = new();
 
@@ -533,8 +533,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return result;
 			}
 
-			if ((botName.Length > 2) && botName.Contains("..", StringComparison.Ordinal)) {
-				string[] botRange = botName.Split(SharedInfo.ArrayDots, StringSplitOptions.RemoveEmptyEntries);
+			if ((botName.Length > 2) && SharedInfo.RangeIndicators.Any(rangeIndicator => botName.Contains(rangeIndicator, StringComparison.Ordinal))) {
+				string[] botRange = botName.Split(SharedInfo.RangeIndicators, StringSplitOptions.RemoveEmptyEntries);
 
 				Bot? firstBot = GetBot(botRange[0]);
 
@@ -1189,7 +1189,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			string[] dlcAppIDsTexts = listOfDlc!.Split(SharedInfo.ArrayComma, StringSplitOptions.RemoveEmptyEntries);
+			string[] dlcAppIDsTexts = listOfDlc!.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 			foreach (string dlcAppIDsText in dlcAppIDsTexts) {
 				if (!uint.TryParse(dlcAppIDsText, out uint dlcAppID) || (dlcAppID == 0)) {
