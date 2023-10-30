@@ -245,11 +245,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, userNotifications.Body));
 
 				break;
-			case EMsg.ClientWalletInfoUpdate:
-				ClientMsgProtobuf<CMsgClientWalletInfoUpdate> walletInfoUpdate = new(packetMsg);
-				Client.PostCallback(new WalletInfoUpdateCallback(packetMsg.TargetJobID, walletInfoUpdate.Body));
-
-				break;
 		}
 	}
 

@@ -349,10 +349,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
 		CallbackManager.Subscribe<SteamUser.PlayingSessionStateCallback>(OnPlayingSessionState);
 		CallbackManager.Subscribe<SteamUser.VanityURLChangedCallback>(OnVanityURLChangedCallback);
+		CallbackManager.Subscribe<SteamUser.WalletInfoCallback>(OnWalletInfo);
 
 		CallbackManager.Subscribe<SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 		CallbackManager.Subscribe<UserNotificationsCallback>(OnUserNotifications);
-		CallbackManager.Subscribe<WalletInfoUpdateCallback>(OnWalletInfoUpdate);
 
 		Actions = new Actions(this);
 		CardsFarmer = new CardsFarmer(this);
@@ -3370,11 +3370,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
 	}
 
-	private void OnWalletInfoUpdate(WalletInfoUpdateCallback callback) {
+	private void OnWalletInfo(SteamUser.WalletInfoCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
-		WalletBalance = callback.Balance;
-		WalletBalanceDelayed = callback.BalanceDelayed;
+		WalletBalance = callback.LongBalance;
+		WalletBalanceDelayed = callback.LongBalanceDelayed;
 		WalletCurrency = callback.Currency;
 	}
 
