@@ -1586,7 +1586,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return false;
 			}
 
-			UpdateTokens(response.AccessToken, !string.IsNullOrEmpty(response.RefreshToken) ? response.RefreshToken : RefreshToken!);
+			UpdateTokens(response.AccessToken, response.RefreshToken);
 
 			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 				InitRefreshTokensTimer(AccessTokenValidUntil ?? now.AddHours(18));
@@ -2672,6 +2672,26 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			if (!string.IsNullOrEmpty(pollResult.NewGuardData) && BotConfig.UseLoginKeys) {
 				BotDatabase.SteamGuardData = pollResult.NewGuardData;
+			}
+
+			if (string.IsNullOrEmpty(pollResult.AccessToken)) {
+				// The fuck is this?
+				ArchiLogger.LogNullError(nameof(pollResult.AccessToken));
+
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
+
+				return;
+			}
+
+			if (string.IsNullOrEmpty(pollResult.RefreshToken)) {
+				// The fuck is that?
+				ArchiLogger.LogNullError(nameof(pollResult.RefreshToken));
+
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
+
+				return;
 			}
 
 			UpdateTokens(pollResult.AccessToken, pollResult.RefreshToken);
@@ -3760,25 +3780,30 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		RefreshTokensTimer = null;
 	}
 
-	private void UpdateTokens(string accessToken, string refreshToken) {
+	private void UpdateTokens(string accessToken, string? refreshToken = null) {
 		if (string.IsNullOrEmpty(accessToken)) {
 			throw new ArgumentNullException(nameof(accessToken));
 		}
 
-		if (string.IsNullOrEmpty(refreshToken)) {
-			throw new ArgumentNullException(nameof(refreshToken));
-		}
-
 		AccessToken = accessToken;
-		RefreshToken = refreshToken;
+
+		if (!string.IsNullOrEmpty(refreshToken)) {
+			RefreshToken = refreshToken;
+		}
 
 		if (BotConfig.UseLoginKeys) {
 			if (BotConfig.PasswordFormat.HasTransformation()) {
 				BotDatabase.AccessToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, accessToken);
-				BotDatabase.RefreshToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, refreshToken);
+
+				if (!string.IsNullOrEmpty(refreshToken)) {
+					BotDatabase.RefreshToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, refreshToken);
+				}
 			} else {
 				BotDatabase.AccessToken = accessToken;
-				BotDatabase.RefreshToken = refreshToken;
+
+				if (!string.IsNullOrEmpty(refreshToken)) {
+					BotDatabase.RefreshToken = refreshToken;
+				}
 			}
 		}
 	}
