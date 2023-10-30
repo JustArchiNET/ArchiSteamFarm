@@ -1560,24 +1560,35 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return false;
 			}
 
-			CAuthentication_AccessToken_GenerateForApp_Response? response = await ArchiHandler.GenerateAccessTokens(RefreshToken!).ConfigureAwait(false);
+			AccessTokenGenerateResult response;
 
-			if (string.IsNullOrEmpty(response?.access_token)) {
+			try {
+				response = await SteamClient.Authentication.GenerateAccessTokenForAppAsync(SteamID, RefreshToken!, true).ConfigureAwait(false);
+			} catch (Exception e) {
 				// The request has failed, in almost all cases this means our refresh token is no longer valid, relog needed
-				BotDatabase.RefreshToken = RefreshToken = null;
+				ArchiLogger.LogGenericWarningException(e);
 
-				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiHandler.GenerateAccessTokens)));
+				BotDatabase.RefreshToken = RefreshToken = null;
 
 				await Connect(true).ConfigureAwait(false);
 
 				return false;
 			}
 
-			// TODO: Handle update of refresh token with next SK2 release
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			UpdateTokens(response!.access_token, RefreshToken!);
+			if (string.IsNullOrEmpty(response.AccessToken)) {
+				// The request has failed, in almost all cases this means our refresh token is no longer valid, relog needed
+				BotDatabase.RefreshToken = RefreshToken = null;
 
-			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.access_token!, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(SteamClient.Authentication.GenerateAccessTokenForAppAsync)));
+
+				await Connect(true).ConfigureAwait(false);
+
+				return false;
+			}
+
+			UpdateTokens(response.AccessToken, !string.IsNullOrEmpty(response.RefreshToken) ? response.RefreshToken : RefreshToken!);
+
+			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 				InitRefreshTokensTimer(AccessTokenValidUntil ?? now.AddHours(18));
 
 				return true;
