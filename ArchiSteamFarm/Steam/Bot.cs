@@ -31,7 +31,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -349,7 +348,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 		CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
 		CallbackManager.Subscribe<SteamUser.PlayingSessionStateCallback>(OnPlayingSessionState);
-		CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
 		CallbackManager.Subscribe<SteamUser.VanityURLChangedCallback>(OnVanityURLChangedCallback);
 
 		CallbackManager.Subscribe<SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
@@ -636,7 +634,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			EFileType.KeysToRedeemUnused => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUnusedExtension}",
 			EFileType.KeysToRedeemUsed => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUsedExtension}",
 			EFileType.MobileAuthenticator => $"{botPath}{SharedInfo.MobileAuthenticatorExtension}",
-			EFileType.SentryFile => $"{botPath}{SharedInfo.SentryHashExtension}",
 			_ => throw new ArgumentOutOfRangeException(nameof(fileType))
 		};
 	}
@@ -2585,31 +2582,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		string sentryFilePath = GetFilePath(EFileType.SentryFile);
-
-		if (string.IsNullOrEmpty(sentryFilePath)) {
-			ArchiLogger.LogNullError(sentryFilePath);
-
-			return;
-		}
-
-		byte[]? sentryFileHash = null;
-
-		if (File.Exists(sentryFilePath)) {
-			try {
-				byte[] sentryFileContent = await File.ReadAllBytesAsync(sentryFilePath).ConfigureAwait(false);
-				sentryFileHash = CryptoHelper.SHAHash(sentryFileContent);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-
-				try {
-					File.Delete(sentryFilePath);
-				} catch {
-					// Ignored, we can only try to delete faulted file at best
-				}
-			}
-		}
-
 		if (!await InitLoginAndPassword(string.IsNullOrEmpty(RefreshToken)).ConfigureAwait(false)) {
 			Stop();
 
@@ -2698,7 +2670,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			AccessToken = RefreshToken,
 			CellID = ASF.GlobalDatabase?.CellID,
 			LoginID = LoginID,
-			SentryFileHash = sentryFileHash,
 			ShouldRememberPassword = BotConfig.UseLoginKeys,
 			Username = username
 		};
@@ -3248,67 +3219,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		SteamPICSChanges.OnBotLoggedOn();
 
 		await PluginsCore.OnBotLoggedOn(this).ConfigureAwait(false);
-	}
-
-	private async void OnMachineAuth(SteamUser.UpdateMachineAuthCallback callback) {
-		ArgumentNullException.ThrowIfNull(callback);
-
-		string sentryFilePath = GetFilePath(EFileType.SentryFile);
-
-		if (string.IsNullOrEmpty(sentryFilePath)) {
-			ArchiLogger.LogNullError(sentryFilePath);
-
-			return;
-		}
-
-		long fileSize;
-		byte[] sentryHash;
-
-		try {
-#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-			FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-
-			await using (fileStream.ConfigureAwait(false)) {
-				fileStream.Seek(callback.Offset, SeekOrigin.Begin);
-
-				await fileStream.WriteAsync(callback.Data.AsMemory(0, callback.BytesToWrite)).ConfigureAwait(false);
-
-				fileSize = fileStream.Length;
-				fileStream.Seek(0, SeekOrigin.Begin);
-
-#pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-				using SHA1 hashAlgorithm = SHA1.Create();
-
-				sentryHash = await hashAlgorithm.ComputeHashAsync(fileStream).ConfigureAwait(false);
-#pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-			}
-		} catch (Exception e) {
-			ArchiLogger.LogGenericException(e);
-
-			try {
-				File.Delete(sentryFilePath);
-			} catch {
-				// Ignored, we can only try to delete faulted file at best
-			}
-
-			return;
-		}
-
-		// Inform the steam servers that we're accepting this sentry file
-		SteamUser.SendMachineAuthResponse(
-			new SteamUser.MachineAuthDetails {
-				BytesWritten = callback.BytesToWrite,
-				FileName = callback.FileName,
-				FileSize = (int) fileSize,
-				JobID = callback.JobID,
-				LastError = 0,
-				Offset = callback.Offset,
-				OneTimePassword = callback.OneTimePassword,
-				Result = EResult.OK,
-				SentryFileHash = sentryHash
-			}
-		);
 	}
 
 	private async void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
@@ -3928,7 +3838,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		KeysToRedeem,
 		KeysToRedeemUnused,
 		KeysToRedeemUsed,
-		MobileAuthenticator,
-		SentryFile
+		MobileAuthenticator
 	}
 }

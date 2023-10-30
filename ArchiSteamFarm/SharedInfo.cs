@@ -63,7 +63,6 @@ public static class SharedInfo {
 	internal const string MobileAuthenticatorExtension = ".maFile";
 	internal const string PluginsDirectory = "plugins";
 	internal const string ProjectURL = $"https://github.com/{GithubRepo}";
-	internal const string SentryHashExtension = ".bin";
 	internal const ushort ShortInformationDelay = InformationDelay / 2;
 	internal const string UlongCompatibilityStringPrefix = "s_";
 	internal const string UpdateDirectory = "_old";
