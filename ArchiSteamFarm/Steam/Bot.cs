@@ -2676,7 +2676,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			if (string.IsNullOrEmpty(pollResult.AccessToken)) {
 				// The fuck is this?
-				ArchiLogger.LogNullError(nameof(pollResult.AccessToken));
+				ArchiLogger.LogNullError(pollResult.AccessToken);
 
 				ReconnectOnUserInitiated = true;
 				SteamClient.Disconnect();
@@ -2686,7 +2686,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			if (string.IsNullOrEmpty(pollResult.RefreshToken)) {
 				// The fuck is that?
-				ArchiLogger.LogNullError(nameof(pollResult.RefreshToken));
+				ArchiLogger.LogNullError(pollResult.RefreshToken);
 
 				ReconnectOnUserInitiated = true;
 				SteamClient.Disconnect();

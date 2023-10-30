@@ -351,7 +351,7 @@ internal sealed class GlobalCache : SerializableFile {
 				string? countText = await reader.ReadLineAsync().ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(countText) || !int.TryParse(countText, out int count) || (count <= 0)) {
-					ASF.ArchiLogger.LogNullError(nameof(countText));
+					ASF.ArchiLogger.LogNullError(countText);
 
 					return (false, null);
 				}
@@ -360,7 +360,7 @@ internal sealed class GlobalCache : SerializableFile {
 
 				while (await reader.ReadLineAsync().ConfigureAwait(false) is { Length: > 0 } line) {
 					if (!uint.TryParse(line, out uint depotID) || (depotID == 0)) {
-						ASF.ArchiLogger.LogNullError(nameof(depotID));
+						ASF.ArchiLogger.LogNullError(depotID);
 
 						continue;
 					}
