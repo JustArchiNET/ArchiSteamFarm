@@ -3796,7 +3796,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				BotDatabase.AccessToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, accessToken);
 
 				if (!string.IsNullOrEmpty(refreshToken)) {
-					BotDatabase.RefreshToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, refreshToken);
+					BotDatabase.RefreshToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, refreshToken!);
 				}
 			} else {
 				BotDatabase.AccessToken = accessToken;
