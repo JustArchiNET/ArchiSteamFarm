@@ -39,7 +39,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
 
 	private readonly ArchiLogger ArchiLogger;
-	private readonly SteamUnifiedMessages.UnifiedService<IAuthentication> UnifiedAuthenticationService;
 	private readonly SteamUnifiedMessages.UnifiedService<IChatRoom> UnifiedChatRoomService;
 	private readonly SteamUnifiedMessages.UnifiedService<IClanChatRooms> UnifiedClanChatRoomsService;
 	private readonly SteamUnifiedMessages.UnifiedService<ICredentials> UnifiedCredentialsService;
@@ -54,7 +53,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		ArgumentNullException.ThrowIfNull(steamUnifiedMessages);
 
 		ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
-		UnifiedAuthenticationService = steamUnifiedMessages.CreateService<IAuthentication>();
 		UnifiedChatRoomService = steamUnifiedMessages.CreateService<IChatRoom>();
 		UnifiedClanChatRoomsService = steamUnifiedMessages.CreateService<IClanChatRooms>();
 		UnifiedCredentialsService = steamUnifiedMessages.CreateService<ICredentials>();
@@ -245,11 +243,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, userNotifications.Body));
 
 				break;
-			case EMsg.ClientWalletInfoUpdate:
-				ClientMsgProtobuf<CMsgClientWalletInfoUpdate> walletInfoUpdate = new(packetMsg);
-				Client.PostCallback(new WalletInfoUpdateCallback(packetMsg.TargetJobID, walletInfoUpdate.Body));
-
-				break;
 		}
 	}
 
@@ -348,35 +341,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		};
 
 		Client.Send(request);
-	}
-
-	internal async Task<CAuthentication_AccessToken_GenerateForApp_Response?> GenerateAccessTokens(string refreshToken) {
-		ArgumentException.ThrowIfNullOrEmpty(refreshToken);
-
-		if (Client == null) {
-			throw new InvalidOperationException(nameof(Client));
-		}
-
-		if (!Client.IsConnected || (Client.SteamID == null)) {
-			return null;
-		}
-
-		CAuthentication_AccessToken_GenerateForApp_Request request = new() {
-			refresh_token = refreshToken,
-			steamid = Client.SteamID
-		};
-
-		SteamUnifiedMessages.ServiceMethodResponse response;
-
-		try {
-			response = await UnifiedAuthenticationService.SendMessage(x => x.GenerateAccessTokenForApp(request)).ToLongRunningTask().ConfigureAwait(false);
-		} catch (Exception e) {
-			ArchiLogger.LogGenericWarningException(e);
-
-			return null;
-		}
-
-		return response.Result == EResult.OK ? response.GetDeserializedResponse<CAuthentication_AccessToken_GenerateForApp_Response>() : null;
 	}
 
 	internal async Task<ulong> GetClanChatGroupID(ulong steamID) {

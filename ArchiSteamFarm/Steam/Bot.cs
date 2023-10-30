@@ -31,7 +31,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -349,12 +348,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 		CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
 		CallbackManager.Subscribe<SteamUser.PlayingSessionStateCallback>(OnPlayingSessionState);
-		CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
 		CallbackManager.Subscribe<SteamUser.VanityURLChangedCallback>(OnVanityURLChangedCallback);
+		CallbackManager.Subscribe<SteamUser.WalletInfoCallback>(OnWalletInfo);
 
 		CallbackManager.Subscribe<SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 		CallbackManager.Subscribe<UserNotificationsCallback>(OnUserNotifications);
-		CallbackManager.Subscribe<WalletInfoUpdateCallback>(OnWalletInfoUpdate);
 
 		Actions = new Actions(this);
 		CardsFarmer = new CardsFarmer(this);
@@ -630,7 +628,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			EFileType.KeysToRedeemUnused => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUnusedExtension}",
 			EFileType.KeysToRedeemUsed => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUsedExtension}",
 			EFileType.MobileAuthenticator => $"{botPath}{SharedInfo.MobileAuthenticatorExtension}",
-			EFileType.SentryFile => $"{botPath}{SharedInfo.SentryHashExtension}",
 			_ => throw new InvalidOperationException(nameof(fileType))
 		};
 	}
@@ -1529,24 +1526,35 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return false;
 			}
 
-			CAuthentication_AccessToken_GenerateForApp_Response? response = await ArchiHandler.GenerateAccessTokens(RefreshToken!).ConfigureAwait(false);
+			AccessTokenGenerateResult response;
 
-			if (string.IsNullOrEmpty(response?.access_token)) {
+			try {
+				response = await SteamClient.Authentication.GenerateAccessTokenForAppAsync(SteamID, RefreshToken!, true).ConfigureAwait(false);
+			} catch (Exception e) {
 				// The request has failed, in almost all cases this means our refresh token is no longer valid, relog needed
-				BotDatabase.RefreshToken = RefreshToken = null;
+				ArchiLogger.LogGenericWarningException(e);
 
-				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiHandler.GenerateAccessTokens)));
+				BotDatabase.RefreshToken = RefreshToken = null;
 
 				await Connect(true).ConfigureAwait(false);
 
 				return false;
 			}
 
-			// TODO: Handle update of refresh token with next SK2 release
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			UpdateTokens(response!.access_token, RefreshToken!);
+			if (string.IsNullOrEmpty(response.AccessToken)) {
+				// The request has failed, in almost all cases this means our refresh token is no longer valid, relog needed
+				BotDatabase.RefreshToken = RefreshToken = null;
 
-			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.access_token!, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(SteamClient.Authentication.GenerateAccessTokenForAppAsync)));
+
+				await Connect(true).ConfigureAwait(false);
+
+				return false;
+			}
+
+			UpdateTokens(response.AccessToken, response.RefreshToken);
+
+			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 				InitRefreshTokensTimer(AccessTokenValidUntil ?? now.AddHours(18));
 
 				return true;
@@ -2541,31 +2549,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		string sentryFilePath = GetFilePath(EFileType.SentryFile);
-
-		if (string.IsNullOrEmpty(sentryFilePath)) {
-			ArchiLogger.LogNullError(sentryFilePath);
-
-			return;
-		}
-
-		byte[]? sentryFileHash = null;
-
-		if (File.Exists(sentryFilePath)) {
-			try {
-				byte[] sentryFileContent = await File.ReadAllBytesAsync(sentryFilePath).ConfigureAwait(false);
-				sentryFileHash = CryptoHelper.SHAHash(sentryFileContent);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-
-				try {
-					File.Delete(sentryFilePath);
-				} catch {
-					// Ignored, we can only try to delete faulted file at best
-				}
-			}
-		}
-
 		if (!await InitLoginAndPassword(string.IsNullOrEmpty(RefreshToken)).ConfigureAwait(false)) {
 			Stop();
 
@@ -2647,6 +2630,26 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				BotDatabase.SteamGuardData = pollResult.NewGuardData;
 			}
 
+			if (string.IsNullOrEmpty(pollResult.AccessToken)) {
+				// The fuck is this?
+				ArchiLogger.LogNullError(pollResult.AccessToken);
+
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
+
+				return;
+			}
+
+			if (string.IsNullOrEmpty(pollResult.RefreshToken)) {
+				// The fuck is that?
+				ArchiLogger.LogNullError(pollResult.RefreshToken);
+
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
+
+				return;
+			}
+
 			UpdateTokens(pollResult.AccessToken, pollResult.RefreshToken);
 		}
 
@@ -2654,7 +2657,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			AccessToken = RefreshToken,
 			CellID = ASF.GlobalDatabase?.CellID,
 			LoginID = LoginID,
-			SentryFileHash = sentryFileHash,
 			ShouldRememberPassword = BotConfig.UseLoginKeys,
 			Username = username
 		};
@@ -3206,67 +3208,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await PluginsCore.OnBotLoggedOn(this).ConfigureAwait(false);
 	}
 
-	private async void OnMachineAuth(SteamUser.UpdateMachineAuthCallback callback) {
-		ArgumentNullException.ThrowIfNull(callback);
-
-		string sentryFilePath = GetFilePath(EFileType.SentryFile);
-
-		if (string.IsNullOrEmpty(sentryFilePath)) {
-			ArchiLogger.LogNullError(sentryFilePath);
-
-			return;
-		}
-
-		long fileSize;
-		byte[] sentryHash;
-
-		try {
-#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-			FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-
-			await using (fileStream.ConfigureAwait(false)) {
-				fileStream.Seek(callback.Offset, SeekOrigin.Begin);
-
-				await fileStream.WriteAsync(callback.Data.AsMemory(0, callback.BytesToWrite)).ConfigureAwait(false);
-
-				fileSize = fileStream.Length;
-				fileStream.Seek(0, SeekOrigin.Begin);
-
-#pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-				using SHA1 hashAlgorithm = SHA1.Create();
-
-				sentryHash = await hashAlgorithm.ComputeHashAsync(fileStream).ConfigureAwait(false);
-#pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-			}
-		} catch (Exception e) {
-			ArchiLogger.LogGenericException(e);
-
-			try {
-				File.Delete(sentryFilePath);
-			} catch {
-				// Ignored, we can only try to delete faulted file at best
-			}
-
-			return;
-		}
-
-		// Inform the steam servers that we're accepting this sentry file
-		SteamUser.SendMachineAuthResponse(
-			new SteamUser.MachineAuthDetails {
-				BytesWritten = callback.BytesToWrite,
-				FileName = callback.FileName,
-				FileSize = (int) fileSize,
-				JobID = callback.JobID,
-				LastError = 0,
-				Offset = callback.Offset,
-				OneTimePassword = callback.OneTimePassword,
-				Result = EResult.OK,
-				SentryFileHash = sentryHash
-			}
-		);
-	}
-
 	private async void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
@@ -3416,11 +3357,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
 	}
 
-	private void OnWalletInfoUpdate(WalletInfoUpdateCallback callback) {
+	private void OnWalletInfo(SteamUser.WalletInfoCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
-		WalletBalance = callback.Balance;
-		WalletBalanceDelayed = callback.BalanceDelayed;
+		WalletBalance = callback.LongBalance;
+		WalletBalanceDelayed = callback.LongBalanceDelayed;
 		WalletCurrency = callback.Currency;
 	}
 
@@ -3793,20 +3734,28 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		RefreshTokensTimer = null;
 	}
 
-	private void UpdateTokens(string accessToken, string refreshToken) {
+	private void UpdateTokens(string accessToken, string? refreshToken = null) {
 		ArgumentException.ThrowIfNullOrEmpty(accessToken);
-		ArgumentException.ThrowIfNullOrEmpty(refreshToken);
 
 		AccessToken = accessToken;
-		RefreshToken = refreshToken;
+
+		if (!string.IsNullOrEmpty(refreshToken)) {
+			RefreshToken = refreshToken;
+		}
 
 		if (BotConfig.UseLoginKeys) {
 			if (BotConfig.PasswordFormat.HasTransformation()) {
 				BotDatabase.AccessToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, accessToken);
-				BotDatabase.RefreshToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, refreshToken);
+
+				if (!string.IsNullOrEmpty(refreshToken)) {
+					BotDatabase.RefreshToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, refreshToken!);
+				}
 			} else {
 				BotDatabase.AccessToken = accessToken;
-				BotDatabase.RefreshToken = refreshToken;
+
+				if (!string.IsNullOrEmpty(refreshToken)) {
+					BotDatabase.RefreshToken = refreshToken;
+				}
 			}
 		}
 	}
@@ -3877,7 +3826,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		KeysToRedeem,
 		KeysToRedeemUnused,
 		KeysToRedeemUsed,
-		MobileAuthenticator,
-		SentryFile
+		MobileAuthenticator
 	}
 }
