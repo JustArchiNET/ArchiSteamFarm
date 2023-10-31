@@ -133,7 +133,7 @@ internal sealed class ExamplePlugin : IASF, IBot, IBotCommand2, IBotConnection, 
 	// This method, apart from being called during bot modules initialization, allows you to read custom bot config properties that are not recognized by ASF
 	// Thanks to that, you can extend default bot config with your own stuff, then parse it here in order to customize your plugin during runtime
 	// Keep in mind that, as noted in the interface, additionalConfigProperties can be null if no custom, unrecognized properties are found by ASF, you should handle that case appropriately
-	// Also keep in mind that this function can be called multiple times, e.g. when user edits his bot configs during runtime
+	// Also keep in mind that this function can be called multiple times, e.g. when user edits their bot configs during runtime
 	// Take a look at OnASFInit() for example parsing code
 	public async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
 		// For example, we'll ensure that every bot starts paused regardless of Paused property, in order to do this, we'll just call Pause here in InitModules()
