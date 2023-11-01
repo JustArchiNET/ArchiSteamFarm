@@ -45,24 +45,6 @@ internal sealed class MobileAuthenticatorPlugin : OfficialPlugin, IBotCommand2, 
 	public override Version Version => typeof(MobileAuthenticatorPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
-		ArgumentNullException.ThrowIfNull(bot);
-
-		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
-		}
-
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
-
-		if ((args == null) || (args.Length == 0)) {
-			throw new ArgumentNullException(nameof(args));
-		}
-
-		if ((steamID != 0) && !new SteamID(steamID).IsIndividualAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
 		return await Commands.OnBotCommand(bot, access, message, args, steamID).ConfigureAwait(false);
 	}
 
