@@ -20,7 +20,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -66,48 +65,6 @@ internal static class SteamUtilities {
 			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(EResult), result));
 
 			return null;
-		}
-
-		return result;
-	}
-
-	internal static Dictionary<uint, string>? ParseItems(this SteamApps.PurchaseResponseCallback callback) {
-		ArgumentNullException.ThrowIfNull(callback);
-
-		List<KeyValue> lineItems = callback.PurchaseReceiptInfo["lineitems"].Children;
-
-		if (lineItems.Count == 0) {
-			return null;
-		}
-
-		Dictionary<uint, string> result = new(lineItems.Count);
-
-		foreach (KeyValue lineItem in lineItems) {
-			uint packageID = lineItem["PackageID"].AsUnsignedInteger();
-
-			if (packageID == 0) {
-				// Coupons have PackageID of -1 (don't ask me why)
-				// We'll use ItemAppID in this case
-				packageID = lineItem["ItemAppID"].AsUnsignedInteger();
-
-				if (packageID == 0) {
-					ASF.ArchiLogger.LogNullError(packageID);
-
-					return null;
-				}
-			}
-
-			string? gameName = lineItem["ItemDescription"].AsString();
-
-			if (string.IsNullOrEmpty(gameName)) {
-				ASF.ArchiLogger.LogNullError(gameName);
-
-				return null;
-			}
-
-			// Apparently steam expects client to decode sent HTML
-			gameName = Uri.UnescapeDataString(gameName);
-			result[packageID] = gameName;
 		}
 
 		return result;

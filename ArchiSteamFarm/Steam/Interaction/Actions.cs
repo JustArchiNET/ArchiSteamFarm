@@ -39,6 +39,7 @@ using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using SteamKit2;
+using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.Steam.Interaction;
 
@@ -278,7 +279,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<SteamApps.PurchaseResponseCallback?> RedeemKey(string key) {
+	public async Task<CStore_RegisterCDKey_Response?> RedeemKey(string key) {
 		await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 		return await Bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);

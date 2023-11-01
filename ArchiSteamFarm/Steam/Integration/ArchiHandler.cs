@@ -45,6 +45,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	private readonly SteamUnifiedMessages.UnifiedService<IEcon> UnifiedEconService;
 	private readonly SteamUnifiedMessages.UnifiedService<IFriendMessages> UnifiedFriendMessagesService;
 	private readonly SteamUnifiedMessages.UnifiedService<IPlayer> UnifiedPlayerService;
+	private readonly SteamUnifiedMessages.UnifiedService<IStore> UnifiedStoreService;
 	private readonly SteamUnifiedMessages.UnifiedService<ITwoFactor> UnifiedTwoFactorService;
 
 	internal DateTime LastPacketReceived { get; private set; }
@@ -59,6 +60,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		UnifiedEconService = steamUnifiedMessages.CreateService<IEcon>();
 		UnifiedFriendMessagesService = steamUnifiedMessages.CreateService<IFriendMessages>();
 		UnifiedPlayerService = steamUnifiedMessages.CreateService<IPlayer>();
+		UnifiedStoreService = steamUnifiedMessages.CreateService<IStore>();
 		UnifiedTwoFactorService = steamUnifiedMessages.CreateService<ITwoFactor>();
 	}
 
@@ -631,7 +633,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		}
 	}
 
-	internal async Task<SteamApps.PurchaseResponseCallback?> RedeemKey(string key) {
+	internal async Task<CStore_RegisterCDKey_Response?> RedeemKey(string key) {
 		if (string.IsNullOrEmpty(key)) {
 			throw new ArgumentNullException(nameof(key));
 		}
@@ -644,20 +646,23 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			return null;
 		}
 
-		ClientMsgProtobuf<CMsgClientRegisterKey> request = new(EMsg.ClientRegisterKey) {
-			SourceJobID = Client.GetNextJobID(),
-			Body = { key = key }
+		CStore_RegisterCDKey_Request request = new() {
+			activation_code = key,
+			is_request_from_client = true
 		};
 
-		Client.Send(request);
+		SteamUnifiedMessages.ServiceMethodResponse response;
 
 		try {
-			return await new AsyncJob<SteamApps.PurchaseResponseCallback>(Client, request.SourceJobID).ToLongRunningTask().ConfigureAwait(false);
+			response = await UnifiedStoreService.SendMessage(x => x.RegisterCDKey(request)).ToLongRunningTask().ConfigureAwait(false);
 		} catch (Exception e) {
-			ArchiLogger.LogGenericException(e);
+			ArchiLogger.LogGenericWarningException(e);
 
 			return null;
 		}
+
+		// We want to deserialize the response even with failed EResult
+		return response.GetDeserializedResponse<CStore_RegisterCDKey_Response>();
 	}
 
 	internal void RequestItemAnnouncements() {

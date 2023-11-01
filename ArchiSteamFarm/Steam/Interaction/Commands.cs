@@ -39,6 +39,7 @@ using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 using SteamKit2;
+using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.Steam.Interaction;
 
@@ -2534,11 +2535,19 @@ public sealed class Commands {
 
 							if (!skipRequest) {
 								// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-								SteamApps.PurchaseResponseCallback? redeemResult = await currentBot.Actions.RedeemKey(key!).ConfigureAwait(false);
+								CStore_RegisterCDKey_Response? redeemResult = await currentBot.Actions.RedeemKey(key!).ConfigureAwait(false);
 
-								result = redeemResult?.Result ?? EResult.Timeout;
-								purchaseResultDetail = redeemResult?.PurchaseResultDetail ?? EPurchaseResultDetail.Timeout;
-								items = redeemResult?.ParseItems();
+								if (redeemResult != null) {
+									result = (EResult) redeemResult.purchase_receipt_info.purchase_status;
+									purchaseResultDetail = (EPurchaseResultDetail) redeemResult.purchase_result_details;
+
+									if (redeemResult.purchase_receipt_info.line_items.Count > 0) {
+										items = redeemResult.purchase_receipt_info.line_items.ToDictionary(static lineItem => lineItem.packageid, static lineItem => lineItem.line_item_description);
+									}
+								} else {
+									result = EResult.Timeout;
+									purchaseResultDetail = EPurchaseResultDetail.Timeout;
+								}
 							}
 
 							if ((result == EResult.Timeout) || (purchaseResultDetail == EPurchaseResultDetail.Timeout)) {
@@ -2618,9 +2627,9 @@ public sealed class Commands {
 
 										foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !triedBots.Contains(bot.Value) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && ((access >= EAccess.Owner) || ((steamID != 0) && (bot.Value.GetAccess(steamID) >= EAccess.Operator))) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value)) {
 											// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-											SteamApps.PurchaseResponseCallback? redeemResult = await innerBot.Actions.RedeemKey(key!).ConfigureAwait(false);
+											CStore_RegisterCDKey_Response? redeemResponse = await innerBot.Actions.RedeemKey(key!).ConfigureAwait(false);
 
-											if (redeemResult == null) {
+											if (redeemResponse == null) {
 												response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{EResult.Timeout}/{EPurchaseResultDetail.Timeout}"), innerBot.BotName));
 
 												continue;
@@ -2628,7 +2637,10 @@ public sealed class Commands {
 
 											triedBots.Add(innerBot);
 
-											switch (redeemResult.PurchaseResultDetail) {
+											EResult redeemResult = (EResult) redeemResponse.purchase_receipt_info.purchase_status;
+											EPurchaseResultDetail redeemPurchaseResult = (EPurchaseResultDetail) redeemResponse.purchase_result_details;
+
+											switch (redeemPurchaseResult) {
 												case EPurchaseResultDetail.BadActivationCode:
 												case EPurchaseResultDetail.DuplicateActivationCode:
 												case EPurchaseResultDetail.NoDetail: // OK
@@ -2645,9 +2657,9 @@ public sealed class Commands {
 													break;
 											}
 
-											Dictionary<uint, string>? redeemItems = redeemResult.ParseItems();
+											Dictionary<uint, string>? redeemItems = redeemResponse.purchase_receipt_info.line_items.Count > 0 ? redeemResponse.purchase_receipt_info.line_items.ToDictionary(static lineItem => lineItem.packageid, static lineItem => lineItem.line_item_description) : null;
 
-											response.AppendLine(FormatBotResponse(redeemItems?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{redeemResult.Result}/{redeemResult.PurchaseResultDetail}", string.Join(", ", redeemItems)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{redeemResult.Result}/{redeemResult.PurchaseResultDetail}"), innerBot.BotName));
+											response.AppendLine(FormatBotResponse(redeemItems?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{redeemResult}/{redeemPurchaseResult}", string.Join(", ", redeemItems)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{redeemResult}/{redeemPurchaseResult}"), innerBot.BotName));
 
 											if (alreadyHandled) {
 												break;
