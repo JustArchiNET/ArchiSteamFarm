@@ -206,7 +206,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				return (true, handledConfirmations.Values, string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations.Count));
 			}
 
-			// If he did, check if we've already found everything we were supposed to
+			// If they did, check if we've already found everything we were supposed to
 			if ((handledConfirmations.Count >= acceptedCreatorIDs.Count) && acceptedCreatorIDs.All(handledConfirmations.ContainsKey)) {
 				return (true, handledConfirmations.Values, string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations.Count));
 			}
