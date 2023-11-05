@@ -33,10 +33,13 @@ public sealed class PackageData {
 	[JsonProperty(Required = Required.Always)]
 	public uint ChangeNumber { get; private set; }
 
+	[JsonProperty]
+	public ImmutableHashSet<string>? ProhibitRunInCountries { get; private set; }
+
 	[JsonProperty(Required = Required.Always)]
 	public DateTime ValidUntil { get; private set; }
 
-	internal PackageData(uint changeNumber, DateTime validUntil, ImmutableHashSet<uint>? appIDs = null) {
+	internal PackageData(uint changeNumber, DateTime validUntil, ImmutableHashSet<uint>? appIDs = null, ImmutableHashSet<string>? prohibitRunInCountries = null) {
 		if (changeNumber == 0) {
 			throw new ArgumentOutOfRangeException(nameof(changeNumber));
 		}
@@ -48,6 +51,7 @@ public sealed class PackageData {
 		ChangeNumber = changeNumber;
 		ValidUntil = validUntil;
 		AppIDs = appIDs;
+		ProhibitRunInCountries = prohibitRunInCountries;
 	}
 
 	[JsonConstructor]
@@ -55,4 +59,7 @@ public sealed class PackageData {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeAppIDs() => AppIDs is { IsEmpty: false };
+
+	[UsedImplicitly]
+	public bool ShouldSerializeProhibitRunInCountries() => ProhibitRunInCountries is { IsEmpty: false };
 }

@@ -69,6 +69,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private const byte MaxLoginFailures = WebBrowser.MaxTries; // Max login failures in a row before we determine that our credentials are invalid (because Steam wrongly returns those, of course)course)
 	private const byte MinimumAccessTokenValidityMinutes = 10;
 	private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
+	private const byte RegionRestrictionPlayableBlockMonths = 3;
 
 	[PublicAPI]
 	public static IReadOnlyDictionary<string, Bot>? BotsReadOnly => Bots;
@@ -241,6 +242,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private Timer? ConnectionFailureTimer;
 	private bool FirstTradeSent;
 	private Timer? GamesRedeemerInBackgroundTimer;
+	private string? IPCountryCode;
 	private EResult LastLogOnResult;
 	private DateTime LastLogonSessionReplaced;
 	private bool LibraryLocked;
@@ -1120,6 +1122,56 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
+		// Check region restrictions
+		if (!string.IsNullOrEmpty(IPCountryCode)) {
+			DateTime? regionRestrictedUntil = null;
+
+			DateTime safePlayableBefore = DateTime.UtcNow.AddMonths(-RegionRestrictionPlayableBlockMonths);
+
+			foreach (uint packageID in packageIDs) {
+				if (!OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) ownedPackageData)) {
+					// We don't own that packageID, keep checking
+					continue;
+				}
+
+				if (ownedPackageData.TimeCreated < safePlayableBefore) {
+					// Our package is older than required, this is playable
+					regionRestrictedUntil = null;
+
+					break;
+				}
+
+				// We've got a package that was activated recently, we should check if we have any playable restrictions on it
+				if ((ASF.GlobalDatabase == null) || !ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out PackageData? packageData)) {
+					// No information about that package, try again later
+					return (0, DateTime.MaxValue, true);
+				}
+
+				if ((packageData.ProhibitRunInCountries == null) || packageData.ProhibitRunInCountries.IsEmpty) {
+					// No restrictions, we're good to go
+					regionRestrictedUntil = null;
+
+					break;
+				}
+
+				if (packageData.ProhibitRunInCountries.Contains(IPCountryCode)) {
+					// We are restricted by this package, we can only be saved by another package that is not restricted
+					DateTime regionRestrictedUntilPackage = ownedPackageData.TimeCreated.AddMonths(RegionRestrictionPlayableBlockMonths);
+
+					if (!regionRestrictedUntil.HasValue || (regionRestrictedUntilPackage < regionRestrictedUntil.Value)) {
+						regionRestrictedUntil = regionRestrictedUntilPackage;
+					}
+				}
+			}
+
+			if (regionRestrictedUntil.HasValue) {
+				// We can't play this game for now
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningRegionRestrictedPackage, appID, IPCountryCode, regionRestrictedUntil.Value));
+
+				return (0, regionRestrictedUntil.Value, false);
+			}
+		}
+
 		SteamApps.PICSTokensCallback? tokenCallback = null;
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (tokenCallback == null) && IsConnectedAndLoggedOn; i++) {
@@ -1300,33 +1352,38 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			if (productInfo.KeyValues == KeyValue.Invalid) {
 				ArchiLogger.LogNullError(productInfo);
 
-				return null;
+				continue;
 			}
 
 			uint changeNumber = productInfo.ChangeNumber;
+
 			HashSet<uint>? appIDs = null;
 
-			try {
-				KeyValue appIDsKv = productInfo.KeyValues["appids"];
+			KeyValue appIDsKv = productInfo.KeyValues["appids"];
 
-				if (appIDsKv == KeyValue.Invalid) {
-					continue;
-				}
-
+			if (appIDsKv != KeyValue.Invalid) {
 				appIDs = new HashSet<uint>(appIDsKv.Children.Count);
 
 				foreach (string? appIDText in appIDsKv.Children.Select(static app => app.Value)) {
 					if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 						ArchiLogger.LogNullError(appID);
 
-						return null;
+						continue;
 					}
 
 					appIDs.Add(appID);
 				}
-			} finally {
-				result[productInfo.ID] = new PackageData(changeNumber, validUntil, appIDs?.ToImmutableHashSet());
 			}
+
+			string[]? prohibitRunInCountries = null;
+
+			string? prohibitRunInCountriesText = productInfo.KeyValues["extended"]["prohibitrunincountries"].AsString();
+
+			if (!string.IsNullOrEmpty(prohibitRunInCountriesText)) {
+				prohibitRunInCountries = prohibitRunInCountriesText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			}
+
+			result[productInfo.ID] = new PackageData(changeNumber, validUntil, appIDs?.ToImmutableHashSet(), prohibitRunInCountries?.ToImmutableHashSet(StringComparer.Ordinal));
 		}
 
 		return result;
@@ -2350,7 +2407,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		AccountFlags = EAccountFlags.NormalUser;
-		AvatarHash = Nickname = null;
+		AvatarHash = IPCountryCode = Nickname = null;
 		MasterChatGroupID = 0;
 		RequiredInput = ASF.EUserInputType.None;
 		WalletBalance = 0;
@@ -3131,6 +3188,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		AccountFlags = callback.AccountFlags;
+		IPCountryCode = callback.IPCountryCode;
 		SteamID = callback.ClientSteamID ?? throw new InvalidOperationException(nameof(callback.ClientSteamID));
 
 		ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOn, $"{SteamID}{(!string.IsNullOrEmpty(callback.VanityURL) ? $"/{callback.VanityURL}" : "")}"));
