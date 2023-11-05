@@ -1154,7 +1154,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					break;
 				}
 
-				if (packageData.ProhibitRunInCountries.Contains(IPCountryCode)) {
+				if (packageData.ProhibitRunInCountries.Contains(IPCountryCode!)) {
 					// We are restricted by this package, we can only be saved by another package that is not restricted
 					DateTime regionRestrictedUntilPackage = ownedPackageData.TimeCreated.AddMonths(RegionRestrictionPlayableBlockMonths);
 
@@ -1380,7 +1380,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			string? prohibitRunInCountriesText = productInfo.KeyValues["extended"]["prohibitrunincountries"].AsString();
 
 			if (!string.IsNullOrEmpty(prohibitRunInCountriesText)) {
-				prohibitRunInCountries = prohibitRunInCountriesText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				prohibitRunInCountries = prohibitRunInCountriesText!.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 			}
 
 			result[productInfo.ID] = new PackageData(changeNumber, validUntil, appIDs?.ToImmutableHashSet(), prohibitRunInCountries?.ToImmutableHashSet(StringComparer.Ordinal));
