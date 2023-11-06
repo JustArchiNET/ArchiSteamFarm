@@ -748,4 +748,5 @@ StackTrace:
 		<value>ניסית להשתמש בתכונה בתשלום {0} אך אין לך מזהה רישיון חוקי שהוגדר בתצורה הגלובלית של ASF. אנא בדוק את התצורה שלך, מכיוון שהפונקציונליות לא תעבוד ללא פרטים נוספים.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
+	
 </root>

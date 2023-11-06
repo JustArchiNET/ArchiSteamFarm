@@ -748,4 +748,5 @@ Prosessin käyttöaika: {1}</value>
 		<value>Olet yrittänyt käyttää maksullista ominaisuutta {0}, mutta sinulla ei ole voimassa olevaa ASF:n yleisissä asetuksissa olevaa lisenssitunnusta. Tarkista asetukset, koska toiminto ei toimi ilman lisätietoja.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
+	
 </root>

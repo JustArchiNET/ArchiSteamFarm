@@ -748,4 +748,5 @@
 		<value>您正在嘗試使用付費功能 {0}，但您尚未在 ASF 全域設定中設定有效的 LicenseID。請檢查您的設定，因為如果沒有額外資訊，該功能將會無法運作。</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
+	
 </root>

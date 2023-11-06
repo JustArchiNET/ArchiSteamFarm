@@ -92,13 +92,27 @@ StackTrace:
 	
 	
 	
+	<data name="ErrorIsInvalid" xml:space="preserve">
+		<value>{0} er ugyldig!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
 	
+	<data name="ErrorObjectIsNull" xml:space="preserve">
+		<value>{0} er null!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
 	
 	
 	
 	
 	
 	
+	<data name="Exiting" xml:space="preserve">
+		<value>Avslutter...</value>
+	</data>
+	<data name="WarningFailed" xml:space="preserve">
+		<value>Mislykket!</value>
+	</data>
 	
 	
 	
@@ -106,8 +120,23 @@ StackTrace:
 	
 	
 	
+	<data name="Restarting" xml:space="preserve">
+		<value>Restarter...</value>
+	</data>
+	<data name="Starting" xml:space="preserve">
+		<value>Starter...</value>
+	</data>
+	<data name="Success" xml:space="preserve">
+		<value>Suksess!</value>
+	</data>
 	
+	<data name="UpdateCheckingNewVersion" xml:space="preserve">
+		<value>Ser etter ny versjon...</value>
+	</data>
 	
+	<data name="UpdateFinished" xml:space="preserve">
+		<value>Oppdateringsprosessen er ferdig!</value>
+	</data>
 	
 	
 	
@@ -127,6 +156,9 @@ StackTrace:
 	
 	
 	
+	<data name="Done" xml:space="preserve">
+		<value>Utført!</value>
+	</data>
 	
 	
 	
@@ -142,8 +174,15 @@ StackTrace:
 	
 	
 	
+	<data name="UnknownCommand" xml:space="preserve">
+		<value>Ukjent kommando!</value>
+	</data>
 	
 	
+	<data name="BotAcceptingGift" xml:space="preserve">
+		<value>Godta gave: {0}...</value>
+		<comment>{0} will be replaced by giftID (number)</comment>
+	</data>
 	
 	
 	
@@ -155,8 +194,21 @@ StackTrace:
 	
 	
 	
+	<data name="BotConnected" xml:space="preserve">
+		<value>Koblet til Steam!</value>
+	</data>
+	<data name="BotDisconnected" xml:space="preserve">
+		<value>Koblet fra Steam!</value>
+	</data>
+	<data name="BotDisconnecting" xml:space="preserve">
+		<value>Kobler fra...</value>
+	</data>
 	
 	
+	<data name="BotLoggedOff" xml:space="preserve">
+		<value>Logget av Steam: {0}</value>
+		<comment>{0} will be replaced by logging off reason (string)</comment>
+	</data>
 	
 	
 	
@@ -170,6 +222,9 @@ StackTrace:
 	
 	
 	
+	<data name="BotReconnecting" xml:space="preserve">
+		<value>Kobler til på nytt...</value>
+	</data>
 	
 	
 	
@@ -179,36 +234,39 @@ StackTrace:
 	
 	
 	
+	<data name="BotUnableToLogin" xml:space="preserve">
+		<value>Kan ikke logge inn på Steam: {0}/{1}</value>
+		<comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+	</data>
+	<data name="ErrorIsEmpty" xml:space="preserve">
+		<value>{0} er tom!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="UnusedKeys" xml:space="preserve">
+		<value>Ubrukte nøkler: {0}</value>
+		<comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+	</data>
+	<data name="WarningFailedWithError" xml:space="preserve">
+		<value>Mislyktes på grunn av feil: {0}</value>
+		<comment>{0} will be replaced by failure reason (string)</comment>
+	</data>
 	
 	
 	
+	<data name="BotConnecting" xml:space="preserve">
+		<value>Kobler til...</value>
+	</data>
 	
 	
+	<data name="BotStopping" xml:space="preserve">
+		<value>Stopper...</value>
+	</data>
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="Initializing" xml:space="preserve">
+		<value>Initialiserer {0}...</value>
+		<comment>{0} will be replaced by service name that is being initialized</comment>
+	</data>
 	
 	
 	
