@@ -3432,7 +3432,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		return access >= EAccess.Operator ? FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotVersion, SharedInfo.ASF, SharedInfo.Version)) : null;
+		return access >= EAccess.FamilySharing ? FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotVersion, SharedInfo.ASF, SharedInfo.Version)) : null;
 	}
 
 	private string? ResponseWalletBalance(EAccess access) {
