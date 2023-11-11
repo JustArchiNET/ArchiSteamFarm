@@ -94,6 +94,42 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	[PublicAPI]
+	public async Task<CClanChatRooms_GetClanChatRoomInfo_Response?> GetClanChatRoomInfo(ulong steamID) {
+		if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return null;
+		}
+
+		CClanChatRooms_GetClanChatRoomInfo_Request request = new() {
+			autocreate = true,
+			steamid = steamID
+		};
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedClanChatRoomsService.SendMessage(x => x.GetClanChatRoomInfo(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return null;
+		}
+
+		if (response.Result != EResult.OK) {
+			return null;
+		}
+
+		return response.GetDeserializedResponse<CClanChatRooms_GetClanChatRoomInfo_Response>();
+	}
+
+	[PublicAPI]
 	public async Task<CCredentials_LastCredentialChangeTime_Response?> GetCredentialChangeTimeDetails() {
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -249,6 +285,64 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	[PublicAPI]
+	public async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {
+		if (chatGroupID == 0) {
+			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
+		}
+
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return false;
+		}
+
+		CChatRoom_JoinChatRoomGroup_Request request = new() { chat_group_id = chatGroupID };
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedChatRoomService.SendMessage(x => x.JoinChatRoomGroup(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return false;
+		}
+
+		return response.Result == EResult.OK;
+	}
+
+	[PublicAPI]
+	public async Task<bool> LeaveChatRoomGroup(ulong chatGroupID) {
+		if (chatGroupID == 0) {
+			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
+		}
+
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return false;
+		}
+
+		CChatRoom_LeaveChatRoomGroup_Request request = new() { chat_group_id = chatGroupID };
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedChatRoomService.SendMessage(x => x.LeaveChatRoomGroup(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return false;
+		}
+
+		return response.Result == EResult.OK;
+	}
+
+	[PublicAPI]
 	public async Task<bool> RemoveFriend(ulong steamID) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -275,42 +369,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		}
 
 		return response.Result == EResult.OK;
-	}
-
-	[PublicAPI]
-	public async Task<CClanChatRooms_GetClanChatRoomInfo_Response?> GetClanChatRoomInfo(ulong steamID) {
-		if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
-		if (Client == null) {
-			throw new InvalidOperationException(nameof(Client));
-		}
-
-		if (!Client.IsConnected) {
-			return null;
-		}
-
-		CClanChatRooms_GetClanChatRoomInfo_Request request = new() {
-			autocreate = true,
-			steamid = steamID
-		};
-
-		SteamUnifiedMessages.ServiceMethodResponse response;
-
-		try {
-			response = await UnifiedClanChatRoomsService.SendMessage(x => x.GetClanChatRoomInfo(request)).ToLongRunningTask().ConfigureAwait(false);
-		} catch (Exception e) {
-			ArchiLogger.LogGenericWarningException(e);
-
-			return null;
-		}
-
-		if (response.Result != EResult.OK) {
-			return null;
-		}
-
-		return response.GetDeserializedResponse<CClanChatRooms_GetClanChatRoomInfo_Response>();
 	}
 
 	internal void AckChatMessage(ulong chatGroupID, ulong chatID, uint timestamp) {
@@ -514,64 +572,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		CTwoFactor_Status_Response body = response.GetDeserializedResponse<CTwoFactor_Status_Response>();
 
 		return body.device_identifier;
-	}
-
-	[PublicAPI]
-	public async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {
-		if (chatGroupID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-		}
-
-		if (Client == null) {
-			throw new InvalidOperationException(nameof(Client));
-		}
-
-		if (!Client.IsConnected) {
-			return false;
-		}
-
-		CChatRoom_JoinChatRoomGroup_Request request = new() { chat_group_id = chatGroupID };
-
-		SteamUnifiedMessages.ServiceMethodResponse response;
-
-		try {
-			response = await UnifiedChatRoomService.SendMessage(x => x.JoinChatRoomGroup(request)).ToLongRunningTask().ConfigureAwait(false);
-		} catch (Exception e) {
-			ArchiLogger.LogGenericWarningException(e);
-
-			return false;
-		}
-
-		return response.Result == EResult.OK;
-	}
-
-	[PublicAPI]
-	public async Task<bool> LeaveChatRoomGroup(ulong chatGroupID) {
-		if (chatGroupID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-		}
-
-		if (Client == null) {
-			throw new InvalidOperationException(nameof(Client));
-		}
-
-		if (!Client.IsConnected) {
-			return false;
-		}
-
-		CChatRoom_LeaveChatRoomGroup_Request request = new() { chat_group_id = chatGroupID };
-
-		SteamUnifiedMessages.ServiceMethodResponse response;
-
-		try {
-			response = await UnifiedChatRoomService.SendMessage(x => x.LeaveChatRoomGroup(request)).ToLongRunningTask().ConfigureAwait(false);
-		} catch (Exception e) {
-			ArchiLogger.LogGenericWarningException(e);
-
-			return false;
-		}
-
-		return response.Result == EResult.OK;
 	}
 
 	internal async Task PlayGames(IReadOnlyCollection<uint> gameIDs, string? gameName = null) {
