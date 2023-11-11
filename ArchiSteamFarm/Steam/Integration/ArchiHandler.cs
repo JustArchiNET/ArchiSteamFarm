@@ -122,11 +122,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			return null;
 		}
 
-		if (response.Result != EResult.OK) {
-			return null;
-		}
-
-		return response.GetDeserializedResponse<CClanChatRooms_GetClanChatRoomInfo_Response>();
+		return response.Result == EResult.OK ? response.GetDeserializedResponse<CClanChatRooms_GetClanChatRoomInfo_Response>() : null;
 	}
 
 	[PublicAPI]
