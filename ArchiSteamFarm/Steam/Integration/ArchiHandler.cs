@@ -278,7 +278,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	[PublicAPI]
-	public async Task<(ulong ChatGroupID, ulong DefaultChatID)?> GetClanChatInfo(ulong steamID) {
+	public async Task<CClanChatRooms_GetClanChatRoomInfo_Response?> GetClanChatRoomInfo(ulong steamID) {
 		if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -310,9 +310,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			return null;
 		}
 
-		CClanChatRooms_GetClanChatRoomInfo_Response body = response.GetDeserializedResponse<CClanChatRooms_GetClanChatRoomInfo_Response>();
-
-		return (body.chat_group_summary.chat_group_id, body.chat_group_summary.default_chat_id);
+		return response.GetDeserializedResponse<CClanChatRooms_GetClanChatRoomInfo_Response>();
 	}
 
 	internal void AckChatMessage(ulong chatGroupID, ulong chatID, uint timestamp) {
