@@ -518,7 +518,8 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		return body.device_identifier;
 	}
 
-	internal async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {
+	[PublicAPI]
+	public async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {
 		if (chatGroupID == 0) {
 			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
 		}
@@ -537,6 +538,35 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 		try {
 			response = await UnifiedChatRoomService.SendMessage(x => x.JoinChatRoomGroup(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return false;
+		}
+
+		return response.Result == EResult.OK;
+	}
+
+	[PublicAPI]
+	public async Task<bool> LeaveChatRoomGroup(ulong chatGroupID) {
+		if (chatGroupID == 0) {
+			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
+		}
+
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return false;
+		}
+
+		CChatRoom_LeaveChatRoomGroup_Request request = new() { chat_group_id = chatGroupID };
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedChatRoomService.SendMessage(x => x.LeaveChatRoomGroup(request)).ToLongRunningTask().ConfigureAwait(false);
 		} catch (Exception e) {
 			ArchiLogger.LogGenericWarningException(e);
 
