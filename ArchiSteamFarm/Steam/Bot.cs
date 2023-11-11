@@ -2578,13 +2578,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (MasterChatGroupID == 0) {
-			ulong chatGroupID = await ArchiHandler.GetClanChatGroupID(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+			(ulong ChatGroupID, ulong DefaultChatID)? clanChatGroupInfo = await ArchiHandler.GetClanChatInfo(BotConfig.SteamMasterClanID).ConfigureAwait(false);
 
-			if (chatGroupID == 0) {
+			if ((clanChatGroupInfo == null) || (clanChatGroupInfo.Value.ChatGroupID == 0)) {
 				return;
 			}
 
-			MasterChatGroupID = chatGroupID;
+			MasterChatGroupID = clanChatGroupInfo.Value.ChatGroupID;
 		}
 
 		HashSet<ulong>? chatGroupIDs = await ArchiHandler.GetMyChatGroupIDs().ConfigureAwait(false);

@@ -277,6 +277,44 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		return response.Result == EResult.OK;
 	}
 
+	[PublicAPI]
+	public async Task<(ulong ChatGroupID, ulong DefaultChatID)?> GetClanChatInfo(ulong steamID) {
+		if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return null;
+		}
+
+		CClanChatRooms_GetClanChatRoomInfo_Request request = new() {
+			autocreate = true,
+			steamid = steamID
+		};
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedClanChatRoomsService.SendMessage(x => x.GetClanChatRoomInfo(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return null;
+		}
+
+		if (response.Result != EResult.OK) {
+			return null;
+		}
+
+		CClanChatRooms_GetClanChatRoomInfo_Response body = response.GetDeserializedResponse<CClanChatRooms_GetClanChatRoomInfo_Response>();
+
+		return (body.chat_group_summary.chat_group_id, body.chat_group_summary.default_chat_id);
+	}
+
 	internal void AckChatMessage(ulong chatGroupID, ulong chatID, uint timestamp) {
 		if (chatGroupID == 0) {
 			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
@@ -353,43 +391,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		};
 
 		Client.Send(request);
-	}
-
-	internal async Task<ulong> GetClanChatGroupID(ulong steamID) {
-		if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
-		if (Client == null) {
-			throw new InvalidOperationException(nameof(Client));
-		}
-
-		if (!Client.IsConnected) {
-			return 0;
-		}
-
-		CClanChatRooms_GetClanChatRoomInfo_Request request = new() {
-			autocreate = true,
-			steamid = steamID
-		};
-
-		SteamUnifiedMessages.ServiceMethodResponse response;
-
-		try {
-			response = await UnifiedClanChatRoomsService.SendMessage(x => x.GetClanChatRoomInfo(request)).ToLongRunningTask().ConfigureAwait(false);
-		} catch (Exception e) {
-			ArchiLogger.LogGenericWarningException(e);
-
-			return 0;
-		}
-
-		if (response.Result != EResult.OK) {
-			return 0;
-		}
-
-		CClanChatRooms_GetClanChatRoomInfo_Response body = response.GetDeserializedResponse<CClanChatRooms_GetClanChatRoomInfo_Response>();
-
-		return body.chat_group_summary.chat_group_id;
 	}
 
 	internal async Task<uint?> GetLevel() {
