@@ -282,9 +282,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 	[PublicAPI]
 	public async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {
-		if (chatGroupID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(chatGroupID);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -311,9 +309,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 	[PublicAPI]
 	public async Task<bool> LeaveChatRoomGroup(ulong chatGroupID) {
-		if (chatGroupID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(chatGroupID);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
