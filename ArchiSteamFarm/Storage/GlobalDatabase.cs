@@ -99,7 +99,11 @@ public sealed class GlobalDatabase : GenericDatabase {
 	[JsonProperty($"_{nameof(LastChangeNumber)}", Required = Required.DisallowNull)]
 	private uint BackingLastChangeNumber;
 
-	private GlobalDatabase(string filePath) : this() => FilePath = !string.IsNullOrEmpty(filePath) ? filePath : throw new ArgumentNullException(nameof(filePath));
+	private GlobalDatabase(string filePath) : this() {
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
+
+		FilePath = filePath;
+	}
 
 	[JsonConstructor]
 	private GlobalDatabase() {
