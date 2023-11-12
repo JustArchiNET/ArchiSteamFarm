@@ -310,9 +310,21 @@ internal static class Logging {
 
 			StringBuilder result = new();
 
-			ConsoleKeyInfo keyInfo;
+			while (true) {
+				ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
-			while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Enter) {
+				switch (keyInfo.Key) {
+					case 0:
+						// Linux terminal closing STDIN, we're done here
+						return result.ToString();
+					case ConsoleKey.Enter:
+						// User finishing input, as expected
+						Console.WriteLine();
+
+						return result.ToString();
+				}
+
+				// User continues input
 				if (!char.IsControl(keyInfo.KeyChar)) {
 					result.Append(keyInfo.KeyChar);
 					Console.Write(mask);
@@ -328,10 +340,6 @@ internal static class Logging {
 					}
 				}
 			}
-
-			Console.WriteLine();
-
-			return result.ToString();
 		} finally {
 			cts.Cancel();
 		}

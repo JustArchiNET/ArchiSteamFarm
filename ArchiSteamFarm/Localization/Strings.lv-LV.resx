@@ -748,4 +748,5 @@ Darbspējas laiks: {1}</value>
 		<value>Jūs mēģinat izmantot maksas pakalpojumu {0}, bet jums nav derīgs LicenseID iestatīts ASF globālajā konfigurācijā. Lūdzu pārskati savu konfigurāciju, jo šī funkcionalitāte nestrādās bez papildu informācijas.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
+	
 </root>

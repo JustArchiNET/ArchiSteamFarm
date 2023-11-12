@@ -748,4 +748,8 @@ Tempo de execução: {1}</value>
 		<value>Você tentou usar o recurso pago {0}, mas você não tem uma LicenseID válida definida na configuração global do ASF. Por favor, revise sua configuração, pois essa funcionalidade não funcionará sem ela.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>O ASF não consegue iniciar o app {0} devido a uma restrição relacionada à região do país {1}, que vigora até {2}.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
 </root>

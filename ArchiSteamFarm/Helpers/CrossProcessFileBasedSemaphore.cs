@@ -30,7 +30,7 @@ using ArchiSteamFarm.Core;
 namespace ArchiSteamFarm.Helpers;
 
 internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossProcessSemaphore, IDisposable {
-	private const ushort SpinLockDelay = 1000; // In milliseconds
+	private const byte SpinLockDelay = 200; // In milliseconds
 
 	private readonly string FilePath;
 	private readonly SemaphoreSlim LocalSemaphore = new(1, 1);
@@ -123,15 +123,11 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 		try {
 			stopwatch.Stop();
 
-			if (stopwatch.ElapsedMilliseconds >= int.MaxValue) {
+			if (stopwatch.ElapsedMilliseconds >= millisecondsTimeout) {
 				return false;
 			}
 
 			millisecondsTimeout -= (int) stopwatch.ElapsedMilliseconds;
-
-			if (millisecondsTimeout <= 0) {
-				return false;
-			}
 
 			while (true) {
 				try {

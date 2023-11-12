@@ -4,15 +4,15 @@
 		<PackageVersion Include="ConfigureAwaitChecker.Analyzer" Version="5.0.0.1" />
 		<PackageVersion Include="CryptSharpStandard" Version="1.0.0" />
 		<PackageVersion Include="Humanizer" Version="2.14.1" />
-		<PackageVersion Include="JetBrains.Annotations" Version="2023.2.0" />
+		<PackageVersion Include="JetBrains.Annotations" Version="2023.3.0" />
 		<PackageVersion Include="Markdig.Signed" Version="0.33.0" />
-		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
 		<PackageVersion Include="MSTest.TestAdapter" Version="3.1.1" />
 		<PackageVersion Include="MSTest.TestFramework" Version="3.1.1" />
 		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
 		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.5" />
-		<PackageVersion Include="SteamKit2" Version="2.5.0-Beta.2" />
+		<PackageVersion Include="SteamKit2" Version="2.5.0" />
 		<PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 		<PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
 		<PackageVersion Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />

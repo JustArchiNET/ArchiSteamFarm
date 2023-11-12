@@ -777,7 +777,7 @@ public sealed class WebBrowser : IDisposable {
 							break;
 					}
 
-					// Compress the request if caller specified it, so he knows that the server supports it, and the content is not compressed yet
+					// Compress the request if caller specified it, so they know that the server supports it, and the content is not compressed yet
 					if (requestOptions.HasFlag(ERequestOptions.CompressRequest) && (requestMessage.Content.Headers.ContentEncoding.Count == 0)) {
 						HttpContent originalContent = requestMessage.Content;
 

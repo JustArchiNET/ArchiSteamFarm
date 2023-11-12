@@ -385,8 +385,8 @@ internal sealed class Startup {
 				goto default;
 			default:
 				// Instruct the caller to always ask us first about every file it requests
-				// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that his cache is still up-to-date
-				// This is used to handle ASF and user updates to WWW root, we don't want from the client to ever use outdated scripts
+				// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that their cache is still up-to-date
+				// This is used to handle ASF and user updates to WWW root, we don't want the client to ever use outdated scripts
 				cacheControl.NoCache = true;
 
 				// All static files are public by definition, we don't have any authorization here

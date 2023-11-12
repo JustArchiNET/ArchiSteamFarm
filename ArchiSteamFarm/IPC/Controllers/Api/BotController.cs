@@ -34,7 +34,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using SteamKit2;
+using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
@@ -293,7 +293,7 @@ public sealed class BotController : ArchiController {
 	/// </remarks>
 	[Consumes("application/json")]
 	[HttpPost("{botNames:required}/Redeem")]
-	[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, SteamApps.PurchaseResponseCallback>>>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, CStore_RegisterCDKey_Response>>>), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult<GenericResponse>> RedeemPost(string botNames, [FromBody] BotRedeemRequest request) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
@@ -309,14 +309,14 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
 		}
 
-		IList<SteamApps.PurchaseResponseCallback?> results = await Utilities.InParallel(bots.Select(bot => request.KeysToRedeem.Select(key => bot.Actions.RedeemKey(key))).SelectMany(static task => task)).ConfigureAwait(false);
+		IList<CStore_RegisterCDKey_Response?> results = await Utilities.InParallel(bots.Select(bot => request.KeysToRedeem.Select(key => bot.Actions.RedeemKey(key))).SelectMany(static task => task)).ConfigureAwait(false);
 
-		Dictionary<string, IReadOnlyDictionary<string, SteamApps.PurchaseResponseCallback?>> result = new(bots.Count, Bot.BotsComparer);
+		Dictionary<string, IReadOnlyDictionary<string, CStore_RegisterCDKey_Response?>> result = new(bots.Count, Bot.BotsComparer);
 
 		int count = 0;
 
 		foreach (Bot bot in bots) {
-			Dictionary<string, SteamApps.PurchaseResponseCallback?> responses = new(request.KeysToRedeem.Count, StringComparer.Ordinal);
+			Dictionary<string, CStore_RegisterCDKey_Response?> responses = new(request.KeysToRedeem.Count, StringComparer.Ordinal);
 			result[bot.BotName] = responses;
 
 			foreach (string key in request.KeysToRedeem) {
@@ -324,7 +324,7 @@ public sealed class BotController : ArchiController {
 			}
 		}
 
-		return Ok(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, SteamApps.PurchaseResponseCallback?>>>(result.Values.SelectMany(static responses => responses.Values).All(static value => value != null), result));
+		return Ok(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, CStore_RegisterCDKey_Response?>>>(result.Values.SelectMany(static responses => responses.Values).All(static value => value != null), result));
 	}
 
 	/// <summary>

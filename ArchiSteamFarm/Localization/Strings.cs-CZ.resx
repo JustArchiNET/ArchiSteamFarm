@@ -748,4 +748,5 @@ StackTrace:
 		<value>Pokusili jste se použít placenou funkci {0}, ale nemáte platné ID licence nastavené v globální konfiguraci ASF. Zkontrolujte prosím svou konfiguraci, protože funkce nebude fungovat bez dalších podrobností.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
+	
 </root>

@@ -1214,5 +1214,11 @@ namespace ArchiSteamFarm.Localization {
                 return ResourceManager.GetString("WarningNoLicense", resourceCulture);
             }
         }
+        
+        public static string WarningRegionRestrictedPackage {
+            get {
+                return ResourceManager.GetString("WarningRegionRestrictedPackage", resourceCulture);
+            }
+        }
     }
 }

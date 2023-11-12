@@ -745,4 +745,5 @@ Process uptime: {1}</value>
 		<value>有償機能の{0} の使用を試みましたが、ASFグローバル設定に有効なLicenseIDが設定されていません。追加の設定が行われていない場合、この機能は動作しません。設定を確認してください。</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
+	
 </root>

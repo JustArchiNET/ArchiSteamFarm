@@ -59,7 +59,7 @@ internal sealed class BotCredentialsProvider : IAuthenticator {
 			return false;
 		}
 
-		// Ask the user what he wants
+		// Ask the user what they want
 		string input = await ProvideInput(ASF.EUserInputType.DeviceConfirmation, false).ConfigureAwait(false);
 
 		return input.Equals("Y", StringComparison.OrdinalIgnoreCase);

@@ -69,6 +69,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private const byte MaxLoginFailures = WebBrowser.MaxTries; // Max login failures in a row before we determine that our credentials are invalid (because Steam wrongly returns those, of course)course)
 	private const byte MinimumAccessTokenValidityMinutes = 10;
 	private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
+	private const byte RegionRestrictionPlayableBlockMonths = 3;
 
 	[PublicAPI]
 	public static IReadOnlyDictionary<string, Bot>? BotsReadOnly => Bots;
@@ -241,6 +242,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private Timer? ConnectionFailureTimer;
 	private bool FirstTradeSent;
 	private Timer? GamesRedeemerInBackgroundTimer;
+	private string? IPCountryCode;
 	private EResult LastLogOnResult;
 	private DateTime LastLogonSessionReplaced;
 	private bool LibraryLocked;
@@ -1088,6 +1090,56 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
+		// Check region restrictions
+		if (!string.IsNullOrEmpty(IPCountryCode)) {
+			DateTime? regionRestrictedUntil = null;
+
+			DateTime safePlayableBefore = DateTime.UtcNow.AddMonths(-RegionRestrictionPlayableBlockMonths);
+
+			foreach (uint packageID in packageIDs) {
+				if (!OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) ownedPackageData)) {
+					// We don't own that packageID, keep checking
+					continue;
+				}
+
+				if (ownedPackageData.TimeCreated < safePlayableBefore) {
+					// Our package is older than required, this is playable
+					regionRestrictedUntil = null;
+
+					break;
+				}
+
+				// We've got a package that was activated recently, we should check if we have any playable restrictions on it
+				if ((ASF.GlobalDatabase == null) || !ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out PackageData? packageData)) {
+					// No information about that package, try again later
+					return (0, DateTime.MaxValue, true);
+				}
+
+				if ((packageData.ProhibitRunInCountries == null) || packageData.ProhibitRunInCountries.IsEmpty) {
+					// No restrictions, we're good to go
+					regionRestrictedUntil = null;
+
+					break;
+				}
+
+				if (packageData.ProhibitRunInCountries.Contains(IPCountryCode!)) {
+					// We are restricted by this package, we can only be saved by another package that is not restricted
+					DateTime regionRestrictedUntilPackage = ownedPackageData.TimeCreated.AddMonths(RegionRestrictionPlayableBlockMonths);
+
+					if (!regionRestrictedUntil.HasValue || (regionRestrictedUntilPackage < regionRestrictedUntil.Value)) {
+						regionRestrictedUntil = regionRestrictedUntilPackage;
+					}
+				}
+			}
+
+			if (regionRestrictedUntil.HasValue) {
+				// We can't play this game for now
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningRegionRestrictedPackage, appID, IPCountryCode, regionRestrictedUntil.Value));
+
+				return (0, regionRestrictedUntil.Value, false);
+			}
+		}
+
 		SteamApps.PICSTokensCallback? tokenCallback = null;
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (tokenCallback == null) && IsConnectedAndLoggedOn; i++) {
@@ -1268,33 +1320,39 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			if (productInfo.KeyValues == KeyValue.Invalid) {
 				ArchiLogger.LogNullError(productInfo);
 
-				return null;
+				continue;
 			}
 
 			uint changeNumber = productInfo.ChangeNumber;
+
 			HashSet<uint>? appIDs = null;
 
-			try {
-				KeyValue appIDsKv = productInfo.KeyValues["appids"];
+			KeyValue appIDsKv = productInfo.KeyValues["appids"];
 
-				if (appIDsKv == KeyValue.Invalid) {
-					continue;
-				}
-
+			if (appIDsKv != KeyValue.Invalid) {
 				appIDs = new HashSet<uint>(appIDsKv.Children.Count);
 
 				foreach (string? appIDText in appIDsKv.Children.Select(static app => app.Value)) {
 					if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 						ArchiLogger.LogNullError(appID);
 
-						return null;
+						continue;
 					}
 
 					appIDs.Add(appID);
 				}
-			} finally {
-				result[productInfo.ID] = new PackageData(changeNumber, validUntil, appIDs?.ToImmutableHashSet());
 			}
+
+			string[]? prohibitRunInCountries = null;
+
+			string? prohibitRunInCountriesText = productInfo.KeyValues["extended"]["prohibitrunincountries"].AsString();
+
+			if (!string.IsNullOrEmpty(prohibitRunInCountriesText)) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				prohibitRunInCountries = prohibitRunInCountriesText!.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			}
+
+			result[productInfo.ID] = new PackageData(changeNumber, validUntil, appIDs?.ToImmutableHashSet(), prohibitRunInCountries?.ToImmutableHashSet(StringComparer.Ordinal));
 		}
 
 		return result;
@@ -2134,7 +2192,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			case EResult.AccountLoginDeniedThrottle:
 			case EResult.DuplicateRequest: // This will happen if user reacts to popup and tries to use the code afterwards, we have the code saved in ASF, we just need to try again
 			case EResult.Expired: // Refresh token expired
-			case EResult.FileNotFound: // User denied approval despite telling us that he accepted it, just try again
+			case EResult.FileNotFound: // User denied approval despite telling us that they accepted it, just try again
 			case EResult.InvalidPassword:
 			case EResult.NoConnection:
 			case EResult.PasswordRequiredToKickSession: // Not sure about this one, it seems to be just generic "try again"? #694
@@ -2308,7 +2366,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		AccountFlags = EAccountFlags.NormalUser;
-		AvatarHash = Nickname = null;
+		AvatarHash = IPCountryCode = Nickname = null;
 		MasterChatGroupID = 0;
 		RequiredInput = ASF.EUserInputType.None;
 		WalletBalance = 0;
@@ -2476,13 +2534,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (MasterChatGroupID == 0) {
-			ulong chatGroupID = await ArchiHandler.GetClanChatGroupID(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+			CClanChatRooms_GetClanChatRoomInfo_Response? clanChatRoomInfo = await ArchiHandler.GetClanChatRoomInfo(BotConfig.SteamMasterClanID).ConfigureAwait(false);
 
-			if (chatGroupID == 0) {
+			if ((clanChatRoomInfo == null) || (clanChatRoomInfo.chat_group_summary.chat_group_id == 0)) {
 				return;
 			}
 
-			MasterChatGroupID = chatGroupID;
+			MasterChatGroupID = clanChatRoomInfo.chat_group_summary.chat_group_id;
 		}
 
 		HashSet<ulong>? chatGroupIDs = await ArchiHandler.GetMyChatGroupIDs().ConfigureAwait(false);
@@ -3087,6 +3145,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		AccountFlags = callback.AccountFlags;
+		IPCountryCode = callback.IPCountryCode;
 		SteamID = callback.ClientSteamID ?? throw new InvalidOperationException(nameof(callback.ClientSteamID));
 
 		ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOn, $"{SteamID}{(!string.IsNullOrEmpty(callback.VanityURL) ? $"/{callback.VanityURL}" : "")}"));
@@ -3397,37 +3456,40 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 
 				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				SteamApps.PurchaseResponseCallback? result = await Actions.RedeemKey(key!).ConfigureAwait(false);
+				CStore_RegisterCDKey_Response? response = await Actions.RedeemKey(key!).ConfigureAwait(false);
 
-				if (result == null) {
+				if (response == null) {
 					continue;
 				}
 
+				EResult result = (EResult) response.purchase_receipt_info.purchase_status;
+				EPurchaseResultDetail purchaseResultDetail = (EPurchaseResultDetail) response.purchase_result_details;
+
 				string? balanceText = null;
 
-				if ((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((result.PurchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
+				if ((purchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((purchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
 					// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
 					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)? walletResult = await ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
 
 					if (walletResult != null) {
-						result.Result = walletResult.Value.Result;
-						result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.BadActivationCode); // BadActivationCode is our smart guess in this case
+						result = walletResult.Value.Result;
+						purchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.BadActivationCode); // BadActivationCode is our smart guess in this case
 						balanceText = walletResult.Value.BalanceText;
 					} else {
-						result.Result = EResult.Timeout;
-						result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
+						result = EResult.Timeout;
+						purchaseResultDetail = EPurchaseResultDetail.Timeout;
 					}
 				}
 
-				Dictionary<uint, string>? items = result.ParseItems();
+				Dictionary<uint, string>? items = response.purchase_receipt_info.line_items.Count > 0 ? response.purchase_receipt_info.line_items.ToDictionary(static lineItem => lineItem.packageid, static lineItem => lineItem.line_item_description) : null;
 
-				ArchiLogger.LogGenericDebug(items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result.Result}/{result.PurchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}", string.Join(", ", items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result.Result}/{result.PurchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}"));
+				ArchiLogger.LogGenericDebug(items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result}/{purchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}", string.Join(", ", items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result}/{purchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}"));
 
 				bool rateLimited = false;
 				bool redeemed = false;
 
-				switch (result.PurchaseResultDetail) {
+				switch (purchaseResultDetail) {
 					case EPurchaseResultDetail.AccountLocked:
 					case EPurchaseResultDetail.AlreadyPurchased:
 					case EPurchaseResultDetail.CannotRedeemCodeFromClient:
@@ -3447,7 +3509,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 						break;
 					default:
-						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
+						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(purchaseResultDetail), purchaseResultDetail));
 
 						break;
 				}
@@ -3465,7 +3527,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					name = string.Join(", ", items.Values);
 				}
 
-				string logEntry = $"{name}{DefaultBackgroundKeysRedeemerSeparator}[{result.PurchaseResultDetail}]{(items?.Count > 0 ? $"{DefaultBackgroundKeysRedeemerSeparator}{string.Join(", ", items)}" : "")}{DefaultBackgroundKeysRedeemerSeparator}{key}";
+				string logEntry = $"{name}{DefaultBackgroundKeysRedeemerSeparator}[{purchaseResultDetail}]{(items?.Count > 0 ? $"{DefaultBackgroundKeysRedeemerSeparator}{string.Join(", ", items)}" : "")}{DefaultBackgroundKeysRedeemerSeparator}{key}";
 
 				string filePath = GetFilePath(redeemed ? EFileType.KeysToRedeemUsed : EFileType.KeysToRedeemUnused);
 
