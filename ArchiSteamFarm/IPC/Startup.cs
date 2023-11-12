@@ -60,7 +60,11 @@ namespace ArchiSteamFarm.IPC;
 internal sealed class Startup {
 	private readonly IConfiguration Configuration;
 
-	public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+	public Startup(IConfiguration configuration) {
+		ArgumentNullException.ThrowIfNull(configuration);
+
+		Configuration = configuration;
+	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "PathString is a primitive, it's unlikely to be trimmed to the best of our knowledge")]
 	[UsedImplicitly]

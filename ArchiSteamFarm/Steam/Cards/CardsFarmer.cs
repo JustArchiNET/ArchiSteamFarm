@@ -148,7 +148,9 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	private bool ShouldSkipNewGamesIfPossible;
 
 	internal CardsFarmer(Bot bot) {
-		Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
 
 		byte idleFarmingPeriod = ASF.GlobalConfig?.IdleFarmingPeriod ?? GlobalConfig.DefaultIdleFarmingPeriod;
 

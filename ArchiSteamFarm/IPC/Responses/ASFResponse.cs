@@ -77,12 +77,18 @@ public sealed class ASFResponse {
 	public Version Version { get; private set; }
 
 	internal ASFResponse(string buildVariant, bool canUpdate, GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
-		BuildVariant = !string.IsNullOrEmpty(buildVariant) ? buildVariant : throw new ArgumentNullException(nameof(buildVariant));
+		ArgumentException.ThrowIfNullOrEmpty(buildVariant);
+		ArgumentNullException.ThrowIfNull(globalConfig);
+		ArgumentOutOfRangeException.ThrowIfZero(memoryUsage);
+		ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(processStartTime, DateTime.UnixEpoch);
+		ArgumentNullException.ThrowIfNull(version);
+
+		BuildVariant = buildVariant;
 		CanUpdate = canUpdate;
-		GlobalConfig = globalConfig ?? throw new ArgumentNullException(nameof(globalConfig));
-		MemoryUsage = memoryUsage > 0 ? memoryUsage : throw new ArgumentOutOfRangeException(nameof(memoryUsage));
-		ProcessStartTime = processStartTime > DateTime.MinValue ? processStartTime : throw new ArgumentOutOfRangeException(nameof(processStartTime));
-		Version = version ?? throw new ArgumentNullException(nameof(version));
+		GlobalConfig = globalConfig;
+		MemoryUsage = memoryUsage;
+		ProcessStartTime = processStartTime;
+		Version = version;
 
 		Service = Program.Service;
 	}

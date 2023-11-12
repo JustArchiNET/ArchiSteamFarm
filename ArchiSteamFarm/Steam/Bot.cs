@@ -284,13 +284,17 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
-		BotName = !string.IsNullOrEmpty(botName) ? botName : throw new ArgumentNullException(nameof(botName));
-		BotConfig = botConfig ?? throw new ArgumentNullException(nameof(botConfig));
-		BotDatabase = botDatabase ?? throw new ArgumentNullException(nameof(botDatabase));
+		ArgumentException.ThrowIfNullOrEmpty(botName);
+		ArgumentNullException.ThrowIfNull(botConfig);
+		ArgumentNullException.ThrowIfNull(botDatabase);
 
 		if (ASF.GlobalDatabase == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 		}
+
+		BotName = botName;
+		BotConfig = botConfig;
+		BotDatabase = botDatabase;
 
 		ArchiLogger = new ArchiLogger(botName);
 
@@ -327,9 +331,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		SteamUnifiedMessages? steamUnifiedMessages = SteamClient.GetHandler<SteamUnifiedMessages>();
-
-		ArchiHandler = new ArchiHandler(ArchiLogger, steamUnifiedMessages ?? throw new InvalidOperationException(nameof(steamUnifiedMessages)));
+		ArchiHandler = new ArchiHandler(ArchiLogger, SteamClient.GetHandler<SteamUnifiedMessages>() ?? throw new InvalidOperationException(nameof(SteamUnifiedMessages)));
 		SteamClient.AddHandler(ArchiHandler);
 
 		CallbackManager = new CallbackManager(SteamClient);
@@ -1458,12 +1460,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal static void Init(StringComparer botsComparer) {
+		ArgumentNullException.ThrowIfNull(botsComparer);
+
 		if (Bots != null) {
 			throw new InvalidOperationException(nameof(Bots));
 		}
 
-		BotsComparer = botsComparer ?? throw new ArgumentNullException(nameof(botsComparer));
-
+		BotsComparer = botsComparer;
 		Bots = new ConcurrentDictionary<string, Bot>(botsComparer);
 	}
 

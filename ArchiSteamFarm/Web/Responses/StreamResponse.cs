@@ -36,10 +36,17 @@ public sealed class StreamResponse : BasicResponse, IAsyncDisposable, IDisposabl
 
 	private readonly HttpResponseMessage ResponseMessage;
 
-	internal StreamResponse(HttpResponseMessage httpResponseMessage, Stream content) : this(httpResponseMessage) => Content = content ?? throw new ArgumentNullException(nameof(content));
+	internal StreamResponse(HttpResponseMessage httpResponseMessage, Stream content) : this(httpResponseMessage) {
+		ArgumentNullException.ThrowIfNull(httpResponseMessage);
+		ArgumentNullException.ThrowIfNull(content);
+
+		Content = content;
+	}
 
 	internal StreamResponse(HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) {
-		ResponseMessage = httpResponseMessage ?? throw new ArgumentNullException(nameof(httpResponseMessage));
+		ArgumentNullException.ThrowIfNull(httpResponseMessage);
+
+		ResponseMessage = httpResponseMessage;
 		Length = httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
 	}
 

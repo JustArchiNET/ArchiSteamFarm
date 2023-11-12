@@ -43,8 +43,9 @@ public sealed class LogResponse {
 
 	internal LogResponse(int totalLines, IReadOnlyList<string> content) {
 		ArgumentOutOfRangeException.ThrowIfNegative(totalLines);
+		ArgumentNullException.ThrowIfNull(content);
 
 		TotalLines = totalLines;
-		Content = content ?? throw new ArgumentNullException(nameof(content));
+		Content = content;
 	}
 }

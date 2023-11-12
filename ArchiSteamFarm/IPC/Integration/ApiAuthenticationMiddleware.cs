@@ -58,9 +58,10 @@ internal sealed class ApiAuthenticationMiddleware {
 	private readonly RequestDelegate Next;
 
 	public ApiAuthenticationMiddleware(RequestDelegate next, IOptions<ForwardedHeadersOptions> forwardedHeadersOptions) {
-		Next = next ?? throw new ArgumentNullException(nameof(next));
-
+		ArgumentNullException.ThrowIfNull(next);
 		ArgumentNullException.ThrowIfNull(forwardedHeadersOptions);
+
+		Next = next;
 
 		ForwardedHeadersOptions = forwardedHeadersOptions.Value ?? throw new InvalidOperationException(nameof(forwardedHeadersOptions));
 

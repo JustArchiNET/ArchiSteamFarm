@@ -49,7 +49,11 @@ public sealed class Commands {
 	private readonly Bot Bot;
 	private readonly Dictionary<uint, string> CachedGamesOwned = new();
 
-	internal Commands(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+	internal Commands(Bot bot) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
+	}
 
 	[PublicAPI]
 	public static string FormatBotResponse(string response, string botName) {

@@ -37,7 +37,13 @@ internal sealed class UserPrivacy {
 
 	// Constructed from privacy change request
 	internal UserPrivacy(PrivacySettings settings, ECommentPermission commentPermission) {
-		Settings = settings ?? throw new ArgumentNullException(nameof(settings));
+		ArgumentNullException.ThrowIfNull(settings);
+
+		if (!Enum.IsDefined(commentPermission)) {
+			throw new InvalidEnumArgumentException(nameof(commentPermission), (int) commentPermission, typeof(ECommentPermission));
+		}
+
+		Settings = settings;
 		CommentPermission = commentPermission;
 	}
 

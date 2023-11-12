@@ -35,8 +35,11 @@ public sealed class Tag {
 	public string Value { get; private set; } = "";
 
 	internal Tag(string identifier, string value) {
-		Identifier = !string.IsNullOrEmpty(identifier) ? identifier : throw new ArgumentNullException(nameof(identifier));
-		Value = value ?? throw new ArgumentNullException(nameof(value));
+		ArgumentException.ThrowIfNullOrEmpty(identifier);
+		ArgumentNullException.ThrowIfNull(value);
+
+		Identifier = identifier;
+		Value = value;
 	}
 
 	[JsonConstructor]

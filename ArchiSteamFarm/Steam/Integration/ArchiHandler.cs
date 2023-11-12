@@ -51,9 +51,10 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	internal DateTime LastPacketReceived { get; private set; }
 
 	internal ArchiHandler(ArchiLogger archiLogger, SteamUnifiedMessages steamUnifiedMessages) {
+		ArgumentNullException.ThrowIfNull(archiLogger);
 		ArgumentNullException.ThrowIfNull(steamUnifiedMessages);
 
-		ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
+		ArchiLogger = archiLogger;
 		UnifiedChatRoomService = steamUnifiedMessages.CreateService<IChatRoom>();
 		UnifiedClanChatRoomsService = steamUnifiedMessages.CreateService<IClanChatRooms>();
 		UnifiedCredentialsService = steamUnifiedMessages.CreateService<ICredentials>();

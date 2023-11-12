@@ -54,7 +54,11 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	private bool ProcessingGiftsScheduled;
 	private bool TradingScheduled;
 
-	internal Actions(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+	internal Actions(Bot bot) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
+	}
 
 	public void Dispose() {
 		// Those are objects that are always being created if constructor doesn't throw exception

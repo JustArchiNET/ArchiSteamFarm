@@ -285,7 +285,11 @@ public sealed class MobileAuthenticator : IDisposable {
 		return true;
 	}
 
-	internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+	internal void Init(Bot bot) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
+	}
 
 	internal static async Task ResetSteamTimeDifference() {
 		if ((SteamTimeDifference == null) && (LastSteamTimeCheck == DateTime.MinValue)) {

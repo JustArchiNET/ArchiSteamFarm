@@ -60,7 +60,9 @@ public sealed class WebBrowser : IDisposable {
 	private readonly HttpClientHandler HttpClientHandler;
 
 	internal WebBrowser(ArchiLogger archiLogger, IWebProxy? webProxy = null, bool extendedTimeout = false) {
-		ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
+		ArgumentNullException.ThrowIfNull(archiLogger);
+
+		ArchiLogger = archiLogger;
 
 		HttpClientHandler = new HttpClientHandler {
 			AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile://"

@@ -92,7 +92,9 @@ public sealed class ArchiWebHandler : IDisposable {
 	private string? VanityURL;
 
 	internal ArchiWebHandler(Bot bot) {
-		Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
 
 		CachedAccessToken = new ArchiCacheable<string>(ResolveAccessToken, TimeSpan.FromHours(6));
 		CachedApiKey = new ArchiCacheable<string>(ResolveApiKey, TimeSpan.FromHours(6));

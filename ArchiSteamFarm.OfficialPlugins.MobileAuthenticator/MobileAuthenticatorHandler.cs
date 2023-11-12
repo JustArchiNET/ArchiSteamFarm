@@ -33,9 +33,10 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 	private readonly SteamUnifiedMessages.UnifiedService<ITwoFactor> UnifiedTwoFactorService;
 
 	internal MobileAuthenticatorHandler(ArchiLogger archiLogger, SteamUnifiedMessages steamUnifiedMessages) {
+		ArgumentNullException.ThrowIfNull(archiLogger);
 		ArgumentNullException.ThrowIfNull(steamUnifiedMessages);
 
-		ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
+		ArchiLogger = archiLogger;
 		UnifiedTwoFactorService = steamUnifiedMessages.CreateService<ITwoFactor>();
 	}
 

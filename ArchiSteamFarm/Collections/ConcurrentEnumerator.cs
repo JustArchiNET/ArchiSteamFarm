@@ -35,9 +35,10 @@ internal sealed class ConcurrentEnumerator<T> : IEnumerator<T> {
 
 	internal ConcurrentEnumerator(IReadOnlyCollection<T> collection, IDisposable lockObject) {
 		ArgumentNullException.ThrowIfNull(collection);
+		ArgumentNullException.ThrowIfNull(lockObject);
 
-		LockObject = lockObject ?? throw new ArgumentNullException(nameof(lockObject));
 		Enumerator = collection.GetEnumerator();
+		LockObject = lockObject;
 	}
 
 	public void Dispose() {

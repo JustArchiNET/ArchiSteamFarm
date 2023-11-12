@@ -40,7 +40,9 @@ public sealed class ArchiCacheable<T> : IDisposable {
 	private T? InitializedValue;
 
 	public ArchiCacheable(Func<Task<(bool Success, T? Result)>> resolveFunction, TimeSpan? cacheLifetime = null) {
-		ResolveFunction = resolveFunction ?? throw new ArgumentNullException(nameof(resolveFunction));
+		ArgumentNullException.ThrowIfNull(resolveFunction);
+
+		ResolveFunction = resolveFunction;
 		CacheLifetime = cacheLifetime ?? Timeout.InfiniteTimeSpan;
 	}
 

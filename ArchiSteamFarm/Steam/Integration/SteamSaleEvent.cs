@@ -37,7 +37,9 @@ internal sealed class SteamSaleEvent : IAsyncDisposable, IDisposable {
 	private readonly Timer SaleEventTimer;
 
 	internal SteamSaleEvent(Bot bot) {
-		Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
 
 		SaleEventTimer = new Timer(
 			ExploreDiscoveryQueue,
