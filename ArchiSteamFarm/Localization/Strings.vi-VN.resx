@@ -748,5 +748,8 @@ Thời gian hoạt động: {1}</value>
 		<value>Bạn đang cố gắng sử dụng tính năng trả phí {0} nhưng bạn chưa đặt một LicenseID hợp lệ trong cấu hình chung ASF. Vui lòng kiểm tra lại cấu hình vì chức năng này yêu cầu thông tin bổ sung.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
-	
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>ASF không thể chạy ứng dụng {0} do có hạn chế liên quan đến khu vực đối với quốc gia {1} kéo dài đến {2}.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
 </root>
