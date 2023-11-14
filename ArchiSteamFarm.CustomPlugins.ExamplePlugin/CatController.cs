@@ -21,6 +21,7 @@
 
 using System;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Controllers.Api;
@@ -45,7 +46,9 @@ public sealed class CatController : ArchiController {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
 
-		Uri? url = await CatAPI.GetRandomCatURL(ASF.WebBrowser).ConfigureAwait(false);
+		CancellationToken cancellationToken = HttpContext.RequestAborted;
+
+		Uri? url = await CatAPI.GetRandomCatURL(ASF.WebBrowser, cancellationToken).ConfigureAwait(false);
 
 		return url != null ? Ok(new GenericResponse<Uri>(url)) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false));
 	}

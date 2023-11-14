@@ -56,7 +56,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 	private static readonly ConcurrentDictionary<Bot, IDisposable> BotSubscriptions = new();
 	private static readonly ConcurrentDictionary<Bot, (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer)> BotSynchronizations = new();
 	private static readonly SemaphoreSlim SubmissionSemaphore = new(1, 1);
-	private static readonly Timer SubmissionTimer = new(SubmitData);
+	private static readonly Timer SubmissionTimer = new(OnSubmissionTimer);
 
 	private static GlobalCache? GlobalCache;
 	private static DateTimeOffset LastUploadAt = DateTimeOffset.MinValue;
@@ -311,6 +311,8 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		await Refresh(bot, packageTokens.Keys).ConfigureAwait(false);
 	}
 
+	private static async void OnSubmissionTimer(object? state = null) => await SubmitData().ConfigureAwait(false);
+
 	private static async Task Refresh(Bot bot, IReadOnlyCollection<uint>? packageIDs = null) {
 		ArgumentNullException.ThrowIfNull(bot);
 
@@ -544,7 +546,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		}
 	}
 
-	private static async void SubmitData(object? state = null) {
+	private static async Task SubmitData(CancellationToken cancellationToken = default) {
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));
 		}
@@ -565,7 +567,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			return;
 		}
 
-		if (!await SubmissionSemaphore.WaitAsync(0).ConfigureAwait(false)) {
+		if (!await SubmissionSemaphore.WaitAsync(0, cancellationToken).ConfigureAwait(false)) {
 			return;
 		}
 
@@ -593,7 +595,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionInProgress, appTokens.Count, packageTokens.Count, depotKeys.Count));
 
-			ObjectResponse<SubmitResponse>? response = await ASF.WebBrowser.UrlPostToJsonObject<SubmitResponse, SubmitRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+			ObjectResponse<SubmitResponse>? response = await ASF.WebBrowser.UrlPostToJsonObject<SubmitResponse, SubmitRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				ASF.ArchiLogger.LogGenericWarning(ArchiSteamFarm.Localization.Strings.WarningFailed);
