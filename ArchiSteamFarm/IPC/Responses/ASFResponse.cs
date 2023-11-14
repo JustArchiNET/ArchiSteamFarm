@@ -80,11 +80,7 @@ public sealed class ASFResponse {
 		ArgumentException.ThrowIfNullOrEmpty(buildVariant);
 		ArgumentNullException.ThrowIfNull(globalConfig);
 		ArgumentOutOfRangeException.ThrowIfZero(memoryUsage);
-
-		// TODO: Use this instead once we get rid of generic-netf
-		//ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(processStartTime, DateTime.UnixEpoch);
-		ArgumentOutOfRangeException.ThrowIfEqual(processStartTime, DateTime.MinValue);
-
+		ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(processStartTime, DateTime.UnixEpoch);
 		ArgumentNullException.ThrowIfNull(version);
 
 		BuildVariant = buildVariant;

@@ -129,13 +129,8 @@ public abstract class SerializableFile : IDisposable {
 	}
 
 	internal static async Task<bool> Write(string filePath, string json) {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
-
-		if (string.IsNullOrEmpty(json)) {
-			throw new ArgumentNullException(nameof(json));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
+		ArgumentException.ThrowIfNullOrEmpty(json);
 
 		string newFilePath = $"{filePath}.new";
 

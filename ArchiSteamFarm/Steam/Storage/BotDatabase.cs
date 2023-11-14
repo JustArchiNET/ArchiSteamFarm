@@ -132,7 +132,11 @@ public sealed class BotDatabase : GenericDatabase {
 	[JsonProperty]
 	private string? BackingSteamGuardData;
 
-	private BotDatabase(string filePath) : this() => FilePath = !string.IsNullOrEmpty(filePath) ? filePath : throw new ArgumentNullException(nameof(filePath));
+	private BotDatabase(string filePath) : this() {
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
+
+		FilePath = filePath;
+	}
 
 	[JsonConstructor]
 	private BotDatabase() {

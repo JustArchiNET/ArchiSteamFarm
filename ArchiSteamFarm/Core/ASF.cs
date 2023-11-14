@@ -102,7 +102,7 @@ public static class ASF {
 		return fileType switch {
 			EFileType.Config => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName),
 			EFileType.Database => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName),
-			_ => throw new ArgumentOutOfRangeException(nameof(fileType))
+			_ => throw new InvalidOperationException(nameof(fileType))
 		};
 	}
 

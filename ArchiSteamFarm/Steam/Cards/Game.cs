@@ -42,9 +42,13 @@ public sealed class Game : IEquatable<Game> {
 	internal uint PlayableAppID { get; set; }
 
 	internal Game(uint appID, string gameName, float hoursPlayed, ushort cardsRemaining, byte badgeLevel) {
-		AppID = appID > 0 ? appID : throw new ArgumentOutOfRangeException(nameof(appID));
-		GameName = !string.IsNullOrEmpty(gameName) ? gameName : throw new ArgumentNullException(nameof(gameName));
-		HoursPlayed = hoursPlayed >= 0 ? hoursPlayed : throw new ArgumentOutOfRangeException(nameof(hoursPlayed));
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentException.ThrowIfNullOrEmpty(gameName);
+		ArgumentOutOfRangeException.ThrowIfNegative(hoursPlayed);
+
+		AppID = appID;
+		GameName = gameName;
+		HoursPlayed = hoursPlayed;
 		CardsRemaining = cardsRemaining;
 		BadgeLevel = badgeLevel;
 
