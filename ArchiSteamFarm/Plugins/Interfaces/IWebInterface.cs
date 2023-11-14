@@ -28,7 +28,7 @@ namespace ArchiSteamFarm.Plugins.Interfaces;
 /// </summary>
 public interface IWebInterface : IPlugin {
 	/// <summary>
-	///     Specifies physical path to static WWW files provided by the plugin. Can be either relative to plugin's assembly location, or absolute. Default value of "www", assumes that you ship "www" directory together with your plugin's main DLL assembly, similar to ASF.
+	///     Specifies physical path to static WWW files provided by the plugin. Can be either relative to plugin's assembly location, or absolute. Default value of "www" assumes that you ship "www" directory together with your plugin's main DLL assembly, similar to ASF.
 	/// </summary>
 	string PhysicalPath => "www";
 
