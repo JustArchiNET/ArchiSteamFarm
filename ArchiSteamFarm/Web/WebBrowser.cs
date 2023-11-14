@@ -66,14 +66,9 @@ public sealed class WebBrowser : IDisposable {
 
 		HttpClientHandler = new HttpClientHandler {
 			AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile://"
-
-#if NETFRAMEWORK || NETSTANDARD
-			AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-#else
 			AutomaticDecompression = DecompressionMethods.All,
-#endif
-
-			CookieContainer = CookieContainer
+			CookieContainer = CookieContainer,
+			MaxConnectionsPerServer = MaxConnections
 		};
 
 		if (webProxy != null) {
@@ -85,14 +80,6 @@ public sealed class WebBrowser : IDisposable {
 				HttpClientHandler.PreAuthenticate = true;
 			}
 		}
-
-#if NETFRAMEWORK || NETSTANDARD
-		if (!RuntimeMadness.IsRunningOnMono) {
-			HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
-		}
-#else
-		HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
-#endif
 
 		HttpClient = GenerateDisposableHttpClient(extendedTimeout);
 	}
@@ -107,9 +94,7 @@ public sealed class WebBrowser : IDisposable {
 		byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 		HttpClient result = new(HttpClientHandler, false) {
-#if !NETFRAMEWORK && !NETSTANDARD
 			DefaultRequestVersion = HttpVersion.Version30,
-#endif
 			Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeout : connectionTimeout)
 		};
 
@@ -710,13 +695,7 @@ public sealed class WebBrowser : IDisposable {
 		ServicePointManager.Expect100Continue = false;
 
 		// Reuse ports if possible
-#if NETFRAMEWORK || NETSTANDARD
-		if (!RuntimeMadness.IsRunningOnMono) {
-			ServicePointManager.ReusePort = true;
-		}
-#else
 		ServicePointManager.ReusePort = true;
-#endif
 	}
 
 	private async Task<HttpResponseMessage?> InternalGet(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
@@ -745,9 +724,7 @@ public sealed class WebBrowser : IDisposable {
 
 		while (true) {
 			using (HttpRequestMessage requestMessage = new(httpMethod, request)) {
-#if !NETFRAMEWORK && !NETSTANDARD
 				requestMessage.Version = HttpClient.DefaultRequestVersion;
-#endif
 
 				if (headers != null) {
 					foreach ((string header, string value) in headers) {

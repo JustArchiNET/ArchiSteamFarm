@@ -342,8 +342,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			BasicResponse? response = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, assetsForListing, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
+			BasicResponse? response = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, assetsForListing, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname, avatarHash).ConfigureAwait(false);
 
 			if (response == null) {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -383,12 +382,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 						LastAnnouncement = DateTime.UtcNow.AddYears(1);
 
 						return;
-#if NETFRAMEWORK || NETSTANDARD
-					case (HttpStatusCode) 429:
-#else
 					case HttpStatusCode.TooManyRequests:
-#endif
-
 						// ArchiNet told us to try again later
 						LastAnnouncement = DateTime.UtcNow.AddDays(1);
 
@@ -682,7 +676,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, WebBrowser, ourInventory.Values, acceptedMatchableTypes).ConfigureAwait(false);
 
 			if (response == null) {

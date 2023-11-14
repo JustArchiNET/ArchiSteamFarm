@@ -67,8 +67,7 @@ public sealed class TypeController : ArchiController {
 					string? unifiedName = field.FieldType.GetUnifiedName();
 
 					if (!string.IsNullOrEmpty(unifiedName)) {
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						body[jsonProperty.PropertyName ?? field.Name] = unifiedName!;
+						body[jsonProperty.PropertyName ?? field.Name] = unifiedName;
 					}
 				}
 			}
@@ -80,8 +79,7 @@ public sealed class TypeController : ArchiController {
 					string? unifiedName = property.PropertyType.GetUnifiedName();
 
 					if (!string.IsNullOrEmpty(unifiedName)) {
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						body[jsonProperty.PropertyName ?? property.Name] = unifiedName!;
+						body[jsonProperty.PropertyName ?? property.Name] = unifiedName;
 					}
 				}
 			}
@@ -104,10 +102,7 @@ public sealed class TypeController : ArchiController {
 					continue;
 				}
 
-				// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
-				body[valueText!] = valueObjText!;
-
-				// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
+				body[valueText] = valueObjText;
 			}
 		}
 

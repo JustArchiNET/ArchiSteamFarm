@@ -35,7 +35,7 @@ internal static class WebBrowserUtilities {
 		// We're going to create compressed stream and copy original content to it
 		MemoryStream compressionOutput = new();
 
-		(Stream compressionInput, string contentEncoding) = GetBestSupportedCompressionMethod(compressionOutput);
+		BrotliStream compressionInput = new(compressionOutput, CompressionLevel.SmallestSize, true);
 
 		await using (compressionInput.ConfigureAwait(false)) {
 			await content.CopyToAsync(compressionInput).ConfigureAwait(false);
@@ -51,18 +51,8 @@ internal static class WebBrowserUtilities {
 		}
 
 		// Inform the server that we're sending compressed data
-		result.Headers.ContentEncoding.Add(contentEncoding);
+		result.Headers.ContentEncoding.Add("br");
 
 		return result;
-	}
-
-	private static (Stream CompressionInput, string ContentEncoding) GetBestSupportedCompressionMethod(Stream output) {
-		ArgumentNullException.ThrowIfNull(output);
-
-#if NETFRAMEWORK || NETSTANDARD
-		return (new GZipStream(output, CompressionLevel.Optimal, true), "gzip");
-#else
-		return (new BrotliStream(output, CompressionLevel.SmallestSize, true), "br");
-#endif
 	}
 }

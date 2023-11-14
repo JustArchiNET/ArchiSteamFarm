@@ -96,7 +96,7 @@ public sealed class NLogController : ArchiController {
 		}
 
 		if (!HttpContext.WebSockets.IsWebSocketRequest) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError!, $"{nameof(HttpContext.WebSockets.IsWebSocketRequest)}: {HttpContext.WebSockets.IsWebSocketRequest}")));
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(HttpContext.WebSockets.IsWebSocketRequest)}: {HttpContext.WebSockets.IsWebSocketRequest}")));
 		}
 
 		// From now on we can return only EmptyResult as the response stream is already being used by existing websocket connection

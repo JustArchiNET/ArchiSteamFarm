@@ -19,10 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK || NETSTANDARD
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-#endif
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -35,26 +31,6 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.IPC;
 
 internal static class WebUtilities {
-#if NETFRAMEWORK || NETSTANDARD
-	internal static IMvcCoreBuilder AddControllers(this IServiceCollection services) {
-		ArgumentNullException.ThrowIfNull(services);
-
-		return services.AddMvcCore();
-	}
-
-	internal static IMvcCoreBuilder AddNewtonsoftJson(this IMvcCoreBuilder mvc, Action<MvcJsonOptions> setupAction) {
-		ArgumentNullException.ThrowIfNull(mvc);
-		ArgumentNullException.ThrowIfNull(setupAction);
-
-		// Add JSON formatters that will be used as default ones if no specific formatters are asked for
-		mvc.AddJsonFormatters();
-
-		mvc.AddJsonOptions(setupAction);
-
-		return mvc;
-	}
-#endif
-
 	internal static string? GetUnifiedName(this Type type) {
 		ArgumentNullException.ThrowIfNull(type);
 

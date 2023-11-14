@@ -9,11 +9,6 @@
 		<PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net481' OR '$(TargetFramework)' == 'netstandard2.1'">
-		<!-- Madness is already included in netf build of ASF, so we don't need to emit it ourselves -->
-		<PackageReference Update="JustArchiNET.Madness" IncludeAssets="compile" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" />
 	</ItemGroup>

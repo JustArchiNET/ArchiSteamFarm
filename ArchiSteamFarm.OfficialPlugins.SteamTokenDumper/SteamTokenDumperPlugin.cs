@@ -621,12 +621,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						GlobalCache.Reset(true);
 
 						break;
-#if NETFRAMEWORK || NETSTANDARD
-					case (HttpStatusCode) 429:
-#else
 					case HttpStatusCode.TooManyRequests:
-#endif
-
 						// SteamDB told us to try again later
 #pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
 						TimeSpan startIn = TimeSpan.FromMinutes(Random.Shared.Next(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));

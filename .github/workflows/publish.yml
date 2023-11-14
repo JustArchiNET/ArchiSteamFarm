@@ -5,8 +5,6 @@ on: [push, pull_request]
 env:
   CONFIGURATION: Release
   DOTNET_SDK_VERSION: 8.0
-  NET_CORE_VERSION: net8.0
-  NET_FRAMEWORK_VERSION: net481
   NODE_JS_VERSION: 'lts/*'
   PLUGINS: ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 
@@ -54,8 +52,6 @@ jobs:
         include:
         - os: ubuntu-latest
           variant: generic
-        - os: windows-latest
-          variant: generic-netf
         - os: ubuntu-latest
           variant: linux-arm
         - os: ubuntu-latest
@@ -131,19 +127,15 @@ jobs:
 
     - name: Prepare for publishing on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
-      env:
-        TARGET_FRAMEWORK: ${{ (endsWith(matrix.variant, '-netf') && env.NET_FRAMEWORK_VERSION) || env.NET_CORE_VERSION }}
       shell: bash
       run: |
         set -euo pipefail
 
         dotnet restore
-        dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+        dotnet build ArchiSteamFarm -c "$CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
 
     - name: Prepare for publishing on Windows
       if: startsWith(matrix.os, 'windows-')
-      env:
-        TARGET_FRAMEWORK: ${{ (endsWith(matrix.variant, '-netf') && env.NET_FRAMEWORK_VERSION) || env.NET_CORE_VERSION }}
       shell: pwsh
       run: |
         Set-StrictMode -Version Latest
@@ -151,7 +143,7 @@ jobs:
         $ProgressPreference = 'SilentlyContinue'
 
         dotnet restore
-        dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:TARGET_FRAMEWORK" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+        dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
 
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
@@ -184,13 +176,12 @@ jobs:
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       env:
         MAX_JOBS: 4
-        TARGET_FRAMEWORK: ${{ (endsWith(matrix.variant, '-netf') && env.NET_FRAMEWORK_VERSION) || env.NET_CORE_VERSION }}
       shell: bash
       run: |
         set -euo pipefail
 
         publish() {
-            dotnet publish "$1" -c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" -o "out/${1}/${TARGET_FRAMEWORK}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+            dotnet publish "$1" -c "$CONFIGURATION" -o "out/${1}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
         }
 
         for plugin in $PLUGINS; do
@@ -207,7 +198,6 @@ jobs:
       if: startsWith(matrix.os, 'windows-')
       env:
         MAX_JOBS: 4
-        TARGET_FRAMEWORK: ${{ (endsWith(matrix.variant, '-netf') && env.NET_FRAMEWORK_VERSION) || env.NET_CORE_VERSION }}
       shell: pwsh
       run: |
         Set-StrictMode -Version Latest
@@ -223,7 +213,7 @@ jobs:
 
             Set-Location "$env:GITHUB_WORKSPACE"
 
-            dotnet publish "$plugin" -c "$env:CONFIGURATION" -f "$env:TARGET_FRAMEWORK" -o "out\$plugin\$env:TARGET_FRAMEWORK" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+            dotnet publish "$plugin" -c "$env:CONFIGURATION" -o "out\$plugin" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
 
             if ($LastExitCode -ne 0) {
                 throw "Last command failed."
@@ -248,7 +238,6 @@ jobs:
     - name: Publish ASF-${{ matrix.variant }} on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       env:
-        TARGET_FRAMEWORK: ${{ (endsWith(matrix.variant, '-netf') && env.NET_FRAMEWORK_VERSION) || env.NET_CORE_VERSION }}
         VARIANT: ${{ matrix.variant }}
       shell: bash
       run: |
@@ -260,13 +249,13 @@ jobs:
             variantArgs="-p:PublishSingleFile=true -p:PublishTrimmed=true -r $VARIANT --self-contained"
         fi
 
-        dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" -o "out/${VARIANT}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
+        dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${VARIANT}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
 
         # If we're including official plugins for this framework, copy them to output directory
         for plugin in $PLUGINS; do
-            if [ -d "out/${plugin}/${TARGET_FRAMEWORK}" ]; then
+            if [ -d "out/${plugin}" ]; then
                 mkdir -p "out/${VARIANT}/plugins/${plugin}"
-                cp -pR "out/${plugin}/${TARGET_FRAMEWORK}/"* "out/${VARIANT}/plugins/${plugin}"
+                cp -pR "out/${plugin}/"* "out/${VARIANT}/plugins/${plugin}"
             fi
         done
 
@@ -328,7 +317,6 @@ jobs:
     - name: Publish ASF-${{ matrix.variant }} on Windows
       if: startsWith(matrix.os, 'windows-')
       env:
-        TARGET_FRAMEWORK: ${{ (endsWith(matrix.variant, '-netf') && env.NET_FRAMEWORK_VERSION) || env.NET_CORE_VERSION }}
         VARIANT: ${{ matrix.variant }}
       shell: pwsh
       run: |
@@ -342,7 +330,7 @@ jobs:
             $variantArgs = '-p:PublishSingleFile=true', '-p:PublishTrimmed=true', '-r', "$env:VARIANT", '--self-contained'
         }
 
-        dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:TARGET_FRAMEWORK" -o "out\$env:VARIANT" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
+        dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$env:VARIANT" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
 
         if ($LastExitCode -ne 0) {
             throw "Last command failed."
@@ -350,12 +338,12 @@ jobs:
 
         # If we're including official plugins for this framework, copy them to output directory
         foreach ($plugin in $env:PLUGINS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
-            if (Test-Path "out\$plugin\$env:TARGET_FRAMEWORK" -PathType Container) {
+            if (Test-Path "out\$plugin" -PathType Container) {
                 if (!(Test-Path "out\$env:VARIANT\plugins\$plugin" -PathType Container)) {
                     New-Item -ItemType Directory -Path "out\$env:VARIANT\plugins\$plugin" > $null
                 }
 
-                Copy-Item "out\$plugin\$env:TARGET_FRAMEWORK\*" "out\$env:VARIANT\plugins\$plugin" -Recurse
+                Copy-Item "out\$plugin\*" "out\$env:VARIANT\plugins\$plugin" -Recurse
             }
         }
 
@@ -428,12 +416,6 @@ jobs:
       uses: actions/download-artifact@v3.0.2
       with:
         name: ubuntu-latest_ASF-generic
-        path: out
-
-    - name: Download ASF-generic-netf artifact from windows-latest
-      uses: actions/download-artifact@v3.0.2
-      with:
-        name: windows-latest_ASF-generic-netf
         path: out
 
     - name: Download ASF-linux-arm artifact from ubuntu-latest

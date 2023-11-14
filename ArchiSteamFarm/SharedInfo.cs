@@ -80,8 +80,7 @@ public static class SharedInfo {
 	internal static string HomeDirectory {
 		get {
 			if (!string.IsNullOrEmpty(CachedHomeDirectory)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				return CachedHomeDirectory!;
+				return CachedHomeDirectory;
 			}
 
 			// We're aiming to handle two possible cases here, classic publish and single-file publish which is possible with OS-specific builds
@@ -110,9 +109,6 @@ public static class SharedInfo {
 #elif ASF_VARIANT_GENERIC
 		internal static bool CanUpdate => true;
 		internal static string Variant => "generic";
-#elif ASF_VARIANT_GENERIC_NETF
-		internal static bool CanUpdate => true;
-		internal static string Variant => "generic-netf";
 #elif ASF_VARIANT_LINUX_ARM
 		internal static bool CanUpdate => true;
 		internal static string Variant => "linux-arm";

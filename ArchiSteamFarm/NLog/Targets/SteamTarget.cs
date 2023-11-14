@@ -78,8 +78,7 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 		string? botName = BotName?.Render(logEvent);
 
 		if (!string.IsNullOrEmpty(botName)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			bot = Bot.GetBot(botName!);
+			bot = Bot.GetBot(botName);
 
 			if (bot?.IsConnectedAndLoggedOn != true) {
 				return;

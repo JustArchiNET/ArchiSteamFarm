@@ -268,7 +268,7 @@ public static class ASF {
 			}
 
 			string targetFile = $"{SharedInfo.ASF}-{SharedInfo.BuildInfo.Variant}.zip";
-			GitHub.ReleaseResponse.Asset? binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name!.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
+			GitHub.ReleaseResponse.Asset? binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisVersion);
@@ -298,7 +298,7 @@ public static class ASF {
 			}
 
 			if (!string.IsNullOrEmpty(releaseResponse.ChangelogPlainText)) {
-				ArchiLogger.LogGenericInfo(releaseResponse.ChangelogPlainText!);
+				ArchiLogger.LogGenericInfo(releaseResponse.ChangelogPlainText);
 			}
 
 			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
@@ -310,7 +310,7 @@ public static class ASF {
 			BinaryResponse? response;
 
 			try {
-				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL!, progressReporter: progressReporter).ConfigureAwait(false);
+				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL, progressReporter: progressReporter).ConfigureAwait(false);
 			} finally {
 				progressReporter.ProgressChanged -= OnProgressChanged;
 			}
@@ -404,7 +404,6 @@ public static class ASF {
 	private static HashSet<string> GetLoadedAssembliesNames() {
 		Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 		return loadedAssemblies.Select(static loadedAssembly => loadedAssembly.FullName).Where(static name => !string.IsNullOrEmpty(name)).ToHashSet(StringComparer.Ordinal)!;
 	}
 
@@ -1018,10 +1017,8 @@ public static class ASF {
 					return false;
 				}
 
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				if (!Directory.Exists(directory!)) {
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					Directory.CreateDirectory(directory!);
+				if (!Directory.Exists(directory)) {
+					Directory.CreateDirectory(directory);
 				}
 
 				// We're not interested in extracting placeholder files (but we still want directories created for them, done above)

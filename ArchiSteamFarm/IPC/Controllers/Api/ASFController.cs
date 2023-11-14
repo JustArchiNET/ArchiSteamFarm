@@ -186,6 +186,6 @@ public sealed class ASFController : ArchiController {
 			message = success ? Strings.Success : Strings.WarningFailed;
 		}
 
-		return Ok(new GenericResponse<string>(success, message!, version?.ToString()));
+		return Ok(new GenericResponse<string>(success, message, version?.ToString()));
 	}
 }

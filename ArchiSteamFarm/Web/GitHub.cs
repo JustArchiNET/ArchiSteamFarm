@@ -125,8 +125,7 @@ internal static class GitHub {
 				return null;
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			result[versionText!] = dateTime.ToUniversalTime();
+			result[versionText] = dateTime.ToUniversalTime();
 		}
 
 		return result;
@@ -270,7 +269,7 @@ internal static class GitHub {
 					return null;
 				}
 
-				return BackingChangelog = ExtractChangelogFromBody(MarkdownBody!);
+				return BackingChangelog = ExtractChangelogFromBody(MarkdownBody);
 			}
 		}
 

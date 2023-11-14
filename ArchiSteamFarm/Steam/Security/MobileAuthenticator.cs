@@ -130,8 +130,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		// Build the alphanumeric code
 		uint fullCode = BitConverter.ToUInt32(bytes, 0) & 0x7fffffff;
 
-		// ReSharper disable once BuiltInTypeReferenceStyleForMemberAccess - required for .NET Framework
-		return String.Create(
+		return string.Create(
 			CodeDigits, fullCode, static (buffer, state) => {
 				for (byte i = 0; i < CodeDigits; i++) {
 					buffer[i] = CodeCharacters[(byte) (state % CodeCharacters.Count)];
@@ -170,8 +169,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			return null;
 		}
 
-		// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
-		ConfirmationsResponse? response = await Bot.ArchiWebHandler.GetConfirmations(deviceID!, confirmationHash!, time).ConfigureAwait(false);
+		ConfirmationsResponse? response = await Bot.ArchiWebHandler.GetConfirmations(deviceID, confirmationHash, time).ConfigureAwait(false);
 
 		if (response?.Success != true) {
 			return null;
@@ -253,10 +251,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			return false;
 		}
 
-		// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
-		bool? result = await Bot.ArchiWebHandler.HandleConfirmations(deviceID!, confirmationHash!, time, confirmations, accept).ConfigureAwait(false);
-
-		// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
+		bool? result = await Bot.ArchiWebHandler.HandleConfirmations(deviceID, confirmationHash, time, confirmations, accept).ConfigureAwait(false);
 
 		if (!result.HasValue) {
 			// Request timed out
@@ -272,10 +267,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		// In this case, we'll accept all pending confirmations one-by-one, synchronously (as Steam can't handle them in parallel)
 		// We totally ignore actual result returned by those calls, abort only if request timed out
 		foreach (Confirmation confirmation in confirmations) {
-			// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
-			bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(deviceID!, confirmationHash!, time, confirmation.ID, confirmation.Nonce, accept).ConfigureAwait(false);
-
-			// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
+			bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(deviceID, confirmationHash, time, confirmation.ID, confirmation.Nonce, accept).ConfigureAwait(false);
 
 			if (!confirmationResult.HasValue) {
 				return false;
@@ -338,8 +330,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		byte bufferSize = 8;
 
 		if (!string.IsNullOrEmpty(tag)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			bufferSize += (byte) Math.Min(32, tag!.Length);
+			bufferSize += (byte) Math.Min(32, tag.Length);
 		}
 
 		byte[] timeArray = BitConverter.GetBytes(time);
@@ -353,8 +344,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		Array.Copy(timeArray, buffer, 8);
 
 		if (!string.IsNullOrEmpty(tag)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			Array.Copy(Encoding.UTF8.GetBytes(tag!), 0, buffer, 8, bufferSize - 8);
+			Array.Copy(Encoding.UTF8.GetBytes(tag), 0, buffer, 8, bufferSize - 8);
 		}
 
 #pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms

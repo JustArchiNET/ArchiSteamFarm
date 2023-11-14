@@ -106,8 +106,7 @@ internal static class Logging {
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceConfirmation, botName));
 							result = ConsoleReadLine();
 
-							// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-							if (string.IsNullOrEmpty(result) || result!.Equals("Y", StringComparison.OrdinalIgnoreCase) || result.Equals("N", StringComparison.OrdinalIgnoreCase)) {
+							if (string.IsNullOrEmpty(result) || result.Equals("Y", StringComparison.OrdinalIgnoreCase) || result.Equals("N", StringComparison.OrdinalIgnoreCase)) {
 								break;
 							}
 						}
@@ -159,8 +158,7 @@ internal static class Logging {
 			ConsoleSemaphore.Release();
 		}
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		return !string.IsNullOrEmpty(result) ? result!.Trim() : null;
+		return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 	}
 
 	internal static void InitCoreLoggers(bool uniqueInstance) {
@@ -383,12 +381,8 @@ internal static class Logging {
 
 						string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
-						// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
-						if (!string.IsNullOrEmpty(commandPrefix) && command!.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
-							// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
-
-							// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-							if (command.Length == commandPrefix!.Length) {
+						if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix, StringComparison.Ordinal)) {
+							if (command.Length == commandPrefix.Length) {
 								// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
 								continue;
 							}
@@ -406,8 +400,7 @@ internal static class Logging {
 
 						Console.WriteLine($@"<> {Strings.Executing}");
 
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						string? response = await targetBot.Commands.Response(EAccess.Owner, command!).ConfigureAwait(false);
+						string? response = await targetBot.Commands.Response(EAccess.Owner, command).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(response)) {
 							ASF.ArchiLogger.LogNullError(response);

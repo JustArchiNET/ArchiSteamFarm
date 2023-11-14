@@ -30,12 +30,6 @@ internal static partial class GeneratedRegexes {
 	private const string DigitsPattern = @"\d+";
 	private const string NonAsciiPattern = @"[^\u0000-\u007F]+";
 
-#if NETFRAMEWORK || NETSTANDARD
-	internal static Regex CdKey() => new(CdKeyPattern, DefaultOptions);
-	internal static Regex Decimal() => new(DecimalPattern, DefaultOptions);
-	internal static Regex Digits() => new(DigitsPattern, DefaultOptions);
-	internal static Regex NonAscii() => new(NonAsciiPattern, DefaultOptions);
-#else
 	[GeneratedRegex(CdKeyPattern, DefaultOptions)]
 	internal static partial Regex CdKey();
 
@@ -47,5 +41,4 @@ internal static partial class GeneratedRegexes {
 
 	[GeneratedRegex(NonAsciiPattern, DefaultOptions)]
 	internal static partial Regex NonAscii();
-#endif
 }

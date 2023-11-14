@@ -47,8 +47,7 @@ internal static class SteamChatMessage {
 
 		if (!string.IsNullOrEmpty(steamMessagePrefix)) {
 			// We must escape our message prefix if needed
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			steamMessagePrefix = Escape(steamMessagePrefix!);
+			steamMessagePrefix = Escape(steamMessagePrefix);
 
 			prefixBytes = GetMessagePrefixBytes(steamMessagePrefix);
 

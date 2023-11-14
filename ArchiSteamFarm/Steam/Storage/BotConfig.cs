@@ -522,11 +522,11 @@ public sealed class BotConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMasterClanID), SteamMasterClanID));
 		}
 
-		if (!string.IsNullOrEmpty(SteamParentalCode) && ((SteamParentalCode!.Length != SteamParentalCodeLength) || SteamParentalCode.Any(static character => character is < '0' or > '9'))) {
+		if (!string.IsNullOrEmpty(SteamParentalCode) && ((SteamParentalCode.Length != SteamParentalCodeLength) || SteamParentalCode.Any(static character => character is < '0' or > '9'))) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamParentalCode), SteamParentalCode));
 		}
 
-		if (!string.IsNullOrEmpty(SteamTradeToken) && (SteamTradeToken!.Length != SteamTradeTokenLength)) {
+		if (!string.IsNullOrEmpty(SteamTradeToken) && (SteamTradeToken.Length != SteamTradeTokenLength)) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamTradeToken), SteamTradeToken));
 		}
 
@@ -557,7 +557,7 @@ public sealed class BotConfig {
 			return SteamPassword;
 		}
 
-		string? result = await ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword!).ConfigureAwait(false);
+		string? result = await ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(result)) {
 			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SteamPassword)));
@@ -604,8 +604,7 @@ public sealed class BotConfig {
 
 		if (!valid) {
 			if (!string.IsNullOrEmpty(errorMessage)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				ASF.ArchiLogger.LogGenericError(errorMessage!);
+				ASF.ArchiLogger.LogGenericError(errorMessage);
 			}
 
 			return (null, null);
@@ -617,13 +616,12 @@ public sealed class BotConfig {
 			HashSet<string> disallowedValues = new(StringComparer.InvariantCultureIgnoreCase) { "account" };
 
 			if (!string.IsNullOrEmpty(botConfig.SteamLogin)) {
-				disallowedValues.Add(botConfig.SteamLogin!);
+				disallowedValues.Add(botConfig.SteamLogin);
 			}
 
 			Utilities.InBackground(
 				() => {
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					(bool isWeak, string? reason) = Utilities.TestPasswordStrength(decryptedSteamPassword!, disallowedValues);
+					(bool isWeak, string? reason) = Utilities.TestPasswordStrength(decryptedSteamPassword, disallowedValues);
 
 					if (isWeak) {
 						if (string.IsNullOrEmpty(botName)) {

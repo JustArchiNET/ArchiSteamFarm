@@ -43,22 +43,17 @@ internal static class OS {
 	internal static readonly string ProcessFileName = Environment.ProcessPath ?? throw new InvalidOperationException(nameof(ProcessFileName));
 
 	internal static DateTime ProcessStartTime {
-#if NETFRAMEWORK || NETSTANDARD
-		get => RuntimeMadness.ProcessStartTime.ToUniversalTime();
-#else
 		get {
 			using Process process = Process.GetCurrentProcess();
 
 			return process.StartTime.ToUniversalTime();
 		}
-#endif
 	}
 
 	internal static string Version {
 		get {
 			if (!string.IsNullOrEmpty(BackingVersion)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				return BackingVersion!;
+				return BackingVersion;
 			}
 
 			string framework = RuntimeInformation.FrameworkDescription.Trim();
@@ -67,15 +62,11 @@ internal static class OS {
 				framework = "Unknown Framework";
 			}
 
-#if NETFRAMEWORK || NETSTANDARD
-			string runtime = RuntimeInformation.OSArchitecture.ToString();
-#else
 			string runtime = RuntimeInformation.RuntimeIdentifier.Trim();
 
 			if (runtime.Length == 0) {
 				runtime = "Unknown Runtime";
 			}
-#endif
 
 			string description = RuntimeInformation.OSDescription.Trim();
 
@@ -208,38 +199,6 @@ internal static class OS {
 		// We're not going to analyze source builds, as we don't know what changes the author has made, assume they have a point
 		if (SharedInfo.BuildInfo.IsCustomBuild) {
 			return true;
-		}
-
-		if (SharedInfo.BuildInfo.Variant.EndsWith("-netf", StringComparison.Ordinal)) {
-#if NETFRAMEWORK || NETSTANDARD
-			// All Windows variants (7+) have valid .NET Core build
-			if (OperatingSystem.IsWindows()) {
-				return false;
-			}
-
-			// Non-Windows variants of generic-netf are supported only in Mono
-			if (!RuntimeMadness.IsRunningOnMono) {
-				return false;
-			}
-
-			// Platforms not supported by .NET Core
-			return RuntimeInformation.OSArchitecture switch {
-				// Sadly we can't tell a difference between ARMv6 and ARMv7 reliably, we'll believe that this linux-arm user knows what he's doing and he's indeed in need of generic-netf on ARMv6
-				Architecture.Arm => true,
-
-				// Apart from real x86, this also covers all unknown architectures, such as sparc, ppc64, and anything else Mono might support, we're fine with that
-				Architecture.X86 => true,
-
-				// Everything else is covered by .NET Core
-				_ => false
-			};
-#else
-
-			// .NET Framework build running on .NET Core? Very funny - only if somebody lied during build process
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(SharedInfo.BuildInfo.Variant), SharedInfo.BuildInfo.Variant));
-
-			return false;
-#endif
 		}
 
 		if (SharedInfo.BuildInfo.Variant == "generic") {

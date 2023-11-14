@@ -270,8 +270,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			JwtSecurityToken? jwtToken = Utilities.ReadJwtToken(value!);
+			JwtSecurityToken? jwtToken = Utilities.ReadJwtToken(value);
 
 			if (jwtToken == null) {
 				return;
@@ -1124,7 +1123,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					break;
 				}
 
-				if (packageData.ProhibitRunInCountries.Contains(IPCountryCode!)) {
+				if (packageData.ProhibitRunInCountries.Contains(IPCountryCode)) {
 					// We are restricted by this package, we can only be saved by another package that is not restricted
 					DateTime regionRestrictedUntilPackage = ownedPackageData.TimeCreated.AddMonths(RegionRestrictionPlayableBlockMonths);
 
@@ -1195,8 +1194,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			if (!string.IsNullOrEmpty(releaseState)) {
 				// We must convert this to uppercase, since Valve doesn't stick to any convention and we can have a case mismatch
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				switch (releaseState!.ToUpperInvariant()) {
+				switch (releaseState.ToUpperInvariant()) {
 					case "RELEASED":
 						break;
 					case "PRELOADONLY" or "PRERELEASE":
@@ -1215,8 +1213,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			// We must convert this to uppercase, since Valve doesn't stick to any convention and we can have a case mismatch
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			switch (type!.ToUpperInvariant()) {
+			switch (type.ToUpperInvariant()) {
 				case "APPLICATION" or "EPISODE" or "GAME" or "MOD" or "MOVIE" or "SERIES" or "TOOL" or "VIDEO":
 					// Types that can be idled
 					return (appID, DateTime.MinValue, true);
@@ -1239,8 +1236,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return (appID, DateTime.MinValue, true);
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			string[] dlcAppIDsTexts = listOfDlc!.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
+			string[] dlcAppIDsTexts = listOfDlc.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 			foreach (string dlcAppIDsText in dlcAppIDsTexts) {
 				if (!uint.TryParse(dlcAppIDsText, out uint dlcAppID) || (dlcAppID == 0)) {
@@ -1267,8 +1263,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return null;
 		}
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		if (!string.IsNullOrEmpty(ASF.GlobalConfig?.DefaultBot) && Bots.TryGetValue(ASF.GlobalConfig!.DefaultBot!, out Bot? targetBot)) {
+		if (!string.IsNullOrEmpty(ASF.GlobalConfig?.DefaultBot) && Bots.TryGetValue(ASF.GlobalConfig.DefaultBot, out Bot? targetBot)) {
 			return targetBot;
 		}
 
@@ -1350,8 +1345,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			string? prohibitRunInCountriesText = productInfo.KeyValues["extended"]["prohibitrunincountries"].AsString();
 
 			if (!string.IsNullOrEmpty(prohibitRunInCountriesText)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				prohibitRunInCountries = prohibitRunInCountriesText!.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+				prohibitRunInCountries = prohibitRunInCountriesText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 			}
 
 			result[productInfo.ID] = new PackageData(changeNumber, validUntil, appIDs?.ToImmutableHashSet(), prohibitRunInCountries?.ToImmutableHashSet(StringComparer.Ordinal));
@@ -1390,7 +1384,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		string? gameName = null;
 
 		if (!string.IsNullOrEmpty(BotConfig.CustomGamePlayedWhileFarming)) {
-			gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming!, game.AppID, game.GameName);
+			gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming, game.AppID, game.GameName);
 		}
 
 		await ArchiHandler.PlayGames(new HashSet<uint>(1) { game.PlayableAppID }, gameName).ConfigureAwait(false);
@@ -1404,7 +1398,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		string? gameName = null;
 
 		if (!string.IsNullOrEmpty(BotConfig.CustomGamePlayedWhileFarming)) {
-			gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming!, string.Join(", ", games.Select(static game => game.AppID)), string.Join(", ", games.Select(static game => game.GameName)));
+			gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming, string.Join(", ", games.Select(static game => game.AppID)), string.Join(", ", games.Select(static game => game.GameName)));
 		}
 
 		await ArchiHandler.PlayGames(games.Select(static game => game.PlayableAppID).ToHashSet(), gameName).ConfigureAwait(false);
@@ -1570,7 +1564,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			if (!force && !string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > now.AddMinutes(MinimumAccessTokenValidityMinutes))) {
 				// We can use the tokens we already have
-				if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken!, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+				if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 					InitRefreshTokensTimer(AccessTokenValidUntil.Value);
 
 					return true;
@@ -1590,7 +1584,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			AccessTokenGenerateResult response;
 
 			try {
-				response = await SteamClient.Authentication.GenerateAccessTokenForAppAsync(SteamID, RefreshToken!, true).ConfigureAwait(false);
+				response = await SteamClient.Authentication.GenerateAccessTokenForAppAsync(SteamID, RefreshToken, true).ConfigureAwait(false);
 			} catch (Exception e) {
 				// The request has failed, in almost all cases this means our refresh token is no longer valid, relog needed
 				ArchiLogger.LogGenericWarningException(e);
@@ -1666,8 +1660,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		if (!string.IsNullOrEmpty(latestJson)) {
 			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.AutomaticFileMigration, configFilePath));
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			await SerializableFile.Write(configFilePath, latestJson!).ConfigureAwait(false);
+			await SerializableFile.Write(configFilePath, latestJson).ConfigureAwait(false);
 
 			ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 		}
@@ -1823,8 +1816,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		string? input = await Logging.GetUserInput(inputType, BotName).ConfigureAwait(false);
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		if (string.IsNullOrEmpty(input) || !SetUserInput(inputType, input!)) {
+		if (string.IsNullOrEmpty(input) || !SetUserInput(inputType, input)) {
 			ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(input)));
 
 			Stop();
@@ -1951,11 +1943,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			string? key = game.Key as string;
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			if (string.IsNullOrEmpty(key)) {
 				invalid = true;
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(key)));
-			} else if (!Utilities.IsValidCdKey(key!)) {
+			} else if (!Utilities.IsValidCdKey(key)) {
 				invalid = true;
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, key));
 			}
@@ -2103,8 +2094,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			// URIs to foil badges are the same as for normal badges except they end with "?border=1"
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			string appIDText = badgeUri!.Split('?', StringSplitOptions.RemoveEmptyEntries)[0].Split('/', StringSplitOptions.RemoveEmptyEntries)[^1];
+			string appIDText = badgeUri.Split('?', StringSplitOptions.RemoveEmptyEntries)[0].Split('/', StringSplitOptions.RemoveEmptyEntries)[^1];
 
 			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 				ArchiLogger.LogNullError(appID);
@@ -2168,8 +2158,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				string? authCode = await Logging.GetUserInput(ASF.EUserInputType.SteamGuard, BotName).ConfigureAwait(false);
 
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				if (string.IsNullOrEmpty(authCode) || !SetUserInput(ASF.EUserInputType.SteamGuard, authCode!)) {
+				if (string.IsNullOrEmpty(authCode) || !SetUserInput(ASF.EUserInputType.SteamGuard, authCode)) {
 					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(authCode)));
 
 					Stop();
@@ -2182,8 +2171,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				string? twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName).ConfigureAwait(false);
 
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode!)) {
+				if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode)) {
 					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(twoFactorCode)));
 
 					Stop();
@@ -2335,8 +2323,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			string? steamLogin = await Logging.GetUserInput(ASF.EUserInputType.Login, BotName).ConfigureAwait(false);
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (string.IsNullOrEmpty(steamLogin) || !SetUserInput(ASF.EUserInputType.Login, steamLogin!)) {
+			if (string.IsNullOrEmpty(steamLogin) || !SetUserInput(ASF.EUserInputType.Login, steamLogin)) {
 				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamLogin)));
 
 				return false;
@@ -2351,8 +2338,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				string? steamPassword = await Logging.GetUserInput(ASF.EUserInputType.Password, BotName).ConfigureAwait(false);
 
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				if (string.IsNullOrEmpty(steamPassword) || !SetUserInput(ASF.EUserInputType.Password, steamPassword!)) {
+				if (string.IsNullOrEmpty(steamPassword) || !SetUserInput(ASF.EUserInputType.Password, steamPassword)) {
 					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamPassword)));
 
 					return false;
@@ -2380,13 +2366,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (BotConfig.PasswordFormat.HasTransformation()) {
 			if (!string.IsNullOrEmpty(accessToken)) {
-				// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
-				accessToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, accessToken!).ConfigureAwait(false);
+				accessToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, accessToken).ConfigureAwait(false);
 			}
 
 			if (!string.IsNullOrEmpty(refreshToken)) {
-				// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
-				refreshToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshToken!).ConfigureAwait(false);
+				refreshToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshToken).ConfigureAwait(false);
 			}
 		}
 
@@ -2621,7 +2605,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		// Steam login and password fields can contain ASCII characters only, including spaces
-		string username = GeneratedRegexes.NonAscii().Replace(BotConfig.SteamLogin!, "");
+		string username = GeneratedRegexes.NonAscii().Replace(BotConfig.SteamLogin, "");
 
 		if (string.IsNullOrEmpty(username)) {
 			ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(BotConfig.SteamLogin)));
@@ -2634,8 +2618,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		string? password = await BotConfig.GetDecryptedSteamPassword().ConfigureAwait(false);
 
 		if (!string.IsNullOrEmpty(password)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			password = GeneratedRegexes.NonAscii().Replace(password!, "");
+			password = GeneratedRegexes.NonAscii().Replace(password, "");
 
 			if (string.IsNullOrEmpty(password)) {
 				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(BotConfig.SteamPassword)));
@@ -3190,8 +3173,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				if (!string.IsNullOrEmpty(steamParentalCode)) {
 					// We were able to automatically generate it, potentially with help of the config
 					if (BotConfig.SteamParentalCode != steamParentalCode) {
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						if (!SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode!)) {
+						if (!SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
 							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamParentalCode)));
 
 							Stop();
@@ -3205,8 +3187,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 					steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode!)) {
+					if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
 						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamParentalCode)));
 
 						Stop();
@@ -3458,8 +3439,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					break;
 				}
 
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				CStore_RegisterCDKey_Response? response = await Actions.RedeemKey(key!).ConfigureAwait(false);
+				CStore_RegisterCDKey_Response? response = await Actions.RedeemKey(key).ConfigureAwait(false);
 
 				if (response == null) {
 					continue;
@@ -3472,8 +3452,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				if ((purchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((purchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
 					// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)? walletResult = await ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
+					(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)? walletResult = await ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
 
 					if (walletResult != null) {
 						result = walletResult.Value.Result;
@@ -3521,12 +3500,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					break;
 				}
 
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				BotDatabase.RemoveGameToRedeemInBackground(key!);
+				BotDatabase.RemoveGameToRedeemInBackground(key);
 
 				// If user omitted the name or intentionally provided the same name as key, replace it with the Steam result
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				if (name!.Equals(key, StringComparison.OrdinalIgnoreCase) && (items?.Count > 0)) {
+				if (name.Equals(key, StringComparison.OrdinalIgnoreCase) && (items?.Count > 0)) {
 					name = string.Join(", ", items.Values);
 				}
 
@@ -3813,7 +3790,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				BotDatabase.AccessToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, accessToken);
 
 				if (!string.IsNullOrEmpty(refreshToken)) {
-					BotDatabase.RefreshToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, refreshToken!);
+					BotDatabase.RefreshToken = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, refreshToken);
 				}
 			} else {
 				BotDatabase.AccessToken = accessToken;
@@ -3856,8 +3833,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		if (!string.IsNullOrEmpty(steamParentalCode)) {
 			byte i = 0;
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			byte[] password = new byte[steamParentalCode!.Length];
+			byte[] password = new byte[steamParentalCode.Length];
 
 			foreach (char character in steamParentalCode.TakeWhile(static character => character is >= '0' and <= '9')) {
 				password[i++] = (byte) character;

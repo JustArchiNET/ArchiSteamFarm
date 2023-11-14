@@ -23,32 +23,8 @@
 		<PackageReference Include="System.Composition" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" />
 		<PackageReference Include="System.Linq.Async" />
-		<PackageReference Include="zxcvbn-core" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' != 'net481'">
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net481' OR '$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="Microsoft.AspNetCore.Cors" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics" />
-		<PackageReference Include="Microsoft.AspNetCore.HttpOverrides" />
-		<PackageReference Include="Microsoft.AspNetCore.ResponseCaching" />
-		<PackageReference Include="Microsoft.AspNetCore.ResponseCompression" />
-		<PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" />
-		<PackageReference Include="Microsoft.AspNetCore.WebSockets" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net481'">
-		<Reference Include="System.Net.Http" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8.1\System.Net.Http.dll" />
-		<Reference Include="System.Security" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8.1\System.Security.dll" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="System.IO.FileSystem.AccessControl" />
+		<PackageReference Include="zxcvbn-core" />
 	</ItemGroup>
 
 	<ItemGroup>

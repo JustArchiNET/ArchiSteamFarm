@@ -307,8 +307,7 @@ public sealed class ArchiWebHandler : IDisposable {
 						}
 
 						// Interpret the reason and see if we should try again
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						switch (response.Content!.ErrorCode) {
+						switch (response.Content.ErrorCode) {
 							case EResult.DuplicateRequest:
 							case EResult.ServiceUnavailable:
 								response = null;
@@ -317,8 +316,7 @@ public sealed class ArchiWebHandler : IDisposable {
 						}
 
 						// This is actually client error with a reason, so it doesn't make sense to retry
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText), null, response.StatusCode);
+						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText), null, response.StatusCode);
 					}
 				}
 			} finally {
@@ -413,9 +411,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		Dictionary<string, object?> arguments = new(2, StringComparer.Ordinal) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "access_token", accessToken! },
-
+			{ "access_token", accessToken },
 			{ "steamid", Bot.SteamID }
 		};
 
@@ -478,8 +474,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		Dictionary<string, object?> arguments = new(StringComparer.Ordinal) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "key", steamApiKey! }
+			{ "key", steamApiKey }
 		};
 
 		if (activeOnly.HasValue) {
@@ -594,8 +589,7 @@ public sealed class ArchiWebHandler : IDisposable {
 						return null;
 					}
 
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					parsedTags.Add(new Tag(identifier!, value));
+					parsedTags.Add(new Tag(identifier, value));
 				}
 
 				parsedDescription.Tags = parsedTags.ToImmutableHashSet();
@@ -774,8 +768,7 @@ public sealed class ArchiWebHandler : IDisposable {
 					}
 
 					// This is actually client error with a reason, so it doesn't make sense to retry
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText));
 
 					return (false, tradeOfferIDs, mobileTradeOfferIDs);
 				}
@@ -1116,11 +1109,9 @@ public sealed class ArchiWebHandler : IDisposable {
 			};
 
 			if (data != null) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				data[sessionName] = sessionID!;
+				data[sessionName] = sessionID;
 			} else {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID! } };
+				data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID } };
 			}
 		}
 
@@ -1228,11 +1219,9 @@ public sealed class ArchiWebHandler : IDisposable {
 			};
 
 			if (data != null) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				data[sessionName] = sessionID!;
+				data[sessionName] = sessionID;
 			} else {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID! } };
+				data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID } };
 			}
 		}
 
@@ -1339,8 +1328,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				_ => throw new InvalidOperationException(nameof(session))
 			};
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			KeyValuePair<string, string> sessionValue = new(sessionName, sessionID!);
+			KeyValuePair<string, string> sessionValue = new(sessionName, sessionID);
 
 			if (data != null) {
 				data.Remove(sessionValue);
@@ -1454,11 +1442,9 @@ public sealed class ArchiWebHandler : IDisposable {
 			};
 
 			if (data != null) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				data[sessionName] = sessionID!;
+				data[sessionName] = sessionID;
 			} else {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID! } };
+				data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID } };
 			}
 		}
 
@@ -1599,8 +1585,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				// This is actually client error with a reason, so it doesn't make sense to retry
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText));
 
 				return (false, false);
 			}
@@ -1846,15 +1831,12 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		Dictionary<string, object?> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 3 : 2, StringComparer.Ordinal) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "key", steamApiKey! },
-
+			{ "key", steamApiKey },
 			{ "steamid_target", steamID }
 		};
 
 		if (!string.IsNullOrEmpty(tradeToken)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			arguments["trade_offer_access_token"] = tradeToken!;
+			arguments["trade_offer_access_token"] = tradeToken;
 		}
 
 		KeyValue? response = null;
@@ -1954,8 +1936,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (giftCardIDText!.Length <= 13) {
+			if (giftCardIDText.Length <= 13) {
 				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(giftCardIDText)));
 
 				return null;
@@ -2231,8 +2212,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		// Unlock Steam Parental if needed
 		if (!string.IsNullOrEmpty(parentalCode)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!await UnlockParentalAccount(parentalCode!).ConfigureAwait(false)) {
+			if (!await UnlockParentalAccount(parentalCode).ConfigureAwait(false)) {
 				return false;
 			}
 		}
@@ -2635,8 +2615,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request).ConfigureAwait(false);
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		return !string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken) ? (true, response!.Content!.Data.WebAPIToken) : (false, null);
+		return !string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken) ? (true, response.Content.Data.WebAPIToken) : (false, null);
 	}
 
 	private async Task<(bool Success, string? Result)> ResolveApiKey() {
@@ -2711,9 +2690,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		Dictionary<string, object?> arguments = new(2, StringComparer.Ordinal) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "key", steamApiKey! },
-
+			{ "key", steamApiKey },
 			{ "steamids", Bot.SteamID }
 		};
 
@@ -2815,9 +2792,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
 			{ "pin", parentalCode },
-
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "sessionid", sessionID! }
+			{ "sessionid", sessionID }
 		};
 
 		// This request doesn't go through UrlPostRetryWithSession as we have no access to session refresh capability (this is in fact session initialization)

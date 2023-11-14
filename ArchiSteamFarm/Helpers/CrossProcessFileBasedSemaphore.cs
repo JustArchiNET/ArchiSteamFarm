@@ -173,10 +173,8 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 			return;
 		}
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		if (!Directory.Exists(directoryPath!)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			DirectoryInfo directoryInfo = Directory.CreateDirectory(directoryPath!);
+		if (!Directory.Exists(directoryPath)) {
+			DirectoryInfo directoryInfo = Directory.CreateDirectory(directoryPath);
 
 			if (OperatingSystem.IsWindows()) {
 				try {

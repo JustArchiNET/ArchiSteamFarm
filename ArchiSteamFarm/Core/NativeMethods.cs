@@ -29,67 +29,37 @@ internal static partial class NativeMethods {
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
-#if NETFRAMEWORK || NETSTANDARD
-	[DllImport("kernel32.dll")]
-	internal static extern bool GetConsoleMode(nint hConsoleHandle, out EConsoleMode lpMode);
-#else
 	[LibraryImport("kernel32.dll")]
 	internal static partial bool GetConsoleMode(nint hConsoleHandle, out EConsoleMode lpMode);
-#endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("FreeBSD")]
 	[SupportedOSPlatform("Linux")]
 	[SupportedOSPlatform("MacOS")]
-#if NETFRAMEWORK || NETSTANDARD
-	[DllImport("libc", EntryPoint = "geteuid", SetLastError = true)]
-	internal static extern uint GetEuid();
-#else
 	[LibraryImport("libc", EntryPoint = "geteuid", SetLastError = true)]
 	internal static partial uint GetEuid();
-#endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("Windows")]
-#if NETFRAMEWORK || NETSTANDARD
-	[DllImport("kernel32.dll")]
-	internal static extern nint GetStdHandle(EStandardHandle nStdHandle);
-#else
 	[LibraryImport("kernel32.dll")]
 	internal static partial nint GetStdHandle(EStandardHandle nStdHandle);
-#endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
-#if NETFRAMEWORK || NETSTANDARD
-	[DllImport("kernel32.dll")]
-	internal static extern bool SetConsoleMode(nint hConsoleHandle, EConsoleMode dwMode);
-#else
 	[LibraryImport("kernel32.dll")]
 	internal static partial bool SetConsoleMode(nint hConsoleHandle, EConsoleMode dwMode);
-#endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("Windows")]
-#if NETFRAMEWORK || NETSTANDARD
-	[DllImport("kernel32.dll")]
-	internal static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);
-#else
 	[LibraryImport("kernel32.dll")]
 	internal static partial EExecutionState SetThreadExecutionState(EExecutionState executionState);
-#endif
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
-#if NETFRAMEWORK || NETSTANDARD
-	[DllImport("user32.dll")]
-	internal static extern void ShowWindow(nint hWnd, EShowWindow nCmdShow);
-#else
 	[LibraryImport("user32.dll")]
 	internal static partial void ShowWindow(nint hWnd, EShowWindow nCmdShow);
-#endif
 
 	[Flags]
 	[SupportedOSPlatform("Windows")]

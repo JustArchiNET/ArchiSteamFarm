@@ -81,11 +81,15 @@ public abstract class SerializableFile : IDisposable {
 
 			string json = JsonConvert.SerializeObject(this, Debugging.IsUserDebugging ? Formatting.Indented : Formatting.None);
 
+			if (string.IsNullOrEmpty(json)) {
+				throw new InvalidOperationException(nameof(json));
+			}
+
 			// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
 			string newFilePath = $"{FilePath}.new";
 
 			if (File.Exists(FilePath)) {
-				string currentJson = await File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
+				string currentJson = await File.ReadAllTextAsync(FilePath).ConfigureAwait(false);
 
 				if (json == currentJson) {
 					return;
@@ -93,11 +97,11 @@ public abstract class SerializableFile : IDisposable {
 
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				File.Replace(newFilePath, FilePath!, null);
+				File.Replace(newFilePath, FilePath, null);
 			} else {
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				File.Move(newFilePath, FilePath!);
+				File.Move(newFilePath, FilePath);
 			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
@@ -125,8 +129,13 @@ public abstract class SerializableFile : IDisposable {
 	}
 
 	internal static async Task<bool> Write(string filePath, string json) {
-		ArgumentException.ThrowIfNullOrEmpty(filePath);
-		ArgumentException.ThrowIfNullOrEmpty(json);
+		if (string.IsNullOrEmpty(filePath)) {
+			throw new ArgumentNullException(nameof(filePath));
+		}
+
+		if (string.IsNullOrEmpty(json)) {
+			throw new ArgumentNullException(nameof(json));
+		}
 
 		string newFilePath = $"{filePath}.new";
 

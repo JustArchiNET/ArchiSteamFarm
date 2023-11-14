@@ -343,13 +343,11 @@ public sealed class Commands {
 		string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
 		if (!string.IsNullOrEmpty(commandPrefix)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!message.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
+			if (!message.StartsWith(commandPrefix, StringComparison.Ordinal)) {
 				string? pluginsResponse = await PluginsCore.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 				if (!string.IsNullOrEmpty(pluginsResponse)) {
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					if (!await Bot.SendMessage(steamID, pluginsResponse!).ConfigureAwait(false)) {
+					if (!await Bot.SendMessage(steamID, pluginsResponse).ConfigureAwait(false)) {
 						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 						Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, pluginsResponse));
 					}
@@ -358,8 +356,7 @@ public sealed class Commands {
 				return;
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (message.Length == commandPrefix!.Length) {
+			if (message.Length == commandPrefix.Length) {
 				// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
 				return;
 			}
@@ -395,8 +392,7 @@ public sealed class Commands {
 			response = FormatBotResponse(Strings.ErrorAccessDenied);
 		}
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		if (!await Bot.SendMessage(steamID, response!).ConfigureAwait(false)) {
+		if (!await Bot.SendMessage(steamID, response).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, response));
 		}
@@ -415,13 +411,11 @@ public sealed class Commands {
 		string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
 		if (!string.IsNullOrEmpty(commandPrefix)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!message.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
+			if (!message.StartsWith(commandPrefix, StringComparison.Ordinal)) {
 				string? pluginsResponse = await PluginsCore.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 				if (!string.IsNullOrEmpty(pluginsResponse)) {
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					if (!await Bot.SendMessage(chatGroupID, chatID, pluginsResponse!).ConfigureAwait(false)) {
+					if (!await Bot.SendMessage(chatGroupID, chatID, pluginsResponse).ConfigureAwait(false)) {
 						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 						Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, pluginsResponse));
 					}
@@ -430,8 +424,7 @@ public sealed class Commands {
 				return;
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (message.Length == commandPrefix!.Length) {
+			if (message.Length == commandPrefix.Length) {
 				// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
 				return;
 			}
@@ -469,8 +462,7 @@ public sealed class Commands {
 			response = FormatBotResponse(Strings.ErrorAccessDenied);
 		}
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		if (!await Bot.SendMessage(chatGroupID, chatID, response!).ConfigureAwait(false)) {
+		if (!await Bot.SendMessage(chatGroupID, chatID, response).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, response));
 		}
@@ -2304,8 +2296,7 @@ public sealed class Commands {
 			string? previousKey = key;
 
 			while (!string.IsNullOrEmpty(key)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				string startingKey = key!;
+				string startingKey = key;
 
 				using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && bot.Value.IsConnectedAndLoggedOn && ((access >= EAccess.Owner) || ((steamID != 0) && (bot.Value.GetAccess(steamID) >= EAccess.Operator)))).OrderByDescending(bot => Bot.BotsComparer?.Compare(bot.Key, Bot.BotName) > 0).ThenBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value).GetEnumerator()) {
 					Bot? currentBot = Bot;
@@ -2316,8 +2307,7 @@ public sealed class Commands {
 							previousKey = key;
 						}
 
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !Utilities.IsValidCdKey(key!)) {
+						if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !Utilities.IsValidCdKey(key)) {
 							// Next key
 							key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null;
 
@@ -2336,8 +2326,7 @@ public sealed class Commands {
 							Dictionary<uint, string>? items = null;
 
 							if (!skipRequest) {
-								// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-								CStore_RegisterCDKey_Response? redeemResult = await currentBot.Actions.RedeemKey(key!).ConfigureAwait(false);
+								CStore_RegisterCDKey_Response? redeemResult = await currentBot.Actions.RedeemKey(key).ConfigureAwait(false);
 
 								if (redeemResult != null) {
 									result = (EResult) redeemResult.purchase_receipt_info.purchase_status;
@@ -2364,8 +2353,7 @@ public sealed class Commands {
 
 								if ((purchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((purchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
 									// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
-									// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-									(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
+									(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
 
 									if (walletResult != null) {
 										result = walletResult.Value.Result;
@@ -2390,8 +2378,7 @@ public sealed class Commands {
 									case EPurchaseResultDetail.NoDetail: // OK
 									case EPurchaseResultDetail.Timeout:
 										if ((result != EResult.Timeout) && (purchaseResultDetail != EPurchaseResultDetail.Timeout)) {
-											// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-											unusedKeys.Remove(key!);
+											unusedKeys.Remove(key);
 										}
 
 										// Next key
@@ -2428,8 +2415,7 @@ public sealed class Commands {
 										bool alreadyHandled = false;
 
 										foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !triedBots.Contains(bot.Value) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && ((access >= EAccess.Owner) || ((steamID != 0) && (bot.Value.GetAccess(steamID) >= EAccess.Operator))) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value)) {
-											// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-											CStore_RegisterCDKey_Response? redeemResponse = await innerBot.Actions.RedeemKey(key!).ConfigureAwait(false);
+											CStore_RegisterCDKey_Response? redeemResponse = await innerBot.Actions.RedeemKey(key).ConfigureAwait(false);
 
 											if (redeemResponse == null) {
 												response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{EResult.Timeout}/{EPurchaseResultDetail.Timeout}"), innerBot.BotName));
@@ -2449,8 +2435,7 @@ public sealed class Commands {
 													// This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
 													alreadyHandled = true;
 
-													// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-													unusedKeys.Remove(key!);
+													unusedKeys.Remove(key);
 
 													break;
 												case EPurchaseResultDetail.RateLimited:
@@ -2488,8 +2473,7 @@ public sealed class Commands {
 									default:
 										ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(purchaseResultDetail), purchaseResultDetail));
 
-										// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-										unusedKeys.Remove(key!);
+										unusedKeys.Remove(key);
 
 										// Next key
 										key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null;
@@ -3165,8 +3149,7 @@ public sealed class Commands {
 		GlobalConfig.EUpdateChannel channel = ASF.GlobalConfig?.UpdateChannel ?? GlobalConfig.DefaultUpdateChannel;
 
 		if (!string.IsNullOrEmpty(channelText)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!Enum.TryParse(channelText!, true, out channel) || (channel == GlobalConfig.EUpdateChannel.None)) {
+			if (!Enum.TryParse(channelText, true, out channel) || (channel == GlobalConfig.EUpdateChannel.None)) {
 				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(channelText)));
 			}
 		}

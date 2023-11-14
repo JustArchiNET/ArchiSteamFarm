@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Quic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -42,9 +43,6 @@ using ArchiSteamFarm.Web;
 using Newtonsoft.Json;
 using NLog;
 using SteamKit2;
-#if !NETFRAMEWORK && !NETSTANDARD
-using System.Net.Quic;
-#endif
 
 namespace ArchiSteamFarm;
 
@@ -58,15 +56,9 @@ internal static class Program {
 	internal static bool ShutdownSequenceInitialized { get; private set; }
 	internal static bool SteamParentalGeneration { get; private set; } = true;
 
-#if !NETFRAMEWORK && !NETSTANDARD
 	private static readonly Dictionary<PosixSignal, PosixSignalRegistration> RegisteredPosixSignals = new();
-#endif
-
 	private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
-
-#if !NETFRAMEWORK && !NETSTANDARD
 	private static readonly ImmutableHashSet<PosixSignal> SupportedPosixSignals = ImmutableHashSet.Create(PosixSignal.SIGINT, PosixSignal.SIGTERM);
-#endif
 
 	private static bool IgnoreUnsupportedEnvironment;
 	private static bool InputCryptkeyManually;
@@ -182,15 +174,11 @@ internal static class Program {
 		AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 		TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
-#if NETFRAMEWORK || NETSTANDARD
-		RuntimeMadness.Initialize();
-#else
 		if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 			foreach (PosixSignal signal in SupportedPosixSignals) {
 				RegisteredPosixSignals[signal] = PosixSignalRegistration.Create(signal, OnPosixSignal);
 			}
 		}
-#endif
 
 		Console.CancelKeyPress += OnCancelKeyPress;
 
@@ -304,8 +292,7 @@ internal static class Program {
 		string? copyright = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
 
 		if (!string.IsNullOrEmpty(copyright)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			ASF.ArchiLogger.LogGenericInfo(copyright!);
+			ASF.ArchiLogger.LogGenericInfo(copyright);
 		}
 
 		if (IgnoreUnsupportedEnvironment) {
@@ -333,8 +320,7 @@ internal static class Program {
 				return false;
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			ArchiCryptoHelper.SetEncryptionKey(cryptkey!);
+			ArchiCryptoHelper.SetEncryptionKey(cryptkey);
 		}
 
 		if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
@@ -378,7 +364,7 @@ internal static class Program {
 		if (!string.IsNullOrEmpty(globalConfig.CurrentCulture)) {
 			try {
 				// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
-				CultureInfo culture = CultureInfo.CreateSpecificCulture(globalConfig.CurrentCulture!);
+				CultureInfo culture = CultureInfo.CreateSpecificCulture(globalConfig.CurrentCulture);
 				CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericWarningException(e);
@@ -393,8 +379,7 @@ internal static class Program {
 		if (!string.IsNullOrEmpty(latestJson)) {
 			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.AutomaticFileMigration, globalConfigFile));
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			await SerializableFile.Write(globalConfigFile, latestJson!).ConfigureAwait(false);
+			await SerializableFile.Write(globalConfigFile, latestJson).ConfigureAwait(false);
 
 			ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 		}
@@ -477,7 +462,6 @@ internal static class Program {
 
 		ShutdownSequenceInitialized = true;
 
-#if !NETFRAMEWORK && !NETSTANDARD
 		if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 			// Unregister from registered signals
 			foreach (PosixSignalRegistration registration in RegisteredPosixSignals.Values) {
@@ -486,7 +470,6 @@ internal static class Program {
 
 			RegisteredPosixSignals.Clear();
 		}
-#endif
 
 		// Sockets created by IPC might still be running for a short while after complete app shutdown
 		// Ensure that IPC is stopped before we finalize shutdown sequence
@@ -522,7 +505,6 @@ internal static class Program {
 
 	private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit(130).ConfigureAwait(false);
 
-#if !NETFRAMEWORK && !NETSTANDARD
 	private static async void OnPosixSignal(PosixSignalContext signal) {
 		ArgumentNullException.ThrowIfNull(signal);
 
@@ -539,7 +521,6 @@ internal static class Program {
 				throw new InvalidOperationException(nameof(signal.Signal));
 		}
 	}
-#endif
 
 	private static async void OnProcessExit(object? sender, EventArgs e) => await Shutdown().ConfigureAwait(false);
 
@@ -695,15 +676,13 @@ internal static class Program {
 			string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
 
 			if (!string.IsNullOrEmpty(envCryptKey)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				HandleCryptKeyArgument(envCryptKey!);
+				HandleCryptKeyArgument(envCryptKey);
 			}
 
 			string? envCryptKeyFile = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKeyFile);
 
 			if (!string.IsNullOrEmpty(envCryptKeyFile)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				if (!await HandleCryptKeyFileArgument(envCryptKeyFile!).ConfigureAwait(false)) {
+				if (!await HandleCryptKeyFileArgument(envCryptKeyFile).ConfigureAwait(false)) {
 					return false;
 				}
 			}
@@ -711,15 +690,13 @@ internal static class Program {
 			string? envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
 
 			if (!string.IsNullOrEmpty(envNetworkGroup)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				HandleNetworkGroupArgument(envNetworkGroup!);
+				HandleNetworkGroupArgument(envNetworkGroup);
 			}
 
 			string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
 
 			if (!string.IsNullOrEmpty(envPath)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				if (!HandlePathArgument(envPath!)) {
+				if (!HandlePathArgument(envPath)) {
 					return false;
 				}
 			}

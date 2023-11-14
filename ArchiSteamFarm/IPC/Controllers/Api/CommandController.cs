@@ -62,10 +62,8 @@ public sealed class CommandController : ArchiController {
 		string command = request.Command;
 		string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (command.Length == commandPrefix!.Length) {
+		if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix, StringComparison.Ordinal)) {
+			if (command.Length == commandPrefix.Length) {
 				// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
 				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(command))));
 			}

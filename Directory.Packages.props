@@ -20,29 +20,7 @@
 		<PackageVersion Include="System.Composition.AttributedModel" Version="8.0.0" />
 		<PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
 		<PackageVersion Include="System.Linq.Async" Version="6.0.1" />
-		<PackageVersion Include="zxcvbn-core" Version="7.0.92" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' != 'net481'">
 		<PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net481' OR '$(TargetFramework)' == 'netstandard2.1'">
-		<PackageVersion Include="JustArchiNET.Madness" Version="3.17.0" />
-		<PackageVersion Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
-		<PackageVersion Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
-		<PackageVersion Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
-		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-		<PackageVersion Include="Microsoft.AspNetCore.ResponseCaching" Version="2.2.0" />
-		<PackageVersion Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
-		<PackageVersion Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
-		<PackageVersion Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />
-		<PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="3.1.32" />
-		<PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.32" />
-		<PackageVersion Include="TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray" Version="1.0.1" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-		<PackageVersion Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
+		<PackageVersion Include="zxcvbn-core" Version="7.0.92" />
 	</ItemGroup>
 </Project>
