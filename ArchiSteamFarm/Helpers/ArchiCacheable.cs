@@ -23,6 +23,7 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Core;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers;
@@ -58,7 +59,13 @@ public sealed class ArchiCacheable<T> : IDisposable {
 			return (true, InitializedValue);
 		}
 
-		await InitSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+		try {
+			await InitSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+		} catch (OperationCanceledException e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+			return ReturnFailedValueFor(cacheFallback);
+		}
 
 		try {
 			if (IsInitialized && IsRecent) {
@@ -68,18 +75,17 @@ public sealed class ArchiCacheable<T> : IDisposable {
 			(bool success, T? result) = await ResolveFunction(cancellationToken).ConfigureAwait(false);
 
 			if (!success) {
-				return cacheFallback switch {
-					ECacheFallback.DefaultForType => (false, default(T?)),
-					ECacheFallback.FailedNow => (false, result),
-					ECacheFallback.SuccessPreviously => (false, InitializedValue),
-					_ => throw new InvalidOperationException(nameof(cacheFallback))
-				};
+				return ReturnFailedValueFor(cacheFallback, result);
 			}
 
 			InitializedValue = result;
 			InitializedAt = DateTime.UtcNow;
 
 			return (true, result);
+		} catch (OperationCanceledException e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+			return ReturnFailedValueFor(cacheFallback);
 		} finally {
 			InitSemaphore.Release();
 		}
@@ -102,5 +108,18 @@ public sealed class ArchiCacheable<T> : IDisposable {
 		} finally {
 			InitSemaphore.Release();
 		}
+	}
+
+	private (bool Success, T? Result) ReturnFailedValueFor(ECacheFallback cacheFallback, T? result = default) {
+		if (!Enum.IsDefined(typeof(ECacheFallback), cacheFallback)) {
+			throw new InvalidEnumArgumentException(nameof(cacheFallback), (int) cacheFallback, typeof(ECacheFallback));
+		}
+
+		return cacheFallback switch {
+			ECacheFallback.DefaultForType => (false, default(T?)),
+			ECacheFallback.FailedNow => (false, result),
+			ECacheFallback.SuccessPreviously => (false, InitializedValue),
+			_ => throw new InvalidOperationException(nameof(cacheFallback))
+		};
 	}
 }
