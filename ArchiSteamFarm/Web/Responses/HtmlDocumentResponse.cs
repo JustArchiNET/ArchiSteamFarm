@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
@@ -43,12 +44,12 @@ public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
 	public void Dispose() => Content?.Dispose();
 
 	[PublicAPI]
-	public static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse) {
+	public static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(streamResponse);
 
 		IBrowsingContext context = BrowsingContext.New();
 
-		IDocument document = await context.OpenAsync(request => request.Content(streamResponse.Content, true)).ConfigureAwait(false);
+		IDocument document = await context.OpenAsync(request => request.Content(streamResponse.Content, true), cancellationToken).ConfigureAwait(false);
 
 		return new HtmlDocumentResponse(streamResponse, document);
 	}

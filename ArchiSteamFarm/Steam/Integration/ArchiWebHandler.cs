@@ -795,7 +795,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -810,7 +810,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -820,7 +820,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -828,7 +828,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -842,7 +842,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToHtmlDocument(request, headers, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToHtmlDocument(request, headers, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -850,7 +850,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -870,14 +870,14 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return response;
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -892,7 +892,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -902,7 +902,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -910,7 +910,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -924,7 +924,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToJsonObject<T>(request, headers, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToJsonObject<T>(request, headers, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return default(ObjectResponse<T>?);
@@ -932,7 +932,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -952,14 +952,14 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return response;
 	}
 
 	[PublicAPI]
-	public async Task<bool> UrlHeadWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<bool> UrlHeadWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -974,7 +974,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlHeadWithSession(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlHeadWithSession(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -984,7 +984,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -992,7 +992,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -1006,7 +1006,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(request, headers, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(request, headers, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return false;
@@ -1014,7 +1014,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlHeadWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlHeadWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1034,14 +1034,14 @@ public sealed class ArchiWebHandler : IDisposable {
 				return false;
 			}
 
-			return await UrlHeadWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlHeadWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return true;
 	}
 
 	[PublicAPI]
-	public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
@@ -1061,7 +1061,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1071,7 +1071,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -1079,7 +1079,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -1116,7 +1116,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToHtmlDocument(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToHtmlDocument(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -1124,7 +1124,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1144,14 +1144,14 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return response;
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
@@ -1171,7 +1171,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1181,7 +1181,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -1189,7 +1189,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -1226,7 +1226,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, IDictionary<string, string>>(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, IDictionary<string, string>>(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -1234,7 +1234,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1254,14 +1254,14 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return response;
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, ICollection<KeyValuePair<string, string>>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, ICollection<KeyValuePair<string, string>>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
@@ -1281,7 +1281,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1291,7 +1291,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -1299,7 +1299,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -1339,7 +1339,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, ICollection<KeyValuePair<string, string>>>(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, ICollection<KeyValuePair<string, string>>>(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -1347,7 +1347,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1367,14 +1367,14 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return response;
 	}
 
 	[PublicAPI]
-	public async Task<bool> UrlPostWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<bool> UrlPostWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
@@ -1394,7 +1394,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1404,7 +1404,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -1412,7 +1412,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -1449,7 +1449,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPost(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPost(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return false;
@@ -1457,7 +1457,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1477,14 +1477,14 @@ public sealed class ArchiWebHandler : IDisposable {
 				return false;
 			}
 
-			return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return true;
 	}
 
 	[PublicAPI]
-	public static async Task<T> WebLimitRequest<T>(Uri service, Func<Task<T>> function) {
+	public static async Task<T> WebLimitRequest<T>(Uri service, Func<Task<T>> function, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(service);
 		ArgumentNullException.ThrowIfNull(function);
 
@@ -1508,15 +1508,16 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Sending a request opens a new connection
-		await limiters.OpenConnectionsSemaphore.WaitAsync().ConfigureAwait(false);
+		await limiters.OpenConnectionsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			// It also increases number of requests
-			await limiters.RateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+			await limiters.RateLimitingSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 			// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
 			Utilities.InBackground(
 				async () => {
+					// ReSharper disable once MethodSupportsCancellation - we must always wait given time before releasing semaphore
 					await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
 					limiters.RateLimitingSemaphore.Release();
 				}

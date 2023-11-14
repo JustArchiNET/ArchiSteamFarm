@@ -27,6 +27,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
@@ -40,27 +41,27 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.Web;
 
 internal static class GitHub {
-	internal static async Task<ReleaseResponse?> GetLatestRelease(bool stable = true) {
+	internal static async Task<ReleaseResponse?> GetLatestRelease(bool stable = true, CancellationToken cancellationToken = default) {
 		Uri request = new($"{SharedInfo.GithubReleaseURL}{(stable ? "/latest" : "?per_page=1")}");
 
 		if (stable) {
-			return await GetReleaseFromURL(request).ConfigureAwait(false);
+			return await GetReleaseFromURL(request, cancellationToken).ConfigureAwait(false);
 		}
 
-		ImmutableList<ReleaseResponse>? response = await GetReleasesFromURL(request).ConfigureAwait(false);
+		ImmutableList<ReleaseResponse>? response = await GetReleasesFromURL(request, cancellationToken).ConfigureAwait(false);
 
 		return response?.FirstOrDefault();
 	}
 
-	internal static async Task<ReleaseResponse?> GetRelease(string version) {
+	internal static async Task<ReleaseResponse?> GetRelease(string version, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(version);
 
 		Uri request = new($"{SharedInfo.GithubReleaseURL}/tags/{version}");
 
-		return await GetReleaseFromURL(request).ConfigureAwait(false);
+		return await GetReleaseFromURL(request, cancellationToken).ConfigureAwait(false);
 	}
 
-	internal static async Task<Dictionary<string, DateTime>?> GetWikiHistory(string page) {
+	internal static async Task<Dictionary<string, DateTime>?> GetWikiHistory(string page, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(page);
 
 		if (ASF.WebBrowser == null) {
@@ -69,7 +70,7 @@ internal static class GitHub {
 
 		Uri request = new($"{SharedInfo.ProjectURL}/wiki/{page}/_history");
 
-		using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.StatusCode.IsClientErrorCode() == true) {
 			return response.StatusCode switch {
@@ -131,7 +132,7 @@ internal static class GitHub {
 		return result;
 	}
 
-	internal static async Task<string?> GetWikiPage(string page, string? revision = null) {
+	internal static async Task<string?> GetWikiPage(string page, string? revision = null, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(page);
 
 		if (ASF.WebBrowser == null) {
@@ -140,7 +141,7 @@ internal static class GitHub {
 
 		Uri request = new($"{SharedInfo.ProjectURL}/wiki/{page}{(!string.IsNullOrEmpty(revision) ? $"/{revision}" : "")}");
 
-		using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content == null) {
 			return null;
@@ -166,26 +167,26 @@ internal static class GitHub {
 		return result;
 	}
 
-	private static async Task<ReleaseResponse?> GetReleaseFromURL(Uri request) {
+	private static async Task<ReleaseResponse?> GetReleaseFromURL(Uri request, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
 
-		ObjectResponse<ReleaseResponse>? response = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(request).ConfigureAwait(false);
+		ObjectResponse<ReleaseResponse>? response = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content;
 	}
 
-	private static async Task<ImmutableList<ReleaseResponse>?> GetReleasesFromURL(Uri request) {
+	private static async Task<ImmutableList<ReleaseResponse>?> GetReleasesFromURL(Uri request, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
 
-		ObjectResponse<ImmutableList<ReleaseResponse>>? response = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(request).ConfigureAwait(false);
+		ObjectResponse<ImmutableList<ReleaseResponse>>? response = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content;
 	}

@@ -77,8 +77,8 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 		LocalSemaphore.Release();
 	}
 
-	async Task ICrossProcessSemaphore.WaitAsync() {
-		await LocalSemaphore.WaitAsync().ConfigureAwait(false);
+	async Task ICrossProcessSemaphore.WaitAsync(CancellationToken cancellationToken) {
+		await LocalSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		bool success = false;
 
@@ -99,7 +99,7 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 						return;
 					}
 				} catch (IOException) {
-					await Task.Delay(SpinLockDelay).ConfigureAwait(false);
+					await Task.Delay(SpinLockDelay, cancellationToken).ConfigureAwait(false);
 				}
 			}
 		} finally {
@@ -109,10 +109,10 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 		}
 	}
 
-	async Task<bool> ICrossProcessSemaphore.WaitAsync(int millisecondsTimeout) {
+	async Task<bool> ICrossProcessSemaphore.WaitAsync(int millisecondsTimeout, CancellationToken cancellationToken) {
 		Stopwatch stopwatch = Stopwatch.StartNew();
 
-		if (!await LocalSemaphore.WaitAsync(millisecondsTimeout).ConfigureAwait(false)) {
+		if (!await LocalSemaphore.WaitAsync(millisecondsTimeout, cancellationToken).ConfigureAwait(false)) {
 			stopwatch.Stop();
 
 			return false;
@@ -149,7 +149,7 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 						return false;
 					}
 
-					await Task.Delay(SpinLockDelay).ConfigureAwait(false);
+					await Task.Delay(SpinLockDelay, cancellationToken).ConfigureAwait(false);
 					millisecondsTimeout -= SpinLockDelay;
 				}
 			}

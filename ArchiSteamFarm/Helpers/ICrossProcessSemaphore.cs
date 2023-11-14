@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
@@ -27,6 +28,6 @@ namespace ArchiSteamFarm.Helpers;
 [PublicAPI]
 public interface ICrossProcessSemaphore {
 	void Release();
-	Task WaitAsync();
-	Task<bool> WaitAsync(int millisecondsTimeout);
+	Task WaitAsync(CancellationToken cancellationToken = default);
+	Task<bool> WaitAsync(int millisecondsTimeout, CancellationToken cancellationToken = default);
 }
