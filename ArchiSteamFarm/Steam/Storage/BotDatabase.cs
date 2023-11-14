@@ -132,13 +132,7 @@ public sealed class BotDatabase : GenericDatabase {
 	[JsonProperty]
 	private string? BackingSteamGuardData;
 
-	private BotDatabase(string filePath) : this() {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
-
-		FilePath = filePath;
-	}
+	private BotDatabase(string filePath) : this() => FilePath = !string.IsNullOrEmpty(filePath) ? filePath : throw new ArgumentNullException(nameof(filePath));
 
 	[JsonConstructor]
 	private BotDatabase() {
@@ -221,9 +215,7 @@ public sealed class BotDatabase : GenericDatabase {
 	}
 
 	internal static async Task<BotDatabase?> CreateOrLoad(string filePath) {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
 			return new BotDatabase(filePath);
@@ -277,9 +269,7 @@ public sealed class BotDatabase : GenericDatabase {
 	}
 
 	internal void RemoveGameToRedeemInBackground(string key) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		lock (GamesToRedeemInBackground) {
 			if (!GamesToRedeemInBackground.Contains(key)) {

@@ -37,13 +37,8 @@ internal sealed class ServerRecordEndPoint : IEquatable<ServerRecordEndPoint> {
 	internal readonly ProtocolTypes ProtocolTypes;
 
 	internal ServerRecordEndPoint(string host, ushort port, ProtocolTypes protocolTypes) {
-		if (string.IsNullOrEmpty(host)) {
-			throw new ArgumentNullException(nameof(host));
-		}
-
-		if (port == 0) {
-			throw new ArgumentOutOfRangeException(nameof(port));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(host);
+		ArgumentOutOfRangeException.ThrowIfZero(port);
 
 		if (protocolTypes == 0) {
 			throw new InvalidEnumArgumentException(nameof(protocolTypes), (int) protocolTypes, typeof(ProtocolTypes));

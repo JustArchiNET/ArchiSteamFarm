@@ -78,6 +78,10 @@ internal sealed class HistoryTarget : TargetWithLayout {
 	internal sealed class NewHistoryEntryArgs : EventArgs {
 		internal readonly string Message;
 
-		internal NewHistoryEntryArgs(string message) => Message = message ?? throw new ArgumentNullException(nameof(message));
+		internal NewHistoryEntryArgs(string message) {
+			ArgumentNullException.ThrowIfNull(message);
+
+			Message = message;
+		}
 	}
 }

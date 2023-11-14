@@ -29,9 +29,7 @@ namespace ArchiSteamFarm.Steam.Integration;
 
 internal static class SteamUtilities {
 	internal static EResult? InterpretError(string errorText) {
-		if (string.IsNullOrEmpty(errorText)) {
-			throw new ArgumentNullException(nameof(errorText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(errorText);
 
 		if (errorText.StartsWith("EYldRefreshAppIfNecessary", StringComparison.Ordinal)) {
 			return EResult.ServiceUnavailable;

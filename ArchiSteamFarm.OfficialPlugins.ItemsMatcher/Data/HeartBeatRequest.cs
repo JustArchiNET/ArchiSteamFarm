@@ -33,9 +33,7 @@ internal sealed class HeartBeatRequest {
 	internal readonly ulong SteamID;
 
 	internal HeartBeatRequest(Guid guid, ulong steamID) {
-		if (guid == Guid.Empty) {
-			throw new ArgumentOutOfRangeException(nameof(guid));
-		}
+		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));

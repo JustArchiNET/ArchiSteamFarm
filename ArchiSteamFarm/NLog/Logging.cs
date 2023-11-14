@@ -79,9 +79,7 @@ internal static class Logging {
 			throw new InvalidEnumArgumentException(nameof(userInputType), (int) userInputType, typeof(ASF.EUserInputType));
 		}
 
-		if (string.IsNullOrEmpty(botName)) {
-			throw new ArgumentNullException(nameof(botName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botName);
 
 		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
 			ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
@@ -275,9 +273,7 @@ internal static class Logging {
 	}
 
 	private static async Task BeepUntilCanceled(CancellationToken cancellationToken, byte secondsDelay = 30) {
-		if (secondsDelay == 0) {
-			throw new ArgumentOutOfRangeException(nameof(secondsDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(secondsDelay);
 
 		while (!cancellationToken.IsCancellationRequested) {
 			try {

@@ -27,7 +27,11 @@ namespace ArchiSteamFarm.Helpers;
 internal sealed class SemaphoreLock : IDisposable {
 	private readonly SemaphoreSlim Semaphore;
 
-	internal SemaphoreLock(SemaphoreSlim semaphore) => Semaphore = semaphore ?? throw new ArgumentNullException(nameof(semaphore));
+	internal SemaphoreLock(SemaphoreSlim semaphore) {
+		ArgumentNullException.ThrowIfNull(semaphore);
+
+		Semaphore = semaphore;
+	}
 
 	public void Dispose() => Semaphore.Release();
 }

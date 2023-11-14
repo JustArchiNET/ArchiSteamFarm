@@ -80,7 +80,7 @@ internal sealed class BotCredentialsProvider : IAuthenticator {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, reason, reason));
 
 			if (++LoginFailures >= MaxLoginFailures) {
-				CancellationTokenSource.Cancel();
+				await CancellationTokenSource.CancelAsync().ConfigureAwait(false);
 
 				return "";
 			}
@@ -89,7 +89,7 @@ internal sealed class BotCredentialsProvider : IAuthenticator {
 		string? result = await Bot.RequestInput(inputType, previousCodeWasIncorrect).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(result)) {
-			CancellationTokenSource.Cancel();
+			await CancellationTokenSource.CancelAsync().ConfigureAwait(false);
 		}
 
 		return result ?? "";

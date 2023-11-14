@@ -148,7 +148,9 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	private bool ShouldSkipNewGamesIfPossible;
 
 	internal CardsFarmer(Bot bot) {
-		Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
 
 		byte idleFarmingPeriod = ASF.GlobalConfig?.IdleFarmingPeriod ?? GlobalConfig.DefaultIdleFarmingPeriod;
 
@@ -416,17 +418,9 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task CheckGame(uint appID, string name, float hours, byte badgeLevel) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (hours < 0) {
-			throw new ArgumentOutOfRangeException(nameof(hours));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentOutOfRangeException.ThrowIfNegative(hours);
 
 		Game? game = await GetGameCardsInfo(appID).ConfigureAwait(false);
 
@@ -746,10 +740,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task<bool> CheckPage(byte page, ISet<uint> parsedAppIDs) {
-		if (page == 0) {
-			throw new ArgumentOutOfRangeException(nameof(page));
-		}
-
+		ArgumentOutOfRangeException.ThrowIfZero(page);
 		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
 		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
@@ -989,9 +980,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task<Game?> GetGameCardsInfo(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
 
@@ -1350,9 +1339,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private bool ShouldIdle(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		if (SalesBlacklist.Contains(appID) || (ASF.GlobalConfig?.Blacklist.Contains(appID) == true) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.FarmPriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
 			// We're configured to ignore this appID, so skip it

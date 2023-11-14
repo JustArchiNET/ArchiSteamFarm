@@ -100,9 +100,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 	private uint BackingLastChangeNumber;
 
 	private GlobalDatabase(string filePath) : this() {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		FilePath = filePath;
 	}
@@ -151,9 +149,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 	}
 
 	internal static async Task<GlobalDatabase?> CreateOrLoad(string filePath) {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
 			GlobalDatabase result = new(filePath);
@@ -193,10 +189,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 	}
 
 	internal HashSet<uint> GetPackageIDs(uint appID, IEnumerable<uint> packageIDs, int limit = int.MaxValue) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentNullException.ThrowIfNull(packageIDs);
 
 		HashSet<uint> result = new();
@@ -217,9 +210,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 	}
 
 	internal async Task OnPICSChangesRestart(uint currentChangeNumber) {
-		if (currentChangeNumber == 0) {
-			throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));

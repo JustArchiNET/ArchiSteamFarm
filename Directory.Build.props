@@ -29,7 +29,7 @@
 		<RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
 		<RollForward>LatestMajor</RollForward>
 		<RuntimeIdentifiers>linux-arm;linux-arm64;linux-x64;osx-arm64;osx-x64;win-arm64;win-x64</RuntimeIdentifiers>
-		<TargetFrameworks>net7.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 	</PropertyGroup>
 
@@ -46,8 +46,11 @@
 		<PackageReference Include="TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray" />
 
 		<Using Include="JustArchiNET.Madness" />
+		<Using Include="JustArchiNET.Madness.ArgumentExceptionMadness.ArgumentException" Alias="ArgumentException" />
 		<Using Include="JustArchiNET.Madness.ArgumentNullExceptionMadness.ArgumentNullException" Alias="ArgumentNullException" />
+		<Using Include="JustArchiNET.Madness.ArgumentOutOfRangeExceptionMadness.ArgumentOutOfRangeException" Alias="ArgumentOutOfRangeException" />
 		<Using Include="JustArchiNET.Madness.ArrayMadness.Array" Alias="Array" />
+		<Using Include="JustArchiNET.Madness.CancellationTokenSourceMadness.CancellationTokenSource" Alias="CancellationTokenSource" />
 		<Using Include="JustArchiNET.Madness.ConvertMadness.Convert" Alias="Convert" />
 		<Using Include="JustArchiNET.Madness.DirectoryInfoMadness.DirectoryInfo" Alias="DirectoryInfo" />
 		<Using Include="JustArchiNET.Madness.DirectoryMadness.Directory" Alias="Directory" />
@@ -91,6 +94,9 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
 		<WarningsNotAsErrors>CS8002,IL2026,IL2057,IL2072,IL2075,IL2104,IL3000</WarningsNotAsErrors>
+
+		<!-- TODO: .NET 8 -->
+		<WarningsNotAsErrors>$(WarningsNotAsErrors),CA1863</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<!-- Enable public signing if not part of Visual Studio, which is too stupid to understand what public signing is -->

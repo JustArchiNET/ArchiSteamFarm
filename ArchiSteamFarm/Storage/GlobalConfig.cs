@@ -488,9 +488,7 @@ public sealed class GlobalConfig {
 	}
 
 	internal static async Task<(GlobalConfig? GlobalConfig, string? LatestJson)> Load(string filePath) {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
 			return (null, null);
@@ -566,10 +564,7 @@ public sealed class GlobalConfig {
 	}
 
 	internal static async Task<bool> Write(string filePath, GlobalConfig globalConfig) {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
-
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
 		ArgumentNullException.ThrowIfNull(globalConfig);
 
 		string json = JsonConvert.SerializeObject(globalConfig, Formatting.Indented);

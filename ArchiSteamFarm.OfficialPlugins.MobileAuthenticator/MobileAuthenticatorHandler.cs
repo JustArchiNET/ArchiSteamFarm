@@ -33,9 +33,10 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 	private readonly SteamUnifiedMessages.UnifiedService<ITwoFactor> UnifiedTwoFactorService;
 
 	internal MobileAuthenticatorHandler(ArchiLogger archiLogger, SteamUnifiedMessages steamUnifiedMessages) {
+		ArgumentNullException.ThrowIfNull(archiLogger);
 		ArgumentNullException.ThrowIfNull(steamUnifiedMessages);
 
-		ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
+		ArchiLogger = archiLogger;
 		UnifiedTwoFactorService = steamUnifiedMessages.CreateService<ITwoFactor>();
 	}
 
@@ -46,9 +47,7 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(deviceID)) {
-			throw new ArgumentNullException(nameof(deviceID));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(deviceID);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -90,17 +89,9 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(activationCode)) {
-			throw new ArgumentNullException(nameof(activationCode));
-		}
-
-		if (string.IsNullOrEmpty(authenticatorCode)) {
-			throw new ArgumentNullException(nameof(authenticatorCode));
-		}
-
-		if (authenticatorTime <= 0) {
-			throw new ArgumentOutOfRangeException(nameof(authenticatorTime));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(activationCode);
+		ArgumentException.ThrowIfNullOrEmpty(authenticatorCode);
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(authenticatorTime);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));

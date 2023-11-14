@@ -42,11 +42,10 @@ public sealed class LogResponse {
 	public int TotalLines { get; private set; }
 
 	internal LogResponse(int totalLines, IReadOnlyList<string> content) {
-		if (totalLines < 0) {
-			throw new ArgumentOutOfRangeException(nameof(totalLines));
-		}
+		ArgumentOutOfRangeException.ThrowIfNegative(totalLines);
+		ArgumentNullException.ThrowIfNull(content);
 
 		TotalLines = totalLines;
-		Content = content ?? throw new ArgumentNullException(nameof(content));
+		Content = content;
 	}
 }

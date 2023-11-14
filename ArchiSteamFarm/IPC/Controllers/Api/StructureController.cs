@@ -40,9 +40,7 @@ public sealed class StructureController : ArchiController {
 	[ProducesResponseType(typeof(GenericResponse<object>), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	public ActionResult<GenericResponse> StructureGet(string structure) {
-		if (string.IsNullOrEmpty(structure)) {
-			throw new ArgumentNullException(nameof(structure));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(structure);
 
 		Type? targetType = WebUtilities.ParseType(structure);
 

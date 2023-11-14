@@ -44,10 +44,7 @@ internal static class ArchiNet {
 
 	internal static async Task<string?> FetchBuildChecksum(Version version, string variant) {
 		ArgumentNullException.ThrowIfNull(version);
-
-		if (string.IsNullOrEmpty(variant)) {
-			throw new ArgumentNullException(nameof(variant));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(variant);
 
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));

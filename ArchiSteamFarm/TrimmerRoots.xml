@@ -1,5 +1,5 @@
 <linker>
-	<!-- This is actually needed for ASF (JSON deserialization), not plugins -->
+	<!-- This is needed for ASF (JSON deserialization) -->
 	<assembly fullname="System.Collections.Immutable">
 		<type fullname="System.Collections.Immutable.ImmutableDictionary" />
 		<type fullname="System.Collections.Immutable.ImmutableHashSet" />

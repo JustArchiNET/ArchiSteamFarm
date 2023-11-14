@@ -28,5 +28,9 @@ public sealed class SignInWithSteamResponse {
 	[JsonProperty(Required = Required.Always)]
 	public Uri ReturnURL { get; private set; }
 
-	internal SignInWithSteamResponse(Uri returnURL) => ReturnURL = returnURL ?? throw new ArgumentNullException(nameof(returnURL));
+	internal SignInWithSteamResponse(Uri returnURL) {
+		ArgumentNullException.ThrowIfNull(returnURL);
+
+		ReturnURL = returnURL;
+	}
 }

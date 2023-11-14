@@ -36,9 +36,7 @@ public sealed class StorageController : ArchiController {
 	[HttpDelete]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StorageDelete(string key) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		if (ASF.GlobalDatabase == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
@@ -55,9 +53,7 @@ public sealed class StorageController : ArchiController {
 	[HttpGet]
 	[ProducesResponseType(typeof(GenericResponse<JToken>), (int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StorageGet(string key) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		if (ASF.GlobalDatabase == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
@@ -75,10 +71,7 @@ public sealed class StorageController : ArchiController {
 	[HttpPost]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StoragePost(string key, [FromBody] JToken value) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
-
+		ArgumentException.ThrowIfNullOrEmpty(key);
 		ArgumentNullException.ThrowIfNull(value);
 
 		if (ASF.GlobalDatabase == null) {

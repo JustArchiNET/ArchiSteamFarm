@@ -100,9 +100,7 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 	}
 
 	private async Task SendGroupMessage(string message, Bot? bot = null) {
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if (bot == null) {
 			bot = Bot.Bots?.Values.FirstOrDefault(static targetBot => targetBot.IsConnectedAndLoggedOn);
@@ -118,9 +116,7 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 	}
 
 	private async Task SendPrivateMessage(string message, Bot? bot = null) {
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if (bot == null) {
 			bot = Bot.Bots?.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.SteamID != SteamID));

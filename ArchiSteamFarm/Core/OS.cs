@@ -118,9 +118,7 @@ internal static class OS {
 	}
 
 	internal static string GetOsResourceName(string objectName) {
-		if (string.IsNullOrEmpty(objectName)) {
-			throw new ArgumentNullException(nameof(objectName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(objectName);
 
 		return $"{SharedInfo.AssemblyName}-{objectName}";
 	}
@@ -140,7 +138,7 @@ internal static class OS {
 
 				break;
 			default:
-				throw new ArgumentOutOfRangeException(nameof(optimizationMode));
+				throw new InvalidOperationException(nameof(optimizationMode));
 		}
 	}
 

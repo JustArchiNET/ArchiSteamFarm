@@ -61,10 +61,7 @@ internal sealed class MaFileData {
 
 	internal MaFileData(CTwoFactor_AddAuthenticator_Response data, string deviceID) {
 		ArgumentNullException.ThrowIfNull(data);
-
-		if (string.IsNullOrEmpty(deviceID)) {
-			throw new ArgumentNullException(nameof(deviceID));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(deviceID);
 
 		AccountName = data.account_name;
 		DeviceID = deviceID;

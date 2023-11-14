@@ -50,13 +50,8 @@ public sealed class TradeOffer {
 
 	// Constructed from trades being received
 	internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
-		if (tradeOfferID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(tradeOfferID));
-		}
-
-		if (otherSteamID3 == 0) {
-			throw new ArgumentOutOfRangeException(nameof(otherSteamID3));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(tradeOfferID);
+		ArgumentOutOfRangeException.ThrowIfZero(otherSteamID3);
 
 		if (!Enum.IsDefined(state)) {
 			throw new InvalidEnumArgumentException(nameof(state), (int) state, typeof(ETradeOfferState));

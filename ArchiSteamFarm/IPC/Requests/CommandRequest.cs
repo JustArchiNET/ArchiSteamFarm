@@ -36,9 +36,7 @@ public sealed class CommandRequest {
 	public string Command { get; private set; } = "";
 
 	internal CommandRequest(string command) {
-		if (string.IsNullOrEmpty(command)) {
-			throw new ArgumentNullException(nameof(command));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(command);
 
 		Command = command;
 	}

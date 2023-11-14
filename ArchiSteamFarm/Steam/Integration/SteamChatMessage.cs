@@ -40,9 +40,7 @@ internal static class SteamChatMessage {
 	internal const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
 
 	internal static async IAsyncEnumerable<string> GetMessageParts(string message, string? steamMessagePrefix = null, bool isAccountLimited = false) {
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		int prefixBytes = 0;
 		int prefixLength = 0;
@@ -188,35 +186,27 @@ internal static class SteamChatMessage {
 	}
 
 	internal static bool IsValidPrefix(string steamMessagePrefix) {
-		if (string.IsNullOrEmpty(steamMessagePrefix)) {
-			throw new ArgumentNullException(nameof(steamMessagePrefix));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(steamMessagePrefix);
 
 		return GetMessagePrefixBytes(Escape(steamMessagePrefix)) <= MaxMessagePrefixBytes;
 	}
 
 	internal static string Unescape(string message) {
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		return message.Replace("\\[", "[", StringComparison.Ordinal).Replace("\\\\", "\\", StringComparison.Ordinal);
 	}
 
 	private static string Escape(string message) {
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		return message.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("[", "\\[", StringComparison.Ordinal);
 	}
 
 	private static int GetMessagePrefixBytes(string escapedSteamMessagePrefix) {
-		if (string.IsNullOrEmpty(escapedSteamMessagePrefix)) {
-			throw new ArgumentNullException(nameof(escapedSteamMessagePrefix));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(escapedSteamMessagePrefix);
 
-		string[] prefixLines = escapedSteamMessagePrefix.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+		string[] prefixLines = escapedSteamMessagePrefix.Split(SharedInfo.NewLineIndicators, StringSplitOptions.None);
 
 		return prefixLines.Where(static prefixLine => prefixLine.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((prefixLines.Length - 1) * NewlineWeight);
 	}

@@ -53,9 +53,7 @@ internal static class GitHub {
 	}
 
 	internal static async Task<ReleaseResponse?> GetRelease(string version) {
-		if (string.IsNullOrEmpty(version)) {
-			throw new ArgumentNullException(nameof(version));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(version);
 
 		Uri request = new($"{SharedInfo.GithubReleaseURL}/tags/{version}");
 
@@ -63,9 +61,7 @@ internal static class GitHub {
 	}
 
 	internal static async Task<Dictionary<string, DateTime>?> GetWikiHistory(string page) {
-		if (string.IsNullOrEmpty(page)) {
-			throw new ArgumentNullException(nameof(page));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(page);
 
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
@@ -137,9 +133,7 @@ internal static class GitHub {
 	}
 
 	internal static async Task<string?> GetWikiPage(string page, string? revision = null) {
-		if (string.IsNullOrEmpty(page)) {
-			throw new ArgumentNullException(nameof(page));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(page);
 
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
@@ -159,9 +153,7 @@ internal static class GitHub {
 	}
 
 	private static MarkdownDocument ExtractChangelogFromBody(string markdownText) {
-		if (string.IsNullOrEmpty(markdownText)) {
-			throw new ArgumentNullException(nameof(markdownText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(markdownText);
 
 		MarkdownDocument markdownDocument = Markdown.Parse(markdownText);
 		MarkdownDocument result = new();

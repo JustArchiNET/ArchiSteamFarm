@@ -49,7 +49,11 @@ public sealed class Trading : IDisposable {
 
 	private bool ParsingScheduled;
 
-	internal Trading(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+	internal Trading(Bot bot) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
+	}
 
 	public void Dispose() => TradesSemaphore.Dispose();
 

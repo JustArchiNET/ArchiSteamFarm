@@ -45,9 +45,7 @@ public sealed class TypeController : ArchiController {
 	[ProducesResponseType(typeof(GenericResponse<TypeResponse>), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 	public ActionResult<GenericResponse> TypeGet(string type) {
-		if (string.IsNullOrEmpty(type)) {
-			throw new ArgumentNullException(nameof(type));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(type);
 
 		Type? targetType = WebUtilities.ParseType(type);
 

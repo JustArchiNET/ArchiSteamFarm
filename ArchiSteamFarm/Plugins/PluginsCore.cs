@@ -56,9 +56,7 @@ public static class PluginsCore {
 
 	[PublicAPI]
 	public static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName) {
-		if (string.IsNullOrEmpty(objectName)) {
-			throw new ArgumentNullException(nameof(objectName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(objectName);
 
 		if (ASF.GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalConfig));
@@ -294,9 +292,7 @@ public static class PluginsCore {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if ((args == null) || (args.Length == 0)) {
 			throw new ArgumentNullException(nameof(args));
@@ -462,9 +458,7 @@ public static class PluginsCore {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return null;
@@ -576,10 +570,7 @@ public static class PluginsCore {
 	}
 
 	internal static async Task OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges) {
-		if (currentChangeNumber == 0) {
-			throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
-		}
-
+		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 		ArgumentNullException.ThrowIfNull(appChanges);
 		ArgumentNullException.ThrowIfNull(packageChanges);
 
@@ -595,9 +586,7 @@ public static class PluginsCore {
 	}
 
 	internal static async Task OnPICSChangesRestart(uint currentChangeNumber) {
-		if (currentChangeNumber == 0) {
-			throw new ArgumentNullException(nameof(currentChangeNumber));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;
@@ -655,9 +644,7 @@ public static class PluginsCore {
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	private static HashSet<Assembly>? LoadAssembliesFrom(string path) {
-		if (string.IsNullOrEmpty(path)) {
-			throw new ArgumentNullException(nameof(path));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(path);
 
 		if (!Directory.Exists(path)) {
 			return null;

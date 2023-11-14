@@ -47,7 +47,10 @@ public sealed class TypeResponse {
 	public TypeProperties Properties { get; private set; }
 
 	internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
-		Body = body ?? throw new ArgumentNullException(nameof(body));
-		Properties = properties ?? throw new ArgumentNullException(nameof(properties));
+		ArgumentNullException.ThrowIfNull(body);
+		ArgumentNullException.ThrowIfNull(properties);
+
+		Body = body;
+		Properties = properties;
 	}
 }

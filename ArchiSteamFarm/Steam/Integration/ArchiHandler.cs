@@ -51,9 +51,10 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	internal DateTime LastPacketReceived { get; private set; }
 
 	internal ArchiHandler(ArchiLogger archiLogger, SteamUnifiedMessages steamUnifiedMessages) {
+		ArgumentNullException.ThrowIfNull(archiLogger);
 		ArgumentNullException.ThrowIfNull(steamUnifiedMessages);
 
-		ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
+		ArchiLogger = archiLogger;
 		UnifiedChatRoomService = steamUnifiedMessages.CreateService<IChatRoom>();
 		UnifiedClanChatRoomsService = steamUnifiedMessages.CreateService<IClanChatRooms>();
 		UnifiedCredentialsService = steamUnifiedMessages.CreateService<ICredentials>();
@@ -282,9 +283,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 	[PublicAPI]
 	public async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {
-		if (chatGroupID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(chatGroupID);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -311,9 +310,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 	[PublicAPI]
 	public async Task<bool> LeaveChatRoomGroup(ulong chatGroupID) {
-		if (chatGroupID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(chatGroupID);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -368,17 +365,9 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	internal void AckChatMessage(ulong chatGroupID, ulong chatID, uint timestamp) {
-		if (chatGroupID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-		}
-
-		if (chatID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatID));
-		}
-
-		if (timestamp == 0) {
-			throw new ArgumentOutOfRangeException(nameof(timestamp));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(chatGroupID);
+		ArgumentOutOfRangeException.ThrowIfZero(chatID);
+		ArgumentOutOfRangeException.ThrowIfZero(timestamp);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -402,9 +391,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (timestamp == 0) {
-			throw new ArgumentOutOfRangeException(nameof(timestamp));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(timestamp);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -630,9 +617,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	internal async Task<SteamApps.RedeemGuestPassResponseCallback?> RedeemGuestPass(ulong guestPassID) {
-		if (guestPassID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(guestPassID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(guestPassID);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -659,9 +644,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	internal async Task<CStore_RegisterCDKey_Response?> RedeemKey(string key) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -708,9 +691,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -741,17 +722,9 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	internal async Task<EResult> SendMessage(ulong chatGroupID, ulong chatID, string message) {
-		if (chatGroupID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-		}
-
-		if (chatID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatID));
-		}
-
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(chatGroupID);
+		ArgumentOutOfRangeException.ThrowIfZero(chatID);
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -816,9 +789,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			throw new InvalidEnumArgumentException(nameof(userInterfaceMode), (int) userInterfaceMode, typeof(EUserInterfaceMode));
 		}
 
-		if (chatMode == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatMode));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(chatMode);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
