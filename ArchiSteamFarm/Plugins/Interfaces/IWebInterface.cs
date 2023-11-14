@@ -28,13 +28,13 @@ namespace ArchiSteamFarm.Plugins.Interfaces;
 /// </summary>
 public interface IWebInterface : IPlugin {
 	/// <summary>
-	///     Specifies physical path to static WWW files provided by the plugin. Can be either relative to plugin's assembly location, or absolute. If you don't know better, we recommend value of "www", which assumes that you ship "www" directory together with your plugin's main DLL assembly, similar to ASF.
+	///     Specifies physical path to static WWW files provided by the plugin. Can be either relative to plugin's assembly location, or absolute. Default value of "www", assumes that you ship "www" directory together with your plugin's main DLL assembly, similar to ASF.
 	/// </summary>
-	string PhysicalPath { get; }
+	string PhysicalPath => "www";
 
 	/// <summary>
-	///     Specifies web path (address) under which ASF should host your static WWW files in <see cref="PhysicalPath" /> directory. If you don't know better, we recommend value of "/", which allows you to override default ASF files and gives you full flexibility in your <see cref="PhysicalPath" /> directory. However, you can instead host your files under some other fixed location specified here, such as "/MyPlugin".
+	///     Specifies web path (address) under which ASF should host your static WWW files in <see cref="PhysicalPath" /> directory. Default value of "/" allows you to override default ASF files and gives you full flexibility in your <see cref="PhysicalPath" /> directory. However, you can instead host your files under some other fixed location specified here, such as "/MyPlugin".
 	/// </summary>
 	[JsonProperty]
-	string WebPath { get; }
+	string WebPath => "/";
 }
