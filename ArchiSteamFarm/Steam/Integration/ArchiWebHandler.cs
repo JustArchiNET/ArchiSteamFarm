@@ -2275,9 +2275,9 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal void OnDisconnected() {
 		Initialized = false;
 
-		Utilities.InBackground(CachedAccessToken.Reset);
-		Utilities.InBackground(CachedApiKey.Reset);
-		Utilities.InBackground(CachedEconomyBan.Reset);
+		Utilities.InBackground(() => CachedAccessToken.Reset());
+		Utilities.InBackground(() => CachedApiKey.Reset());
+		Utilities.InBackground(() => CachedEconomyBan.Reset());
 	}
 
 	internal void OnVanityURLChanged(string? vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
@@ -2329,10 +2329,10 @@ public sealed class ArchiWebHandler : IDisposable {
 		return response?.Content?.Result == EResult.OK;
 	}
 
-	private async Task<(ESteamApiKeyState State, string? Key)> GetApiKeyState() {
+	private async Task<(ESteamApiKeyState State, string? Key)> GetApiKeyState(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamCommunityURL, "/dev/apikey?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content == null) {
 			return (ESteamApiKeyState.Timeout, null);
@@ -2611,21 +2611,21 @@ public sealed class ArchiWebHandler : IDisposable {
 		return await UrlPostWithSession(request, data: data).ConfigureAwait(false);
 	}
 
-	private async Task<(bool Success, string? Result)> ResolveAccessToken() {
+	private async Task<(bool Success, string? Result)> ResolveAccessToken(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamStoreURL, "/pointssummary/ajaxgetasyncconfig");
 
-		ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request).ConfigureAwait(false);
+		ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return !string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken) ? (true, response.Content.Data.WebAPIToken) : (false, null);
 	}
 
-	private async Task<(bool Success, string? Result)> ResolveApiKey() {
+	private async Task<(bool Success, string? Result)> ResolveApiKey(CancellationToken cancellationToken = default) {
 		if (Bot.IsAccountLimited) {
 			// API key is permanently unavailable for limited accounts
 			return (true, null);
 		}
 
-		(ESteamApiKeyState State, string? Key) result = await GetApiKeyState().ConfigureAwait(false);
+		(ESteamApiKeyState State, string? Key) result = await GetApiKeyState(cancellationToken).ConfigureAwait(false);
 
 		switch (result.State) {
 			case ESteamApiKeyState.AccessDenied:
@@ -2641,7 +2641,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				// We should have the key ready, so let's fetch it again
-				result = await GetApiKeyState().ConfigureAwait(false);
+				result = await GetApiKeyState(cancellationToken).ConfigureAwait(false);
 
 				if (result.State == ESteamApiKeyState.Timeout) {
 					// Request timed out, bad luck, we'll try again later
@@ -2669,8 +2669,8 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	private async Task<(bool Success, bool? Result)> ResolveEconomyBan() {
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+	private async Task<(bool Success, bool? Result)> ResolveEconomyBan(CancellationToken cancellationToken = default) {
+		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously, cancellationToken).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(steamApiKey)) {
 			return (false, null);
@@ -2680,7 +2680,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -2699,7 +2699,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 			if ((i > 0) && (WebLimiterDelay > 0)) {
-				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
+				await Task.Delay(WebLimiterDelay, cancellationToken).ConfigureAwait(false);
 			}
 
 			using WebAPI.AsyncInterface service = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamUserService);
@@ -2711,7 +2711,7 @@ public sealed class ArchiWebHandler : IDisposable {
 					WebAPI.DefaultBaseAddress,
 
 					// ReSharper disable once AccessToDisposedClosure
-					async () => await service.CallAsync(HttpMethod.Get, "GetPlayerBans", args: arguments).ConfigureAwait(false)
+					async () => await service.CallAsync(HttpMethod.Get, "GetPlayerBans", args: arguments).ConfigureAwait(false), cancellationToken
 				).ConfigureAwait(false);
 			} catch (TaskCanceledException e) {
 				Bot.ArchiLogger.LogGenericDebuggingException(e);

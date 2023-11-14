@@ -375,7 +375,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		);
 	}
 
-	private async Task<(bool Success, string? Result)> ResolveDeviceID() {
+	private async Task<(bool Success, string? Result)> ResolveDeviceID(CancellationToken cancellationToken = default) {
 		if (Bot == null) {
 			throw new InvalidOperationException(nameof(Bot));
 		}

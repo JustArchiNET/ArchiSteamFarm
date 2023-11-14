@@ -26,6 +26,7 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
@@ -324,14 +325,14 @@ internal sealed class GlobalCache : SerializableFile {
 		return (depotKey.Length == 64) && Utilities.IsValidHexadecimalText(depotKey);
 	}
 
-	private static async Task<(bool Success, ImmutableHashSet<uint>? Result)> ResolveKnownDepotIDs() {
+	private static async Task<(bool Success, ImmutableHashSet<uint>? Result)> ResolveKnownDepotIDs(CancellationToken cancellationToken = default) {
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
 
 		Uri request = new($"{SharedInfo.ServerURL}/knowndepots.csv");
 
-		StreamResponse? response = await ASF.WebBrowser.UrlGetToStream(request).ConfigureAwait(false);
+		StreamResponse? response = await ASF.WebBrowser.UrlGetToStream(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content == null) {
 			return (false, null);
@@ -341,7 +342,7 @@ internal sealed class GlobalCache : SerializableFile {
 			try {
 				using StreamReader reader = new(response.Content);
 
-				string? countText = await reader.ReadLineAsync().ConfigureAwait(false);
+				string? countText = await reader.ReadLineAsync(cancellationToken).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(countText) || !int.TryParse(countText, out int count) || (count <= 0)) {
 					ASF.ArchiLogger.LogNullError(countText);
@@ -351,7 +352,7 @@ internal sealed class GlobalCache : SerializableFile {
 
 				HashSet<uint> result = new(count);
 
-				while (await reader.ReadLineAsync().ConfigureAwait(false) is { Length: > 0 } line) {
+				while (await reader.ReadLineAsync(cancellationToken).ConfigureAwait(false) is { Length: > 0 } line) {
 					if (!uint.TryParse(line, out uint depotID) || (depotID == 0)) {
 						ASF.ArchiLogger.LogNullError(depotID);
 

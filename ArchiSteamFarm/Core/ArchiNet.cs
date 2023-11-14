@@ -25,6 +25,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Helpers;
@@ -170,7 +171,7 @@ internal static class ArchiNet {
 		return authenticateResponse.Content?.Result == bot.SteamID ? HttpStatusCode.OK : HttpStatusCode.Unauthorized;
 	}
 
-	private static async Task<(bool Success, IReadOnlyCollection<ulong>? Result)> ResolveCachedBadBots() {
+	private static async Task<(bool Success, IReadOnlyCollection<ulong>? Result)> ResolveCachedBadBots(CancellationToken cancellationToken = default) {
 		if (ASF.GlobalDatabase == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
@@ -181,7 +182,7 @@ internal static class ArchiNet {
 
 		Uri request = new(URL, "/Api/BadBots");
 
-		ObjectResponse<GenericResponse<ImmutableHashSet<ulong>>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<ImmutableHashSet<ulong>>>(request).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<ImmutableHashSet<ulong>>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<ImmutableHashSet<ulong>>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content?.Result == null) {
 			return (false, ASF.GlobalDatabase.CachedBadBots);

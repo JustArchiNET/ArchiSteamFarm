@@ -30,7 +30,7 @@ namespace ArchiSteamFarm.Helpers;
 public sealed class ArchiCacheable<T> : IDisposable {
 	private readonly TimeSpan CacheLifetime;
 	private readonly SemaphoreSlim InitSemaphore = new(1, 1);
-	private readonly Func<Task<(bool Success, T? Result)>> ResolveFunction;
+	private readonly Func<CancellationToken, Task<(bool Success, T? Result)>> ResolveFunction;
 
 	private bool IsInitialized => InitializedAt > DateTime.MinValue;
 	private bool IsPermanentCache => CacheLifetime == Timeout.InfiniteTimeSpan;
@@ -39,7 +39,7 @@ public sealed class ArchiCacheable<T> : IDisposable {
 	private DateTime InitializedAt;
 	private T? InitializedValue;
 
-	public ArchiCacheable(Func<Task<(bool Success, T? Result)>> resolveFunction, TimeSpan? cacheLifetime = null) {
+	public ArchiCacheable(Func<CancellationToken, Task<(bool Success, T? Result)>> resolveFunction, TimeSpan? cacheLifetime = null) {
 		ArgumentNullException.ThrowIfNull(resolveFunction);
 
 		ResolveFunction = resolveFunction;
@@ -49,7 +49,7 @@ public sealed class ArchiCacheable<T> : IDisposable {
 	public void Dispose() => InitSemaphore.Dispose();
 
 	[PublicAPI]
-	public async Task<(bool Success, T? Result)> GetValue(ECacheFallback cacheFallback = ECacheFallback.DefaultForType) {
+	public async Task<(bool Success, T? Result)> GetValue(ECacheFallback cacheFallback = ECacheFallback.DefaultForType, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(cacheFallback)) {
 			throw new InvalidEnumArgumentException(nameof(cacheFallback), (int) cacheFallback, typeof(ECacheFallback));
 		}
@@ -58,14 +58,14 @@ public sealed class ArchiCacheable<T> : IDisposable {
 			return (true, InitializedValue);
 		}
 
-		await InitSemaphore.WaitAsync().ConfigureAwait(false);
+		await InitSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (IsInitialized && IsRecent) {
 				return (true, InitializedValue);
 			}
 
-			(bool success, T? result) = await ResolveFunction().ConfigureAwait(false);
+			(bool success, T? result) = await ResolveFunction(cancellationToken).ConfigureAwait(false);
 
 			if (!success) {
 				return cacheFallback switch {
@@ -86,12 +86,12 @@ public sealed class ArchiCacheable<T> : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task Reset() {
+	public async Task Reset(CancellationToken cancellationToken = default) {
 		if (!IsInitialized) {
 			return;
 		}
 
-		await InitSemaphore.WaitAsync().ConfigureAwait(false);
+		await InitSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (!IsInitialized) {
