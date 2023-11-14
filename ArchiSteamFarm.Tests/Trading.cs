@@ -410,5 +410,29 @@ public sealed class Trading {
 		Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 	}
 
+	[TestMethod]
+	public void TakingExcessiveAmountOfSingleCardCanStillBeFairAndNeutral() {
+		HashSet<Asset> inventory = new() {
+			CreateItem(1, 52),
+			CreateItem(2, 73),
+			CreateItem(3, 52),
+			CreateItem(4, 47),
+			CreateItem(5)
+		};
+
+		HashSet<Asset> itemsToGive = new() { CreateItem(2, 73) };
+
+		HashSet<Asset> itemsToReceive = new() {
+			CreateItem(1, 9),
+			CreateItem(3, 9),
+			CreateItem(4, 8),
+			CreateItem(5, 24),
+			CreateItem(6, 23)
+		};
+
+		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
+		Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
+	}
+
 	private static Asset CreateItem(ulong classID, uint amount = 1, uint realAppID = Asset.SteamAppID, Asset.EType type = Asset.EType.TradingCard, Asset.ERarity rarity = Asset.ERarity.Common) => new(Asset.SteamAppID, Asset.SteamCommunityContextID, classID, amount, realAppID: realAppID, type: type, rarity: rarity);
 }
