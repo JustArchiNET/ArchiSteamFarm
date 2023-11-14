@@ -3,13 +3,23 @@ name: ASF-lock-threads
 on:
   schedule:
     - cron: '0 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  discussions: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: lock-threads
 
 jobs:
   lock:
     runs-on: ubuntu-latest
     steps:
       - name: Lock inactive threads
-        uses: dessant/lock-threads@v4.0.1
+        uses: dessant/lock-threads@v5.0.0
         with:
+          discussion-inactive-days: 90
           issue-inactive-days: 60
           pr-inactive-days: 60
