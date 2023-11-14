@@ -5,6 +5,7 @@
     "source": "/ArchiSteamFarm/Localization/Strings.resx",
     "translation": "/ArchiSteamFarm/Localization/Strings.%locale%.resx",
     "translation_replace": {
+      ".bs-BA.resx": ".bs-Latn.resx",
       ".lol-US.resx": ".qps-Ploc.resx",
       ".sr-CS.resx": ".sr-Latn.resx",
       ".zh-CN.resx": ".zh-Hans.resx",
@@ -16,6 +17,7 @@
     "source": "/ArchiSteamFarm.OfficialPlugins.ItemsMatcher/Localization/Strings.resx",
     "translation": "/ArchiSteamFarm.OfficialPlugins.ItemsMatcher/Localization/Strings.%locale%.resx",
     "translation_replace": {
+      ".bs-BA.resx": ".bs-Latn.resx",
       ".lol-US.resx": ".qps-Ploc.resx",
       ".sr-CS.resx": ".sr-Latn.resx",
       ".zh-CN.resx": ".zh-Hans.resx",
@@ -27,6 +29,7 @@
     "source": "/ArchiSteamFarm.OfficialPlugins.MobileAuthenticator/Localization/Strings.resx",
     "translation": "/ArchiSteamFarm.OfficialPlugins.MobileAuthenticator/Localization/Strings.%locale%.resx",
     "translation_replace": {
+      ".bs-BA.resx": ".bs-Latn.resx",
       ".lol-US.resx": ".qps-Ploc.resx",
       ".sr-CS.resx": ".sr-Latn.resx",
       ".zh-CN.resx": ".zh-Hans.resx",
@@ -38,6 +41,7 @@
     "source": "/ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/Localization/Strings.resx",
     "translation": "/ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/Localization/Strings.%locale%.resx",
     "translation_replace": {
+      ".bs-BA.resx": ".bs-Latn.resx",
       ".lol-US.resx": ".qps-Ploc.resx",
       ".sr-CS.resx": ".sr-Latn.resx",
       ".zh-CN.resx": ".zh-Hans.resx",
