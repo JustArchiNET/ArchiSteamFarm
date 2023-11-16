@@ -37,7 +37,7 @@ public sealed class IPCBansController : ArchiController {
 	///     Clears the list of all IP addresses currently blocked by ASFs IPC module
 	/// </summary>
 	[HttpDelete]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> Delete() {
 		ApiAuthenticationMiddleware.ClearFailedAuthorizations();
 
@@ -48,8 +48,8 @@ public sealed class IPCBansController : ArchiController {
 	///     Removes an IP address from the list of addresses currently blocked by ASFs IPC module
 	/// </summary>
 	[HttpDelete("{ipAddress:required}")]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public ActionResult<GenericResponse> DeleteSpecific(string ipAddress) {
 		ArgumentException.ThrowIfNullOrEmpty(ipAddress);
 
@@ -70,6 +70,6 @@ public sealed class IPCBansController : ArchiController {
 	///     Gets all IP addresses currently blocked by ASFs IPC module
 	/// </summary>
 	[HttpGet]
-	[ProducesResponseType(typeof(GenericResponse<ISet<string>>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse<ISet<string>>>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse<ISet<string>>> Get() => Ok(new GenericResponse<ISet<string>>(ApiAuthenticationMiddleware.GetCurrentlyBannedIPs().Select(static ip => ip.ToString()).ToHashSet()));
 }

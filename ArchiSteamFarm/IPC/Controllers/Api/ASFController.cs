@@ -43,8 +43,8 @@ public sealed class ASFController : ArchiController {
 	/// </summary>
 	[Consumes("application/json")]
 	[HttpPost("Encrypt")]
-	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public ActionResult<GenericResponse> ASFEncryptPost([FromBody] ASFEncryptRequest request) {
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -61,7 +61,7 @@ public sealed class ASFController : ArchiController {
 	///     Fetches common info related to ASF as a whole.
 	/// </summary>
 	[HttpGet]
-	[ProducesResponseType(typeof(GenericResponse<ASFResponse>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse<ASFResponse>>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse<ASFResponse>> ASFGet() {
 		if (ASF.GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalConfig));
@@ -79,8 +79,8 @@ public sealed class ASFController : ArchiController {
 	/// </summary>
 	[Consumes("application/json")]
 	[HttpPost("Hash")]
-	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public ActionResult<GenericResponse> ASFHashPost([FromBody] ASFHashRequest request) {
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -98,8 +98,8 @@ public sealed class ASFController : ArchiController {
 	/// </summary>
 	[Consumes("application/json")]
 	[HttpPost]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult<GenericResponse>> ASFPost([FromBody] ASFRequest request) {
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -150,7 +150,7 @@ public sealed class ASFController : ArchiController {
 	///     Makes ASF shutdown itself.
 	/// </summary>
 	[HttpPost("Exit")]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> ExitPost() {
 		(bool success, string message) = Actions.Exit();
 
@@ -161,7 +161,7 @@ public sealed class ASFController : ArchiController {
 	///     Makes ASF restart itself.
 	/// </summary>
 	[HttpPost("Restart")]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> RestartPost() {
 		(bool success, string message) = Actions.Restart();
 
@@ -172,7 +172,7 @@ public sealed class ASFController : ArchiController {
 	///     Makes ASF update itself.
 	/// </summary>
 	[HttpPost("Update")]
-	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
 	public async Task<ActionResult<GenericResponse<string>>> UpdatePost([FromBody] UpdateRequest request) {
 		ArgumentNullException.ThrowIfNull(request);
 

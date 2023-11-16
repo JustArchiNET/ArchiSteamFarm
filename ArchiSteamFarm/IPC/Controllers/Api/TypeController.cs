@@ -42,8 +42,8 @@ public sealed class TypeController : ArchiController {
 	///     Type info is defined as a representation of given object with its fields and properties being assigned to a string value that defines their type.
 	/// </remarks>
 	[HttpGet("{type:required}")]
-	[ProducesResponseType(typeof(GenericResponse<TypeResponse>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse<TypeResponse>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public ActionResult<GenericResponse> TypeGet(string type) {
 		ArgumentException.ThrowIfNullOrEmpty(type);
 

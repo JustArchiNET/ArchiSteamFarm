@@ -32,7 +32,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api;
 [Route("Api/Plugins")]
 public sealed class PluginsController : ArchiController {
 	[HttpGet]
-	[ProducesResponseType(typeof(GenericResponse<IReadOnlyCollection<IPlugin>>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse<IReadOnlyCollection<IPlugin>>>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse<IReadOnlyCollection<IPlugin>>> PluginsGet() {
 		IReadOnlyCollection<IPlugin> activePlugins = PluginsCore.ActivePlugins ?? (IReadOnlyCollection<IPlugin>) Array.Empty<IPlugin>();
 

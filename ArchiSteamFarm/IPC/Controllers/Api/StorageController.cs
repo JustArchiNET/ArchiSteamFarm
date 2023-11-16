@@ -34,7 +34,7 @@ public sealed class StorageController : ArchiController {
 	///     Deletes entry under specified key from ASF's persistent KeyValue JSON storage.
 	/// </summary>
 	[HttpDelete]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StorageDelete(string key) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
@@ -51,7 +51,7 @@ public sealed class StorageController : ArchiController {
 	///     Loads entry under specified key from ASF's persistent KeyValue JSON storage.
 	/// </summary>
 	[HttpGet]
-	[ProducesResponseType(typeof(GenericResponse<JToken>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse<JToken>>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StorageGet(string key) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
@@ -69,7 +69,7 @@ public sealed class StorageController : ArchiController {
 	/// </summary>
 	[Consumes("application/json")]
 	[HttpPost]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StoragePost(string key, [FromBody] JToken value) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 		ArgumentNullException.ThrowIfNull(value);
