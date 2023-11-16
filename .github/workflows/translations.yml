@@ -27,7 +27,7 @@ jobs:
         git reset --hard origin/master
 
     - name: Download latest translations from Crowdin
-      uses: crowdin/github-action@v1.15.1
+      uses: crowdin/github-action@v1.15.2
       with:
         upload_sources: false
         download_translations: true
