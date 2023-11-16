@@ -29,7 +29,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 [Route("Api/SteamTokenDumperPlugin")]
 public sealed class SteamTokenDumperController : ArchiController {
 	[HttpGet(nameof(GlobalConfigExtension))]
-	[ProducesResponseType(typeof(GlobalConfigExtension), (int) HttpStatusCode.OK)]
+	[ProducesResponseType<GlobalConfigExtension>((int) HttpStatusCode.OK)]
 	[SwaggerOperation(Tags = new[] { nameof(GlobalConfigExtension) })]
 	public ActionResult<GlobalConfigExtension> Get() => Ok(new GlobalConfigExtension());
 }

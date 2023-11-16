@@ -39,8 +39,8 @@ public sealed class CatController : ArchiController {
 	///     Fetches URL of a random cat picture.
 	/// </summary>
 	[HttpGet]
-	[ProducesResponseType(typeof(GenericResponse<Uri>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
+	[ProducesResponseType<GenericResponse<Uri>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> CatGet() {
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));

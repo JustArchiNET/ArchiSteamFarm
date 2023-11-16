@@ -37,8 +37,8 @@ public sealed class StructureController : ArchiController {
 	///     Structure is defined as a representation of given object in its default state.
 	/// </remarks>
 	[HttpGet("{structure:required}")]
-	[ProducesResponseType(typeof(GenericResponse<object>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse<object>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public ActionResult<GenericResponse> StructureGet(string structure) {
 		ArgumentException.ThrowIfNullOrEmpty(structure);
 

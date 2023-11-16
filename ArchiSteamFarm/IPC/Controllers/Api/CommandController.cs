@@ -44,8 +44,8 @@ public sealed class CommandController : ArchiController {
 	/// </remarks>
 	[Consumes("application/json")]
 	[HttpPost]
-	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult<GenericResponse>> CommandPost([FromBody] CommandRequest request) {
 		ArgumentNullException.ThrowIfNull(request);
 
