@@ -132,7 +132,7 @@ jobs:
         set -euo pipefail
 
         dotnet restore
-        dotnet build ArchiSteamFarm -c "$CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+        dotnet build ArchiSteamFarm -c "$CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
     - name: Prepare for publishing on Windows
       if: startsWith(matrix.os, 'windows-')
@@ -143,7 +143,7 @@ jobs:
         $ProgressPreference = 'SilentlyContinue'
 
         dotnet restore
-        dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+        dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
@@ -249,7 +249,7 @@ jobs:
             variantArgs="-p:PublishSingleFile=true -p:PublishTrimmed=true -r $VARIANT --self-contained"
         fi
 
-        dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${VARIANT}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
+        dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${VARIANT}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
 
         # If we're including official plugins for this framework, copy them to output directory
         for plugin in $PLUGINS; do
@@ -330,7 +330,7 @@ jobs:
             $variantArgs = '-p:PublishSingleFile=true', '-p:PublishTrimmed=true', '-r', "$env:VARIANT", '--self-contained'
         }
 
-        dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$env:VARIANT" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
+        dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$env:VARIANT" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
 
         if ($LastExitCode -ne 0) {
             throw "Last command failed."
