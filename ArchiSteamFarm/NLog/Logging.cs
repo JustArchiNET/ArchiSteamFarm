@@ -46,7 +46,6 @@ internal static class Logging {
 	private const byte ConsoleResponsivenessDelay = 250; // In milliseconds
 	private const string GeneralLayout = $@"${{date:format=yyyy-MM-dd HH\:mm\:ss}}|${{processname}}-${{processid}}|${{level:uppercase=true}}|{LayoutMessage}";
 	private const string LayoutMessage = @"${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}";
-	private const byte MaxReadFailures = 100; // How many unknown characters we allow before closing STDIN in order to avoid infinite loop
 
 	internal static bool LogFileExists => File.Exists(SharedInfo.LogFile);
 
@@ -309,28 +308,20 @@ internal static class Logging {
 
 			StringBuilder result = new();
 
-			byte readFailures = 0;
-
 			while (true) {
 				ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
-				switch (keyInfo.Key) {
-					case 0 when ++readFailures < MaxReadFailures:
-						// Likely linux terminal closing STDIN, but we'll check for more
-						continue;
-					case 0:
-						// Linux terminal closing STDIN, we're done here
-						ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(readFailures)));
-
-						return result.ToString();
-					case ConsoleKey.Enter:
-						// User finishing input, as expected
-						Console.WriteLine();
-
-						return result.ToString();
+				if (keyInfo.KeyChar == '\u0004') {
+					// Linux terminal closing STDIN, we're done here
+					return result.ToString();
 				}
 
-				readFailures = 0;
+				if (keyInfo.Key == ConsoleKey.Enter) {
+					// User finishing input, as expected
+					Console.WriteLine();
+
+					return result.ToString();
+				}
 
 				// User continues input
 				if (!char.IsControl(keyInfo.KeyChar)) {
@@ -355,8 +346,6 @@ internal static class Logging {
 
 	private static async Task HandleConsoleInteractively() {
 		try {
-			byte readFailures = 0;
-
 			while (!Program.ShutdownSequenceInitialized) {
 				if (IsWaitingForUserInput || !Console.KeyAvailable) {
 					await Task.Delay(ConsoleResponsivenessDelay).ConfigureAwait(false);
@@ -369,26 +358,15 @@ internal static class Logging {
 				try {
 					ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
-					switch (keyInfo.Key) {
-						case 0 when ++readFailures < MaxReadFailures:
-							// Likely linux terminal closing STDIN, but we'll check for more
-							continue;
-						case 0:
-							// Linux terminal closing STDIN, we're done here
-							ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(readFailures)));
-
-							return;
-						case ConsoleKey.C:
-							// User hitting 'c', as expected
-							break;
-						default:
-							// Any other input, ignored
-							readFailures = 0;
-
-							continue;
+					if (keyInfo.KeyChar == '\u0004') {
+						// Linux terminal closing STDIN, we're done here
+						return;
 					}
 
-					readFailures = 0;
+					if (keyInfo.Key != ConsoleKey.C) {
+						// Console input other than 'c', ignored
+						continue;
+					}
 
 					OnUserInputStart();
 
