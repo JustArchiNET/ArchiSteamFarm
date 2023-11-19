@@ -25,7 +25,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
-internal class AssetForMatching {
+internal class AssetForMatching : IEquatable<AssetForMatching> {
 	[JsonProperty("a", Required = Required.Always)]
 	internal readonly uint Amount;
 
@@ -59,4 +59,30 @@ internal class AssetForMatching {
 		Type = asset.Type;
 		Rarity = asset.Rarity;
 	}
+
+	public bool Equals(AssetForMatching? other) {
+		if (ReferenceEquals(null, other)) {
+			return false;
+		}
+
+		if (ReferenceEquals(this, other)) {
+			return true;
+		}
+
+		return (Amount == other.Amount) && (ClassID == other.ClassID) && (Rarity == other.Rarity) && (RealAppID == other.RealAppID) && (Tradable == other.Tradable) && (Type == other.Type);
+	}
+
+	public override bool Equals(object? obj) {
+		if (ReferenceEquals(null, obj)) {
+			return false;
+		}
+
+		if (ReferenceEquals(this, obj)) {
+			return true;
+		}
+
+		return obj is AssetForMatching assetForMatching && Equals(assetForMatching);
+	}
+
+	public override int GetHashCode() => HashCode.Combine(Amount, ClassID, Rarity, RealAppID, Tradable, Type);
 }

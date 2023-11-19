@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -54,8 +55,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const byte MaxTradeOffersActive = 5; // The actual upper limit is 30, but we should use lower amount to allow some bots to react before we hit the maximum allowed
 	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
-	private const byte MinimumSteamGuardEnabledDays = 15; // As imposed by Steam limits
 	private const byte MinimumPasswordResetCooldownDays = 5; // As imposed by Steam limits
+	private const byte MinimumSteamGuardEnabledDays = 15; // As imposed by Steam limits
 	private const byte MinPersonaStateTTL = 5; // Minimum amount of minutes we must wait before requesting persona state update
 
 	private static readonly ImmutableHashSet<Asset.EType> AcceptedMatchableTypes = ImmutableHashSet.Create(
@@ -68,15 +69,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private readonly Bot Bot;
 	private readonly Timer? HeartBeatTimer;
 
-	// We access this collection only within a semaphore, therefore there is no need for concurrent access
-	private readonly Dictionary<ulong, uint> LastAnnouncedItems = new();
-
 	private readonly SemaphoreSlim MatchActivelySemaphore = new(1, 1);
 	private readonly Timer? MatchActivelyTimer;
 	private readonly SemaphoreSlim RequestsSemaphore = new(1, 1);
 	private readonly WebBrowser WebBrowser;
 
-	private string? LastAnnouncedTradeToken;
+	private string BotCacheFilePath => Path.Combine(SharedInfo.ConfigDirectory, $"{Bot.BotName}.{nameof(ItemsMatcher)}.cache");
+
+	private BotCache? BotCache;
 	private DateTime LastAnnouncement;
 	private DateTime LastHeartBeat;
 	private DateTime LastPersonaStateRequest;
@@ -92,7 +92,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) && Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
 			HeartBeatTimer = new Timer(
-				HeartBeat,
+				OnHeartBeatTimer,
 				null,
 				TimeSpan.FromMinutes(1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0),
 				TimeSpan.FromMinutes(1)
@@ -114,12 +114,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	}
 
 	public void Dispose() {
-		// Those are objects that are always being created if constructor doesn't throw exception
-		MatchActivelySemaphore.Dispose();
-		RequestsSemaphore.Dispose();
-		WebBrowser.Dispose();
-
-		// Those are objects that might be null and the check should be in-place
+		// Dispose timers first so we won't launch new events
 		HeartBeatTimer?.Dispose();
 
 		if (MatchActivelyTimer != null) {
@@ -128,6 +123,25 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				MatchActivelyTimer.Dispose();
 			}
 		}
+
+		// Ensure the semaphores are closed, then dispose the rest
+		try {
+			MatchActivelySemaphore.Wait();
+		} catch (ObjectDisposedException) {
+			// Ignored, this is fine
+		}
+
+		try {
+			RequestsSemaphore.Wait();
+		} catch (ObjectDisposedException) {
+			// Ignored, this is fine
+		}
+
+		BotCache?.Dispose();
+
+		MatchActivelySemaphore.Dispose();
+		RequestsSemaphore.Dispose();
+		WebBrowser.Dispose();
 	}
 
 	public async ValueTask DisposeAsync() {
@@ -144,8 +158,19 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		// Ensure the semaphores are closed, then dispose the rest
-		await MatchActivelySemaphore.WaitAsync().ConfigureAwait(false);
-		await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
+		try {
+			await MatchActivelySemaphore.WaitAsync().ConfigureAwait(false);
+		} catch (ObjectDisposedException) {
+			// Ignored, this is fine
+		}
+
+		try {
+			await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
+		} catch (ObjectDisposedException) {
+			// Ignored, this is fine
+		}
+
+		BotCache?.Dispose();
 
 		MatchActivelySemaphore.Dispose();
 		RequestsSemaphore.Dispose();
@@ -250,6 +275,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			bool matchEverything = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything);
 
+			uint index = 0;
 			ulong previousAssetID = 0;
 
 			List<AssetForListing> assetsForListing = new();
@@ -260,7 +286,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				if (item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown } && acceptedMatchableTypes.Contains(item.Type)) {
 					// Only tradable assets matter for MatchEverything bots
 					if (!matchEverything || item.Tradable) {
-						assetsForListing.Add(new AssetForListing(item, previousAssetID));
+						assetsForListing.Add(new AssetForListing(item, index++, previousAssetID));
 					}
 
 					// But even for Fair bots, we should track and skip sets where we don't have any item to trade with
@@ -311,12 +337,18 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			if (ShouldSendHeartBeats && (tradeToken == LastAnnouncedTradeToken) && (assetsForListing.Count == LastAnnouncedItems.Count) && assetsForListing.All(item => LastAnnouncedItems.TryGetValue(item.AssetID, out uint amount) && (item.Amount == amount))) {
-				// There is nothing new to announce, this is fine, skip the request
+			BotCache ??= await BotCache.CreateOrLoad(BotCacheFilePath).ConfigureAwait(false);
+
+			ulong checksum = Backend.GenerateChecksumFor(assetsForListing);
+			ulong? previousChecksum = BotCache.LastAnnouncedAssetsForListing.Count > 0 ? Backend.GenerateChecksumFor(BotCache.LastAnnouncedAssetsForListing) : null;
+
+			if ((tradeToken == BotCache.LastAnnouncedTradeToken) && (checksum == previousChecksum)) {
+				// We've determined our state to be the same, we can skip announce entirely and start sending heartbeats exclusively
 				LastAnnouncement = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = false;
+				ShouldSendHeartBeats = true;
 
-				return;
+				Utilities.InBackground(() => OnHeartBeatTimer());
 			}
 
 			if (!SignedInWithSteam) {
@@ -340,73 +372,51 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				SignedInWithSteam = true;
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
+			if (BotCache.LastAnnouncedAssetsForListing.Count > 0) {
+				Dictionary<ulong, AssetForListing> previousInventoryState = BotCache.LastAnnouncedAssetsForListing.ToDictionary(static asset => asset.AssetID);
 
-			BasicResponse? response = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, assetsForListing, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname, avatarHash).ConfigureAwait(false);
+				HashSet<AssetForListing> inventoryChanges = new();
 
-			if (response == null) {
-				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
-				ShouldSendHeartBeats = false;
+				foreach (AssetForListing asset in assetsForListing) {
+					if (previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset)) {
+						if (asset.Equals(previousAsset)) {
+							continue;
+						}
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
+						asset.ChangeType = EAssetForListingChangeType.Changed;
+					} else {
+						asset.ChangeType = EAssetForListingChangeType.Added;
+					}
 
-				return;
-			}
+					inventoryChanges.Add(asset);
+				}
 
-			if (response.StatusCode.IsRedirectionCode()) {
-				ShouldSendHeartBeats = false;
+				foreach (AssetForListing asset in previousInventoryState.Values) {
+					asset.ChangeType = EAssetForListingChangeType.Removed;
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
+					inventoryChanges.Add(asset);
+				}
 
-				if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
+				BasicResponse? diffResponse = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, inventoryChanges, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
+
+				if (HandleAnnounceResponse(BotCache, tradeToken, assetsForListing, diffResponse)) {
+					// Our diff announce has succeeded, we have nothing to do further
 					return;
 				}
 
-				// We've expected the result, not the redirection to the sign in, we need to authenticate again
-				SignedInWithSteam = false;
-
-				return;
-			}
-
-			if (response.StatusCode.IsClientErrorCode()) {
-				// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
-				ShouldSendHeartBeats = false;
-
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
-
-				switch (response.StatusCode) {
-					case HttpStatusCode.Forbidden:
-						// ArchiNet told us to stop submitting data for now
-						LastAnnouncement = DateTime.UtcNow.AddYears(1);
-
-						return;
-					case HttpStatusCode.TooManyRequests:
-						// ArchiNet told us to try again later
-						LastAnnouncement = DateTime.UtcNow.AddDays(1);
-
-						return;
-					default:
-						// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
-						LastAnnouncement = DateTime.UtcNow.AddHours(6);
-
-						return;
+				// Reset ChangeType back to added for all inventory changes we're going to announce in a seconds
+				foreach (AssetForListing asset in inventoryChanges) {
+					asset.ChangeType = EAssetForListingChangeType.Added;
 				}
 			}
 
-			LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
-			ShouldSendAnnouncementEarlier = false;
-			ShouldSendHeartBeats = true;
+			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
-			LastAnnouncedTradeToken = tradeToken;
-			LastAnnouncedItems.Clear();
+			BasicResponse? response = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, assetsForListing, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname: nickname, avatarHash: avatarHash).ConfigureAwait(false);
 
-			foreach (AssetForListing item in assetsForListing) {
-				LastAnnouncedItems[item.AssetID] = item.Amount;
-			}
-
-			LastAnnouncedItems.TrimExcess();
+			HandleAnnounceResponse(BotCache, tradeToken, assetsForListing, response);
 		} finally {
 			RequestsSemaphore.Release();
 		}
@@ -425,62 +435,73 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async void HeartBeat(object? state = null) {
-		if (!Bot.IsConnectedAndLoggedOn || (Bot.HeartBeatFailures > 0)) {
-			return;
+	private bool HandleAnnounceResponse(BotCache botCache, string tradeToken, ICollection<AssetForListing> assetsForListing, BasicResponse? response = null) {
+		ArgumentNullException.ThrowIfNull(botCache);
+		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
+
+		if ((assetsForListing == null) || (assetsForListing.Count == 0)) {
+			throw new ArgumentNullException(nameof(assetsForListing));
 		}
 
-		// Request persona update if needed
-		if ((DateTime.UtcNow > LastPersonaStateRequest.AddMinutes(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL))) {
-			LastPersonaStateRequest = DateTime.UtcNow;
-			Bot.RequestPersonaStateUpdate();
+		if (response == null) {
+			// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+			ShouldSendHeartBeats = false;
+
+			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
+
+			return false;
 		}
 
-		if (!ShouldSendHeartBeats || (DateTime.UtcNow < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
-			return;
-		}
+		if (response.StatusCode.IsRedirectionCode()) {
+			ShouldSendHeartBeats = false;
 
-		if (!await RequestsSemaphore.WaitAsync(0).ConfigureAwait(false)) {
-			return;
-		}
+			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
 
-		try {
-			BasicResponse? response = await Backend.HeartBeatForListing(Bot, WebBrowser).ConfigureAwait(false);
+			if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
 
-			if (response == null) {
-				// This is actually a network failure, we should keep sending heartbeats for now
-				return;
+				return false;
 			}
 
-			if (response.StatusCode.IsRedirectionCode()) {
-				ShouldSendHeartBeats = false;
+			// We've expected the result, not the redirection to the sign in, we need to authenticate again
+			SignedInWithSteam = false;
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
-
-				if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
-
-					return;
-				}
-
-				// We've expected the result, not the redirection to the sign in, we need to authenticate again
-				SignedInWithSteam = false;
-
-				return;
-			}
-
-			if (response.StatusCode.IsClientErrorCode()) {
-				ShouldSendHeartBeats = false;
-
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
-
-				return;
-			}
-
-			LastHeartBeat = DateTime.UtcNow;
-		} finally {
-			RequestsSemaphore.Release();
+			return false;
 		}
+
+		if (response.StatusCode.IsClientErrorCode()) {
+			// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
+			ShouldSendHeartBeats = false;
+
+			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
+
+			switch (response.StatusCode) {
+				case HttpStatusCode.Forbidden:
+					// ArchiNet told us to stop submitting data for now
+					LastAnnouncement = DateTime.UtcNow.AddYears(1);
+
+					return false;
+				case HttpStatusCode.TooManyRequests:
+					// ArchiNet told us to try again later
+					LastAnnouncement = DateTime.UtcNow.AddDays(1);
+
+					return false;
+				default:
+					// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
+					LastAnnouncement = DateTime.UtcNow.AddHours(6);
+
+					return false;
+			}
+		}
+
+		LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
+		ShouldSendAnnouncementEarlier = false;
+		ShouldSendHeartBeats = true;
+
+		botCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
+		botCache.LastAnnouncedTradeToken = tradeToken;
+
+		return true;
 	}
 
 	private async Task<bool?> IsEligibleForListing() {
@@ -1088,5 +1109,84 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingItemsRound, matchedSets));
 
 		return matchedSets > 0;
+	}
+
+	private async void OnHeartBeatTimer(object? state = null) {
+		if (!Bot.IsConnectedAndLoggedOn || (Bot.HeartBeatFailures > 0)) {
+			return;
+		}
+
+		// Request persona update if needed
+		if ((DateTime.UtcNow > LastPersonaStateRequest.AddMinutes(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL))) {
+			LastPersonaStateRequest = DateTime.UtcNow;
+			Bot.RequestPersonaStateUpdate();
+		}
+
+		if (!ShouldSendHeartBeats || (DateTime.UtcNow < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
+			return;
+		}
+
+		if (!await RequestsSemaphore.WaitAsync(0).ConfigureAwait(false)) {
+			return;
+		}
+
+		try {
+			if (!SignedInWithSteam) {
+				HttpStatusCode? signInWithSteam = await ArchiNet.SignInWithSteam(Bot, WebBrowser).ConfigureAwait(false);
+
+				if (signInWithSteam == null) {
+					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+					ShouldSendHeartBeats = false;
+
+					return;
+				}
+
+				if (!signInWithSteam.Value.IsSuccessCode()) {
+					// SignIn procedure failed and it wasn't a network error, hold off with future tries at least for a full day
+					LastAnnouncement = DateTime.UtcNow.AddDays(1);
+					ShouldSendHeartBeats = false;
+
+					return;
+				}
+
+				SignedInWithSteam = true;
+			}
+
+			BasicResponse? response = await Backend.HeartBeatForListing(Bot, WebBrowser).ConfigureAwait(false);
+
+			if (response == null) {
+				// This is actually a network failure, we should keep sending heartbeats for now
+				return;
+			}
+
+			if (response.StatusCode.IsRedirectionCode()) {
+				ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
+
+				if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
+
+					return;
+				}
+
+				// We've expected the result, not the redirection to the sign in, we need to authenticate again
+				SignedInWithSteam = false;
+
+				return;
+			}
+
+			if (response.StatusCode.IsClientErrorCode()) {
+				ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
+
+				return;
+			}
+
+			LastHeartBeat = DateTime.UtcNow;
+		} finally {
+			RequestsSemaphore.Release();
+		}
 	}
 }

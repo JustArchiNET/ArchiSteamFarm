@@ -38,7 +38,10 @@ internal sealed class AnnouncementRequest {
 	private readonly Guid Guid;
 
 	[JsonProperty(Required = Required.Always)]
-	private readonly ImmutableList<AssetForListing> Inventory;
+	private readonly ImmutableHashSet<AssetForListing> Inventory;
+
+	[JsonProperty(Required = Required.Always)]
+	private readonly ulong InventoryChecksum;
 
 	[JsonProperty(Required = Required.Always)]
 	private readonly ImmutableHashSet<Asset.EType> MatchableTypes;
@@ -52,6 +55,9 @@ internal sealed class AnnouncementRequest {
 	[JsonProperty]
 	private readonly string? Nickname;
 
+	[JsonProperty]
+	private readonly ulong? PreviousInventoryChecksum;
+
 	[JsonProperty(Required = Required.Always)]
 	private readonly ulong SteamID;
 
@@ -61,7 +67,7 @@ internal sealed class AnnouncementRequest {
 	[JsonProperty(Required = Required.Always)]
 	private readonly string TradeToken;
 
-	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, IReadOnlyList<AssetForListing> inventory, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string? nickname = null, string? avatarHash = null) {
+	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, ICollection<AssetForListing> inventory, ulong inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, ulong? previousInventoryChecksum = null, string? nickname = null, string? avatarHash = null) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -78,6 +84,8 @@ internal sealed class AnnouncementRequest {
 			throw new ArgumentNullException(nameof(inventory));
 		}
 
+		ArgumentOutOfRangeException.ThrowIfZero(inventoryChecksum);
+
 		if ((matchableTypes == null) || (matchableTypes.Count == 0)) {
 			throw new ArgumentNullException(nameof(matchableTypes));
 		}
@@ -87,12 +95,14 @@ internal sealed class AnnouncementRequest {
 		Guid = guid;
 		SteamID = steamID;
 		TradeToken = tradeToken;
-		Inventory = inventory.ToImmutableList();
+		Inventory = inventory.ToImmutableHashSet();
+		InventoryChecksum = inventoryChecksum;
 		MatchableTypes = matchableTypes.ToImmutableHashSet();
 		MatchEverything = matchEverything;
 		MaxTradeHoldDuration = maxTradeHoldDuration;
 		TotalInventoryCount = totalInventoryCount;
 
+		PreviousInventoryChecksum = previousInventoryChecksum;
 		Nickname = nickname;
 		AvatarHash = avatarHash;
 	}
@@ -102,4 +112,7 @@ internal sealed class AnnouncementRequest {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeNickname() => !string.IsNullOrEmpty(Nickname);
+
+	[UsedImplicitly]
+	public bool ShouldSerializePreviousInventoryChecksum() => PreviousInventoryChecksum.HasValue;
 }

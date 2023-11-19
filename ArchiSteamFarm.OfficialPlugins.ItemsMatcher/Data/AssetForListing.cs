@@ -21,17 +21,68 @@
 
 using System;
 using ArchiSteamFarm.Steam.Data;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
-internal sealed class AssetForListing : AssetInInventory {
+internal sealed class AssetForListing : AssetInInventory, IEquatable<AssetForListing> {
+	[JsonProperty("i", Required = Required.Always)]
+	internal readonly uint Index;
+
 	[JsonProperty("l", Required = Required.Always)]
 	internal readonly ulong PreviousAssetID;
 
-	internal AssetForListing(Asset asset, ulong previousAssetID) : base(asset) {
+	[JsonProperty("z", Required = Required.Always)]
+	internal EAssetForListingChangeType ChangeType { get; set; }
+
+	internal AssetForListing(Asset asset, uint index, ulong previousAssetID) : base(asset) {
 		ArgumentNullException.ThrowIfNull(asset);
 
+		Index = index;
 		PreviousAssetID = previousAssetID;
 	}
+
+	public bool Equals(AssetForListing? other) {
+		if (ReferenceEquals(null, other)) {
+			return false;
+		}
+
+		if (ReferenceEquals(this, other)) {
+			return true;
+		}
+
+		return (Index == other.Index) && (PreviousAssetID == other.PreviousAssetID) && base.Equals(other);
+	}
+
+	public override bool Equals(object? obj) {
+		if (ReferenceEquals(null, obj)) {
+			return false;
+		}
+
+		if (ReferenceEquals(this, obj)) {
+			return true;
+		}
+
+		return obj is AssetInInventory other && Equals(other);
+	}
+
+	public override int GetHashCode() {
+		HashCode hash = new();
+
+		hash.Add(Index);
+		hash.Add(PreviousAssetID);
+		hash.Add(AssetID);
+		hash.Add(Amount);
+		hash.Add(ClassID);
+		hash.Add(Rarity);
+		hash.Add(RealAppID);
+		hash.Add(Tradable);
+		hash.Add(Type);
+
+		return hash.ToHashCode();
+	}
+
+	[UsedImplicitly]
+	public bool ShouldSerializeChangeType() => ChangeType != default(EAssetForListingChangeType);
 }
