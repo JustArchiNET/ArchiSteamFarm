@@ -476,6 +476,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
 
 			switch (response.StatusCode) {
+				case HttpStatusCode.Conflict:
+					// ArchiNet told us to do full announcement instead
+					return false;
 				case HttpStatusCode.Forbidden:
 					// ArchiNet told us to stop submitting data for now
 					LastAnnouncement = DateTime.UtcNow.AddYears(1);
@@ -497,6 +500,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
 		ShouldSendAnnouncementEarlier = false;
 		ShouldSendHeartBeats = true;
+
+		// Reset ChangeType back to added for all assets since we're about to save them
+		foreach (AssetForListing asset in assetsForListing) {
+			asset.ChangeType = EAssetForListingChangeType.Added;
+		}
 
 		botCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
 		botCache.LastAnnouncedTradeToken = tradeToken;
