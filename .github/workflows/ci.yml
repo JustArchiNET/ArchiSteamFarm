@@ -7,6 +7,8 @@ env:
   DOTNET_NOLOGO: true
   DOTNET_SDK_VERSION: 8.0
 
+permissions: {}
+
 jobs:
   main:
     strategy:

@@ -5,6 +5,8 @@ on: [push, pull_request]
 env:
   PLATFORMS: linux/amd64,linux/arm,linux/arm64
 
+permissions: {}
+
 jobs:
   main:
     strategy:

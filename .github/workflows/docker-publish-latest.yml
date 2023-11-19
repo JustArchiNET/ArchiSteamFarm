@@ -9,6 +9,9 @@ env:
   PLATFORMS: linux/amd64,linux/arm,linux/arm64
   TAG: latest
 
+permissions:
+  packages: write
+
 jobs:
   main:
     runs-on: ubuntu-latest

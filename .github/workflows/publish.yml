@@ -4,9 +4,13 @@ on: [push, pull_request]
 
 env:
   CONFIGURATION: Release
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
   DOTNET_SDK_VERSION: 8.0
   NODE_JS_VERSION: 'lts/*'
   PLUGINS: ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+
+permissions: {}
 
 jobs:
   publish-asf-ui:
@@ -68,10 +72,6 @@ jobs:
           variant: win-x64
 
     runs-on: ${{ matrix.os }}
-
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: true
-      DOTNET_NOLOGO: true
 
     steps:
     - name: Checkout code
@@ -405,6 +405,9 @@ jobs:
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') }}
     needs: publish-asf
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout code

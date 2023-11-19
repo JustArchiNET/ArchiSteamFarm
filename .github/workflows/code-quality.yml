@@ -6,16 +6,16 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_NOLOGO: true
 
+permissions:
+  checks: write
+  contents: write
+  pull-requests: write
+  security-events: write
+
 jobs:
   main:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-
-    permissions:
-      checks: write
-      contents: write
-      pull-requests: write
-      security-events: write
 
     steps:
     - name: Checkout code
