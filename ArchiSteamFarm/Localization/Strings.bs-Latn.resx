@@ -75,13 +75,19 @@
 {0}</value>
 		<comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
 	</data>
+	<data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+		<value>Podešavanje {0} je netačno: {1}</value>
+		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+	</data>
 	
 	
 	
 	
 	
-	
-	
+	<data name="ErrorIsInvalid" xml:space="preserve">
+		<value>{0} je netačan!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
 	
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} je null!</value>
@@ -118,7 +124,9 @@
 		<value>Prijavljivanje u {0}...</value>
 		<comment>{0} will be replaced by service's name</comment>
 	</data>
-	
+	<data name="NoBotsAreRunning" xml:space="preserve">
+		<value>Nijedan bot trenutno ne radi, izlaženje...</value>
+	</data>
 	<data name="RefreshingOurSession" xml:space="preserve">
 		<value>Osvežavanje sesije!</value>
 	</data>
@@ -150,8 +158,14 @@
 	
 	
 	
-	
-	
+	<data name="UserInputSteamLogin" xml:space="preserve">
+		<value>Molimo Vas unestie vaše Steam korističko ime: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamParentalCode" xml:space="preserve">
+		<value>Molimo Vas da unesete Steam roditeljski kod: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteamPassword" xml:space="preserve">
 		<value>Molimo Vas uneste vašu Steam lozinku: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -212,9 +226,17 @@
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
 	
-	
-	
-	
+	<data name="BotAddLicense" xml:space="preserve">
+		<value>ID: {0} | Status: {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotAddLicenseWithItems" xml:space="preserve">
+		<value>ID: {0} | Status: {1} | Stavke: {2}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+	</data>
+	<data name="BotAlreadyRunning" xml:space="preserve">
+		<value>Ovaj bot je već pokrenut!</value>
+	</data>
 	
 	
 	<data name="BotAuthenticatorToken" xml:space="preserve">
@@ -244,8 +266,14 @@
 	</data>
 	
 	
-	
-	
+	<data name="BotLoggedOff" xml:space="preserve">
+		<value>Odjavljen sa Steam-a: {0}</value>
+		<comment>{0} will be replaced by logging off reason (string)</comment>
+	</data>
+	<data name="BotLoggedOn" xml:space="preserve">
+		<value>Uspešno prijavljeni kao {0}.</value>
+		<comment>{0} will be replaced by steam ID (number)</comment>
+	</data>
 	<data name="BotLoggingIn" xml:space="preserve">
 		<value>Prijavljivanje...</value>
 	</data>
@@ -257,7 +285,9 @@
 	
 	
 	
-	
+	<data name="BotNotConnected" xml:space="preserve">
+		<value>Ova instanca bot-a nije povezana!</value>
+	</data>
 	
 	
 	
@@ -265,8 +295,14 @@
 	<data name="BotReconnecting" xml:space="preserve">
 		<value>Ponovno povezivanje...</value>
 	</data>
-	
-	
+	<data name="BotRedeem" xml:space="preserve">
+		<value>Ključ: {0} | Status: {1}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotRedeemWithItems" xml:space="preserve">
+		<value>Ključ: {0} | Status: {1} | Stavke: {2}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
+	</data>
 	
 	
 	
@@ -280,7 +316,10 @@
 	<data name="BotStatusPlayingNotAvailable" xml:space="preserve">
 		<value>Bot se trenutno koristi.</value>
 	</data>
-	
+	<data name="BotUnableToLogin" xml:space="preserve">
+		<value>Nije moguće prijavljivanje na Steam: {0}/{1}</value>
+		<comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+	</data>
 	<data name="ErrorIsEmpty" xml:space="preserve">
 		<value>{0} je prazan!</value>
 		<comment>{0} will be replaced by object's name</comment>
@@ -300,7 +339,10 @@
 	</data>
 	
 	
-	
+	<data name="Initializing" xml:space="preserve">
+		<value>Učitavanje {0}...</value>
+		<comment>{0} will be replaced by service name that is being initialized</comment>
+	</data>
 	
 	
 	
@@ -330,7 +372,10 @@
 	
 	
 	
-	
+	<data name="BotLevel" xml:space="preserve">
+		<value>Bot je nivo {0}.</value>
+		<comment>{0} will be replaced by bot's level</comment>
+	</data>
 	
 	
 	<data name="ErrorAborted" xml:space="preserve">
