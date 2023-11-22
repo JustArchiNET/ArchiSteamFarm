@@ -28,6 +28,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
@@ -45,8 +46,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 namespace ArchiSteamFarm.IPC;
@@ -309,9 +308,6 @@ internal sealed class Startup {
 			}
 		);
 
-		// Add support for Newtonsoft.Json in swagger, this one must be executed after AddSwaggerGen()
-		services.AddSwaggerGenNewtonsoftSupport();
-
 		// We need MVC for /Api, but we're going to use only a small subset of all available features
 		IMvcBuilder mvc = services.AddControllers();
 
@@ -328,14 +324,10 @@ internal sealed class Startup {
 
 		mvc.AddControllersAsServices();
 
-		mvc.AddNewtonsoftJson(
+		mvc.AddJsonOptions(
 			static options => {
-				// Fix default contract resolver to use original names and not a camel case
-				options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-
-				if (Debugging.IsUserDebugging) {
-					options.SerializerSettings.Formatting = Formatting.Indented;
-				}
+				options.JsonSerializerOptions.PropertyNamingPolicy = JsonUtilities.DefaultJsonSerialierOptions.PropertyNamingPolicy;
+				options.JsonSerializerOptions.TypeInfoResolver = JsonUtilities.DefaultJsonSerialierOptions.TypeInfoResolver;
 			}
 		);
 	}
