@@ -21,12 +21,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC;
 
@@ -55,27 +50,5 @@ internal static class WebUtilities {
 		}
 
 		return Type.GetType($"{typeText},{typeText[..index]}");
-	}
-
-	internal static async Task WriteJsonAsync<TValue>(this HttpResponse response, TValue? value, JsonSerializerSettings? jsonSerializerSettings = null) {
-		ArgumentNullException.ThrowIfNull(response);
-
-		JsonSerializer serializer = JsonSerializer.CreateDefault(jsonSerializerSettings);
-
-		response.ContentType = "application/json; charset=utf-8";
-
-		StreamWriter streamWriter = new(response.Body, Encoding.UTF8);
-
-		await using (streamWriter.ConfigureAwait(false)) {
-#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-			JsonTextWriter jsonWriter = new(streamWriter) {
-				CloseOutput = false
-			};
-#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-
-			await using (jsonWriter.ConfigureAwait(false)) {
-				serializer.Serialize(jsonWriter, value);
-			}
-		}
 	}
 }
