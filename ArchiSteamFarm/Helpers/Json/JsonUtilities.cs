@@ -43,11 +43,11 @@ public static class JsonUtilities {
 					return true;
 				}
 
-				if (property.AttributeProvider.IsDefined(typeof(JsonDoNotSerialize), true)) {
+				if (property.AttributeProvider.IsDefined(typeof(JsonDoNotSerializeAttribute), true)) {
 					return false;
 				}
 
-				if (property.AttributeProvider.IsDefined(typeof(JsonDoNotSerializeEmptyCollection), true) && value is IEnumerable enumerable && !enumerable.GetEnumerator().MoveNext()) {
+				if (property.AttributeProvider.IsDefined(typeof(JsonDoNotSerializeEmptyCollectionAttribute), true) && ((value == null) || (value is IEnumerable enumerable && !enumerable.GetEnumerator().MoveNext()))) {
 					return false;
 				}
 

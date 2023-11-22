@@ -26,4 +26,4 @@ namespace ArchiSteamFarm.Helpers.Json;
 
 [AttributeUsage(AttributeTargets.Property)]
 [PublicAPI]
-public sealed class JsonDoNotSerialize : Attribute { }
+public sealed class JsonDoNotSerializeAttribute : Attribute { }
