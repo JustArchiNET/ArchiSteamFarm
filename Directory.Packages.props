@@ -15,7 +15,6 @@
 		<PackageVersion Include="SteamKit2" Version="2.5.0" />
 		<PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 		<PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
-		<PackageVersion Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />
 		<PackageVersion Include="System.Composition" Version="8.0.0" />
 		<PackageVersion Include="System.Composition.AttributedModel" Version="8.0.0" />
 		<PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
