@@ -437,7 +437,7 @@ StackTrace:
 		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
 	</data>
 	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-		<value>Abgelaufener Anmelde-Schlüssel entfernt!</value>
+		<value>Abgelaufener Anmeldeschlüssel entfernt!</value>
 	</data>
 	<data name="BotStatusNotIdling" xml:space="preserve">
 		<value>Bot sammelt nichts.</value>
