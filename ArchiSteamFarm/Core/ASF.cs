@@ -30,7 +30,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Helpers;
@@ -323,7 +322,7 @@ public static class ASF {
 
 			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
 
-			string checksum = Convert.ToHexString(SHA512.HashData(responseBytes));
+			string checksum = Utilities.GenerateChecksumFor(responseBytes);
 
 			if (!checksum.Equals(remoteChecksum, StringComparison.OrdinalIgnoreCase)) {
 				ArchiLogger.LogGenericError(Strings.ChecksumWrong);

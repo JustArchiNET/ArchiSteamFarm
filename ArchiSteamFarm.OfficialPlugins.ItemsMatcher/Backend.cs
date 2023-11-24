@@ -41,7 +41,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal static class Backend {
-	internal static async Task<BasicResponse?> AnnounceForListing(ulong steamID, WebBrowser webBrowser, ICollection<AssetForListing> inventory, ulong inventoryChecksum, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, ICollection<AssetForListing>? inventoryRemoved = null, ulong? previousInventoryChecksum = null, string? nickname = null, string? avatarHash = null) {
+	internal static async Task<BasicResponse?> AnnounceForListing(ulong steamID, WebBrowser webBrowser, ICollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, ICollection<AssetForListing>? inventoryRemoved = null, string? previousInventoryChecksum = null, string? nickname = null, string? avatarHash = null) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -52,7 +52,7 @@ internal static class Backend {
 			throw new ArgumentNullException(nameof(inventory));
 		}
 
-		ArgumentOutOfRangeException.ThrowIfZero(inventoryChecksum);
+		ArgumentException.ThrowIfNullOrEmpty(inventoryChecksum);
 
 		if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0)) {
 			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
@@ -72,15 +72,15 @@ internal static class Backend {
 		return await webBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
 	}
 
-	internal static ulong GenerateChecksumFor(IList<AssetForListing> assetsForListings) {
+	internal static string GenerateChecksumFor(IList<AssetForListing> assetsForListings) {
 		if ((assetsForListings == null) || (assetsForListings.Count == 0)) {
 			throw new ArgumentNullException(nameof(assetsForListings));
 		}
 
 		string json = JsonConvert.SerializeObject(assetsForListings);
-		byte[] hash = SHA512.HashData(Encoding.UTF8.GetBytes(json));
+		byte[] bytes = Encoding.UTF8.GetBytes(json);
 
-		return BitConverter.ToUInt64(hash);
+		return Utilities.GenerateChecksumFor(bytes);
 	}
 
 	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Guid licenseID, Bot bot, WebBrowser webBrowser, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes) {

@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Resources;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
@@ -50,6 +51,15 @@ public static class Utilities {
 	private static readonly ImmutableHashSet<string> ForbiddenPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "archisteamfarm", "archi", "steam", "farm", "archisteam", "archifarm", "steamfarm", "asf", "asffarm", "password");
 
 	private static readonly JwtSecurityTokenHandler JwtSecurityTokenHandler = new();
+
+	[PublicAPI]
+	public static string GenerateChecksumFor(byte[] source) {
+		ArgumentNullException.ThrowIfNull(source);
+
+		byte[] hash = SHA512.HashData(source);
+
+		return Convert.ToHexString(hash);
+	}
 
 	[PublicAPI]
 	public static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {

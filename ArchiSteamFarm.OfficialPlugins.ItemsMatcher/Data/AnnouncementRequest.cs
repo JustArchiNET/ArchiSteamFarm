@@ -41,7 +41,7 @@ internal sealed class AnnouncementRequest {
 	private readonly ImmutableHashSet<AssetForListing> Inventory;
 
 	[JsonProperty(Required = Required.Always)]
-	private readonly ulong InventoryChecksum;
+	private readonly string InventoryChecksum;
 
 	[JsonProperty]
 	private readonly ImmutableHashSet<AssetForListing>? InventoryRemoved;
@@ -59,7 +59,7 @@ internal sealed class AnnouncementRequest {
 	private readonly string? Nickname;
 
 	[JsonProperty]
-	private readonly ulong? PreviousInventoryChecksum;
+	private readonly string? PreviousInventoryChecksum;
 
 	[JsonProperty(Required = Required.Always)]
 	private readonly ulong SteamID;
@@ -70,7 +70,7 @@ internal sealed class AnnouncementRequest {
 	[JsonProperty(Required = Required.Always)]
 	private readonly string TradeToken;
 
-	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, ICollection<AssetForListing> inventory, ulong inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, ICollection<AssetForListing>? inventoryRemoved = null, ulong? previousInventoryChecksum = null, string? nickname = null, string? avatarHash = null) {
+	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, ICollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, ICollection<AssetForListing>? inventoryRemoved = null, string? previousInventoryChecksum = null, string? nickname = null, string? avatarHash = null) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -87,7 +87,7 @@ internal sealed class AnnouncementRequest {
 			throw new ArgumentNullException(nameof(inventory));
 		}
 
-		ArgumentOutOfRangeException.ThrowIfZero(inventoryChecksum);
+		ArgumentException.ThrowIfNullOrEmpty(inventoryChecksum);
 
 		if ((matchableTypes == null) || (matchableTypes.Count == 0)) {
 			throw new ArgumentNullException(nameof(matchableTypes));
@@ -118,5 +118,5 @@ internal sealed class AnnouncementRequest {
 	public bool ShouldSerializeNickname() => !string.IsNullOrEmpty(Nickname);
 
 	[UsedImplicitly]
-	public bool ShouldSerializePreviousInventoryChecksum() => PreviousInventoryChecksum.HasValue;
+	public bool ShouldSerializePreviousInventoryChecksum() => !string.IsNullOrEmpty(PreviousInventoryChecksum);
 }
