@@ -43,6 +43,9 @@ internal sealed class AnnouncementRequest {
 	[JsonProperty(Required = Required.Always)]
 	private readonly ulong InventoryChecksum;
 
+	[JsonProperty]
+	private readonly ImmutableHashSet<AssetForListing>? InventoryRemoved;
+
 	[JsonProperty(Required = Required.Always)]
 	private readonly ImmutableHashSet<Asset.EType> MatchableTypes;
 
@@ -67,7 +70,7 @@ internal sealed class AnnouncementRequest {
 	[JsonProperty(Required = Required.Always)]
 	private readonly string TradeToken;
 
-	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, ICollection<AssetForListing> inventory, ulong inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, ulong? previousInventoryChecksum = null, string? nickname = null, string? avatarHash = null) {
+	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, ICollection<AssetForListing> inventory, ulong inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, ICollection<AssetForListing>? inventoryRemoved = null, ulong? previousInventoryChecksum = null, string? nickname = null, string? avatarHash = null) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -102,6 +105,7 @@ internal sealed class AnnouncementRequest {
 		MaxTradeHoldDuration = maxTradeHoldDuration;
 		TotalInventoryCount = totalInventoryCount;
 
+		InventoryRemoved = inventoryRemoved?.Count > 0 ? inventoryRemoved.ToImmutableHashSet() : null;
 		PreviousInventoryChecksum = previousInventoryChecksum;
 		Nickname = nickname;
 		AvatarHash = avatarHash;

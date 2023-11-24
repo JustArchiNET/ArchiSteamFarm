@@ -21,7 +21,6 @@
 
 using System;
 using ArchiSteamFarm.Steam.Data;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
@@ -32,9 +31,6 @@ internal sealed class AssetForListing : AssetInInventory, IEquatable<AssetForLis
 
 	[JsonProperty("l", Required = Required.Always)]
 	internal readonly ulong PreviousAssetID;
-
-	[JsonProperty("z", Required = Required.Always)]
-	internal EAssetForListingChangeType ChangeType { get; set; }
 
 	internal AssetForListing(Asset asset, uint index, ulong previousAssetID) : base(asset) {
 		ArgumentNullException.ThrowIfNull(asset);
@@ -82,7 +78,4 @@ internal sealed class AssetForListing : AssetInInventory, IEquatable<AssetForLis
 
 		return hash.ToHashCode();
 	}
-
-	[UsedImplicitly]
-	public bool ShouldSerializeChangeType() => ChangeType != default(EAssetForListingChangeType);
 }

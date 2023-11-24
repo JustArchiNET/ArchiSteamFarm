@@ -375,40 +375,28 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			if (BotCache.LastAnnouncedAssetsForListing.Count > 0) {
 				Dictionary<ulong, AssetForListing> previousInventoryState = BotCache.LastAnnouncedAssetsForListing.ToDictionary(static asset => asset.AssetID);
 
-				HashSet<AssetForListing> inventoryChanges = new();
+				HashSet<AssetForListing> inventoryAdded = new();
+				HashSet<AssetForListing> inventoryRemoved = new();
 
 				foreach (AssetForListing asset in assetsForListing) {
-					if (previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset)) {
-						if (asset.Equals(previousAsset)) {
-							continue;
-						}
-
-						asset.ChangeType = EAssetForListingChangeType.Changed;
-					} else {
-						asset.ChangeType = EAssetForListingChangeType.Added;
+					if (previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset) && asset.Equals(previousAsset)) {
+						continue;
 					}
 
-					inventoryChanges.Add(asset);
+					inventoryAdded.Add(asset);
 				}
 
 				foreach (AssetForListing asset in previousInventoryState.Values) {
-					asset.ChangeType = EAssetForListingChangeType.Removed;
-
-					inventoryChanges.Add(asset);
+					inventoryRemoved.Add(asset);
 				}
 
 				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
-				BasicResponse? diffResponse = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, inventoryChanges, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
+				BasicResponse? diffResponse = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, inventoryAdded, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, inventoryRemoved, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
 
 				if (HandleAnnounceResponse(BotCache, tradeToken, assetsForListing, diffResponse)) {
 					// Our diff announce has succeeded, we have nothing to do further
 					return;
-				}
-
-				// Reset ChangeType back to added for all inventory changes we're going to announce in a seconds
-				foreach (AssetForListing asset in inventoryChanges) {
-					asset.ChangeType = EAssetForListingChangeType.Added;
 				}
 			}
 
@@ -500,11 +488,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
 		ShouldSendAnnouncementEarlier = false;
 		ShouldSendHeartBeats = true;
-
-		// Reset ChangeType back to added for all assets since we're about to save them
-		foreach (AssetForListing asset in assetsForListing) {
-			asset.ChangeType = EAssetForListingChangeType.Added;
-		}
 
 		botCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
 		botCache.LastAnnouncedTradeToken = tradeToken;
