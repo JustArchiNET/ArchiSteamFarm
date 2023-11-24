@@ -673,6 +673,14 @@ internal static class Program {
 	private static async Task<bool> ParseEnvironmentVariables() {
 		// We're using a single try-catch block here, as a failure for getting one variable will result in the same failure for all other ones
 		try {
+			string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
+
+			if (!string.IsNullOrEmpty(envPath)) {
+				if (!HandlePathArgument(envPath)) {
+					return false;
+				}
+			}
+
 			string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
 
 			if (!string.IsNullOrEmpty(envCryptKey)) {
@@ -691,14 +699,6 @@ internal static class Program {
 
 			if (!string.IsNullOrEmpty(envNetworkGroup)) {
 				HandleNetworkGroupArgument(envNetworkGroup);
-			}
-
-			string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
-
-			if (!string.IsNullOrEmpty(envPath)) {
-				if (!HandlePathArgument(envPath)) {
-					return false;
-				}
 			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
