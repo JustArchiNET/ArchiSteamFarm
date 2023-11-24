@@ -191,27 +191,27 @@ StackTrace:
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
 	<data name="UserInputDeviceConfirmation" xml:space="preserve">
-		<value>Bitte überprüfen Sie ihre Steam Mobile App, Sie sollten eine Benachrichtigung zur Genehmigung der Anmeldung erhalten haben. Geben Sie "Y" ein, wenn Sie die Benachrichtigung erhalten und genehmigt haben, "N" wenn Sie stattdessen den Code eingeben möchten: </value>
+		<value>Bitte überprüfen Sie Ihre Steam Mobile App, Sie sollten eine Benachrichtigung zur Genehmigung der Anmeldung erhalten haben. Geben Sie "Y" ein, wenn Sie die Benachrichtigung erhalten und genehmigt haben, "N" wenn Sie stattdessen den Code eingeben möchten: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
-		<value>Bitte geben Sie ihren 2FA-Code aus ihrer Steam-Authentifizierungsapp ein: </value>
+		<value>Bitte geben Sie Ihren 2FA-Code aus Ihrer Steam-Authentifizierungsapp ein: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Bitte geben Sie den SteamGuard Authentifizierungstoken ein, der an ihre E-Mail Adresse geschickt wurde: </value>
+		<value>Bitte geben Sie den SteamGuard Authentifizierungstoken ein, der an Ihre E-Mail Adresse geschickt wurde: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
-		<value>Bitte geben Sie ihren Steam-Benutzernamen ein: </value>
+		<value>Bitte geben Sie Ihren Steam-Benutzernamen ein: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamParentalCode" xml:space="preserve">
-		<value>Bitte geben Sie ihre Steam-Familienansicht-PIN ein: </value>
+		<value>Bitte geben Sie Ihre Steam-Familienansicht-PIN ein: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamPassword" xml:space="preserve">
-		<value>Bitte geben Sie ihr Steam-Passwort ein: </value>
+		<value>Bitte geben Sie Ihr Steam-Passwort ein: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="WarningUnknownValuePleaseReport" xml:space="preserve">
@@ -374,7 +374,7 @@ StackTrace:
 		<value>Bot-Instanz nicht gestartet, weil diese in der Konfigurationsdatei deaktiviert ist!</value>
 	</data>
 	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-		<value>Der TwoFactorCodeMismatch-Fehlercode wurde {0} Mal in Folge empfangen. Entweder sind ihre 2FA-Anmedeinformationen nicht mehr gültig oder die Systemuhr ist nicht synchronisiert. Der Vorgang wird abgebrochen!</value>
+		<value>Der TwoFactorCodeMismatch-Fehlercode wurde {0} Mal in Folge empfangen. Entweder sind Ihre 2FA-Anmedeinformationen nicht mehr gültig oder die Systemuhr ist nicht synchronisiert. Der Vorgang wird abgebrochen!</value>
 		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
 	</data>
 	<data name="BotLoggedOff" xml:space="preserve">
@@ -404,7 +404,7 @@ StackTrace:
 		<value>Sie können nicht mit sich selbst handeln!</value>
 	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
-		<value>Dieser Bot hat ASF-2FA nicht aktiviert! Haben Sie vergessen, ihren Authentifikator als ASF-2FA zu importieren?</value>
+		<value>Dieser Bot hat ASF-2FA nicht aktiviert! Haben Sie vergessen, Ihren Authentifikator als ASF-2FA zu importieren?</value>
 	</data>
 	<data name="BotNotConnected" xml:space="preserve">
 		<value>Diese Bot-Instanz ist nicht verbunden!</value>
@@ -516,7 +516,7 @@ StackTrace:
 		<value>Ihre angegebene CurrentCulture ist ungültig, ASF wird weiterhin mit dem Standard ausgeführt!</value>
 	</data>
 	<data name="TranslationIncomplete" xml:space="preserve">
-		<value>ASF wird versuchen, ihre bevorzugte Sprache {0} zu verwenden, jedoch wurde die Übersetzung in dieser Sprache nur zu {1} abgeschlossen. Können Sie uns vielleicht helfen, die ASF-Übersetzung in ihrer Sprache zu verbessern?</value>
+		<value>ASF wird versuchen, Ihre bevorzugte Sprache {0} zu verwenden, jedoch wurde die Übersetzung in dieser Sprache nur zu {1} abgeschlossen. Können Sie uns vielleicht helfen, die ASF-Übersetzung in Ihrer Sprache zu verbessern?</value>
 		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
 	</data>
 	<data name="IdlingGameNotPossible" xml:space="preserve">
@@ -548,7 +548,7 @@ StackTrace:
 		<value>Zugriff verweigert!</value>
 	</data>
 	<data name="WarningPreReleaseVersion" xml:space="preserve">
-		<value>Sie verwenden eine Version, die neuer ist als die zuletzt veröffentlichte Version ihres Aktualisierungskanals. Bitte bedenken Sie, dass Vorabversionen nur für Benutzer gedacht sind, die wissen wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird keine technische Unterstützung geben.</value>
+		<value>Sie verwenden eine Version, die neuer ist als die zuletzt veröffentlichte Version Ihres Aktualisierungskanals. Bitte bedenken Sie, dass Vorabversionen nur für Benutzer gedacht sind, die wissen wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird keine technische Unterstützung geben.</value>
 	</data>
 	<data name="BotStats" xml:space="preserve">
 		<value>Aktuelle Speichernutzung: {0} MB.
@@ -666,7 +666,7 @@ Prozesslaufzeit: {1}</value>
 		<comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
 	</data>
 	<data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
-		<value>Fehlercode InvalidPassword {0} mal hintereinander erhalten. ihr Passwort für dieses Konto ist höchstwahrscheinlich falsch. Abbruch!</value>
+		<value>Fehlercode InvalidPassword {0} mal hintereinander erhalten. Ihr Passwort für dieses Konto ist höchstwahrscheinlich falsch. Abbruch!</value>
 		<comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
 	</data>
 	<data name="Result" xml:space="preserve">
@@ -677,7 +677,7 @@ Prozesslaufzeit: {1}</value>
 		<value>Sie versuchen, die Variante {0} von ASF in einer nicht unterstützten Umgebung auszuführen: {1}. Geben Sie das Argument --ignore-unsupported-environment an, sofern Sie wirklich wissen, was Sie tun.</value>
 	</data>
 	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
-		<value>Unbekanntes Kommandozeilenargument: {0}</value>
+		<value>Unbekanntes Befehlszeilenargument: {0}</value>
 		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
 	</data>
 	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
@@ -692,7 +692,7 @@ Prozesslaufzeit: {1}</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
 	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Ihr IPC-Passwort scheint schwach zu sein. Für erhöhte Sicherheit sollten Sie überlegen, ein Stärkeres auszusuchen. Details: {0}Ihr</value>
+		<value>Ihr IPC-Passwort scheint schwach zu sein. Für erhöhte Sicherheit sollten Sie überlegen, ein Stärkeres auszusuchen. Details: {0} Ihr</value>
 		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
@@ -716,7 +716,7 @@ Prozesslaufzeit: {1}</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
 	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>Sie versuchen ASF als Administrator (root) auszuführen. Dies stellt ein signifikantes Sicherheitsrisiko für ihr Gerät dar und da ASF diese Rechte nicht benötigt, unterstützen wir dieses Szenario nicht. Verwenden Sie das Kommandozeilenargument --ignore-unsupported-environment, wenn Sie wirklich wissen, was Sie tun.</value>
+		<value>Sie versuchen ASF als Administrator (root) auszuführen. Dies stellt ein signifikantes Sicherheitsrisiko für Ihr Gerät dar und da ASF diese Rechte nicht benötigt, unterstützen wir dieses Szenario nicht. Verwenden Sie das Befehlszeilenargument --ignore-unsupported-environment, wenn Sie wirklich wissen, was Sie tun.</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Sie nutzen ASF in einer nicht unterstützten Umgebung und verwenden das Argument --ignore-unsupported-environment. Bitte beachten Sie, dass wir für dieses Szenario keinerlei Unterstützung anbieten und Sie das Risiko vollständig bei Ihnen liegt. Sie wurden gewarnt.</value>
@@ -745,7 +745,7 @@ Prozesslaufzeit: {1}</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
 	<data name="WarningNoLicense" xml:space="preserve">
-		<value>Sie haben versucht, die kostenpflichtige Funktion {0} zu verwenden, aber Sie haben keine gültige Lizenz-ID in der globalen ASF Konfiguration gesetzt. Bitte überprüfen Sie ihre Konfiguration, da die Funktionalität ohne zusätzliche Details nicht funktioniert.</value>
+		<value>Sie haben versucht, die kostenpflichtige Funktion {0} zu verwenden, aber Sie haben keine gültige Lizenz-ID in der globalen ASF Konfiguration gesetzt. Bitte überprüfen Sie Ihre Konfiguration, da die Funktionalität ohne zusätzliche Details nicht funktioniert.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
 	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
