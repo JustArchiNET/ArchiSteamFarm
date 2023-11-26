@@ -36,23 +36,14 @@ internal sealed class AnnouncementDiffRequest : AnnouncementRequest {
 	[JsonProperty(Required = Required.Always)]
 	private readonly string PreviousInventoryChecksum;
 
-	internal AnnouncementDiffRequest(Guid guid, ulong steamID, string tradeToken, ICollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, ICollection<AssetForListing> inventoryRemoved, string previousInventoryChecksum, string? nickname = null, string? avatarHash = null) : base(guid, steamID, tradeToken, inventory, inventoryChecksum, matchableTypes, totalInventoryCount, matchEverything, maxTradeHoldDuration, nickname, avatarHash) {
+	internal AnnouncementDiffRequest(Guid guid, ulong steamID, ICollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, ICollection<AssetForListing> inventoryRemoved, string previousInventoryChecksum, string? nickname = null, string? avatarHash = null) : base(guid, steamID, inventory, inventoryChecksum, matchableTypes, totalInventoryCount, matchEverything, maxTradeHoldDuration, tradeToken, nickname, avatarHash) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
-
-		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
-			throw new ArgumentOutOfRangeException(nameof(tradeToken));
-		}
-
-		if ((inventory == null) || (inventory.Count == 0)) {
-			throw new ArgumentNullException(nameof(inventory));
-		}
-
+		ArgumentNullException.ThrowIfNull(inventory);
 		ArgumentException.ThrowIfNullOrEmpty(inventoryChecksum);
 
 		if ((matchableTypes == null) || (matchableTypes.Count == 0)) {
@@ -60,6 +51,12 @@ internal sealed class AnnouncementDiffRequest : AnnouncementRequest {
 		}
 
 		ArgumentOutOfRangeException.ThrowIfZero(totalInventoryCount);
+		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
+
+		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
+			throw new ArgumentOutOfRangeException(nameof(tradeToken));
+		}
+
 		ArgumentNullException.ThrowIfNull(inventoryRemoved);
 		ArgumentException.ThrowIfNullOrEmpty(previousInventoryChecksum);
 

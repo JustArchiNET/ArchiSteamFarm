@@ -40,4 +40,7 @@ internal sealed class AssetForListing : AssetInInventory {
 		Index = index;
 		PreviousAssetID = previousAssetID;
 	}
+
+	[JsonConstructor]
+	private AssetForListing() { }
 }

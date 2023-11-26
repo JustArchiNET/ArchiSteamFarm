@@ -413,7 +413,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					}
 				}
 
-				List<AssetForListing> assetsForListingFiltered = assetsForListing.ToList();
+				HashSet<AssetForListing> assetsForListingFiltered = new();
 
 				foreach (AssetForListing asset in assetsForListing.Where(asset => state.TryGetValue((asset.RealAppID, asset.Type, asset.Rarity), out Dictionary<ulong, uint>? setState) && setState.TryGetValue(asset.ClassID, out uint targetAmount) && (targetAmount > 0)).OrderByDescending(static asset => asset.Tradable).ThenByDescending(static asset => asset.Index)) {
 					(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
@@ -436,7 +436,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					assetsForListingFiltered.Add(asset);
 				}
 
-				assetsForListing = assetsForListingFiltered;
+				assetsForListing = assetsForListingFiltered.OrderBy(static asset => asset.Index).ToList();
 			}
 
 			if (assetsForListing.Count > MaxItemsCount) {
@@ -459,6 +459,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				ShouldSendHeartBeats = true;
 
 				Utilities.InBackground(() => OnHeartBeatTimer());
+
+				return;
 			}
 
 			if (BotCache.LastAnnouncedAssetsForListing.Count > 0) {
@@ -481,17 +483,19 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
-				BasicResponse? diffResponse = await Backend.AnnounceDiffForListing(Bot.SteamID, WebBrowser, inventoryAdded, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, inventoryRemoved, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
+				BasicResponse? diffResponse = await Backend.AnnounceDiffForListing(WebBrowser, Bot.SteamID, inventoryAdded, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, inventoryRemoved, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
 
 				if (HandleAnnounceResponse(BotCache, tradeToken, previousChecksum, assetsForListing, diffResponse)) {
 					// Our diff announce has succeeded, we have nothing to do further
+					Bot.ArchiLogger.LogGenericInfo(Strings.Success);
+
 					return;
 				}
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
-			BasicResponse? response = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, assetsForListing, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname, avatarHash).ConfigureAwait(false);
+			BasicResponse? response = await Backend.AnnounceForListing(WebBrowser, Bot.SteamID, assetsForListing, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname, avatarHash).ConfigureAwait(false);
 
 			HandleAnnounceResponse(BotCache, tradeToken, assetsForListing: assetsForListing, response: response);
 		} finally {

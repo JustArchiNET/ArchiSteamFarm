@@ -64,17 +64,11 @@ internal class AnnouncementRequest {
 	[JsonProperty(Required = Required.Always)]
 	private readonly string TradeToken;
 
-	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, ICollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string? nickname = null, string? avatarHash = null) {
+	internal AnnouncementRequest(Guid guid, ulong steamID, ICollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, string? nickname = null, string? avatarHash = null) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
-
-		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
-
-		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
-			throw new ArgumentOutOfRangeException(nameof(tradeToken));
 		}
 
 		if ((inventory == null) || (inventory.Count == 0)) {
@@ -88,6 +82,11 @@ internal class AnnouncementRequest {
 		}
 
 		ArgumentOutOfRangeException.ThrowIfZero(totalInventoryCount);
+		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
+
+		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
+			throw new ArgumentOutOfRangeException(nameof(tradeToken));
+		}
 
 		Guid = guid;
 		SteamID = steamID;
