@@ -41,7 +41,41 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal static class Backend {
-	internal static async Task<BasicResponse?> AnnounceForListing(ulong steamID, WebBrowser webBrowser, ICollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, ICollection<AssetForListing>? inventoryRemoved = null, string? previousInventoryChecksum = null, string? nickname = null, string? avatarHash = null) {
+	internal static async Task<BasicResponse?> AnnounceDiffForListing(ulong steamID, WebBrowser webBrowser, ICollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, ICollection<AssetForListing> inventoryRemoved, string? previousInventoryChecksum, string? nickname = null, string? avatarHash = null) {
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		ArgumentNullException.ThrowIfNull(webBrowser);
+
+		if ((inventory == null) || (inventory.Count == 0)) {
+			throw new ArgumentNullException(nameof(inventory));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(inventoryChecksum);
+
+		if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0)) {
+			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
+		}
+
+		ArgumentOutOfRangeException.ThrowIfZero(totalInventoryCount);
+		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
+
+		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
+			throw new ArgumentOutOfRangeException(nameof(tradeToken));
+		}
+
+		ArgumentNullException.ThrowIfNull(inventoryRemoved);
+		ArgumentException.ThrowIfNullOrEmpty(previousInventoryChecksum);
+
+		Uri request = new(ArchiNet.URL, "/Api/Listing/AnnounceDiff");
+
+		AnnouncementDiffRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, tradeToken, inventory, inventoryChecksum, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, inventoryRemoved, previousInventoryChecksum, nickname, avatarHash);
+
+		return await webBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
+	}
+
+	internal static async Task<BasicResponse?> AnnounceForListing(ulong steamID, WebBrowser webBrowser, ICollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, string? nickname = null, string? avatarHash = null) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -67,7 +101,7 @@ internal static class Backend {
 
 		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce/v4");
 
-		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, tradeToken, inventory, inventoryChecksum, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, inventoryRemoved, previousInventoryChecksum, nickname, avatarHash);
+		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, tradeToken, inventory, inventoryChecksum, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, nickname, avatarHash);
 
 		return await webBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
 	}

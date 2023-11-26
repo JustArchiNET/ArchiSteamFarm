@@ -370,7 +370,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				ObjectResponse<GenericResponse<ImmutableHashSet<SetPart>>>? setPartsResponse = await Backend.GetSetParts(WebBrowser, Bot.SteamID, acceptedMatchableTypes, realAppIDs).ConfigureAwait(false);
 
-				if (!HandleAnnounceResponse(BotCache, tradeToken, null, setPartsResponse) || (setPartsResponse?.Content?.Result == null)) {
+				if (!HandleAnnounceResponse(BotCache, tradeToken, response: setPartsResponse) || (setPartsResponse?.Content?.Result == null)) {
 					return;
 				}
 
@@ -481,9 +481,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
-				BasicResponse? diffResponse = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, inventoryAdded, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, inventoryRemoved, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
+				BasicResponse? diffResponse = await Backend.AnnounceDiffForListing(Bot.SteamID, WebBrowser, inventoryAdded, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, inventoryRemoved, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
 
-				if (HandleAnnounceResponse(BotCache, tradeToken, assetsForListing, diffResponse)) {
+				if (HandleAnnounceResponse(BotCache, tradeToken, previousChecksum, assetsForListing, diffResponse)) {
 					// Our diff announce has succeeded, we have nothing to do further
 					return;
 				}
@@ -491,9 +491,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
-			BasicResponse? response = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, assetsForListing, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname: nickname, avatarHash: avatarHash).ConfigureAwait(false);
+			BasicResponse? response = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, assetsForListing, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname, avatarHash).ConfigureAwait(false);
 
-			HandleAnnounceResponse(BotCache, tradeToken, assetsForListing, response);
+			HandleAnnounceResponse(BotCache, tradeToken, assetsForListing: assetsForListing, response: response);
 		} finally {
 			RequestsSemaphore.Release();
 		}
@@ -512,7 +512,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private bool HandleAnnounceResponse(BotCache botCache, string tradeToken, ICollection<AssetForListing>? assetsForListing = null, BasicResponse? response = null) {
+	private bool HandleAnnounceResponse(BotCache botCache, string tradeToken, string? previousInventoryChecksum = null, ICollection<AssetForListing>? assetsForListing = null, BasicResponse? response = null) {
 		ArgumentNullException.ThrowIfNull(botCache);
 		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
 
@@ -549,7 +549,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
 
 			switch (response.StatusCode) {
-				case HttpStatusCode.Conflict:
+				case HttpStatusCode.Conflict when !string.IsNullOrEmpty(previousInventoryChecksum):
 					// ArchiNet told us to do full announcement instead
 					return false;
 				case HttpStatusCode.Forbidden:

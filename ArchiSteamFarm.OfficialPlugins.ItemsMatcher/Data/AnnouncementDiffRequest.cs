@@ -24,47 +24,19 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
-internal class AnnouncementRequest {
-	[JsonProperty]
-	private readonly string? AvatarHash;
+internal sealed class AnnouncementDiffRequest : AnnouncementRequest {
+	[JsonProperty(Required = Required.Always)]
+	private readonly ImmutableHashSet<AssetForListing> InventoryRemoved;
 
 	[JsonProperty(Required = Required.Always)]
-	private readonly Guid Guid;
+	private readonly string PreviousInventoryChecksum;
 
-	[JsonProperty(Required = Required.Always)]
-	private readonly ImmutableHashSet<AssetForListing> Inventory;
-
-	[JsonProperty(Required = Required.Always)]
-	private readonly string InventoryChecksum;
-
-	[JsonProperty(Required = Required.Always)]
-	private readonly ImmutableHashSet<Asset.EType> MatchableTypes;
-
-	[JsonProperty(Required = Required.Always)]
-	private readonly bool MatchEverything;
-
-	[JsonProperty(Required = Required.Always)]
-	private readonly byte MaxTradeHoldDuration;
-
-	[JsonProperty]
-	private readonly string? Nickname;
-
-	[JsonProperty(Required = Required.Always)]
-	private readonly ulong SteamID;
-
-	[JsonProperty(Required = Required.Always)]
-	private readonly uint TotalInventoryCount;
-
-	[JsonProperty(Required = Required.Always)]
-	private readonly string TradeToken;
-
-	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, ICollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string? nickname = null, string? avatarHash = null) {
+	internal AnnouncementDiffRequest(Guid guid, ulong steamID, string tradeToken, ICollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, ICollection<AssetForListing> inventoryRemoved, string previousInventoryChecksum, string? nickname = null, string? avatarHash = null) : base(guid, steamID, tradeToken, inventory, inventoryChecksum, matchableTypes, totalInventoryCount, matchEverything, maxTradeHoldDuration, nickname, avatarHash) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -88,24 +60,10 @@ internal class AnnouncementRequest {
 		}
 
 		ArgumentOutOfRangeException.ThrowIfZero(totalInventoryCount);
+		ArgumentNullException.ThrowIfNull(inventoryRemoved);
+		ArgumentException.ThrowIfNullOrEmpty(previousInventoryChecksum);
 
-		Guid = guid;
-		SteamID = steamID;
-		TradeToken = tradeToken;
-		Inventory = inventory.ToImmutableHashSet();
-		InventoryChecksum = inventoryChecksum;
-		MatchableTypes = matchableTypes.ToImmutableHashSet();
-		MatchEverything = matchEverything;
-		MaxTradeHoldDuration = maxTradeHoldDuration;
-		TotalInventoryCount = totalInventoryCount;
-
-		Nickname = nickname;
-		AvatarHash = avatarHash;
+		InventoryRemoved = inventoryRemoved.ToImmutableHashSet();
+		PreviousInventoryChecksum = previousInventoryChecksum;
 	}
-
-	[UsedImplicitly]
-	public bool ShouldSerializeAvatarHash() => !string.IsNullOrEmpty(AvatarHash);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeNickname() => !string.IsNullOrEmpty(Nickname);
 }
