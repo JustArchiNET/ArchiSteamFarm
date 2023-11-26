@@ -25,7 +25,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
-internal class AssetInInventory : AssetForMatching, IEquatable<AssetInInventory> {
+internal class AssetInInventory : AssetForMatching {
 	[JsonProperty("d", Required = Required.Always)]
 	internal readonly ulong AssetID;
 
@@ -37,32 +37,6 @@ internal class AssetInInventory : AssetForMatching, IEquatable<AssetInInventory>
 
 	[JsonConstructor]
 	private AssetInInventory() { }
-
-	public bool Equals(AssetInInventory? other) {
-		if (ReferenceEquals(null, other)) {
-			return false;
-		}
-
-		if (ReferenceEquals(this, other)) {
-			return true;
-		}
-
-		return (AssetID == other.AssetID) && base.Equals(other);
-	}
-
-	public override bool Equals(object? obj) {
-		if (ReferenceEquals(null, obj)) {
-			return false;
-		}
-
-		if (ReferenceEquals(this, obj)) {
-			return true;
-		}
-
-		return obj is AssetInInventory other && Equals(other);
-	}
-
-	public override int GetHashCode() => HashCode.Combine(AssetID, Amount, ClassID, Rarity, RealAppID, Tradable, Type);
 
 	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, tradable: Tradable, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
 }

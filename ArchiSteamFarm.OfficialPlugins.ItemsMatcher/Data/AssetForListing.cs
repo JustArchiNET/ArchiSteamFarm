@@ -25,7 +25,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
-internal sealed class AssetForListing : AssetInInventory, IEquatable<AssetForListing> {
+internal sealed class AssetForListing : AssetInInventory {
 	[JsonProperty("i", Required = Required.Always)]
 	internal readonly uint Index;
 
@@ -39,43 +39,5 @@ internal sealed class AssetForListing : AssetInInventory, IEquatable<AssetForLis
 		PreviousAssetID = previousAssetID;
 	}
 
-	public bool Equals(AssetForListing? other) {
-		if (ReferenceEquals(null, other)) {
-			return false;
-		}
-
-		if (ReferenceEquals(this, other)) {
-			return true;
-		}
-
-		return (Index == other.Index) && (PreviousAssetID == other.PreviousAssetID) && base.Equals(other);
-	}
-
-	public override bool Equals(object? obj) {
-		if (ReferenceEquals(null, obj)) {
-			return false;
-		}
-
-		if (ReferenceEquals(this, obj)) {
-			return true;
-		}
-
-		return obj is AssetInInventory other && Equals(other);
-	}
-
-	public override int GetHashCode() {
-		HashCode hash = new();
-
-		hash.Add(Index);
-		hash.Add(PreviousAssetID);
-		hash.Add(AssetID);
-		hash.Add(Amount);
-		hash.Add(ClassID);
-		hash.Add(Rarity);
-		hash.Add(RealAppID);
-		hash.Add(Tradable);
-		hash.Add(Type);
-
-		return hash.ToHashCode();
-	}
+	internal string BackendHashCode => Index + "-" + PreviousAssetID + "-" + AssetID + "-" + ClassID + "-" + Rarity + "-" + RealAppID + "-" + Tradable + "-" + Type + "-" + Amount;
 }

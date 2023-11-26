@@ -468,7 +468,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				HashSet<AssetForListing> inventoryRemoved = new();
 
 				foreach (AssetForListing asset in assetsForListing) {
-					if (previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset) && asset.Equals(previousAsset)) {
+					if (previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset) && (asset.BackendHashCode == previousAsset.BackendHashCode)) {
 						continue;
 					}
 

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -111,8 +112,8 @@ internal static class Backend {
 			throw new ArgumentNullException(nameof(assetsForListings));
 		}
 
-		string json = JsonConvert.SerializeObject(assetsForListings);
-		byte[] bytes = Encoding.UTF8.GetBytes(json);
+		string text = string.Join('|', assetsForListings.Select(static asset => asset.BackendHashCode));
+		byte[] bytes = Encoding.UTF8.GetBytes(text);
 
 		return Utilities.GenerateChecksumFor(bytes);
 	}
