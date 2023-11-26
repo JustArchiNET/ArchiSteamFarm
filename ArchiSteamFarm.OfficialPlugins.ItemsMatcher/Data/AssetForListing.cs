@@ -32,12 +32,12 @@ internal sealed class AssetForListing : AssetInInventory {
 	[JsonProperty("l", Required = Required.Always)]
 	internal readonly ulong PreviousAssetID;
 
+	internal string BackendHashCode => Index + "-" + PreviousAssetID + "-" + AssetID + "-" + ClassID + "-" + Rarity + "-" + RealAppID + "-" + Tradable + "-" + Type + "-" + Amount;
+
 	internal AssetForListing(Asset asset, uint index, ulong previousAssetID) : base(asset) {
 		ArgumentNullException.ThrowIfNull(asset);
 
 		Index = index;
 		PreviousAssetID = previousAssetID;
 	}
-
-	internal string BackendHashCode => Index + "-" + PreviousAssetID + "-" + AssetID + "-" + ClassID + "-" + Rarity + "-" + RealAppID + "-" + Tradable + "-" + Type + "-" + Amount;
 }
