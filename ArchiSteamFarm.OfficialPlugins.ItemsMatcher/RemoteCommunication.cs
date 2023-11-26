@@ -31,6 +31,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 using ArchiSteamFarm.Steam;
@@ -327,30 +328,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 			}
 
-			if (assetsForListing.Count > MaxItemsCount) {
-				// We're not eligible, record this as a valid check
-				LastAnnouncement = DateTime.UtcNow;
-				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
-
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(assetsForListing)} > {MaxItemsCount}"));
-
-				return;
-			}
-
-			BotCache ??= await BotCache.CreateOrLoad(BotCacheFilePath).ConfigureAwait(false);
-
-			string checksum = Backend.GenerateChecksumFor(assetsForListing);
-			string? previousChecksum = BotCache.LastAnnouncedAssetsForListing.Count > 0 ? Backend.GenerateChecksumFor(BotCache.LastAnnouncedAssetsForListing) : null;
-
-			if ((tradeToken == BotCache.LastAnnouncedTradeToken) && (checksum == previousChecksum)) {
-				// We've determined our state to be the same, we can skip announce entirely and start sending heartbeats exclusively
-				LastAnnouncement = DateTime.UtcNow;
-				ShouldSendAnnouncementEarlier = false;
-				ShouldSendHeartBeats = true;
-
-				Utilities.InBackground(() => OnHeartBeatTimer());
-			}
-
 			if (!SignedInWithSteam) {
 				HttpStatusCode? signInWithSteam = await ArchiNet.SignInWithSteam(Bot, WebBrowser).ConfigureAwait(false);
 
@@ -370,6 +347,118 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 
 				SignedInWithSteam = true;
+			}
+
+			BotCache ??= await BotCache.CreateOrLoad(BotCacheFilePath).ConfigureAwait(false);
+
+			if (!matchEverything) {
+				// We should deduplicate our sets before sending them to the server, for doing that we'll use ASFB set parts data
+				HashSet<uint> realAppIDs = new();
+				Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> state = new();
+
+				foreach (AssetForListing asset in assetsForListing) {
+					realAppIDs.Add(asset.RealAppID);
+
+					(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
+
+					if (state.TryGetValue(key, out Dictionary<ulong, uint>? set)) {
+						set[asset.ClassID] = set.TryGetValue(asset.ClassID, out uint amount) ? amount + asset.Amount : asset.Amount;
+					} else {
+						state[key] = new Dictionary<ulong, uint> { { asset.ClassID, asset.Amount } };
+					}
+				}
+
+				ObjectResponse<GenericResponse<ImmutableHashSet<SetPart>>>? setPartsResponse = await Backend.GetSetParts(WebBrowser, Bot.SteamID, acceptedMatchableTypes, realAppIDs).ConfigureAwait(false);
+
+				if (!HandleAnnounceResponse(BotCache, tradeToken, null, setPartsResponse) || (setPartsResponse?.Content?.Result == null)) {
+					return;
+				}
+
+				Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), HashSet<ulong>> databaseSets = setPartsResponse.Content.Result.GroupBy(static setPart => (setPart.RealAppID, setPart.Type, setPart.Rarity)).ToDictionary(static group => group.Key, static group => group.Select(static setPart => setPart.ClassID).ToHashSet());
+
+				HashSet<(ulong ClassID, uint Amount)> setCopy = new();
+
+				foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key, Dictionary<ulong, uint> set) in state) {
+					if (!databaseSets.TryGetValue(key, out HashSet<ulong>? databaseSet)) {
+						// We have no clue about this set, we can't do any optimization
+						continue;
+					}
+
+					if ((databaseSet.Count != set.Count) || !databaseSet.SetEquals(set.Keys)) {
+						// User either has more or less classIDs than we know about, we can't optimize this
+						continue;
+					}
+
+					// User has all classIDs we know about, we can deduplicate his items based on lowest count
+					setCopy.Clear();
+
+					uint minimumAmount = uint.MaxValue;
+
+					foreach ((ulong classID, uint amount) in set) {
+						if (amount < minimumAmount) {
+							minimumAmount = amount;
+						}
+
+						setCopy.Add((classID, amount));
+					}
+
+					foreach ((ulong classID, uint amount) in setCopy) {
+						if (minimumAmount >= amount) {
+							set.Remove(classID);
+
+							continue;
+						}
+
+						set[classID] = amount - minimumAmount;
+					}
+				}
+
+				List<AssetForListing> assetsForListingFiltered = assetsForListing.ToList();
+
+				foreach (AssetForListing asset in assetsForListing.Where(asset => state.TryGetValue((asset.RealAppID, asset.Type, asset.Rarity), out Dictionary<ulong, uint>? setState) && setState.TryGetValue(asset.ClassID, out uint targetAmount) && (targetAmount > 0)).OrderByDescending(static asset => asset.Tradable).ThenByDescending(static asset => asset.Index)) {
+					(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
+
+					if (!state.TryGetValue(key, out Dictionary<ulong, uint>? setState) || !setState.TryGetValue(asset.ClassID, out uint targetAmount) || (targetAmount == 0)) {
+						// We're not interested in this combination
+						continue;
+					}
+
+					if (asset.Amount >= targetAmount) {
+						asset.Amount = targetAmount;
+
+						if (setState.Remove(asset.ClassID) && (setState.Count == 0)) {
+							state.Remove(key);
+						}
+					} else {
+						setState[asset.ClassID] = targetAmount - asset.Amount;
+					}
+
+					assetsForListingFiltered.Add(asset);
+				}
+
+				assetsForListing = assetsForListingFiltered;
+			}
+
+			if (assetsForListing.Count > MaxItemsCount) {
+				// We're not eligible, record this as a valid check
+				LastAnnouncement = DateTime.UtcNow;
+				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(assetsForListing)} > {MaxItemsCount}"));
+
+				return;
+			}
+
+			string checksum = Backend.GenerateChecksumFor(assetsForListing);
+			string? previousChecksum = BotCache.LastAnnouncedAssetsForListing.Count > 0 ? Backend.GenerateChecksumFor(BotCache.LastAnnouncedAssetsForListing) : null;
+
+			if ((tradeToken == BotCache.LastAnnouncedTradeToken) && (checksum == previousChecksum)) {
+				// We've determined our state to be the same, we can skip announce entirely and start sending heartbeats exclusively
+				LastAnnouncement = DateTime.UtcNow;
+				ShouldSendAnnouncementEarlier = false;
+				ShouldSendHeartBeats = true;
+
+				Utilities.InBackground(() => OnHeartBeatTimer());
 			}
 
 			if (BotCache.LastAnnouncedAssetsForListing.Count > 0) {
@@ -423,13 +512,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private bool HandleAnnounceResponse(BotCache botCache, string tradeToken, ICollection<AssetForListing> assetsForListing, BasicResponse? response = null) {
+	private bool HandleAnnounceResponse(BotCache botCache, string tradeToken, ICollection<AssetForListing>? assetsForListing = null, BasicResponse? response = null) {
 		ArgumentNullException.ThrowIfNull(botCache);
 		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
-
-		if ((assetsForListing == null) || (assetsForListing.Count == 0)) {
-			throw new ArgumentNullException(nameof(assetsForListing));
-		}
 
 		if (response == null) {
 			// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -485,12 +570,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
-		ShouldSendAnnouncementEarlier = false;
-		ShouldSendHeartBeats = true;
+		if (assetsForListing?.Count > 0) {
+			LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
+			ShouldSendAnnouncementEarlier = false;
+			ShouldSendHeartBeats = true;
 
-		botCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
-		botCache.LastAnnouncedTradeToken = tradeToken;
+			botCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
+			botCache.LastAnnouncedTradeToken = tradeToken;
+		}
 
 		return true;
 	}

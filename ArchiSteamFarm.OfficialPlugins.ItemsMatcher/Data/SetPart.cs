@@ -19,14 +19,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Diagnostics.CodeAnalysis;
 using ArchiSteamFarm.Steam.Data;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
-internal class AssetForMatching : IEquatable<AssetForMatching> {
+internal sealed class SetPart {
 	[JsonProperty("c", Required = Required.Always)]
 	internal readonly ulong ClassID;
 
@@ -36,55 +34,6 @@ internal class AssetForMatching : IEquatable<AssetForMatching> {
 	[JsonProperty("e", Required = Required.Always)]
 	internal readonly uint RealAppID;
 
-	[JsonProperty("t", Required = Required.Always)]
-	internal readonly bool Tradable;
-
 	[JsonProperty("p", Required = Required.Always)]
 	internal readonly Asset.EType Type;
-
-	[JsonProperty("a", Required = Required.Always)]
-	internal uint Amount { get; set; }
-
-	[JsonConstructor]
-	protected AssetForMatching() { }
-
-	internal AssetForMatching(Asset asset) {
-		ArgumentNullException.ThrowIfNull(asset);
-
-		Amount = asset.Amount;
-
-		ClassID = asset.ClassID;
-		Tradable = asset.Tradable;
-
-		RealAppID = asset.RealAppID;
-		Type = asset.Type;
-		Rarity = asset.Rarity;
-	}
-
-	public bool Equals(AssetForMatching? other) {
-		if (ReferenceEquals(null, other)) {
-			return false;
-		}
-
-		if (ReferenceEquals(this, other)) {
-			return true;
-		}
-
-		return (Amount == other.Amount) && (ClassID == other.ClassID) && (Rarity == other.Rarity) && (RealAppID == other.RealAppID) && (Tradable == other.Tradable) && (Type == other.Type);
-	}
-
-	public override bool Equals(object? obj) {
-		if (ReferenceEquals(null, obj)) {
-			return false;
-		}
-
-		if (ReferenceEquals(this, obj)) {
-			return true;
-		}
-
-		return obj is AssetForMatching assetForMatching && Equals(assetForMatching);
-	}
-
-	[SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
-	public override int GetHashCode() => HashCode.Combine(Amount, ClassID, Rarity, RealAppID, Tradable, Type);
 }

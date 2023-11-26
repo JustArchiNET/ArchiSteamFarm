@@ -23,8 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Net;
-using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Responses;
@@ -111,6 +111,28 @@ internal static class Backend {
 		}
 
 		return (response.StatusCode, response.Content?.Result ?? ImmutableHashSet<ListedUser>.Empty);
+	}
+
+	internal static async Task<ObjectResponse<GenericResponse<ImmutableHashSet<SetPart>>>?> GetSetParts(WebBrowser webBrowser, ulong steamID, ICollection<Asset.EType> matchableTypes, ICollection<uint> realAppIDs, CancellationToken cancellationToken = default) {
+		ArgumentNullException.ThrowIfNull(webBrowser);
+
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		if ((matchableTypes == null) || (matchableTypes.Count == 0)) {
+			throw new ArgumentNullException(nameof(matchableTypes));
+		}
+
+		if ((realAppIDs == null) || (realAppIDs.Count == 0)) {
+			throw new ArgumentNullException(nameof(realAppIDs));
+		}
+
+		Uri request = new(ArchiNet.URL, "/Api/SetParts/Request");
+
+		SetPartsRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, matchableTypes, realAppIDs);
+
+		return await webBrowser.UrlPostToJsonObject<GenericResponse<ImmutableHashSet<SetPart>>, SetPartsRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	internal static async Task<BasicResponse?> HeartBeatForListing(Bot bot, WebBrowser webBrowser) {
