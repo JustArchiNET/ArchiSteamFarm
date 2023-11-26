@@ -86,7 +86,7 @@ internal static class Program {
 		IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName, StringComparison.Ordinal) ? 1 : 0);
 
 		try {
-			Process.Start(OS.ProcessFileName, string.Join(" ", arguments));
+			Process.Start(OS.ProcessFileName, string.Join(' ', arguments));
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}

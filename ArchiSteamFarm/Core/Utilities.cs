@@ -331,7 +331,7 @@ public static class Utilities {
 			}
 		}
 
-		return (result.Score < 4, suggestions is { Count: > 0 } ? string.Join(" ", suggestions.Where(static suggestion => suggestion.Length > 0)) : null);
+		return (result.Score < 4, suggestions is { Count: > 0 } ? string.Join(' ', suggestions.Where(static suggestion => suggestion.Length > 0)) : null);
 	}
 
 	internal static void WarnAboutIncompleteTranslation(ResourceManager resourceManager) {
