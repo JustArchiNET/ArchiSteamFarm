@@ -438,6 +438,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 
 				assetsForListing = assetsForListingFiltered.OrderBy(static asset => asset.Index).ToList();
+
+				if (assetsForListing.Count == 0) {
+					// We're not eligible, record this as a valid check
+					LastAnnouncement = DateTime.UtcNow;
+					ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+
+					return;
+				}
 			}
 
 			if (assetsForListing.Count > MaxItemsCount) {
