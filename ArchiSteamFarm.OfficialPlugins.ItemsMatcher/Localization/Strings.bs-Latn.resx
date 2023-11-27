@@ -62,4 +62,8 @@
 			PublicKeyToken=b77a5c561934e089
 		</value>
   </resheader>
+  <data name="ActivelyMatchingSomeConfirmationsFailed" xml:space="preserve">
+		<value>Neke konfirmacije su neuspješne, odprilike {0} od {1} razmjena je poslano uspješno.</value>
+		<comment>{0} will be replaced by amount of the trade offers that succeeded (number), {1} will be replaced by amount of the trade offers that were supposed to be sent in total (number)</comment>
+	</data>
 </root>

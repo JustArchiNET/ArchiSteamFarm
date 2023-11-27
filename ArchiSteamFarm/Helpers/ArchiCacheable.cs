@@ -111,7 +111,7 @@ public sealed class ArchiCacheable<T> : IDisposable {
 	}
 
 	private (bool Success, T? Result) ReturnFailedValueFor(ECacheFallback cacheFallback, T? result = default) {
-		if (!Enum.IsDefined(typeof(ECacheFallback), cacheFallback)) {
+		if (!Enum.IsDefined(cacheFallback)) {
 			throw new InvalidEnumArgumentException(nameof(cacheFallback), (int) cacheFallback, typeof(ECacheFallback));
 		}
 

@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Lock inactive threads
-        uses: dessant/lock-threads@v5.0.0
+        uses: dessant/lock-threads@v5.0.1
         with:
           discussion-inactive-days: 90
           issue-inactive-days: 60
