@@ -37,7 +37,7 @@ internal static class WebUtilities {
 		return type.GenericTypeArguments.Length == 0 ? type.FullName : $"{type.Namespace}.{type.Name}{string.Join("", type.GenericTypeArguments.Select(static innerType => $"[{innerType.GetUnifiedName()}]"))}";
 	}
 
-	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2057:TypeGetType", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	internal static Type? ParseType(string typeText) {
 		ArgumentException.ThrowIfNullOrEmpty(typeText);
 
