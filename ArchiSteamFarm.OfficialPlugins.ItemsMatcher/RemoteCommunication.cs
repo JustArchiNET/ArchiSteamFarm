@@ -287,7 +287,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				if (item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown } && acceptedMatchableTypes.Contains(item.Type)) {
 					// Only tradable assets matter for MatchEverything bots
 					if (!matchEverything || item.Tradable) {
-						assetsForListing.Add(new AssetForListing(item, index++, previousAssetID));
+						assetsForListing.Add(new AssetForListing(item, index, previousAssetID));
 					}
 
 					// But even for Fair bots, we should track and skip sets where we don't have any item to trade with
@@ -304,6 +304,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					}
 				}
 
+				index++;
 				previousAssetID = item.AssetID;
 			}
 
