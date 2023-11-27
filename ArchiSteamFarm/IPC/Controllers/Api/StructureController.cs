@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
 using ArchiSteamFarm.IPC.Responses;
@@ -39,6 +40,7 @@ public sealed class StructureController : ArchiController {
 	[HttpGet("{structure:required}")]
 	[ProducesResponseType<GenericResponse<object>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2072", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	public ActionResult<GenericResponse> StructureGet(string structure) {
 		ArgumentException.ThrowIfNullOrEmpty(structure);
 

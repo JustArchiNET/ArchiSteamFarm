@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -44,6 +45,7 @@ public sealed class TypeController : ArchiController {
 	[HttpGet("{type:required}")]
 	[ProducesResponseType<GenericResponse<TypeResponse>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2075", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	public ActionResult<GenericResponse> TypeGet(string type) {
 		ArgumentException.ThrowIfNullOrEmpty(type);
 
