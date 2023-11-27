@@ -108,15 +108,15 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 	}
 
 	public bool Remove(T item) {
-		bool result;
-
 		using (Lock.WriterLock()) {
-			result = BackingCollection.Remove(item);
+			if (!BackingCollection.Remove(item)) {
+				return false;
+			}
 		}
 
 		OnModified?.Invoke(this, EventArgs.Empty);
 
-		return result;
+		return true;
 	}
 
 	public void RemoveAt(int index) {
