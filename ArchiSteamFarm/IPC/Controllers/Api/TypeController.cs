@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -41,6 +42,7 @@ public sealed class TypeController : ArchiController {
 	/// <remarks>
 	///     Type info is defined as a representation of given object with its fields and properties being assigned to a string value that defines their type.
 	/// </remarks>
+	[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)]
 	[HttpGet("{type:required}")]
 	[ProducesResponseType<GenericResponse<TypeResponse>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
