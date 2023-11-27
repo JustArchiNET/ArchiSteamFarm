@@ -114,6 +114,7 @@ dotnet_code_quality_unused_parameters = all:warning
 
 dotnet_diagnostic.ca1028.severity = silent
 dotnet_diagnostic.ca1031.severity = silent
+dotnet_diagnostic.ca1863.severity = silent
 
 # Rule - almost everything
 dotnet_naming_rule.almost_everything_must_be_pascal_case.severity = warning
