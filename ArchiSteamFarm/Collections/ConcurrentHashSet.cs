@@ -29,6 +29,7 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Collections;
 
 public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> where T : notnull {
+	[PublicAPI]
 	public event EventHandler? OnModified;
 
 	public int Count => BackingCollection.Count;

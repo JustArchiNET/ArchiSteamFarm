@@ -19,44 +19,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Diagnostics.CodeAnalysis;
 using ArchiSteamFarm.Steam.Data;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
-internal class AssetForMatching {
+#pragma warning disable CA1812 // False positive, the class is used during json deserialization
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+internal sealed class SetPart {
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonProperty("c", Required = Required.Always)]
 	internal readonly ulong ClassID;
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonProperty("r", Required = Required.Always)]
 	internal readonly Asset.ERarity Rarity;
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonProperty("e", Required = Required.Always)]
 	internal readonly uint RealAppID;
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
-	[JsonProperty("t", Required = Required.Always)]
-	internal readonly bool Tradable;
-
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonProperty("p", Required = Required.Always)]
 	internal readonly Asset.EType Type;
-
-	[JsonProperty("a", Required = Required.Always)]
-	internal uint Amount { get; set; }
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
 	[JsonConstructor]
-	protected AssetForMatching() { }
-
-	internal AssetForMatching(Asset asset) {
-		ArgumentNullException.ThrowIfNull(asset);
-
-		Amount = asset.Amount;
-
-		ClassID = asset.ClassID;
-		Tradable = asset.Tradable;
-
-		RealAppID = asset.RealAppID;
-		Type = asset.Type;
-		Rarity = asset.Rarity;
-	}
+	private SetPart() { }
 }
+#pragma warning restore CA1812 // False positive, the class is used during json deserialization

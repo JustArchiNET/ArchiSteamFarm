@@ -34,7 +34,7 @@ internal static class WebUtilities {
 	internal static string? GetUnifiedName(this Type type) {
 		ArgumentNullException.ThrowIfNull(type);
 
-		return type.GenericTypeArguments.Length == 0 ? type.FullName : $"{type.Namespace}.{type.Name}{string.Join("", type.GenericTypeArguments.Select(static innerType => $"[{innerType.GetUnifiedName()}]"))}";
+		return type.GenericTypeArguments.Length == 0 ? type.FullName : $"{type.Namespace}.{type.Name}{string.Join(null, type.GenericTypeArguments.Select(static innerType => $"[{innerType.GetUnifiedName()}]"))}";
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2057:TypeGetType", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]

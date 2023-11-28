@@ -19,13 +19,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Nito.AsyncEx;
 
 namespace ArchiSteamFarm.Collections;
 
 internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
+	[PublicAPI]
+	public event EventHandler? OnModified;
+
 	public bool IsReadOnly => false;
 
 	internal int Count {
@@ -53,6 +58,8 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 			using (Lock.WriterLock()) {
 				BackingCollection[index] = value;
 			}
+
+			OnModified?.Invoke(this, EventArgs.Empty);
 		}
 	}
 
@@ -60,12 +67,16 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 		using (Lock.WriterLock()) {
 			BackingCollection.Add(item);
 		}
+
+		OnModified?.Invoke(this, EventArgs.Empty);
 	}
 
 	public void Clear() {
 		using (Lock.WriterLock()) {
 			BackingCollection.Clear();
 		}
+
+		OnModified?.Invoke(this, EventArgs.Empty);
 	}
 
 	public bool Contains(T item) {
@@ -92,18 +103,28 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 		using (Lock.WriterLock()) {
 			BackingCollection.Insert(index, item);
 		}
+
+		OnModified?.Invoke(this, EventArgs.Empty);
 	}
 
 	public bool Remove(T item) {
 		using (Lock.WriterLock()) {
-			return BackingCollection.Remove(item);
+			if (!BackingCollection.Remove(item)) {
+				return false;
+			}
 		}
+
+		OnModified?.Invoke(this, EventArgs.Empty);
+
+		return true;
 	}
 
 	public void RemoveAt(int index) {
 		using (Lock.WriterLock()) {
 			BackingCollection.RemoveAt(index);
 		}
+
+		OnModified?.Invoke(this, EventArgs.Empty);
 	}
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -113,5 +134,7 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 			BackingCollection.Clear();
 			BackingCollection.AddRange(collection);
 		}
+
+		OnModified?.Invoke(this, EventArgs.Empty);
 	}
 }

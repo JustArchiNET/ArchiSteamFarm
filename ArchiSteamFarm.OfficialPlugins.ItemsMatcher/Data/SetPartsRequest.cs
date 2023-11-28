@@ -20,27 +20,45 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using ArchiSteamFarm.Steam.Data;
 using Newtonsoft.Json;
+using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
-internal sealed class AssetForListing : AssetInInventory {
-	[JsonProperty("i", Required = Required.Always)]
-	internal readonly uint Index;
+internal sealed class SetPartsRequest {
+	[JsonProperty(Required = Required.Always)]
+	internal readonly Guid Guid;
 
-	[JsonProperty("l", Required = Required.Always)]
-	internal readonly ulong PreviousAssetID;
+	[JsonProperty(Required = Required.Always)]
+	internal readonly ImmutableHashSet<Asset.EType> MatchableTypes;
 
-	internal string BackendHashCode => Index + "-" + PreviousAssetID + "-" + AssetID + "-" + ClassID + "-" + Rarity + "-" + RealAppID + "-" + Tradable + "-" + Type + "-" + Amount;
+	[JsonProperty(Required = Required.Always)]
+	internal readonly ImmutableHashSet<uint> RealAppIDs;
 
-	internal AssetForListing(Asset asset, uint index, ulong previousAssetID) : base(asset) {
-		ArgumentNullException.ThrowIfNull(asset);
+	[JsonProperty(Required = Required.Always)]
+	internal readonly ulong SteamID;
 
-		Index = index;
-		PreviousAssetID = previousAssetID;
+	internal SetPartsRequest(Guid guid, ulong steamID, ICollection<Asset.EType> matchableTypes, ICollection<uint> realAppIDs) {
+		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
+
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		if ((matchableTypes == null) || (matchableTypes.Count == 0)) {
+			throw new ArgumentNullException(nameof(matchableTypes));
+		}
+
+		if ((realAppIDs == null) || (realAppIDs.Count == 0)) {
+			throw new ArgumentNullException(nameof(realAppIDs));
+		}
+
+		Guid = guid;
+		SteamID = steamID;
+		MatchableTypes = matchableTypes.ToImmutableHashSet();
+		RealAppIDs = realAppIDs.ToImmutableHashSet();
 	}
-
-	[JsonConstructor]
-	private AssetForListing() { }
 }

@@ -29,14 +29,14 @@ internal class AssetInInventory : AssetForMatching {
 	[JsonProperty("d", Required = Required.Always)]
 	internal readonly ulong AssetID;
 
+	[JsonConstructor]
+	protected AssetInInventory() { }
+
 	internal AssetInInventory(Asset asset) : base(asset) {
 		ArgumentNullException.ThrowIfNull(asset);
 
 		AssetID = asset.AssetID;
 	}
-
-	[JsonConstructor]
-	private AssetInInventory() { }
 
 	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, tradable: Tradable, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
 }
