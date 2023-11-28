@@ -748,5 +748,8 @@
 		<value>Вы попытались использовать платную функцию {0}, но в глобальной конфигурации ASF не установлен действительный LicenseID. Пожалуйста, пересмотрите вашу конфигурацию, так как функциональность не будет работать без дополнительной информации.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
-	
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>ASF не может запустить приложение {0}, так как на него действует связанное с регионом ограничение для страны {1}, которое длится до {2}.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
 </root>
