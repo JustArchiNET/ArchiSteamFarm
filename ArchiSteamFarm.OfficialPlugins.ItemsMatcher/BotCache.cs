@@ -50,8 +50,24 @@ internal sealed class BotCache : SerializableFile {
 		}
 	}
 
+	internal string? LastInventoryChecksumBeforeDeduplication {
+		get => BackingLastInventoryChecksumBeforeDeduplication;
+
+		set {
+			if (BackingLastInventoryChecksumBeforeDeduplication == value) {
+				return;
+			}
+
+			BackingLastInventoryChecksumBeforeDeduplication = value;
+			Utilities.InBackground(Save);
+		}
+	}
+
 	[JsonProperty]
 	private string? BackingLastAnnouncedTradeToken;
+
+	[JsonProperty]
+	private string? BackingLastInventoryChecksumBeforeDeduplication;
 
 	private BotCache(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -64,6 +80,9 @@ internal sealed class BotCache : SerializableFile {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeBackingLastAnnouncedTradeToken() => !string.IsNullOrEmpty(BackingLastAnnouncedTradeToken);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingLastInventoryChecksumBeforeDeduplication() => !string.IsNullOrEmpty(BackingLastInventoryChecksumBeforeDeduplication);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeLastAnnouncedAssetsForListing() => LastAnnouncedAssetsForListing.Count > 0;

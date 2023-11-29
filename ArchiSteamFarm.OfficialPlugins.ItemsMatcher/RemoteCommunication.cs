@@ -329,6 +329,27 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 			}
 
+			BotCache ??= await BotCache.CreateOrLoad(BotCacheFilePath).ConfigureAwait(false);
+
+			string inventoryChecksumBeforeDeduplication = Backend.GenerateChecksumFor(assetsForListing);
+
+			if ((tradeToken == BotCache.LastAnnouncedTradeToken) && !string.IsNullOrEmpty(BotCache.LastInventoryChecksumBeforeDeduplication)) {
+				if (inventoryChecksumBeforeDeduplication == BotCache.LastInventoryChecksumBeforeDeduplication) {
+					// We've determined our state to be the same, we can skip announce entirely and start sending heartbeats exclusively
+					bool triggerImmediately = !ShouldSendHeartBeats;
+
+					LastAnnouncement = DateTime.UtcNow;
+					ShouldSendAnnouncementEarlier = false;
+					ShouldSendHeartBeats = true;
+
+					if (triggerImmediately) {
+						Utilities.InBackground(() => OnHeartBeatTimer());
+					}
+
+					return;
+				}
+			}
+
 			if (!SignedInWithSteam) {
 				HttpStatusCode? signInWithSteam = await ArchiNet.SignInWithSteam(Bot, WebBrowser).ConfigureAwait(false);
 
@@ -349,8 +370,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				SignedInWithSteam = true;
 			}
-
-			BotCache ??= await BotCache.CreateOrLoad(BotCacheFilePath).ConfigureAwait(false);
 
 			if (!matchEverything) {
 				// We should deduplicate our sets before sending them to the server, for doing that we'll use ASFB set parts data
@@ -444,6 +463,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					LastAnnouncement = DateTime.UtcNow;
 					ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
 
+					// There is a possibility that our inventory has changed even if our announced assets did not, record that
+					BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
+
 					return;
 				}
 			}
@@ -452,6 +474,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// We're not eligible, record this as a valid check
 				LastAnnouncement = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+
+				// There is a possibility that our inventory has changed even if our announced assets did not, record that
+				BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
 
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(assetsForListing)} > {MaxItemsCount}"));
 
@@ -463,11 +488,18 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			if ((tradeToken == BotCache.LastAnnouncedTradeToken) && (checksum == previousChecksum)) {
 				// We've determined our state to be the same, we can skip announce entirely and start sending heartbeats exclusively
+				bool triggerImmediately = !ShouldSendHeartBeats;
+
 				LastAnnouncement = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = false;
 				ShouldSendHeartBeats = true;
 
-				Utilities.InBackground(() => OnHeartBeatTimer());
+				if (triggerImmediately) {
+					Utilities.InBackground(() => OnHeartBeatTimer());
+				}
+
+				// There is a possibility that our inventory has changed even if our announced assets did not, record that
+				BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
 
 				return;
 			}
@@ -481,7 +513,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				BasicResponse? diffResponse = await Backend.AnnounceDiffForListing(WebBrowser, Bot.SteamID, inventoryAddedChanged, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, previousInventoryState.Values, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
 
-				if (HandleAnnounceResponse(BotCache, tradeToken, previousChecksum, assetsForListing, diffResponse)) {
+				if (HandleAnnounceResponse(BotCache, tradeToken, inventoryChecksumBeforeDeduplication, assetsForListing, previousChecksum, diffResponse)) {
 					// Our diff announce has succeeded, we have nothing to do further
 					Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
@@ -493,7 +525,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			BasicResponse? response = await Backend.AnnounceForListing(WebBrowser, Bot.SteamID, assetsForListing, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname, avatarHash).ConfigureAwait(false);
 
-			HandleAnnounceResponse(BotCache, tradeToken, assetsForListing: assetsForListing, response: response);
+			HandleAnnounceResponse(BotCache, tradeToken, inventoryChecksumBeforeDeduplication, assetsForListing, response: response);
 		} finally {
 			RequestsSemaphore.Release();
 		}
@@ -512,7 +544,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private bool HandleAnnounceResponse(BotCache botCache, string tradeToken, string? previousInventoryChecksum = null, ICollection<AssetForListing>? assetsForListing = null, BasicResponse? response = null) {
+	private bool HandleAnnounceResponse(BotCache botCache, string tradeToken, string? inventoryChecksumBeforeDeduplication = null, ICollection<AssetForListing>? assetsForListing = null, string? previousInventoryChecksum = null, BasicResponse? response = null) {
 		ArgumentNullException.ThrowIfNull(botCache);
 		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
 
@@ -577,6 +609,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			botCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
 			botCache.LastAnnouncedTradeToken = tradeToken;
+			botCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
 		}
 
 		return true;
