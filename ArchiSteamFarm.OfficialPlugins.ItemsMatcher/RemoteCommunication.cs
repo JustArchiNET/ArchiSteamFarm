@@ -475,24 +475,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			if (BotCache.LastAnnouncedAssetsForListing.Count > 0) {
 				Dictionary<ulong, AssetForListing> previousInventoryState = BotCache.LastAnnouncedAssetsForListing.ToDictionary(static asset => asset.AssetID);
 
-				HashSet<AssetForListing> inventoryAdded = new();
-				HashSet<AssetForListing> inventoryRemoved = new();
-
-				foreach (AssetForListing asset in assetsForListing) {
-					if (previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset) && (asset.BackendHashCode == previousAsset.BackendHashCode)) {
-						continue;
-					}
-
-					inventoryAdded.Add(asset);
-				}
-
-				foreach (AssetForListing asset in previousInventoryState.Values) {
-					inventoryRemoved.Add(asset);
-				}
+				HashSet<AssetForListing> inventoryAddedChanged = assetsForListing.Where(asset => !previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset) || (asset.BackendHashCode != previousAsset.BackendHashCode)).ToHashSet();
 
 				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
-				BasicResponse? diffResponse = await Backend.AnnounceDiffForListing(WebBrowser, Bot.SteamID, inventoryAdded, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, inventoryRemoved, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
+				BasicResponse? diffResponse = await Backend.AnnounceDiffForListing(WebBrowser, Bot.SteamID, inventoryAddedChanged, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, previousInventoryState.Values, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
 
 				if (HandleAnnounceResponse(BotCache, tradeToken, previousChecksum, assetsForListing, diffResponse)) {
 					// Our diff announce has succeeded, we have nothing to do further
