@@ -284,7 +284,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), bool> tradableSets = new();
 
 			foreach (Asset item in inventory) {
-				if (item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown } && acceptedMatchableTypes.Contains(item.Type)) {
+				if (item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown, IsSteamPointsShopItem: false } && acceptedMatchableTypes.Contains(item.Type)) {
 					// Only tradable assets matter for MatchEverything bots
 					if (!matchEverything || item.Tradable) {
 						assetsForListing.Add(new AssetForListing(item, index, previousAssetID));
@@ -768,7 +768,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			Dictionary<ulong, Asset> ourInventory;
 
 			try {
-				ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown } && acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToDictionaryAsync(static item => item.AssetID).ConfigureAwait(false);
+				ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown, IsSteamPointsShopItem: false } && acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToDictionaryAsync(static item => item.AssetID).ConfigureAwait(false);
 			} catch (HttpRequestException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ourInventory)));

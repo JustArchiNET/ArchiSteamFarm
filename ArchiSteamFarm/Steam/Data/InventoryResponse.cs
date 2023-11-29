@@ -19,7 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
@@ -118,33 +117,6 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 			}
 		}
 
-		internal uint RealAppID {
-			get {
-				foreach (Tag tag in Tags) {
-					switch (tag.Identifier) {
-						case "Game":
-							if (string.IsNullOrEmpty(tag.Value) || (tag.Value.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
-								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
-
-								break;
-							}
-
-							string appIDText = tag.Value[4..];
-
-							if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
-								ASF.ArchiLogger.LogNullError(appID);
-
-								break;
-							}
-
-							return appID;
-					}
-				}
-
-				return 0;
-			}
-		}
-
 		internal Asset.EType Type {
 			get {
 				Asset.EType type = Asset.EType.Unknown;
@@ -224,6 +196,9 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		internal ulong ClassID { get; set; }
 		internal ulong InstanceID { get; set; }
 		internal bool Marketable { get; set; }
+
+		[JsonProperty("market_fee_app", Required = Required.Always)]
+		internal uint RealAppID { get; set; }
 
 		[JsonProperty("tags", Required = Required.DisallowNull)]
 		internal ImmutableHashSet<Tag> Tags { get; set; } = ImmutableHashSet<Tag>.Empty;

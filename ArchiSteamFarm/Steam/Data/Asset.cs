@@ -38,9 +38,16 @@ public sealed class Asset {
 	[PublicAPI]
 	public const ulong SteamCommunityContextID = 6;
 
+	[PublicAPI]
+	public const ulong SteamPointsShopInstanceID = 3865004543;
+
 	[JsonIgnore]
 	[PublicAPI]
 	public IReadOnlyDictionary<string, JToken>? AdditionalPropertiesReadOnly => AdditionalProperties;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public bool IsSteamPointsShopItem => !Tradable && (InstanceID == SteamPointsShopInstanceID);
 
 	[JsonIgnore]
 	[PublicAPI]
