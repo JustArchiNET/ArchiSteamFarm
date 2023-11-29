@@ -558,18 +558,22 @@ public sealed class ArchiWebHandler : IDisposable {
 				continue;
 			}
 
-			InventoryResponse.Description parsedDescription = new() {
-				AppID = appID,
-				ClassID = classID,
-				InstanceID = instanceID,
-				Marketable = description["marketable"].AsBoolean(),
-				Tradable = true // We're parsing active trade offers, we can assume as much
-			};
+			uint realAppID = description["market_fee_app"].AsUnsignedInteger();
+
+			if (realAppID == 0) {
+				Bot.ArchiLogger.LogNullError(realAppID);
+
+				return null;
+			}
+
+			bool marketable = description["marketable"].AsBoolean();
 
 			List<KeyValue> tags = description["tags"].Children;
 
+			HashSet<Tag>? parsedTags = null;
+
 			if (tags.Count > 0) {
-				HashSet<Tag> parsedTags = new(tags.Count);
+				parsedTags = new HashSet<Tag>(tags.Count);
 
 				foreach (KeyValue tag in tags) {
 					string? identifier = tag["category"].AsString();
@@ -591,9 +595,9 @@ public sealed class ArchiWebHandler : IDisposable {
 
 					parsedTags.Add(new Tag(identifier, value));
 				}
-
-				parsedDescription.Tags = parsedTags.ToImmutableHashSet();
 			}
+
+			InventoryResponse.Description parsedDescription = new(appID, classID, instanceID, marketable, realAppID, parsedTags);
 
 			descriptions[key] = parsedDescription;
 		}

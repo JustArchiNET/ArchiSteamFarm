@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
@@ -91,6 +92,15 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	private InventoryResponse() { }
 
 	internal sealed class Description {
+		[JsonProperty("appid", Required = Required.Always)]
+		internal readonly uint AppID;
+
+		[JsonProperty("market_fee_app", Required = Required.Always)]
+		internal readonly uint RealAppID;
+
+		[JsonProperty("tags", Required = Required.DisallowNull)]
+		internal readonly ImmutableHashSet<Tag> Tags = ImmutableHashSet<Tag>.Empty;
+
 		internal Asset.ERarity Rarity {
 			get {
 				foreach (Tag tag in Tags) {
@@ -190,20 +200,10 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 			set;
 		}
 
-		[JsonProperty("appid", Required = Required.Always)]
-		internal uint AppID { get; set; }
-
-		internal ulong ClassID { get; set; }
-		internal ulong InstanceID { get; set; }
-		internal bool Marketable { get; set; }
-
-		[JsonProperty("market_fee_app", Required = Required.Always)]
-		internal uint RealAppID { get; set; }
-
-		[JsonProperty("tags", Required = Required.DisallowNull)]
-		internal ImmutableHashSet<Tag> Tags { get; set; } = ImmutableHashSet<Tag>.Empty;
-
-		internal bool Tradable { get; set; }
+		internal ulong ClassID { get; private set; }
+		internal ulong InstanceID { get; private set; }
+		internal bool Marketable { get; private set; }
+		internal bool Tradable { get; private set; }
 
 		[JsonProperty("classid", Required = Required.Always)]
 		private string ClassIDText {
@@ -251,7 +251,25 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 			set => Tradable = value > 0;
 		}
 
+		// Constructed from trades being received/sent
+		internal Description(uint appID, ulong classID, ulong instanceID, bool marketable, uint realAppID, ICollection<Tag>? tags = null) {
+			ArgumentOutOfRangeException.ThrowIfZero(appID);
+			ArgumentOutOfRangeException.ThrowIfZero(classID);
+			ArgumentOutOfRangeException.ThrowIfZero(realAppID);
+
+			AppID = appID;
+			ClassID = classID;
+			InstanceID = instanceID;
+			Marketable = marketable;
+			RealAppID = realAppID;
+			Tradable = true;
+
+			if (tags?.Count > 0) {
+				Tags = tags.ToImmutableHashSet();
+			}
+		}
+
 		[JsonConstructor]
-		internal Description() { }
+		private Description() { }
 	}
 }
