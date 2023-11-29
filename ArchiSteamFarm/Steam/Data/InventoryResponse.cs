@@ -95,9 +95,6 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		[JsonProperty("appid", Required = Required.Always)]
 		internal readonly uint AppID;
 
-		[JsonProperty("market_fee_app", Required = Required.Always)]
-		internal readonly uint RealAppID;
-
 		[JsonProperty("tags", Required = Required.DisallowNull)]
 		internal readonly ImmutableHashSet<Tag> Tags = ImmutableHashSet<Tag>.Empty;
 
@@ -124,6 +121,33 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 				}
 
 				return Asset.ERarity.Unknown;
+			}
+		}
+
+		internal uint RealAppID {
+			get {
+				foreach (Tag tag in Tags) {
+					switch (tag.Identifier) {
+						case "Game":
+							if (string.IsNullOrEmpty(tag.Value) || (tag.Value.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
+								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+
+								break;
+							}
+
+							string appIDText = tag.Value[4..];
+
+							if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+								ASF.ArchiLogger.LogNullError(appID);
+
+								break;
+							}
+
+							return appID;
+					}
+				}
+
+				return 0;
 			}
 		}
 
@@ -252,16 +276,14 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		}
 
 		// Constructed from trades being received/sent
-		internal Description(uint appID, ulong classID, ulong instanceID, bool marketable, uint realAppID, ICollection<Tag>? tags = null) {
+		internal Description(uint appID, ulong classID, ulong instanceID, bool marketable, ICollection<Tag>? tags = null) {
 			ArgumentOutOfRangeException.ThrowIfZero(appID);
 			ArgumentOutOfRangeException.ThrowIfZero(classID);
-			ArgumentOutOfRangeException.ThrowIfZero(realAppID);
 
 			AppID = appID;
 			ClassID = classID;
 			InstanceID = instanceID;
 			Marketable = marketable;
-			RealAppID = realAppID;
 			Tradable = true;
 
 			if (tags?.Count > 0) {

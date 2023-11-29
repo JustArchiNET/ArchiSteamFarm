@@ -558,14 +558,6 @@ public sealed class ArchiWebHandler : IDisposable {
 				continue;
 			}
 
-			uint realAppID = description["market_fee_app"].AsUnsignedInteger();
-
-			if (realAppID == 0) {
-				Bot.ArchiLogger.LogNullError(realAppID);
-
-				return null;
-			}
-
 			bool marketable = description["marketable"].AsBoolean();
 
 			List<KeyValue> tags = description["tags"].Children;
@@ -597,7 +589,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 			}
 
-			InventoryResponse.Description parsedDescription = new(appID, classID, instanceID, marketable, realAppID, parsedTags);
+			InventoryResponse.Description parsedDescription = new(appID, classID, instanceID, marketable, parsedTags);
 
 			descriptions[key] = parsedDescription;
 		}
