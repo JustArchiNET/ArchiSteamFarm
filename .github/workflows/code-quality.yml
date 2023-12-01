@@ -34,7 +34,7 @@ jobs:
 
     - name: Run Qodana scan
       if: false # TODO: Enable GitHub results after qodana starts reporting meaningful stuff
-      uses: JetBrains/qodana-action@v2023.2.8
+      uses: JetBrains/qodana-action@v2023.2.9
       with:
         args: --property=idea.headless.enable.statistics=false
       env:
