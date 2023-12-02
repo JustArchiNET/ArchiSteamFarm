@@ -2634,6 +2634,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
+		if (!SteamClient.IsConnected) {
+			// Possible if user spent too much time entering password, try again after reconnect
+			return;
+		}
+
 		ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
 
 		InitConnectionFailureTimer();
