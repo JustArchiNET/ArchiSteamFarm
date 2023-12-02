@@ -390,7 +390,58 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				ObjectResponse<GenericResponse<ImmutableHashSet<SetPart>>>? setPartsResponse = await Backend.GetSetParts(WebBrowser, Bot.SteamID, acceptedMatchableTypes, realAppIDs).ConfigureAwait(false);
 
-				if (!HandleAnnounceResponse(BotCache, tradeToken, response: setPartsResponse) || (setPartsResponse?.Content?.Result == null)) {
+				if (setPartsResponse == null) {
+					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+					ShouldSendHeartBeats = false;
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(setPartsResponse)));
+
+					return;
+				}
+
+				if (setPartsResponse.StatusCode.IsRedirectionCode()) {
+					ShouldSendHeartBeats = false;
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, setPartsResponse.StatusCode));
+
+					if (setPartsResponse.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
+						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(setPartsResponse.FinalUri), setPartsResponse.FinalUri));
+
+						return;
+					}
+
+					// We've expected the result, not the redirection to the sign in, we need to authenticate again
+					SignedInWithSteam = false;
+
+					return;
+				}
+
+				if (!setPartsResponse.StatusCode.IsSuccessCode()) {
+					// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
+					ShouldSendHeartBeats = false;
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, setPartsResponse.StatusCode));
+
+					switch (setPartsResponse.StatusCode) {
+						case HttpStatusCode.Forbidden:
+							// ArchiNet told us to stop submitting data for now
+							LastAnnouncement = DateTime.UtcNow.AddYears(1);
+
+							return;
+						case HttpStatusCode.TooManyRequests:
+							// ArchiNet told us to try again later
+							LastAnnouncement = DateTime.UtcNow.AddDays(1);
+
+							return;
+						default:
+							// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
+							LastAnnouncement = DateTime.UtcNow.AddHours(6);
+
+							return;
+					}
+				}
+
+				if (setPartsResponse.Content?.Result == null) {
+					// This should never happen if we got the correct response
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(setPartsResponse), setPartsResponse.Content?.Result));
+
 					return;
 				}
 
@@ -511,11 +562,102 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
-				BasicResponse? diffResponse = await Backend.AnnounceDiffForListing(WebBrowser, Bot.SteamID, inventoryAddedChanged, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, previousInventoryState.Values, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
+				ObjectResponse<GenericResponse<BackgroundTaskResponse>>? diffResponse = null;
+				Guid diffRequestID = Guid.Empty;
 
-				if (HandleAnnounceResponse(BotCache, tradeToken, inventoryChecksumBeforeDeduplication, assetsForListing, previousChecksum, diffResponse)) {
+				for (byte i = 0; i < WebBrowser.MaxTries; i++) {
+					if (diffRequestID != Guid.Empty) {
+						diffResponse = await Backend.PollResult(WebBrowser, Bot.SteamID, diffRequestID).ConfigureAwait(false);
+					} else {
+						diffResponse = await Backend.AnnounceDiffForListing(WebBrowser, Bot.SteamID, inventoryAddedChanged, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, previousInventoryState.Values, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
+					}
+
+					if (diffResponse == null) {
+						// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+						ShouldSendHeartBeats = false;
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(diffResponse)));
+
+						return;
+					}
+
+					if (diffResponse.StatusCode.IsRedirectionCode()) {
+						ShouldSendHeartBeats = false;
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, diffResponse.StatusCode));
+
+						if (diffResponse.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
+							ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(diffResponse.FinalUri), diffResponse.FinalUri));
+
+							return;
+						}
+
+						// We've expected the result, not the redirection to the sign in, we need to authenticate again
+						SignedInWithSteam = false;
+
+						return;
+					}
+
+					if (!diffResponse.StatusCode.IsSuccessCode()) {
+						// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
+						ShouldSendHeartBeats = false;
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, diffResponse.StatusCode));
+
+						switch (diffResponse.StatusCode) {
+							case HttpStatusCode.Conflict:
+								// ArchiNet told us to do full announcement instead, the only non-OK response we accept
+								break;
+							case HttpStatusCode.Forbidden:
+								// ArchiNet told us to stop submitting data for now
+								LastAnnouncement = DateTime.UtcNow.AddYears(1);
+
+								return;
+							case HttpStatusCode.TooManyRequests:
+								// ArchiNet told us to try again later
+								LastAnnouncement = DateTime.UtcNow.AddDays(1);
+
+								return;
+							default:
+								// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
+								LastAnnouncement = DateTime.UtcNow.AddHours(6);
+
+								return;
+						}
+
+						break;
+					}
+
+					// Great, do we need to wait?
+					if (diffResponse.Content?.Result == null) {
+						// This should never happen if we got the correct response
+						Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(diffResponse), diffResponse.Content?.Result));
+
+						return;
+					}
+
+					if (diffResponse.Content.Result.Finished) {
+						break;
+					}
+
+					diffRequestID = diffResponse.Content.Result.RequestID;
+					diffResponse = null;
+				}
+
+				if (diffResponse == null) {
+					// We've waited long enough, something is definitely wrong with us or the backend
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(diffResponse)));
+
+					return;
+				}
+
+				if (diffResponse.StatusCode.IsSuccessCode() && diffResponse.Content is { Success: true, Result.Finished: true }) {
 					// Our diff announce has succeeded, we have nothing to do further
 					Bot.ArchiLogger.LogGenericInfo(Strings.Success);
+
+					LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
+					ShouldSendAnnouncementEarlier = false;
+					ShouldSendHeartBeats = true;
+					BotCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
+					BotCache.LastAnnouncedTradeToken = tradeToken;
+					BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
 
 					return;
 				}
@@ -523,14 +665,111 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
-			BasicResponse? response = await Backend.AnnounceForListing(WebBrowser, Bot.SteamID, assetsForListing, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname, avatarHash).ConfigureAwait(false);
+			ObjectResponse<GenericResponse<BackgroundTaskResponse>>? announceResponse = null;
+			Guid announceRequestID = Guid.Empty;
 
-			HandleAnnounceResponse(BotCache, tradeToken, inventoryChecksumBeforeDeduplication, assetsForListing, response: response);
+			for (byte i = 0; i < WebBrowser.MaxTries; i++) {
+				if (announceRequestID != Guid.Empty) {
+					announceResponse = await Backend.PollResult(WebBrowser, Bot.SteamID, announceRequestID).ConfigureAwait(false);
+				} else {
+					announceResponse = await Backend.AnnounceForListing(WebBrowser, Bot.SteamID, assetsForListing, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname, avatarHash).ConfigureAwait(false);
+				}
+
+				if (announceResponse == null) {
+					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+					ShouldSendHeartBeats = false;
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(announceResponse)));
+
+					return;
+				}
+
+				if (announceResponse.StatusCode.IsRedirectionCode()) {
+					ShouldSendHeartBeats = false;
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, announceResponse.StatusCode));
+
+					if (announceResponse.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
+						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(announceResponse.FinalUri), announceResponse.FinalUri));
+
+						return;
+					}
+
+					// We've expected the result, not the redirection to the sign in, we need to authenticate again
+					SignedInWithSteam = false;
+
+					return;
+				}
+
+				if (!announceResponse.StatusCode.IsSuccessCode()) {
+					// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
+					ShouldSendHeartBeats = false;
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, announceResponse.StatusCode));
+
+					switch (announceResponse.StatusCode) {
+						case HttpStatusCode.Conflict:
+							// ArchiNet told us to that we've applied wrong deduplication logic, we can try again in a second
+							LastAnnouncement = DateTime.UtcNow.AddMinutes(5);
+
+							return;
+						case HttpStatusCode.Forbidden:
+							// ArchiNet told us to stop submitting data for now
+							LastAnnouncement = DateTime.UtcNow.AddYears(1);
+
+							return;
+						case HttpStatusCode.TooManyRequests:
+							// ArchiNet told us to try again later
+							LastAnnouncement = DateTime.UtcNow.AddDays(1);
+
+							return;
+						default:
+							// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
+							LastAnnouncement = DateTime.UtcNow.AddHours(6);
+
+							return;
+					}
+				}
+
+				// Great, do we need to wait?
+				if (announceResponse.Content?.Result == null) {
+					// This should never happen if we got the correct response
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(announceResponse), announceResponse.Content?.Result));
+
+					return;
+				}
+
+				if (announceResponse.Content.Result.Finished) {
+					break;
+				}
+
+				announceRequestID = announceResponse.Content.Result.RequestID;
+				announceResponse = null;
+			}
+
+			if (announceResponse == null) {
+				// We've waited long enough, something is definitely wrong with us or the backend
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(announceResponse)));
+
+				return;
+			}
+
+			if (announceResponse.StatusCode.IsSuccessCode() && announceResponse.Content is { Success: true, Result.Finished: true }) {
+				// Our diff announce has succeeded, we have nothing to do further
+				Bot.ArchiLogger.LogGenericInfo(Strings.Success);
+
+				LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
+				ShouldSendAnnouncementEarlier = false;
+				ShouldSendHeartBeats = true;
+				BotCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
+				BotCache.LastAnnouncedTradeToken = tradeToken;
+				BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
+
+				return;
+			}
+
+			// Everything we've tried has failed
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 		} finally {
 			RequestsSemaphore.Release();
 		}
-
-		Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 	}
 
 	internal void TriggerMatchActivelyEarlier() {
@@ -542,77 +781,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		lock (MatchActivelySemaphore) {
 			MatchActivelyTimer.Change(TimeSpan.Zero, TimeSpan.FromHours(6));
 		}
-	}
-
-	private bool HandleAnnounceResponse(BotCache botCache, string tradeToken, string? inventoryChecksumBeforeDeduplication = null, ICollection<AssetForListing>? assetsForListing = null, string? previousInventoryChecksum = null, BasicResponse? response = null) {
-		ArgumentNullException.ThrowIfNull(botCache);
-		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
-
-		if (response == null) {
-			// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
-			ShouldSendHeartBeats = false;
-
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
-
-			return false;
-		}
-
-		if (response.StatusCode.IsRedirectionCode()) {
-			ShouldSendHeartBeats = false;
-
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
-
-			if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
-
-				return false;
-			}
-
-			// We've expected the result, not the redirection to the sign in, we need to authenticate again
-			SignedInWithSteam = false;
-
-			return false;
-		}
-
-		if (response.StatusCode.IsClientErrorCode()) {
-			// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
-			ShouldSendHeartBeats = false;
-
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
-
-			switch (response.StatusCode) {
-				case HttpStatusCode.Conflict when !string.IsNullOrEmpty(previousInventoryChecksum):
-					// ArchiNet told us to do full announcement instead
-					return false;
-				case HttpStatusCode.Forbidden:
-					// ArchiNet told us to stop submitting data for now
-					LastAnnouncement = DateTime.UtcNow.AddYears(1);
-
-					return false;
-				case HttpStatusCode.TooManyRequests:
-					// ArchiNet told us to try again later
-					LastAnnouncement = DateTime.UtcNow.AddDays(1);
-
-					return false;
-				default:
-					// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
-					LastAnnouncement = DateTime.UtcNow.AddHours(6);
-
-					return false;
-			}
-		}
-
-		if (assetsForListing?.Count > 0) {
-			LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
-			ShouldSendAnnouncementEarlier = false;
-			ShouldSendHeartBeats = true;
-
-			botCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
-			botCache.LastAnnouncedTradeToken = tradeToken;
-			botCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
-		}
-
-		return true;
 	}
 
 	private async Task<bool?> IsEligibleForListing() {
