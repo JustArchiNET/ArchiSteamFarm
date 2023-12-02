@@ -21,6 +21,7 @@
 
 using System;
 using Newtonsoft.Json;
+using SteamKit2;
 using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.OfficialPlugins.MobileAuthenticator;
@@ -47,6 +48,9 @@ internal sealed class MaFileData {
 	[JsonProperty("server_time", Required = Required.Always)]
 	internal readonly ulong ServerTime;
 
+	[JsonProperty(Required = Required.Always)]
+	internal readonly MaFileSessionData Session;
+
 	[JsonProperty("shared_secret", Required = Required.Always)]
 	internal readonly string SharedSecret;
 
@@ -59,8 +63,13 @@ internal sealed class MaFileData {
 	[JsonProperty("uri", Required = Required.Always)]
 	internal readonly string Uri;
 
-	internal MaFileData(CTwoFactor_AddAuthenticator_Response data, string deviceID) {
+	internal MaFileData(CTwoFactor_AddAuthenticator_Response data, ulong steamID, string deviceID) {
 		ArgumentNullException.ThrowIfNull(data);
+
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
 		ArgumentException.ThrowIfNullOrEmpty(deviceID);
 
 		AccountName = data.account_name;
@@ -70,6 +79,7 @@ internal sealed class MaFileData {
 		Secret1 = Convert.ToBase64String(data.secret_1);
 		SerialNumber = data.serial_number;
 		ServerTime = data.server_time;
+		Session = new MaFileSessionData(steamID);
 		SharedSecret = Convert.ToBase64String(data.shared_secret);
 		Status = data.status;
 		TokenGid = data.token_gid;

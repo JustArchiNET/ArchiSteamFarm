@@ -357,7 +357,7 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, result));
 		}
 
-		MaFileData maFileData = new(response, deviceID);
+		MaFileData maFileData = new(response, bot.SteamID, deviceID);
 
 		string maFilePendingPath = $"{bot.GetFilePath(Bot.EFileType.MobileAuthenticator)}.PENDING";
 		string json = JsonConvert.SerializeObject(maFileData, Formatting.Indented);
