@@ -91,7 +91,7 @@ public static class Utilities {
 
 		CookieCollection cookies = cookieContainer.GetCookies(uri);
 
-		return cookies.Count > 0 ? cookies.FirstOrDefault(cookie => cookie.Name == name)?.Value : null;
+		return cookies.FirstOrDefault(cookie => cookie.Name == name)?.Value;
 	}
 
 	[PublicAPI]
