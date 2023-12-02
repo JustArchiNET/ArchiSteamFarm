@@ -2183,11 +2183,13 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		ArgumentException.ThrowIfNullOrEmpty(accessToken);
 
-		if (Initialized) {
-			DateTime triggeredAt = DateTime.UtcNow;
+		string steamLoginSecure = $"{steamID}||{accessToken}";
 
-			if (triggeredAt <= SessionValidUntil) {
-				// Assume session is still valid
+		if (Initialized) {
+			string? previousSteamLoginSecure = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "steamLoginSecure");
+
+			if (previousSteamLoginSecure == steamLoginSecure) {
+				// We have nothing to update, skip this request
 				return true;
 			}
 		}
@@ -2200,8 +2202,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamCommunityURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamHelpURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamStoreURL.Host}"));
-
-		string steamLoginSecure = $"{steamID}||{accessToken}";
 
 		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamCheckoutURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamCommunityURL.Host}"));
