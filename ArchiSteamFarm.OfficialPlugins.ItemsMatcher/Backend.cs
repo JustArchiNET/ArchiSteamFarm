@@ -65,6 +65,10 @@ internal static class Backend {
 		ArgumentNullException.ThrowIfNull(inventoryRemoved);
 		ArgumentException.ThrowIfNullOrEmpty(previousInventoryChecksum);
 
+		if (SharedInfo.BuildInfo.IsCustomBuild) {
+			return null;
+		}
+
 		Uri request = new(ArchiNet.URL, "/Api/Listing/AnnounceDiff");
 
 		AnnouncementDiffRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, inventory, inventoryChecksum, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, tradeToken, inventoryRemoved, previousInventoryChecksum, nickname, avatarHash);
@@ -96,6 +100,10 @@ internal static class Backend {
 			throw new ArgumentOutOfRangeException(nameof(tradeToken));
 		}
 
+		if (SharedInfo.BuildInfo.IsCustomBuild) {
+			return null;
+		}
+
 		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce/v4");
 
 		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, inventory, inventoryChecksum, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, tradeToken, nickname, avatarHash);
@@ -125,6 +133,10 @@ internal static class Backend {
 
 		if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0)) {
 			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
+		}
+
+		if (SharedInfo.BuildInfo.IsCustomBuild) {
+			return null;
 		}
 
 		Uri request = new(ArchiNet.URL, "/Api/Listing/Inventories/v2");
@@ -159,6 +171,10 @@ internal static class Backend {
 			throw new ArgumentNullException(nameof(realAppIDs));
 		}
 
+		if (SharedInfo.BuildInfo.IsCustomBuild) {
+			return null;
+		}
+
 		Uri request = new(ArchiNet.URL, "/Api/SetParts/Request");
 
 		SetPartsRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, matchableTypes, realAppIDs);
@@ -169,6 +185,10 @@ internal static class Backend {
 	internal static async Task<BasicResponse?> HeartBeatForListing(Bot bot, WebBrowser webBrowser) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(webBrowser);
+
+		if (SharedInfo.BuildInfo.IsCustomBuild) {
+			return null;
+		}
 
 		Uri request = new(ArchiNet.URL, "/Api/Listing/HeartBeat");
 
