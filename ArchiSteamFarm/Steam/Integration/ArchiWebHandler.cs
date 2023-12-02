@@ -2183,6 +2183,17 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		ArgumentException.ThrowIfNullOrEmpty(accessToken);
 
+		if (Initialized) {
+			DateTime triggeredAt = DateTime.UtcNow;
+
+			if (triggeredAt <= SessionValidUntil) {
+				// Assume session is still valid
+				return true;
+			}
+		}
+
+		Initialized = false;
+
 		string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString(CultureInfo.InvariantCulture)));
 
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamCheckoutURL.Host}"));
