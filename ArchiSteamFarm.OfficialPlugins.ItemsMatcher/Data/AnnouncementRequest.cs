@@ -71,10 +71,7 @@ internal class AnnouncementRequest {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if ((inventory == null) || (inventory.Count == 0)) {
-			throw new ArgumentNullException(nameof(inventory));
-		}
-
+		ArgumentNullException.ThrowIfNull(inventory);
 		ArgumentException.ThrowIfNullOrEmpty(inventoryChecksum);
 
 		if ((matchableTypes == null) || (matchableTypes.Count == 0)) {
