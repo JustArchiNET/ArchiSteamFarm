@@ -1,4 +1,4 @@
-//     _                _      _  ____   _                           _____
+﻿//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -20,40 +20,25 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
 
-[PublicAPI]
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-public sealed class Confirmation {
-	[JsonProperty(PropertyName = "nonce", Required = Required.Always)]
-	internal readonly ulong Nonce;
+internal sealed class ApiKeyRequestResponse : ResultResponse {
+	[JsonProperty("api_key", Required = Required.AllowNull)]
+	internal readonly string? ApiKey;
 
-	[JsonProperty(PropertyName = "type", Required = Required.Always)]
-	public EConfirmationType ConfirmationType { get; private set; }
+	[JsonProperty("request_id", Required = Required.AllowNull)]
+	internal readonly ulong? RequestID;
 
-	[JsonProperty(PropertyName = "creator_id", Required = Required.Always)]
-	public ulong CreatorID { get; private set; }
+	internal bool RequiresConfirmation { get; private set; }
 
-	[JsonProperty(PropertyName = "id", Required = Required.Always)]
-	public ulong ID { get; private set; }
+	[JsonProperty("requires_confirmation", Required = Required.Always)]
+	private byte RequiresConfirmationNumber {
+		set => RequiresConfirmation = value > 0;
+	}
 
 	[JsonConstructor]
-	private Confirmation() { }
-
-	[UsedImplicitly]
-	public static bool ShouldSerializeNonce() => false;
-
-	[PublicAPI]
-	public enum EConfirmationType : byte {
-		Unknown,
-		Generic,
-		Trade,
-		Market,
-		PhoneNumberChange = 5,
-		AccountRecovery = 6,
-		ApiKeyRegistration = 9
-	}
+	private ApiKeyRequestResponse() { }
 }

@@ -2603,8 +2603,8 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	private async Task<bool> RegisterApiKey() {
-		Uri request = new(SteamCommunityURL, "/dev/registerkey");
+	private async Task<string?> RegisterApiKey() {
+		Uri request = new(SteamCommunityURL, "/dev/requestkey");
 
 		// Extra entry for sessionID
 		Dictionary<string, string> data = new(4, StringComparer.Ordinal) {
@@ -2612,10 +2612,54 @@ public sealed class ArchiWebHandler : IDisposable {
 #pragma warning disable CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
 			{ "domain", $"generated.by.{SharedInfo.AssemblyName.ToLowerInvariant()}.localhost" },
 #pragma warning restore CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
-			{ "Submit", "Register" }
+			{ "request_id", "0" }
 		};
 
-		return await UrlPostWithSession(request, data: data).ConfigureAwait(false);
+		ObjectResponse<ApiKeyRequestResponse>? response = await UrlPostToJsonObjectWithSession<ApiKeyRequestResponse>(request, data: data).ConfigureAwait(false);
+
+		if (response?.Content == null) {
+			return null;
+		}
+
+		switch (response.Content.Result) {
+			case EResult.OK when !string.IsNullOrEmpty(response.Content.ApiKey):
+				return response.Content.ApiKey;
+			case EResult.Pending when response.Content.RequiresConfirmation && Bot.HasMobileAuthenticator:
+				if (response.Content.RequestID is null or 0) {
+					Bot.ArchiLogger.LogNullError(response.Content.RequestID);
+
+					return null;
+				}
+
+				(bool success, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.ApiKeyRegistration, new HashSet<ulong>(1) { response.Content.RequestID.Value }, true).ConfigureAwait(false);
+
+				if (!success) {
+					return null;
+				}
+
+				break;
+			default:
+				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.Content.Result), response.Content.Result));
+
+				return null;
+		}
+
+		data["request_id"] = response.Content.RequestID.Value.ToString(CultureInfo.InvariantCulture);
+
+		response = await UrlPostToJsonObjectWithSession<ApiKeyRequestResponse>(request, data: data).ConfigureAwait(false);
+
+		if (response?.Content == null) {
+			return null;
+		}
+
+		switch (response.Content.Result) {
+			case EResult.OK when !string.IsNullOrEmpty(response.Content.ApiKey):
+				return response.Content.ApiKey;
+			default:
+				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.Content.Result), response.Content.Result));
+
+				return null;
+		}
 	}
 
 	private async Task<(bool Success, string? Result)> ResolveAccessToken(CancellationToken cancellationToken = default) {
@@ -2638,29 +2682,24 @@ public sealed class ArchiWebHandler : IDisposable {
 			case ESteamApiKeyState.AccessDenied:
 				// We succeeded in fetching API key, but it resulted in access denied
 				// Return empty result, API key is unavailable permanently
-				return (true, "");
-			case ESteamApiKeyState.NotRegisteredYet:
+				return (true, null);
+			case ESteamApiKeyState.NotRegisteredYet when Bot.HasMobileAuthenticator:
 				// We succeeded in fetching API key, and it resulted in no key registered yet
 				// Let's try to register a new key
-				if (!await RegisterApiKey().ConfigureAwait(false)) {
+				string? key = await RegisterApiKey().ConfigureAwait(false);
+
+				if (string.IsNullOrEmpty(key)) {
 					// Request timed out, bad luck, we'll try again later
 					goto case ESteamApiKeyState.Timeout;
 				}
 
-				// We should have the key ready, so let's fetch it again
-				result = await GetApiKeyState(cancellationToken).ConfigureAwait(false);
+				return (true, key);
+			case ESteamApiKeyState.NotRegisteredYet:
+				// Registration of key requires active ASF 2FA, or user interaction
+				// Show a warning but don't cache this, we expect this to be temporary
+				Bot.ArchiLogger.LogGenericWarning(Strings.BotWarningNoApiKeyRegistered);
 
-				if (result.State == ESteamApiKeyState.Timeout) {
-					// Request timed out, bad luck, we'll try again later
-					goto case ESteamApiKeyState.Timeout;
-				}
-
-				if (result.State != ESteamApiKeyState.Registered) {
-					// Something went wrong, report error
-					goto default;
-				}
-
-				goto case ESteamApiKeyState.Registered;
+				return (false, null);
 			case ESteamApiKeyState.Registered:
 				// We succeeded in fetching API key, and it resulted in registered key
 				// Cache the result, this is the API key we want
