@@ -1220,11 +1220,5 @@ namespace ArchiSteamFarm.Localization {
                 return ResourceManager.GetString("WarningRegionRestrictedPackage", resourceCulture);
             }
         }
-        
-        public static string BotWarningNoApiKeyRegistered {
-            get {
-                return ResourceManager.GetString("BotWarningNoApiKeyRegistered", resourceCulture);
-            }
-        }
     }
 }

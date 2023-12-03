@@ -2316,86 +2316,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		return response?.Content?.Result == EResult.OK;
 	}
 
-	private async Task<(ESteamApiKeyState State, string? Key)> GetApiKeyState(CancellationToken cancellationToken = default) {
-		Uri request = new(SteamCommunityURL, "/dev/apikey?l=english");
-
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
-
-		if (response?.Content == null) {
-			return (ESteamApiKeyState.Timeout, null);
-		}
-
-		INode? titleNode = response.Content.SelectSingleNode("//div[@id='mainContents']/h2");
-
-		if (titleNode == null) {
-			Bot.ArchiLogger.LogNullError(titleNode);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		string title = titleNode.TextContent;
-
-		if (string.IsNullOrEmpty(title)) {
-			Bot.ArchiLogger.LogNullError(title);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		if (title.Contains("Access Denied", StringComparison.OrdinalIgnoreCase) || title.Contains("Validated email address required", StringComparison.OrdinalIgnoreCase)) {
-			return (ESteamApiKeyState.AccessDenied, null);
-		}
-
-		INode? htmlNode = response.Content.SelectSingleNode("//div[@id='bodyContents_ex']//p");
-
-		if (htmlNode == null) {
-			Bot.ArchiLogger.LogNullError(htmlNode);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		string text = htmlNode.TextContent;
-
-		if (string.IsNullOrEmpty(text)) {
-			Bot.ArchiLogger.LogNullError(text);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		if (text.Contains("Your account does not meet the requirements", StringComparison.OrdinalIgnoreCase)) {
-			return (ESteamApiKeyState.RequirementsNotMet, null);
-		}
-
-		if (text.Contains("Registering for a Steam Web API Key", StringComparison.OrdinalIgnoreCase)) {
-			return (ESteamApiKeyState.NotRegisteredYet, null);
-		}
-
-		int keyIndex = text.IndexOf("Key: ", StringComparison.Ordinal);
-
-		if (keyIndex < 0) {
-			Bot.ArchiLogger.LogNullError(keyIndex);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		keyIndex += 5;
-
-		if (text.Length <= keyIndex) {
-			Bot.ArchiLogger.LogNullError(text);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		text = text[keyIndex..];
-
-		if ((text.Length != 32) || !Utilities.IsValidHexadecimalText(text)) {
-			Bot.ArchiLogger.LogNullError(text);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		return (ESteamApiKeyState.Registered, text);
-	}
-
 	private async Task<bool> IsProfileUri(Uri uri, bool waitForInitialization = true) {
 		ArgumentNullException.ThrowIfNull(uri);
 
@@ -2587,117 +2507,12 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	private async Task<string?> RegisterApiKey() {
-		Uri request = new(SteamCommunityURL, "/dev/requestkey");
-
-		// Extra entry for sessionID
-		Dictionary<string, string> data = new(4, StringComparer.Ordinal) {
-			{ "agreeToTerms", "agreed" },
-#pragma warning disable CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
-			{ "domain", $"generated.by.{SharedInfo.AssemblyName.ToLowerInvariant()}.localhost" },
-#pragma warning restore CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
-			{ "request_id", "0" }
-		};
-
-		ObjectResponse<ApiKeyRequestResponse>? response = await UrlPostToJsonObjectWithSession<ApiKeyRequestResponse>(request, data: data).ConfigureAwait(false);
-
-		if (response?.Content == null) {
-			return null;
-		}
-
-		switch (response.Content.Result) {
-			case EResult.OK when !string.IsNullOrEmpty(response.Content.ApiKey):
-				return response.Content.ApiKey;
-			case EResult.Pending when response.Content.RequiresConfirmation && Bot.HasMobileAuthenticator:
-				if (response.Content.RequestID is null or 0) {
-					Bot.ArchiLogger.LogNullError(response.Content.RequestID);
-
-					return null;
-				}
-
-				(bool success, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.ApiKeyRegistration, new HashSet<ulong>(1) { response.Content.RequestID.Value }, true).ConfigureAwait(false);
-
-				if (!success) {
-					return null;
-				}
-
-				break;
-			default:
-				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.Content.Result), response.Content.Result));
-
-				return null;
-		}
-
-		data["request_id"] = response.Content.RequestID.Value.ToString(CultureInfo.InvariantCulture);
-
-		response = await UrlPostToJsonObjectWithSession<ApiKeyRequestResponse>(request, data: data).ConfigureAwait(false);
-
-		if (response?.Content == null) {
-			return null;
-		}
-
-		switch (response.Content.Result) {
-			case EResult.OK when !string.IsNullOrEmpty(response.Content.ApiKey):
-				return response.Content.ApiKey;
-			default:
-				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.Content.Result), response.Content.Result));
-
-				return null;
-		}
-	}
-
 	private async Task<(bool Success, string? Result)> ResolveAccessToken(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamStoreURL, "/pointssummary/ajaxgetasyncconfig");
 
 		ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return !string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken) ? (true, response.Content.Data.WebAPIToken) : (false, null);
-	}
-
-	private async Task<(bool Success, string? Result)> ResolveApiKey(CancellationToken cancellationToken = default) {
-		if (Bot.IsAccountLimited) {
-			// API key is permanently unavailable for limited accounts
-			return (true, null);
-		}
-
-		(ESteamApiKeyState State, string? Key) result = await GetApiKeyState(cancellationToken).ConfigureAwait(false);
-
-		switch (result.State) {
-			case ESteamApiKeyState.AccessDenied:
-				// We succeeded in fetching API key, but it resulted in access denied
-				// Return empty result, API key is unavailable permanently
-				return (true, null);
-			case ESteamApiKeyState.NotRegisteredYet when Bot.HasMobileAuthenticator:
-				// We succeeded in fetching API key, and it resulted in no key registered yet
-				// Let's try to register a new key
-				string? key = await RegisterApiKey().ConfigureAwait(false);
-
-				if (string.IsNullOrEmpty(key)) {
-					// Request timed out, bad luck, we'll try again later
-					goto case ESteamApiKeyState.Timeout;
-				}
-
-				return (true, key);
-			case ESteamApiKeyState.NotRegisteredYet:
-			case ESteamApiKeyState.RequirementsNotMet:
-				// Registration of key requires active ASF 2FA, or user interaction
-				// Show a warning but don't cache this, we expect this to be temporary
-				Bot.ArchiLogger.LogGenericWarning(Strings.BotWarningNoApiKeyRegistered);
-
-				return (false, null);
-			case ESteamApiKeyState.Registered:
-				// We succeeded in fetching API key, and it resulted in registered key
-				// Cache the result, this is the API key we want
-				return (true, result.Key);
-			case ESteamApiKeyState.Timeout:
-				// Request timed out, bad luck, we'll try again later
-				return (false, null);
-			default:
-				// We got an unhandled error, this should never happen
-				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result.State), result.State));
-
-				return (false, null);
-		}
 	}
 
 	private async Task<bool> UnlockParentalAccount(string parentalCode) {
@@ -2767,14 +2582,5 @@ public sealed class ArchiWebHandler : IDisposable {
 		Lowercase,
 		CamelCase,
 		PascalCase
-	}
-
-	private enum ESteamApiKeyState : byte {
-		Error,
-		Timeout,
-		Registered,
-		NotRegisteredYet,
-		AccessDenied,
-		RequirementsNotMet
 	}
 }
