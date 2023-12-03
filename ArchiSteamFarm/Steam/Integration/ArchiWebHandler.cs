@@ -53,7 +53,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	private const ushort MaxItemsInSingleInventoryRequest = 5000;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const string SteamAppsService = "ISteamApps";
-	private const string SteamUserService = "ISteamUser";
 	private const string TwoFactorService = "ITwoFactorService";
 
 	[PublicAPI]
@@ -74,12 +73,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	public ArchiCacheable<string> CachedAccessToken { get; }
 
 	[PublicAPI]
-	public ArchiCacheable<string> CachedApiKey { get; }
-
-	[PublicAPI]
-	public ArchiCacheable<bool?> CachedEconomyBan { get; }
-
-	[PublicAPI]
 	public WebBrowser WebBrowser { get; }
 
 	private readonly Bot Bot;
@@ -97,16 +90,12 @@ public sealed class ArchiWebHandler : IDisposable {
 		Bot = bot;
 
 		CachedAccessToken = new ArchiCacheable<string>(ResolveAccessToken, TimeSpan.FromHours(6));
-		CachedApiKey = new ArchiCacheable<string>(ResolveApiKey, TimeSpan.FromHours(6));
-		CachedEconomyBan = new ArchiCacheable<bool?>(ResolveEconomyBan, TimeSpan.FromHours(6));
 
 		WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy);
 	}
 
 	public void Dispose() {
 		CachedAccessToken.Dispose();
-		CachedApiKey.Dispose();
-		CachedEconomyBan.Dispose();
 		SessionSemaphore.Dispose();
 		WebBrowser.Dispose();
 	}
@@ -467,14 +456,14 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<HashSet<TradeOffer>?> GetTradeOffers(bool? activeOnly = null, bool? receivedOffers = null, bool? sentOffers = null, bool? withDescriptions = null) {
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		(_, string? accessToken) = await CachedAccessToken.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
-		if (string.IsNullOrEmpty(steamApiKey)) {
+		if (string.IsNullOrEmpty(accessToken)) {
 			return null;
 		}
 
 		Dictionary<string, object?> arguments = new(StringComparer.Ordinal) {
-			{ "key", steamApiKey }
+			{ "access_token", accessToken }
 		};
 
 		if (activeOnly.HasValue) {
@@ -661,13 +650,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		return result;
-	}
-
-	[PublicAPI]
-	public async Task<bool?> HasValidApiKey() {
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
-
-		return !string.IsNullOrEmpty(steamApiKey);
 	}
 
 	[PublicAPI]
@@ -1821,14 +1803,14 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		(_, string? accessToken) = await CachedAccessToken.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
-		if (string.IsNullOrEmpty(steamApiKey)) {
+		if (string.IsNullOrEmpty(accessToken)) {
 			return null;
 		}
 
 		Dictionary<string, object?> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 3 : 2, StringComparer.Ordinal) {
-			{ "key", steamApiKey },
+			{ "access_token", accessToken },
 			{ "steamid_target", steamID }
 		};
 
@@ -2283,8 +2265,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		Initialized = false;
 
 		Utilities.InBackground(() => CachedAccessToken.Reset());
-		Utilities.InBackground(() => CachedApiKey.Reset());
-		Utilities.InBackground(() => CachedEconomyBan.Reset());
 	}
 
 	internal void OnVanityURLChanged(string? vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
@@ -2715,89 +2695,6 @@ public sealed class ArchiWebHandler : IDisposable {
 			default:
 				// We got an unhandled error, this should never happen
 				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result.State), result.State));
-
-				return (false, null);
-		}
-	}
-
-	private async Task<(bool Success, bool? Result)> ResolveEconomyBan(CancellationToken cancellationToken = default) {
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously, cancellationToken).ConfigureAwait(false);
-
-		if (string.IsNullOrEmpty(steamApiKey)) {
-			return (false, null);
-		}
-
-		if (!Initialized) {
-			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
-
-			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-			}
-
-			if (!Initialized) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-				return (false, null);
-			}
-		}
-
-		Dictionary<string, object?> arguments = new(2, StringComparer.Ordinal) {
-			{ "key", steamApiKey },
-			{ "steamids", Bot.SteamID }
-		};
-
-		KeyValue? response = null;
-
-		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			if ((i > 0) && (WebLimiterDelay > 0)) {
-				await Task.Delay(WebLimiterDelay, cancellationToken).ConfigureAwait(false);
-			}
-
-			using WebAPI.AsyncInterface service = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamUserService);
-
-			service.Timeout = WebBrowser.Timeout;
-
-			try {
-				response = await WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
-
-					// ReSharper disable once AccessToDisposedClosure
-					async () => await service.CallAsync(HttpMethod.Get, "GetPlayerBans", args: arguments).ConfigureAwait(false), cancellationToken
-				).ConfigureAwait(false);
-			} catch (TaskCanceledException e) {
-				Bot.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-			}
-		}
-
-		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-
-			return (false, null);
-		}
-
-		List<KeyValue> players = response["players"].Children;
-
-		if (players.Count != 1) {
-			Bot.ArchiLogger.LogNullError(players);
-
-			return (false, null);
-		}
-
-		string? economyBanText = players[0]["EconomyBan"].AsString();
-
-		switch (economyBanText) {
-			case null:
-				Bot.ArchiLogger.LogNullError(economyBanText);
-
-				return (false, null);
-			case "none":
-				return (true, false);
-			case "banned":
-				return (true, true);
-			default:
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(economyBanText), economyBanText));
 
 				return (false, null);
 		}

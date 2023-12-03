@@ -30,7 +30,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
@@ -868,24 +867,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(credentialChangeTimeDetails.timestamp_last_password_reset)}: {credentialChangeTimeDetails.timestamp_last_password_reset}"));
 
 			return false;
-		}
-
-		// Bot must have valid API key (e.g. not being restricted account)
-		bool? hasValidApiKey = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
-
-		if (hasValidApiKey != true) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.ArchiWebHandler.HasValidApiKey)}: {hasValidApiKey?.ToString() ?? "null"}"));
-
-			return hasValidApiKey.HasValue ? false : null;
-		}
-
-		// Bot can't be trade banned
-		(bool _, bool? Result) economyBan = await Bot.ArchiWebHandler.CachedEconomyBan.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
-
-		if (economyBan.Result != false) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(economyBan)}: {economyBan.Result?.ToString() ?? "null"}"));
-
-			return economyBan.Result.HasValue ? false : null;
 		}
 
 		return true;

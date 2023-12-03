@@ -3213,9 +3213,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		// Pre-fetch API key for future usage if possible
-		Utilities.InBackground(ArchiWebHandler.HasValidApiKey);
-
 		if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground) {
 			Utilities.InBackground(() => RedeemGamesInBackground());
 		}
