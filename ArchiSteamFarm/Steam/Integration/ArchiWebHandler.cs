@@ -2365,7 +2365,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return (ESteamApiKeyState.AccessDenied, null);
 		}
 
-		INode? htmlNode = response.Content.SelectSingleNode("//div[@id='bodyContents_ex']/p");
+		INode? htmlNode = response.Content.SelectSingleNode("//div[@id='bodyContents_ex']//p");
 
 		if (htmlNode == null) {
 			Bot.ArchiLogger.LogNullError(htmlNode);
@@ -2379,6 +2379,10 @@ public sealed class ArchiWebHandler : IDisposable {
 			Bot.ArchiLogger.LogNullError(text);
 
 			return (ESteamApiKeyState.Error, null);
+		}
+
+		if (text.Contains("Your account does not meet the requirements", StringComparison.OrdinalIgnoreCase)) {
+			return (ESteamApiKeyState.RequirementsNotMet, null);
 		}
 
 		if (text.Contains("Registering for a Steam Web API Key", StringComparison.OrdinalIgnoreCase)) {
@@ -2695,6 +2699,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 				return (true, key);
 			case ESteamApiKeyState.NotRegisteredYet:
+			case ESteamApiKeyState.RequirementsNotMet:
 				// Registration of key requires active ASF 2FA, or user interaction
 				// Show a warning but don't cache this, we expect this to be temporary
 				Bot.ArchiLogger.LogGenericWarning(Strings.BotWarningNoApiKeyRegistered);
@@ -2872,6 +2877,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		Timeout,
 		Registered,
 		NotRegisteredYet,
-		AccessDenied
+		AccessDenied,
+		RequirementsNotMet
 	}
 }
