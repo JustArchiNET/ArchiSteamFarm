@@ -74,11 +74,5 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Localization {
                 return ResourceManager.GetString("ActivelyMatchingSomeConfirmationsFailed", resourceCulture);
             }
         }
-        
-        internal static string PluginDisabledCustomBuild {
-            get {
-                return ResourceManager.GetString("PluginDisabledCustomBuild", resourceCulture);
-            }
-        }
     }
 }

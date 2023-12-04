@@ -66,10 +66,6 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (SharedInfo.BuildInfo.IsCustomBuild) {
-			return null;
-		}
-
 		return await Commands.OnBotCommand(bot, access, args, steamID).ConfigureAwait(false);
 	}
 
@@ -92,10 +88,6 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 
 		if (RemoteCommunications.TryRemove(bot, out RemoteCommunication? remoteCommunication)) {
 			await remoteCommunication.DisposeAsync().ConfigureAwait(false);
-		}
-
-		if (SharedInfo.BuildInfo.IsCustomBuild) {
-			return;
 		}
 
 		remoteCommunication = new RemoteCommunication(bot);
@@ -140,12 +132,6 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 	}
 
 	public override Task OnLoaded() {
-		if (SharedInfo.BuildInfo.IsCustomBuild) {
-			ASF.ArchiLogger.LogGenericWarning(Strings.PluginDisabledCustomBuild);
-
-			return Task.CompletedTask;
-		}
-
 		Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
 
 		return Task.CompletedTask;

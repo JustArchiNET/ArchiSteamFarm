@@ -51,10 +51,6 @@ internal static class ArchiNet {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
 
-		if (SharedInfo.BuildInfo.IsCustomBuild) {
-			return null;
-		}
-
 		Uri request = new(URL, $"/Api/Checksum/{version}/{variant}");
 
 		ObjectResponse<GenericResponse<string>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<string>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -71,10 +67,6 @@ internal static class ArchiNet {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (SharedInfo.BuildInfo.IsCustomBuild) {
-			return null;
-		}
-
 		(_, IReadOnlyCollection<ulong>? badBots) = await CachedBadBots.GetValue(ECacheFallback.FailedNow, cancellationToken).ConfigureAwait(false);
 
 		return badBots?.Contains(steamID);
@@ -84,7 +76,7 @@ internal static class ArchiNet {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
-		if (!bot.IsConnectedAndLoggedOn || SharedInfo.BuildInfo.IsCustomBuild) {
+		if (!bot.IsConnectedAndLoggedOn) {
 			return null;
 		}
 
@@ -186,10 +178,6 @@ internal static class ArchiNet {
 
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
-		}
-
-		if (SharedInfo.BuildInfo.IsCustomBuild) {
-			return (false, null);
 		}
 
 		Uri request = new(URL, "/Api/BadBots");
