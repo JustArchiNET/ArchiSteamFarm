@@ -304,11 +304,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			throw new InvalidOperationException(nameof(GlobalCache));
 		}
 
-		Dictionary<uint, ulong> packageTokens = callback.LicenseList.Where(static license => !Config.SecretPackageIDs.Contains(license.PackageID) && ((license.PaymentMethod != EPaymentMethod.AutoGrant) || !Config.SkipAutoGrantPackages)).GroupBy(static license => license.PackageID).ToDictionary(static group => group.Key, static group => group.OrderByDescending(static license => license.TimeCreated).First().AccessToken);
+		HashSet<uint> packageIDs = callback.LicenseList.Where(static license => !Config.SecretPackageIDs.Contains(license.PackageID) && ((license.PaymentMethod != EPaymentMethod.AutoGrant) || !Config.SkipAutoGrantPackages)).Select(static license => license.PackageID).ToHashSet();
 
-		GlobalCache.UpdatePackageTokens(packageTokens);
-
-		await Refresh(bot, packageTokens.Keys).ConfigureAwait(false);
+		await Refresh(bot, packageIDs).ConfigureAwait(false);
 	}
 
 	private static async void OnSubmissionTimer(object? state = null) => await SubmitData().ConfigureAwait(false);
