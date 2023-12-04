@@ -276,7 +276,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		}
 
 		// Constructed from trades being received/sent
-		internal Description(uint appID, ulong classID, ulong instanceID, bool marketable, ICollection<Tag>? tags = null) {
+		internal Description(uint appID, ulong classID, ulong instanceID, bool marketable, IReadOnlyCollection<Tag>? tags = null) {
 			ArgumentOutOfRangeException.ThrowIfZero(appID);
 			ArgumentOutOfRangeException.ThrowIfZero(classID);
 

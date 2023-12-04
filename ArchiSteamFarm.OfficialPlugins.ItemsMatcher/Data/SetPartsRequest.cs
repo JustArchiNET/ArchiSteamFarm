@@ -41,7 +41,7 @@ internal sealed class SetPartsRequest {
 	[JsonProperty(Required = Required.Always)]
 	internal readonly ulong SteamID;
 
-	internal SetPartsRequest(Guid guid, ulong steamID, ICollection<Asset.EType> matchableTypes, ICollection<uint> realAppIDs) {
+	internal SetPartsRequest(Guid guid, ulong steamID, IReadOnlyCollection<Asset.EType> matchableTypes, IReadOnlyCollection<uint> realAppIDs) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
