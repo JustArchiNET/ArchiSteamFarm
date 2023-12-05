@@ -211,6 +211,11 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 	public async Task OnBotInit(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
+		if (GlobalCache == null) {
+			// We can't operate like this anyway, skip initialization of synchronization structures
+			return;
+		}
+
 		SemaphoreSlim refreshSemaphore = new(1, 1);
 		Timer refreshTimer = new(OnBotRefreshTimer, bot, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 
