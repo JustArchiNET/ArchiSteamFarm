@@ -748,5 +748,8 @@ Prosessin käyttöaika: {1}</value>
 		<value>Olet yrittänyt käyttää maksullista ominaisuutta {0}, mutta sinulla ei ole voimassa olevaa ASF:n yleisissä asetuksissa olevaa lisenssitunnusta. Tarkista asetukset, koska toiminto ei toimi ilman lisätietoja.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
-	
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>ASF ei pysty pelaamaan sovellusta {0}, koska sillä on aluekohtainen rajoitus maassa {1}, joka kestää {2} asti.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
 </root>
