@@ -10,9 +10,9 @@ body:
       options:
         - label: I read and understood ASF's **[Contributing guidelines](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/CONTRIBUTING.md)**
           required: true
-        - label: This is not a **[duplicate](https://github.com/JustArchiNET/ArchiSteamFarm/issues?q=is%3Aissue)** of an existing issue.
-          required: true
         - label: I also read **[Setting-up](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up)** and **[FAQ](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ)**, I don't need **[help](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/SUPPORT.md)**, this is a bug report
+          required: true
+        - label: This is not a **[duplicate](https://github.com/JustArchiNET/ArchiSteamFarm/issues?q=is%3Aissue)** of an existing issue
           required: true
         - label: I don't own more than **[10 accounts in total](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ#how-many-bots-can-i-run-with-asf)**
           required: true
