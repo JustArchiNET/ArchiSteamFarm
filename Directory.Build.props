@@ -77,6 +77,7 @@
 		<EventSourceSupport>false</EventSourceSupport>
 		<HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
 		<MetadataUpdaterSupport>false</MetadataUpdaterSupport>
+		<StackTraceSupport>false</StackTraceSupport>
 		<UseNativeHttpHandler>true</UseNativeHttpHandler>
 		<TrimMode>partial</TrimMode>
 	</PropertyGroup>
