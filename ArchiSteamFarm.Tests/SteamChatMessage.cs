@@ -200,60 +200,62 @@ public sealed class SteamChatMessage {
 	public async Task RyzhehvostInitialTestForSplitting() {
 		const string prefix = "/me ";
 
-		const string message = @"<XLimited5> Уже имеет: app/1493800 | Aircraft Carrier Survival: Prolouge
-<XLimited5> Уже имеет: app/349520 | Armillo
-<XLimited5> Уже имеет: app/346330 | BrainBread 2
-<XLimited5> Уже имеет: app/1086690 | C-War 2
-<XLimited5> Уже имеет: app/730 | Counter-Strike: Global Offensive
-<XLimited5> Уже имеет: app/838380 | DEAD OR ALIVE 6
-<XLimited5> Уже имеет: app/582890 | Estranged: The Departure
-<XLimited5> Уже имеет: app/331470 | Everlasting Summer
-<XLimited5> Уже имеет: app/1078000 | Gamecraft
-<XLimited5> Уже имеет: app/266310 | GameGuru
-<XLimited5> Уже имеет: app/275390 | Guacamelee! Super Turbo Championship Edition
-<XLimited5> Уже имеет: app/627690 | Idle Champions of the Forgotten Realms
-<XLimited5> Уже имеет: app/1048540 | Kao the Kangaroo: Round 2
-<XLimited5> Уже имеет: app/370910 | Kathy Rain
-<XLimited5> Уже имеет: app/343710 | KHOLAT
-<XLimited5> Уже имеет: app/253900 | Knights and Merchants
-<XLimited5> Уже имеет: app/224260 | No More Room in Hell
-<XLimited5> Уже имеет: app/343360 | Particula
-<XLimited5> Уже имеет: app/237870 | Planet Explorers
-<XLimited5> Уже имеет: app/684680 | Polygoneer
-<XLimited5> Уже имеет: app/1089130 | Quake II RTX
-<XLimited5> Уже имеет: app/755790 | Ring of Elysium
-<XLimited5> Уже имеет: app/1258080 | Shop Titans
-<XLimited5> Уже имеет: app/759530 | Struckd - 3D Game Creator
-<XLimited5> Уже имеет: app/269710 | Tumblestone
-<XLimited5> Уже имеет: app/304930 | Unturned
-<XLimited5> Уже имеет: app/1019250 | WWII TCG - World War 2: The Card Game
+		const string message = """
+								<XLimited5> Уже имеет: app/1493800 | Aircraft Carrier Survival: Prolouge
+								<XLimited5> Уже имеет: app/349520 | Armillo
+								<XLimited5> Уже имеет: app/346330 | BrainBread 2
+								<XLimited5> Уже имеет: app/1086690 | C-War 2
+								<XLimited5> Уже имеет: app/730 | Counter-Strike: Global Offensive
+								<XLimited5> Уже имеет: app/838380 | DEAD OR ALIVE 6
+								<XLimited5> Уже имеет: app/582890 | Estranged: The Departure
+								<XLimited5> Уже имеет: app/331470 | Everlasting Summer
+								<XLimited5> Уже имеет: app/1078000 | Gamecraft
+								<XLimited5> Уже имеет: app/266310 | GameGuru
+								<XLimited5> Уже имеет: app/275390 | Guacamelee! Super Turbo Championship Edition
+								<XLimited5> Уже имеет: app/627690 | Idle Champions of the Forgotten Realms
+								<XLimited5> Уже имеет: app/1048540 | Kao the Kangaroo: Round 2
+								<XLimited5> Уже имеет: app/370910 | Kathy Rain
+								<XLimited5> Уже имеет: app/343710 | KHOLAT
+								<XLimited5> Уже имеет: app/253900 | Knights and Merchants
+								<XLimited5> Уже имеет: app/224260 | No More Room in Hell
+								<XLimited5> Уже имеет: app/343360 | Particula
+								<XLimited5> Уже имеет: app/237870 | Planet Explorers
+								<XLimited5> Уже имеет: app/684680 | Polygoneer
+								<XLimited5> Уже имеет: app/1089130 | Quake II RTX
+								<XLimited5> Уже имеет: app/755790 | Ring of Elysium
+								<XLimited5> Уже имеет: app/1258080 | Shop Titans
+								<XLimited5> Уже имеет: app/759530 | Struckd - 3D Game Creator
+								<XLimited5> Уже имеет: app/269710 | Tumblestone
+								<XLimited5> Уже имеет: app/304930 | Unturned
+								<XLimited5> Уже имеет: app/1019250 | WWII TCG - World War 2: The Card Game
 
-<ASF> 1/1 ботов уже имеют игру app/1493800 | Aircraft Carrier Survival: Prolouge.
-<ASF> 1/1 ботов уже имеют игру app/349520 | Armillo.
-<ASF> 1/1 ботов уже имеют игру app/346330 | BrainBread 2.
-<ASF> 1/1 ботов уже имеют игру app/1086690 | C-War 2.
-<ASF> 1/1 ботов уже имеют игру app/730 | Counter-Strike: Global Offensive.
-<ASF> 1/1 ботов уже имеют игру app/838380 | DEAD OR ALIVE 6.
-<ASF> 1/1 ботов уже имеют игру app/582890 | Estranged: The Departure.
-<ASF> 1/1 ботов уже имеют игру app/331470 | Everlasting Summer.
-<ASF> 1/1 ботов уже имеют игру app/1078000 | Gamecraft.
-<ASF> 1/1 ботов уже имеют игру app/266310 | GameGuru.
-<ASF> 1/1 ботов уже имеют игру app/275390 | Guacamelee! Super Turbo Championship Edition.
-<ASF> 1/1 ботов уже имеют игру app/627690 | Idle Champions of the Forgotten Realms.
-<ASF> 1/1 ботов уже имеют игру app/1048540 | Kao the Kangaroo: Round 2.
-<ASF> 1/1 ботов уже имеют игру app/370910 | Kathy Rain.
-<ASF> 1/1 ботов уже имеют игру app/343710 | KHOLAT.
-<ASF> 1/1 ботов уже имеют игру app/253900 | Knights and Merchants.
-<ASF> 1/1 ботов уже имеют игру app/224260 | No More Room in Hell.
-<ASF> 1/1 ботов уже имеют игру app/343360 | Particula.
-<ASF> 1/1 ботов уже имеют игру app/237870 | Planet Explorers.
-<ASF> 1/1 ботов уже имеют игру app/684680 | Polygoneer.
-<ASF> 1/1 ботов уже имеют игру app/1089130 | Quake II RTX.
-<ASF> 1/1 ботов уже имеют игру app/755790 | Ring of Elysium.
-<ASF> 1/1 ботов уже имеют игру app/1258080 | Shop Titans.
-<ASF> 1/1 ботов уже имеют игру app/759530 | Struckd - 3D Game Creator.
-<ASF> 1/1 ботов уже имеют игру app/269710 | Tumblestone.
-<ASF> 1/1 ботов уже имеют игру app/304930 | Unturned.";
+								<ASF> 1/1 ботов уже имеют игру app/1493800 | Aircraft Carrier Survival: Prolouge.
+								<ASF> 1/1 ботов уже имеют игру app/349520 | Armillo.
+								<ASF> 1/1 ботов уже имеют игру app/346330 | BrainBread 2.
+								<ASF> 1/1 ботов уже имеют игру app/1086690 | C-War 2.
+								<ASF> 1/1 ботов уже имеют игру app/730 | Counter-Strike: Global Offensive.
+								<ASF> 1/1 ботов уже имеют игру app/838380 | DEAD OR ALIVE 6.
+								<ASF> 1/1 ботов уже имеют игру app/582890 | Estranged: The Departure.
+								<ASF> 1/1 ботов уже имеют игру app/331470 | Everlasting Summer.
+								<ASF> 1/1 ботов уже имеют игру app/1078000 | Gamecraft.
+								<ASF> 1/1 ботов уже имеют игру app/266310 | GameGuru.
+								<ASF> 1/1 ботов уже имеют игру app/275390 | Guacamelee! Super Turbo Championship Edition.
+								<ASF> 1/1 ботов уже имеют игру app/627690 | Idle Champions of the Forgotten Realms.
+								<ASF> 1/1 ботов уже имеют игру app/1048540 | Kao the Kangaroo: Round 2.
+								<ASF> 1/1 ботов уже имеют игру app/370910 | Kathy Rain.
+								<ASF> 1/1 ботов уже имеют игру app/343710 | KHOLAT.
+								<ASF> 1/1 ботов уже имеют игру app/253900 | Knights and Merchants.
+								<ASF> 1/1 ботов уже имеют игру app/224260 | No More Room in Hell.
+								<ASF> 1/1 ботов уже имеют игру app/343360 | Particula.
+								<ASF> 1/1 ботов уже имеют игру app/237870 | Planet Explorers.
+								<ASF> 1/1 ботов уже имеют игру app/684680 | Polygoneer.
+								<ASF> 1/1 ботов уже имеют игру app/1089130 | Quake II RTX.
+								<ASF> 1/1 ботов уже имеют игру app/755790 | Ring of Elysium.
+								<ASF> 1/1 ботов уже имеют игру app/1258080 | Shop Titans.
+								<ASF> 1/1 ботов уже имеют игру app/759530 | Struckd - 3D Game Creator.
+								<ASF> 1/1 ботов уже имеют игру app/269710 | Tumblestone.
+								<ASF> 1/1 ботов уже имеют игру app/304930 | Unturned.
+								""";
 
 		List<string> output = await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
 

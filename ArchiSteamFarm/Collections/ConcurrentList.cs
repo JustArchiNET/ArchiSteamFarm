@@ -41,7 +41,7 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 		}
 	}
 
-	private readonly List<T> BackingCollection = new();
+	private readonly List<T> BackingCollection = [];
 	private readonly AsyncReaderWriterLock Lock = new();
 
 	int ICollection<T>.Count => Count;

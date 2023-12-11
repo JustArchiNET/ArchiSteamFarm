@@ -36,7 +36,7 @@ public sealed class SwaggerValidValuesAttribute : CustomSwaggerAttribute {
 	public override void Apply(OpenApiSchema schema) {
 		ArgumentNullException.ThrowIfNull(schema);
 
-		OpenApiArray validValues = new();
+		OpenApiArray validValues = [];
 
 		if (ValidIntValues != null) {
 			validValues.AddRange(ValidIntValues.Select(static type => new OpenApiInteger(type)));

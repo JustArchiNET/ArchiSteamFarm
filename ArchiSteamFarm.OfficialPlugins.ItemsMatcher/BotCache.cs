@@ -35,7 +35,7 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal sealed class BotCache : SerializableFile {
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentList<AssetForListing> LastAnnouncedAssetsForListing = new();
+	internal readonly ConcurrentList<AssetForListing> LastAnnouncedAssetsForListing = [];
 
 	internal string? LastAnnouncedTradeToken {
 		get => BackingLastAnnouncedTradeToken;

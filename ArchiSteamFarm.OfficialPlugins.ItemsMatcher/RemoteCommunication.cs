@@ -278,7 +278,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			uint index = 0;
 			ulong previousAssetID = 0;
 
-			List<AssetForListing> assetsForListing = new();
+			List<AssetForListing> assetsForListing = [];
 
 			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), bool> tradableSets = new();
 
@@ -372,7 +372,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			if (!matchEverything) {
 				// We should deduplicate our sets before sending them to the server, for doing that we'll use ASFB set parts data
-				HashSet<uint> realAppIDs = new();
+				HashSet<uint> realAppIDs = [];
 				Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> state = new();
 
 				foreach (AssetForListing asset in assetsForListing) {
@@ -446,7 +446,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), HashSet<ulong>> databaseSets = setPartsResponse.Content.Result.GroupBy(static setPart => (setPart.RealAppID, setPart.Type, setPart.Rarity)).ToDictionary(static group => group.Key, static group => group.Select(static setPart => setPart.ClassID).ToHashSet());
 
-				HashSet<(ulong ClassID, uint Amount)> setCopy = new();
+				HashSet<(ulong ClassID, uint Amount)> setCopy = [];
 
 				foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key, Dictionary<ulong, uint> set) in state) {
 					if (!databaseSets.TryGetValue(key, out HashSet<ulong>? databaseSet)) {
@@ -483,7 +483,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					}
 				}
 
-				HashSet<AssetForListing> assetsForListingFiltered = new();
+				HashSet<AssetForListing> assetsForListingFiltered = [];
 
 				foreach (AssetForListing asset in assetsForListing.Where(asset => state.TryGetValue((asset.RealAppID, asset.Type, asset.Rarity), out Dictionary<ulong, uint>? setState) && setState.TryGetValue(asset.ClassID, out uint targetAmount) && (targetAmount > 0)).OrderByDescending(static asset => asset.Tradable).ThenByDescending(static asset => asset.Index)) {
 					(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
@@ -1031,16 +1031,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		matchActivelyTradeOfferIDs ??= new HashSet<ulong>();
+		matchActivelyTradeOfferIDs ??= [];
 
-		HashSet<ulong> deprioritizedSteamIDs = new();
+		HashSet<ulong> deprioritizedSteamIDs = [];
 
 		if (matchActivelyTradeOfferIDs.Count > 0) {
 			// This is not a mandatory step, we allow it to fail
 			HashSet<TradeOffer>? sentTradeOffers = await Bot.ArchiWebHandler.GetTradeOffers(true, false, true, false).ConfigureAwait(false);
 
 			if (sentTradeOffers != null) {
-				HashSet<ulong> activeTradeOfferIDs = new();
+				HashSet<ulong> activeTradeOfferIDs = [];
 
 				foreach (TradeOffer tradeOffer in sentTradeOffers.Where(tradeOffer => (tradeOffer.State == ETradeOfferState.Active) && matchActivelyTradeOfferIDs.Contains(tradeOffer.TradeOfferID))) {
 					deprioritizedSteamIDs.Add(tradeOffer.OtherSteamID64);
@@ -1062,7 +1062,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		HashSet<ulong> pendingMobileTradeOfferIDs = new();
+		HashSet<ulong> pendingMobileTradeOfferIDs = [];
 
 		byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
 
@@ -1109,13 +1109,13 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				continue;
 			}
 
-			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisUser = new();
+			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisUser = [];
 
 			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> theirTradableState = Trading.GetTradableInventoryState(theirInventory);
 
 			for (byte i = 0; i < Trading.MaxTradesPerAccount; i++) {
 				byte itemsInTrade = 0;
-				HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisTrade = new();
+				HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisTrade = [];
 
 				Dictionary<ulong, uint> classIDsToGive = new();
 				Dictionary<ulong, uint> classIDsToReceive = new();

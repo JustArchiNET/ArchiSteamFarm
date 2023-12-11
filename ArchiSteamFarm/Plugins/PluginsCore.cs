@@ -207,7 +207,7 @@ public static class PluginsCore {
 			return true;
 		}
 
-		HashSet<IPlugin> invalidPlugins = new();
+		HashSet<IPlugin> invalidPlugins = [];
 
 		foreach (IPlugin plugin in activePlugins) {
 			try {
@@ -649,7 +649,7 @@ public static class PluginsCore {
 			return null;
 		}
 
-		HashSet<Assembly> assemblies = new();
+		HashSet<Assembly> assemblies = [];
 
 		try {
 			foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {

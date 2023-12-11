@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using JetBrains.Annotations;
@@ -48,7 +49,7 @@ public abstract class GenericDatabase : SerializableFile {
 	public JToken? LoadFromJsonStorage(string key) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
-		return KeyValueJsonStorage.TryGetValue(key, out JToken? value) ? value : null;
+		return KeyValueJsonStorage.GetValueOrDefault(key);
 	}
 
 	[PublicAPI]

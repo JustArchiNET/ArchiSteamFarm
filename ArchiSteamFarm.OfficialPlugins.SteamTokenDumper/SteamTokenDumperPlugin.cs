@@ -324,7 +324,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 			packageIDs ??= bot.OwnedPackageIDs.Where(static package => (Config?.SecretPackageIDs.Contains(package.Key) != true) && ((package.Value.PaymentMethod != EPaymentMethod.AutoGrant) || (Config?.SkipAutoGrantPackages == false))).Select(static package => package.Key).ToHashSet();
 
-			HashSet<uint> appIDsToRefresh = new();
+			HashSet<uint> appIDsToRefresh = [];
 
 			foreach (uint packageID in packageIDs.Where(static packageID => Config?.SecretPackageIDs.Contains(packageID) != true)) {
 				if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out PackageData? packageData) || (packageData.AppIDs == null)) {
@@ -576,7 +576,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 		Utilities.InBackground(static () => SubmitData());
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}

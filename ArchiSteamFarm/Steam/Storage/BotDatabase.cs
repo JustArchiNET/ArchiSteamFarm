@@ -38,22 +38,22 @@ namespace ArchiSteamFarm.Steam.Storage;
 
 public sealed class BotDatabase : GenericDatabase {
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingBlacklistAppIDs = new();
+	internal readonly ConcurrentHashSet<uint> FarmingBlacklistAppIDs = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs = new();
+	internal readonly ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly ObservableConcurrentDictionary<uint, DateTime> FarmingRiskyIgnoredAppIDs = new();
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs = new();
+	internal readonly ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs = new();
+	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<ulong> TradingBlacklistSteamIDs = new();
+	internal readonly ConcurrentHashSet<ulong> TradingBlacklistSteamIDs = [];
 
 	internal uint GamesToRedeemInBackgroundCount {
 		get {

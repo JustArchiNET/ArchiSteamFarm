@@ -86,7 +86,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 			// More advanced calculation, the above AND hours required for bumps
 			uint cardsRemaining = 0;
-			List<float> totalHoursClocked = new();
+			List<float> totalHoursClocked = [];
 
 			foreach (Game gameToFarm in GamesToFarm) {
 				cardsRemaining += gameToFarm.CardsRemaining;
@@ -119,11 +119,11 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private readonly Bot Bot;
-	private readonly ConcurrentHashSet<Game> CurrentGamesFarming = new();
+	private readonly ConcurrentHashSet<Game> CurrentGamesFarming = [];
 	private readonly SemaphoreSlim EventSemaphore = new(1, 1);
 	private readonly SemaphoreSlim FarmingInitializationSemaphore = new(1, 1);
 	private readonly SemaphoreSlim FarmingResetSemaphore = new(0, 1);
-	private readonly ConcurrentList<Game> GamesToFarm = new();
+	private readonly ConcurrentList<Game> GamesToFarm = [];
 	private readonly Timer? IdleFarmingTimer;
 
 	private readonly ConcurrentDictionary<uint, DateTime> LocallyIgnoredAppIDs = new();
@@ -723,7 +723,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 						break;
 					default:
-						backgroundTasks ??= new HashSet<Task>();
+						backgroundTasks ??= [];
 
 						backgroundTasks.Add(task);
 
@@ -1141,7 +1141,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		GamesToFarm.Clear();
 
-		ConcurrentHashSet<uint> parsedAppIDs = new();
+		ConcurrentHashSet<uint> parsedAppIDs = [];
 
 		Task mainTask = CheckPage(htmlDocument, parsedAppIDs);
 

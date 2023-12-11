@@ -49,7 +49,7 @@ internal static class Logging {
 
 	internal static bool LogFileExists => File.Exists(SharedInfo.LogFile);
 
-	private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = new();
+	private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = [];
 	private static readonly SemaphoreSlim ConsoleSemaphore = new(1, 1);
 
 	private static string Backspace => "\b \b";

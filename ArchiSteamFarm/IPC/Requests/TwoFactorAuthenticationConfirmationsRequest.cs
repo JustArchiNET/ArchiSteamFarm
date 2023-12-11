@@ -62,7 +62,7 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 		private set {
 			ArgumentNullException.ThrowIfNull(value);
 
-			HashSet<ulong> acceptedCreatorIDs = new();
+			HashSet<ulong> acceptedCreatorIDs = [];
 
 			foreach (string creatorIDText in value) {
 				if (!ulong.TryParse(creatorIDText, out ulong creatorID) || (creatorID == 0)) {

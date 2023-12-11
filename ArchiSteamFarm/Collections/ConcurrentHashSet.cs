@@ -135,7 +135,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> where
 
 	public void SymmetricExceptWith(IEnumerable<T> other) {
 		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
-		HashSet<T> removed = new();
+		HashSet<T> removed = [];
 
 		foreach (T item in otherSet.Where(Contains)) {
 			removed.Add(item);

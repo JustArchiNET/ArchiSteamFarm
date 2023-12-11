@@ -165,7 +165,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private readonly SemaphoreSlim RefreshWebSessionSemaphore = new(1, 1);
 	private readonly SemaphoreSlim SendCompleteTypesSemaphore = new(1, 1);
 	private readonly SteamClient SteamClient;
-	private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new();
+	private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = [];
 	private readonly SteamUser SteamUser;
 	private readonly Trading Trading;
 
@@ -524,7 +524,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		string[] botNames = args.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
-		HashSet<Bot> result = new();
+		HashSet<Bot> result = [];
 
 		foreach (string botName in botNames) {
 			if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
@@ -659,7 +659,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		ArgumentOutOfRangeException.ThrowIfLessThan(maxItems, MinCardsPerBadge);
 
-		HashSet<Asset> result = new();
+		HashSet<Asset> result = [];
 		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, HashSet<Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(static item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(static grouping => grouping.Key, static grouping => grouping.GroupBy(static item => item.ClassID).ToDictionary(static group => group.Key, static group => group.ToHashSet()));
 
 		foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract.OrderBy(static kv => kv.Value.ItemsPerSet)) {
@@ -1281,7 +1281,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 		}
 
-		HashSet<SteamApps.PICSRequest> packageRequests = new();
+		HashSet<SteamApps.PICSRequest> packageRequests = [];
 
 		foreach (uint packageID in packageIDs) {
 			if (!ASF.GlobalDatabase.PackageAccessTokensReadOnly.TryGetValue(packageID, out ulong packageAccessToken)) {
@@ -1936,7 +1936,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new ArgumentNullException(nameof(gamesToRedeemInBackground));
 		}
 
-		HashSet<object> invalidKeys = new();
+		HashSet<object> invalidKeys = [];
 
 		foreach (DictionaryEntry game in gamesToRedeemInBackground) {
 			bool invalid = false;
@@ -2084,7 +2084,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		// Level 5 is maximum level for card badges according to https://steamcommunity.com/tradingcards/faq
 		IEnumerable<IAttr> linkElements = badgePage.SelectNodes<IAttr>("//a[@class='badge_craft_button']/@href | //div[@class='badges_sheet']/div[contains(@class, 'badge_row') and .//div[@class='badge_info_description']/div[contains(text(), 'Level 5')]]/a[@class='badge_row_overlay']/@href");
 
-		HashSet<uint> result = new();
+		HashSet<uint> result = [];
 
 		foreach (string badgeUri in linkElements.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(badgeUri)) {
@@ -3353,7 +3353,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		HashSet<UserNotificationsCallback.EUserNotification> newPluginNotifications = new();
+		HashSet<UserNotificationsCallback.EUserNotification> newPluginNotifications = [];
 
 		foreach ((UserNotificationsCallback.EUserNotification notification, uint count) in callback.Notifications) {
 			bool newNotification;

@@ -197,7 +197,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		HashSet<uint> result = new();
+		HashSet<uint> result = [];
 
 		IEnumerable<IAttr> linkNodes = response.Content.SelectNodes<IAttr>("//li[@class='booster_eligibility_game']/a/@href");
 
@@ -353,11 +353,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 				(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
 
-				if (descriptions.ContainsKey(key)) {
-					continue;
-				}
-
-				descriptions[key] = description;
+				descriptions.TryAdd(key, description);
 			}
 
 			foreach (Asset asset in response.Content.Assets) {
@@ -593,7 +589,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			trades = trades.Concat(response["trade_offers_sent"].Children);
 		}
 
-		HashSet<TradeOffer> result = new();
+		HashSet<TradeOffer> result = [];
 
 		foreach (KeyValue trade in trades) {
 			ETradeOfferState state = trade["trade_offer_state"].AsEnum<ETradeOfferState>();
@@ -679,7 +675,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		ArgumentOutOfRangeException.ThrowIfZero(itemsPerTrade);
 
 		TradeOfferSendRequest singleTrade = new();
-		HashSet<TradeOfferSendRequest> trades = new() { singleTrade };
+		HashSet<TradeOfferSendRequest> trades = [singleTrade];
 
 		if (itemsToGive != null) {
 			foreach (Asset itemToGive in itemsToGive) {
@@ -1906,7 +1902,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		IEnumerable<IAttr> htmlNodes = response.Content.SelectNodes<IAttr>("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
 
-		HashSet<ulong> results = new();
+		HashSet<ulong> results = [];
 
 		foreach (string giftCardIDText in htmlNodes.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(giftCardIDText)) {
@@ -1952,7 +1948,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		IEnumerable<IAttr> htmlNodes = response.Content.SelectNodes<IAttr>("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
 
-		HashSet<ulong> result = new();
+		HashSet<ulong> result = [];
 
 		foreach (string miniProfile in htmlNodes.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(miniProfile)) {

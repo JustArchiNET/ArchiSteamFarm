@@ -123,7 +123,7 @@ public static class Utilities {
 
 		switch (ASF.GlobalConfig?.OptimizationMode) {
 			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-				List<T> results = new();
+				List<T> results = [];
 
 				foreach (Task<T> task in tasks) {
 					results.Add(await task.ConfigureAwait(false));

@@ -36,8 +36,8 @@ public sealed class TradeOffer {
 	[PublicAPI]
 	public IReadOnlyCollection<Asset> ItemsToReceiveReadOnly => ItemsToReceive;
 
-	internal readonly HashSet<Asset> ItemsToGive = new();
-	internal readonly HashSet<Asset> ItemsToReceive = new();
+	internal readonly HashSet<Asset> ItemsToGive = [];
+	internal readonly HashSet<Asset> ItemsToReceive = [];
 
 	[PublicAPI]
 	public ulong OtherSteamID64 { get; private set; }

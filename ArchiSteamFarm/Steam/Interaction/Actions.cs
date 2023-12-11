@@ -47,7 +47,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	private static readonly SemaphoreSlim GiftCardsSemaphore = new(1, 1);
 
 	private readonly Bot Bot;
-	private readonly ConcurrentHashSet<ulong> HandledGifts = new();
+	private readonly ConcurrentHashSet<ulong> HandledGifts = [];
 	private readonly SemaphoreSlim TradingSemaphore = new(1, 1);
 
 	private Timer? CardsFarmerResumeTimer;

@@ -47,7 +47,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 	public IReadOnlyDictionary<uint, PackageData> PackagesDataReadOnly => PackagesData;
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<ulong> CachedBadBots = new();
+	internal readonly ConcurrentHashSet<ulong> CachedBadBots = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly ObservableConcurrentDictionary<uint, byte> CardCountsPerGame = new();
@@ -192,7 +192,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentNullException.ThrowIfNull(packageIDs);
 
-		HashSet<uint> result = new();
+		HashSet<uint> result = [];
 
 		foreach (uint packageID in packageIDs.Where(static packageID => packageID != 0)) {
 			if (!PackagesData.TryGetValue(packageID, out PackageData? packageEntry) || (packageEntry.AppIDs?.Contains(appID) != true)) {

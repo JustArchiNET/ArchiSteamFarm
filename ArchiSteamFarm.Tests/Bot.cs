@@ -39,7 +39,7 @@ public sealed class Bot {
 			{ 43, MinCardsPerBadge + 1 }
 		};
 
-		HashSet<Asset> items = new();
+		HashSet<Asset> items = [];
 
 		foreach ((uint appID, byte cards) in itemsPerSet) {
 			for (byte i = 1; i <= cards; i++) {
@@ -59,10 +59,10 @@ public sealed class Bot {
 	public void MaxItemsTooSmall() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID),
 			CreateCard(2, appID)
-		};
+		];
 
 		GetItemsForFullBadge(items, 2, appID, MinCardsPerBadge - 1);
 
@@ -73,12 +73,12 @@ public sealed class Bot {
 	public void MoreCardsThanNeeded() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID),
 			CreateCard(1, appID),
 			CreateCard(2, appID),
 			CreateCard(3, appID)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
 
@@ -95,12 +95,12 @@ public sealed class Bot {
 	public void MultipleSets() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID),
 			CreateCard(1, appID),
 			CreateCard(2, appID),
 			CreateCard(2, appID)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
 
@@ -116,11 +116,11 @@ public sealed class Bot {
 	public void MultipleSetsDifferentAmount() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID, 2),
 			CreateCard(2, appID),
 			CreateCard(2, appID)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
 
@@ -136,7 +136,7 @@ public sealed class Bot {
 	public void MutliRarityAndType() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID, type: Asset.EType.TradingCard, rarity: Asset.ERarity.Common),
 			CreateCard(2, appID, type: Asset.EType.TradingCard, rarity: Asset.ERarity.Common),
 
@@ -158,7 +158,7 @@ public sealed class Bot {
 			CreateCard(2, appID, type: Asset.EType.Unknown, rarity: Asset.ERarity.Rare),
 			CreateCard(3, appID, type: Asset.EType.Unknown, rarity: Asset.ERarity.Rare),
 			CreateCard(4, appID, type: Asset.EType.Unknown, rarity: Asset.ERarity.Rare)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
 
@@ -177,10 +177,10 @@ public sealed class Bot {
 	public void NotAllCardsPresent() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID),
 			CreateCard(2, appID)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
 
@@ -192,10 +192,10 @@ public sealed class Bot {
 	public void OneSet() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID),
 			CreateCard(2, appID)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
 
@@ -212,10 +212,10 @@ public sealed class Bot {
 		const uint appID0 = 42;
 		const uint appID1 = 43;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID0),
 			CreateCard(1, appID1)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(
 			items, new Dictionary<uint, byte> {
@@ -237,10 +237,10 @@ public sealed class Bot {
 		const uint appID0 = 42;
 		const uint appID1 = 43;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID0),
 			CreateCard(1, appID1)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(
 			items, new Dictionary<uint, byte> {
@@ -260,14 +260,14 @@ public sealed class Bot {
 		const uint appID1 = 43;
 		const uint appID2 = 44;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID0),
 			CreateCard(2, appID0),
 
 			CreateCard(1, appID1),
 			CreateCard(2, appID1),
 			CreateCard(3, appID1)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(
 			items, new Dictionary<uint, byte> {
@@ -290,10 +290,10 @@ public sealed class Bot {
 	public void OtherRarityFullSets() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID, rarity: Asset.ERarity.Common),
 			CreateCard(1, appID, rarity: Asset.ERarity.Rare)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 1, appID);
 
@@ -308,10 +308,10 @@ public sealed class Bot {
 	public void OtherRarityNoSets() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID, rarity: Asset.ERarity.Common),
 			CreateCard(1, appID, rarity: Asset.ERarity.Rare)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
 
@@ -324,13 +324,13 @@ public sealed class Bot {
 	public void OtherRarityOneSet() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID, rarity: Asset.ERarity.Common),
 			CreateCard(2, appID, rarity: Asset.ERarity.Common),
 			CreateCard(1, appID, rarity: Asset.ERarity.Uncommon),
 			CreateCard(2, appID, rarity: Asset.ERarity.Uncommon),
 			CreateCard(3, appID, rarity: Asset.ERarity.Uncommon)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
 
@@ -347,10 +347,10 @@ public sealed class Bot {
 	public void OtherTypeFullSets() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID, type: Asset.EType.TradingCard),
 			CreateCard(1, appID, type: Asset.EType.FoilTradingCard)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 1, appID);
 
@@ -365,10 +365,10 @@ public sealed class Bot {
 	public void OtherTypeNoSets() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID, type: Asset.EType.TradingCard),
 			CreateCard(1, appID, type: Asset.EType.FoilTradingCard)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
 
@@ -381,13 +381,13 @@ public sealed class Bot {
 	public void OtherTypeOneSet() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID, type: Asset.EType.TradingCard),
 			CreateCard(2, appID, type: Asset.EType.TradingCard),
 			CreateCard(1, appID, type: Asset.EType.FoilTradingCard),
 			CreateCard(2, appID, type: Asset.EType.FoilTradingCard),
 			CreateCard(3, appID, type: Asset.EType.FoilTradingCard)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
 
@@ -404,10 +404,10 @@ public sealed class Bot {
 	public void TooHighAmount() {
 		const uint appID0 = 42;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID0, 2),
 			CreateCard(2, appID0)
-		};
+		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID0);
 
@@ -423,7 +423,7 @@ public sealed class Bot {
 	public void TooManyCardsForSingleTrade() {
 		const uint appID = 42;
 
-		HashSet<Asset> items = new();
+		HashSet<Asset> items = [];
 
 		for (byte i = 0; i < Steam.Exchange.Trading.MaxItemsPerTrade; i++) {
 			items.Add(CreateCard(1, appID));
@@ -440,7 +440,7 @@ public sealed class Bot {
 		const uint appID0 = 42;
 		const uint appID1 = 43;
 
-		HashSet<Asset> items = new();
+		HashSet<Asset> items = [];
 
 		for (byte i = 0; i < 100; i++) {
 			items.Add(CreateCard(1, appID0));
@@ -466,12 +466,12 @@ public sealed class Bot {
 		const uint appID1 = 43;
 		const uint appID2 = 44;
 
-		HashSet<Asset> items = new() {
+		HashSet<Asset> items = [
 			CreateCard(1, appID0),
 			CreateCard(2, appID0),
 			CreateCard(3, appID0),
 			CreateCard(4, appID0)
-		};
+		];
 
 		GetItemsForFullBadge(
 			items, new Dictionary<uint, byte> {
