@@ -2705,6 +2705,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		SteamUser.LogOnDetails logOnDetails = new() {
 			AccessToken = RefreshToken,
 			CellID = ASF.GlobalDatabase?.CellID,
+			ClientLanguage = CultureInfo.CurrentCulture.ToSteamClientLanguage(),
 			LoginID = LoginID,
 			ShouldRememberPassword = BotConfig.UseLoginKeys,
 			Username = username

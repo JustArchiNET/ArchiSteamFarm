@@ -67,4 +67,40 @@ internal static class SteamUtilities {
 
 		return result;
 	}
+
+	internal static string ToSteamClientLanguage(this CultureInfo cultureInfo) {
+		ArgumentNullException.ThrowIfNull(cultureInfo);
+
+		// We're doing our best here to map provided CultureInfo to language supported by Steam
+		return cultureInfo.TwoLetterISOLanguageName switch {
+			"bg" => "bulgarian",
+			"cs" => "czech",
+			"da" => "danish",
+			"de" => "german",
+			"es" when cultureInfo.Name is "es-419" or "es-AR" or "es-BO" or "es-BR" or "es-BZ" or "es-CL" or "es-CO" or "es-CR" or "es-CU" or "es-DO" or "es-EC" or "es-GQ" or "es-GT" or "es-HN" or "es-MX" or "es-NI" or "es-PA" or "es-PE" or "es-PH" or "es-PR" or "es-PY" or "es-SV" or "es-US" or "es-UY" or "es-VE" => "latam",
+			"es" => "spanish",
+			"el" => "greek",
+			"fr" => "french",
+			"fi" => "finnish",
+			"hu" => "hungarian",
+			"id" => "indonesian",
+			"it" => "italian",
+			"ko" => "koreana",
+			"nl" => "dutch",
+			"no" => "norwegian",
+			"pl" => "polish",
+			"pt" when cultureInfo.Name == "pt-BR" => "brazilian",
+			"pt" => "portuguese",
+			"ro" => "romanian",
+			"ru" => "russian",
+			"sv" => "swedish",
+			"th" => "thai",
+			"tr" => "turkish",
+			"uk" => "ukrainian",
+			"vi" => "vietnamese",
+			"zh" when cultureInfo.Name is "zh-Hant" or "zh-HK" or "zh-MO" or "zh-TW" => "tchinese",
+			"zh" => "schinese",
+			_ => "english"
+		};
+	}
 }
