@@ -116,6 +116,23 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? Confirmations, string Message)> GetConfirmations() {
+		if (Bot.BotDatabase.MobileAuthenticator == null) {
+			return (false, null, Strings.BotNoASFAuthenticator);
+		}
+
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return (false, null, Strings.BotNotConnected);
+		}
+
+		ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
+
+		bool success = confirmations != null;
+
+		return (success, confirmations, success ? Strings.Success : Strings.WarningFailed);
+	}
+
+	[PublicAPI]
 	public ulong GetFirstSteamMasterID() {
 		ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(static kv => kv.Key).OrderBy(static steamID => steamID).FirstOrDefault();
 
@@ -133,23 +150,6 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		await TradingSemaphore.WaitAsync().ConfigureAwait(false);
 
 		return new SemaphoreLock(TradingSemaphore);
-	}
-
-	[PublicAPI]
-	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? Confirmations, string Message)> GetConfirmations() {
-		if (Bot.BotDatabase.MobileAuthenticator == null) {
-			return (false, null, Strings.BotNoASFAuthenticator);
-		}
-
-		if (!Bot.IsConnectedAndLoggedOn) {
-			return (false, null, Strings.BotNotConnected);
-		}
-
-		ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
-
-		bool success = confirmations != null;
-
-		return (success, confirmations, success ? Strings.Success : Strings.WarningFailed);
 	}
 
 	[PublicAPI]
