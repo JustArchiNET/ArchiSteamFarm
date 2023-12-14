@@ -9,6 +9,7 @@ exclude:
       - ArchiSteamFarm.OfficialPlugins.ItemsMatcher/Localization
       - ArchiSteamFarm.OfficialPlugins.MobileAuthenticator/Localization
       - ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/Localization
+  - name: InternalOrPrivateMemberNotDocumented
   - name: InvertIf
   - name: SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
   - name: SwitchStatementHandlesSomeKnownEnumValuesWithDefault
