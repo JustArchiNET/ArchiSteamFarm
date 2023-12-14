@@ -13,6 +13,7 @@ exclude:
   - name: InternalOrPrivateMemberNotDocumented
   - name: InvertIf
   - name: NullableWarningSuppressionIsUsed
+  - name: ReplaceAsyncWithTaskReturn
   - name: SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
   - name: SwitchStatementHandlesSomeKnownEnumValuesWithDefault
   - name: SwitchStatementMissingSomeEnumCasesNoDefault
