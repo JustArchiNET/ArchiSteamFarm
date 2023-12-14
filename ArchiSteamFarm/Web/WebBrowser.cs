@@ -193,7 +193,7 @@ public sealed class WebBrowser : IDisposable {
 								progressReporter.Report(++batch);
 							}
 						}
-					} catch (OperationCanceledException) {
+					} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 						throw;
 					} catch (Exception e) {
 						ArchiLogger.LogGenericWarningException(e);
@@ -260,7 +260,7 @@ public sealed class WebBrowser : IDisposable {
 
 				try {
 					return await HtmlDocumentResponse.Create(response, cancellationToken).ConfigureAwait(false);
-				} catch (OperationCanceledException) {
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
@@ -334,7 +334,7 @@ public sealed class WebBrowser : IDisposable {
 
 						obj = serializer.Deserialize<T>(jsonReader);
 					}
-				} catch (OperationCanceledException) {
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
@@ -543,7 +543,7 @@ public sealed class WebBrowser : IDisposable {
 
 				try {
 					return await HtmlDocumentResponse.Create(response, cancellationToken).ConfigureAwait(false);
-				} catch (OperationCanceledException) {
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
@@ -617,7 +617,7 @@ public sealed class WebBrowser : IDisposable {
 
 						obj = serializer.Deserialize<TResult>(jsonReader);
 					}
-				} catch (OperationCanceledException) {
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
@@ -790,7 +790,7 @@ public sealed class WebBrowser : IDisposable {
 
 				try {
 					response = await HttpClient.SendAsync(requestMessage, httpCompletionOption, cancellationToken).ConfigureAwait(false);
-				} catch (OperationCanceledException) {
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
 					ArchiLogger.LogGenericDebuggingException(e);
