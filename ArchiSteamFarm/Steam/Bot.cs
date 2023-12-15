@@ -3293,9 +3293,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private async void OnRefreshTokensTimer(object? state = null) {
-		if (AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > DateTime.UtcNow.AddMinutes(MinimumAccessTokenValidityMinutes))) {
+		DateTime accessTokenValidUntil = AccessTokenValidUntil.GetValueOrDefault();
+
+		if ((accessTokenValidUntil > DateTime.MinValue) && (accessTokenValidUntil > DateTime.UtcNow.AddMinutes(MinimumAccessTokenValidityMinutes))) {
 			// We don't need to refresh just yet
-			InitRefreshTokensTimer(AccessTokenValidUntil.Value);
+			InitRefreshTokensTimer(accessTokenValidUntil);
 		}
 
 		await RefreshWebSession().ConfigureAwait(false);
