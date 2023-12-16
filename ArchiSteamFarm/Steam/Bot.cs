@@ -1562,7 +1562,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			DateTime now = DateTime.UtcNow;
 
-			if (!force && !string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > now.AddMinutes(MinimumAccessTokenValidityMinutes))) {
+			if (!force && !string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value >= now.AddMinutes(MinimumAccessTokenValidityMinutes))) {
 				// We can use the tokens we already have
 				if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 					InitRefreshTokensTimer(AccessTokenValidUntil.Value);
@@ -3295,7 +3295,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private async void OnRefreshTokensTimer(object? state = null) {
 		DateTime accessTokenValidUntil = AccessTokenValidUntil.GetValueOrDefault();
 
-		if ((accessTokenValidUntil > DateTime.MinValue) && (accessTokenValidUntil > DateTime.UtcNow.AddMinutes(MinimumAccessTokenValidityMinutes))) {
+		if ((accessTokenValidUntil > DateTime.MinValue) && (accessTokenValidUntil > DateTime.UtcNow.AddMinutes(MinimumAccessTokenValidityMinutes + 1))) {
 			// We don't need to refresh just yet
 			InitRefreshTokensTimer(accessTokenValidUntil);
 
