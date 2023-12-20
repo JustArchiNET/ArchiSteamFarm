@@ -748,5 +748,8 @@ StackTrace:
 		<value>Pokusili jste se použít placenou funkci {0}, ale nemáte platné ID licence nastavené v globální konfiguraci ASF. Zkontrolujte prosím svou konfiguraci, protože funkce nebude fungovat bez dalších podrobností.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
-	
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>ASF nemůže spustit aplikaci {0}, protože má regionální omezení pro zemi {1}, které trvá do {2}.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
 </root>

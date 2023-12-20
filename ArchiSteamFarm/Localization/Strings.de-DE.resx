@@ -548,7 +548,7 @@ StackTrace:
 		<value>Zugriff verweigert!</value>
 	</data>
 	<data name="WarningPreReleaseVersion" xml:space="preserve">
-		<value>Sie verwenden eine Version, die neuer ist als die zuletzt veröffentlichte Version Ihres Aktualisierungskanals. Bitte bedenken Sie, dass Vorabversionen nur für Benutzer gedacht sind, die wissen wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird keine technische Unterstützung geben.</value>
+		<value>Sie verwenden eine Version, die neuer ist als die zuletzt veröffentlichte Version Ihres Aktualisierungskanals. Bitte bedenken Sie, dass Vorabversionen nur für Benutzer gedacht sind, die wissen wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt – es wird keine technische Unterstützung geben.</value>
 	</data>
 	<data name="BotStats" xml:space="preserve">
 		<value>Aktuelle Speichernutzung: {0} MB.
