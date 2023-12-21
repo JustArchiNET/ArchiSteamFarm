@@ -1016,6 +1016,26 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			HashSet<(ulong ClassID, uint Amount)> setCopy = [];
 
 			foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key, Dictionary<ulong, uint> set) in setsState) {
+				uint minimumAmount = uint.MaxValue;
+				uint maximumAmount = uint.MinValue;
+
+				foreach (uint amount in set.Values) {
+					if (amount < minimumAmount) {
+						minimumAmount = amount;
+					}
+
+					if (amount > maximumAmount) {
+						maximumAmount = amount;
+					}
+				}
+
+				if (maximumAmount < 2) {
+					// We don't have anything to swap with, remove all entries from this set
+					set.Clear();
+
+					continue;
+				}
+
 				if (!databaseSets.TryGetValue(key, out HashSet<ulong>? databaseSet)) {
 					// We have no clue about this set, we can't do any optimization
 					continue;
@@ -1026,16 +1046,17 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					continue;
 				}
 
+				if (maximumAmount - minimumAmount < 2) {
+					// We don't have anything to swap with, remove all entries from this set
+					set.Clear();
+
+					continue;
+				}
+
 				// User has all classIDs we know about, we can deduplicate his items based on lowest count
 				setCopy.Clear();
 
-				uint minimumAmount = uint.MaxValue;
-
 				foreach ((ulong classID, uint amount) in set) {
-					if (amount < minimumAmount) {
-						minimumAmount = amount;
-					}
-
 					setCopy.Add((classID, amount));
 				}
 
