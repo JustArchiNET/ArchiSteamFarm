@@ -623,7 +623,7 @@ Prozesslaufzeit: {1}</value>
 		<value>Nichts gefunden!</value>
 	</data>
 	<data name="PluginsWarning" xml:space="preserve">
-		<value>Sie haben ein oder mehrere benutzerdefinierte Plugins in ASF geladen. Da wir keine Unterstützung für modifizierte Setups anbieten können, bitten wir Sie, sich im Falle von Problemen an die entsprechenden Entwickler der Plugins zu wenden.</value>
+		<value>Sie haben ein oder mehrere benutzerdefinierte Erweiterungen in ASF geladen. Da wir keine Unterstützung für modifizierte Setups anbieten können, bitten wir Sie, sich im Falle von Problemen an die entsprechenden Entwickler der Erweiterungen zu wenden.</value>
 	</data>
 	<data name="PleaseWait" xml:space="preserve">
 		<value>Bitte warten...</value>
