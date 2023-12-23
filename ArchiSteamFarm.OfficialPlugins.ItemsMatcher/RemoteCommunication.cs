@@ -446,7 +446,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), HashSet<ulong>> databaseSets = setPartsResponse.Content.Result.GroupBy(static setPart => (setPart.RealAppID, setPart.Type, setPart.Rarity)).ToDictionary(static group => group.Key, static group => group.Select(static setPart => setPart.ClassID).ToHashSet());
 
-				HashSet<(ulong ClassID, uint Amount)> setCopy = [];
+				Dictionary<ulong, uint> setCopy = [];
 
 				foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key, Dictionary<ulong, uint> set) in state) {
 					if (!databaseSets.TryGetValue(key, out HashSet<ulong>? databaseSet)) {
@@ -469,7 +469,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 							minimumAmount = amount;
 						}
 
-						setCopy.Add((classID, amount));
+						setCopy[classID] = amount;
 					}
 
 					foreach ((ulong classID, uint amount) in setCopy) {
