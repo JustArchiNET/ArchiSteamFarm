@@ -109,7 +109,10 @@
 		<value>Dokončené získavanie informácií {0} aplikácií.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Úspešne načítaných {0} z {1} depot kľúčov.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys that were successfully retrieved, {1} will be replaced by the number (count this batch) of depot keys that were supposed to be retrieved</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Dokončené získanie všetkých kľúčov položiek {0} aplikácií.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
@@ -161,7 +164,13 @@
 		<value>{0} inicializovaných, modul nebude pracovať so žiadnym: {1}.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
-	
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>Načítanie globálnej vyrovnávacej pamäti STD...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>Overovanie globálnej vyrovnávacej pamäti STD...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>Overovanie globálnej vyrovnávacej pamäti STD sa nepodarilo. To naznačuje, že mohlo dôjsť k poškodeniu súboru/pamäti, miesto toho bude inicializovaná nová inštancia.</value>
+	</data>
 </root>

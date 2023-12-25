@@ -66,4 +66,20 @@
 		<value>Celkovo porovnaných {0} sad karet.</value>
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
+  <data name="ListingAnnouncing" xml:space="preserve">
+		<value>Oznámenie {0} ({1}) s inventárom v ktorom je {2} položiek na zozname...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname, {2} will be replaced with number of items in the inventory</comment>
+	</data>
+  <data name="MatchingFound" xml:space="preserve">
+		<value>Zhodné s celkom {0} položiek s botom {1} ({2}), posielanie obchodnej ponuky...</value>
+		<comment>{0} will be replaced by number of items matched, {1} will be replaced by steam ID (number), {2} will be replaced by user's nickname</comment>
+	</data>
+  <data name="TradeOfferFailed" xml:space="preserve">
+		<value>Nepodarilo se odoslať obchodnú ponuku pre bota {0} ({1}), pokračujem...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname'</comment>
+	</data>
+  <data name="ActivelyMatchingSomeConfirmationsFailed" xml:space="preserve">
+		<value>Niektoré potvrdenia sa nepodarili, úspešne bolo poslaných približne {0} z {1} obchodov.</value>
+		<comment>{0} will be replaced by amount of the trade offers that succeeded (number), {1} will be replaced by amount of the trade offers that were supposed to be sent in total (number)</comment>
+	</data>
 </root>
