@@ -191,7 +191,7 @@ StackTrace:
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
 	<data name="UserInputDeviceConfirmation" xml:space="preserve">
-		<value>Bitte überprüfen Sie Ihre Steam Mobile App, Sie sollten eine Benachrichtigung zur Genehmigung der Anmeldung erhalten haben. Geben Sie „Y“ ein, wenn Sie die Benachrichtigung erhalten und genehmigt haben, „N“ wenn Sie stattdessen den Code eingeben möchten: </value>
+		<value>Bitte überprüfen Sie Ihre mobilen Steam App, Sie sollten eine Benachrichtigung zur Genehmigung der Anmeldung erhalten haben. Geben Sie „Y“ ein, wenn Sie die Benachrichtigung erhalten und genehmigt haben, „N“ wenn Sie stattdessen den Code eingeben möchten: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
