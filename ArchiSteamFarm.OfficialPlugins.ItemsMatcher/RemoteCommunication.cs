@@ -939,12 +939,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			// Remove from our inventory items that can't be possibly matched due to no dupes to offer available
 			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> setsToKeep = Trading.GetInventorySets(assetsForMatching).Where(static set => set.Value.Any(static amount => amount > 1)).Select(static set => set.Key).ToHashSet();
 
-			assetsForMatching.RemoveWhere(item => !setsToKeep.Contains((item.RealAppID, item.Type, item.Rarity)));
+			if (assetsForMatching.RemoveWhere(item => !setsToKeep.Contains((item.RealAppID, item.Type, item.Rarity))) > 0) {
+				if (assetsForMatching.Count == 0) {
+					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(assetsForMatching)));
 
-			if (assetsForMatching.Count == 0) {
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(assetsForMatching)));
-
-				return;
+					return;
+				}
 			}
 
 			// We should deduplicate our sets before sending them to the server, for doing that we'll use ASFB set parts data
