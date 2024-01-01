@@ -160,7 +160,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginInitializedAndEnabled, nameof(SteamTokenDumperPlugin), startIn.ToHumanReadable()));
 	}
 
-	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
+	public Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!Enum.IsDefined(access)) {
@@ -175,20 +175,20 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			case 1:
 				switch (args[0].ToUpperInvariant()) {
 					case "STD":
-						return await ResponseRefreshManually(access, bot).ConfigureAwait(false);
+						return Task.FromResult(ResponseRefreshManually(access, bot));
 				}
 
 				break;
 			default:
 				switch (args[0].ToUpperInvariant()) {
 					case "STD":
-						return await ResponseRefreshManually(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
+						return Task.FromResult(ResponseRefreshManually(access, Utilities.GetArgsAsText(args, 1, ","), steamID));
 				}
 
 				break;
 		}
 
-		return null;
+		return Task.FromResult((string?) null);
 	}
 
 	public async Task OnBotDestroy(Bot bot) {
@@ -527,7 +527,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		}
 	}
 
-	private static async Task<string?> ResponseRefreshManually(EAccess access, Bot bot, bool submit = true) {
+	private static string? ResponseRefreshManually(EAccess access, Bot bot) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -542,16 +542,17 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(GlobalCache)));
 		}
 
-		await Refresh(bot).ConfigureAwait(false);
-
-		if (submit) {
-			Utilities.InBackground(static () => SubmitData());
-		}
+		Utilities.InBackground(
+			async () => {
+				await Refresh(bot).ConfigureAwait(false);
+				await SubmitData().ConfigureAwait(false);
+			}
+		);
 
 		return bot.Commands.FormatBotResponse(ArchiSteamFarm.Localization.Strings.Done);
 	}
 
-	private static async Task<string?> ResponseRefreshManually(EAccess access, string botNames, ulong steamID = 0) {
+	private static string? ResponseRefreshManually(EAccess access, string botNames, ulong steamID = 0) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -568,17 +569,25 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			return access >= EAccess.Owner ? Commands.FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.BotNotFound, botNames)) : null;
 		}
 
+		bots.RemoveWhere(bot => Commands.GetProxyAccess(bot, access, steamID) < EAccess.Master);
+
+		if (bots.Count == 0) {
+			return access >= EAccess.Owner ? Commands.FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.BotNotFound, botNames)) : null;
+		}
+
 		if (GlobalCache == null) {
 			return Commands.FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(GlobalCache)));
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseRefreshManually(Commands.GetProxyAccess(bot, access, steamID), bot, false))).ConfigureAwait(false);
+		Utilities.InBackground(
+			async () => {
+				await Utilities.InParallel(bots.Select(static bot => Refresh(bot))).ConfigureAwait(false);
 
-		Utilities.InBackground(static () => SubmitData());
+				await SubmitData().ConfigureAwait(false);
+			}
+		);
 
-		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
-
-		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+		return Commands.FormatStaticResponse(ArchiSteamFarm.Localization.Strings.Done);
 	}
 
 	private static async Task SubmitData(CancellationToken cancellationToken = default) {
