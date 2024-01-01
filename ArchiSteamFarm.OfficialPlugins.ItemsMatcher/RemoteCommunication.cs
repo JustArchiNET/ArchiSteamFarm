@@ -771,16 +771,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	internal void TriggerMatchActivelyEarlier() {
-		if (MatchActivelyTimer == null) {
-			throw new InvalidOperationException(nameof(MatchActivelyTimer));
-		}
-
-		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-		lock (MatchActivelySemaphore) {
-			MatchActivelyTimer.Change(TimeSpan.Zero, TimeSpan.FromHours(6));
-		}
-	}
+	internal void TriggerMatchActively() => Utilities.InBackground(() => MatchActively());
 
 	private async Task<bool?> IsEligibleForListing() {
 		// Bot must be eligible for matching
@@ -881,7 +872,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(ASF.GlobalConfig.LicenseID));
 		}
 
-		if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively)) {
+		if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything)) {
 			Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
 
 			return;
@@ -1131,8 +1122,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 #pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 			using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
 #pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-				Bot.ArchiLogger.LogGenericInfo(Strings.Starting);
-
 				tradesSent = await MatchActively(response.Value.Users, assetsForMatching, acceptedMatchableTypes).ConfigureAwait(false);
 			}
 
