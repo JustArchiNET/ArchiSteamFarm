@@ -96,7 +96,7 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(remoteCommunication)));
 		}
 
-		remoteCommunication.TriggerMatchActively();
+		remoteCommunication.TriggerMatchActivelyEarlier();
 
 		return bot.Commands.FormatBotResponse(Strings.Done);
 	}

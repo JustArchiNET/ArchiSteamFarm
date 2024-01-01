@@ -771,7 +771,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	internal void TriggerMatchActively() => Utilities.InBackground(() => MatchActively());
+	internal void TriggerMatchActivelyEarlier() {
+		if (MatchActivelyTimer == null) {
+			Utilities.InBackground(() => MatchActively());
+		} else {
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+			lock (MatchActivelySemaphore) {
+				MatchActivelyTimer.Change(TimeSpan.Zero, TimeSpan.FromHours(6));
+			}
+		}
+	}
 
 	private async Task<bool?> IsEligibleForListing() {
 		// Bot must be eligible for matching
