@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -63,11 +63,27 @@ internal sealed class BotCache : SerializableFile {
 		}
 	}
 
+	internal DateTime? LastRequestAt {
+		get => BackingLastRequestAt;
+
+		set {
+			if (BackingLastRequestAt == value) {
+				return;
+			}
+
+			BackingLastRequestAt = value;
+			Utilities.InBackground(Save);
+		}
+	}
+
 	[JsonProperty]
 	private string? BackingLastAnnouncedTradeToken;
 
 	[JsonProperty]
 	private string? BackingLastInventoryChecksumBeforeDeduplication;
+
+	[JsonProperty]
+	private DateTime? BackingLastRequestAt;
 
 	private BotCache(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -83,6 +99,9 @@ internal sealed class BotCache : SerializableFile {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeBackingLastInventoryChecksumBeforeDeduplication() => !string.IsNullOrEmpty(BackingLastInventoryChecksumBeforeDeduplication);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingLastRequestAt() => BackingLastRequestAt.HasValue;
 
 	[UsedImplicitly]
 	public bool ShouldSerializeLastAnnouncedAssetsForListing() => LastAnnouncedAssetsForListing.Count > 0;

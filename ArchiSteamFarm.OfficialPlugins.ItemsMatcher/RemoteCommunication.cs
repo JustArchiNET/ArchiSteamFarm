@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,6 +51,7 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const string MatchActivelyTradeOfferIDsStorageKey = $"{nameof(ItemsMatcher)}-{nameof(MatchActively)}-TradeOfferIDs";
 	private const byte MaxAnnouncementTTL = 60; // Maximum amount of minutes we can wait if the next announcement doesn't happen naturally
+	private const byte MaxInactivityDays = 14; // How long the server is willing to keep information about us for
 	private const uint MaxItemsCount = 500000; // Server is unwilling to accept more items than this
 	private const byte MaxTradeOffersActive = 5; // The actual upper limit is 30, but we should use lower amount to allow some bots to react before we hit the maximum allowed
 	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
@@ -332,7 +333,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			string inventoryChecksumBeforeDeduplication = Backend.GenerateChecksumFor(assetsForListing);
 
-			if ((tradeToken == BotCache.LastAnnouncedTradeToken) && !string.IsNullOrEmpty(BotCache.LastInventoryChecksumBeforeDeduplication)) {
+			if (BotCache.LastRequestAt.HasValue && (DateTime.UtcNow.Subtract(BotCache.LastRequestAt.Value).TotalDays < MaxInactivityDays) && (tradeToken == BotCache.LastAnnouncedTradeToken) && !string.IsNullOrEmpty(BotCache.LastInventoryChecksumBeforeDeduplication)) {
 				if (inventoryChecksumBeforeDeduplication == BotCache.LastInventoryChecksumBeforeDeduplication) {
 					// We've determined our state to be the same, we can skip announce entirely and start sending heartbeats exclusively
 					bool triggerImmediately = !ShouldSendHeartBeats;
@@ -654,9 +655,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
 					ShouldSendAnnouncementEarlier = false;
 					ShouldSendHeartBeats = true;
+
 					BotCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
 					BotCache.LastAnnouncedTradeToken = tradeToken;
 					BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
+					BotCache.LastRequestAt = LastHeartBeat;
 
 					return;
 				}
@@ -757,9 +760,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = false;
 				ShouldSendHeartBeats = true;
+
 				BotCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
 				BotCache.LastAnnouncedTradeToken = tradeToken;
 				BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
+				BotCache.LastRequestAt = LastHeartBeat;
 
 				return;
 			}
@@ -1587,15 +1592,42 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			if (response.StatusCode.IsClientErrorCode()) {
+			BotCache ??= await BotCache.CreateOrLoad(BotCacheFilePath).ConfigureAwait(false);
+
+			if (!response.StatusCode.IsSuccessCode()) {
 				ShouldSendHeartBeats = false;
 
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
 
-				return;
+				switch (response.StatusCode) {
+					case HttpStatusCode.Conflict:
+						// ArchiNet told us to that we need to announce again
+						LastAnnouncement = DateTime.MinValue;
+
+						BotCache.LastAnnouncedAssetsForListing.Clear();
+						BotCache.LastInventoryChecksumBeforeDeduplication = BotCache.LastAnnouncedTradeToken = null;
+						BotCache.LastRequestAt = null;
+
+						return;
+					case HttpStatusCode.Forbidden:
+						// ArchiNet told us to stop submitting data for now
+						LastAnnouncement = DateTime.UtcNow.AddYears(1);
+
+						return;
+					case HttpStatusCode.TooManyRequests:
+						// ArchiNet told us to try again later
+						LastAnnouncement = DateTime.UtcNow.AddDays(1);
+
+						return;
+					default:
+						// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
+						LastAnnouncement = DateTime.UtcNow.AddHours(6);
+
+						return;
+				}
 			}
 
-			LastHeartBeat = DateTime.UtcNow;
+			BotCache.LastRequestAt = LastHeartBeat = DateTime.UtcNow;
 		} finally {
 			RequestsSemaphore.Release();
 		}
