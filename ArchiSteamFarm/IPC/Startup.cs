@@ -277,8 +277,8 @@ internal sealed class Startup {
 
 				// We require custom schema IDs due to conflicting type names, choosing the proper one is tricky as there is no good answer and any kind of convention has a potential to create conflict
 				// FullName and Name both do, ToString() for unknown to me reason doesn't, and I don't have courage to call our WebUtilities.GetUnifiedName() better than what .NET ships with (because it isn't)
-				// Let's use ToString() until we find a good enough reason to change it
-				options.CustomSchemaIds(static type => type.ToString());
+				// Let's use ToString() until we find a good enough reason to change it, also, the name must pass ^[a-zA-Z0-9.-_]+$ regex
+				options.CustomSchemaIds(static type => type.ToString().Replace('+', '-'));
 
 				options.EnableAnnotations(true, true);
 
