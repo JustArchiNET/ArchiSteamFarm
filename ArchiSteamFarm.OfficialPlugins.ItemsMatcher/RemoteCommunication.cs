@@ -537,7 +537,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			string checksum = Backend.GenerateChecksumFor(assetsForListing);
 			string? previousChecksum = BotCache.LastAnnouncedAssetsForListing.Count > 0 ? Backend.GenerateChecksumFor(BotCache.LastAnnouncedAssetsForListing) : null;
 
-			if ((tradeToken == BotCache.LastAnnouncedTradeToken) && (checksum == previousChecksum)) {
+			if (BotCache.LastRequestAt.HasValue && (DateTime.UtcNow.Subtract(BotCache.LastRequestAt.Value).TotalDays < MaxInactivityDays) && (tradeToken == BotCache.LastAnnouncedTradeToken) && (checksum == previousChecksum)) {
 				// We've determined our state to be the same, we can skip announce entirely and start sending heartbeats exclusively
 				bool triggerImmediately = !ShouldSendHeartBeats;
 
