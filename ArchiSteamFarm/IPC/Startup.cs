@@ -206,7 +206,7 @@ internal sealed class Startup {
 			knownNetworks = new HashSet<IPNetwork>();
 
 			foreach (string knownNetworkText in knownNetworksTexts) {
-				string[] addressParts = knownNetworkText.Split('/', StringSplitOptions.RemoveEmptyEntries);
+				string[] addressParts = knownNetworkText.Split('/', 3, StringSplitOptions.RemoveEmptyEntries);
 
 				if ((addressParts.Length != 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress) || !byte.TryParse(addressParts[1], out byte prefixLength)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(knownNetworkText)));

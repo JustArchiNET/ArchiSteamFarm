@@ -471,7 +471,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				continue;
 			}
 
-			string[] appIDSplitted = appIDText.Split('_');
+			string[] appIDSplitted = appIDText.Split('_', 6);
 
 			if (appIDSplitted.Length < 5) {
 				Bot.ArchiLogger.LogNullError(appIDSplitted);

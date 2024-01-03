@@ -2113,7 +2113,7 @@ public sealed class Commands {
 		// There are only 7 privacy settings
 		const byte privacySettings = 7;
 
-		string[] privacySettingsArgs = privacySettingsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
+		string[] privacySettingsArgs = privacySettingsText.Split(SharedInfo.ListElementSeparators, privacySettings + 1, StringSplitOptions.RemoveEmptyEntries);
 
 		switch (privacySettingsArgs.Length) {
 			case 0:
