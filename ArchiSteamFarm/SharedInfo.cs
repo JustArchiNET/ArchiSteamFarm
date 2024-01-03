@@ -69,13 +69,13 @@ public static class SharedInfo {
 	internal const string WebsiteDirectory = "www";
 
 	[PublicAPI]
-	public static readonly char[] ListElementSeparators = { ',' };
+	public static readonly char[] ListElementSeparators = [','];
 
 	[PublicAPI]
-	public static readonly string[] NewLineIndicators = { "\r\n", "\r", "\n" };
+	public static readonly string[] NewLineIndicators = ["\r\n", "\r", "\n"];
 
 	[PublicAPI]
-	public static readonly string[] RangeIndicators = { ".." };
+	public static readonly string[] RangeIndicators = [".."];
 
 	internal static string HomeDirectory {
 		get {

@@ -282,7 +282,7 @@ public sealed class GlobalConfig {
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	[SwaggerSteamIdentifier]
-	[SwaggerValidValues(ValidIntValues = new[] { 0 })]
+	[SwaggerValidValues(ValidIntValues = [0])]
 	public ulong SteamOwnerID { get; private set; } = DefaultSteamOwnerID;
 
 	[JsonProperty(Required = Required.DisallowNull)]

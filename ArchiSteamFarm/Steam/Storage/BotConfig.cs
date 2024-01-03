@@ -162,7 +162,7 @@ public sealed class BotConfig {
 	public EBotBehaviour BotBehaviour { get; private set; } = DefaultBotBehaviour;
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	[SwaggerValidValues(ValidIntValues = new[] { (int) Asset.EType.FoilTradingCard, (int) Asset.EType.TradingCard })]
+	[SwaggerValidValues(ValidIntValues = [(int) Asset.EType.FoilTradingCard, (int) Asset.EType.TradingCard])]
 	public ImmutableHashSet<Asset.EType> CompleteTypesToSend { get; private set; } = DefaultCompleteTypesToSend;
 
 	[JsonProperty]
@@ -242,13 +242,13 @@ public sealed class BotConfig {
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	[SwaggerSteamIdentifier(AccountType = EAccountType.Clan)]
-	[SwaggerValidValues(ValidIntValues = new[] { 0 })]
+	[SwaggerValidValues(ValidIntValues = [0])]
 	public ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
 
 	[JsonProperty]
 	[MaxLength(SteamParentalCodeLength)]
 	[MinLength(SteamParentalCodeLength)]
-	[SwaggerValidValues(ValidStringValues = new[] { "0" })]
+	[SwaggerValidValues(ValidStringValues = ["0"])]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
 	public string? SteamParentalCode {
 		get => BackingSteamParentalCode;
