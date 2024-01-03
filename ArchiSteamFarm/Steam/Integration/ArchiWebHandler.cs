@@ -188,7 +188,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<ImmutableHashSet<uint>?> GetBoosterEligibility() {
+	public async Task<HashSet<uint>?> GetBoosterEligibility() {
 		Uri request = new(SteamCommunityURL, "/my/ajaxgetboostereligibility");
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
@@ -227,7 +227,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			result.Add(appID);
 		}
 
-		return result.ToImmutableHashSet();
+		return result;
 	}
 
 	[PublicAPI]

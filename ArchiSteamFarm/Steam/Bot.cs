@@ -22,6 +22,7 @@
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.Specialized;
@@ -206,7 +207,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[JsonIgnore]
 	[PublicAPI]
-	public ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs { get; private set; } = ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
+	public FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs { get; private set; } = FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
 
 	[JsonProperty]
 	[PublicAPI]
@@ -1355,7 +1356,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal async Task<(Dictionary<string, string>? UnusedKeys, Dictionary<string, string>? UsedKeys)> GetUsedAndUnusedKeys() {
-		string[] files = { GetFilePath(EFileType.KeysToRedeemUnused), GetFilePath(EFileType.KeysToRedeemUsed) };
+		string[] files = [GetFilePath(EFileType.KeysToRedeemUnused), GetFilePath(EFileType.KeysToRedeemUsed)];
 
 		IList<Dictionary<string, string>?> results = await Utilities.InParallel(files.Select(GetKeysFromFile)).ConfigureAwait(false);
 
@@ -2740,7 +2741,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		Trading.OnDisconnected();
 
 		FirstTradeSent = false;
-		OwnedPackageIDs = ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
+		OwnedPackageIDs = FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
 
 		EResult lastLogOnResult = LastLogOnResult;
 
@@ -3057,7 +3058,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		OwnedPackageIDs = ownedPackageIDs.ToImmutableDictionary();
+		OwnedPackageIDs = ownedPackageIDs.ToFrozenDictionary();
 
 		if (packageAccessTokens.Count > 0) {
 			ASF.GlobalDatabase.RefreshPackageAccessTokens(packageAccessTokens);

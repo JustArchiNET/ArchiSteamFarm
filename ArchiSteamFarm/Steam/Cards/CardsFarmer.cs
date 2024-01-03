@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
@@ -54,12 +55,12 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	private const byte HoursToIgnore = 1; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<uint> SalesBlacklist = ImmutableHashSet.Create<uint>(267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740, 991980, 1195670, 1343890, 1465680, 1658760, 1797760, 2021850, 2243720, 2459330, 2640280);
+	public static readonly FrozenSet<uint> SalesBlacklist = new HashSet<uint>(20) { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740, 991980, 1195670, 1343890, 1465680, 1658760, 1797760, 2021850, 2243720, 2459330, 2640280 }.ToFrozenSet();
 
 	private static readonly ConcurrentDictionary<uint, DateTime> GloballyIgnoredAppIDs = new(); // Reserved for unreleased games
 
 	// Games that were confirmed to show false status on general badges page
-	private static readonly ImmutableHashSet<uint> UntrustedAppIDs = ImmutableHashSet.Create<uint>(440, 570, 730);
+	private static readonly FrozenSet<uint> UntrustedAppIDs = new HashSet<uint>(3) { 440, 570, 730 }.ToFrozenSet();
 
 	[JsonProperty(nameof(CurrentGamesFarming))]
 	[PublicAPI]
@@ -1210,7 +1211,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	private async Task<bool?> IsAnythingToFarmRisky() {
 		Task<ImmutableHashSet<BoosterCreatorEntry>?> boosterCreatorEntriesTask = Bot.ArchiWebHandler.GetBoosterCreatorEntries();
 
-		ImmutableHashSet<uint>? boosterElibility = await Bot.ArchiWebHandler.GetBoosterEligibility().ConfigureAwait(false);
+		HashSet<uint>? boosterElibility = await Bot.ArchiWebHandler.GetBoosterEligibility().ConfigureAwait(false);
 
 		if (boosterElibility == null) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
@@ -1399,11 +1400,11 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					HashSet<uint>? marketableAppIDs = await Bot.GetMarketableAppIDs().ConfigureAwait(false);
 
 					if (marketableAppIDs?.Count > 0) {
-						ImmutableHashSet<uint> immutableMarketableAppIDs = marketableAppIDs.ToImmutableHashSet();
+						HashSet<uint> marketableAppIDsCopy = marketableAppIDs;
 
 						orderedGamesToFarm = farmingOrder switch {
-							BotConfig.EFarmingOrder.MarketableAscending => orderedGamesToFarm.ThenBy(game => immutableMarketableAppIDs.Contains(game.AppID)),
-							BotConfig.EFarmingOrder.MarketableDescending => orderedGamesToFarm.ThenByDescending(game => immutableMarketableAppIDs.Contains(game.AppID)),
+							BotConfig.EFarmingOrder.MarketableAscending => orderedGamesToFarm.ThenBy(game => marketableAppIDsCopy.Contains(game.AppID)),
+							BotConfig.EFarmingOrder.MarketableDescending => orderedGamesToFarm.ThenByDescending(game => marketableAppIDsCopy.Contains(game.AppID)),
 							_ => throw new InvalidOperationException(nameof(farmingOrder))
 						};
 					}
@@ -1456,14 +1457,12 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 						redeemDates[game.AppID] = redeemDate;
 					}
 
-					ImmutableDictionary<uint, DateTime> immutableRedeemDates = redeemDates.ToImmutableDictionary();
-
 					orderedGamesToFarm = farmingOrder switch {
 						// ReSharper disable once AccessToModifiedClosure - you're wrong
-						BotConfig.EFarmingOrder.RedeemDateTimesAscending => orderedGamesToFarm.ThenBy(game => immutableRedeemDates[game.AppID]),
+						BotConfig.EFarmingOrder.RedeemDateTimesAscending => orderedGamesToFarm.ThenBy(game => redeemDates[game.AppID]),
 
 						// ReSharper disable once AccessToModifiedClosure - you're wrong
-						BotConfig.EFarmingOrder.RedeemDateTimesDescending => orderedGamesToFarm.ThenByDescending(game => immutableRedeemDates[game.AppID]),
+						BotConfig.EFarmingOrder.RedeemDateTimesDescending => orderedGamesToFarm.ThenByDescending(game => redeemDates[game.AppID]),
 
 						_ => throw new InvalidOperationException(nameof(farmingOrder))
 					};

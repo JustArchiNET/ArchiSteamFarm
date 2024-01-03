@@ -20,8 +20,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Composition;
 using System.Composition.Convention;
@@ -52,7 +52,7 @@ public static class PluginsCore {
 	internal static bool HasCustomPluginsLoaded => ActivePlugins?.Any(static plugin => plugin is not OfficialPlugin officialPlugin || !officialPlugin.HasSameVersion()) == true;
 
 	[ImportMany]
-	internal static ImmutableHashSet<IPlugin>? ActivePlugins { get; private set; }
+	internal static FrozenSet<IPlugin>? ActivePlugins { get; private set; }
 
 	[PublicAPI]
 	public static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName) {
@@ -230,7 +230,7 @@ public static class PluginsCore {
 			}
 		}
 
-		ActivePlugins = activePlugins.ToImmutableHashSet();
+		ActivePlugins = activePlugins.ToFrozenSet();
 
 		if (HasCustomPluginsLoaded) {
 			ASF.ArchiLogger.LogGenericInfo(Strings.PluginsWarning);

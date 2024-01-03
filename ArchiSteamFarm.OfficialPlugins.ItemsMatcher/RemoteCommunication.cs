@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
@@ -60,12 +61,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const byte MinimumSteamGuardEnabledDays = 15; // As imposed by Steam limits
 	private const byte MinPersonaStateTTL = 5; // Minimum amount of minutes we must wait before requesting persona state update
 
-	private static readonly ImmutableHashSet<Asset.EType> AcceptedMatchableTypes = ImmutableHashSet.Create(
+	private static readonly FrozenSet<Asset.EType> AcceptedMatchableTypes = new HashSet<Asset.EType>(4) {
 		Asset.EType.Emoticon,
 		Asset.EType.FoilTradingCard,
 		Asset.EType.ProfileBackground,
 		Asset.EType.TradingCard
-	);
+	}.ToFrozenSet();
 
 	private readonly Bot Bot;
 	private readonly Timer? HeartBeatTimer;

@@ -20,8 +20,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -45,7 +45,7 @@ public static class ArchiCryptoHelper {
 
 	internal static bool HasDefaultCryptKey { get; private set; } = true;
 
-	private static readonly ImmutableHashSet<string> ForbiddenCryptKeyPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "crypt", "key", "cryptkey");
+	private static readonly FrozenSet<string> ForbiddenCryptKeyPhrases = new HashSet<string>(3, StringComparer.InvariantCultureIgnoreCase) { "crypt", "key", "cryptkey" }.ToFrozenSet(StringComparer.InvariantCultureIgnoreCase);
 
 	private static IEnumerable<byte> SteamParentalCharacters => Enumerable.Range('0', 10).Select(static character => (byte) character);
 
