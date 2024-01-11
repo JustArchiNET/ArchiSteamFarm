@@ -57,6 +57,11 @@ internal sealed class ListedUser {
 
 #pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonProperty(Required = Required.Always)]
+	internal readonly uint TotalGamesCount;
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
+	[JsonProperty(Required = Required.Always)]
 	internal readonly uint TotalInventoryCount;
 #pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
