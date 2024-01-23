@@ -1070,7 +1070,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return (0, DateTime.MaxValue, true);
 		}
 
-		if ((hoursPlayed < CardsFarmer.HoursForRefund) && BotConfig.SkipRefundableGames) {
+		if ((hoursPlayed < CardsFarmer.HoursForRefund) && BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SkipRefundableGames)) {
 			DateTime mostRecent = DateTime.MinValue;
 
 			foreach (uint packageID in packageIDs) {
@@ -1531,13 +1531,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal async Task OnFarmingFinished(bool farmedSomething) {
 		await OnFarmingStopped().ConfigureAwait(false);
 
-		if (BotConfig is { SendOnFarmingFinished: true, LootableTypes.Count: > 0 } && (farmedSomething || !FirstTradeSent)) {
+		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && (BotConfig.LootableTypes.Count > 0) && (farmedSomething || !FirstTradeSent)) {
 			FirstTradeSent = true;
 
 			await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 		}
 
-		if (BotConfig.ShutdownOnFarmingFinished) {
+		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.ShutdownOnFarmingFinished)) {
 			Stop();
 		}
 
@@ -2378,7 +2378,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		AccessToken = accessToken;
 		RefreshToken = refreshToken;
 
-		CardsFarmer.SetInitialState(BotConfig.Paused);
+		CardsFarmer.SetInitialState(BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmingPausedByDefault));
 
 		if (SendItemsTimer != null) {
 			await SendItemsTimer.DisposeAsync().ConfigureAwait(false);
@@ -2407,7 +2407,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			);
 		}
 
-		if (BotConfig.AutoSteamSaleEvent) {
+		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.AutoSteamSaleEvent)) {
 			SteamSaleEvent = new SteamSaleEvent(this);
 		}
 

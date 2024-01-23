@@ -258,7 +258,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		// If we're not farming, and we got new items, it's likely to be a booster pack or likewise
 		// In this case, perform a loot if user wants to do so
-		if (Bot.BotConfig is { SendOnFarmingFinished: true, LootableTypes.Count: > 0 }) {
+		if (Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && (Bot.BotConfig.LootableTypes.Count > 0)) {
 			await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 		}
 	}
@@ -313,7 +313,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.FarmPriorityQueueOnly && (Bot.BotDatabase.FarmingPriorityQueueAppIDs.Count == 0))) {
+		if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmPriorityQueueOnly) && (Bot.BotDatabase.FarmingPriorityQueueAppIDs.Count == 0))) {
 			Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
 			await Bot.OnFarmingFinished(false).ConfigureAwait(false);
 
@@ -1106,12 +1106,12 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		// Find the number of badge pages
 		Bot.ArchiLogger.LogGenericInfo(Strings.CheckingFirstBadgePage);
 
-		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1, Bot.BotConfig.EnableRiskyCardsDiscovery ? (byte) 2 : WebBrowser.MaxTries).ConfigureAwait(false);
+		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1, Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.EnableRiskyCardsDiscovery) ? (byte) 2 : WebBrowser.MaxTries).ConfigureAwait(false);
 
 		if (htmlDocument == null) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
 
-			if (!Bot.BotConfig.EnableRiskyCardsDiscovery) {
+			if (!Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.EnableRiskyCardsDiscovery)) {
 				return null;
 			}
 
@@ -1195,7 +1195,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			ShouldResumeFarming = false;
 
 			// Allow changing to risky algorithm only if we failed at least some badge pages and we have the prop enabled
-			if (allTasksSucceeded || !Bot.BotConfig.EnableRiskyCardsDiscovery) {
+			if (allTasksSucceeded || !Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.EnableRiskyCardsDiscovery)) {
 				return false;
 			}
 
@@ -1341,7 +1341,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	private bool ShouldIdle(uint appID) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
-		if (SalesBlacklist.Contains(appID) || (ASF.GlobalConfig?.Blacklist.Contains(appID) == true) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.FarmPriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
+		if (SalesBlacklist.Contains(appID) || (ASF.GlobalConfig?.Blacklist.Contains(appID) == true) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmPriorityQueueOnly) && !Bot.IsPriorityIdling(appID))) {
 			// We're configured to ignore this appID, so skip it
 			return false;
 		}

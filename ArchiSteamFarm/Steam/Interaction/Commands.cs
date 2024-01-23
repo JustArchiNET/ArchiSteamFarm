@@ -1239,7 +1239,7 @@ public sealed class Commands {
 		}
 
 		switch (Bot.CardsFarmer.NowFarming) {
-			case false when Bot.BotConfig.FarmPriorityQueueOnly:
+			case false when Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmPriorityQueueOnly):
 				Utilities.InBackground(Bot.CardsFarmer.StartFarming);
 
 				break;

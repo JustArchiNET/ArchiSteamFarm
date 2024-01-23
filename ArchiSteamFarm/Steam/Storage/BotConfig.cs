@@ -48,9 +48,6 @@ public sealed class BotConfig {
 	public const bool DefaultAcceptGifts = false;
 
 	[PublicAPI]
-	public const bool DefaultAutoSteamSaleEvent = false;
-
-	[PublicAPI]
 	public const EBotBehaviour DefaultBotBehaviour = EBotBehaviour.None;
 
 	[PublicAPI]
@@ -63,10 +60,7 @@ public sealed class BotConfig {
 	public const bool DefaultEnabled = false;
 
 	[PublicAPI]
-	public const bool DefaultEnableRiskyCardsDiscovery = false;
-
-	[PublicAPI]
-	public const bool DefaultFarmPriorityQueueOnly = false;
+	public const EFarmingPreferences DefaultFarmingPreferences = EFarmingPreferences.None;
 
 	[PublicAPI]
 	public const byte DefaultHoursUntilCardDrops = 3;
@@ -81,25 +75,13 @@ public sealed class BotConfig {
 	public const ArchiCryptoHelper.ECryptoMethod DefaultPasswordFormat = ArchiCryptoHelper.ECryptoMethod.PlainText;
 
 	[PublicAPI]
-	public const bool DefaultPaused = false;
-
-	[PublicAPI]
 	public const ERedeemingPreferences DefaultRedeemingPreferences = ERedeemingPreferences.None;
 
 	[PublicAPI]
 	public const ERemoteCommunication DefaultRemoteCommunication = ERemoteCommunication.All;
 
 	[PublicAPI]
-	public const bool DefaultSendOnFarmingFinished = false;
-
-	[PublicAPI]
 	public const byte DefaultSendTradePeriod = 0;
-
-	[PublicAPI]
-	public const bool DefaultShutdownOnFarmingFinished = false;
-
-	[PublicAPI]
-	public const bool DefaultSkipRefundableGames = false;
 
 	[PublicAPI]
 	public const string? DefaultSteamLogin = null;
@@ -156,9 +138,6 @@ public sealed class BotConfig {
 	public bool AcceptGifts { get; private set; } = DefaultAcceptGifts;
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	public bool AutoSteamSaleEvent { get; private set; } = DefaultAutoSteamSaleEvent;
-
-	[JsonProperty(Required = Required.DisallowNull)]
 	public EBotBehaviour BotBehaviour { get; private set; } = DefaultBotBehaviour;
 
 	[JsonProperty(Required = Required.DisallowNull)]
@@ -174,14 +153,11 @@ public sealed class BotConfig {
 	[JsonProperty(Required = Required.DisallowNull)]
 	public bool Enabled { get; private set; } = DefaultEnabled;
 
-	[JsonProperty]
-	public bool EnableRiskyCardsDiscovery { get; private set; } = DefaultEnableRiskyCardsDiscovery;
-
 	[JsonProperty(Required = Required.DisallowNull)]
 	public ImmutableList<EFarmingOrder> FarmingOrders { get; private set; } = DefaultFarmingOrders;
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	public bool FarmPriorityQueueOnly { get; private set; } = DefaultFarmPriorityQueueOnly;
+	public EFarmingPreferences FarmingPreferences { get; private set; } = DefaultFarmingPreferences;
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	[MaxLength(ArchiHandler.MaxGamesPlayedConcurrently)]
@@ -209,26 +185,14 @@ public sealed class BotConfig {
 	public ArchiCryptoHelper.ECryptoMethod PasswordFormat { get; internal set; } = DefaultPasswordFormat;
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	public bool Paused { get; private set; } = DefaultPaused;
-
-	[JsonProperty(Required = Required.DisallowNull)]
 	public ERedeemingPreferences RedeemingPreferences { get; private set; } = DefaultRedeemingPreferences;
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	public ERemoteCommunication RemoteCommunication { get; private set; } = DefaultRemoteCommunication;
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	public bool SendOnFarmingFinished { get; private set; } = DefaultSendOnFarmingFinished;
-
-	[JsonProperty(Required = Required.DisallowNull)]
 	[Range(byte.MinValue, byte.MaxValue)]
 	public byte SendTradePeriod { get; private set; } = DefaultSendTradePeriod;
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool ShutdownOnFarmingFinished { get; private set; } = DefaultShutdownOnFarmingFinished;
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool SkipRefundableGames { get; private set; } = DefaultSkipRefundableGames;
 
 	[JsonProperty]
 	public string? SteamLogin {
@@ -310,6 +274,104 @@ public sealed class BotConfig {
 	private string? BackingSteamParentalCode = DefaultSteamParentalCode;
 	private string? BackingSteamPassword = DefaultSteamPassword;
 
+	[JsonProperty(Required = Required.DisallowNull)]
+	[Obsolete]
+	private bool AutoSteamSaleEvent {
+		set {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(AutoSteamSaleEvent), nameof(FarmingPreferences)));
+
+			if (value) {
+				FarmingPreferences |= EFarmingPreferences.AutoSteamSaleEvent;
+			} else {
+				FarmingPreferences &= ~EFarmingPreferences.AutoSteamSaleEvent;
+			}
+		}
+	}
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	[Obsolete]
+	private bool EnableRiskyCardsDiscovery {
+		set {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(EnableRiskyCardsDiscovery), nameof(FarmingPreferences)));
+
+			if (value) {
+				FarmingPreferences |= EFarmingPreferences.EnableRiskyCardsDiscovery;
+			} else {
+				FarmingPreferences &= ~EFarmingPreferences.EnableRiskyCardsDiscovery;
+			}
+		}
+	}
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	[Obsolete]
+	private bool FarmPriorityQueueOnly {
+		set {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(FarmPriorityQueueOnly), nameof(FarmingPreferences)));
+
+			if (value) {
+				FarmingPreferences |= EFarmingPreferences.FarmPriorityQueueOnly;
+			} else {
+				FarmingPreferences &= ~EFarmingPreferences.FarmPriorityQueueOnly;
+			}
+		}
+	}
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	[Obsolete]
+	private bool Paused {
+		set {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(Paused), nameof(FarmingPreferences)));
+
+			if (value) {
+				FarmingPreferences |= EFarmingPreferences.FarmingPausedByDefault;
+			} else {
+				FarmingPreferences &= ~EFarmingPreferences.FarmingPausedByDefault;
+			}
+		}
+	}
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	[Obsolete]
+	private bool SendOnFarmingFinished {
+		set {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(SendOnFarmingFinished), nameof(FarmingPreferences)));
+
+			if (value) {
+				FarmingPreferences |= EFarmingPreferences.SendOnFarmingFinished;
+			} else {
+				FarmingPreferences &= ~EFarmingPreferences.SendOnFarmingFinished;
+			}
+		}
+	}
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	[Obsolete]
+	private bool ShutdownOnFarmingFinished {
+		set {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(ShutdownOnFarmingFinished), nameof(FarmingPreferences)));
+
+			if (value) {
+				FarmingPreferences |= EFarmingPreferences.ShutdownOnFarmingFinished;
+			} else {
+				FarmingPreferences &= ~EFarmingPreferences.ShutdownOnFarmingFinished;
+			}
+		}
+	}
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	[Obsolete]
+	private bool SkipRefundableGames {
+		set {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(SkipRefundableGames), nameof(FarmingPreferences)));
+
+			if (value) {
+				FarmingPreferences |= EFarmingPreferences.SkipRefundableGames;
+			} else {
+				FarmingPreferences &= ~EFarmingPreferences.SkipRefundableGames;
+			}
+		}
+	}
+
 	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamMasterClanID)}", Required = Required.DisallowNull)]
 	private string SSteamMasterClanID {
 		get => SteamMasterClanID.ToString(CultureInfo.InvariantCulture);
@@ -332,9 +394,6 @@ public sealed class BotConfig {
 	public bool ShouldSerializeAcceptGifts() => !Saving || (AcceptGifts != DefaultAcceptGifts);
 
 	[UsedImplicitly]
-	public bool ShouldSerializeAutoSteamSaleEvent() => !Saving || (AutoSteamSaleEvent != DefaultAutoSteamSaleEvent);
-
-	[UsedImplicitly]
 	public bool ShouldSerializeBotBehaviour() => !Saving || (BotBehaviour != DefaultBotBehaviour);
 
 	[UsedImplicitly]
@@ -350,13 +409,10 @@ public sealed class BotConfig {
 	public bool ShouldSerializeEnabled() => !Saving || (Enabled != DefaultEnabled);
 
 	[UsedImplicitly]
-	public bool ShouldSerializeEnableRiskyCardsDiscovery() => !Saving || (EnableRiskyCardsDiscovery != DefaultEnableRiskyCardsDiscovery);
-
-	[UsedImplicitly]
 	public bool ShouldSerializeFarmingOrders() => !Saving || ((FarmingOrders != DefaultFarmingOrders) && !FarmingOrders.SequenceEqual(DefaultFarmingOrders));
 
 	[UsedImplicitly]
-	public bool ShouldSerializeFarmPriorityQueueOnly() => !Saving || (FarmPriorityQueueOnly != DefaultFarmPriorityQueueOnly);
+	public bool ShouldSerializeFarmingPreferences() => !Saving || (FarmingPreferences != DefaultFarmingPreferences);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeGamesPlayedWhileIdle() => !Saving || ((GamesPlayedWhileIdle != DefaultGamesPlayedWhileIdle) && !GamesPlayedWhileIdle.SequenceEqual(DefaultGamesPlayedWhileIdle));
@@ -380,25 +436,13 @@ public sealed class BotConfig {
 	public bool ShouldSerializePasswordFormat() => !Saving || (PasswordFormat != DefaultPasswordFormat);
 
 	[UsedImplicitly]
-	public bool ShouldSerializePaused() => !Saving || (Paused != DefaultPaused);
-
-	[UsedImplicitly]
 	public bool ShouldSerializeRedeemingPreferences() => !Saving || (RedeemingPreferences != DefaultRedeemingPreferences);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeRemoteCommunication() => !Saving || (RemoteCommunication != DefaultRemoteCommunication);
 
 	[UsedImplicitly]
-	public bool ShouldSerializeSendOnFarmingFinished() => !Saving || (SendOnFarmingFinished != DefaultSendOnFarmingFinished);
-
-	[UsedImplicitly]
 	public bool ShouldSerializeSendTradePeriod() => !Saving || (SendTradePeriod != DefaultSendTradePeriod);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeShutdownOnFarmingFinished() => !Saving || (ShutdownOnFarmingFinished != DefaultShutdownOnFarmingFinished);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeSkipRefundableGames() => !Saving || (SkipRefundableGames != DefaultSkipRefundableGames);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSSteamMasterClanID() => !Saving;
@@ -695,6 +739,20 @@ public sealed class BotConfig {
 		RedeemDateTimesDescending,
 		MarketableAscending,
 		MarketableDescending
+	}
+
+	[Flags]
+	[PublicAPI]
+	public enum EFarmingPreferences : byte {
+		None = 0,
+		FarmingPausedByDefault = 1,
+		ShutdownOnFarmingFinished = 2,
+		SendOnFarmingFinished = 4,
+		FarmPriorityQueueOnly = 8,
+		SkipRefundableGames = 16,
+		EnableRiskyCardsDiscovery = 32,
+		AutoSteamSaleEvent = 64,
+		All = FarmingPausedByDefault | ShutdownOnFarmingFinished | SendOnFarmingFinished | FarmPriorityQueueOnly | SkipRefundableGames | EnableRiskyCardsDiscovery | AutoSteamSaleEvent
 	}
 
 	[Flags]
