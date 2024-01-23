@@ -610,6 +610,11 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				}
 			}
 
+			if ((hours <= 0.0F) && Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SkipUnplayedGames)) {
+				// User is skipping unplayed games, ignore this entry
+				continue;
+			}
+
 			// Names
 			INode? nameNode = statsNode?.SelectSingleNode("(.//div[@class='card_drop_info_body'])[last()]");
 
