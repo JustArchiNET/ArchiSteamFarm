@@ -217,7 +217,7 @@ public static class PluginsCore {
 			try {
 				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginLoading, plugin.Name, plugin.Version));
 
-				if (plugin is OfficialPlugin officialPlugin && !officialPlugin.HasSameVersion()) {
+				if (!Program.IgnoreUnsupportedEnvironment && plugin is OfficialPlugin officialPlugin && !officialPlugin.HasSameVersion()) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedOfficialPlugins, plugin.Name, plugin.Version, SharedInfo.Version));
 
 					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
