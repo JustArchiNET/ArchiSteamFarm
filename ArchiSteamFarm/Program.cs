@@ -49,6 +49,7 @@ namespace ArchiSteamFarm;
 internal static class Program {
 	internal static bool ConfigMigrate { get; private set; } = true;
 	internal static bool ConfigWatch { get; private set; } = true;
+	internal static bool IgnoreUnsupportedEnvironment { get; private set; }
 	internal static string? NetworkGroup { get; private set; }
 	internal static bool ProcessRequired { get; private set; }
 	internal static bool RestartAllowed { get; private set; } = true;
@@ -60,7 +61,6 @@ internal static class Program {
 	private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
 	private static readonly FrozenSet<PosixSignal> SupportedPosixSignals = new HashSet<PosixSignal>(2) { PosixSignal.SIGINT, PosixSignal.SIGTERM }.ToFrozenSet();
 
-	private static bool IgnoreUnsupportedEnvironment;
 	private static bool InputCryptkeyManually;
 	private static bool Minimized;
 	private static bool SystemRequired;
@@ -205,13 +205,7 @@ internal static class Program {
 
 		OS.Init(ASF.GlobalConfig?.OptimizationMode ?? GlobalConfig.DefaultOptimizationMode);
 
-		if (!await InitGlobalDatabaseAndServices().ConfigureAwait(false)) {
-			return false;
-		}
-
-		await ASF.Init().ConfigureAwait(false);
-
-		return true;
+		return await InitGlobalDatabaseAndServices().ConfigureAwait(false) && await ASF.Init().ConfigureAwait(false);
 	}
 
 	private static async Task<bool> InitCore(IReadOnlyCollection<string>? args) {

@@ -105,13 +105,13 @@ public static class ASF {
 		};
 	}
 
-	internal static async Task Init() {
+	internal static async Task<bool> Init() {
 		if (GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
 
-		if (!PluginsCore.InitPlugins()) {
-			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+		if (!await PluginsCore.InitPlugins().ConfigureAwait(false)) {
+			return false;
 		}
 
 		WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
@@ -142,6 +142,8 @@ public static class ASF {
 		if (Program.ConfigWatch) {
 			InitConfigWatchEvents();
 		}
+
+		return true;
 	}
 
 	internal static bool IsValidBotName(string botName) {

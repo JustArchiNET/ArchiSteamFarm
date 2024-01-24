@@ -1220,5 +1220,11 @@ namespace ArchiSteamFarm.Localization {
                 return ResourceManager.GetString("WarningRegionRestrictedPackage", resourceCulture);
             }
         }
+        
+        public static string WarningUnsupportedOfficialPlugins {
+            get {
+                return ResourceManager.GetString("WarningUnsupportedOfficialPlugins", resourceCulture);
+            }
+        }
     }
 }

@@ -49,10 +49,10 @@ using SteamKit2;
 namespace ArchiSteamFarm.Plugins;
 
 public static class PluginsCore {
-	internal static bool HasCustomPluginsLoaded => ActivePlugins?.Any(static plugin => plugin is not OfficialPlugin officialPlugin || !officialPlugin.HasSameVersion()) == true;
+	internal static bool HasCustomPluginsLoaded => ActivePlugins.Any(static plugin => plugin is not OfficialPlugin officialPlugin || !officialPlugin.HasSameVersion());
 
 	[ImportMany]
-	internal static FrozenSet<IPlugin>? ActivePlugins { get; private set; }
+	internal static FrozenSet<IPlugin> ActivePlugins { get; private set; } = FrozenSet<IPlugin>.Empty;
 
 	[PublicAPI]
 	public static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName) {
@@ -73,7 +73,7 @@ public static class PluginsCore {
 
 		string resourceName = OS.GetOsResourceName(objectName);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return new CrossProcessFileBasedSemaphore(resourceName);
 		}
 
@@ -91,7 +91,7 @@ public static class PluginsCore {
 	}
 
 	internal static async Task<StringComparer> GetBotsComparer() {
-		if (ActivePlugins == null) {
+		if (ActivePlugins.Count == 0) {
 			return StringComparer.Ordinal;
 		}
 
@@ -113,7 +113,7 @@ public static class PluginsCore {
 	internal static async Task<uint> GetChangeNumberToStartFrom() {
 		uint lastChangeNumber = ASF.GlobalDatabase?.LastChangeNumber ?? 0;
 
-		if ((lastChangeNumber == 0) || (ActivePlugins == null)) {
+		if ((lastChangeNumber == 0) || (ActivePlugins.Count == 0)) {
 			return lastChangeNumber;
 		}
 
@@ -137,7 +137,7 @@ public static class PluginsCore {
 	internal static async Task<IMachineInfoProvider?> GetCustomMachineInfoProvider(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if (ActivePlugins == null) {
+		if (ActivePlugins.Count == 0) {
 			return null;
 		}
 
@@ -155,9 +155,9 @@ public static class PluginsCore {
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	internal static bool InitPlugins() {
-		if (ActivePlugins != null) {
-			return false;
+	internal static async Task<bool> InitPlugins() {
+		if (ActivePlugins.Count > 0) {
+			throw new InvalidOperationException(nameof(ActivePlugins));
 		}
 
 		HashSet<Assembly>? assemblies = LoadAssemblies();
@@ -182,6 +182,8 @@ public static class PluginsCore {
 				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, assembly.FullName));
 				ASF.ArchiLogger.LogGenericException(e);
 
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+
 				return false;
 			}
 		}
@@ -200,6 +202,8 @@ public static class PluginsCore {
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
+			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+
 			return false;
 		}
 
@@ -211,11 +215,19 @@ public static class PluginsCore {
 
 		foreach (IPlugin plugin in activePlugins) {
 			try {
-				string pluginName = plugin.Name;
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginLoading, plugin.Name, plugin.Version));
 
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginLoading, pluginName, plugin.Version));
-				plugin.OnLoaded();
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginLoaded, pluginName));
+				if (plugin is OfficialPlugin officialPlugin && !officialPlugin.HasSameVersion()) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedOfficialPlugins, plugin.Name, plugin.Version, SharedInfo.Version));
+
+					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+
+					return false;
+				}
+
+				await plugin.OnLoaded().ConfigureAwait(false);
+
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginLoaded, plugin.Name));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				invalidPlugins.Add(plugin);
@@ -223,10 +235,12 @@ public static class PluginsCore {
 		}
 
 		if (invalidPlugins.Count > 0) {
+			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+
 			activePlugins.ExceptWith(invalidPlugins);
 
 			if (activePlugins.Count == 0) {
-				return false;
+				return true;
 			}
 		}
 
@@ -239,7 +253,7 @@ public static class PluginsCore {
 			Console.Title = SharedInfo.ProgramIdentifier;
 		}
 
-		return invalidPlugins.Count == 0;
+		return true;
 	}
 
 	internal static HashSet<Assembly>? LoadAssemblies() {
@@ -273,7 +287,7 @@ public static class PluginsCore {
 	}
 
 	internal static async Task OnASFInitModules(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -297,7 +311,7 @@ public static class PluginsCore {
 			throw new ArgumentNullException(nameof(args));
 		}
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return null;
 		}
 
@@ -317,7 +331,7 @@ public static class PluginsCore {
 	internal static async Task OnBotDestroy(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -331,7 +345,7 @@ public static class PluginsCore {
 	internal static async Task OnBotDisconnected(Bot bot, EResult reason) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -345,7 +359,7 @@ public static class PluginsCore {
 	internal static async Task OnBotFarmingFinished(Bot bot, bool farmedSomething) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -359,7 +373,7 @@ public static class PluginsCore {
 	internal static async Task OnBotFarmingStarted(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -373,7 +387,7 @@ public static class PluginsCore {
 	internal static async Task OnBotFarmingStopped(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -391,7 +405,7 @@ public static class PluginsCore {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return false;
 		}
 
@@ -411,7 +425,7 @@ public static class PluginsCore {
 	internal static async Task OnBotInit(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -425,7 +439,7 @@ public static class PluginsCore {
 	internal static async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -439,7 +453,7 @@ public static class PluginsCore {
 	internal static async Task OnBotLoggedOn(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -459,7 +473,7 @@ public static class PluginsCore {
 
 		ArgumentException.ThrowIfNullOrEmpty(message);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return null;
 		}
 
@@ -480,7 +494,7 @@ public static class PluginsCore {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(callbackManager);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -494,7 +508,7 @@ public static class PluginsCore {
 	internal static async Task<HashSet<ClientMsgHandler>?> OnBotSteamHandlersInit(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return null;
 		}
 
@@ -515,7 +529,7 @@ public static class PluginsCore {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(tradeOffer);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return false;
 		}
 
@@ -539,7 +553,7 @@ public static class PluginsCore {
 			throw new ArgumentNullException(nameof(tradeResults));
 		}
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -557,7 +571,7 @@ public static class PluginsCore {
 			throw new ArgumentNullException(nameof(newNotifications));
 		}
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -573,7 +587,7 @@ public static class PluginsCore {
 		ArgumentNullException.ThrowIfNull(appChanges);
 		ArgumentNullException.ThrowIfNull(packageChanges);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -587,7 +601,7 @@ public static class PluginsCore {
 	internal static async Task OnPICSChangesRestart(uint currentChangeNumber) {
 		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -602,7 +616,7 @@ public static class PluginsCore {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(data);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -616,7 +630,7 @@ public static class PluginsCore {
 	internal static async Task OnUpdateFinished(Version newVersion) {
 		ArgumentNullException.ThrowIfNull(newVersion);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
@@ -630,7 +644,7 @@ public static class PluginsCore {
 	internal static async Task OnUpdateProceeding(Version newVersion) {
 		ArgumentNullException.ThrowIfNull(newVersion);
 
-		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+		if (ActivePlugins.Count == 0) {
 			return;
 		}
 

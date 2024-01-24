@@ -103,7 +103,7 @@ internal sealed class Startup {
 
 		Dictionary<string, string> pluginPaths = new(StringComparer.Ordinal);
 
-		if (PluginsCore.ActivePlugins?.Count > 0) {
+		if (PluginsCore.ActivePlugins.Count > 0) {
 			foreach (IWebInterface plugin in PluginsCore.ActivePlugins.OfType<IWebInterface>()) {
 				if (string.IsNullOrEmpty(plugin.PhysicalPath) || string.IsNullOrEmpty(plugin.WebPath)) {
 					// Invalid path provided
@@ -317,7 +317,7 @@ internal sealed class Startup {
 		IMvcBuilder mvc = services.AddControllers();
 
 		// Add support for controllers declared in custom plugins
-		if (PluginsCore.ActivePlugins?.Count > 0) {
+		if (PluginsCore.ActivePlugins.Count > 0) {
 			HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
 
 			if (assemblies != null) {
