@@ -748,5 +748,8 @@ Darbspējas laiks: {1}</value>
 		<value>Jūs mēģinat izmantot maksas pakalpojumu {0}, bet jums nav derīgs LicenseID iestatīts ASF globālajā konfigurācijā. Lūdzu pārskati savu konfigurāciju, jo šī funkcionalitāte nestrādās bez papildu informācijas.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
-	
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>ASF nevar palaist aplikāciju {0}, jo tai ir ar reģionu saistīts ierobežojums {1}  valstī, kas ir spēkā līdz {2}.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
 </root>
