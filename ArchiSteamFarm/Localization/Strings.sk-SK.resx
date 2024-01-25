@@ -753,4 +753,5 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
 		<value>ASF nemôže spustiť aplikáciu {0}, pretože má regionálne obmedzenie pre krajinu {1}, ktoré trvá do {2}.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
 	</data>
+	
 </root>
