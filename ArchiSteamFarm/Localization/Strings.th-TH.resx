@@ -122,8 +122,13 @@ StackTrace:
 	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
 		<value>ไม่สามารถตรวจสอบเวอร์ชั่นล่าสุดได้!</value>
 	</data>
-	
-	
+	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+		<value>ไม่สามารถดำเนินการอัพเดตต่อได้เนื่องจากไม่มีแอทเซทซที่ใช้กับเวอร์ชั่นที่ทำงานอยู่ตอนนี้! 
+อัพเดตอัตโนมัติไม่สามารถดำเนินได้</value>
+	</data>
+	<data name="ErrorUpdateNoAssets" xml:space="preserve">
+		<value>ไม่สามารถดำเนินการอัพเดตได้เนื่อจากเวอร์ชั่นดังกล่าวไม่มีแอทเซทซใดๆอยู่!</value>
+	</data>
 	
 	<data name="Exiting" xml:space="preserve">
 		<value>กำลังออก…</value>
