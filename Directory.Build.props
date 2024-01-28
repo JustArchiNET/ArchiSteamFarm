@@ -50,7 +50,7 @@
 		<DebugType>none</DebugType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
-		<WarningsNotAsErrors>CA1863,CS8002,IL2026,IL2104</WarningsNotAsErrors>
+		<WarningsNotAsErrors>CA1863,CS8002,IL2026,IL2104,NU1901,NU1902,NU1903,NU1904</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<!-- Enable public signing if not part of Visual Studio, which is too stupid to understand what public signing is -->
