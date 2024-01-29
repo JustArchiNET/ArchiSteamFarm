@@ -196,13 +196,22 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		private set {
 			AccessTokenValidUntil = null;
-			BackingAccessToken = value;
 
 			if (string.IsNullOrEmpty(value)) {
+				BackingAccessToken = null;
+
 				return;
 			}
 
-			if (Utilities.TryReadJwtToken(value, out JwtSecurityToken? accessToken) && (accessToken.ValidTo > DateTime.MinValue)) {
+			if (!Utilities.TryReadJwtToken(value, out JwtSecurityToken? accessToken)) {
+				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(accessToken)));
+
+				return;
+			}
+
+			BackingAccessToken = value;
+
+			if (accessToken.ValidTo > DateTime.MinValue) {
 				AccessTokenValidUntil = accessToken.ValidTo;
 			}
 		}
