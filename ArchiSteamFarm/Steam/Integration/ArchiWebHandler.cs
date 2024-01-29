@@ -25,7 +25,6 @@ using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -70,6 +69,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	private static ushort WebLimiterDelay => ASF.GlobalConfig?.WebLimiterDelay ?? GlobalConfig.DefaultWebLimiterDelay;
 
+	[Obsolete($"Use Bot.{nameof(Bot.AccessToken)} instead, this property will be removed in the next version")]
 	[PublicAPI]
 	public ArchiCacheable<string> CachedAccessToken { get; }
 
@@ -90,13 +90,18 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Bot = bot;
 
-		CachedAccessToken = new ArchiCacheable<string>(ResolveAccessToken);
+#pragma warning disable CS0612, CS0618 // Type or member is obsolete - TODO, pending removal
+		CachedAccessToken = new ArchiCacheable<string>(ResolveAccessToken, TimeSpan.Zero);
+#pragma warning restore CS0612, CS0618 // Type or member is obsolete - TODO, pending removal
 
 		WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy);
 	}
 
 	public void Dispose() {
+#pragma warning disable CS0618 // Type or member is obsolete - TODO, pending removal
 		CachedAccessToken.Dispose();
+#pragma warning restore CS0618 // Type or member is obsolete - TODO, pending removal
+
 		SessionSemaphore.Dispose();
 		WebBrowser.Dispose();
 	}
@@ -390,7 +395,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<uint?> GetPointsBalance() {
-		(_, string? accessToken) = await CachedAccessToken.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		string? accessToken = Bot.AccessToken;
 
 		if (string.IsNullOrEmpty(accessToken)) {
 			return null;
@@ -453,7 +458,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<HashSet<TradeOffer>?> GetTradeOffers(bool? activeOnly = null, bool? receivedOffers = null, bool? sentOffers = null, bool? withDescriptions = null) {
-		(_, string? accessToken) = await CachedAccessToken.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		string? accessToken = Bot.AccessToken;
 
 		if (string.IsNullOrEmpty(accessToken)) {
 			return null;
@@ -1800,7 +1805,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		(_, string? accessToken) = await CachedAccessToken.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		string? accessToken = Bot.AccessToken;
 
 		if (string.IsNullOrEmpty(accessToken)) {
 			return null;
@@ -2258,11 +2263,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return await UrlHeadWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 	}
 
-	internal void OnDisconnected() {
-		Initialized = false;
-
-		Utilities.InBackground(() => CachedAccessToken.Reset());
-	}
+	internal void OnDisconnected() => Initialized = false;
 
 	internal void OnVanityURLChanged(string? vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
 
@@ -2504,26 +2505,11 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	private async Task<(bool Success, string? Result, DateTime? ValidUntil)> ResolveAccessToken(CancellationToken cancellationToken = default) {
-		Uri request = new(SteamStoreURL, "/pointssummary/ajaxgetasyncconfig");
+	[Obsolete]
+	private Task<(bool Success, string? Result)> ResolveAccessToken(CancellationToken cancellationToken = default) {
+		string? accessToken = Bot.AccessToken;
 
-		ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
-
-		if (string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken)) {
-			return (false, null, null);
-		}
-
-		JwtSecurityToken? jwtToken = Utilities.ReadJwtToken(response.Content.Data.WebAPIToken);
-
-		if (jwtToken == null) {
-			Bot.ArchiLogger.LogNullError(nameof(jwtToken));
-
-			return (false, null, null);
-		}
-
-		DateTime validTo = jwtToken.ValidTo > DateTime.MinValue ? jwtToken.ValidTo.AddMinutes(-Bot.MinimumAccessTokenValidityMinutes) : DateTime.UtcNow.AddMinutes(Bot.MinimumAccessTokenValidityMinutes);
-
-		return (true, response.Content.Data.WebAPIToken, validTo);
+		return Task.FromResult((!string.IsNullOrEmpty(accessToken), accessToken));
 	}
 
 	private async Task<bool> UnlockParentalAccount(string parentalCode) {

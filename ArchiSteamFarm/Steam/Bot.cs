@@ -63,12 +63,12 @@ namespace ArchiSteamFarm.Steam;
 public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal const ushort CallbackSleep = 500; // In milliseconds
 	internal const byte MinCardsPerBadge = 5;
-	internal const byte MinimumAccessTokenValidityMinutes = 5;
 
 	private const char DefaultBackgroundKeysRedeemerSeparator = '\t';
 	private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 	private const uint LoginID = 1242; // This must be the same for all ASF bots and all ASF processes
 	private const byte MaxLoginFailures = WebBrowser.MaxTries; // Max login failures in a row before we determine that our credentials are invalid (because Steam wrongly returns those, of course)course)
+	private const byte MinimumAccessTokenValidityMinutes = 5;
 	private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
 	private const byte RegionRestrictionPlayableBlockMonths = 3;
 
@@ -189,6 +189,25 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
 	private string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
 
+	[JsonIgnore]
+	[PublicAPI]
+	public string? AccessToken {
+		get => BackingAccessToken;
+
+		private set {
+			AccessTokenValidUntil = null;
+			BackingAccessToken = value;
+
+			if (string.IsNullOrEmpty(value)) {
+				return;
+			}
+
+			if (Utilities.TryReadJwtToken(value, out JwtSecurityToken? accessToken) && (accessToken.ValidTo > DateTime.MinValue)) {
+				AccessTokenValidUntil = accessToken.ValidTo;
+			}
+		}
+	}
+
 	[JsonProperty]
 	[PublicAPI]
 	public EAccountFlags AccountFlags { get; private set; }
@@ -259,29 +278,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private SteamSaleEvent? SteamSaleEvent;
 	private Timer? TradeCheckTimer;
 	private string? TwoFactorCode;
-
-	private string? AccessToken {
-		get => BackingAccessToken;
-
-		set {
-			AccessTokenValidUntil = null;
-			BackingAccessToken = value;
-
-			if (string.IsNullOrEmpty(value)) {
-				return;
-			}
-
-			JwtSecurityToken? jwtToken = Utilities.ReadJwtToken(value);
-
-			if (jwtToken == null) {
-				return;
-			}
-
-			if (jwtToken.ValidTo > DateTime.MinValue) {
-				AccessTokenValidUntil = jwtToken.ValidTo;
-			}
-		}
-	}
 
 	private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
 		ArgumentException.ThrowIfNullOrEmpty(botName);
@@ -1561,12 +1557,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return false;
 			}
 
-			DateTime now = DateTime.UtcNow;
+			DateTime minimumValidUntil = DateTime.UtcNow.AddMinutes(MinimumAccessTokenValidityMinutes);
 
-			if (!force && !string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value >= now.AddMinutes(MinimumAccessTokenValidityMinutes))) {
+			if (!force && !string.IsNullOrEmpty(AccessToken) && (!AccessTokenValidUntil.HasValue || (AccessTokenValidUntil.Value >= minimumValidUntil))) {
 				// We can use the tokens we already have
 				if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
-					InitRefreshTokensTimer(AccessTokenValidUntil.Value);
+					InitRefreshTokensTimer(AccessTokenValidUntil ?? minimumValidUntil);
 
 					return true;
 				}
@@ -1611,7 +1607,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			UpdateTokens(response.AccessToken, response.RefreshToken);
 
 			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
-				InitRefreshTokensTimer(AccessTokenValidUntil ?? now.AddHours(18));
+				InitRefreshTokensTimer(AccessTokenValidUntil ?? minimumValidUntil);
 
 				return true;
 			}
@@ -2362,21 +2358,30 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		WalletBalance = 0;
 		WalletCurrency = ECurrencyCode.Invalid;
 
-		string? accessToken = BotDatabase.AccessToken;
-		string? refreshToken = BotDatabase.RefreshToken;
+		string? accessTokenText = BotDatabase.AccessToken;
+		string? refreshTokenText = BotDatabase.RefreshToken;
 
 		if (BotConfig.PasswordFormat.HasTransformation()) {
-			if (!string.IsNullOrEmpty(accessToken)) {
-				accessToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, accessToken).ConfigureAwait(false);
+			if (!string.IsNullOrEmpty(accessTokenText)) {
+				accessTokenText = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, accessTokenText).ConfigureAwait(false);
 			}
 
-			if (!string.IsNullOrEmpty(refreshToken)) {
-				refreshToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshToken).ConfigureAwait(false);
+			if (!string.IsNullOrEmpty(refreshTokenText)) {
+				refreshTokenText = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshTokenText).ConfigureAwait(false);
 			}
 		}
 
-		AccessToken = accessToken;
-		RefreshToken = refreshToken;
+		if (!string.IsNullOrEmpty(accessTokenText) && Utilities.TryReadJwtToken(accessTokenText, out JwtSecurityToken? accessToken) && ((accessToken.ValidTo == DateTime.MinValue) || (accessToken.ValidTo >= DateTime.UtcNow))) {
+			AccessToken = accessTokenText;
+		} else {
+			AccessToken = null;
+		}
+
+		if (!string.IsNullOrEmpty(refreshTokenText) && Utilities.TryReadJwtToken(refreshTokenText, out JwtSecurityToken? refreshToken) && ((refreshToken.ValidTo == DateTime.MinValue) || (refreshToken.ValidTo >= DateTime.UtcNow))) {
+			RefreshToken = refreshTokenText;
+		} else {
+			RefreshToken = null;
+		}
 
 		CardsFarmer.SetInitialState(BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmingPausedByDefault));
 

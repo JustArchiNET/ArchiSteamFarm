@@ -171,7 +171,7 @@ internal static class ArchiNet {
 		return authenticateResponse.Content?.Result == bot.SteamID ? HttpStatusCode.OK : HttpStatusCode.Unauthorized;
 	}
 
-	private static async Task<(bool Success, IReadOnlyCollection<ulong>? Result, DateTime? ValidUntil)> ResolveCachedBadBots(CancellationToken cancellationToken = default) {
+	private static async Task<(bool Success, IReadOnlyCollection<ulong>? Result)> ResolveCachedBadBots(CancellationToken cancellationToken = default) {
 		if (ASF.GlobalDatabase == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
@@ -185,11 +185,11 @@ internal static class ArchiNet {
 		ObjectResponse<GenericResponse<ImmutableHashSet<ulong>>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<ImmutableHashSet<ulong>>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content?.Result == null) {
-			return (false, ASF.GlobalDatabase.CachedBadBots, null);
+			return (false, ASF.GlobalDatabase.CachedBadBots);
 		}
 
 		ASF.GlobalDatabase.CachedBadBots.ReplaceIfNeededWith(response.Content.Result);
 
-		return (true, response.Content.Result, null);
+		return (true, response.Content.Result);
 	}
 }

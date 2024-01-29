@@ -375,7 +375,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		);
 	}
 
-	private async Task<(bool Success, string? Result, DateTime? ValidUntil)> ResolveDeviceID(CancellationToken cancellationToken = default) {
+	private async Task<(bool Success, string? Result)> ResolveDeviceID(CancellationToken cancellationToken = default) {
 		if (Bot == null) {
 			throw new InvalidOperationException(nameof(Bot));
 		}
@@ -385,9 +385,9 @@ public sealed class MobileAuthenticator : IDisposable {
 		if (string.IsNullOrEmpty(deviceID)) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
-			return (false, null, null);
+			return (false, null);
 		}
 
-		return (true, deviceID, null);
+		return (true, deviceID);
 	}
 }

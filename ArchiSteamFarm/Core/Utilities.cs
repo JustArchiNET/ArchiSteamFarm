@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
@@ -49,8 +50,6 @@ public static class Utilities {
 
 	// normally we'd just use words like "steam" and "farm", but the library we're currently using is a bit iffy about banned words, so we need to also add combinations such as "steamfarm"
 	private static readonly FrozenSet<string> ForbiddenPasswordPhrases = new HashSet<string>(10, StringComparer.InvariantCultureIgnoreCase) { "archisteamfarm", "archi", "steam", "farm", "archisteam", "archifarm", "steamfarm", "asf", "asffarm", "password" }.ToFrozenSet(StringComparer.InvariantCultureIgnoreCase);
-
-	private static readonly JwtSecurityTokenHandler JwtSecurityTokenHandler = new();
 
 	[PublicAPI]
 	public static string GenerateChecksumFor(byte[] source) {
@@ -179,16 +178,38 @@ public static class Utilities {
 		return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
 	}
 
+	[Obsolete($"Use {nameof(TryReadJwtToken)} instead, this function will be removed in the next version.")]
 	[PublicAPI]
 	public static JwtSecurityToken? ReadJwtToken(string token) {
 		ArgumentException.ThrowIfNullOrEmpty(token);
 
+		JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
+
 		try {
-			return JwtSecurityTokenHandler.ReadJwtToken(token);
+			return jwtSecurityTokenHandler.ReadJwtToken(token);
 		} catch (Exception e) {
-			ASF.ArchiLogger.LogGenericException(e);
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
 
 			return null;
+		}
+	}
+
+	[PublicAPI]
+	public static bool TryReadJwtToken(string token, [NotNullWhen(true)] out JwtSecurityToken? result) {
+		ArgumentException.ThrowIfNullOrEmpty(token);
+
+		JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
+
+		try {
+			result = jwtSecurityTokenHandler.ReadJwtToken(token);
+
+			return true;
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+			result = null;
+
+			return false;
 		}
 	}
 

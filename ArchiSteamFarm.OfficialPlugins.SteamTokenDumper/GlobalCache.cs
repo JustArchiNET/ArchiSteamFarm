@@ -306,7 +306,7 @@ internal sealed class GlobalCache : SerializableFile {
 		return (depotKey.Length == 64) && Utilities.IsValidHexadecimalText(depotKey);
 	}
 
-	private static async Task<(bool Success, FrozenSet<uint>? Result, DateTime? ValidUntil)> ResolveKnownDepotIDs(CancellationToken cancellationToken = default) {
+	private static async Task<(bool Success, FrozenSet<uint>? Result)> ResolveKnownDepotIDs(CancellationToken cancellationToken = default) {
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
@@ -316,7 +316,7 @@ internal sealed class GlobalCache : SerializableFile {
 		StreamResponse? response = await ASF.WebBrowser.UrlGetToStream(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content == null) {
-			return (false, null, null);
+			return (false, null);
 		}
 
 		await using (response.ConfigureAwait(false)) {
@@ -328,7 +328,7 @@ internal sealed class GlobalCache : SerializableFile {
 				if (string.IsNullOrEmpty(countText) || !int.TryParse(countText, out int count) || (count <= 0)) {
 					ASF.ArchiLogger.LogNullError(countText);
 
-					return (false, null, null);
+					return (false, null);
 				}
 
 				HashSet<uint> result = new(count);
@@ -343,11 +343,11 @@ internal sealed class GlobalCache : SerializableFile {
 					result.Add(depotID);
 				}
 
-				return (result.Count > 0, result.ToFrozenSet(), null);
+				return (result.Count > 0, result.ToFrozenSet());
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericWarningException(e);
 
-				return (false, null, null);
+				return (false, null);
 			}
 		}
 	}
