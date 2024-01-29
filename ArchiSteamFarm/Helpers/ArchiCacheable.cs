@@ -31,16 +31,17 @@ namespace ArchiSteamFarm.Helpers;
 public sealed class ArchiCacheable<T> : IDisposable {
 	private readonly TimeSpan CacheLifetime;
 	private readonly SemaphoreSlim InitSemaphore = new(1, 1);
-	private readonly Func<CancellationToken, Task<(bool Success, T? Result)>> ResolveFunction;
+	private readonly Func<CancellationToken, Task<(bool Success, T? Result, DateTime? ValidUntil)>> ResolveFunction;
 
 	private bool IsInitialized => InitializedAt > DateTime.MinValue;
 	private bool IsPermanentCache => CacheLifetime == Timeout.InfiniteTimeSpan;
-	private bool IsRecent => IsPermanentCache || (DateTime.UtcNow.Subtract(InitializedAt) < CacheLifetime);
+	private bool IsRecent => IsInitialized && (InitializedAt < ValidUntil) && (IsPermanentCache || (DateTime.UtcNow.Subtract(InitializedAt) < CacheLifetime));
 
 	private DateTime InitializedAt;
 	private T? InitializedValue;
+	private DateTime ValidUntil = DateTime.MaxValue;
 
-	public ArchiCacheable(Func<CancellationToken, Task<(bool Success, T? Result)>> resolveFunction, TimeSpan? cacheLifetime = null) {
+	public ArchiCacheable(Func<CancellationToken, Task<(bool Success, T? Result, DateTime? ValidUntil)>> resolveFunction, TimeSpan? cacheLifetime = null) {
 		ArgumentNullException.ThrowIfNull(resolveFunction);
 
 		ResolveFunction = resolveFunction;
@@ -55,7 +56,7 @@ public sealed class ArchiCacheable<T> : IDisposable {
 			throw new InvalidEnumArgumentException(nameof(cacheFallback), (int) cacheFallback, typeof(ECacheFallback));
 		}
 
-		if (IsInitialized && IsRecent) {
+		if (IsRecent) {
 			return (true, InitializedValue);
 		}
 
@@ -68,11 +69,11 @@ public sealed class ArchiCacheable<T> : IDisposable {
 		}
 
 		try {
-			if (IsInitialized && IsRecent) {
+			if (IsRecent) {
 				return (true, InitializedValue);
 			}
 
-			(bool success, T? result) = await ResolveFunction(cancellationToken).ConfigureAwait(false);
+			(bool success, T? result, DateTime? validUntil) = await ResolveFunction(cancellationToken).ConfigureAwait(false);
 
 			if (!success) {
 				return ReturnFailedValueFor(cacheFallback, result);
@@ -80,6 +81,7 @@ public sealed class ArchiCacheable<T> : IDisposable {
 
 			InitializedValue = result;
 			InitializedAt = DateTime.UtcNow;
+			ValidUntil = validUntil ?? DateTime.MaxValue;
 
 			return (true, result);
 		} catch (OperationCanceledException e) {
@@ -105,6 +107,7 @@ public sealed class ArchiCacheable<T> : IDisposable {
 			}
 
 			InitializedAt = DateTime.MinValue;
+			ValidUntil = DateTime.MaxValue;
 		} finally {
 			InitSemaphore.Release();
 		}

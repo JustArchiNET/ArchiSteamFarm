@@ -25,6 +25,7 @@ using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -89,7 +90,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Bot = bot;
 
-		CachedAccessToken = new ArchiCacheable<string>(ResolveAccessToken, TimeSpan.FromHours(6));
+		CachedAccessToken = new ArchiCacheable<string>(ResolveAccessToken);
 
 		WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy);
 	}
@@ -2503,12 +2504,26 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	private async Task<(bool Success, string? Result)> ResolveAccessToken(CancellationToken cancellationToken = default) {
+	private async Task<(bool Success, string? Result, DateTime? ValidUntil)> ResolveAccessToken(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamStoreURL, "/pointssummary/ajaxgetasyncconfig");
 
 		ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		return !string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken) ? (true, response.Content.Data.WebAPIToken) : (false, null);
+		if (string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken)) {
+			return (false, null, null);
+		}
+
+		JwtSecurityToken? jwtToken = Utilities.ReadJwtToken(response.Content.Data.WebAPIToken);
+
+		if (jwtToken == null) {
+			Bot.ArchiLogger.LogNullError(nameof(jwtToken));
+
+			return (false, null, null);
+		}
+
+		DateTime validTo = jwtToken.ValidTo > DateTime.MinValue ? jwtToken.ValidTo.AddMinutes(-Bot.MinimumAccessTokenValidityMinutes) : DateTime.UtcNow.AddMinutes(Bot.MinimumAccessTokenValidityMinutes);
+
+		return (true, response.Content.Data.WebAPIToken, validTo);
 	}
 
 	private async Task<bool> UnlockParentalAccount(string parentalCode) {
