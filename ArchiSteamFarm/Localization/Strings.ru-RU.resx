@@ -752,5 +752,8 @@
 		<value>ASF не может запустить приложение {0}, так как на него действует связанное с регионом ограничение для страны {1}, которое длится до {2}.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
 	</data>
-	
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>Вы пытаетесь запустить официальный плагин {0} в версии, не соответствующей ASF: {1} (ожидается {2}). Это говорит о том, что вы делаете что-то ужасно неправильно: либо исправьте настройки, либо укажите аргумент --ignore-unsupported-environment, если вы действительно знаете, что делаете.</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
 </root>
