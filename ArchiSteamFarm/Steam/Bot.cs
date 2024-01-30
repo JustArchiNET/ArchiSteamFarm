@@ -28,7 +28,6 @@ using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -53,6 +52,7 @@ using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Newtonsoft.Json;
 using SteamKit2;
 using SteamKit2.Authentication;
@@ -203,7 +203,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			if (!Utilities.TryReadJwtToken(value, out JwtSecurityToken? accessToken)) {
+			if (!Utilities.TryReadJsonWebToken(value, out JsonWebToken? accessToken)) {
 				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(accessToken)));
 
 				return;
@@ -2380,13 +2380,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		if (!string.IsNullOrEmpty(accessTokenText) && Utilities.TryReadJwtToken(accessTokenText, out JwtSecurityToken? accessToken) && ((accessToken.ValidTo == DateTime.MinValue) || (accessToken.ValidTo >= DateTime.UtcNow))) {
+		if (!string.IsNullOrEmpty(accessTokenText) && Utilities.TryReadJsonWebToken(accessTokenText, out JsonWebToken? accessToken) && ((accessToken.ValidTo == DateTime.MinValue) || (accessToken.ValidTo >= DateTime.UtcNow))) {
 			AccessToken = accessTokenText;
 		} else {
 			AccessToken = null;
 		}
 
-		if (!string.IsNullOrEmpty(refreshTokenText) && Utilities.TryReadJwtToken(refreshTokenText, out JwtSecurityToken? refreshToken) && ((refreshToken.ValidTo == DateTime.MinValue) || (refreshToken.ValidTo >= DateTime.UtcNow))) {
+		if (!string.IsNullOrEmpty(refreshTokenText) && Utilities.TryReadJsonWebToken(refreshTokenText, out JsonWebToken? refreshToken) && ((refreshToken.ValidTo == DateTime.MinValue) || (refreshToken.ValidTo >= DateTime.UtcNow))) {
 			RefreshToken = refreshTokenText;
 		} else {
 			RefreshToken = null;

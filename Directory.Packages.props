@@ -6,6 +6,7 @@
 		<PackageVersion Include="Humanizer" Version="2.14.1" />
 		<PackageVersion Include="JetBrains.Annotations" Version="2023.3.0" />
 		<PackageVersion Include="Markdig.Signed" Version="0.34.0" />
+		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.3.0" />
 		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
 		<PackageVersion Include="MSTest.TestAdapter" Version="3.2.0" />
 		<PackageVersion Include="MSTest.TestFramework" Version="3.2.0" />
@@ -18,7 +19,6 @@
 		<PackageVersion Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />
 		<PackageVersion Include="System.Composition" Version="8.0.0" />
 		<PackageVersion Include="System.Composition.AttributedModel" Version="8.0.0" />
-		<PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.3.0" />
 		<PackageVersion Include="System.Linq.Async" Version="6.0.1" />
 		<PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
 		<PackageVersion Include="zxcvbn-core" Version="7.0.92" />

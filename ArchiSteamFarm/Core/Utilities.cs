@@ -25,7 +25,6 @@ using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -40,6 +39,7 @@ using ArchiSteamFarm.Storage;
 using Humanizer;
 using Humanizer.Localisation;
 using JetBrains.Annotations;
+using Microsoft.IdentityModel.JsonWebTokens;
 using SteamKit2;
 using Zxcvbn;
 
@@ -178,41 +178,6 @@ public static class Utilities {
 		return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
 	}
 
-	[Obsolete($"Use {nameof(TryReadJwtToken)} instead, this function will be removed in the next version.")]
-	[PublicAPI]
-	public static JwtSecurityToken? ReadJwtToken(string token) {
-		ArgumentException.ThrowIfNullOrEmpty(token);
-
-		JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
-
-		try {
-			return jwtSecurityTokenHandler.ReadJwtToken(token);
-		} catch (Exception e) {
-			ASF.ArchiLogger.LogGenericDebuggingException(e);
-
-			return null;
-		}
-	}
-
-	[PublicAPI]
-	public static bool TryReadJwtToken(string token, [NotNullWhen(true)] out JwtSecurityToken? result) {
-		ArgumentException.ThrowIfNullOrEmpty(token);
-
-		JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
-
-		try {
-			result = jwtSecurityTokenHandler.ReadJwtToken(token);
-
-			return true;
-		} catch (Exception e) {
-			ASF.ArchiLogger.LogGenericDebuggingException(e);
-
-			result = null;
-
-			return false;
-		}
-	}
-
 	[PublicAPI]
 	public static IList<INode> SelectNodes(this IDocument document, string xpath) {
 		ArgumentNullException.ThrowIfNull(document);
@@ -279,6 +244,23 @@ public static class Utilities {
 		job.Timeout = TimeSpan.FromSeconds(TimeoutForLongRunningTasksInSeconds);
 
 		return job.ToTask();
+	}
+
+	[PublicAPI]
+	public static bool TryReadJsonWebToken(string token, [NotNullWhen(true)] out JsonWebToken? result) {
+		ArgumentException.ThrowIfNullOrEmpty(token);
+
+		try {
+			result = new JsonWebToken(token);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+			result = null;
+
+			return false;
+		}
+
+		return true;
 	}
 
 	internal static void DeleteEmptyDirectoriesRecursively(string directory) {
