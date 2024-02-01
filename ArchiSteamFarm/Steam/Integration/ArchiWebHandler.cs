@@ -69,10 +69,6 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	private static ushort WebLimiterDelay => ASF.GlobalConfig?.WebLimiterDelay ?? GlobalConfig.DefaultWebLimiterDelay;
 
-	[Obsolete($"Use Bot.{nameof(Bot.AccessToken)} instead, this property will be removed in the next version")]
-	[PublicAPI]
-	public ArchiCacheable<string> CachedAccessToken { get; }
-
 	[PublicAPI]
 	public WebBrowser WebBrowser { get; }
 
@@ -89,19 +85,10 @@ public sealed class ArchiWebHandler : IDisposable {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		Bot = bot;
-
-#pragma warning disable CS0612, CS0618 // Type or member is obsolete - TODO, pending removal
-		CachedAccessToken = new ArchiCacheable<string>(ResolveAccessToken, TimeSpan.Zero);
-#pragma warning restore CS0612, CS0618 // Type or member is obsolete - TODO, pending removal
-
 		WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy);
 	}
 
 	public void Dispose() {
-#pragma warning disable CS0618 // Type or member is obsolete - TODO, pending removal
-		CachedAccessToken.Dispose();
-#pragma warning restore CS0618 // Type or member is obsolete - TODO, pending removal
-
 		SessionSemaphore.Dispose();
 		WebBrowser.Dispose();
 	}
@@ -2503,13 +2490,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		} finally {
 			SessionSemaphore.Release();
 		}
-	}
-
-	[Obsolete]
-	private Task<(bool Success, string? Result)> ResolveAccessToken(CancellationToken cancellationToken = default) {
-		string? accessToken = Bot.AccessToken;
-
-		return Task.FromResult((!string.IsNullOrEmpty(accessToken), accessToken));
 	}
 
 	private async Task<bool> UnlockParentalAccount(string parentalCode) {
