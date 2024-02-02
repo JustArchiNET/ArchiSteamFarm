@@ -289,14 +289,26 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			return;
 		}
 
-		HashSet<uint> packageIDs = callback.LicenseList.Where(static license => !Config.SecretPackageIDs.Contains(license.PackageID) && ((license.PaymentMethod != EPaymentMethod.AutoGrant) || !Config.SkipAutoGrantPackages)).Select(static license => license.PackageID).ToHashSet();
+		// Schedule a refresh in a while from now
+		if (!BotSynchronizations.TryGetValue(bot, out (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer) synchronization)) {
+			return;
+		}
 
-		await Refresh(bot, packageIDs).ConfigureAwait(false);
+		if (!await synchronization.RefreshSemaphore.WaitAsync(0).ConfigureAwait(false)) {
+			// Another refresh is in progress, skip the refresh for now
+			return;
+		}
+
+		try {
+			synchronization.RefreshTimer.Change(TimeSpan.FromMinutes(1), TimeSpan.FromHours(SharedInfo.MaximumHoursBetweenRefresh));
+		} finally {
+			synchronization.RefreshSemaphore.Release();
+		}
 	}
 
 	private static async void OnSubmissionTimer(object? state = null) => await SubmitData().ConfigureAwait(false);
 
-	private static async Task Refresh(Bot bot, IReadOnlyCollection<uint>? packageIDs = null) {
+	private static async Task Refresh(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (GlobalCache == null) {
@@ -322,7 +334,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				return;
 			}
 
-			packageIDs ??= bot.OwnedPackageIDs.Where(static package => (Config?.SecretPackageIDs.Contains(package.Key) != true) && ((package.Value.PaymentMethod != EPaymentMethod.AutoGrant) || (Config?.SkipAutoGrantPackages == false))).Select(static package => package.Key).ToHashSet();
+			HashSet<uint> packageIDs = bot.OwnedPackageIDs.Where(static package => (Config?.SecretPackageIDs.Contains(package.Key) != true) && ((package.Value.PaymentMethod != EPaymentMethod.AutoGrant) || (Config?.SkipAutoGrantPackages == false))).Select(static package => package.Key).ToHashSet();
 
 			HashSet<uint> appIDsToRefresh = [];
 
