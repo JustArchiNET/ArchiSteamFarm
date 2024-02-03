@@ -151,6 +151,13 @@ public sealed class ArchiLogger {
 		Logger.Log(logEventInfo);
 	}
 
+	internal void LogFatalError(string message, [CallerMemberName] string? previousMethodName = null) {
+		ArgumentException.ThrowIfNullOrEmpty(message);
+		ArgumentException.ThrowIfNullOrEmpty(previousMethodName);
+
+		Logger.Fatal($"{previousMethodName}() {message}");
+	}
+
 	internal async Task LogFatalException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
 		ArgumentNullException.ThrowIfNull(exception);
 		ArgumentException.ThrowIfNullOrEmpty(previousMethodName);

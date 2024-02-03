@@ -90,7 +90,8 @@ StackTrace:
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
 	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Exiting with nonzero error code!</value>
+		<value>Exiting with {0} error code!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
 	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Request failing: {0}</value>
@@ -755,5 +756,8 @@ Process uptime: {1}</value>
 	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
 		<value>You're attempting to run official {0} plugin in mismatched with ASF version: {1} (expected {2}). This suggests you're doing something horribly wrong, either fix your setup or supply --ignore-unsupported-environment argument if you really know what you're doing.</value>
 		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>Your ASF has crashed too many times recently, and due to that the process initialization has been disabled. Either investigate, fix your setup, then remove ASF.crash file from your config directory, or supply --ignore-unsupported-environment argument if you really know what you're doing.</value>
 	</data>
 </root>

@@ -48,6 +48,7 @@ public static class SharedInfo {
 	internal const string GithubReleaseURL = $"https://api.github.com/repos/{GithubRepo}/releases";
 	internal const string GithubRepo = $"JustArchiNET/{AssemblyName}";
 	internal const string GlobalConfigFileName = $"{ASF}{JsonConfigExtension}";
+	internal const string GlobalCrashFileName = $"{ASF}.crash";
 	internal const string GlobalDatabaseFileName = $"{ASF}{DatabaseExtension}";
 	internal const ushort InformationDelay = 10000;
 	internal const string IPCConfigExtension = ".config";

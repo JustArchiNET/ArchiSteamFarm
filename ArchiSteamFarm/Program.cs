@@ -47,6 +47,7 @@ using SteamKit2;
 namespace ArchiSteamFarm;
 
 internal static class Program {
+	internal static bool AllowCrashFileRemoval { get; set; }
 	internal static bool ConfigMigrate { get; private set; } = true;
 	internal static bool ConfigWatch { get; private set; } = true;
 	internal static bool IgnoreUnsupportedEnvironment { get; private set; }
@@ -67,7 +68,7 @@ internal static class Program {
 
 	internal static async Task Exit(byte exitCode = 0) {
 		if (exitCode != 0) {
-			ASF.ArchiLogger.LogGenericError(Strings.ErrorExitingWithNonZeroErrorCode);
+			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorExitingWithNonZeroErrorCode, exitCode));
 		}
 
 		await Shutdown(exitCode).ConfigureAwait(false);
@@ -444,7 +445,7 @@ internal static class Program {
 		return true;
 	}
 
-	private static async Task<bool> InitShutdownSequence() {
+	private static async Task<bool> InitShutdownSequence(byte exitCode = 0) {
 		if (ShutdownSequenceInitialized) {
 			// We've already initialized shutdown sequence before, we won't allow the caller to init shutdown sequence again
 			// While normally this will be respected, caller might not have any say in this for example because it's the runtime terminating ASF due to fatal exception
@@ -456,13 +457,26 @@ internal static class Program {
 
 		ShutdownSequenceInitialized = true;
 
+		// Unregister from registered signals
 		if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-			// Unregister from registered signals
 			foreach (PosixSignalRegistration registration in RegisteredPosixSignals.Values) {
 				registration.Dispose();
 			}
 
 			RegisteredPosixSignals.Clear();
+		}
+
+		// Remove crash file if allowed
+		if ((exitCode == 0) && AllowCrashFileRemoval) {
+			string crashFile = ASF.GetFilePath(ASF.EFileType.Crash);
+
+			if (File.Exists(crashFile)) {
+				try {
+					File.Delete(crashFile);
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+				}
+			}
 		}
 
 		// Sockets created by IPC might still be running for a short while after complete app shutdown
@@ -497,16 +511,13 @@ internal static class Program {
 		return await ShutdownResetEvent.Task.ConfigureAwait(false);
 	}
 
-	private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit(130).ConfigureAwait(false);
+	private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit().ConfigureAwait(false);
 
 	private static async void OnPosixSignal(PosixSignalContext signal) {
 		ArgumentNullException.ThrowIfNull(signal);
 
 		switch (signal.Signal) {
 			case PosixSignal.SIGINT:
-				await Exit(130).ConfigureAwait(false);
-
-				break;
 			case PosixSignal.SIGTERM:
 				await Exit().ConfigureAwait(false);
 
@@ -704,7 +715,7 @@ internal static class Program {
 	}
 
 	private static async Task Shutdown(byte exitCode = 0) {
-		if (!await InitShutdownSequence().ConfigureAwait(false)) {
+		if (!await InitShutdownSequence(exitCode).ConfigureAwait(false)) {
 			return;
 		}
 

@@ -1226,5 +1226,11 @@ namespace ArchiSteamFarm.Localization {
                 return ResourceManager.GetString("WarningUnsupportedOfficialPlugins", resourceCulture);
             }
         }
+        
+        public static string ErrorTooManyCrashes {
+            get {
+                return ResourceManager.GetString("ErrorTooManyCrashes", resourceCulture);
+            }
+        }
     }
 }

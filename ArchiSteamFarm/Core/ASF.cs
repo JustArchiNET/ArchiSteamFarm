@@ -101,6 +101,7 @@ public static class ASF {
 		return fileType switch {
 			EFileType.Config => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName),
 			EFileType.Database => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName),
+			EFileType.Crash => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalCrashFileName),
 			_ => throw new InvalidOperationException(nameof(fileType))
 		};
 	}
@@ -110,13 +111,21 @@ public static class ASF {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
 
-		if (!await PluginsCore.InitPlugins().ConfigureAwait(false)) {
-			return false;
-		}
-
 		WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
 
 		await UpdateAndRestart().ConfigureAwait(false);
+
+		if (!Program.IgnoreUnsupportedEnvironment && !await ProtectAgainstCrashes().ConfigureAwait(false)) {
+			ArchiLogger.LogGenericError(Strings.ErrorTooManyCrashes);
+
+			return true;
+		}
+
+		Program.AllowCrashFileRemoval = true;
+
+		if (!await PluginsCore.InitPlugins().ConfigureAwait(false)) {
+			return false;
+		}
 
 		await PluginsCore.OnASFInitModules(GlobalConfig.AdditionalProperties).ConfigureAwait(false);
 		await InitRateLimiters().ConfigureAwait(false);
@@ -815,6 +824,32 @@ public static class ASF {
 		}
 	}
 
+	private static async Task<bool> ProtectAgainstCrashes() {
+		string crashFilePath = GetFilePath(EFileType.Crash);
+
+		CrashFile crashFile = await CrashFile.CreateOrLoad(crashFilePath).ConfigureAwait(false);
+
+		if (crashFile.StartupCount >= WebBrowser.MaxTries) {
+			// We've reached maximum allowed count of recent crashes, return failure
+			return false;
+		}
+
+		DateTime now = DateTime.UtcNow;
+
+		if (now - crashFile.LastStartup > TimeSpan.FromMinutes(5)) {
+			// Last crash was long ago, restart counter
+			crashFile.StartupCount = 1;
+		} else if (++crashFile.StartupCount >= WebBrowser.MaxTries) {
+			// We've reached maximum allowed count of recent crashes, return failure
+			return false;
+		}
+
+		crashFile.LastStartup = now;
+
+		// We're allowing this run to proceed
+		return true;
+	}
+
 	private static async Task RegisterBots() {
 		if (GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(GlobalConfig));
@@ -906,6 +941,9 @@ public static class ASF {
 
 			return;
 		}
+
+		// Allow crash file recovery, if needed
+		Program.AllowCrashFileRemoval = true;
 
 		await RestartOrExit().ConfigureAwait(false);
 	}
@@ -1049,6 +1087,7 @@ public static class ASF {
 
 	internal enum EFileType : byte {
 		Config,
-		Database
+		Database,
+		Crash
 	}
 }
