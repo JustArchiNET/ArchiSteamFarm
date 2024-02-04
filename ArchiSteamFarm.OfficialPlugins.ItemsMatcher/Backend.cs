@@ -114,6 +114,21 @@ internal static class Backend {
 		return Utilities.GenerateChecksumFor(bytes);
 	}
 
+	internal static async Task<HttpStatusCode?> GetLicenseStatus(Guid licenseID, WebBrowser webBrowser) {
+		ArgumentOutOfRangeException.ThrowIfEqual(licenseID, Guid.Empty);
+		ArgumentNullException.ThrowIfNull(webBrowser);
+
+		Uri request = new(ArchiNet.URL, "/Api/Licenses/Status");
+
+		Dictionary<string, string> headers = new(1, StringComparer.Ordinal) {
+			{ "X-License-Key", licenseID.ToString("N") }
+		};
+
+		ObjectResponse<GenericResponse>? response = await webBrowser.UrlGetToJsonObject<GenericResponse>(request, headers, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+
+		return response?.StatusCode;
+	}
+
 	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Guid licenseID, Bot bot, WebBrowser webBrowser, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes) {
 		ArgumentOutOfRangeException.ThrowIfEqual(licenseID, Guid.Empty);
 		ArgumentNullException.ThrowIfNull(bot);
