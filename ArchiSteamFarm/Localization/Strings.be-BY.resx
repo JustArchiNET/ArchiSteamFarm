@@ -89,9 +89,7 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Выхад з ненулявым кодам памылкі!</value>
-	</data>
+	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Памылка запыту да: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -561,6 +559,7 @@ StackTrace:
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Выпраўленне файлаў ASF...</value>
 	</data>
+	
 	
 	
 	

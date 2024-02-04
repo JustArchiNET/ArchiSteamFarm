@@ -90,7 +90,8 @@
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
 	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>以非零錯誤碼退出！</value>
+		<value>以 {0} 錯誤碼退出！</value>
+		<comment>{0} will be replaced by error code (number)</comment>
 	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>請求失敗︰ {0}</value>
@@ -755,5 +756,8 @@
 	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
 		<value>您正嘗試執行 {0} 官方外掛程式於錯誤的 ASF 版本：{1}（應為 {2}）。這代表您的行為具有嚴重錯誤，請改正您的設定值，或者，若您知道您在做什麼，請提供 --ignore-unsupported-environment 引數。</value>
 		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>您的 ASF 最近崩潰太多次了，因此程序初始化已被停用。您需要自行調查原因、修正您的設定，然後從您的設定資料夾中刪除 ASF.crash 檔案；要是如果您知道您在做什麼，可以提供 --ignore-unsupported-environment 引數。</value>
 	</data>
 </root>

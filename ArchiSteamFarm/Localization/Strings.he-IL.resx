@@ -89,9 +89,7 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>יוצא עם קוד שגיאה שאינו אפס!</value>
-	</data>
+	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>בקשה נכשלה: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -748,6 +746,7 @@ StackTrace:
 		<value>ניסית להשתמש בתכונה בתשלום {0} אך אין לך מזהה רישיון חוקי שהוגדר בתצורה הגלובלית של ASF. אנא בדוק את התצורה שלך, מכיוון שהפונקציונליות לא תעבוד ללא פרטים נוספים.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
+	
 	
 	
 </root>

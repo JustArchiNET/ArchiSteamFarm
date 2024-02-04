@@ -89,9 +89,7 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Đang thoát với mã lỗi khác 0!</value>
-	</data>
+	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Yêu cầu thất bại: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -752,5 +750,6 @@ Thời gian hoạt động: {1}</value>
 		<value>ASF không thể chạy ứng dụng {0} do có hạn chế liên quan đến khu vực đối với quốc gia {1} kéo dài đến {2}.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
 	</data>
+	
 	
 </root>

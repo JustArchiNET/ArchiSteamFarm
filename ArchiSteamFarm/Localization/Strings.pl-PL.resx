@@ -90,7 +90,8 @@ StackTrace:
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
 	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Kończenie z niezerowym kodem błędu!</value>
+		<value>Zamykanie z kodem błędu {0}!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
 	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Niepowodzenie żądania: {0}</value>
@@ -755,5 +756,8 @@ Czas procesu: {1}</value>
 	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
 		<value>Próbujesz uruchomić oficjalną wtyczkę {0} w wersji niezgodnej z wersją ASF: {1} (oczekiwano: {2}). Sugeruje to, że robisz coś bardzo niewłaściwego; napraw konfigurację albo podaj argument --ignore-unsupported-environment, jeśli naprawdę wiesz, co robisz.</value>
 		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>Twój plik ASF ulegał ostatnio awarii zbyt wiele razy i dlatego inicjalizacja procesu została wyłączona. Sprawdź, napraw konfigurację, a następnie usuń plik ASF.crash z katalogu konfiguracyjnego lub podaj argument --ignore-unsupported-environment, jeśli naprawdę wiesz, co robisz.</value>
 	</data>
 </root>

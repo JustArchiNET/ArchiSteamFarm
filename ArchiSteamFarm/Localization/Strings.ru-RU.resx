@@ -89,9 +89,7 @@
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Выход с ненулевым кодом ошибки!</value>
-	</data>
+	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Запрос не удался: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -756,4 +754,5 @@
 		<value>Вы пытаетесь запустить официальный плагин {0} в версии, не соответствующей ASF: {1} (ожидается {2}). Это говорит о том, что вы делаете что-то ужасно неправильно: либо исправьте настройки, либо укажите аргумент --ignore-unsupported-environment, если вы действительно знаете, что делаете.</value>
 		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
 	</data>
+	
 </root>
