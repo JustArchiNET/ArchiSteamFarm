@@ -757,5 +757,7 @@
 		<value>您正在尝试运行官方 {0} 插件，但 ASF 版本不匹配：{1}（预期为 {2}）。这表明您正在进行的操作有严重错误，请修复您的安装配置，或者，如果您了解自己在做什么，则提供 --ignore-unsupported-environment 参数。</value>
 		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
 	</data>
-	
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>您的 ASF 最近崩溃了太多次，因此该进程的初始化已被禁用。请检查并修复您的部署，然后删除 config 文件夹下的 ASF.crash 文件，或者，如果您了解自己在做什么，则提供 --ignore-unsupported-environment 参数。</value>
+	</data>
 </root>
