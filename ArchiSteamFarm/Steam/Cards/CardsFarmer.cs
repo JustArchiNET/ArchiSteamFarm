@@ -51,7 +51,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	internal const byte HoursForRefund = 2; // Up to how many hours we're allowed to play for refund
 
 	private const byte DaysToIgnoreRiskyAppIDs = 14; // How many days since determining that game is not candidate for idling, we assume that to still be the case, in risky approach
-	private const byte ExtraFarmingDelaySeconds = 10; // In seconds, how much time to add on top of FarmingDelay (helps fighting misc time differences of Steam network)
+	private const byte ExtraFarmingDelaySeconds = 15; // In seconds, how much time to add on top of FarmingDelay (helps fighting misc time differences of Steam network)
 	private const byte HoursToIgnore = 1; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
 	[PublicAPI]
@@ -123,7 +123,6 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	private readonly ConcurrentHashSet<Game> CurrentGamesFarming = [];
 	private readonly SemaphoreSlim EventSemaphore = new(1, 1);
 	private readonly SemaphoreSlim FarmingInitializationSemaphore = new(1, 1);
-	private readonly SemaphoreSlim FarmingResetSemaphore = new(0, 1);
 	private readonly ConcurrentList<Game> GamesToFarm = [];
 	private readonly Timer? IdleFarmingTimer;
 
@@ -142,7 +141,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 	internal bool NowFarming { get; private set; }
 
-	private bool KeepFarming;
+	private TaskCompletionSource<bool>? FarmingResetEvent;
 	private bool ParsingScheduled;
 	private bool PermanentlyPaused;
 	private bool ShouldResumeFarming;
@@ -169,7 +168,6 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		// Those are objects that are always being created if constructor doesn't throw exception
 		EventSemaphore.Dispose();
 		FarmingInitializationSemaphore.Dispose();
-		FarmingResetSemaphore.Dispose();
 
 		// Those are objects that might be null and the check should be in-place
 		IdleFarmingTimer?.Dispose();
@@ -179,7 +177,6 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		// Those are objects that are always being created if constructor doesn't throw exception
 		EventSemaphore.Dispose();
 		FarmingInitializationSemaphore.Dispose();
-		FarmingResetSemaphore.Dispose();
 
 		// Those are objects that might be null and the check should be in-place
 		if (IdleFarmingTimer != null) {
@@ -230,7 +227,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			// We should restart the farming if the order or efficiency of the farming could be affected by the newly-activated product
 			// The order is affected when user uses farming order that isn't independent of the game data (it could alter the order in deterministic way if the game was considered in current queue)
 			// The efficiency is affected only in complex algorithm (entirely), as it depends on hours order that is not independent (as specified above)
-			if (!ShouldSkipNewGamesIfPossible && ((Bot.BotConfig.HoursUntilCardDrops > 0) || ((Bot.BotConfig.FarmingOrders.Count > 0) && Bot.BotConfig.FarmingOrders.Any(static farmingOrder => (farmingOrder != BotConfig.EFarmingOrder.Unordered) && (farmingOrder != BotConfig.EFarmingOrder.Random))))) {
+			if (!ShouldSkipNewGamesIfPossible && ((Bot.BotConfig.HoursUntilCardDrops > 0) || ((Bot.BotConfig.FarmingOrders.Count > 0) && Bot.BotConfig.FarmingOrders.Any(static farmingOrder => farmingOrder is not BotConfig.EFarmingOrder.Unordered and not BotConfig.EFarmingOrder.Random)))) {
 				await StopFarming().ConfigureAwait(false);
 				await StartFarming().ConfigureAwait(false);
 			}
@@ -245,9 +242,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 			try {
 				if (NowFarming) {
-					if (FarmingResetSemaphore.CurrentCount == 0) {
-						FarmingResetSemaphore.Release();
-					}
+					FarmingResetEvent?.TrySetResult(true);
 
 					return;
 				}
@@ -375,7 +370,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				}
 			}
 
-			KeepFarming = NowFarming = true;
+			NowFarming = true;
 			Utilities.InBackground(Farm, true);
 
 			await PluginsCore.OnBotFarmingStarted(Bot).ConfigureAwait(false);
@@ -396,12 +391,8 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			KeepFarming = false;
-
 			for (byte i = 0; (i < byte.MaxValue) && NowFarming; i++) {
-				if (FarmingResetSemaphore.CurrentCount == 0) {
-					FarmingResetSemaphore.Release();
-				}
+				FarmingResetEvent?.TrySetResult(false);
 
 				await Task.Delay(1000).ConfigureAwait(false);
 			}
@@ -875,8 +866,16 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 			DateTime startFarmingPeriod = DateTime.UtcNow;
 
-			if (await FarmingResetSemaphore.WaitAsync(((ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay) * 60 * 1000) + (ExtraFarmingDelaySeconds * 1000)).ConfigureAwait(false)) {
-				success = KeepFarming;
+			if (FarmingResetEvent?.Task.IsCompleted != false) {
+				FarmingResetEvent = new TaskCompletionSource<bool>();
+			}
+
+			TimeSpan timeSpan = TimeSpan.FromMinutes(ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay) + TimeSpan.FromSeconds(ExtraFarmingDelaySeconds);
+
+			try {
+				success = await FarmingResetEvent.Task.WaitAsync(timeSpan).ConfigureAwait(false);
+			} catch (TimeoutException e) {
+				Bot.ArchiLogger.LogGenericDebuggingException(e);
 			}
 
 			// Don't forget to update our GamesToFarm hours
@@ -920,8 +919,16 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 			DateTime startFarmingPeriod = DateTime.UtcNow;
 
-			if (await FarmingResetSemaphore.WaitAsync(((ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay) * 60 * 1000) + (ExtraFarmingDelaySeconds * 1000)).ConfigureAwait(false)) {
-				success = KeepFarming;
+			if (FarmingResetEvent?.Task.IsCompleted != false) {
+				FarmingResetEvent = new TaskCompletionSource<bool>();
+			}
+
+			TimeSpan timeSpan = TimeSpan.FromMinutes(ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay) + TimeSpan.FromSeconds(ExtraFarmingDelaySeconds);
+
+			try {
+				success = await FarmingResetEvent.Task.WaitAsync(timeSpan).ConfigureAwait(false);
+			} catch (TimeoutException e) {
+				Bot.ArchiLogger.LogGenericDebuggingException(e);
 			}
 
 			// Don't forget to update our GamesToFarm hours
