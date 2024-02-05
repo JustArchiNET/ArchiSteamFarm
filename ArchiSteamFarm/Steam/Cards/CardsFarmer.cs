@@ -858,7 +858,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		await Bot.IdleGame(game).ConfigureAwait(false);
 
-		bool success = true;
+		bool keepFarming = true;
 		DateTime endFarmingDate = DateTime.UtcNow.AddHours(ASF.GlobalConfig?.MaxFarmingTime ?? GlobalConfig.DefaultMaxFarmingTime);
 
 		while ((DateTime.UtcNow < endFarmingDate) && (await ShouldFarm(game).ConfigureAwait(false)).GetValueOrDefault(true)) {
@@ -873,7 +873,12 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			TimeSpan timeSpan = TimeSpan.FromMinutes(ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay) + TimeSpan.FromSeconds(ExtraFarmingDelaySeconds);
 
 			try {
-				success = await FarmingResetEvent.Task.WaitAsync(timeSpan).ConfigureAwait(false);
+				keepFarming = await FarmingResetEvent.Task.WaitAsync(timeSpan).ConfigureAwait(false);
+
+				if (keepFarming) {
+					// We've got an event that suggests item drop, wait for a brief moment to fight with potential cache issues
+					await Task.Delay(5000).ConfigureAwait(false);
+				}
 			} catch (TimeoutException e) {
 				Bot.ArchiLogger.LogGenericDebuggingException(e);
 			}
@@ -881,14 +886,14 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			// Don't forget to update our GamesToFarm hours
 			game.HoursPlayed += (float) DateTime.UtcNow.Subtract(startFarmingPeriod).TotalHours;
 
-			if (!success) {
+			if (!keepFarming) {
 				break;
 			}
 		}
 
 		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.StoppedIdling, game.AppID, game.GameName));
 
-		return success;
+		return keepFarming;
 	}
 
 	private async Task<bool> FarmHours(IReadOnlyCollection<Game> games) {
@@ -912,7 +917,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		await Bot.IdleGames(games).ConfigureAwait(false);
 
-		bool success = true;
+		bool keepFarming = true;
 
 		while (maxHour < Bot.BotConfig.HoursUntilCardDrops) {
 			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.StillIdlingList, string.Join(", ", games.Select(static game => game.AppID))));
@@ -926,7 +931,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			TimeSpan timeSpan = TimeSpan.FromMinutes(ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay) + TimeSpan.FromSeconds(ExtraFarmingDelaySeconds);
 
 			try {
-				success = await FarmingResetEvent.Task.WaitAsync(timeSpan).ConfigureAwait(false);
+				keepFarming = await FarmingResetEvent.Task.WaitAsync(timeSpan).ConfigureAwait(false);
 			} catch (TimeoutException e) {
 				Bot.ArchiLogger.LogGenericDebuggingException(e);
 			}
@@ -938,7 +943,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				game.HoursPlayed += timePlayed;
 			}
 
-			if (!success) {
+			if (!keepFarming) {
 				break;
 			}
 
@@ -947,7 +952,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.StoppedIdlingList, string.Join(", ", games.Select(static game => game.AppID))));
 
-		return success;
+		return keepFarming;
 	}
 
 	private async Task<bool> FarmMultiple(IReadOnlyCollection<Game> games) {
