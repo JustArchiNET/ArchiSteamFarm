@@ -11,7 +11,7 @@
 		<type fullname="System.Composition.ExportAttribute" />
 	</assembly>
 
-	<!-- Entries below are needed for our officials plugins -->
+	<!-- Entries below are needed for our official plugins -->
 	<assembly fullname="System.Linq">
 		<type fullname="System.Linq.Enumerable">
 			<method name="MaxBy" />
