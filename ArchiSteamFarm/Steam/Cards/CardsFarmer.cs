@@ -659,7 +659,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 			if (privateAppIDs?.Contains(appID) == true) {
 				// This game is private, it won't drop any cards until removal
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingGameNotPossible, appID, name));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingGameNotPossiblePrivate, appID, name));
 
 				continue;
 			}
@@ -1275,7 +1275,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				}
 
 				// This game is private, it won't drop any cards until removal
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingGameNotPossible, appID, name));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingGameNotPossiblePrivate, appID, name));
 
 				gamesToFarm.Remove(appID);
 			}

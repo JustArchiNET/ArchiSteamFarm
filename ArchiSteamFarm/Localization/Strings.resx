@@ -760,4 +760,8 @@ Process uptime: {1}</value>
 	<data name="ErrorTooManyCrashes" xml:space="preserve">
 		<value>Your ASF has crashed too many times recently, and due to that the process initialization has been disabled. Either investigate, fix your setup, then remove ASF.crash file from your config directory, or supply --ignore-unsupported-environment argument if you really know what you're doing.</value>
 	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>Farming {0} ({1}) is disabled, as that game is currently marked as private. If you intend from ASF to farm that game, then consider changing its privacy settings.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 </root>

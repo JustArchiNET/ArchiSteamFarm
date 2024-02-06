@@ -1232,5 +1232,11 @@ namespace ArchiSteamFarm.Localization {
                 return ResourceManager.GetString("ErrorTooManyCrashes", resourceCulture);
             }
         }
+        
+        public static string IdlingGameNotPossiblePrivate {
+            get {
+                return ResourceManager.GetString("IdlingGameNotPossiblePrivate", resourceCulture);
+            }
+        }
     }
 }
