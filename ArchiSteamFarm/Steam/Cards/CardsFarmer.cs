@@ -885,7 +885,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 				if (keepFarming) {
 					// We've got an event that suggests item drop, wait for a brief moment to fight with potential cache issues
-					await Task.Delay(5000).ConfigureAwait(false);
+					await Task.Delay(2000).ConfigureAwait(false);
 				}
 			} catch (TimeoutException e) {
 				Bot.ArchiLogger.LogGenericDebuggingException(e);
