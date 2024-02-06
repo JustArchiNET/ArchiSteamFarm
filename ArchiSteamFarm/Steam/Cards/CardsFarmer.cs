@@ -33,6 +33,7 @@ using AngleSharp.Dom;
 using AngleSharp.XPath;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Steam.Data;
@@ -437,7 +438,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		await StartFarming().ConfigureAwait(false);
 	}
 
-	private async Task CheckPage(IDocument htmlDocument, ISet<uint> parsedAppIDs) {
+	private async Task CheckPage(IDocument htmlDocument, ISet<uint> parsedAppIDs, IReadOnlyCollection<uint>? privateAppIDs = null) {
 		ArgumentNullException.ThrowIfNull(htmlDocument);
 		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
@@ -656,6 +657,13 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				continue;
 			}
 
+			if (privateAppIDs?.Contains(appID) == true) {
+				// This game is private, it won't drop any cards until removal
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingGameNotPossible, appID, name));
+
+				continue;
+			}
+
 			// Levels
 			byte badgeLevel = 0;
 
@@ -735,7 +743,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task<bool> CheckPage(byte page, ISet<uint> parsedAppIDs) {
+	private async Task<bool> CheckPage(byte page, ISet<uint> parsedAppIDs, IReadOnlyCollection<uint>? privateAppIDs = null) {
 		ArgumentOutOfRangeException.ThrowIfZero(page);
 		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
@@ -745,7 +753,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return false;
 		}
 
-		await CheckPage(htmlDocument, parsedAppIDs).ConfigureAwait(false);
+		await CheckPage(htmlDocument, parsedAppIDs, privateAppIDs).ConfigureAwait(false);
 
 		return true;
 	}
@@ -1159,9 +1167,11 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		GamesToFarm.Clear();
 
+		(_, FrozenSet<uint>? privateAppIDs) = await Bot.ArchiWebHandler.CachedPrivateAppIDs.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+
 		ConcurrentHashSet<uint> parsedAppIDs = [];
 
-		Task mainTask = CheckPage(htmlDocument, parsedAppIDs);
+		Task mainTask = CheckPage(htmlDocument, parsedAppIDs, privateAppIDs);
 
 		bool allTasksSucceeded = true;
 
@@ -1173,7 +1183,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
 
 					for (byte page = 2; page <= maxPages; page++) {
-						if (!await CheckPage(page, parsedAppIDs).ConfigureAwait(false)) {
+						if (!await CheckPage(page, parsedAppIDs, privateAppIDs).ConfigureAwait(false)) {
 							allTasksSucceeded = false;
 						}
 					}
@@ -1189,7 +1199,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					for (byte page = 2; page <= maxPages; page++) {
 						// ReSharper disable once InlineTemporaryVariable - we need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
 						byte currentPage = page;
-						tasks.Add(CheckPage(currentPage, parsedAppIDs));
+						tasks.Add(CheckPage(currentPage, parsedAppIDs, privateAppIDs));
 					}
 
 					bool[] taskResults = await Task.WhenAll(tasks).ConfigureAwait(false);
@@ -1254,16 +1264,31 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		// In particular, firstly we give priority to appIDs that we already found out before, either rule them out, or prioritize
 		// Next, we apply farm priority queue right away, by both considering apps (if FarmPriorityQueueOnly) as well as giving priority to those that user specified
 		// Lastly, we forcefully apply random order to those considered the same in value, as we can't really afford massive amount of misses in a row
-		HashSet<uint> gamesToFarm = boosterCreatorEntries.Select(static entry => entry.AppID).Where(appID => !boosterElibility.Contains(appID) && (!Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.TryGetValue(appID, out DateTime ignoredUntil) || (ignoredUntil < now)) && ShouldIdle(appID)).ToHashSet();
+		Dictionary<uint, string> gamesToFarm = boosterCreatorEntries.Where(entry => !boosterElibility.Contains(entry.AppID) && (!Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.TryGetValue(entry.AppID, out DateTime ignoredUntil) || (ignoredUntil < now)) && ShouldIdle(entry.AppID)).ToDictionary(static entry => entry.AppID, static entry => entry.Name);
 
-		foreach (uint appID in Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.Keys.Where(appID => !gamesToFarm.Contains(appID))) {
+		(_, FrozenSet<uint>? privateAppIDs) = await Bot.ArchiWebHandler.CachedPrivateAppIDs.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+
+		if (privateAppIDs != null) {
+			foreach (uint appID in privateAppIDs) {
+				if (!gamesToFarm.TryGetValue(appID, out string? name)) {
+					continue;
+				}
+
+				// This game is private, it won't drop any cards until removal
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingGameNotPossible, appID, name));
+
+				gamesToFarm.Remove(appID);
+			}
+		}
+
+		foreach (uint appID in Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.Keys.Where(appID => !gamesToFarm.ContainsKey(appID))) {
 			Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.Remove(appID);
 		}
 
-		Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.IntersectWith(gamesToFarm);
+		Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.IntersectWith(gamesToFarm.Keys);
 
 #pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
-		IOrderedEnumerable<uint> gamesToFarmOrdered = gamesToFarm.OrderByDescending(Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.Contains).ThenByDescending(Bot.IsPriorityIdling).ThenBy(static _ => Random.Shared.Next());
+		IOrderedEnumerable<uint> gamesToFarmOrdered = gamesToFarm.Keys.OrderByDescending(Bot.BotDatabase.FarmingRiskyPrioritizedAppIDs.Contains).ThenByDescending(Bot.IsPriorityIdling).ThenBy(static _ => Random.Shared.Next());
 #pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
 
 		DateTime ignoredUntil = now.AddDays(DaysToIgnoreRiskyAppIDs);

@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
@@ -48,6 +49,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.Steam.Integration;
 
 public sealed class ArchiWebHandler : IDisposable {
+	private const string AccountPrivateAppsService = "IAccountPrivateAppsService";
 	private const string EconService = "IEconService";
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
 	private const ushort MaxItemsInSingleInventoryRequest = 5000;
@@ -72,6 +74,8 @@ public sealed class ArchiWebHandler : IDisposable {
 	[PublicAPI]
 	public WebBrowser WebBrowser { get; }
 
+	internal readonly ArchiCacheable<FrozenSet<uint>> CachedPrivateAppIDs;
+
 	private readonly Bot Bot;
 	private readonly SemaphoreSlim SessionSemaphore = new(1, 1);
 
@@ -85,10 +89,12 @@ public sealed class ArchiWebHandler : IDisposable {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		Bot = bot;
+		CachedPrivateAppIDs = new ArchiCacheable<FrozenSet<uint>>(ResolvePrivateAppIDs, TimeSpan.FromMinutes(5));
 		WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy);
 	}
 
 	public void Dispose() {
+		CachedPrivateAppIDs.Dispose();
 		SessionSemaphore.Dispose();
 		WebBrowser.Dispose();
 	}
@@ -123,7 +129,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<ImmutableHashSet<BoosterCreatorEntry>?> GetBoosterCreatorEntries() {
-		Uri request = new(SteamCommunityURL, "/tradingcards/boostercreator");
+		Uri request = new(SteamCommunityURL, "/tradingcards/boostercreator?l=english");
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
@@ -182,7 +188,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<HashSet<uint>?> GetBoosterEligibility() {
-		Uri request = new(SteamCommunityURL, "/my/ajaxgetboostereligibility");
+		Uri request = new(SteamCommunityURL, "/my/ajaxgetboostereligibility?l=english");
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
@@ -1885,7 +1891,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<HashSet<ulong>?> GetDigitalGiftCards() {
-		Uri request = new(SteamStoreURL, "/gifts");
+		Uri request = new(SteamStoreURL, "/gifts?l=english");
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
@@ -2252,6 +2258,8 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	internal void OnDisconnected() => Initialized = false;
 
+	internal void OnInitModules() => Utilities.InBackground(() => CachedPrivateAppIDs.Reset());
+
 	internal void OnVanityURLChanged(string? vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
 
 	internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)?> RedeemWalletKey(string key) {
@@ -2490,6 +2498,69 @@ public sealed class ArchiWebHandler : IDisposable {
 		} finally {
 			SessionSemaphore.Release();
 		}
+	}
+
+	private async Task<(bool Success, FrozenSet<uint>? Result)> ResolvePrivateAppIDs(CancellationToken cancellationToken) {
+		string? accessToken = Bot.AccessToken;
+
+		if (string.IsNullOrEmpty(accessToken)) {
+			return (false, null);
+		}
+
+		Dictionary<string, object?> arguments = new(1, StringComparer.Ordinal) {
+			{ "access_token", accessToken }
+		};
+
+		KeyValue? response = null;
+
+		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+			if ((i > 0) && (WebLimiterDelay > 0)) {
+				await Task.Delay(WebLimiterDelay, cancellationToken).ConfigureAwait(false);
+			}
+
+			using WebAPI.AsyncInterface loyaltyRewardsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(AccountPrivateAppsService);
+
+			loyaltyRewardsService.Timeout = WebBrowser.Timeout;
+
+			try {
+				response = await WebLimitRequest(
+					WebAPI.DefaultBaseAddress,
+
+					// ReSharper disable once AccessToDisposedClosure
+					async () => await loyaltyRewardsService.CallAsync(HttpMethod.Get, "GetPrivateAppList", args: arguments).ConfigureAwait(false), cancellationToken
+				).ConfigureAwait(false);
+			} catch (TaskCanceledException e) {
+				Bot.ArchiLogger.LogGenericDebuggingException(e);
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericWarningException(e);
+			}
+		}
+
+		if (response == null) {
+			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+
+			return (false, null);
+		}
+
+		List<KeyValue> nodes = response["private_apps"]["appids"].Children;
+
+		if (nodes.Count == 0) {
+			return (true, FrozenSet<uint>.Empty);
+		}
+
+		HashSet<uint> result = new(nodes.Count);
+
+		foreach (uint appID in nodes.Select(static node => node.AsUnsignedInteger())) {
+			if (appID == 0) {
+				Bot.ArchiLogger.LogNullError(appID);
+
+				return (false, null);
+			}
+
+			result.Add(appID);
+		}
+
+		return (true, result.ToFrozenSet());
 	}
 
 	private async Task<bool> UnlockParentalAccount(string parentalCode) {

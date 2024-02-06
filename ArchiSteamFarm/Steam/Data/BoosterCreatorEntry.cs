@@ -29,6 +29,9 @@ public sealed class BoosterCreatorEntry {
 	[JsonProperty("appid", Required = Required.Always)]
 	public uint AppID { get; private set; }
 
+	[JsonProperty("name", Required = Required.Always)]
+	public string Name { get; private set; } = "";
+
 	[JsonConstructor]
 	private BoosterCreatorEntry() { }
 }

@@ -283,6 +283,8 @@ public sealed class MobileAuthenticator : IDisposable {
 		Bot = bot;
 	}
 
+	internal void OnInitModules() => Utilities.InBackground(() => CachedDeviceID.Reset());
+
 	internal static async Task ResetSteamTimeDifference() {
 		if ((SteamTimeDifference == null) && (LastSteamTimeCheck == DateTime.MinValue)) {
 			return;
