@@ -761,4 +761,5 @@ Prozesslaufzeit: {1}</value>
 	<data name="ErrorTooManyCrashes" xml:space="preserve">
 		<value>ASF ist in letzter Zeit zu oft abgestürzt und deshalb wurde die Initialisierung des Prozesses deaktiviert. Untersuchen oder reparieren Sie Ihre Einrichtung und entfernen Sie anschließend Datei »ASF.crash« aus Ihrem Konfigurationsverzeichnis oder geben Sie das Argument --ignore-unsupported-environment, sofern Sie wirklich wissen, was Sie tun.</value>
 	</data>
+	
 </root>

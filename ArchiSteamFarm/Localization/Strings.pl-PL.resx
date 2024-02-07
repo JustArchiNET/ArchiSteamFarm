@@ -760,4 +760,8 @@ Czas procesu: {1}</value>
 	<data name="ErrorTooManyCrashes" xml:space="preserve">
 		<value>Twój plik ASF ulegał ostatnio awarii zbyt wiele razy i dlatego inicjalizacja procesu została wyłączona. Sprawdź, napraw konfigurację, a następnie usuń plik ASF.crash z katalogu konfiguracyjnego lub podaj argument --ignore-unsupported-environment, jeśli naprawdę wiesz, co robisz.</value>
 	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>Farmienie {0} ({1}) jest wyłączone, ponieważ ta gra jest obecnie oznaczona jako prywatna. Jeśli zamierzasz farmić tę grę z ASF, rozważ zmianę jej ustawień prywatności.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 </root>

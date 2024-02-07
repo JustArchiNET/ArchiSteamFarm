@@ -759,4 +759,8 @@ Tiempo de actividad del proceso: {1}</value>
 	<data name="ErrorTooManyCrashes" xml:space="preserve">
 		<value>ASF ha fallado demasiadas veces recientemente, por ello el proceso de inicialización ha sido deshabilitado. Según sea el caso, corrige tu configuración, y luego elimina el archivo ASF.crash de tu directorio de configuración, o proporciona el argumento --ignore-unsupported-environment si realmente sabes lo que estás haciendo.</value>
 	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>La recolección para {0} ({1}) está deshabilitada, debido a que ese juego actualmente está marcado como privado. Si deseas que ASF recolecte ese juego, considera cambiar su configuración de privacidad.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 </root>

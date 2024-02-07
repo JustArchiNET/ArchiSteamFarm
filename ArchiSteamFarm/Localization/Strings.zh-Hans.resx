@@ -760,4 +760,8 @@
 	<data name="ErrorTooManyCrashes" xml:space="preserve">
 		<value>您的 ASF 最近崩溃了太多次，因此该进程的初始化已被禁用。请检查并修复您的部署，然后删除 config 文件夹下的 ASF.crash 文件，或者，如果您了解自己在做什么，则提供 --ignore-unsupported-environment 参数。</value>
 	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>已禁用 {0}（{1}）的挂卡，因为此游戏目前被标记为私密。如果您希望 ASF 挂这款游戏，请考虑更改它的隐私设置。</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 </root>

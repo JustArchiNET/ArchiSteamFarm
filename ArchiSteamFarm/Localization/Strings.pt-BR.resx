@@ -757,4 +757,5 @@ Tempo de execução: {1}</value>
 	<data name="ErrorTooManyCrashes" xml:space="preserve">
 		<value>Seu ASF tem apresentado muitos crashes recentemente e, devido a isso, a inicialização do processo foi desativada. Recomenda-se investigar e corrigir sua configuração e, em seguida, remover o arquivo ASF.crash do diretório de configuração. Alternativamente, você pode fornecer o argumento --ignore-unsupported-environment se realmente souber o que está fazendo.</value>
 	</data>
+	
 </root>

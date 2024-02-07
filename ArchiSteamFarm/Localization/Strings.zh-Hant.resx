@@ -760,4 +760,8 @@
 	<data name="ErrorTooManyCrashes" xml:space="preserve">
 		<value>您的 ASF 最近崩潰太多次了，因此程序初始化已被停用。您需要自行調查原因、修正您的設定，然後從您的設定資料夾中刪除 ASF.crash 檔案；要是如果您知道您在做什麼，可以提供 --ignore-unsupported-environment 引數。</value>
 	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>已停用 {0}（{1}）的掛卡，因為該遊戲目前被標示為私人。若您想要 ASF 掛該遊戲，請更改它的隱私設定。</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 </root>
