@@ -95,7 +95,7 @@ public static class SharedInfo {
 		}
 	}
 
-	internal static string ProgramIdentifier => $"{PublicIdentifier} V{Version} ({BuildInfo.Variant}/{ModuleVersion:N} | {OS.Version}) in {Directory.GetCurrentDirectory()}";
+	internal static string ProgramIdentifier => $"{PublicIdentifier} V{Version} ({BuildInfo.Variant}/{ModuleVersion:N} | {OS.Version}) in [{Directory.GetCurrentDirectory()}]";
 	internal static string PublicIdentifier => $"{AssemblyName}{(BuildInfo.IsCustomBuild ? "-custom" : PluginsCore.HasCustomPluginsLoaded ? "-modded" : "")}";
 	internal static Version Version => Assembly.GetExecutingAssembly().GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
