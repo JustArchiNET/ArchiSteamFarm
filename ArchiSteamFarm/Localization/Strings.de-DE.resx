@@ -761,5 +761,8 @@ Prozesslaufzeit: {1}</value>
 	<data name="ErrorTooManyCrashes" xml:space="preserve">
 		<value>ASF ist in letzter Zeit zu oft abgestürzt und deshalb wurde die Initialisierung des Prozesses deaktiviert. Untersuchen oder reparieren Sie Ihre Einrichtung und entfernen Sie anschließend Datei »ASF.crash« aus Ihrem Konfigurationsverzeichnis oder geben Sie das Argument --ignore-unsupported-environment, sofern Sie wirklich wissen, was Sie tun.</value>
 	</data>
-	
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>Sammeln {0} ({1}) ist deaktiviert, da das Spiel derzeit als privat markiert ist. Wenn Sie vorhaben, dieses Spiel mit ASF zu sammeln, dann erwägen Sie die Änderung der entsprechenden Privatsphäre-Einstellungen.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 </root>
