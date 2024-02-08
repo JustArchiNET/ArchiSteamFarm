@@ -143,7 +143,16 @@ jobs:
         $ProgressPreference = 'SilentlyContinue'
 
         dotnet restore
+
+        if ($LastExitCode -ne 0) {
+            throw "Last command failed."
+        }
+
         dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+
+        if ($LastExitCode -ne 0) {
+            throw "Last command failed."
+        }
 
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
