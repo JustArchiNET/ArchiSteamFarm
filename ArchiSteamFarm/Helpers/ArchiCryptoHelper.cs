@@ -110,6 +110,21 @@ public static class ArchiCryptoHelper {
 		return Convert.ToBase64String(hashBytes);
 	}
 
+	internal static bool VerifyHash(EHashingMethod hashingMethod, string inputString, string verifyHash) {
+		if (!Enum.IsDefined(hashingMethod)) {
+			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(inputString);
+		ArgumentException.ThrowIfNullOrEmpty(verifyHash);
+
+		byte[] verifyBytes = hashingMethod == EHashingMethod.PlainText ? Encoding.UTF8.GetBytes(inputString) : Convert.FromBase64String(verifyHash);
+		byte[] passwordBytes = Encoding.UTF8.GetBytes(inputString);
+		byte[] hashBytes = Hash(passwordBytes, EncryptionKey, DefaultHashLength, hashingMethod);
+
+		return CryptographicOperations.FixedTimeEquals(hashBytes, verifyBytes);
+	}
+
 	internal static byte[] Hash(byte[] password, byte[] salt, byte hashLength, EHashingMethod hashingMethod) {
 		if ((password == null) || (password.Length == 0)) {
 			throw new ArgumentNullException(nameof(password));
