@@ -148,9 +148,7 @@ internal sealed class ApiAuthenticationMiddleware {
 
 		ArchiCryptoHelper.EHashingMethod ipcPasswordFormat = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPasswordFormat : GlobalConfig.DefaultIPCPasswordFormat;
 
-		string inputHash = ArchiCryptoHelper.Hash(ipcPasswordFormat, inputPassword);
-
-		bool authorized = ipcPassword == inputHash;
+		bool authorized = ArchiCryptoHelper.VerifyHash(ipcPasswordFormat, inputPassword, ipcPassword);
 
 		while (true) {
 			if (AuthorizationTasks.TryGetValue(clientIP, out Task? task)) {
