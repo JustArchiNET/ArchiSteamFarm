@@ -128,7 +128,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 	public bool ShouldSerializeBackingCellID() => BackingCellID != 0;
 
 	[UsedImplicitly]
-	public bool ShouldSerializeBackingLastChangeNumber() => LastChangeNumber != 0;
+	public bool ShouldSerializeBackingLastChangeNumber() => BackingLastChangeNumber != 0;
 
 	[UsedImplicitly]
 	public bool ShouldSerializeCachedBadBots() => CachedBadBots.Count > 0;
