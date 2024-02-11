@@ -25,7 +25,6 @@ using System.Text.Json;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Responses;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
@@ -52,7 +51,7 @@ public sealed class StorageController : ArchiController {
 	///     Loads entry under specified key from ASF's persistent KeyValue JSON storage.
 	/// </summary>
 	[HttpGet]
-	[ProducesResponseType<GenericResponse<JToken>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse<JsonElement>>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StorageGet(string key) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 

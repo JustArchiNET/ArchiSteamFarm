@@ -20,8 +20,8 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
 
@@ -30,7 +30,9 @@ namespace ArchiSteamFarm.Steam.Data;
 public class BooleanResponse {
 	// You say it works in a RESTFUL way
 	// Then your errors come back as 200 OK
-	[JsonProperty("success", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("success")]
+	[JsonRequired]
 	public bool Success { get; private set; }
 
 	[JsonConstructor]

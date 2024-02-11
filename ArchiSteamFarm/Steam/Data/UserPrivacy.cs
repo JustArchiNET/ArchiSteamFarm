@@ -22,17 +22,21 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Integration;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class UserPrivacy {
-	[JsonProperty("eCommentPermission", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("eCommentPermission")]
+	[JsonRequired]
 	internal readonly ECommentPermission CommentPermission;
 
-	[JsonProperty("PrivacySettings", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("PrivacySettings")]
+	[JsonRequired]
 	internal readonly PrivacySettings Settings = new();
 
 	// Constructed from privacy change request
@@ -51,22 +55,34 @@ internal sealed class UserPrivacy {
 	private UserPrivacy() { }
 
 	internal sealed class PrivacySettings {
-		[JsonProperty("PrivacyFriendsList", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("PrivacyFriendsList")]
+		[JsonRequired]
 		internal readonly ArchiHandler.EPrivacySetting FriendsList;
 
-		[JsonProperty("PrivacyInventory", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("PrivacyInventory")]
+		[JsonRequired]
 		internal readonly ArchiHandler.EPrivacySetting Inventory;
 
-		[JsonProperty("PrivacyInventoryGifts", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("PrivacyInventoryGifts")]
+		[JsonRequired]
 		internal readonly ArchiHandler.EPrivacySetting InventoryGifts;
 
-		[JsonProperty("PrivacyOwnedGames", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("PrivacyOwnedGames")]
+		[JsonRequired]
 		internal readonly ArchiHandler.EPrivacySetting OwnedGames;
 
-		[JsonProperty("PrivacyPlaytime", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("PrivacyPlaytime")]
+		[JsonRequired]
 		internal readonly ArchiHandler.EPrivacySetting Playtime;
 
-		[JsonProperty("PrivacyProfile", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("PrivacyProfile")]
+		[JsonRequired]
 		internal readonly ArchiHandler.EPrivacySetting Profile;
 
 		// Constructed from privacy change request

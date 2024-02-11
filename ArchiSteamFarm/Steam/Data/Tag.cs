@@ -20,17 +20,21 @@
 // limitations under the License.
 
 using System;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 public sealed class Tag {
-	[JsonProperty("category", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("category")]
+	[JsonRequired]
 	[PublicAPI]
 	public string Identifier { get; private set; } = "";
 
-	[JsonProperty("internal_name", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("internal_name")]
+	[JsonRequired]
 	[PublicAPI]
 	public string Value { get; private set; } = "";
 

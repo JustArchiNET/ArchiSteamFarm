@@ -23,23 +23,27 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class InventoriesRequest {
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	internal readonly Guid Guid;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	internal readonly ImmutableHashSet<AssetForMatching> Inventory;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	internal readonly ImmutableHashSet<Asset.EType> MatchableTypes;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	internal readonly ulong SteamID;
 
 	internal InventoriesRequest(Guid guid, ulong steamID, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> matchableTypes) {

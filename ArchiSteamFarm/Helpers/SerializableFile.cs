@@ -21,10 +21,11 @@
 
 using System;
 using System.IO;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
-using Newtonsoft.Json;
+using ArchiSteamFarm.Helpers.Json;
 
 namespace ArchiSteamFarm.Helpers;
 
@@ -79,7 +80,7 @@ public abstract class SerializableFile : IDisposable {
 				return;
 			}
 
-			string json = JsonConvert.SerializeObject(this, Debugging.IsUserDebugging ? Formatting.Indented : Formatting.None);
+			string json = JsonSerializer.Serialize(this, Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions);
 
 			if (string.IsNullOrEmpty(json)) {
 				throw new InvalidOperationException(nameof(json));

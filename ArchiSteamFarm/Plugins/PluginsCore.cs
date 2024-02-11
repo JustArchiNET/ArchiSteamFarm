@@ -33,6 +33,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
@@ -43,7 +44,6 @@ using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
 using JetBrains.Annotations;
-using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Plugins;
@@ -286,7 +286,7 @@ public static class PluginsCore {
 		return assemblies;
 	}
 
-	internal static async Task OnASFInitModules(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
+	internal static async Task OnASFInitModules(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
 		if (ActivePlugins.Count == 0) {
 			return;
 		}
@@ -436,7 +436,7 @@ public static class PluginsCore {
 		}
 	}
 
-	internal static async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
+	internal static async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (ActivePlugins.Count == 0) {

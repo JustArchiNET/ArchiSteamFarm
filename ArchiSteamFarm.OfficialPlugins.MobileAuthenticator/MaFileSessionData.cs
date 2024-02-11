@@ -20,13 +20,14 @@
 // limitations under the License.
 
 using System;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.MobileAuthenticator;
 
 internal sealed class MaFileSessionData {
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	internal readonly ulong SteamID;
 
 	internal MaFileSessionData(ulong steamID) {

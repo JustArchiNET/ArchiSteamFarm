@@ -21,8 +21,8 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Storage;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
@@ -30,49 +30,56 @@ public sealed class ASFResponse {
 	/// <summary>
 	///     ASF's build variant.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public string BuildVariant { get; private set; }
 
 	/// <summary>
 	///     A value specifying whether this variant of ASF is capable of auto-update.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public bool CanUpdate { get; private set; }
 
 	/// <summary>
 	///     Currently loaded ASF's global config.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public GlobalConfig GlobalConfig { get; private set; }
 
 	/// <summary>
 	///     Current amount of managed memory being used by the process, in kilobytes.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public uint MemoryUsage { get; private set; }
 
 	/// <summary>
 	///     Start date of the process.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public DateTime ProcessStartTime { get; private set; }
 
 	/// <summary>
 	///     Boolean value specifying whether ASF has been started with a --service parameter.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public bool Service { get; private set; }
 
 	/// <summary>
 	///     ASF version of currently running binary.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public Version Version { get; private set; }
 

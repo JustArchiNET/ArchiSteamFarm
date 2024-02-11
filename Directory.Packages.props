@@ -10,7 +10,6 @@
 		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
 		<PackageVersion Include="MSTest.TestAdapter" Version="3.2.0" />
 		<PackageVersion Include="MSTest.TestFramework" Version="3.2.0" />
-		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
 		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.8" />
 		<PackageVersion Include="SteamKit2" Version="2.5.0" />

@@ -38,7 +38,6 @@ using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ArchiSteamFarm.Web;
@@ -744,7 +743,7 @@ public sealed class WebBrowser : IDisposable {
 
 							break;
 						default:
-							requestMessage.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+							requestMessage.Content = new StringContent(JsonSerializer.Serialize(data, JsonUtilities.DefaultJsonSerialierOptions), Encoding.UTF8, "application/json");
 
 							break;
 					}

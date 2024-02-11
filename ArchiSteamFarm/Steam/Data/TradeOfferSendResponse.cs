@@ -20,22 +20,29 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
-using Newtonsoft.Json;
+using ArchiSteamFarm.Helpers.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class TradeOfferSendResponse {
-	[JsonProperty("strError", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("strError")]
 	internal readonly string ErrorText = "";
 
-	[JsonProperty("needs_mobile_confirmation", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("needs_mobile_confirmation")]
 	internal readonly bool RequiresMobileConfirmation;
 
 	internal ulong TradeOfferID { get; private set; }
 
-	[JsonProperty("tradeofferid", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("tradeofferid")]
 	private string TradeOfferIDText {
 		set {
 			if (string.IsNullOrEmpty(value)) {

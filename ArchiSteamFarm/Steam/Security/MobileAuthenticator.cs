@@ -27,6 +27,7 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -34,7 +35,6 @@ using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Storage;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Security;
 
@@ -56,10 +56,14 @@ public sealed class MobileAuthenticator : IDisposable {
 
 	private readonly ArchiCacheable<string> CachedDeviceID;
 
-	[JsonProperty("identity_secret", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("identity_secret")]
+	[JsonRequired]
 	private readonly string IdentitySecret = "";
 
-	[JsonProperty("shared_secret", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("shared_secret")]
+	[JsonRequired]
 	private readonly string SharedSecret = "";
 
 	private Bot? Bot;

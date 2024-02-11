@@ -24,8 +24,10 @@ using System.Collections.Concurrent;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,7 +44,6 @@ using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Cards;
@@ -63,16 +64,24 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	// Games that were confirmed to show false status on general badges page
 	private static readonly FrozenSet<uint> UntrustedAppIDs = new HashSet<uint>(3) { 440, 570, 730 }.ToFrozenSet();
 
-	[JsonProperty(nameof(CurrentGamesFarming))]
+	[JsonInclude]
+	[JsonPropertyName(nameof(CurrentGamesFarming))]
+	[JsonRequired]
 	[PublicAPI]
+	[Required]
 	public IReadOnlyCollection<Game> CurrentGamesFarmingReadOnly => CurrentGamesFarming;
 
-	[JsonProperty(nameof(GamesToFarm))]
+	[JsonInclude]
+	[JsonPropertyName(nameof(GamesToFarm))]
+	[JsonRequired]
 	[PublicAPI]
+	[Required]
 	public IReadOnlyCollection<Game> GamesToFarmReadOnly => GamesToFarm;
 
-	[JsonProperty]
+	[JsonInclude]
+	[JsonRequired]
 	[PublicAPI]
+	[Required]
 	public TimeSpan TimeRemaining {
 		get {
 			if (GamesToFarm.Count == 0) {
@@ -136,8 +145,10 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	[JsonProperty]
+	[JsonInclude]
+	[JsonRequired]
 	[PublicAPI]
+	[Required]
 	public bool Paused { get; private set; }
 
 	internal bool NowFarming { get; private set; }

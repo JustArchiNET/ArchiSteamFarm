@@ -19,15 +19,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [PublicAPI]
 public class ResultResponse {
-	[JsonProperty("success", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("success")]
+	[JsonRequired]
 	public EResult Result { get; private set; }
 
 	[JsonConstructor]

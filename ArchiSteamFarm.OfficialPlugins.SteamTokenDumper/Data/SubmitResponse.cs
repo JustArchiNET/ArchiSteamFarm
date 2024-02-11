@@ -20,7 +20,8 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+using ArchiSteamFarm.Helpers.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 
@@ -28,12 +29,16 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class SubmitResponse {
 #pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty("data", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("data")]
 	internal readonly SubmitResponseData? Data;
 #pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
 #pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty("success", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("success")]
+	[JsonRequired]
 	internal readonly bool Success;
 #pragma warning restore CS0649 // False positive, the field is used during json deserialization
 

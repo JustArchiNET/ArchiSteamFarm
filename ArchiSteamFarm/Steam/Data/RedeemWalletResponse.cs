@@ -20,17 +20,22 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+using ArchiSteamFarm.Helpers.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class RedeemWalletResponse : ResultResponse {
-	[JsonProperty("formattednewwalletbalance", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("formattednewwalletbalance")]
 	internal readonly string? BalanceText;
 
-	[JsonProperty("detail", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("detail")]
 	internal readonly EPurchaseResultDetail PurchaseResultDetail;
 
 	[JsonConstructor]

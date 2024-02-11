@@ -21,8 +21,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Helpers;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests;
 
@@ -31,14 +31,16 @@ public sealed class ASFEncryptRequest {
 	/// <summary>
 	///     Encryption method used for encrypting this string.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public ArchiCryptoHelper.ECryptoMethod CryptoMethod { get; private set; }
 
 	/// <summary>
 	///     String to encrypt with provided <see cref="CryptoMethod" />.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public string StringToEncrypt { get; private set; } = "";
 

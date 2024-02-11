@@ -23,10 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.Steam.Data;
 
@@ -41,9 +42,12 @@ public sealed class Asset {
 	[PublicAPI]
 	public const ulong SteamPointsShopInstanceID = 3865004543;
 
+	[UsedImplicitly]
+	public static bool ShouldSerializeAdditionalProperties => false;
+
 	[JsonIgnore]
 	[PublicAPI]
-	public IReadOnlyDictionary<string, JToken>? AdditionalPropertiesReadOnly => AdditionalProperties;
+	public IReadOnlyDictionary<string, JsonElement>? AdditionalPropertiesReadOnly => AdditionalProperties;
 
 	[JsonIgnore]
 	[PublicAPI]
@@ -53,7 +57,9 @@ public sealed class Asset {
 	[PublicAPI]
 	public uint Amount { get; internal set; }
 
-	[JsonProperty("appid", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("appid")]
 	public uint AppID { get; private set; }
 
 	[JsonIgnore]
@@ -96,10 +102,12 @@ public sealed class Asset {
 	[PublicAPI]
 	public EType Type { get; internal set; }
 
-	[JsonExtensionData(WriteData = false)]
-	internal Dictionary<string, JToken>? AdditionalProperties { private get; set; }
+	[JsonExtensionData]
+	internal Dictionary<string, JsonElement>? AdditionalProperties { private get; set; }
 
-	[JsonProperty("amount", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("amount")]
+	[JsonRequired]
 	private string AmountText {
 		get => Amount.ToString(CultureInfo.InvariantCulture);
 
@@ -120,7 +128,9 @@ public sealed class Asset {
 		}
 	}
 
-	[JsonProperty("assetid", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("assetid")]
 	private string AssetIDText {
 		get => AssetID.ToString(CultureInfo.InvariantCulture);
 
@@ -141,7 +151,9 @@ public sealed class Asset {
 		}
 	}
 
-	[JsonProperty("classid", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("classid")]
 	private string ClassIDText {
 		set {
 			if (string.IsNullOrEmpty(value)) {
@@ -158,7 +170,9 @@ public sealed class Asset {
 		}
 	}
 
-	[JsonProperty("contextid", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("contextid")]
 	private string ContextIDText {
 		get => ContextID.ToString(CultureInfo.InvariantCulture);
 
@@ -179,12 +193,16 @@ public sealed class Asset {
 		}
 	}
 
-	[JsonProperty("id", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("id")]
 	private string IDText {
 		set => AssetIDText = value;
 	}
 
-	[JsonProperty("instanceid", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("instanceid")]
 	private string InstanceIDText {
 		set {
 			if (string.IsNullOrEmpty(value)) {

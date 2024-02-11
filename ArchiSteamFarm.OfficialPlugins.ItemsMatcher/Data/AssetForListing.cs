@@ -20,16 +20,20 @@
 // limitations under the License.
 
 using System;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class AssetForListing : AssetInInventory {
-	[JsonProperty("i", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("i")]
+	[JsonRequired]
 	internal readonly uint Index;
 
-	[JsonProperty("l", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("l")]
+	[JsonRequired]
 	internal readonly ulong PreviousAssetID;
 
 	internal string BackendHashCode => Index + "-" + PreviousAssetID + "-" + AssetID + "-" + ClassID + "-" + Rarity + "-" + RealAppID + "-" + Tradable + "-" + Type + "-" + Amount;

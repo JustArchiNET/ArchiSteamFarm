@@ -30,10 +30,18 @@ namespace ArchiSteamFarm.Helpers.Json;
 
 public static class JsonUtilities {
 	[PublicAPI]
-	public static readonly JsonSerializerOptions DefaultJsonSerialierOptions = new() {
-		PropertyNamingPolicy = null,
-		TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { EvaluateExtraAttributes } }
-	};
+	public static readonly JsonSerializerOptions DefaultJsonSerialierOptions = CreateDefaultJsonSerializerOption();
+
+	[PublicAPI]
+	public static readonly JsonSerializerOptions IndentedJsonSerialierOptions = CreateDefaultJsonSerializerOption(true);
+
+	[PublicAPI]
+	public static JsonSerializerOptions CreateDefaultJsonSerializerOption(bool writeIndented = false) =>
+		new() {
+			PropertyNamingPolicy = null,
+			TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { EvaluateExtraAttributes } },
+			WriteIndented = writeIndented
+		};
 
 	private static void EvaluateExtraAttributes(JsonTypeInfo jsonTypeInfo) {
 		ArgumentNullException.ThrowIfNull(jsonTypeInfo);

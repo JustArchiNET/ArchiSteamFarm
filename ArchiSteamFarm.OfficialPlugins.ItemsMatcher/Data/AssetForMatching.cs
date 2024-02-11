@@ -20,28 +20,40 @@
 // limitations under the License.
 
 using System;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal class AssetForMatching {
-	[JsonProperty("c", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("c")]
+	[JsonRequired]
 	internal readonly ulong ClassID;
 
-	[JsonProperty("r", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("r")]
+	[JsonRequired]
 	internal readonly Asset.ERarity Rarity;
 
-	[JsonProperty("e", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("e")]
+	[JsonRequired]
 	internal readonly uint RealAppID;
 
-	[JsonProperty("t", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("t")]
+	[JsonRequired]
 	internal readonly bool Tradable;
 
-	[JsonProperty("p", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("p")]
+	[JsonRequired]
 	internal readonly Asset.EType Type;
 
-	[JsonProperty("a", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("a")]
+	[JsonRequired]
 	internal uint Amount { get; set; }
 
 	[JsonConstructor]

@@ -25,11 +25,12 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
-using Newtonsoft.Json;
 using SteamKit2;
 using SteamKit2.Internal;
 
@@ -128,7 +129,7 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 		}
 
-		Steam.Security.MobileAuthenticator? mobileAuthenticator = JsonConvert.DeserializeObject<Steam.Security.MobileAuthenticator>(json);
+		Steam.Security.MobileAuthenticator? mobileAuthenticator = JsonSerializer.Deserialize<Steam.Security.MobileAuthenticator>(json, JsonUtilities.DefaultJsonSerialierOptions);
 
 		if (mobileAuthenticator == null) {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
@@ -261,7 +262,7 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 		}
 
-		Steam.Security.MobileAuthenticator? mobileAuthenticator = JsonConvert.DeserializeObject<Steam.Security.MobileAuthenticator>(json);
+		Steam.Security.MobileAuthenticator? mobileAuthenticator = JsonSerializer.Deserialize<Steam.Security.MobileAuthenticator>(json, JsonUtilities.DefaultJsonSerialierOptions);
 
 		if (mobileAuthenticator == null) {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
@@ -360,7 +361,7 @@ internal static class Commands {
 		MaFileData maFileData = new(response, bot.SteamID, deviceID);
 
 		string maFilePendingPath = $"{bot.GetFilePath(Bot.EFileType.MobileAuthenticator)}.PENDING";
-		string json = JsonConvert.SerializeObject(maFileData, Formatting.Indented);
+		string json = JsonSerializer.Serialize(maFileData, JsonUtilities.IndentedJsonSerialierOptions);
 
 		try {
 			await File.WriteAllTextAsync(maFilePendingPath, json).ConfigureAwait(false);

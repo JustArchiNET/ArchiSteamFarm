@@ -19,20 +19,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
-using SteamKit2;
 
-namespace ArchiSteamFarm.Steam.Data;
+namespace ArchiSteamFarm.Helpers.Json;
 
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 [PublicAPI]
-public class OptionalResultResponse {
-	[JsonDisallowNull]
-	[JsonInclude]
-	[JsonPropertyName("success")]
-	public EResult? Result { get; private set; }
-
-	[JsonConstructor]
-	protected OptionalResultResponse() { }
+public sealed class JsonAllowNullAttribute : JsonAttribute {
+	// TODO
 }

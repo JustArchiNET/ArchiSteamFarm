@@ -23,34 +23,48 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 
 internal sealed class SubmitRequest {
-	[JsonProperty("guid", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("guid")]
+	[JsonRequired]
 	private static string Guid => ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
 
-	[JsonProperty("token", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("token")]
+	[JsonRequired]
 	private static string Token => SharedInfo.Token;
 
-	[JsonProperty("v", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("v")]
+	[JsonRequired]
 	private static byte Version => SharedInfo.ApiVersion;
 
-	[JsonProperty("apps", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("apps")]
+	[JsonRequired]
 	private readonly ImmutableDictionary<string, string> Apps;
 
-	[JsonProperty("depots", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("depots")]
+	[JsonRequired]
 	private readonly ImmutableDictionary<string, string> Depots;
 
 	private readonly ulong SteamID;
 
-	[JsonProperty("subs", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("subs")]
+	[JsonRequired]
 	private readonly ImmutableDictionary<string, string> Subs;
 
-	[JsonProperty("steamid", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("steamid")]
+	[JsonRequired]
 	private string SteamIDText => new SteamID(SteamID).Render();
 
 	internal SubmitRequest(ulong steamID, IReadOnlyCollection<KeyValuePair<uint, ulong>> apps, IReadOnlyCollection<KeyValuePair<uint, ulong>> accessTokens, IReadOnlyCollection<KeyValuePair<uint, string>> depots) {

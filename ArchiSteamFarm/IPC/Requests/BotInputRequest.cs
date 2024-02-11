@@ -20,8 +20,8 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests;
 
@@ -30,13 +30,15 @@ public sealed class BotInputRequest {
 	/// <summary>
 	///     Specifies the type of the input.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	public ASF.EUserInputType Type { get; private set; }
 
 	/// <summary>
 	///     Specifies the value for given input type (declared in <see cref="Type" />)
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	public string Value { get; private set; } = "";
 
 	[JsonConstructor]

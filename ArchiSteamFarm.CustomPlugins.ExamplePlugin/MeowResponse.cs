@@ -21,14 +21,16 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin;
 
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class MeowResponse {
-	[JsonProperty("url", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("url")]
+	[JsonRequired]
 	internal readonly Uri URL = null!;
 
 	[JsonConstructor]

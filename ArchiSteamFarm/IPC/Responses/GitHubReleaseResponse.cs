@@ -21,8 +21,8 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Web;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
@@ -30,28 +30,32 @@ public sealed class GitHubReleaseResponse {
 	/// <summary>
 	///     Changelog of the release rendered in HTML.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public string ChangelogHTML { get; private set; }
 
 	/// <summary>
 	///     Date of the release.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public DateTime ReleasedAt { get; private set; }
 
 	/// <summary>
 	///     Boolean value that specifies whether the build is stable or not (pre-release).
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public bool Stable { get; private set; }
 
 	/// <summary>
 	///     Version of the release.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public string Version { get; private set; }
 

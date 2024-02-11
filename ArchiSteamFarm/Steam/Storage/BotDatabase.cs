@@ -25,34 +25,42 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Security;
 using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Storage;
 
 public sealed class BotDatabase : GenericDatabase {
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	internal readonly ConcurrentHashSet<uint> FarmingBlacklistAppIDs = [];
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	internal readonly ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs = [];
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	internal readonly ObservableConcurrentDictionary<uint, DateTime> FarmingRiskyIgnoredAppIDs = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	internal readonly ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs = [];
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs = [];
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	internal readonly ConcurrentHashSet<ulong> TradingBlacklistSteamIDs = [];
 
 	internal uint GamesToRedeemInBackgroundCount {
@@ -65,7 +73,8 @@ public sealed class BotDatabase : GenericDatabase {
 
 	internal bool HasGamesToRedeemInBackground => GamesToRedeemInBackgroundCount > 0;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	private readonly OrderedDictionary GamesToRedeemInBackground = new();
 
 	internal string? AccessToken {
@@ -120,16 +129,17 @@ public sealed class BotDatabase : GenericDatabase {
 		}
 	}
 
-	[JsonProperty]
+	[JsonInclude]
 	private string? BackingAccessToken;
 
-	[JsonProperty($"_{nameof(MobileAuthenticator)}")]
+	[JsonInclude]
+	[JsonPropertyName($"_{nameof(MobileAuthenticator)}")]
 	private MobileAuthenticator? BackingMobileAuthenticator;
 
-	[JsonProperty]
+	[JsonInclude]
 	private string? BackingRefreshToken;
 
-	[JsonProperty]
+	[JsonInclude]
 	private string? BackingSteamGuardData;
 
 	private BotDatabase(string filePath) : this() {
@@ -236,7 +246,7 @@ public sealed class BotDatabase : GenericDatabase {
 				return null;
 			}
 
-			botDatabase = JsonConvert.DeserializeObject<BotDatabase>(json);
+			botDatabase = JsonSerializer.Deserialize<BotDatabase>(json, JsonUtilities.DefaultJsonSerialierOptions);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

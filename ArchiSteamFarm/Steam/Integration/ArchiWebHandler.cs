@@ -30,11 +30,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
@@ -42,8 +45,6 @@ using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Integration;
@@ -167,7 +168,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			string json = scriptNode.TextContent[startIndex..(endIndex + 1)];
 
 			try {
-				result = JsonConvert.DeserializeObject<ImmutableHashSet<BoosterCreatorEntry>>(json);
+				result = JsonSerializer.Deserialize<ImmutableHashSet<BoosterCreatorEntry>>(json, JsonUtilities.DefaultJsonSerialierOptions);
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericException(e);
 
@@ -713,7 +714,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		Dictionary<string, string> data = new(6, StringComparer.Ordinal) {
 			{ "partner", steamID.ToString(CultureInfo.InvariantCulture) },
 			{ "serverid", "1" },
-			{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) : "" },
+			{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JsonObject { { "trade_offer_access_token", token } }.ToJsonString() : "" },
 			{ "tradeoffermessage", $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}" }
 		};
 
@@ -721,7 +722,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		HashSet<ulong> mobileTradeOfferIDs = new(trades.Count);
 
 		foreach (TradeOfferSendRequest trade in trades) {
-			data["json_tradeoffer"] = JsonConvert.SerializeObject(trade);
+			data["json_tradeoffer"] = JsonSerializer.Serialize(trade, JsonUtilities.DefaultJsonSerialierOptions);
 
 			ObjectResponse<TradeOfferSendResponse>? response = null;
 
@@ -1578,7 +1579,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "ajax", "true" }
 		};
 
-		ObjectResponse<JToken>? response = await UrlPostToJsonObjectWithSession<JToken>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+		ObjectResponse<JsonNode>? response = await UrlPostToJsonObjectWithSession<JsonNode>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
 
 		if (response == null) {
 			return (EResult.Fail, EPurchaseResultDetail.Timeout);
@@ -1594,19 +1595,19 @@ public sealed class ArchiWebHandler : IDisposable {
 				// There is not much we can do apart from trying to extract the result and returning it along with the OK and non-OK response, it's also why it doesn't make any sense to strong-type it
 				EResult result = response.StatusCode.IsSuccessCode() ? EResult.OK : EResult.Fail;
 
-				if (response.Content is not JObject jObject) {
+				if (response.Content is not { } jsonNode) {
 					// Who knows what piece of crap that is?
 					return (result, EPurchaseResultDetail.NoDetail);
 				}
 
-				byte? numberResult = jObject["purchaseresultdetail"]?.Value<byte>();
+				byte? numberResult = jsonNode["purchaseresultdetail"]?.GetValue<byte>();
 
 				if (numberResult.HasValue) {
 					return (result, (EPurchaseResultDetail) numberResult.Value);
 				}
 
 				// Attempt to do limited parsing from error message, if it exists that is
-				string? errorMessage = jObject["error"]?.Value<string>();
+				string? errorMessage = jsonNode["error"]?.GetValue<string>();
 
 				switch (errorMessage) {
 					case null:
@@ -1647,7 +1648,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		// Extra entry for sessionID
 		Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
 			{ "eCommentPermission", ((byte) userPrivacy.CommentPermission).ToString(CultureInfo.InvariantCulture) },
-			{ "Privacy", JsonConvert.SerializeObject(userPrivacy.Settings) }
+			{ "Privacy", JsonSerializer.Serialize(userPrivacy.Settings, JsonUtilities.DefaultJsonSerialierOptions) }
 		};
 
 		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);

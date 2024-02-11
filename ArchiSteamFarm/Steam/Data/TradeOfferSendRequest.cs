@@ -20,19 +20,25 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 internal sealed class TradeOfferSendRequest {
-	[JsonProperty("me", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("me")]
+	[JsonRequired]
 	internal readonly ItemList ItemsToGive = new();
 
-	[JsonProperty("them", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("them")]
+	[JsonRequired]
 	internal readonly ItemList ItemsToReceive = new();
 
 	internal sealed class ItemList {
-		[JsonProperty("assets", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("assets")]
+		[JsonRequired]
 		internal readonly HashSet<Asset> Assets = [];
 	}
 }

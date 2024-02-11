@@ -20,8 +20,8 @@
 // limitations under the License.
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Localization;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
@@ -32,7 +32,7 @@ public sealed class GenericResponse<T> : GenericResponse {
 	/// <remarks>
 	///     The type of the result depends on the API endpoint that you've called.
 	/// </remarks>
-	[JsonProperty]
+	[JsonInclude]
 	public T? Result { get; private set; }
 
 	public GenericResponse(T? result) : base(result is not null) => Result = result;
@@ -51,13 +51,14 @@ public class GenericResponse {
 	/// <remarks>
 	///     This property will provide exact reason for majority of expected failures.
 	/// </remarks>
-	[JsonProperty]
+	[JsonInclude]
 	public string? Message { get; private set; }
 
 	/// <summary>
 	///     Boolean type that specifies if the request has succeeded.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
 	public bool Success { get; private set; }
 

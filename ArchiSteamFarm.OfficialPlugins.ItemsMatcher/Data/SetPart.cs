@@ -20,8 +20,8 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
@@ -29,22 +29,30 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class SetPart {
 #pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty("c", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("c")]
+	[JsonRequired]
 	internal readonly ulong ClassID;
 #pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
 #pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty("r", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("r")]
+	[JsonRequired]
 	internal readonly Asset.ERarity Rarity;
 #pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
 #pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty("e", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("e")]
+	[JsonRequired]
 	internal readonly uint RealAppID;
 #pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
 #pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty("p", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("p")]
+	[JsonRequired]
 	internal readonly Asset.EType Type;
 #pragma warning restore CS0649 // False positive, the field is used during json deserialization
 

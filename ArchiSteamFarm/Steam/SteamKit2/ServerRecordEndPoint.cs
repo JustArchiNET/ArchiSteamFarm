@@ -21,19 +21,22 @@
 
 using System;
 using System.ComponentModel;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.SteamKit2;
 
 internal sealed class ServerRecordEndPoint : IEquatable<ServerRecordEndPoint> {
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	internal readonly string Host = "";
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	internal readonly ushort Port;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	internal readonly ProtocolTypes ProtocolTypes;
 
 	internal ServerRecordEndPoint(string host, ushort port, ProtocolTypes protocolTypes) {

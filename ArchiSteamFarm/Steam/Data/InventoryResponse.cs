@@ -24,25 +24,32 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Integration;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class InventoryResponse : OptionalResultResponse {
-	[JsonProperty("assets", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("assets")]
 	internal readonly ImmutableList<Asset> Assets = ImmutableList<Asset>.Empty;
 
-	[JsonProperty("descriptions", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("descriptions")]
 	internal readonly ImmutableHashSet<Description> Descriptions = ImmutableHashSet<Description>.Empty;
 
-	[JsonProperty("total_inventory_count", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("total_inventory_count")]
 	internal readonly uint TotalInventoryCount;
 
 	internal EResult? ErrorCode { get; private set; }
@@ -50,7 +57,9 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	internal ulong LastAssetID { get; private set; }
 	internal bool MoreItems { get; private set; }
 
-	[JsonProperty("error", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("error")]
 	private string Error {
 		set {
 			if (string.IsNullOrEmpty(value)) {
@@ -64,7 +73,9 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		}
 	}
 
-	[JsonProperty("last_assetid", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("last_assetid")]
 	private string LastAssetIDText {
 		set {
 			if (string.IsNullOrEmpty(value)) {
@@ -83,7 +94,9 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		}
 	}
 
-	[JsonProperty("more_items", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("more_items")]
 	private byte MoreItemsNumber {
 		set => MoreItems = value > 0;
 	}
@@ -92,10 +105,17 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	private InventoryResponse() { }
 
 	internal sealed class Description {
-		[JsonProperty("appid", Required = Required.Always)]
+		[UsedImplicitly]
+		public static bool ShouldSerializeAdditionalProperties => false;
+
+		[JsonInclude]
+		[JsonPropertyName("appid")]
+		[JsonRequired]
 		internal readonly uint AppID;
 
-		[JsonProperty("tags", Required = Required.DisallowNull)]
+		[JsonDisallowNull]
+		[JsonInclude]
+		[JsonPropertyName("tags")]
 		internal readonly ImmutableHashSet<Tag> Tags = ImmutableHashSet<Tag>.Empty;
 
 		internal Asset.ERarity Rarity {
@@ -217,8 +237,8 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 			}
 		}
 
-		[JsonExtensionData(WriteData = false)]
-		internal Dictionary<string, JToken>? AdditionalProperties {
+		[JsonExtensionData]
+		internal Dictionary<string, JsonElement>? AdditionalProperties {
 			get;
 			[UsedImplicitly]
 			set;
@@ -229,7 +249,9 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		internal bool Marketable { get; private set; }
 		internal bool Tradable { get; private set; }
 
-		[JsonProperty("classid", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("classid")]
+		[JsonRequired]
 		private string ClassIDText {
 			set {
 				if (string.IsNullOrEmpty(value)) {
@@ -248,7 +270,9 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 			}
 		}
 
-		[JsonProperty("instanceid", Required = Required.DisallowNull)]
+		[JsonDisallowNull]
+		[JsonInclude]
+		[JsonPropertyName("instanceid")]
 		private string InstanceIDText {
 			set {
 				if (string.IsNullOrEmpty(value)) {
@@ -265,12 +289,16 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 			}
 		}
 
-		[JsonProperty("marketable", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("marketable")]
+		[JsonRequired]
 		private byte MarketableNumber {
 			set => Marketable = value > 0;
 		}
 
-		[JsonProperty("tradable", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("tradable")]
+		[JsonRequired]
 		private byte TradableNumber {
 			set => Tradable = value > 0;
 		}
