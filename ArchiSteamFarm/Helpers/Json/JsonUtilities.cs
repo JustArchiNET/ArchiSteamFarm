@@ -24,11 +24,13 @@ using System.Collections;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers.Json;
 
-internal static class JsonUtilities {
-	internal static readonly JsonSerializerOptions DefaultJsonSerialierOptions = new() {
+public static class JsonUtilities {
+	[PublicAPI]
+	public static readonly JsonSerializerOptions DefaultJsonSerialierOptions = new() {
 		PropertyNamingPolicy = null,
 		TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { EvaluateExtraAttributes } }
 	};
@@ -47,7 +49,7 @@ internal static class JsonUtilities {
 						case ECondition.Always:
 
 						// ReSharper disable once NotDisposedResource - false positive, IEnumerator is not disposable
-						case ECondition.WhenEmpty when (value == null) || (value is IEnumerable enumerable && !enumerable.GetEnumerator().MoveNext()):
+						case ECondition.WhenNullOrEmpty when (value == null) || (value is string text && string.IsNullOrEmpty(text)) || (value is IEnumerable enumerable && !enumerable.GetEnumerator().MoveNext()):
 							return false;
 					}
 				}

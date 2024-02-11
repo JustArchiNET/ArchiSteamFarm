@@ -22,19 +22,22 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal sealed class BotCache : SerializableFile {
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
+	[JsonRequired]
 	internal readonly ConcurrentList<AssetForListing> LastAnnouncedAssetsForListing = [];
 
 	internal string? LastAnnouncedTradeToken {
@@ -76,13 +79,19 @@ internal sealed class BotCache : SerializableFile {
 		}
 	}
 
-	[JsonProperty]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
+	[JsonRequired]
 	private string? BackingLastAnnouncedTradeToken;
 
-	[JsonProperty]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
+	[JsonRequired]
 	private string? BackingLastInventoryChecksumBeforeDeduplication;
 
-	[JsonProperty]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
+	[JsonRequired]
 	private DateTime? BackingLastRequestAt;
 
 	private BotCache(string filePath) : this() {
@@ -93,18 +102,6 @@ internal sealed class BotCache : SerializableFile {
 
 	[JsonConstructor]
 	private BotCache() => LastAnnouncedAssetsForListing.OnModified += OnObjectModified;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingLastAnnouncedTradeToken() => !string.IsNullOrEmpty(BackingLastAnnouncedTradeToken);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingLastInventoryChecksumBeforeDeduplication() => !string.IsNullOrEmpty(BackingLastInventoryChecksumBeforeDeduplication);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingLastRequestAt() => BackingLastRequestAt.HasValue;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeLastAnnouncedAssetsForListing() => LastAnnouncedAssetsForListing.Count > 0;
 
 	protected override void Dispose(bool disposing) {
 		if (disposing) {
@@ -134,7 +131,7 @@ internal sealed class BotCache : SerializableFile {
 				return new BotCache(filePath);
 			}
 
-			botCache = JsonConvert.DeserializeObject<BotCache>(json);
+			botCache = JsonSerializer.Deserialize<BotCache>(json, JsonUtilities.DefaultJsonSerialierOptions);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

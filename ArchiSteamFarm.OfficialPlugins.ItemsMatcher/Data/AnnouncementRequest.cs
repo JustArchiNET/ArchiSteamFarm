@@ -22,46 +22,57 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal class AnnouncementRequest {
-	[JsonProperty]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	private readonly string? AvatarHash;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	private readonly Guid Guid;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	private readonly ImmutableHashSet<AssetForListing> Inventory;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	private readonly string InventoryChecksum;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	private readonly ImmutableHashSet<Asset.EType> MatchableTypes;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	private readonly bool MatchEverything;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	private readonly byte MaxTradeHoldDuration;
 
-	[JsonProperty]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	private readonly string? Nickname;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	private readonly ulong SteamID;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	private readonly uint TotalInventoryCount;
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	private readonly string TradeToken;
 
 	internal AnnouncementRequest(Guid guid, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, string? nickname = null, string? avatarHash = null) {
@@ -98,10 +109,4 @@ internal class AnnouncementRequest {
 		Nickname = nickname;
 		AvatarHash = avatarHash;
 	}
-
-	[UsedImplicitly]
-	public bool ShouldSerializeAvatarHash() => !string.IsNullOrEmpty(AvatarHash);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeNickname() => !string.IsNullOrEmpty(Nickname);
 }

@@ -23,5 +23,5 @@ namespace ArchiSteamFarm.Helpers.Json;
 
 internal enum ECondition : byte {
 	Always,
-	WhenEmpty
+	WhenNullOrEmpty
 }

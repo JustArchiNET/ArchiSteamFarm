@@ -23,7 +23,7 @@ using System;
 
 namespace ArchiSteamFarm.Helpers.Json;
 
-[AttributeUsage(AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 internal sealed class JsonDoNotSerializeAttribute : Attribute {
 	public ECondition Condition { get; init; }
 }
