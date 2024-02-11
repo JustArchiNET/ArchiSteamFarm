@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,15 +21,14 @@
 
 using System;
 using System.Collections;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
-using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers.Json;
 
-[PublicAPI]
-public static class JsonUtilities {
-	public static readonly JsonSerializerOptions DefaultJsonSerialierOptions = new() {
+internal static class JsonUtilities {
+	internal static readonly JsonSerializerOptions DefaultJsonSerialierOptions = new() {
 		PropertyNamingPolicy = null,
 		TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { EvaluateExtraAttributes } }
 	};
@@ -43,12 +42,14 @@ public static class JsonUtilities {
 					return true;
 				}
 
-				if (property.AttributeProvider.IsDefined(typeof(JsonDoNotSerializeAttribute), true)) {
-					return false;
-				}
+				foreach (JsonDoNotSerializeAttribute attribute in property.AttributeProvider.GetCustomAttributes(typeof(JsonDoNotSerializeAttribute), true).OfType<JsonDoNotSerializeAttribute>()) {
+					switch (attribute.Condition) {
+						case ECondition.Always:
 
-				if (property.AttributeProvider.IsDefined(typeof(JsonDoNotSerializeEmptyCollectionAttribute), true) && ((value == null) || (value is IEnumerable enumerable && !enumerable.GetEnumerator().MoveNext()))) {
-					return false;
+						// ReSharper disable once NotDisposedResource - false positive, IEnumerator is not disposable
+						case ECondition.WhenEmpty when (value == null) || (value is IEnumerable enumerable && !enumerable.GetEnumerator().MoveNext()):
+							return false;
+					}
 				}
 
 				return true;
