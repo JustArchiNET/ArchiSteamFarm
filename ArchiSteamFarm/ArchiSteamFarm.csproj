@@ -4,6 +4,9 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
 		<OutputType>Exe</OutputType>
+
+		<!-- TODO: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/2550 -->
+		<JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -13,6 +16,7 @@
 		<PackageReference Include="Humanizer" />
 		<PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
 		<PackageReference Include="Markdig.Signed" />
+		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Nito.AsyncEx.Coordination" />
 		<PackageReference Include="NLog.Web.AspNetCore" />
@@ -20,7 +24,6 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
 		<PackageReference Include="System.Composition" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" />
 		<PackageReference Include="System.Linq.Async" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" />
 		<PackageReference Include="zxcvbn-core" />

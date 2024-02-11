@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	private static readonly SemaphoreSlim GiftCardsSemaphore = new(1, 1);
 
 	private readonly Bot Bot;
-	private readonly ConcurrentHashSet<ulong> HandledGifts = new();
+	private readonly ConcurrentHashSet<ulong> HandledGifts = [];
 	private readonly SemaphoreSlim TradingSemaphore = new(1, 1);
 
 	private Timer? CardsFarmerResumeTimer;
@@ -116,6 +116,23 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? Confirmations, string Message)> GetConfirmations() {
+		if (Bot.BotDatabase.MobileAuthenticator == null) {
+			return (false, null, Strings.BotNoASFAuthenticator);
+		}
+
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return (false, null, Strings.BotNotConnected);
+		}
+
+		ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
+
+		bool success = confirmations != null;
+
+		return (success, confirmations, success ? Strings.Success : Strings.WarningFailed);
+	}
+
+	[PublicAPI]
 	public ulong GetFirstSteamMasterID() {
 		ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(static kv => kv.Key).OrderBy(static steamID => steamID).FirstOrDefault();
 
@@ -133,23 +150,6 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		await TradingSemaphore.WaitAsync().ConfigureAwait(false);
 
 		return new SemaphoreLock(TradingSemaphore);
-	}
-
-	[PublicAPI]
-	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? Confirmations, string Message)> GetConfirmations() {
-		if (Bot.BotDatabase.MobileAuthenticator == null) {
-			return (false, null, Strings.BotNoASFAuthenticator);
-		}
-
-		if (!Bot.IsConnectedAndLoggedOn) {
-			return (false, null, Strings.BotNotConnected);
-		}
-
-		ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
-
-		bool success = confirmations != null;
-
-		return (success, confirmations, success ? Strings.Success : Strings.WarningFailed);
 	}
 
 	[PublicAPI]

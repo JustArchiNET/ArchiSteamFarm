@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -45,7 +45,7 @@ public static class ArchiCryptoHelper {
 
 	internal static bool HasDefaultCryptKey { get; private set; } = true;
 
-	private static readonly ImmutableHashSet<string> ForbiddenCryptKeyPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "crypt", "key", "cryptkey");
+	private static readonly FrozenSet<string> ForbiddenCryptKeyPhrases = new HashSet<string>(3, StringComparer.InvariantCultureIgnoreCase) { "crypt", "key", "cryptkey" }.ToFrozenSet(StringComparer.InvariantCultureIgnoreCase);
 
 	private static IEnumerable<byte> SteamParentalCharacters => Enumerable.Range('0', 10).Select(static character => (byte) character);
 
@@ -59,53 +59,53 @@ public static class ArchiCryptoHelper {
 
 	private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
-	internal static async Task<string?> Decrypt(ECryptoMethod cryptoMethod, string encryptedString) {
+	internal static async Task<string?> Decrypt(ECryptoMethod cryptoMethod, string text) {
 		if (!Enum.IsDefined(cryptoMethod)) {
 			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ECryptoMethod));
 		}
 
-		ArgumentException.ThrowIfNullOrEmpty(encryptedString);
+		ArgumentException.ThrowIfNullOrEmpty(text);
 
 		return cryptoMethod switch {
-			ECryptoMethod.AES => DecryptAES(encryptedString),
-			ECryptoMethod.EnvironmentVariable => Environment.GetEnvironmentVariable(encryptedString)?.Trim(),
-			ECryptoMethod.File => await ReadFromFile(encryptedString).ConfigureAwait(false),
-			ECryptoMethod.PlainText => encryptedString,
-			ECryptoMethod.ProtectedDataForCurrentUser => DecryptProtectedDataForCurrentUser(encryptedString),
+			ECryptoMethod.AES => DecryptAES(text),
+			ECryptoMethod.EnvironmentVariable => Environment.GetEnvironmentVariable(text)?.Trim(),
+			ECryptoMethod.File => await ReadFromFile(text).ConfigureAwait(false),
+			ECryptoMethod.PlainText => text,
+			ECryptoMethod.ProtectedDataForCurrentUser => DecryptProtectedDataForCurrentUser(text),
 			_ => throw new InvalidOperationException(nameof(cryptoMethod))
 		};
 	}
 
-	internal static string? Encrypt(ECryptoMethod cryptoMethod, string decryptedString) {
+	internal static string? Encrypt(ECryptoMethod cryptoMethod, string text) {
 		if (!Enum.IsDefined(cryptoMethod)) {
 			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ECryptoMethod));
 		}
 
-		ArgumentException.ThrowIfNullOrEmpty(decryptedString);
+		ArgumentException.ThrowIfNullOrEmpty(text);
 
 		return cryptoMethod switch {
-			ECryptoMethod.AES => EncryptAES(decryptedString),
-			ECryptoMethod.EnvironmentVariable => decryptedString,
-			ECryptoMethod.File => decryptedString,
-			ECryptoMethod.PlainText => decryptedString,
-			ECryptoMethod.ProtectedDataForCurrentUser => EncryptProtectedDataForCurrentUser(decryptedString),
+			ECryptoMethod.AES => EncryptAES(text),
+			ECryptoMethod.EnvironmentVariable => text,
+			ECryptoMethod.File => text,
+			ECryptoMethod.PlainText => text,
+			ECryptoMethod.ProtectedDataForCurrentUser => EncryptProtectedDataForCurrentUser(text),
 			_ => throw new InvalidOperationException(nameof(cryptoMethod))
 		};
 	}
 
-	internal static string Hash(EHashingMethod hashingMethod, string stringToHash) {
+	internal static string Hash(EHashingMethod hashingMethod, string text) {
 		if (!Enum.IsDefined(hashingMethod)) {
 			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
 		}
 
-		ArgumentException.ThrowIfNullOrEmpty(stringToHash);
+		ArgumentException.ThrowIfNullOrEmpty(text);
 
 		if (hashingMethod == EHashingMethod.PlainText) {
-			return stringToHash;
+			return text;
 		}
 
-		byte[] passwordBytes = Encoding.UTF8.GetBytes(stringToHash);
-		byte[] hashBytes = Hash(passwordBytes, EncryptionKey, DefaultHashLength, hashingMethod);
+		byte[] textBytes = Encoding.UTF8.GetBytes(text);
+		byte[] hashBytes = Hash(textBytes, EncryptionKey, DefaultHashLength, hashingMethod);
 
 		return Convert.ToBase64String(hashBytes);
 	}
@@ -197,13 +197,31 @@ public static class ArchiCryptoHelper {
 		EncryptionKey = encryptionKey;
 	}
 
-	private static string? DecryptAES(string encryptedString) {
-		ArgumentException.ThrowIfNullOrEmpty(encryptedString);
+	internal static bool VerifyHash(EHashingMethod hashingMethod, string text, string hash) {
+		if (!Enum.IsDefined(hashingMethod)) {
+			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(text);
+		ArgumentException.ThrowIfNullOrEmpty(hash);
+
+		// Text is always provided as plain text
+		byte[] textBytes = Encoding.UTF8.GetBytes(text);
+		textBytes = Hash(textBytes, EncryptionKey, DefaultHashLength, hashingMethod);
+
+		// Hash is either plain text password (when EHashingMethod.PlainText), or base64-encoded hash
+		byte[] hashBytes = hashingMethod == EHashingMethod.PlainText ? Encoding.UTF8.GetBytes(hash) : Convert.FromBase64String(hash);
+
+		return CryptographicOperations.FixedTimeEquals(textBytes, hashBytes);
+	}
+
+	private static string? DecryptAES(string text) {
+		ArgumentException.ThrowIfNullOrEmpty(text);
 
 		try {
 			byte[] key = SHA256.HashData(EncryptionKey);
 
-			byte[] decryptedData = Convert.FromBase64String(encryptedString);
+			byte[] decryptedData = Convert.FromBase64String(text);
 			decryptedData = CryptoHelper.SymmetricDecrypt(decryptedData, key);
 
 			return Encoding.UTF8.GetString(decryptedData);
@@ -214,8 +232,8 @@ public static class ArchiCryptoHelper {
 		}
 	}
 
-	private static string? DecryptProtectedDataForCurrentUser(string encryptedString) {
-		ArgumentException.ThrowIfNullOrEmpty(encryptedString);
+	private static string? DecryptProtectedDataForCurrentUser(string text) {
+		ArgumentException.ThrowIfNullOrEmpty(text);
 
 		if (!OperatingSystem.IsWindows()) {
 			return null;
@@ -223,7 +241,7 @@ public static class ArchiCryptoHelper {
 
 		try {
 			byte[] decryptedData = ProtectedData.Unprotect(
-				Convert.FromBase64String(encryptedString),
+				Convert.FromBase64String(text),
 				EncryptionKey,
 				DataProtectionScope.CurrentUser
 			);
@@ -236,13 +254,13 @@ public static class ArchiCryptoHelper {
 		}
 	}
 
-	private static string? EncryptAES(string decryptedString) {
-		ArgumentException.ThrowIfNullOrEmpty(decryptedString);
+	private static string? EncryptAES(string text) {
+		ArgumentException.ThrowIfNullOrEmpty(text);
 
 		try {
 			byte[] key = SHA256.HashData(EncryptionKey);
 
-			byte[] encryptedData = Encoding.UTF8.GetBytes(decryptedString);
+			byte[] encryptedData = Encoding.UTF8.GetBytes(text);
 			encryptedData = CryptoHelper.SymmetricEncrypt(encryptedData, key);
 
 			return Convert.ToBase64String(encryptedData);
@@ -253,8 +271,8 @@ public static class ArchiCryptoHelper {
 		}
 	}
 
-	private static string? EncryptProtectedDataForCurrentUser(string decryptedString) {
-		ArgumentException.ThrowIfNullOrEmpty(decryptedString);
+	private static string? EncryptProtectedDataForCurrentUser(string text) {
+		ArgumentException.ThrowIfNullOrEmpty(text);
 
 		if (!OperatingSystem.IsWindows()) {
 			return null;
@@ -262,7 +280,7 @@ public static class ArchiCryptoHelper {
 
 		try {
 			byte[] encryptedData = ProtectedData.Protect(
-				Encoding.UTF8.GetBytes(decryptedString),
+				Encoding.UTF8.GetBytes(text),
 				EncryptionKey,
 				DataProtectionScope.CurrentUser
 			);

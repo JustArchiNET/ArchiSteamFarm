@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -193,7 +193,7 @@ public sealed class WebBrowser : IDisposable {
 								progressReporter.Report(++batch);
 							}
 						}
-					} catch (OperationCanceledException) {
+					} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 						throw;
 					} catch (Exception e) {
 						ArchiLogger.LogGenericWarningException(e);
@@ -260,7 +260,7 @@ public sealed class WebBrowser : IDisposable {
 
 				try {
 					return await HtmlDocumentResponse.Create(response, cancellationToken).ConfigureAwait(false);
-				} catch (OperationCanceledException) {
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
@@ -334,7 +334,7 @@ public sealed class WebBrowser : IDisposable {
 
 						obj = serializer.Deserialize<T>(jsonReader);
 					}
-				} catch (OperationCanceledException) {
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
@@ -543,7 +543,7 @@ public sealed class WebBrowser : IDisposable {
 
 				try {
 					return await HtmlDocumentResponse.Create(response, cancellationToken).ConfigureAwait(false);
-				} catch (OperationCanceledException) {
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
@@ -617,7 +617,7 @@ public sealed class WebBrowser : IDisposable {
 
 						obj = serializer.Deserialize<TResult>(jsonReader);
 					}
-				} catch (OperationCanceledException) {
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
@@ -753,7 +753,7 @@ public sealed class WebBrowser : IDisposable {
 							try {
 								requestMessage.Content = new FormUrlEncodedContent(nameValueCollection);
 							} catch (UriFormatException) {
-								requestMessage.Content = new StringContent(string.Join("&", nameValueCollection.Select(static kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}")), null, "application/x-www-form-urlencoded");
+								requestMessage.Content = new StringContent(string.Join('&', nameValueCollection.Select(static kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}")), null, "application/x-www-form-urlencoded");
 							}
 
 							break;
@@ -790,7 +790,7 @@ public sealed class WebBrowser : IDisposable {
 
 				try {
 					response = await HttpClient.SendAsync(requestMessage, httpCompletionOption, cancellationToken).ConfigureAwait(false);
-				} catch (OperationCanceledException) {
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
 					ArchiLogger.LogGenericDebuggingException(e);

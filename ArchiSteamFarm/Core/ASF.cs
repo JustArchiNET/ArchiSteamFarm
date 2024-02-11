@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,8 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -30,7 +30,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Helpers;
@@ -76,9 +75,9 @@ public static class ASF {
 	internal static ICrossProcessSemaphore? LoginRateLimitingSemaphore { get; private set; }
 	internal static ICrossProcessSemaphore? LoginSemaphore { get; private set; }
 	internal static ICrossProcessSemaphore? RateLimitingSemaphore { get; private set; }
-	internal static ImmutableDictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>? WebLimitingSemaphores { get; private set; }
+	internal static FrozenDictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>? WebLimitingSemaphores { get; private set; }
 
-	private static readonly ImmutableHashSet<string> AssembliesNeededBeforeUpdate = ImmutableHashSet.Create(StringComparer.Ordinal, "System.IO.Pipes");
+	private static readonly FrozenSet<string> AssembliesNeededBeforeUpdate = new HashSet<string>(1, StringComparer.Ordinal) { "System.IO.Pipes" }.ToFrozenSet(StringComparer.Ordinal);
 	private static readonly SemaphoreSlim UpdateSemaphore = new(1, 1);
 
 	private static Timer? AutoUpdatesTimer;
@@ -102,22 +101,31 @@ public static class ASF {
 		return fileType switch {
 			EFileType.Config => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName),
 			EFileType.Database => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName),
+			EFileType.Crash => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalCrashFileName),
 			_ => throw new InvalidOperationException(nameof(fileType))
 		};
 	}
 
-	internal static async Task Init() {
+	internal static async Task<bool> Init() {
 		if (GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(GlobalConfig));
-		}
-
-		if (!PluginsCore.InitPlugins()) {
-			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 		}
 
 		WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
 
 		await UpdateAndRestart().ConfigureAwait(false);
+
+		if (!Program.IgnoreUnsupportedEnvironment && !await ProtectAgainstCrashes().ConfigureAwait(false)) {
+			ArchiLogger.LogGenericError(Strings.ErrorTooManyCrashes);
+
+			return true;
+		}
+
+		Program.AllowCrashFileRemoval = true;
+
+		if (!await PluginsCore.InitPlugins().ConfigureAwait(false)) {
+			return false;
+		}
 
 		await PluginsCore.OnASFInitModules(GlobalConfig.AdditionalProperties).ConfigureAwait(false);
 		await InitRateLimiters().ConfigureAwait(false);
@@ -143,6 +151,8 @@ public static class ASF {
 		if (Program.ConfigWatch) {
 			InitConfigWatchEvents();
 		}
+
+		return true;
 	}
 
 	internal static bool IsValidBotName(string botName) {
@@ -323,7 +333,7 @@ public static class ASF {
 
 			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
 
-			string checksum = Convert.ToHexString(SHA512.HashData(responseBytes));
+			string checksum = Utilities.GenerateChecksumFor(responseBytes);
 
 			if (!checksum.Equals(remoteChecksum, StringComparison.OrdinalIgnoreCase)) {
 				ArchiLogger.LogGenericError(Strings.ChecksumWrong);
@@ -442,7 +452,7 @@ public static class ASF {
 			{ ArchiWebHandler.SteamHelpURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamHelpURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ ArchiWebHandler.SteamStoreURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamStoreURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ WebAPI.DefaultBaseAddress, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(WebAPI)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
-		}.ToImmutableDictionary();
+		}.ToFrozenDictionary();
 	}
 
 	private static void LoadAllAssemblies() {
@@ -814,6 +824,32 @@ public static class ASF {
 		}
 	}
 
+	private static async Task<bool> ProtectAgainstCrashes() {
+		string crashFilePath = GetFilePath(EFileType.Crash);
+
+		CrashFile crashFile = await CrashFile.CreateOrLoad(crashFilePath).ConfigureAwait(false);
+
+		if (crashFile.StartupCount >= WebBrowser.MaxTries) {
+			// We've reached maximum allowed count of recent crashes, return failure
+			return false;
+		}
+
+		DateTime now = DateTime.UtcNow;
+
+		if (now - crashFile.LastStartup > TimeSpan.FromMinutes(5)) {
+			// Last crash was long ago, restart counter
+			crashFile.StartupCount = 1;
+		} else if (++crashFile.StartupCount >= WebBrowser.MaxTries) {
+			// We've reached maximum allowed count of recent crashes, return failure
+			return false;
+		}
+
+		crashFile.LastStartup = now;
+
+		// We're allowing this run to proceed
+		return true;
+	}
+
 	private static async Task RegisterBots() {
 		if (GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(GlobalConfig));
@@ -905,6 +941,9 @@ public static class ASF {
 
 			return;
 		}
+
+		// Allow crash file recovery, if needed
+		Program.AllowCrashFileRemoval = true;
 
 		await RestartOrExit().ConfigureAwait(false);
 	}
@@ -1048,6 +1087,7 @@ public static class ASF {
 
 	internal enum EFileType : byte {
 		Config,
-		Database
+		Database,
+		Crash
 	}
 }

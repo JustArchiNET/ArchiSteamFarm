@@ -17,7 +17,6 @@ ARG TARGETARCH
 ARG TARGETOS
 ENV DOTNET_CLI_TELEMETRY_OPTOUT true
 ENV DOTNET_NOLOGO true
-ENV NET_CORE_VERSION net8.0
 ENV PLUGINS ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 WORKDIR /app
 COPY --from=build-node /app/ASF-ui/dist ASF-ui/dist
@@ -45,17 +44,18 @@ RUN set -eu; \
       *) echo "ERROR: Unsupported CPU architecture: ${TARGETARCH}"; exit 1 ;; \
     esac; \
     \
-    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result" "-p:ASFVariant=${asf_variant}" -p:ContinuousIntegrationBuild=true -p:PublishSingleFile=true -p:PublishTrimmed=true -r "$asf_variant" --nologo --self-contained; \
+    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out" "-p:ASFVariant=${asf_variant}" -p:ContinuousIntegrationBuild=true -p:PublishSingleFile=true -p:PublishTrimmed=true -r "$asf_variant" --nologo --self-contained; \
     \
     if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" ]; then \
       sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs"; \
     fi; \
     \
     for plugin in $PLUGINS; do \
-      dotnet publish "$plugin" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result/plugins/$plugin" "-p:ASFVariant=${asf_variant}" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained; \
+      dotnet publish "$plugin" -c "$CONFIGURATION" -o "out/plugins/$plugin" "-p:ASFVariant=${asf_variant}" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained; \
     done
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime-deps:8.0${IMAGESUFFIX} AS runtime
+ENV ASF_PATH /app
 ENV ASF_USER asf
 ENV ASPNETCORE_URLS=
 ENV DOTNET_CLI_TELEMETRY_OPTOUT true
@@ -73,13 +73,15 @@ LABEL maintainer="JustArchi <JustArchi@JustArchi.net>" \
 
 EXPOSE 1242
 WORKDIR /app
-COPY --from=build-dotnet /app/out/result .
+COPY --from=build-dotnet /app/out /asf
 
 RUN set -eu; \
     groupadd -r -g 1000 asf; \
     useradd -r -d /app -g 1000 -u 1000 asf; \
-    chown -hR asf:asf /app
+    mkdir -p /app /asf; \
+    chown -hR asf:asf /app /asf; \
+    ln -s /asf/ArchiSteamFarm-Service.sh /usr/bin/ArchiSteamFarm
 
 VOLUME ["/app/config", "/app/logs"]
 HEALTHCHECK CMD ["pidof", "-q", "ArchiSteamFarm"]
-ENTRYPOINT ["sh", "ArchiSteamFarm-Service.sh", "--no-restart", "--process-required", "--system-required"]
+ENTRYPOINT ["ArchiSteamFarm", "--no-restart", "--process-required", "--system-required"]

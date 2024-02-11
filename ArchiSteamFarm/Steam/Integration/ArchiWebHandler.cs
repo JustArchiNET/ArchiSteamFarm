@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
@@ -48,12 +49,12 @@ using SteamKit2;
 namespace ArchiSteamFarm.Steam.Integration;
 
 public sealed class ArchiWebHandler : IDisposable {
+	private const string AccountPrivateAppsService = "IAccountPrivateAppsService";
 	private const string EconService = "IEconService";
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
 	private const ushort MaxItemsInSingleInventoryRequest = 5000;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const string SteamAppsService = "ISteamApps";
-	private const string SteamUserService = "ISteamUser";
 	private const string TwoFactorService = "ITwoFactorService";
 
 	[PublicAPI]
@@ -71,16 +72,9 @@ public sealed class ArchiWebHandler : IDisposable {
 	private static ushort WebLimiterDelay => ASF.GlobalConfig?.WebLimiterDelay ?? GlobalConfig.DefaultWebLimiterDelay;
 
 	[PublicAPI]
-	public ArchiCacheable<string> CachedAccessToken { get; }
-
-	[PublicAPI]
-	public ArchiCacheable<string> CachedApiKey { get; }
-
-	[PublicAPI]
-	public ArchiCacheable<bool?> CachedEconomyBan { get; }
-
-	[PublicAPI]
 	public WebBrowser WebBrowser { get; }
+
+	internal readonly ArchiCacheable<FrozenSet<uint>> CachedPrivateAppIDs;
 
 	private readonly Bot Bot;
 	private readonly SemaphoreSlim SessionSemaphore = new(1, 1);
@@ -95,18 +89,12 @@ public sealed class ArchiWebHandler : IDisposable {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		Bot = bot;
-
-		CachedAccessToken = new ArchiCacheable<string>(ResolveAccessToken, TimeSpan.FromHours(6));
-		CachedApiKey = new ArchiCacheable<string>(ResolveApiKey, TimeSpan.FromHours(6));
-		CachedEconomyBan = new ArchiCacheable<bool?>(ResolveEconomyBan, TimeSpan.FromHours(6));
-
+		CachedPrivateAppIDs = new ArchiCacheable<FrozenSet<uint>>(ResolvePrivateAppIDs, TimeSpan.FromMinutes(5));
 		WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy);
 	}
 
 	public void Dispose() {
-		CachedAccessToken.Dispose();
-		CachedApiKey.Dispose();
-		CachedEconomyBan.Dispose();
+		CachedPrivateAppIDs.Dispose();
 		SessionSemaphore.Dispose();
 		WebBrowser.Dispose();
 	}
@@ -141,7 +129,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<ImmutableHashSet<BoosterCreatorEntry>?> GetBoosterCreatorEntries() {
-		Uri request = new(SteamCommunityURL, "/tradingcards/boostercreator");
+		Uri request = new(SteamCommunityURL, "/tradingcards/boostercreator?l=english");
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
@@ -199,8 +187,8 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<ImmutableHashSet<uint>?> GetBoosterEligibility() {
-		Uri request = new(SteamCommunityURL, "/my/ajaxgetboostereligibility");
+	public async Task<HashSet<uint>?> GetBoosterEligibility() {
+		Uri request = new(SteamCommunityURL, "/my/ajaxgetboostereligibility?l=english");
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
@@ -208,7 +196,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		HashSet<uint> result = new();
+		HashSet<uint> result = [];
 
 		IEnumerable<IAttr> linkNodes = response.Content.SelectNodes<IAttr>("//li[@class='booster_eligibility_game']/a/@href");
 
@@ -238,7 +226,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			result.Add(appID);
 		}
 
-		return result.ToImmutableHashSet();
+		return result;
 	}
 
 	[PublicAPI]
@@ -364,11 +352,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 				(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
 
-				if (descriptions.ContainsKey(key)) {
-					continue;
-				}
-
-				descriptions[key] = description;
+				descriptions.TryAdd(key, description);
 			}
 
 			foreach (Asset asset in response.Content.Assets) {
@@ -404,7 +388,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<uint?> GetPointsBalance() {
-		(_, string? accessToken) = await CachedAccessToken.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		string? accessToken = Bot.AccessToken;
 
 		if (string.IsNullOrEmpty(accessToken)) {
 			return null;
@@ -467,14 +451,14 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<HashSet<TradeOffer>?> GetTradeOffers(bool? activeOnly = null, bool? receivedOffers = null, bool? sentOffers = null, bool? withDescriptions = null) {
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		string? accessToken = Bot.AccessToken;
 
-		if (string.IsNullOrEmpty(steamApiKey)) {
+		if (string.IsNullOrEmpty(accessToken)) {
 			return null;
 		}
 
 		Dictionary<string, object?> arguments = new(StringComparer.Ordinal) {
-			{ "key", steamApiKey }
+			{ "access_token", accessToken }
 		};
 
 		if (activeOnly.HasValue) {
@@ -558,18 +542,14 @@ public sealed class ArchiWebHandler : IDisposable {
 				continue;
 			}
 
-			InventoryResponse.Description parsedDescription = new() {
-				AppID = appID,
-				ClassID = classID,
-				InstanceID = instanceID,
-				Marketable = description["marketable"].AsBoolean(),
-				Tradable = true // We're parsing active trade offers, we can assume as much
-			};
+			bool marketable = description["marketable"].AsBoolean();
 
 			List<KeyValue> tags = description["tags"].Children;
 
+			HashSet<Tag>? parsedTags = null;
+
 			if (tags.Count > 0) {
-				HashSet<Tag> parsedTags = new(tags.Count);
+				parsedTags = new HashSet<Tag>(tags.Count);
 
 				foreach (KeyValue tag in tags) {
 					string? identifier = tag["category"].AsString();
@@ -591,9 +571,9 @@ public sealed class ArchiWebHandler : IDisposable {
 
 					parsedTags.Add(new Tag(identifier, value));
 				}
-
-				parsedDescription.Tags = parsedTags.ToImmutableHashSet();
 			}
+
+			InventoryResponse.Description parsedDescription = new(appID, classID, instanceID, marketable, parsedTags);
 
 			descriptions[key] = parsedDescription;
 		}
@@ -608,7 +588,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			trades = trades.Concat(response["trade_offers_sent"].Children);
 		}
 
-		HashSet<TradeOffer> result = new();
+		HashSet<TradeOffer> result = [];
 
 		foreach (KeyValue trade in trades) {
 			ETradeOfferState state = trade["trade_offer_state"].AsEnum<ETradeOfferState>();
@@ -668,13 +648,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<bool?> HasValidApiKey() {
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
-
-		return !string.IsNullOrEmpty(steamApiKey);
-	}
-
-	[PublicAPI]
 	public async Task<bool> JoinGroup(ulong groupID) {
 		if ((groupID == 0) || !new SteamID(groupID).IsClanAccount) {
 			throw new ArgumentOutOfRangeException(nameof(groupID));
@@ -701,7 +674,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		ArgumentOutOfRangeException.ThrowIfZero(itemsPerTrade);
 
 		TradeOfferSendRequest singleTrade = new();
-		HashSet<TradeOfferSendRequest> trades = new() { singleTrade };
+		HashSet<TradeOfferSendRequest> trades = [singleTrade];
 
 		if (itemsToGive != null) {
 			foreach (Asset itemToGive in itemsToGive) {
@@ -1825,14 +1798,14 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		string? accessToken = Bot.AccessToken;
 
-		if (string.IsNullOrEmpty(steamApiKey)) {
+		if (string.IsNullOrEmpty(accessToken)) {
 			return null;
 		}
 
 		Dictionary<string, object?> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 3 : 2, StringComparer.Ordinal) {
-			{ "key", steamApiKey },
+			{ "access_token", accessToken },
 			{ "steamid_target", steamID }
 		};
 
@@ -1918,7 +1891,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<HashSet<ulong>?> GetDigitalGiftCards() {
-		Uri request = new(SteamStoreURL, "/gifts");
+		Uri request = new(SteamStoreURL, "/gifts?l=english");
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
@@ -1928,7 +1901,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		IEnumerable<IAttr> htmlNodes = response.Content.SelectNodes<IAttr>("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
 
-		HashSet<ulong> results = new();
+		HashSet<ulong> results = [];
 
 		foreach (string giftCardIDText in htmlNodes.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(giftCardIDText)) {
@@ -1974,7 +1947,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		IEnumerable<IAttr> htmlNodes = response.Content.SelectNodes<IAttr>("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
 
-		HashSet<ulong> result = new();
+		HashSet<ulong> result = [];
 
 		foreach (string miniProfile in htmlNodes.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(miniProfile)) {
@@ -2187,14 +2160,25 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		ArgumentException.ThrowIfNullOrEmpty(accessToken);
 
+		string steamLoginSecure = $"{steamID}||{accessToken}";
+
+		if (Initialized) {
+			string? previousSteamLoginSecure = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "steamLoginSecure");
+
+			if (previousSteamLoginSecure == steamLoginSecure) {
+				// We have nothing to update, skip this request
+				return true;
+			}
+		}
+
+		Initialized = false;
+
 		string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString(CultureInfo.InvariantCulture)));
 
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamCheckoutURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamCommunityURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamHelpURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamStoreURL.Host}"));
-
-		string steamLoginSecure = $"{steamID}||{accessToken}";
 
 		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamCheckoutURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamCommunityURL.Host}"));
@@ -2272,13 +2256,9 @@ public sealed class ArchiWebHandler : IDisposable {
 		return await UrlHeadWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 	}
 
-	internal void OnDisconnected() {
-		Initialized = false;
+	internal void OnDisconnected() => Initialized = false;
 
-		Utilities.InBackground(() => CachedAccessToken.Reset());
-		Utilities.InBackground(() => CachedApiKey.Reset());
-		Utilities.InBackground(() => CachedEconomyBan.Reset());
-	}
+	internal void OnInitModules() => Utilities.InBackground(() => CachedPrivateAppIDs.Reset());
 
 	internal void OnVanityURLChanged(string? vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
 
@@ -2327,82 +2307,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
 
 		return response?.Content?.Result == EResult.OK;
-	}
-
-	private async Task<(ESteamApiKeyState State, string? Key)> GetApiKeyState(CancellationToken cancellationToken = default) {
-		Uri request = new(SteamCommunityURL, "/dev/apikey?l=english");
-
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
-
-		if (response?.Content == null) {
-			return (ESteamApiKeyState.Timeout, null);
-		}
-
-		INode? titleNode = response.Content.SelectSingleNode("//div[@id='mainContents']/h2");
-
-		if (titleNode == null) {
-			Bot.ArchiLogger.LogNullError(titleNode);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		string title = titleNode.TextContent;
-
-		if (string.IsNullOrEmpty(title)) {
-			Bot.ArchiLogger.LogNullError(title);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		if (title.Contains("Access Denied", StringComparison.OrdinalIgnoreCase) || title.Contains("Validated email address required", StringComparison.OrdinalIgnoreCase)) {
-			return (ESteamApiKeyState.AccessDenied, null);
-		}
-
-		INode? htmlNode = response.Content.SelectSingleNode("//div[@id='bodyContents_ex']/p");
-
-		if (htmlNode == null) {
-			Bot.ArchiLogger.LogNullError(htmlNode);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		string text = htmlNode.TextContent;
-
-		if (string.IsNullOrEmpty(text)) {
-			Bot.ArchiLogger.LogNullError(text);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		if (text.Contains("Registering for a Steam Web API Key", StringComparison.OrdinalIgnoreCase)) {
-			return (ESteamApiKeyState.NotRegisteredYet, null);
-		}
-
-		int keyIndex = text.IndexOf("Key: ", StringComparison.Ordinal);
-
-		if (keyIndex < 0) {
-			Bot.ArchiLogger.LogNullError(keyIndex);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		keyIndex += 5;
-
-		if (text.Length <= keyIndex) {
-			Bot.ArchiLogger.LogNullError(text);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		text = text[keyIndex..];
-
-		if ((text.Length != 32) || !Utilities.IsValidHexadecimalText(text)) {
-			Bot.ArchiLogger.LogNullError(text);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		return (ESteamApiKeyState.Registered, text);
 	}
 
 	private async Task<bool> IsProfileUri(Uri uri, bool waitForInitialization = true) {
@@ -2596,103 +2500,15 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	private async Task<bool> RegisterApiKey() {
-		Uri request = new(SteamCommunityURL, "/dev/registerkey");
+	private async Task<(bool Success, FrozenSet<uint>? Result)> ResolvePrivateAppIDs(CancellationToken cancellationToken) {
+		string? accessToken = Bot.AccessToken;
 
-		// Extra entry for sessionID
-		Dictionary<string, string> data = new(4, StringComparer.Ordinal) {
-			{ "agreeToTerms", "agreed" },
-#pragma warning disable CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
-			{ "domain", $"generated.by.{SharedInfo.AssemblyName.ToLowerInvariant()}.localhost" },
-#pragma warning restore CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
-			{ "Submit", "Register" }
-		};
-
-		return await UrlPostWithSession(request, data: data).ConfigureAwait(false);
-	}
-
-	private async Task<(bool Success, string? Result)> ResolveAccessToken(CancellationToken cancellationToken = default) {
-		Uri request = new(SteamStoreURL, "/pointssummary/ajaxgetasyncconfig");
-
-		ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
-
-		return !string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken) ? (true, response.Content.Data.WebAPIToken) : (false, null);
-	}
-
-	private async Task<(bool Success, string? Result)> ResolveApiKey(CancellationToken cancellationToken = default) {
-		if (Bot.IsAccountLimited) {
-			// API key is permanently unavailable for limited accounts
-			return (true, null);
-		}
-
-		(ESteamApiKeyState State, string? Key) result = await GetApiKeyState(cancellationToken).ConfigureAwait(false);
-
-		switch (result.State) {
-			case ESteamApiKeyState.AccessDenied:
-				// We succeeded in fetching API key, but it resulted in access denied
-				// Return empty result, API key is unavailable permanently
-				return (true, "");
-			case ESteamApiKeyState.NotRegisteredYet:
-				// We succeeded in fetching API key, and it resulted in no key registered yet
-				// Let's try to register a new key
-				if (!await RegisterApiKey().ConfigureAwait(false)) {
-					// Request timed out, bad luck, we'll try again later
-					goto case ESteamApiKeyState.Timeout;
-				}
-
-				// We should have the key ready, so let's fetch it again
-				result = await GetApiKeyState(cancellationToken).ConfigureAwait(false);
-
-				if (result.State == ESteamApiKeyState.Timeout) {
-					// Request timed out, bad luck, we'll try again later
-					goto case ESteamApiKeyState.Timeout;
-				}
-
-				if (result.State != ESteamApiKeyState.Registered) {
-					// Something went wrong, report error
-					goto default;
-				}
-
-				goto case ESteamApiKeyState.Registered;
-			case ESteamApiKeyState.Registered:
-				// We succeeded in fetching API key, and it resulted in registered key
-				// Cache the result, this is the API key we want
-				return (true, result.Key);
-			case ESteamApiKeyState.Timeout:
-				// Request timed out, bad luck, we'll try again later
-				return (false, null);
-			default:
-				// We got an unhandled error, this should never happen
-				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result.State), result.State));
-
-				return (false, null);
-		}
-	}
-
-	private async Task<(bool Success, bool? Result)> ResolveEconomyBan(CancellationToken cancellationToken = default) {
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously, cancellationToken).ConfigureAwait(false);
-
-		if (string.IsNullOrEmpty(steamApiKey)) {
+		if (string.IsNullOrEmpty(accessToken)) {
 			return (false, null);
 		}
 
-		if (!Initialized) {
-			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
-
-			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-			}
-
-			if (!Initialized) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-				return (false, null);
-			}
-		}
-
-		Dictionary<string, object?> arguments = new(2, StringComparer.Ordinal) {
-			{ "key", steamApiKey },
-			{ "steamids", Bot.SteamID }
+		Dictionary<string, object?> arguments = new(1, StringComparer.Ordinal) {
+			{ "access_token", accessToken }
 		};
 
 		KeyValue? response = null;
@@ -2702,16 +2518,16 @@ public sealed class ArchiWebHandler : IDisposable {
 				await Task.Delay(WebLimiterDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			using WebAPI.AsyncInterface service = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamUserService);
+			using WebAPI.AsyncInterface loyaltyRewardsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(AccountPrivateAppsService);
 
-			service.Timeout = WebBrowser.Timeout;
+			loyaltyRewardsService.Timeout = WebBrowser.Timeout;
 
 			try {
 				response = await WebLimitRequest(
 					WebAPI.DefaultBaseAddress,
 
 					// ReSharper disable once AccessToDisposedClosure
-					async () => await service.CallAsync(HttpMethod.Get, "GetPlayerBans", args: arguments).ConfigureAwait(false), cancellationToken
+					async () => await loyaltyRewardsService.CallAsync(HttpMethod.Get, "GetPrivateAppList", args: arguments).ConfigureAwait(false), cancellationToken
 				).ConfigureAwait(false);
 			} catch (TaskCanceledException e) {
 				Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -2726,30 +2542,25 @@ public sealed class ArchiWebHandler : IDisposable {
 			return (false, null);
 		}
 
-		List<KeyValue> players = response["players"].Children;
+		List<KeyValue> nodes = response["private_apps"]["appids"].Children;
 
-		if (players.Count != 1) {
-			Bot.ArchiLogger.LogNullError(players);
-
-			return (false, null);
+		if (nodes.Count == 0) {
+			return (true, FrozenSet<uint>.Empty);
 		}
 
-		string? economyBanText = players[0]["EconomyBan"].AsString();
+		HashSet<uint> result = new(nodes.Count);
 
-		switch (economyBanText) {
-			case null:
-				Bot.ArchiLogger.LogNullError(economyBanText);
-
-				return (false, null);
-			case "none":
-				return (true, false);
-			case "banned":
-				return (true, true);
-			default:
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(economyBanText), economyBanText));
+		foreach (uint appID in nodes.Select(static node => node.AsUnsignedInteger())) {
+			if (appID == 0) {
+				Bot.ArchiLogger.LogNullError(appID);
 
 				return (false, null);
+			}
+
+			result.Add(appID);
 		}
+
+		return (true, result.ToFrozenSet());
 	}
 
 	private async Task<bool> UnlockParentalAccount(string parentalCode) {
@@ -2819,13 +2630,5 @@ public sealed class ArchiWebHandler : IDisposable {
 		Lowercase,
 		CamelCase,
 		PascalCase
-	}
-
-	private enum ESteamApiKeyState : byte {
-		Error,
-		Timeout,
-		Registered,
-		NotRegisteredYet,
-		AccessDenied
 	}
 }

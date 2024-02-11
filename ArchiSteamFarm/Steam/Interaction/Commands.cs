@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -185,10 +185,12 @@ public sealed class Commands {
 						return await Response2FAConfirm(access, Utilities.GetArgsAsText(args, 1, ","), false, steamID).ConfigureAwait(false);
 					case "2FAOK":
 						return await Response2FAConfirm(access, Utilities.GetArgsAsText(args, 1, ","), true, steamID).ConfigureAwait(false);
-					case "ADDLICENCE" or "ADDLICENSE" when args.Length > 2:
+					case "AL" or "ADDLICENCE" or "ADDLICENSE" when args.Length > 2:
 						return await ResponseAddLicense(access, args[1], Utilities.GetArgsAsText(args, 2, ","), steamID).ConfigureAwait(false);
-					case "ADDLICENCE" or "ADDLICENSE":
+					case "AL" or "ADDLICENCE" or "ADDLICENSE":
 						return await ResponseAddLicense(access, args[1]).ConfigureAwait(false);
+					case "ALA":
+						return await ResponseAddLicense(access, SharedInfo.ASF, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
 					case "BALANCE":
 						return await ResponseWalletBalance(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
 					case "BGR":
@@ -532,7 +534,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.Response2FA(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -574,7 +576,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.Response2FAConfirm(GetProxyAccess(bot, access, steamID), confirm))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -678,7 +680,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAddLicense(GetProxyAccess(bot, access, steamID), query))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -729,7 +731,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedLoot(GetProxyAccess(bot, access, steamID), appID, contextID))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -821,7 +823,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedRedeem(GetProxyAccess(bot, access, steamID), options, keys, steamID))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -910,7 +912,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransfer(GetProxyAccess(bot, access, steamID), appID, contextID, targetBot))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -944,7 +946,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBackgroundGamesRedeemer(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1021,7 +1023,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseFarm(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1049,7 +1051,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklist(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1071,7 +1073,7 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<uint> appIDs = new();
+		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
@@ -1113,7 +1115,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklistAdd(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1135,7 +1137,7 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<uint> appIDs = new();
+		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
@@ -1172,7 +1174,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklistRemove(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1200,7 +1202,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueue(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1222,7 +1224,7 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<uint> appIDs = new();
+		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
@@ -1237,7 +1239,7 @@ public sealed class Commands {
 		}
 
 		switch (Bot.CardsFarmer.NowFarming) {
-			case false when Bot.BotConfig.FarmPriorityQueueOnly:
+			case false when Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmPriorityQueueOnly):
 				Utilities.InBackground(Bot.CardsFarmer.StartFarming);
 
 				break;
@@ -1271,7 +1273,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueueAdd(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1293,7 +1295,7 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<uint> appIDs = new();
+		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
@@ -1335,7 +1337,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueueRemove(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1413,7 +1415,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseInput(GetProxyAccess(bot, access, steamID), propertyName, inputValue)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1451,7 +1453,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLevel(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1493,7 +1495,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLoot(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1523,7 +1525,7 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(appIDTexts)));
 		}
 
-		HashSet<uint> realAppIDs = new();
+		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
 			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
@@ -1554,7 +1556,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLootByRealAppIDs(GetProxyAccess(bot, access, steamID), realAppIDsText, exclude))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1582,7 +1584,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklist(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1604,7 +1606,7 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<uint> appIDs = new();
+		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
@@ -1633,7 +1635,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklistAdd(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1655,7 +1657,7 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<uint> appIDs = new();
+		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
@@ -1684,7 +1686,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklistRemove(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1728,7 +1730,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseNickname(GetProxyAccess(bot, access, steamID), nickname)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1896,7 +1898,7 @@ public sealed class Commands {
 
 		IList<(string? Response, Dictionary<string, string>? OwnedGames)> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseOwns(GetProxyAccess(bot, access, steamID), query))).ConfigureAwait(false);
 
-		List<(string Response, Dictionary<string, string> OwnedGames)> validResults = new(results.Where(static result => !string.IsNullOrEmpty(result.Response) && (result.OwnedGames != null))!);
+		List<(string Response, Dictionary<string, string> OwnedGames)> validResults = [..results.Where(static result => !string.IsNullOrEmpty(result.Response) && (result.OwnedGames != null))];
 
 		if (validResults.Count == 0) {
 			return null;
@@ -1962,7 +1964,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePause(GetProxyAccess(bot, access, steamID), permanent, resumeInSecondsText))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2052,7 +2054,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePlay(GetProxyAccess(bot, access, steamID), targetGameIDs))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2090,7 +2092,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePointsBalance(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2113,7 +2115,7 @@ public sealed class Commands {
 		// There are only 7 privacy settings
 		const byte privacySettings = 7;
 
-		string[] privacySettingsArgs = privacySettingsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
+		string[] privacySettingsArgs = privacySettingsText.Split(SharedInfo.ListElementSeparators, privacySettings + 1, StringSplitOptions.RemoveEmptyEntries);
 
 		switch (privacySettingsArgs.Length) {
 			case 0:
@@ -2243,7 +2245,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePrivacy(GetProxyAccess(bot, access, steamID), privacySettingsText))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2285,8 +2287,8 @@ public sealed class Commands {
 		HashSet<string> pendingKeys = keys.ToHashSet(StringComparer.Ordinal);
 		HashSet<string> unusedKeys = pendingKeys.ToHashSet(StringComparer.Ordinal);
 
-		HashSet<Bot> rateLimitedBots = new();
-		HashSet<Bot> triedBots = new();
+		HashSet<Bot> rateLimitedBots = [];
+		HashSet<Bot> triedBots = [];
 
 		StringBuilder response = new();
 
@@ -2523,7 +2525,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseRedeem(GetProxyAccess(bot, access, steamID), keysText, steamID, redeemFlags))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2561,7 +2563,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseReset(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2609,7 +2611,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseResume(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2643,7 +2645,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStart(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2720,7 +2722,7 @@ public sealed class Commands {
 
 		IList<(string? Response, Bot Bot)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStatus(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<(string Response, Bot Bot)> validResults = new(results.Where(static result => !string.IsNullOrEmpty(result.Response))!);
+		List<(string Response, Bot Bot)> validResults = [..results.Where(static result => !string.IsNullOrEmpty(result.Response))];
 
 		if (validResults.Count == 0) {
 			return null;
@@ -2762,7 +2764,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStop(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2790,7 +2792,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklist(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2812,7 +2814,7 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<ulong> targetIDs = new();
+		HashSet<ulong> targetIDs = [];
 
 		foreach (string target in targets) {
 			if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0) || !new SteamID(targetID).IsIndividualAccount) {
@@ -2841,7 +2843,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklistAdd(GetProxyAccess(bot, access, steamID), targetSteamIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2863,7 +2865,7 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<ulong> targetIDs = new();
+		HashSet<ulong> targetIDs = [];
 
 		foreach (string target in targets) {
 			if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0) || !new SteamID(targetID).IsIndividualAccount) {
@@ -2892,7 +2894,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklistRemove(GetProxyAccess(bot, access, steamID), targetSteamIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2951,7 +2953,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransfer(GetProxyAccess(bot, access, steamID), botNameTo))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -3016,7 +3018,7 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(appIDTexts)));
 		}
 
-		HashSet<uint> realAppIDs = new();
+		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
 			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
@@ -3050,7 +3052,7 @@ public sealed class Commands {
 			return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(appIDTexts)));
 		}
 
-		HashSet<uint> realAppIDs = new();
+		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
 			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
@@ -3068,7 +3070,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransferByRealAppIDs(GetProxyAccess(bot, access, steamID), realAppIDs, targetBot, exclude))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -3132,7 +3134,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseUnpackBoosters(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -3194,7 +3196,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseWalletBalance(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}

@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using JetBrains.Annotations;
@@ -48,7 +49,7 @@ public abstract class GenericDatabase : SerializableFile {
 	public JToken? LoadFromJsonStorage(string key) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
-		return KeyValueJsonStorage.TryGetValue(key, out JToken? value) ? value : null;
+		return KeyValueJsonStorage.GetValueOrDefault(key);
 	}
 
 	[PublicAPI]

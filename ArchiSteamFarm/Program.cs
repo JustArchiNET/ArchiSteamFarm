@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -47,8 +47,10 @@ using SteamKit2;
 namespace ArchiSteamFarm;
 
 internal static class Program {
+	internal static bool AllowCrashFileRemoval { get; set; }
 	internal static bool ConfigMigrate { get; private set; } = true;
 	internal static bool ConfigWatch { get; private set; } = true;
+	internal static bool IgnoreUnsupportedEnvironment { get; private set; }
 	internal static string? NetworkGroup { get; private set; }
 	internal static bool ProcessRequired { get; private set; }
 	internal static bool RestartAllowed { get; private set; } = true;
@@ -58,16 +60,15 @@ internal static class Program {
 
 	private static readonly Dictionary<PosixSignal, PosixSignalRegistration> RegisteredPosixSignals = new();
 	private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
-	private static readonly ImmutableHashSet<PosixSignal> SupportedPosixSignals = ImmutableHashSet.Create(PosixSignal.SIGINT, PosixSignal.SIGTERM);
+	private static readonly FrozenSet<PosixSignal> SupportedPosixSignals = new HashSet<PosixSignal>(2) { PosixSignal.SIGINT, PosixSignal.SIGTERM }.ToFrozenSet();
 
-	private static bool IgnoreUnsupportedEnvironment;
 	private static bool InputCryptkeyManually;
 	private static bool Minimized;
 	private static bool SystemRequired;
 
 	internal static async Task Exit(byte exitCode = 0) {
 		if (exitCode != 0) {
-			ASF.ArchiLogger.LogGenericError(Strings.ErrorExitingWithNonZeroErrorCode);
+			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorExitingWithNonZeroErrorCode, exitCode));
 		}
 
 		await Shutdown(exitCode).ConfigureAwait(false);
@@ -86,7 +87,7 @@ internal static class Program {
 		IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName, StringComparison.Ordinal) ? 1 : 0);
 
 		try {
-			Process.Start(OS.ProcessFileName, string.Join(" ", arguments));
+			Process.Start(OS.ProcessFileName, string.Join(' ', arguments));
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
@@ -205,13 +206,7 @@ internal static class Program {
 
 		OS.Init(ASF.GlobalConfig?.OptimizationMode ?? GlobalConfig.DefaultOptimizationMode);
 
-		if (!await InitGlobalDatabaseAndServices().ConfigureAwait(false)) {
-			return false;
-		}
-
-		await ASF.Init().ConfigureAwait(false);
-
-		return true;
+		return await InitGlobalDatabaseAndServices().ConfigureAwait(false) && await ASF.Init().ConfigureAwait(false);
 	}
 
 	private static async Task<bool> InitCore(IReadOnlyCollection<string>? args) {
@@ -450,7 +445,7 @@ internal static class Program {
 		return true;
 	}
 
-	private static async Task<bool> InitShutdownSequence() {
+	private static async Task<bool> InitShutdownSequence(byte exitCode = 0) {
 		if (ShutdownSequenceInitialized) {
 			// We've already initialized shutdown sequence before, we won't allow the caller to init shutdown sequence again
 			// While normally this will be respected, caller might not have any say in this for example because it's the runtime terminating ASF due to fatal exception
@@ -462,13 +457,26 @@ internal static class Program {
 
 		ShutdownSequenceInitialized = true;
 
+		// Unregister from registered signals
 		if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-			// Unregister from registered signals
 			foreach (PosixSignalRegistration registration in RegisteredPosixSignals.Values) {
 				registration.Dispose();
 			}
 
 			RegisteredPosixSignals.Clear();
+		}
+
+		// Remove crash file if allowed
+		if ((exitCode == 0) && AllowCrashFileRemoval) {
+			string crashFile = ASF.GetFilePath(ASF.EFileType.Crash);
+
+			if (File.Exists(crashFile)) {
+				try {
+					File.Delete(crashFile);
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+				}
+			}
 		}
 
 		// Sockets created by IPC might still be running for a short while after complete app shutdown
@@ -503,16 +511,13 @@ internal static class Program {
 		return await ShutdownResetEvent.Task.ConfigureAwait(false);
 	}
 
-	private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit(130).ConfigureAwait(false);
+	private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit().ConfigureAwait(false);
 
 	private static async void OnPosixSignal(PosixSignalContext signal) {
 		ArgumentNullException.ThrowIfNull(signal);
 
 		switch (signal.Signal) {
 			case PosixSignal.SIGINT:
-				await Exit(130).ConfigureAwait(false);
-
-				break;
 			case PosixSignal.SIGTERM:
 				await Exit().ConfigureAwait(false);
 
@@ -673,6 +678,14 @@ internal static class Program {
 	private static async Task<bool> ParseEnvironmentVariables() {
 		// We're using a single try-catch block here, as a failure for getting one variable will result in the same failure for all other ones
 		try {
+			string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
+
+			if (!string.IsNullOrEmpty(envPath)) {
+				if (!HandlePathArgument(envPath)) {
+					return false;
+				}
+			}
+
 			string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
 
 			if (!string.IsNullOrEmpty(envCryptKey)) {
@@ -692,14 +705,6 @@ internal static class Program {
 			if (!string.IsNullOrEmpty(envNetworkGroup)) {
 				HandleNetworkGroupArgument(envNetworkGroup);
 			}
-
-			string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
-
-			if (!string.IsNullOrEmpty(envPath)) {
-				if (!HandlePathArgument(envPath)) {
-					return false;
-				}
-			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -710,7 +715,7 @@ internal static class Program {
 	}
 
 	private static async Task Shutdown(byte exitCode = 0) {
-		if (!await InitShutdownSequence().ConfigureAwait(false)) {
+		if (!await InitShutdownSequence(exitCode).ConfigureAwait(false)) {
 			return;
 		}
 

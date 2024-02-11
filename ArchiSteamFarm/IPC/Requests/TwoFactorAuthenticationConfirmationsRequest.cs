@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,10 +58,11 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(AcceptedCreatorIDs)}", Required = Required.DisallowNull)]
 	public ImmutableHashSet<string> SAcceptedCreatorIDs {
 		get => AcceptedCreatorIDs.Select(static creatorID => creatorID.ToString(CultureInfo.InvariantCulture)).ToImmutableHashSet(StringComparer.Ordinal);
-		set {
+
+		private set {
 			ArgumentNullException.ThrowIfNull(value);
 
-			HashSet<ulong> acceptedCreatorIDs = new();
+			HashSet<ulong> acceptedCreatorIDs = [];
 
 			foreach (string creatorIDText in value) {
 				if (!ulong.TryParse(creatorIDText, out ulong creatorID) || (creatorID == 0)) {

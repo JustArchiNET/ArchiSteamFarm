@@ -89,9 +89,7 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Έξοδος με μη μηδενικό κωδικό σφάλματος!</value>
-	</data>
+	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Αποτυχία αιτήματος: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -741,6 +739,9 @@ StackTrace:
 		<value>Η διεύθυνση IP {0} δεν έχει αποκλειστεί!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
+	
+	
+	
 	
 	
 </root>

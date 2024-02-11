@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,6 +48,7 @@ public static class SharedInfo {
 	internal const string GithubReleaseURL = $"https://api.github.com/repos/{GithubRepo}/releases";
 	internal const string GithubRepo = $"JustArchiNET/{AssemblyName}";
 	internal const string GlobalConfigFileName = $"{ASF}{JsonConfigExtension}";
+	internal const string GlobalCrashFileName = $"{ASF}.crash";
 	internal const string GlobalDatabaseFileName = $"{ASF}{DatabaseExtension}";
 	internal const ushort InformationDelay = 10000;
 	internal const string IPCConfigExtension = ".config";
@@ -69,13 +70,13 @@ public static class SharedInfo {
 	internal const string WebsiteDirectory = "www";
 
 	[PublicAPI]
-	public static readonly char[] ListElementSeparators = { ',' };
+	public static readonly char[] ListElementSeparators = [','];
 
 	[PublicAPI]
-	public static readonly string[] NewLineIndicators = { "\r\n", "\r", "\n" };
+	public static readonly string[] NewLineIndicators = ["\r\n", "\r", "\n"];
 
 	[PublicAPI]
-	public static readonly string[] RangeIndicators = { ".." };
+	public static readonly string[] RangeIndicators = [".."];
 
 	internal static string HomeDirectory {
 		get {
@@ -94,7 +95,7 @@ public static class SharedInfo {
 		}
 	}
 
-	internal static string ProgramIdentifier => $"{PublicIdentifier} V{Version} ({BuildInfo.Variant}/{ModuleVersion} | {OS.Version})";
+	internal static string ProgramIdentifier => $"{PublicIdentifier} V{Version} ({BuildInfo.Variant}/{ModuleVersion:N} | {OS.Version}) in [{Directory.GetCurrentDirectory()}]";
 	internal static string PublicIdentifier => $"{AssemblyName}{(BuildInfo.IsCustomBuild ? "-custom" : PluginsCore.HasCustomPluginsLoaded ? "-modded" : "")}";
 	internal static Version Version => Assembly.GetExecutingAssembly().GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 

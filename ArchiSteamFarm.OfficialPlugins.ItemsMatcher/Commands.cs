@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -80,12 +80,20 @@ internal static class Commands {
 			return access > EAccess.None ? bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied) : null;
 		}
 
+		if (!bot.IsConnectedAndLoggedOn) {
+			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
+		}
+
+		if (bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything)) {
+			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(BotConfig.ETradingPreferences.MatchEverything)));
+		}
+
 		if ((ASF.GlobalConfig?.LicenseID == null) || (ASF.GlobalConfig.LicenseID == Guid.Empty)) {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ASF.GlobalConfig.LicenseID)));
 		}
 
-		if (!bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || !ItemsMatcherPlugin.RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication)) {
-			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(BotConfig.ETradingPreferences.MatchActively)));
+		if (!ItemsMatcherPlugin.RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication)) {
+			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(remoteCommunication)));
 		}
 
 		remoteCommunication.TriggerMatchActivelyEarlier();
@@ -112,7 +120,7 @@ internal static class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => ResponseMatch(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}

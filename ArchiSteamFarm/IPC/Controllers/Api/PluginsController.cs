@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Net;
 using ArchiSteamFarm.IPC.Responses;
@@ -33,9 +32,5 @@ namespace ArchiSteamFarm.IPC.Controllers.Api;
 public sealed class PluginsController : ArchiController {
 	[HttpGet]
 	[ProducesResponseType<GenericResponse<IReadOnlyCollection<IPlugin>>>((int) HttpStatusCode.OK)]
-	public ActionResult<GenericResponse<IReadOnlyCollection<IPlugin>>> PluginsGet() {
-		IReadOnlyCollection<IPlugin> activePlugins = PluginsCore.ActivePlugins ?? (IReadOnlyCollection<IPlugin>) Array.Empty<IPlugin>();
-
-		return Ok(new GenericResponse<IReadOnlyCollection<IPlugin>>(activePlugins));
-	}
+	public ActionResult<GenericResponse<IReadOnlyCollection<IPlugin>>> PluginsGet() => Ok(new GenericResponse<IReadOnlyCollection<IPlugin>>(PluginsCore.ActivePlugins));
 }

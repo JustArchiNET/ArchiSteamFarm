@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,14 +29,14 @@ internal class AssetInInventory : AssetForMatching {
 	[JsonProperty("d", Required = Required.Always)]
 	internal readonly ulong AssetID;
 
+	[JsonConstructor]
+	protected AssetInInventory() { }
+
 	internal AssetInInventory(Asset asset) : base(asset) {
 		ArgumentNullException.ThrowIfNull(asset);
 
 		AssetID = asset.AssetID;
 	}
-
-	[JsonConstructor]
-	private AssetInInventory() { }
 
 	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, tradable: Tradable, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
 }

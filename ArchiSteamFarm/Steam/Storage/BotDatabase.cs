@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,22 +38,22 @@ namespace ArchiSteamFarm.Steam.Storage;
 
 public sealed class BotDatabase : GenericDatabase {
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingBlacklistAppIDs = new();
+	internal readonly ConcurrentHashSet<uint> FarmingBlacklistAppIDs = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs = new();
+	internal readonly ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly ObservableConcurrentDictionary<uint, DateTime> FarmingRiskyIgnoredAppIDs = new();
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs = new();
+	internal readonly ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs = new();
+	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<ulong> TradingBlacklistSteamIDs = new();
+	internal readonly ConcurrentHashSet<ulong> TradingBlacklistSteamIDs = [];
 
 	internal uint GamesToRedeemInBackgroundCount {
 		get {

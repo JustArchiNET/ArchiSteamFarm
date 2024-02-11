@@ -90,7 +90,8 @@ StackTrace:
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
 	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Saindo com um código de erro diferente de zero!</value>
+		<value>Saindo com o código de erro {0}!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
 	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Erro de solicitação: {0}</value>
@@ -719,19 +720,19 @@ Tempo de execução: {1}</value>
 		<value>Você está tentando executar o ASF como administrador (root). Isto causa um risco de segurança significativo à sua máquina e já que o ASF não requer acesso root para o seu funcionamento, recomendamos executá-lo como usuário não-administrador, se possível.</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
-		<value>Você está executando o ASF em um ambiente não suportado, utilizando o argumento --ignore-unsupported-environment. Por favor, note que não oferecemos qualquer tipo de apoio a este cenário, e você está fazendo isso inteiramente por sua conta e risco. Você foi avisado.</value>
+		<value>Você está executando o ASF em um ambiente não suportado, utilizando o argumento --ignore-unsupported-environment. Por favor, note que não oferecemos qualquer tipo de suporte a este cenário, e você está fazendo isso inteiramente por sua conta e risco. Você foi avisado.</value>
 	</data>
 	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
 		<value>Obtendo checksum do servidor remoto...</value>
 	</data>
 	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
-		<value>Comparando a checksum do binário baixado com a do servidor remoto...</value>
+		<value>Comparando a checksum do binário baixado junto ao servidor remoto...</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>O servidor remoto não sabe nada sobre a versão para a qual estamos atualizando. Esta situação é possível se a atualização foi publicada recentemente - recusando-se a prosseguir com o processo de atualização imediatamente como uma medida de segurança adicional.</value>
+		<value>O servidor remoto desconhece a versão para a qual você está atualizando. Esta situação é possível se a atualização foi publicada recentemente - recusar-se a prosseguir com a atualização imediatamente é uma medida de segurança adicional.</value>
 	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
-		<value>O servidor remoto respondeu com um checksum diferente, isto pode indicar download corrompido ou um ataque MITM, recusando-se a prosseguir com o procedimento de atualização!</value>
+		<value>O servidor remoto respondeu com um checksum diferente, isto pode indicar um download corrompido ou um ataque MITM, recusando-se a prosseguir com a atualização!</value>
 	</data>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>Atualizando arquivos do ASF...</value>
@@ -752,4 +753,9 @@ Tempo de execução: {1}</value>
 		<value>O ASF não consegue iniciar o app {0} devido a uma restrição relacionada à região do país {1}, que vigora até {2}.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
 	</data>
+	
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>Seu ASF tem apresentado muitos crashes recentemente e, devido a isso, a inicialização do processo foi desativada. Recomenda-se investigar e corrigir sua configuração e, em seguida, remover o arquivo ASF.crash do diretório de configuração. Alternativamente, você pode fornecer o argumento --ignore-unsupported-environment se realmente souber o que está fazendo.</value>
+	</data>
+	
 </root>

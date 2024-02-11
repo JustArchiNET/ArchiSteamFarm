@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 	public IReadOnlyDictionary<uint, PackageData> PackagesDataReadOnly => PackagesData;
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<ulong> CachedBadBots = new();
+	internal readonly ConcurrentHashSet<ulong> CachedBadBots = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly ObservableConcurrentDictionary<uint, byte> CardCountsPerGame = new();
@@ -192,7 +192,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentNullException.ThrowIfNull(packageIDs);
 
-		HashSet<uint> result = new();
+		HashSet<uint> result = [];
 
 		foreach (uint packageID in packageIDs.Where(static packageID => packageID != 0)) {
 			if (!PackagesData.TryGetValue(packageID, out PackageData? packageEntry) || (packageEntry.AppIDs?.Contains(appID) != true)) {

@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -156,7 +156,7 @@ internal static class GitHub {
 		ArgumentException.ThrowIfNullOrEmpty(markdownText);
 
 		MarkdownDocument markdownDocument = Markdown.Parse(markdownText);
-		MarkdownDocument result = new();
+		MarkdownDocument result = [];
 
 		foreach (Block block in markdownDocument.SkipWhile(static block => block is not HeadingBlock { Inline.FirstChild: LiteralInline literalInline } || (literalInline.Content.ToString()?.Equals("Changelog", StringComparison.OrdinalIgnoreCase) != true)).Skip(1).TakeWhile(static block => block is not ThematicBreakBlock).ToList()) {
 			// All blocks that we're interested in must be removed from original markdownDocument firstly

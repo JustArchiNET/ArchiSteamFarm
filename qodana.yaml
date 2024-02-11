@@ -9,7 +9,11 @@ exclude:
       - ArchiSteamFarm.OfficialPlugins.ItemsMatcher/Localization
       - ArchiSteamFarm.OfficialPlugins.MobileAuthenticator/Localization
       - ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/Localization
+  - name: AsyncVoidMethod
+  - name: InternalOrPrivateMemberNotDocumented
   - name: InvertIf
+  - name: NullableWarningSuppressionIsUsed
+  - name: ReplaceAsyncWithTaskReturn
   - name: SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
   - name: SwitchStatementHandlesSomeKnownEnumValuesWithDefault
   - name: SwitchStatementMissingSomeEnumCasesNoDefault

@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -220,7 +220,7 @@ internal static class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseTwoFactorFinalize(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot, activationCode))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -313,7 +313,7 @@ internal static class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseTwoFactorFinalized(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot, activationCode))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -357,7 +357,7 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, result));
 		}
 
-		MaFileData maFileData = new(response, deviceID);
+		MaFileData maFileData = new(response, bot.SteamID, deviceID);
 
 		string maFilePendingPath = $"{bot.GetFilePath(Bot.EFileType.MobileAuthenticator)}.PENDING";
 		string json = JsonConvert.SerializeObject(maFileData, Formatting.Indented);
@@ -392,7 +392,7 @@ internal static class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseTwoFactorInit(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}

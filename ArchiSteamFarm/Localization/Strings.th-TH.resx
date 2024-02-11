@@ -89,9 +89,7 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>ออกจากโปรแกรมด้วยรหัสข้อผิดพลาดที่ไม่ใช่ศูนย์!</value>
-	</data>
+	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>คำขอล้มเหลว: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -122,8 +120,13 @@ StackTrace:
 	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
 		<value>ไม่สามารถตรวจสอบเวอร์ชั่นล่าสุดได้!</value>
 	</data>
-	
-	
+	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+		<value>ไม่สามารถดำเนินการอัพเดตต่อได้เนื่องจากไม่มีแอทเซทซที่ใช้กับเวอร์ชั่นที่ทำงานอยู่ตอนนี้! 
+อัพเดตอัตโนมัติไม่สามารถดำเนินได้</value>
+	</data>
+	<data name="ErrorUpdateNoAssets" xml:space="preserve">
+		<value>ไม่สามารถดำเนินการอัพเดตได้เนื่อจากเวอร์ชั่นดังกล่าวไม่มีแอทเซทซใดๆอยู่!</value>
+	</data>
 	
 	<data name="Exiting" xml:space="preserve">
 		<value>กำลังออก…</value>
@@ -573,6 +576,9 @@ StackTrace:
 		<value>โปรดกรอกคีย์รหัสลับของคุณ: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	
+	
+	
 	
 	
 	

@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,14 +21,15 @@
 
 using System;
 using System.Collections;
+using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Resources;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
@@ -38,6 +39,7 @@ using ArchiSteamFarm.Storage;
 using Humanizer;
 using Humanizer.Localisation;
 using JetBrains.Annotations;
+using Microsoft.IdentityModel.JsonWebTokens;
 using SteamKit2;
 using Zxcvbn;
 
@@ -47,9 +49,16 @@ public static class Utilities {
 	private const byte TimeoutForLongRunningTasksInSeconds = 60;
 
 	// normally we'd just use words like "steam" and "farm", but the library we're currently using is a bit iffy about banned words, so we need to also add combinations such as "steamfarm"
-	private static readonly ImmutableHashSet<string> ForbiddenPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "archisteamfarm", "archi", "steam", "farm", "archisteam", "archifarm", "steamfarm", "asf", "asffarm", "password");
+	private static readonly FrozenSet<string> ForbiddenPasswordPhrases = new HashSet<string>(10, StringComparer.InvariantCultureIgnoreCase) { "archisteamfarm", "archi", "steam", "farm", "archisteam", "archifarm", "steamfarm", "asf", "asffarm", "password" }.ToFrozenSet(StringComparer.InvariantCultureIgnoreCase);
 
-	private static readonly JwtSecurityTokenHandler JwtSecurityTokenHandler = new();
+	[PublicAPI]
+	public static string GenerateChecksumFor(byte[] source) {
+		ArgumentNullException.ThrowIfNull(source);
+
+		byte[] hash = SHA512.HashData(source);
+
+		return Convert.ToHexString(hash);
+	}
 
 	[PublicAPI]
 	public static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
@@ -81,7 +90,7 @@ public static class Utilities {
 
 		CookieCollection cookies = cookieContainer.GetCookies(uri);
 
-		return cookies.Count > 0 ? cookies.FirstOrDefault(cookie => cookie.Name == name)?.Value : null;
+		return cookies.FirstOrDefault(cookie => cookie.Name == name)?.Value;
 	}
 
 	[PublicAPI]
@@ -113,7 +122,7 @@ public static class Utilities {
 
 		switch (ASF.GlobalConfig?.OptimizationMode) {
 			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-				List<T> results = new();
+				List<T> results = [];
 
 				foreach (Task<T> task in tasks) {
 					results.Add(await task.ConfigureAwait(false));
@@ -167,19 +176,6 @@ public static class Utilities {
 		ArgumentException.ThrowIfNullOrEmpty(text);
 
 		return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
-	}
-
-	[PublicAPI]
-	public static JwtSecurityToken? ReadJwtToken(string token) {
-		ArgumentException.ThrowIfNullOrEmpty(token);
-
-		try {
-			return JwtSecurityTokenHandler.ReadJwtToken(token);
-		} catch (Exception e) {
-			ASF.ArchiLogger.LogGenericException(e);
-
-			return null;
-		}
 	}
 
 	[PublicAPI]
@@ -248,6 +244,23 @@ public static class Utilities {
 		job.Timeout = TimeSpan.FromSeconds(TimeoutForLongRunningTasksInSeconds);
 
 		return job.ToTask();
+	}
+
+	[PublicAPI]
+	public static bool TryReadJsonWebToken(string token, [NotNullWhen(true)] out JsonWebToken? result) {
+		ArgumentException.ThrowIfNullOrEmpty(token);
+
+		try {
+			result = new JsonWebToken(token);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+			result = null;
+
+			return false;
+		}
+
+		return true;
 	}
 
 	internal static void DeleteEmptyDirectoriesRecursively(string directory) {
@@ -321,7 +334,7 @@ public static class Utilities {
 			}
 		}
 
-		return (result.Score < 4, suggestions is { Count: > 0 } ? string.Join(" ", suggestions.Where(static suggestion => suggestion.Length > 0)) : null);
+		return (result.Score < 4, suggestions is { Count: > 0 } ? string.Join(' ', suggestions.Where(static suggestion => suggestion.Length > 0)) : null);
 	}
 
 	internal static void WarnAboutIncompleteTranslation(ResourceManager resourceManager) {

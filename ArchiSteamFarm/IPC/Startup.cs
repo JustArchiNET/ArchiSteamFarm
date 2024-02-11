@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,6 +60,7 @@ internal sealed class Startup {
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "PathString is a primitive, it's unlikely to be trimmed to the best of our knowledge")]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL3000", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	[UsedImplicitly]
 	public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 		ArgumentNullException.ThrowIfNull(app);
@@ -101,7 +102,7 @@ internal sealed class Startup {
 
 		Dictionary<string, string> pluginPaths = new(StringComparer.Ordinal);
 
-		if (PluginsCore.ActivePlugins?.Count > 0) {
+		if (PluginsCore.ActivePlugins.Count > 0) {
 			foreach (IWebInterface plugin in PluginsCore.ActivePlugins.OfType<IWebInterface>()) {
 				if (string.IsNullOrEmpty(plugin.PhysicalPath) || string.IsNullOrEmpty(plugin.WebPath)) {
 					// Invalid path provided
@@ -204,7 +205,7 @@ internal sealed class Startup {
 			knownNetworks = new HashSet<IPNetwork>();
 
 			foreach (string knownNetworkText in knownNetworksTexts) {
-				string[] addressParts = knownNetworkText.Split('/', StringSplitOptions.RemoveEmptyEntries);
+				string[] addressParts = knownNetworkText.Split('/', 3, StringSplitOptions.RemoveEmptyEntries);
 
 				if ((addressParts.Length != 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress) || !byte.TryParse(addressParts[1], out byte prefixLength)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(knownNetworkText)));
@@ -275,8 +276,8 @@ internal sealed class Startup {
 
 				// We require custom schema IDs due to conflicting type names, choosing the proper one is tricky as there is no good answer and any kind of convention has a potential to create conflict
 				// FullName and Name both do, ToString() for unknown to me reason doesn't, and I don't have courage to call our WebUtilities.GetUnifiedName() better than what .NET ships with (because it isn't)
-				// Let's use ToString() until we find a good enough reason to change it
-				options.CustomSchemaIds(static type => type.ToString());
+				// Let's use ToString() until we find a good enough reason to change it, also, the name must pass ^[a-zA-Z0-9.-_]+$ regex
+				options.CustomSchemaIds(static type => type.ToString().Replace('+', '-'));
 
 				options.EnableAnnotations(true, true);
 
@@ -312,7 +313,7 @@ internal sealed class Startup {
 		IMvcBuilder mvc = services.AddControllers();
 
 		// Add support for controllers declared in custom plugins
-		if (PluginsCore.ActivePlugins?.Count > 0) {
+		if (PluginsCore.ActivePlugins.Count > 0) {
 			HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
 
 			if (assemblies != null) {

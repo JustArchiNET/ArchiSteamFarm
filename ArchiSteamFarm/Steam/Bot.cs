@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,12 +22,12 @@
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -52,6 +52,7 @@ using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Newtonsoft.Json;
 using SteamKit2;
 using SteamKit2.Authentication;
@@ -67,7 +68,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 	private const uint LoginID = 1242; // This must be the same for all ASF bots and all ASF processes
 	private const byte MaxLoginFailures = WebBrowser.MaxTries; // Max login failures in a row before we determine that our credentials are invalid (because Steam wrongly returns those, of course)course)
-	private const byte MinimumAccessTokenValidityMinutes = 10;
+	private const byte MinimumAccessTokenValidityMinutes = 5;
 	private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
 	private const byte RegionRestrictionPlayableBlockMonths = 3;
 
@@ -165,7 +166,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private readonly SemaphoreSlim RefreshWebSessionSemaphore = new(1, 1);
 	private readonly SemaphoreSlim SendCompleteTypesSemaphore = new(1, 1);
 	private readonly SteamClient SteamClient;
-	private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new();
+	private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = [];
 	private readonly SteamUser SteamUser;
 	private readonly Trading Trading;
 
@@ -188,6 +189,34 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
 	private string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
 
+	[JsonIgnore]
+	[PublicAPI]
+	public string? AccessToken {
+		get => BackingAccessToken;
+
+		private set {
+			AccessTokenValidUntil = null;
+
+			if (string.IsNullOrEmpty(value)) {
+				BackingAccessToken = null;
+
+				return;
+			}
+
+			if (!Utilities.TryReadJsonWebToken(value, out JsonWebToken? accessToken)) {
+				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(accessToken)));
+
+				return;
+			}
+
+			BackingAccessToken = value;
+
+			if (accessToken.ValidTo > DateTime.MinValue) {
+				AccessTokenValidUntil = accessToken.ValidTo;
+			}
+		}
+	}
+
 	[JsonProperty]
 	[PublicAPI]
 	public EAccountFlags AccountFlags { get; private set; }
@@ -206,7 +235,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[JsonIgnore]
 	[PublicAPI]
-	public ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs { get; private set; } = ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
+	public FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs { get; private set; } = FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
 
 	[JsonProperty]
 	[PublicAPI]
@@ -258,29 +287,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private SteamSaleEvent? SteamSaleEvent;
 	private Timer? TradeCheckTimer;
 	private string? TwoFactorCode;
-
-	private string? AccessToken {
-		get => BackingAccessToken;
-
-		set {
-			AccessTokenValidUntil = null;
-			BackingAccessToken = value;
-
-			if (string.IsNullOrEmpty(value)) {
-				return;
-			}
-
-			JwtSecurityToken? jwtToken = Utilities.ReadJwtToken(value);
-
-			if (jwtToken == null) {
-				return;
-			}
-
-			if (jwtToken.ValidTo > DateTime.MinValue) {
-				AccessTokenValidUntil = jwtToken.ValidTo;
-			}
-		}
-	}
 
 	private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
 		ArgumentException.ThrowIfNullOrEmpty(botName);
@@ -524,7 +530,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		string[] botNames = args.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
-		HashSet<Bot> result = new();
+		HashSet<Bot> result = [];
 
 		foreach (string botName in botNames) {
 			if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
@@ -659,7 +665,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		ArgumentOutOfRangeException.ThrowIfLessThan(maxItems, MinCardsPerBadge);
 
-		HashSet<Asset> result = new();
+		HashSet<Asset> result = [];
 		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, HashSet<Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(static item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(static grouping => grouping.Key, static grouping => grouping.GroupBy(static item => item.ClassID).ToDictionary(static group => group.Key, static group => group.ToHashSet()));
 
 		foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract.OrderBy(static kv => kv.Value.ItemsPerSet)) {
@@ -1069,7 +1075,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return (0, DateTime.MaxValue, true);
 		}
 
-		if ((hoursPlayed < CardsFarmer.HoursForRefund) && BotConfig.SkipRefundableGames) {
+		if ((hoursPlayed < CardsFarmer.HoursForRefund) && BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SkipRefundableGames)) {
 			DateTime mostRecent = DateTime.MinValue;
 
 			foreach (uint packageID in packageIDs) {
@@ -1281,7 +1287,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 		}
 
-		HashSet<SteamApps.PICSRequest> packageRequests = new();
+		HashSet<SteamApps.PICSRequest> packageRequests = [];
 
 		foreach (uint packageID in packageIDs) {
 			if (!ASF.GlobalDatabase.PackageAccessTokensReadOnly.TryGetValue(packageID, out ulong packageAccessToken)) {
@@ -1355,7 +1361,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal async Task<(Dictionary<string, string>? UnusedKeys, Dictionary<string, string>? UsedKeys)> GetUsedAndUnusedKeys() {
-		string[] files = { GetFilePath(EFileType.KeysToRedeemUnused), GetFilePath(EFileType.KeysToRedeemUsed) };
+		string[] files = [GetFilePath(EFileType.KeysToRedeemUnused), GetFilePath(EFileType.KeysToRedeemUsed)];
 
 		IList<Dictionary<string, string>?> results = await Utilities.InParallel(files.Select(GetKeysFromFile)).ConfigureAwait(false);
 
@@ -1530,13 +1536,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal async Task OnFarmingFinished(bool farmedSomething) {
 		await OnFarmingStopped().ConfigureAwait(false);
 
-		if (BotConfig is { SendOnFarmingFinished: true, LootableTypes.Count: > 0 } && (farmedSomething || !FirstTradeSent)) {
+		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && (BotConfig.LootableTypes.Count > 0) && (farmedSomething || !FirstTradeSent)) {
 			FirstTradeSent = true;
 
 			await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 		}
 
-		if (BotConfig.ShutdownOnFarmingFinished) {
+		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.ShutdownOnFarmingFinished)) {
 			Stop();
 		}
 
@@ -1560,12 +1566,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return false;
 			}
 
-			DateTime now = DateTime.UtcNow;
+			DateTime minimumValidUntil = DateTime.UtcNow.AddMinutes(MinimumAccessTokenValidityMinutes);
 
-			if (!force && !string.IsNullOrEmpty(AccessToken) && AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > now.AddMinutes(MinimumAccessTokenValidityMinutes))) {
+			if (!force && !string.IsNullOrEmpty(AccessToken) && (!AccessTokenValidUntil.HasValue || (AccessTokenValidUntil.Value >= minimumValidUntil))) {
 				// We can use the tokens we already have
 				if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
-					InitRefreshTokensTimer(AccessTokenValidUntil.Value);
+					InitRefreshTokensTimer(AccessTokenValidUntil ?? minimumValidUntil);
 
 					return true;
 				}
@@ -1610,7 +1616,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			UpdateTokens(response.AccessToken, response.RefreshToken);
 
 			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
-				InitRefreshTokensTimer(AccessTokenValidUntil ?? now.AddHours(18));
+				InitRefreshTokensTimer(AccessTokenValidUntil ?? minimumValidUntil);
 
 				return true;
 			}
@@ -1936,7 +1942,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new ArgumentNullException(nameof(gamesToRedeemInBackground));
 		}
 
-		HashSet<object> invalidKeys = new();
+		HashSet<object> invalidKeys = [];
 
 		foreach (DictionaryEntry game in gamesToRedeemInBackground) {
 			bool invalid = false;
@@ -2084,7 +2090,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		// Level 5 is maximum level for card badges according to https://steamcommunity.com/tradingcards/faq
 		IEnumerable<IAttr> linkElements = badgePage.SelectNodes<IAttr>("//a[@class='badge_craft_button']/@href | //div[@class='badges_sheet']/div[contains(@class, 'badge_row') and .//div[@class='badge_info_description']/div[contains(text(), 'Level 5')]]/a[@class='badge_row_overlay']/@href");
 
-		HashSet<uint> result = new();
+		HashSet<uint> result = [];
 
 		foreach (string badgeUri in linkElements.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(badgeUri)) {
@@ -2361,23 +2367,32 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		WalletBalance = 0;
 		WalletCurrency = ECurrencyCode.Invalid;
 
-		string? accessToken = BotDatabase.AccessToken;
-		string? refreshToken = BotDatabase.RefreshToken;
+		string? accessTokenText = BotDatabase.AccessToken;
+		string? refreshTokenText = BotDatabase.RefreshToken;
 
 		if (BotConfig.PasswordFormat.HasTransformation()) {
-			if (!string.IsNullOrEmpty(accessToken)) {
-				accessToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, accessToken).ConfigureAwait(false);
+			if (!string.IsNullOrEmpty(accessTokenText)) {
+				accessTokenText = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, accessTokenText).ConfigureAwait(false);
 			}
 
-			if (!string.IsNullOrEmpty(refreshToken)) {
-				refreshToken = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshToken).ConfigureAwait(false);
+			if (!string.IsNullOrEmpty(refreshTokenText)) {
+				refreshTokenText = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshTokenText).ConfigureAwait(false);
 			}
 		}
 
-		AccessToken = accessToken;
-		RefreshToken = refreshToken;
+		if (!string.IsNullOrEmpty(accessTokenText) && Utilities.TryReadJsonWebToken(accessTokenText, out JsonWebToken? accessToken) && ((accessToken.ValidTo == DateTime.MinValue) || (accessToken.ValidTo >= DateTime.UtcNow))) {
+			AccessToken = accessTokenText;
+		} else {
+			AccessToken = null;
+		}
 
-		CardsFarmer.SetInitialState(BotConfig.Paused);
+		if (!string.IsNullOrEmpty(refreshTokenText) && Utilities.TryReadJsonWebToken(refreshTokenText, out JsonWebToken? refreshToken) && ((refreshToken.ValidTo == DateTime.MinValue) || (refreshToken.ValidTo >= DateTime.UtcNow))) {
+			RefreshToken = refreshTokenText;
+		} else {
+			RefreshToken = null;
+		}
+
+		CardsFarmer.SetInitialState(BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmingPausedByDefault));
 
 		if (SendItemsTimer != null) {
 			await SendItemsTimer.DisposeAsync().ConfigureAwait(false);
@@ -2406,7 +2421,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			);
 		}
 
-		if (BotConfig.AutoSteamSaleEvent) {
+		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.AutoSteamSaleEvent)) {
 			SteamSaleEvent = new SteamSaleEvent(this);
 		}
 
@@ -2418,6 +2433,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				TimeSpan.FromMinutes(BotConfig.TradeCheckPeriod) // Period
 			);
 		}
+
+		ArchiWebHandler.OnInitModules();
+		BotDatabase.MobileAuthenticator?.OnInitModules();
 
 		await PluginsCore.OnBotInitModules(this, BotConfig.AdditionalProperties).ConfigureAwait(false);
 	}
@@ -2634,6 +2652,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
+		if (!SteamClient.IsConnected) {
+			// Possible if user spent too much time entering password, try again after reconnect
+			return;
+		}
+
 		ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
 
 		InitConnectionFailureTimer();
@@ -2700,6 +2723,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		SteamUser.LogOnDetails logOnDetails = new() {
 			AccessToken = RefreshToken,
 			CellID = ASF.GlobalDatabase?.CellID,
+			ClientLanguage = CultureInfo.CurrentCulture.ToSteamClientLanguage(),
 			LoginID = LoginID,
 			ShouldRememberPassword = BotConfig.UseLoginKeys,
 			Username = username
@@ -2734,7 +2758,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		Trading.OnDisconnected();
 
 		FirstTradeSent = false;
-		OwnedPackageIDs = ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
+		OwnedPackageIDs = FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
 
 		EResult lastLogOnResult = LastLogOnResult;
 
@@ -3051,7 +3075,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		OwnedPackageIDs = ownedPackageIDs.ToImmutableDictionary();
+		OwnedPackageIDs = ownedPackageIDs.ToFrozenDictionary();
 
 		if (packageAccessTokens.Count > 0) {
 			ASF.GlobalDatabase.RefreshPackageAccessTokens(packageAccessTokens);
@@ -3208,9 +3232,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		// Pre-fetch API key for future usage if possible
-		Utilities.InBackground(ArchiWebHandler.HasValidApiKey);
-
 		if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground) {
 			Utilities.InBackground(() => RedeemGamesInBackground());
 		}
@@ -3290,9 +3311,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private async void OnRefreshTokensTimer(object? state = null) {
-		if (AccessTokenValidUntil.HasValue && (AccessTokenValidUntil.Value > DateTime.UtcNow.AddMinutes(MinimumAccessTokenValidityMinutes))) {
+		DateTime accessTokenValidUntil = AccessTokenValidUntil.GetValueOrDefault();
+
+		if ((accessTokenValidUntil > DateTime.MinValue) && (accessTokenValidUntil > DateTime.UtcNow.AddMinutes(MinimumAccessTokenValidityMinutes + 1))) {
 			// We don't need to refresh just yet
-			InitRefreshTokensTimer(AccessTokenValidUntil.Value);
+			InitRefreshTokensTimer(accessTokenValidUntil);
+
+			return;
 		}
 
 		await RefreshWebSession().ConfigureAwait(false);
@@ -3350,7 +3375,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		HashSet<UserNotificationsCallback.EUserNotification> newPluginNotifications = new();
+		HashSet<UserNotificationsCallback.EUserNotification> newPluginNotifications = [];
 
 		foreach ((UserNotificationsCallback.EUserNotification notification, uint count) in callback.Notifications) {
 			bool newNotification;

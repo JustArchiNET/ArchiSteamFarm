@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,8 +36,8 @@ public sealed class TradeOffer {
 	[PublicAPI]
 	public IReadOnlyCollection<Asset> ItemsToReceiveReadOnly => ItemsToReceive;
 
-	internal readonly HashSet<Asset> ItemsToGive = new();
-	internal readonly HashSet<Asset> ItemsToReceive = new();
+	internal readonly HashSet<Asset> ItemsToGive = [];
+	internal readonly HashSet<Asset> ItemsToReceive = [];
 
 	[PublicAPI]
 	public ulong OtherSteamID64 { get; private set; }
@@ -68,6 +68,6 @@ public sealed class TradeOffer {
 			throw new ArgumentNullException(nameof(acceptedTypes));
 		}
 
-		return ItemsToGive.All(item => item is { AppID: Asset.SteamAppID, ContextID: Asset.SteamCommunityContextID, AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown } && acceptedTypes.Contains(item.Type));
+		return ItemsToGive.All(item => item is { AppID: Asset.SteamAppID, ContextID: Asset.SteamCommunityContextID, AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0 and not Asset.SteamAppID, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown } && acceptedTypes.Contains(item.Type));
 	}
 }

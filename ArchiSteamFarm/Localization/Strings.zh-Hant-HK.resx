@@ -89,9 +89,7 @@
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>使用非零錯誤代碼退出！</value>
-	</data>
+	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>請求失敗：{0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -738,6 +736,9 @@
 		<value>未禁止IP地址{0}！</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
+	
+	
+	
 	
 	
 </root>

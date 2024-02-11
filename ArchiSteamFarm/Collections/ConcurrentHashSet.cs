@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,7 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Collections;
 
 public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> where T : notnull {
+	[PublicAPI]
 	public event EventHandler? OnModified;
 
 	public int Count => BackingCollection.Count;
@@ -134,7 +135,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> where
 
 	public void SymmetricExceptWith(IEnumerable<T> other) {
 		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
-		HashSet<T> removed = new();
+		HashSet<T> removed = [];
 
 		foreach (T item in otherSet.Where(Contains)) {
 			removed.Add(item);

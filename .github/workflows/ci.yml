@@ -27,7 +27,7 @@ jobs:
         submodules: recursive
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3.2.0
+      uses: actions/setup-dotnet@v4.0.0
       with:
         dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
 
@@ -42,7 +42,7 @@ jobs:
 
     - name: Upload latest strings for translation on Crowdin
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.configuration == 'Release' && startsWith(matrix.os, 'ubuntu-') }}
-      uses: crowdin/github-action@v1.15.2
+      uses: crowdin/github-action@v1.18.0
       with:
         crowdin_branch_name: main
         config: '.github/crowdin.yml'

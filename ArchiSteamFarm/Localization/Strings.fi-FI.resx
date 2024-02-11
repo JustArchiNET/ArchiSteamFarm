@@ -89,9 +89,7 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Poistutaan muulla kuin 0 virhekoodilla!</value>
-	</data>
+	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Pyyntö epäonnistuu: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -748,5 +746,11 @@ Prosessin käyttöaika: {1}</value>
 		<value>Olet yrittänyt käyttää maksullista ominaisuutta {0}, mutta sinulla ei ole voimassa olevaa ASF:n yleisissä asetuksissa olevaa lisenssitunnusta. Tarkista asetukset, koska toiminto ei toimi ilman lisätietoja.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>ASF ei pysty pelaamaan sovellusta {0}, koska sillä on aluekohtainen rajoitus maassa {1}, joka kestää {2} asti.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
+	
+	
 	
 </root>

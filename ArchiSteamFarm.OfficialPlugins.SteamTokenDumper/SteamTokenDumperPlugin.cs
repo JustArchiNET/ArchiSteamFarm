@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,8 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Composition;
 using System.Globalization;
@@ -37,6 +37,7 @@ using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Interaction;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
@@ -67,7 +68,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 	[JsonProperty]
 	public override Version Version => typeof(SteamTokenDumperPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-	public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(Config?.Enabled == true ? GlobalCache?.LastChangeNumber ?? 0 : 0);
+	public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(GlobalCache?.LastChangeNumber ?? 0);
 
 	public async Task OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
 		if (!SharedInfo.HasValidToken) {
@@ -101,6 +102,24 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			}
 		}
 
+		if (GlobalCache == null) {
+			GlobalCache? globalCache = await GlobalCache.Load().ConfigureAwait(false);
+
+			if (globalCache == null) {
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.FileCouldNotBeLoadedFreshInit, nameof(GlobalCache)));
+
+				GlobalCache = new GlobalCache();
+			} else {
+				GlobalCache = globalCache;
+			}
+		}
+
+		if (!isEnabled && (config == null)) {
+			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(SteamTokenDumperPlugin)));
+
+			return;
+		}
+
 		config ??= new SteamTokenDumperConfig();
 
 		if (isEnabled) {
@@ -109,8 +128,6 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 		if (!config.Enabled) {
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(SteamTokenDumperPlugin)));
-
-			return;
 		}
 
 		if (!config.SecretAppIDs.IsEmpty) {
@@ -125,19 +142,11 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginSecretListInitialized, nameof(config.SecretDepotIDs), string.Join(", ", config.SecretDepotIDs)));
 		}
 
-		if (GlobalCache == null) {
-			GlobalCache? globalCache = await GlobalCache.Load().ConfigureAwait(false);
-
-			if (globalCache == null) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.FileCouldNotBeLoadedFreshInit, nameof(GlobalCache)));
-
-				GlobalCache = new GlobalCache();
-			} else {
-				GlobalCache = globalCache;
-			}
-		}
-
 		Config = config;
+
+		if (!config.Enabled) {
+			return;
+		}
 
 #pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
 		TimeSpan startIn = TimeSpan.FromMinutes(Random.Shared.Next(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
@@ -162,29 +171,24 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			throw new ArgumentNullException(nameof(args));
 		}
 
-		switch (args[0].ToUpperInvariant()) {
-			case "STD" when access >= EAccess.Owner:
-				if (Config is not { Enabled: true }) {
-					return Task.FromResult((string?) string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(Config)));
+		switch (args.Length) {
+			case 1:
+				switch (args[0].ToUpperInvariant()) {
+					case "STD":
+						return Task.FromResult(ResponseRefreshManually(access, bot));
 				}
 
-				TimeSpan minimumTimeBetweenUpload = TimeSpan.FromMinutes(SharedInfo.MinimumMinutesBetweenUploads);
-
-				if (LastUploadAt + minimumTimeBetweenUpload > DateTimeOffset.UtcNow) {
-					return Task.FromResult((string?) string.Format(CultureInfo.CurrentCulture, Strings.SubmissionFailedTooManyRequests, minimumTimeBetweenUpload.ToHumanReadable()));
-				}
-
-				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-				lock (SubmissionSemaphore) {
-					SubmissionTimer.Change(TimeSpan.Zero, TimeSpan.FromHours(SharedInfo.HoursBetweenUploads));
-				}
-
-				return Task.FromResult((string?) ArchiSteamFarm.Localization.Strings.Done);
-			case "STD" when access > EAccess.None:
-				return Task.FromResult((string?) ArchiSteamFarm.Localization.Strings.ErrorAccessDenied);
+				break;
 			default:
-				return Task.FromResult((string?) null);
+				switch (args[0].ToUpperInvariant()) {
+					case "STD":
+						return Task.FromResult(ResponseRefreshManually(access, Utilities.GetArgsAsText(args, 1, ","), steamID));
+				}
+
+				break;
 		}
+
+		return Task.FromResult((string?) null);
 	}
 
 	public async Task OnBotDestroy(Bot bot) {
@@ -207,7 +211,8 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 	public async Task OnBotInit(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if (Config is not { Enabled: true }) {
+		if (GlobalCache == null) {
+			// We can't operate like this anyway, skip initialization of synchronization structures
 			return;
 		}
 
@@ -255,15 +260,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		ArgumentNullException.ThrowIfNull(appChanges);
 		ArgumentNullException.ThrowIfNull(packageChanges);
 
-		if (Config is not { Enabled: true }) {
-			return Task.CompletedTask;
-		}
-
-		if (GlobalCache == null) {
-			throw new InvalidOperationException(nameof(GlobalCache));
-		}
-
-		GlobalCache.OnPICSChanges(currentChangeNumber, appChanges);
+		GlobalCache?.OnPICSChanges(currentChangeNumber, appChanges);
 
 		return Task.CompletedTask;
 	}
@@ -271,15 +268,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 	public Task OnPICSChangesRestart(uint currentChangeNumber) {
 		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 
-		if (Config is not { Enabled: true }) {
-			return Task.CompletedTask;
-		}
-
-		if (GlobalCache == null) {
-			throw new InvalidOperationException(nameof(GlobalCache));
-		}
-
-		GlobalCache.OnPICSChangesRestart(currentChangeNumber);
+		GlobalCache?.OnPICSChangesRestart(currentChangeNumber);
 
 		return Task.CompletedTask;
 	}
@@ -300,32 +289,34 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			return;
 		}
 
-		if (GlobalCache == null) {
-			throw new InvalidOperationException(nameof(GlobalCache));
+		// Schedule a refresh in a while from now
+		if (!BotSynchronizations.TryGetValue(bot, out (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer) synchronization)) {
+			return;
 		}
 
-		Dictionary<uint, ulong> packageTokens = callback.LicenseList.Where(static license => !Config.SecretPackageIDs.Contains(license.PackageID) && ((license.PaymentMethod != EPaymentMethod.AutoGrant) || !Config.SkipAutoGrantPackages)).GroupBy(static license => license.PackageID).ToDictionary(static group => group.Key, static group => group.OrderByDescending(static license => license.TimeCreated).First().AccessToken);
+		if (!await synchronization.RefreshSemaphore.WaitAsync(0).ConfigureAwait(false)) {
+			// Another refresh is in progress, skip the refresh for now
+			return;
+		}
 
-		GlobalCache.UpdatePackageTokens(packageTokens);
-
-		await Refresh(bot, packageTokens.Keys).ConfigureAwait(false);
+		try {
+			synchronization.RefreshTimer.Change(TimeSpan.FromMinutes(1), TimeSpan.FromHours(SharedInfo.MaximumHoursBetweenRefresh));
+		} finally {
+			synchronization.RefreshSemaphore.Release();
+		}
 	}
 
 	private static async void OnSubmissionTimer(object? state = null) => await SubmitData().ConfigureAwait(false);
 
-	private static async Task Refresh(Bot bot, IReadOnlyCollection<uint>? packageIDs = null) {
+	private static async Task Refresh(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
-
-		if (Config is not { Enabled: true }) {
-			return;
-		}
 
 		if (GlobalCache == null) {
 			throw new InvalidOperationException(nameof(GlobalCache));
 		}
 
 		if (ASF.GlobalDatabase == null) {
-			throw new InvalidOperationException(nameof(GlobalCache));
+			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 		}
 
 		if (!BotSynchronizations.TryGetValue(bot, out (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer) synchronization)) {
@@ -343,17 +334,17 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				return;
 			}
 
-			packageIDs ??= bot.OwnedPackageIDs.Where(static package => !Config.SecretPackageIDs.Contains(package.Key) && ((package.Value.PaymentMethod != EPaymentMethod.AutoGrant) || !Config.SkipAutoGrantPackages)).Select(static package => package.Key).ToHashSet();
+			HashSet<uint> packageIDs = bot.OwnedPackageIDs.Where(static package => (Config?.SecretPackageIDs.Contains(package.Key) != true) && ((package.Value.PaymentMethod != EPaymentMethod.AutoGrant) || (Config?.SkipAutoGrantPackages == false))).Select(static package => package.Key).ToHashSet();
 
-			HashSet<uint> appIDsToRefresh = new();
+			HashSet<uint> appIDsToRefresh = [];
 
-			foreach (uint packageID in packageIDs.Where(static packageID => !Config.SecretPackageIDs.Contains(packageID))) {
+			foreach (uint packageID in packageIDs.Where(static packageID => Config?.SecretPackageIDs.Contains(packageID) != true)) {
 				if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out PackageData? packageData) || (packageData.AppIDs == null)) {
 					// ASF might not have the package info for us at the moment, we'll retry later
 					continue;
 				}
 
-				appIDsToRefresh.UnionWith(packageData.AppIDs.Where(static appID => !Config.SecretAppIDs.Contains(appID) && GlobalCache.ShouldRefreshAppInfo(appID)));
+				appIDsToRefresh.UnionWith(packageData.AppIDs.Where(static appID => (Config?.SecretAppIDs.Contains(appID) != true) && GlobalCache.ShouldRefreshAppInfo(appID)));
 			}
 
 			if (appIDsToRefresh.Count == 0) {
@@ -405,7 +396,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingTotalAppAccessTokens, appIDsToRefresh.Count));
 			bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingTotalDepots, appIDsToRefresh.Count));
 
-			(_, ImmutableHashSet<uint>? knownDepotIDs) = await GlobalCache.KnownDepotIDs.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+			(_, FrozenSet<uint>? knownDepotIDs) = await GlobalCache.KnownDepotIDs.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
 			using (HashSet<uint>.Enumerator enumerator = appIDsToRefresh.GetEnumerator()) {
 				while (true) {
@@ -458,7 +449,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						bool shouldFetchMainKey = false;
 
 						foreach (KeyValue depot in app.KeyValues["depots"].Children) {
-							if (!uint.TryParse(depot.Name, out uint depotID) || (knownDepotIDs?.Contains(depotID) == true) || Config.SecretDepotIDs.Contains(depotID) || !GlobalCache.ShouldRefreshDepotKey(depotID)) {
+							if (!uint.TryParse(depot.Name, out uint depotID) || (knownDepotIDs?.Contains(depotID) == true) || (Config?.SecretDepotIDs.Contains(depotID) == true) || !GlobalCache.ShouldRefreshDepotKey(depotID)) {
 								continue;
 							}
 
@@ -521,7 +512,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						}
 					}
 
-					bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingDepotKeys, depotKeysSuccessful, depotKeysTotal));
+					if (depotKeysTotal > 0) {
+						bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingDepotKeys, depotKeysSuccessful, depotKeysTotal));
+					}
 
 					if (depotKeysSuccessful < depotKeysTotal) {
 						// We're not going to record app change numbers, as we didn't fetch all the depot keys we wanted
@@ -534,9 +527,11 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 			bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingTotalDepots, appIDsToRefresh.Count));
 		} finally {
-			TimeSpan timeSpan = TimeSpan.FromHours(SharedInfo.MaximumHoursBetweenRefresh);
+			if (Config?.Enabled == true) {
+				TimeSpan timeSpan = TimeSpan.FromHours(SharedInfo.MaximumHoursBetweenRefresh);
 
-			synchronization.RefreshTimer.Change(timeSpan, timeSpan);
+				synchronization.RefreshTimer.Change(timeSpan, timeSpan);
+			}
 
 			await depotsRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
 
@@ -546,13 +541,72 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		}
 	}
 
+	private static string? ResponseRefreshManually(EAccess access, Bot bot) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentNullException.ThrowIfNull(bot);
+
+		if (access < EAccess.Master) {
+			return access > EAccess.None ? bot.Commands.FormatBotResponse(ArchiSteamFarm.Localization.Strings.ErrorAccessDenied) : null;
+		}
+
+		if (GlobalCache == null) {
+			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(GlobalCache)));
+		}
+
+		Utilities.InBackground(
+			async () => {
+				await Refresh(bot).ConfigureAwait(false);
+				await SubmitData().ConfigureAwait(false);
+			}
+		);
+
+		return bot.Commands.FormatBotResponse(ArchiSteamFarm.Localization.Strings.Done);
+	}
+
+	private static string? ResponseRefreshManually(EAccess access, string botNames, ulong steamID = 0) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+
+		if ((steamID != 0) && !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return access >= EAccess.Owner ? Commands.FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.BotNotFound, botNames)) : null;
+		}
+
+		if (bots.RemoveWhere(bot => Commands.GetProxyAccess(bot, access, steamID) < EAccess.Master) > 0) {
+			if (bots.Count == 0) {
+				return access >= EAccess.Owner ? Commands.FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.BotNotFound, botNames)) : null;
+			}
+		}
+
+		if (GlobalCache == null) {
+			return Commands.FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(GlobalCache)));
+		}
+
+		Utilities.InBackground(
+			async () => {
+				await Utilities.InParallel(bots.Select(static bot => Refresh(bot))).ConfigureAwait(false);
+
+				await SubmitData().ConfigureAwait(false);
+			}
+		);
+
+		return Commands.FormatStaticResponse(ArchiSteamFarm.Localization.Strings.Done);
+	}
+
 	private static async Task SubmitData(CancellationToken cancellationToken = default) {
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));
-		}
-
-		if (Config is not { Enabled: true }) {
-			return;
 		}
 
 		if (GlobalCache == null) {
@@ -610,7 +664,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, response.StatusCode));
 
 				switch (response.StatusCode) {
-					case HttpStatusCode.Forbidden:
+					case HttpStatusCode.Forbidden when Config?.Enabled == true:
 						// SteamDB told us to stop submitting data for now
 						// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 						lock (SubmissionSemaphore) {
@@ -623,7 +677,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						GlobalCache.Reset(true);
 
 						break;
-					case HttpStatusCode.TooManyRequests:
+					case HttpStatusCode.TooManyRequests when Config?.Enabled == true:
 						// SteamDB told us to try again later
 #pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
 						TimeSpan startIn = TimeSpan.FromMinutes(Random.Shared.Next(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
@@ -649,7 +703,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			}
 
 			if (response.Content.Data == null) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsInvalid), nameof(response.Content.Data));
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsInvalid, nameof(response.Content.Data)));
 
 				return;
 			}

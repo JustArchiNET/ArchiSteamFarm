@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
-internal sealed class AnnouncementRequest {
+internal class AnnouncementRequest {
 	[JsonProperty]
 	private readonly string? AvatarHash;
 
@@ -38,7 +38,10 @@ internal sealed class AnnouncementRequest {
 	private readonly Guid Guid;
 
 	[JsonProperty(Required = Required.Always)]
-	private readonly ImmutableList<AssetForListing> Inventory;
+	private readonly ImmutableHashSet<AssetForListing> Inventory;
+
+	[JsonProperty(Required = Required.Always)]
+	private readonly string InventoryChecksum;
 
 	[JsonProperty(Required = Required.Always)]
 	private readonly ImmutableHashSet<Asset.EType> MatchableTypes;
@@ -61,33 +64,32 @@ internal sealed class AnnouncementRequest {
 	[JsonProperty(Required = Required.Always)]
 	private readonly string TradeToken;
 
-	internal AnnouncementRequest(Guid guid, ulong steamID, string tradeToken, IReadOnlyList<AssetForListing> inventory, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string? nickname = null, string? avatarHash = null) {
+	internal AnnouncementRequest(Guid guid, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, string? nickname = null, string? avatarHash = null) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
-
-		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
-			throw new ArgumentOutOfRangeException(nameof(tradeToken));
-		}
-
-		if ((inventory == null) || (inventory.Count == 0)) {
-			throw new ArgumentNullException(nameof(inventory));
-		}
+		ArgumentNullException.ThrowIfNull(inventory);
+		ArgumentException.ThrowIfNullOrEmpty(inventoryChecksum);
 
 		if ((matchableTypes == null) || (matchableTypes.Count == 0)) {
 			throw new ArgumentNullException(nameof(matchableTypes));
 		}
 
 		ArgumentOutOfRangeException.ThrowIfZero(totalInventoryCount);
+		ArgumentException.ThrowIfNullOrEmpty(tradeToken);
+
+		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
+			throw new ArgumentOutOfRangeException(nameof(tradeToken));
+		}
 
 		Guid = guid;
 		SteamID = steamID;
 		TradeToken = tradeToken;
-		Inventory = inventory.ToImmutableList();
+		Inventory = inventory.ToImmutableHashSet();
+		InventoryChecksum = inventoryChecksum;
 		MatchableTypes = matchableTypes.ToImmutableHashSet();
 		MatchEverything = matchEverything;
 		MaxTradeHoldDuration = maxTradeHoldDuration;

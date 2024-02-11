@@ -4,7 +4,7 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,4 +35,4 @@ namespace ArchiSteamFarm.IPC.Controllers.Api;
 [SwaggerResponse((int) HttpStatusCode.Forbidden, $"ASF lacks {nameof(GlobalConfig.IPCPassword)} and you're not permitted to access the API, or {nameof(GlobalConfig.IPCPassword)} is set and you've failed to authenticate too many times (try again in an hour). See {SharedInfo.ProjectURL}/wiki/IPC#authentication.", typeof(GenericResponse<StatusCodeResponse>))]
 [SwaggerResponse((int) HttpStatusCode.InternalServerError, "ASF has encountered an unexpected error while serving the request. The log may include extra info related to this issue.")]
 [SwaggerResponse((int) HttpStatusCode.ServiceUnavailable, "ASF has encountered an error while requesting a third-party resource. Try again later.")]
-public abstract class ArchiController : ControllerBase { }
+public abstract class ArchiController : ControllerBase;
