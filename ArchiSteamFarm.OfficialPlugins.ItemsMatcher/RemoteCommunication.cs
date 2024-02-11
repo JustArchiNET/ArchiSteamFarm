@@ -28,9 +28,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
@@ -43,7 +45,6 @@ using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
-using Newtonsoft.Json.Linq;
 using SteamKit2;
 using SteamKit2.Internal;
 
@@ -1190,11 +1191,19 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		// Cancel previous trade offers sent and deprioritize SteamIDs that didn't answer us in this round
 		HashSet<ulong>? matchActivelyTradeOfferIDs = null;
 
-		JToken? matchActivelyTradeOfferIDsToken = Bot.BotDatabase.LoadFromJsonStorage(MatchActivelyTradeOfferIDsStorageKey);
+		JsonElement? matchActivelyTradeOfferIDsToken = Bot.BotDatabase.LoadFromJsonStorage(MatchActivelyTradeOfferIDsStorageKey);
 
-		if (matchActivelyTradeOfferIDsToken != null) {
+		if (matchActivelyTradeOfferIDsToken is { ValueKind: JsonValueKind.Array }) {
 			try {
-				matchActivelyTradeOfferIDs = matchActivelyTradeOfferIDsToken.ToObject<HashSet<ulong>>();
+				matchActivelyTradeOfferIDs = new HashSet<ulong>(matchActivelyTradeOfferIDsToken.Value.GetArrayLength());
+
+				foreach (JsonElement tradeIDElement in matchActivelyTradeOfferIDsToken.Value.EnumerateArray()) {
+					if (!tradeIDElement.TryGetUInt64(out ulong tradeID)) {
+						continue;
+					}
+
+					matchActivelyTradeOfferIDs.Add(tradeID);
+				}
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 			}
@@ -1223,7 +1232,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					matchActivelyTradeOfferIDs = activeTradeOfferIDs;
 
 					if (matchActivelyTradeOfferIDs.Count > 0) {
-						Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, JToken.FromObject(matchActivelyTradeOfferIDs));
+						Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, JsonSerializer.SerializeToElement(matchActivelyTradeOfferIDs, JsonUtilities.DefaultJsonSerialierOptions));
 					} else {
 						Bot.BotDatabase.DeleteFromJsonStorage(MatchActivelyTradeOfferIDsStorageKey);
 					}
@@ -1427,7 +1436,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				if (tradeOfferIDs?.Count > 0) {
 					matchActivelyTradeOfferIDs.UnionWith(tradeOfferIDs);
 
-					Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, JToken.FromObject(matchActivelyTradeOfferIDs));
+					Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, JsonSerializer.SerializeToElement(matchActivelyTradeOfferIDs, JsonUtilities.DefaultJsonSerialierOptions));
 				}
 
 				if (mobileTradeOfferIDs?.Count > 0) {

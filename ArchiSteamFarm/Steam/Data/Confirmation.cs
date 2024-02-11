@@ -20,31 +20,38 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
+using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [PublicAPI]
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class Confirmation {
-	[JsonProperty(PropertyName = "nonce", Required = Required.Always)]
+	[JsonDoNotSerialize]
+	[JsonInclude]
+	[JsonPropertyName("nonce")]
+	[JsonRequired]
 	internal readonly ulong Nonce;
 
-	[JsonProperty(PropertyName = "type", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("type")]
+	[JsonRequired]
 	public EConfirmationType ConfirmationType { get; private set; }
 
-	[JsonProperty(PropertyName = "creator_id", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("creator_id")]
+	[JsonRequired]
 	public ulong CreatorID { get; private set; }
 
-	[JsonProperty(PropertyName = "id", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("id")]
+	[JsonRequired]
 	public ulong ID { get; private set; }
 
 	[JsonConstructor]
 	private Confirmation() { }
-
-	[UsedImplicitly]
-	public static bool ShouldSerializeNonce() => false;
 
 	[PublicAPI]
 	public enum EConfirmationType : byte {

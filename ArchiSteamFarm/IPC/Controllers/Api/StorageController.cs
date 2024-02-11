@@ -21,6 +21,7 @@
 
 using System;
 using System.Net;
+using System.Text.Json;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -59,9 +60,9 @@ public sealed class StorageController : ArchiController {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 		}
 
-		JToken? value = ASF.GlobalDatabase.LoadFromJsonStorage(key);
+		JsonElement? value = ASF.GlobalDatabase.LoadFromJsonStorage(key);
 
-		return Ok(new GenericResponse<JToken>(true, value));
+		return Ok(new GenericResponse<JsonElement?>(true, value));
 	}
 
 	/// <summary>
@@ -70,7 +71,7 @@ public sealed class StorageController : ArchiController {
 	[Consumes("application/json")]
 	[HttpPost]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
-	public ActionResult<GenericResponse> StoragePost(string key, [FromBody] JToken value) {
+	public ActionResult<GenericResponse> StoragePost(string key, [FromBody] JsonElement value) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 		ArgumentNullException.ThrowIfNull(value);
 
@@ -78,7 +79,7 @@ public sealed class StorageController : ArchiController {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 		}
 
-		if (value.Type == JTokenType.Null) {
+		if (value.ValueKind == JsonValueKind.Null) {
 			ASF.GlobalDatabase.DeleteFromJsonStorage(key);
 		} else {
 			ASF.GlobalDatabase.SaveToJsonStorage(key, value);

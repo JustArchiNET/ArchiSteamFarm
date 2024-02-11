@@ -25,15 +25,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.SteamKit2;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Storage;
 
@@ -46,24 +48,35 @@ public sealed class GlobalDatabase : GenericDatabase {
 	[PublicAPI]
 	public IReadOnlyDictionary<uint, PackageData> PackagesDataReadOnly => PackagesData;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	internal readonly ConcurrentHashSet<ulong> CachedBadBots = [];
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	internal readonly ObservableConcurrentDictionary<uint, byte> CardCountsPerGame = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	internal readonly InMemoryServerListProvider ServerListProvider = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, ulong> PackagesAccessTokens = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, PackageData> PackagesData = new();
 
 	private readonly SemaphoreSlim PackagesRefreshSemaphore = new(1, 1);
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	[PublicAPI]
 	public Guid Identifier { get; private set; } = Guid.NewGuid();
 
@@ -93,10 +106,16 @@ public sealed class GlobalDatabase : GenericDatabase {
 		}
 	}
 
-	[JsonProperty($"_{nameof(CellID)}", Required = Required.DisallowNull)]
+	[JsonDoNotSerialize(Condition = ECondition.WhenDefault)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName($"_{nameof(CellID)}")]
 	private uint BackingCellID;
 
-	[JsonProperty($"_{nameof(LastChangeNumber)}", Required = Required.DisallowNull)]
+	[JsonDoNotSerialize(Condition = ECondition.WhenDefault)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName($"_{nameof(LastChangeNumber)}")]
 	private uint BackingLastChangeNumber;
 
 	private GlobalDatabase(string filePath) : this() {
@@ -111,27 +130,6 @@ public sealed class GlobalDatabase : GenericDatabase {
 		CardCountsPerGame.OnModified += OnObjectModified;
 		ServerListProvider.ServerListUpdated += OnObjectModified;
 	}
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingCellID() => BackingCellID != 0;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingLastChangeNumber() => LastChangeNumber != 0;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeCachedBadBots() => CachedBadBots.Count > 0;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeCardCountsPerGame() => !CardCountsPerGame.IsEmpty;
-
-	[UsedImplicitly]
-	public bool ShouldSerializePackagesAccessTokens() => !PackagesAccessTokens.IsEmpty;
-
-	[UsedImplicitly]
-	public bool ShouldSerializePackagesData() => !PackagesData.IsEmpty;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeServerListProvider() => ServerListProvider.ShouldSerializeServerRecords();
 
 	protected override void Dispose(bool disposing) {
 		if (disposing) {
@@ -170,7 +168,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 				return null;
 			}
 
-			globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(json);
+			globalDatabase = JsonSerializer.Deserialize<GlobalDatabase>(json, JsonUtilities.DefaultJsonSerialierOptions);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

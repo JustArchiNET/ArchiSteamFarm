@@ -22,12 +22,13 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Storage;
 
@@ -58,10 +59,14 @@ internal sealed class CrashFile : SerializableFile {
 		}
 	}
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenDefault)]
+	[JsonInclude]
 	private DateTime BackingLastStartup;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenDefault)]
+	[JsonInclude]
 	private byte BackingStartupCount;
 
 	private CrashFile(string filePath) : this() {
@@ -72,12 +77,6 @@ internal sealed class CrashFile : SerializableFile {
 
 	[JsonConstructor]
 	private CrashFile() { }
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingLastStartup() => BackingLastStartup > DateTime.MinValue;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingStartupCount() => BackingStartupCount > 0;
 
 	internal static async Task<CrashFile> CreateOrLoad(string filePath) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -97,7 +96,7 @@ internal sealed class CrashFile : SerializableFile {
 				return new CrashFile(filePath);
 			}
 
-			crashFile = JsonConvert.DeserializeObject<CrashFile>(json);
+			crashFile = JsonSerializer.Deserialize<CrashFile>(json, JsonUtilities.DefaultJsonSerialierOptions);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

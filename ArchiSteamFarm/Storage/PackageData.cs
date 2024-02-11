@@ -21,22 +21,26 @@
 
 using System;
 using System.Collections.Immutable;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+using ArchiSteamFarm.Helpers.Json;
 
 namespace ArchiSteamFarm.Storage;
 
 public sealed class PackageData {
-	[JsonProperty]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	public ImmutableHashSet<uint>? AppIDs { get; private set; }
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	public uint ChangeNumber { get; private set; }
 
-	[JsonProperty]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	public ImmutableHashSet<string>? ProhibitRunInCountries { get; private set; }
 
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	public DateTime ValidUntil { get; private set; }
 
 	internal PackageData(uint changeNumber, DateTime validUntil, ImmutableHashSet<uint>? appIDs = null, ImmutableHashSet<string>? prohibitRunInCountries = null) {
@@ -51,10 +55,4 @@ public sealed class PackageData {
 
 	[JsonConstructor]
 	private PackageData() { }
-
-	[UsedImplicitly]
-	public bool ShouldSerializeAppIDs() => AppIDs is { IsEmpty: false };
-
-	[UsedImplicitly]
-	public bool ShouldSerializeProhibitRunInCountries() => ProhibitRunInCountries is { IsEmpty: false };
 }

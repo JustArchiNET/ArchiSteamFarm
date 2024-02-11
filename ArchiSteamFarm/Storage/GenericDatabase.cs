@@ -22,17 +22,20 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.Storage;
 
 public abstract class GenericDatabase : SerializableFile {
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentDictionary<string, JToken> KeyValueJsonStorage = new();
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
+	private readonly ConcurrentDictionary<string, JsonElement> KeyValueJsonStorage = new();
 
 	[PublicAPI]
 	public void DeleteFromJsonStorage(string key) {
@@ -46,31 +49,28 @@ public abstract class GenericDatabase : SerializableFile {
 	}
 
 	[PublicAPI]
-	public JToken? LoadFromJsonStorage(string key) {
+	public JsonElement? LoadFromJsonStorage(string key) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		return KeyValueJsonStorage.GetValueOrDefault(key);
 	}
 
 	[PublicAPI]
-	public void SaveToJsonStorage(string key, JToken value) {
+	public void SaveToJsonStorage(string key, JsonElement value) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 		ArgumentNullException.ThrowIfNull(value);
 
-		if (value.Type == JTokenType.Null) {
+		if (value.ValueKind == JsonValueKind.Null) {
 			DeleteFromJsonStorage(key);
 
 			return;
 		}
 
-		if (KeyValueJsonStorage.TryGetValue(key, out JToken? currentValue) && JToken.DeepEquals(currentValue, value)) {
+		if (KeyValueJsonStorage.TryGetValue(key, out JsonElement currentValue) && currentValue.Equals(value)) {
 			return;
 		}
 
 		KeyValueJsonStorage[key] = value;
 		Utilities.InBackground(Save);
 	}
-
-	[UsedImplicitly]
-	public bool ShouldSerializeKeyValueJsonStorage() => !KeyValueJsonStorage.IsEmpty;
 }
