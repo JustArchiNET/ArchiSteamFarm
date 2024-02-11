@@ -47,15 +47,34 @@ public static class JsonUtilities {
 				foreach (JsonDoNotSerializeAttribute attribute in property.AttributeProvider.GetCustomAttributes(typeof(JsonDoNotSerializeAttribute), true).OfType<JsonDoNotSerializeAttribute>()) {
 					switch (attribute.Condition) {
 						case ECondition.Always:
+						case ECondition.WhenDefault when (value == null) || IsDefaultValueType(value):
 
 						// ReSharper disable once NotDisposedResource - false positive, IEnumerator is not disposable
-						case ECondition.WhenNullOrEmpty when (value == null) || (value is string text && string.IsNullOrEmpty(text)) || (value is IEnumerable enumerable && !enumerable.GetEnumerator().MoveNext()):
+						case ECondition.WhenNullOrEmpty when (value == null) || IsNullOrEmpty(value):
 							return false;
 					}
 				}
 
 				return true;
 			};
+		}
+	}
+
+	private static bool IsDefaultValueType(object value) {
+		Type type = value.GetType();
+
+		return type.IsValueType && (value == Activator.CreateInstance(type));
+	}
+
+	private static bool IsNullOrEmpty(object value) {
+		switch (value) {
+			case string text when string.IsNullOrEmpty(text):
+
+			// ReSharper disable once NotDisposedResource - false positive, IEnumerator is not disposable
+			case IEnumerable enumerable when !enumerable.GetEnumerator().MoveNext():
+				return true;
+			default:
+				return false;
 		}
 	}
 }

@@ -26,14 +26,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
 using ArchiSteamFarm.Web.Responses;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
@@ -43,49 +44,42 @@ internal sealed class GlobalCache : SerializableFile {
 
 	private static string SharedFilePath => Path.Combine(ArchiSteamFarm.SharedInfo.ConfigDirectory, $"{nameof(SteamTokenDumper)}.cache");
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, uint> AppChangeNumbers = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, ulong> AppTokens = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, string> DepotKeys = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, ulong> SubmittedApps = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, string> SubmittedDepots = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
+	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, ulong> SubmittedPackages = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonDoNotSerialize(Condition = ECondition.WhenDefault)]
+	[JsonInclude]
 	internal uint LastChangeNumber { get; private set; }
 
 	internal GlobalCache() => FilePath = SharedFilePath;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeAppChangeNumbers() => !AppChangeNumbers.IsEmpty;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeAppTokens() => !AppTokens.IsEmpty;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeDepotKeys() => !DepotKeys.IsEmpty;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeLastChangeNumber() => LastChangeNumber > 0;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeSubmittedApps() => !SubmittedApps.IsEmpty;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeSubmittedDepots() => !SubmittedDepots.IsEmpty;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeSubmittedPackages() => !SubmittedPackages.IsEmpty;
 
 	internal ulong GetAppToken(uint appID) => AppTokens[appID];
 
@@ -118,7 +112,7 @@ internal sealed class GlobalCache : SerializableFile {
 				return null;
 			}
 
-			globalCache = JsonConvert.DeserializeObject<GlobalCache>(json);
+			globalCache = JsonSerializer.Deserialize<GlobalCache>(json, JsonUtilities.DefaultJsonSerialierOptions);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

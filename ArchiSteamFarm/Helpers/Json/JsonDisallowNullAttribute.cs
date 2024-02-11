@@ -1,4 +1,4 @@
-//     _                _      _  ____   _                           _____
+// _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -27,6 +27,6 @@ namespace ArchiSteamFarm.Helpers.Json;
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 [PublicAPI]
-public sealed class JsonDoNotSerializeAttribute : JsonAttribute {
-	public ECondition Condition { get; init; }
+public sealed class JsonDisallowNullAttribute : JsonAttribute {
+	// TODO
 }

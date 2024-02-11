@@ -32,12 +32,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ArchiSteamFarm.Web;
 
@@ -323,17 +325,7 @@ public sealed class WebBrowser : IDisposable {
 				T? obj;
 
 				try {
-					using StreamReader streamReader = new(response.Content);
-
-#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-					JsonTextReader jsonReader = new(streamReader);
-#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-
-					await using (jsonReader.ConfigureAwait(false)) {
-						JsonSerializer serializer = new();
-
-						obj = serializer.Deserialize<T>(jsonReader);
-					}
+					obj = await JsonSerializer.DeserializeAsync<T>(response.Content, JsonUtilities.DefaultJsonSerialierOptions, cancellationToken).ConfigureAwait(false);
 				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
@@ -606,17 +598,7 @@ public sealed class WebBrowser : IDisposable {
 				TResult? obj;
 
 				try {
-					using StreamReader streamReader = new(response.Content);
-
-#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-					JsonTextReader jsonReader = new(streamReader);
-#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-
-					await using (jsonReader.ConfigureAwait(false)) {
-						JsonSerializer serializer = new();
-
-						obj = serializer.Deserialize<TResult>(jsonReader);
-					}
+					obj = await JsonSerializer.DeserializeAsync<TResult>(response.Content, JsonUtilities.DefaultJsonSerialierOptions, cancellationToken).ConfigureAwait(false);
 				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {

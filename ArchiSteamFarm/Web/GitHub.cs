@@ -27,6 +27,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
@@ -36,7 +37,6 @@ using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Web;
 
@@ -193,16 +193,24 @@ internal static class GitHub {
 
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class ReleaseResponse {
-		[JsonProperty("assets", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("assets")]
+		[JsonRequired]
 		internal readonly ImmutableHashSet<Asset> Assets = ImmutableHashSet<Asset>.Empty;
 
-		[JsonProperty("prerelease", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("prerelease")]
+		[JsonRequired]
 		internal readonly bool IsPreRelease;
 
-		[JsonProperty("published_at", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("published_at")]
+		[JsonRequired]
 		internal readonly DateTime PublishedAt;
 
-		[JsonProperty("tag_name", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("tag_name")]
+		[JsonRequired]
 		internal readonly string Tag = "";
 
 		internal string? ChangelogHTML {
@@ -255,7 +263,9 @@ internal static class GitHub {
 			}
 		}
 
-		[JsonProperty("body", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("body")]
+		[JsonRequired]
 		private readonly string? MarkdownBody = "";
 
 		private MarkdownDocument? Changelog {
@@ -282,13 +292,19 @@ internal static class GitHub {
 		private ReleaseResponse() { }
 
 		internal sealed class Asset {
-			[JsonProperty("browser_download_url", Required = Required.Always)]
+			[JsonInclude]
+			[JsonPropertyName("browser_download_url")]
+			[JsonRequired]
 			internal readonly Uri? DownloadURL;
 
-			[JsonProperty("name", Required = Required.Always)]
+			[JsonInclude]
+			[JsonPropertyName("name")]
+			[JsonRequired]
 			internal readonly string? Name;
 
-			[JsonProperty("size", Required = Required.Always)]
+			[JsonInclude]
+			[JsonPropertyName("size")]
+			[JsonRequired]
 			internal readonly uint Size;
 
 			[JsonConstructor]

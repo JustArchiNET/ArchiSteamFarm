@@ -35,9 +35,9 @@ using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal sealed class BotCache : SerializableFile {
+	[JsonDisallowNull]
 	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
-	[JsonRequired]
 	internal readonly ConcurrentList<AssetForListing> LastAnnouncedAssetsForListing = [];
 
 	internal string? LastAnnouncedTradeToken {
