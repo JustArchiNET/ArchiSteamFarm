@@ -29,6 +29,7 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Storage;
 
@@ -60,12 +61,10 @@ internal sealed class CrashFile : SerializableFile {
 	}
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenDefault)]
 	[JsonInclude]
 	private DateTime BackingLastStartup;
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenDefault)]
 	[JsonInclude]
 	private byte BackingStartupCount;
 
@@ -77,6 +76,12 @@ internal sealed class CrashFile : SerializableFile {
 
 	[JsonConstructor]
 	private CrashFile() { }
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingLastStartup() => BackingLastStartup > DateTime.MinValue;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingStartupCount() => BackingStartupCount > 0;
 
 	internal static async Task<CrashFile> CreateOrLoad(string filePath) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);

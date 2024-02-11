@@ -33,7 +33,6 @@ namespace ArchiSteamFarm.Storage;
 
 public abstract class GenericDatabase : SerializableFile {
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	private readonly ConcurrentDictionary<string, JsonElement> KeyValueJsonStorage = new();
 
@@ -73,4 +72,7 @@ public abstract class GenericDatabase : SerializableFile {
 		KeyValueJsonStorage[key] = value;
 		Utilities.InBackground(Save);
 	}
+
+	[UsedImplicitly]
+	public bool ShouldSerializeKeyValueJsonStorage() => !KeyValueJsonStorage.IsEmpty;
 }

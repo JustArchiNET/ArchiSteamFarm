@@ -49,27 +49,22 @@ public sealed class GlobalDatabase : GenericDatabase {
 	public IReadOnlyDictionary<uint, PackageData> PackagesDataReadOnly => PackagesData;
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	internal readonly ConcurrentHashSet<ulong> CachedBadBots = [];
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	internal readonly ObservableConcurrentDictionary<uint, byte> CardCountsPerGame = new();
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	internal readonly InMemoryServerListProvider ServerListProvider = new();
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, ulong> PackagesAccessTokens = new();
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, PackageData> PackagesData = new();
 
@@ -106,13 +101,11 @@ public sealed class GlobalDatabase : GenericDatabase {
 		}
 	}
 
-	[JsonDoNotSerialize(Condition = ECondition.WhenDefault)]
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName($"_{nameof(CellID)}")]
 	private uint BackingCellID;
 
-	[JsonDoNotSerialize(Condition = ECondition.WhenDefault)]
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName($"_{nameof(LastChangeNumber)}")]
@@ -130,6 +123,27 @@ public sealed class GlobalDatabase : GenericDatabase {
 		CardCountsPerGame.OnModified += OnObjectModified;
 		ServerListProvider.ServerListUpdated += OnObjectModified;
 	}
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingCellID() => BackingCellID != 0;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingLastChangeNumber() => LastChangeNumber != 0;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeCachedBadBots() => CachedBadBots.Count > 0;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeCardCountsPerGame() => !CardCountsPerGame.IsEmpty;
+
+	[UsedImplicitly]
+	public bool ShouldSerializePackagesAccessTokens() => !PackagesAccessTokens.IsEmpty;
+
+	[UsedImplicitly]
+	public bool ShouldSerializePackagesData() => !PackagesData.IsEmpty;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeServerListProvider() => ServerListProvider.ShouldSerializeServerRecords();
 
 	protected override void Dispose(bool disposing) {
 		if (disposing) {

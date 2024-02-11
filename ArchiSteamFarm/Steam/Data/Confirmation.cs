@@ -21,7 +21,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Steam.Data;
@@ -29,7 +28,6 @@ namespace ArchiSteamFarm.Steam.Data;
 [PublicAPI]
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class Confirmation {
-	[JsonDoNotSerialize]
 	[JsonInclude]
 	[JsonPropertyName("nonce")]
 	[JsonRequired]
@@ -52,6 +50,9 @@ public sealed class Confirmation {
 
 	[JsonConstructor]
 	private Confirmation() { }
+
+	[UsedImplicitly]
+	public static bool ShouldSerializeNonce() => false;
 
 	[PublicAPI]
 	public enum EConfirmationType : byte {

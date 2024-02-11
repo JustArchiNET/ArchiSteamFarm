@@ -31,12 +31,12 @@ using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal sealed class BotCache : SerializableFile {
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	internal readonly ConcurrentList<AssetForListing> LastAnnouncedAssetsForListing = [];
 
@@ -79,17 +79,14 @@ internal sealed class BotCache : SerializableFile {
 		}
 	}
 
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	[JsonRequired]
 	private string? BackingLastAnnouncedTradeToken;
 
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	[JsonRequired]
 	private string? BackingLastInventoryChecksumBeforeDeduplication;
 
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	[JsonRequired]
 	private DateTime? BackingLastRequestAt;
@@ -102,6 +99,18 @@ internal sealed class BotCache : SerializableFile {
 
 	[JsonConstructor]
 	private BotCache() => LastAnnouncedAssetsForListing.OnModified += OnObjectModified;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingLastAnnouncedTradeToken() => !string.IsNullOrEmpty(BackingLastAnnouncedTradeToken);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingLastInventoryChecksumBeforeDeduplication() => !string.IsNullOrEmpty(BackingLastInventoryChecksumBeforeDeduplication);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingLastRequestAt() => BackingLastRequestAt.HasValue;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeLastAnnouncedAssetsForListing() => LastAnnouncedAssetsForListing.Count > 0;
 
 	protected override void Dispose(bool disposing) {
 		if (disposing) {

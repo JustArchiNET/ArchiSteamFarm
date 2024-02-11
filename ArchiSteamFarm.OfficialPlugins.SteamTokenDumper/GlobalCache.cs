@@ -35,6 +35,7 @@ using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
 using ArchiSteamFarm.Web.Responses;
+using JetBrains.Annotations;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
@@ -45,41 +46,55 @@ internal sealed class GlobalCache : SerializableFile {
 	private static string SharedFilePath => Path.Combine(ArchiSteamFarm.SharedInfo.ConfigDirectory, $"{nameof(SteamTokenDumper)}.cache");
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, uint> AppChangeNumbers = new();
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, ulong> AppTokens = new();
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, string> DepotKeys = new();
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, ulong> SubmittedApps = new();
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, string> SubmittedDepots = new();
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	private readonly ConcurrentDictionary<uint, ulong> SubmittedPackages = new();
 
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenDefault)]
 	[JsonInclude]
 	internal uint LastChangeNumber { get; private set; }
 
 	internal GlobalCache() => FilePath = SharedFilePath;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeAppChangeNumbers() => !AppChangeNumbers.IsEmpty;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeAppTokens() => !AppTokens.IsEmpty;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeDepotKeys() => !DepotKeys.IsEmpty;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeLastChangeNumber() => LastChangeNumber > 0;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeSubmittedApps() => !SubmittedApps.IsEmpty;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeSubmittedDepots() => !SubmittedDepots.IsEmpty;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeSubmittedPackages() => !SubmittedPackages.IsEmpty;
 
 	internal ulong GetAppToken(uint appID) => AppTokens[appID];
 

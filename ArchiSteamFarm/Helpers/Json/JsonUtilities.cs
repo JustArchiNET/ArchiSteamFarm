@@ -20,10 +20,10 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
-using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using ArchiSteamFarm.Core;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers.Json;
@@ -39,42 +39,36 @@ public static class JsonUtilities {
 		ArgumentNullException.ThrowIfNull(jsonTypeInfo);
 
 		foreach (JsonPropertyInfo property in jsonTypeInfo.Properties) {
-			property.ShouldSerialize = (_, value) => {
-				if (property.AttributeProvider == null) {
-					return true;
-				}
+			property.ShouldSerialize = (parent, _) => {
+				bool? shouldSerialize = ShouldSerialize(parent, property);
 
-				foreach (JsonDoNotSerializeAttribute attribute in property.AttributeProvider.GetCustomAttributes(typeof(JsonDoNotSerializeAttribute), true).OfType<JsonDoNotSerializeAttribute>()) {
-					switch (attribute.Condition) {
-						case ECondition.Always:
-						case ECondition.WhenDefault when (value == null) || IsDefaultValueType(value):
-
-						// ReSharper disable once NotDisposedResource - false positive, IEnumerator is not disposable
-						case ECondition.WhenNullOrEmpty when (value == null) || IsNullOrEmpty(value):
-							return false;
-					}
-				}
-
-				return true;
+				return shouldSerialize ?? true;
 			};
 		}
 	}
 
-	private static bool IsDefaultValueType(object value) {
-		Type type = value.GetType();
+	private static bool? ShouldSerialize(object parent, JsonPropertyInfo property) {
+		ArgumentNullException.ThrowIfNull(parent);
+		ArgumentNullException.ThrowIfNull(property);
 
-		return type.IsValueType && (value == Activator.CreateInstance(type));
-	}
+		try {
+			MethodInfo? shouldSerializeMethod = parent.GetType().GetMethod($"ShouldSerialize{property.Name}", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static, null, Type.EmptyTypes, null);
 
-	private static bool IsNullOrEmpty(object value) {
-		switch (value) {
-			case string text when string.IsNullOrEmpty(text):
+			if ((shouldSerializeMethod == null) || (shouldSerializeMethod.ReturnType != typeof(bool))) {
+				return null;
+			}
 
-			// ReSharper disable once NotDisposedResource - false positive, IEnumerator is not disposable
-			case IEnumerable enumerable when !enumerable.GetEnumerator().MoveNext():
-				return true;
-			default:
-				return false;
+			object? shouldSerialize = shouldSerializeMethod.Invoke(parent, null);
+
+			if (shouldSerialize is bool result) {
+				return result;
+			}
+
+			return null;
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return null;
 		}
 	}
 }

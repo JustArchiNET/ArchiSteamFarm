@@ -20,26 +20,23 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Helpers.Json;
+using JetBrains.Annotations;
 using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm.Steam.SteamKit2;
 
-internal sealed class InMemoryServerListProvider : IEnumerable<ServerRecordEndPoint>, IServerListProvider {
+internal sealed class InMemoryServerListProvider : IServerListProvider {
 	[JsonDisallowNull]
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	private readonly ConcurrentHashSet<ServerRecordEndPoint> ServerRecords = [];
 
 	public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult(ServerRecords.Where(static server => !string.IsNullOrEmpty(server.Host) && server is { Port: > 0, ProtocolTypes: > 0 }).Select(static server => ServerRecord.CreateServer(server.Host, server.Port, server.ProtocolTypes)));
-
-	public IEnumerator<ServerRecordEndPoint> GetEnumerator() => ServerRecords.GetEnumerator();
 
 	public Task UpdateServerListAsync(IEnumerable<ServerRecord> endpoints) {
 		ArgumentNullException.ThrowIfNull(endpoints);
@@ -53,7 +50,8 @@ internal sealed class InMemoryServerListProvider : IEnumerable<ServerRecordEndPo
 		return Task.CompletedTask;
 	}
 
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	[UsedImplicitly]
+	public bool ShouldSerializeServerRecords() => ServerRecords.Count > 0;
 
 	internal event EventHandler? ServerListUpdated;
 }

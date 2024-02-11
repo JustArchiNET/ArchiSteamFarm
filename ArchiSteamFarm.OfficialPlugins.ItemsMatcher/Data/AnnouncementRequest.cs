@@ -23,15 +23,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
+using JetBrains.Annotations;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal class AnnouncementRequest {
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	private readonly string? AvatarHash;
 
@@ -59,7 +58,6 @@ internal class AnnouncementRequest {
 	[JsonRequired]
 	private readonly byte MaxTradeHoldDuration;
 
-	[JsonDoNotSerialize(Condition = ECondition.WhenNullOrEmpty)]
 	[JsonInclude]
 	private readonly string? Nickname;
 
@@ -109,4 +107,10 @@ internal class AnnouncementRequest {
 		Nickname = nickname;
 		AvatarHash = avatarHash;
 	}
+
+	[UsedImplicitly]
+	public bool ShouldSerializeAvatarHash() => !string.IsNullOrEmpty(AvatarHash);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeNickname() => !string.IsNullOrEmpty(Nickname);
 }
