@@ -22,7 +22,6 @@
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Steam.Data;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
@@ -46,7 +45,6 @@ internal sealed class ListedUser {
 	[JsonRequired]
 	internal byte MaxTradeHoldDuration { get; private init; }
 
-	[JsonAllowNull]
 	[JsonInclude]
 	internal string? Nickname { get; private init; }
 

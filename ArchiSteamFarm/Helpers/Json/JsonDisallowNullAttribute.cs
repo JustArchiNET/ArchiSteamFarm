@@ -27,6 +27,4 @@ namespace ArchiSteamFarm.Helpers.Json;
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 [PublicAPI]
-public sealed class JsonDisallowNullAttribute : JsonAttribute {
-	// TODO
-}
+public sealed class JsonDisallowNullAttribute : JsonAttribute;

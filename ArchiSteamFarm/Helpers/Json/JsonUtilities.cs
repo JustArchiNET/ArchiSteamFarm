@@ -21,6 +21,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
@@ -40,19 +41,38 @@ public static class JsonUtilities {
 	public static JsonSerializerOptions CreateDefaultJsonSerializerOption(bool writeIndented = false) =>
 		new() {
 			PropertyNamingPolicy = null,
-			TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { EvaluateExtraAttributes } },
+			TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { ApplyCustomModifiers } },
 			WriteIndented = writeIndented
 		};
 
-	private static void EvaluateExtraAttributes(JsonTypeInfo jsonTypeInfo) {
+	private static void ApplyCustomModifiers(JsonTypeInfo jsonTypeInfo) {
 		ArgumentNullException.ThrowIfNull(jsonTypeInfo);
 
+		bool potentialDisallowedNullsPossible = false;
+
 		foreach (JsonPropertyInfo property in jsonTypeInfo.Properties) {
+			if (!potentialDisallowedNullsPossible && (property.Get != null) && (property.AttributeProvider?.IsDefined(typeof(JsonDisallowNullAttribute), false) == true)) {
+				potentialDisallowedNullsPossible = true;
+			}
+
 			property.ShouldSerialize = (parent, _) => {
 				bool? shouldSerialize = ShouldSerialize(parent, property);
 
 				return shouldSerialize ?? true;
 			};
+		}
+
+		if (potentialDisallowedNullsPossible) {
+			jsonTypeInfo.OnDeserialized = OnPotentialDisallowedNullsDeserialized;
+		}
+	}
+
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2075", Justification = "We don't care about trimmed properties, it's not like we can make it work differently")]
+	private static void OnPotentialDisallowedNullsDeserialized(object obj) {
+		ArgumentNullException.ThrowIfNull(obj);
+
+		foreach (PropertyInfo property in obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static).Where(property => (property.GetMethod != null) && property.IsDefined(typeof(JsonDisallowNullAttribute), false) && (property.GetValue(obj) == null))) {
+			throw new JsonException($"Required property {property.Name} expects a non-null value.");
 		}
 	}
 
