@@ -283,6 +283,7 @@ internal sealed class Startup {
 
 				options.SchemaFilter<CustomAttributesSchemaFilter>();
 				options.SchemaFilter<EnumSchemaFilter>();
+				options.SchemaFilter<ReadOnlyFixesSchemaFilter>();
 
 				options.SwaggerDoc(
 					SharedInfo.ASF, new OpenApiInfo {

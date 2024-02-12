@@ -105,13 +105,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	public BotDatabase BotDatabase { get; }
 
 	[JsonInclude]
-	[JsonRequired]
 	[PublicAPI]
 	[Required]
 	public string BotName { get; }
 
 	[JsonInclude]
-	[JsonRequired]
 	[PublicAPI]
 	[Required]
 	public CardsFarmer CardsFarmer { get; }
@@ -121,13 +119,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	public Commands Commands { get; }
 
 	[JsonInclude]
-	[JsonRequired]
 	[PublicAPI]
 	[Required]
 	public uint GamesToRedeemInBackgroundCount => BotDatabase.GamesToRedeemInBackgroundCount;
 
 	[JsonInclude]
-	[JsonRequired]
 	[PublicAPI]
 	[Required]
 	public bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
@@ -141,13 +137,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	public bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
 
 	[JsonInclude]
-	[JsonRequired]
 	[PublicAPI]
 	[Required]
 	public bool IsConnectedAndLoggedOn => SteamClient.SteamID != null;
 
 	[JsonInclude]
-	[JsonRequired]
 	[PublicAPI]
 	[Required]
 	public bool IsPlayingPossible => !PlayingBlocked && !LibraryLocked;
@@ -203,9 +197,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[JsonInclude]
 	[JsonPropertyName($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
-	[JsonRequired]
+	[PublicAPI]
 	[Required]
-	private string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
+	public string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
 
 	[JsonIgnore]
 	[PublicAPI]
@@ -299,7 +293,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private string? AuthCode;
 
 	[JsonInclude]
-	private string? AvatarHash { get; set; }
+	[PublicAPI]
+	public string? AvatarHash { get; private set; }
 
 	private string? BackingAccessToken;
 	private Timer? ConnectionFailureTimer;

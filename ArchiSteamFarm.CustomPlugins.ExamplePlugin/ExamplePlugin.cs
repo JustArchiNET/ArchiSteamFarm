@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -45,14 +46,19 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin;
 internal sealed class ExamplePlugin : IASF, IBot, IBotCommand2, IBotConnection, IBotFriendRequest, IBotMessage, IBotModules, IBotTradeOffer {
 	// This is used for identification purposes, typically you want to use a friendly name of your plugin here, such as the name of your main class
 	// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place
+	[JsonInclude]
+	[Required]
 	public string Name => nameof(ExamplePlugin);
 
 	// This will be displayed to the user and written in the log file, typically you should point it to the version of your library, but alternatively you can do some more advanced logic if you'd like to
 	// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place
+	[JsonInclude]
+	[Required]
 	public Version Version => typeof(ExamplePlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 	// Plugins can expose custom properties for our GET /Api/Plugins API call, simply annotate them with [JsonProperty] (or keep public)
 	[JsonInclude]
+	[Required]
 	public bool CustomIsEnabledField { get; private init; } = true;
 
 	// This method, apart from being called before any bot initialization takes place, allows you to read custom global config properties that are not recognized by ASF

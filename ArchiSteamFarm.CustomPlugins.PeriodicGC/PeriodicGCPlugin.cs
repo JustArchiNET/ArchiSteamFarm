@@ -20,8 +20,10 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Composition;
 using System.Runtime;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -38,8 +40,12 @@ internal sealed class PeriodicGCPlugin : IPlugin {
 	private static readonly object LockObject = new();
 	private static readonly Timer PeriodicGCTimer = new(PerformGC);
 
+	[JsonInclude]
+	[Required]
 	public string Name => nameof(PeriodicGCPlugin);
 
+	[JsonInclude]
+	[Required]
 	public Version Version => typeof(PeriodicGCPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 	public Task OnLoaded() {

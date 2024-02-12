@@ -23,6 +23,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Composition;
 using System.Linq;
 using System.Text.Json;
@@ -44,9 +45,11 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 	internal static readonly ConcurrentDictionary<Bot, RemoteCommunication> RemoteCommunications = new();
 
 	[JsonInclude]
+	[Required]
 	public override string Name => nameof(ItemsMatcherPlugin);
 
 	[JsonInclude]
+	[Required]
 	public override Version Version => typeof(ItemsMatcherPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {

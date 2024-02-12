@@ -24,6 +24,7 @@ using System.Collections.Concurrent;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Composition;
 using System.Globalization;
 using System.Linq;
@@ -64,9 +65,11 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 	private static DateTimeOffset LastUploadAt = DateTimeOffset.MinValue;
 
 	[JsonInclude]
+	[Required]
 	public override string Name => nameof(SteamTokenDumperPlugin);
 
 	[JsonInclude]
+	[Required]
 	public override Version Version => typeof(SteamTokenDumperPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 	public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(GlobalCache?.LastChangeNumber ?? 0);

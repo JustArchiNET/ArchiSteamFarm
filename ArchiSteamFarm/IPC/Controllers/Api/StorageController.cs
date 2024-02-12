@@ -51,7 +51,7 @@ public sealed class StorageController : ArchiController {
 	///     Loads entry under specified key from ASF's persistent KeyValue JSON storage.
 	/// </summary>
 	[HttpGet]
-	[ProducesResponseType<GenericResponse<JsonElement>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse<JsonElement?>>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StorageGet(string key) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
@@ -59,9 +59,9 @@ public sealed class StorageController : ArchiController {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 		}
 
-		JsonElement? value = ASF.GlobalDatabase.LoadFromJsonStorage(key);
+		JsonElement value = ASF.GlobalDatabase.LoadFromJsonStorage(key);
 
-		return Ok(new GenericResponse<JsonElement?>(true, value));
+		return Ok(new GenericResponse<JsonElement?>(true, value.ValueKind != JsonValueKind.Undefined ? value : null));
 	}
 
 	/// <summary>

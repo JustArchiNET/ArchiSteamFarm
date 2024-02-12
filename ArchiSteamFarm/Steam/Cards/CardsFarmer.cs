@@ -66,20 +66,17 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 	[JsonInclude]
 	[JsonPropertyName(nameof(CurrentGamesFarming))]
-	[JsonRequired]
 	[PublicAPI]
 	[Required]
 	public IReadOnlyCollection<Game> CurrentGamesFarmingReadOnly => CurrentGamesFarming;
 
 	[JsonInclude]
 	[JsonPropertyName(nameof(GamesToFarm))]
-	[JsonRequired]
 	[PublicAPI]
 	[Required]
 	public IReadOnlyCollection<Game> GamesToFarmReadOnly => GamesToFarm;
 
 	[JsonInclude]
-	[JsonRequired]
 	[PublicAPI]
 	[Required]
 	public TimeSpan TimeRemaining {

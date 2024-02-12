@@ -48,7 +48,7 @@ public abstract class GenericDatabase : SerializableFile {
 	}
 
 	[PublicAPI]
-	public JsonElement? LoadFromJsonStorage(string key) {
+	public JsonElement LoadFromJsonStorage(string key) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		return KeyValueJsonStorage.GetValueOrDefault(key);

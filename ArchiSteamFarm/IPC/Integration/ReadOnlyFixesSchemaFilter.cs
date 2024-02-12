@@ -20,34 +20,21 @@
 // limitations under the License.
 
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using System.Reflection;
 using JetBrains.Annotations;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ArchiSteamFarm.Plugins.Interfaces;
+namespace ArchiSteamFarm.IPC.Integration;
 
-[PublicAPI]
-public interface IPlugin {
-	/// <summary>
-	///     ASF will use this property as general plugin identifier for the user.
-	/// </summary>
-	/// <returns>String that will be used as the name of this plugin.</returns>
-	[JsonInclude]
-	[Required]
-	string Name { get; }
+[UsedImplicitly]
+internal sealed class ReadOnlyFixesSchemaFilter : ISchemaFilter {
+	public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
+		ArgumentNullException.ThrowIfNull(schema);
+		ArgumentNullException.ThrowIfNull(context);
 
-	/// <summary>
-	///     ASF will use this property as version indicator of your plugin to the user.
-	///     You have a freedom in deciding what versioning you want to use, this is for identification purposes only.
-	/// </summary>
-	/// <returns>Version that will be shown to the user when plugin is loaded.</returns>
-	[JsonInclude]
-	[Required]
-	Version Version { get; }
-
-	/// <summary>
-	///     ASF will call this method right after plugin initialization.
-	/// </summary>
-	Task OnLoaded();
+		if (schema.ReadOnly && context.MemberInfo is PropertyInfo { CanWrite: true }) {
+			schema.ReadOnly = false;
+		}
+	}
 }

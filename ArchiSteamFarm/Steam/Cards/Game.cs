@@ -20,23 +20,28 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.Steam.Cards;
 
 public sealed class Game : IEquatable<Game> {
 	[JsonInclude]
+	[Required]
 	public uint AppID { get; }
 
 	[JsonInclude]
+	[Required]
 	public string GameName { get; }
 
 	internal readonly byte BadgeLevel;
 
 	[JsonInclude]
+	[Required]
 	public ushort CardsRemaining { get; internal set; }
 
 	[JsonInclude]
+	[Required]
 	public float HoursPlayed { get; internal set; }
 
 	internal uint PlayableAppID { get; set; }

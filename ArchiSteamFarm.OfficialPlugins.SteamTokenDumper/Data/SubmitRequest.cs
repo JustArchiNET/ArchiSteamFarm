@@ -32,17 +32,14 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 internal sealed class SubmitRequest {
 	[JsonInclude]
 	[JsonPropertyName("guid")]
-	[JsonRequired]
 	private static string Guid => ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
 
 	[JsonInclude]
 	[JsonPropertyName("token")]
-	[JsonRequired]
 	private static string Token => SharedInfo.Token;
 
 	[JsonInclude]
 	[JsonPropertyName("v")]
-	[JsonRequired]
 	private static byte Version => SharedInfo.ApiVersion;
 
 	[JsonInclude]
@@ -64,7 +61,6 @@ internal sealed class SubmitRequest {
 
 	[JsonInclude]
 	[JsonPropertyName("steamid")]
-	[JsonRequired]
 	private string SteamIDText => new SteamID(SteamID).Render();
 
 	internal SubmitRequest(ulong steamID, IReadOnlyCollection<KeyValuePair<uint, ulong>> apps, IReadOnlyCollection<KeyValuePair<uint, ulong>> accessTokens, IReadOnlyCollection<KeyValuePair<uint, string>> depots) {

@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
@@ -32,6 +33,7 @@ public sealed class BotInputRequest {
 	/// </summary>
 	[JsonInclude]
 	[JsonRequired]
+	[Required]
 	public ASF.EUserInputType Type { get; private init; }
 
 	/// <summary>
@@ -39,6 +41,7 @@ public sealed class BotInputRequest {
 	/// </summary>
 	[JsonInclude]
 	[JsonRequired]
+	[Required]
 	public string Value { get; private init; } = "";
 
 	[JsonConstructor]

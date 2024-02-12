@@ -1191,13 +1191,13 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		// Cancel previous trade offers sent and deprioritize SteamIDs that didn't answer us in this round
 		HashSet<ulong>? matchActivelyTradeOfferIDs = null;
 
-		JsonElement? matchActivelyTradeOfferIDsToken = Bot.BotDatabase.LoadFromJsonStorage(MatchActivelyTradeOfferIDsStorageKey);
+		JsonElement matchActivelyTradeOfferIDsToken = Bot.BotDatabase.LoadFromJsonStorage(MatchActivelyTradeOfferIDsStorageKey);
 
 		if (matchActivelyTradeOfferIDsToken is { ValueKind: JsonValueKind.Array }) {
 			try {
-				matchActivelyTradeOfferIDs = new HashSet<ulong>(matchActivelyTradeOfferIDsToken.Value.GetArrayLength());
+				matchActivelyTradeOfferIDs = new HashSet<ulong>(matchActivelyTradeOfferIDsToken.GetArrayLength());
 
-				foreach (JsonElement tradeIDElement in matchActivelyTradeOfferIDsToken.Value.EnumerateArray()) {
+				foreach (JsonElement tradeIDElement in matchActivelyTradeOfferIDsToken.EnumerateArray()) {
 					if (!tradeIDElement.TryGetUInt64(out ulong tradeID)) {
 						continue;
 					}
