@@ -19,7 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
@@ -34,12 +33,6 @@ public sealed class CommandRequest {
 	[JsonProperty(Required = Required.Always)]
 	[Required]
 	public string Command { get; private set; } = "";
-
-	internal CommandRequest(string command) {
-		ArgumentException.ThrowIfNullOrEmpty(command);
-
-		Command = command;
-	}
 
 	[JsonConstructor]
 	private CommandRequest() { }
