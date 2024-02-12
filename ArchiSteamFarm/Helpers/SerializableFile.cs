@@ -50,47 +50,49 @@ public abstract class SerializableFile : IDisposable {
 		}
 	}
 
-	protected async Task Save() {
-		if (string.IsNullOrEmpty(FilePath)) {
+	protected static async Task Save<T>(T obj) where T : SerializableFile {
+		ArgumentNullException.ThrowIfNull(obj);
+
+		if (string.IsNullOrEmpty(obj.FilePath)) {
 			throw new InvalidOperationException(nameof(FilePath));
 		}
 
-		if (ReadOnly) {
+		if (obj.ReadOnly) {
 			return;
 		}
 
 		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-		lock (FileSemaphore) {
-			if (SavingScheduled) {
+		lock (obj.FileSemaphore) {
+			if (obj.SavingScheduled) {
 				return;
 			}
 
-			SavingScheduled = true;
+			obj.SavingScheduled = true;
 		}
 
-		await FileSemaphore.WaitAsync().ConfigureAwait(false);
+		await obj.FileSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-			lock (FileSemaphore) {
-				SavingScheduled = false;
+			lock (obj.FileSemaphore) {
+				obj.SavingScheduled = false;
 			}
 
-			if (ReadOnly) {
+			if (obj.ReadOnly) {
 				return;
 			}
 
-			string json = JsonSerializer.Serialize(this, Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions);
+			string json = JsonSerializer.Serialize(obj, Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions);
 
 			if (string.IsNullOrEmpty(json)) {
 				throw new InvalidOperationException(nameof(json));
 			}
 
 			// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-			string newFilePath = $"{FilePath}.new";
+			string newFilePath = $"{obj.FilePath}.new";
 
-			if (File.Exists(FilePath)) {
-				string currentJson = await File.ReadAllTextAsync(FilePath).ConfigureAwait(false);
+			if (File.Exists(obj.FilePath)) {
+				string currentJson = await File.ReadAllTextAsync(obj.FilePath).ConfigureAwait(false);
 
 				if (json == currentJson) {
 					return;
@@ -98,16 +100,16 @@ public abstract class SerializableFile : IDisposable {
 
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				File.Replace(newFilePath, FilePath, null);
+				File.Replace(newFilePath, obj.FilePath, null);
 			} else {
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				File.Move(newFilePath, FilePath);
+				File.Move(newFilePath, obj.FilePath);
 			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		} finally {
-			FileSemaphore.Release();
+			obj.FileSemaphore.Release();
 		}
 	}
 

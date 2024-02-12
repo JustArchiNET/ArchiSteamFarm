@@ -169,7 +169,7 @@ internal sealed class GlobalCache : SerializableFile {
 			AppChangeNumbers.TryRemove(appID, out _);
 		}
 
-		Utilities.InBackground(Save);
+		Utilities.InBackground(() => Save(this));
 	}
 
 	internal void OnPICSChangesRestart(uint currentChangeNumber) {
@@ -192,7 +192,7 @@ internal sealed class GlobalCache : SerializableFile {
 			DepotKeys.Clear();
 		}
 
-		Utilities.InBackground(Save);
+		Utilities.InBackground(() => Save(this));
 	}
 
 	internal bool ShouldRefreshAppInfo(uint appID) => !AppChangeNumbers.ContainsKey(appID);
@@ -213,7 +213,7 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		if (save) {
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(this));
 		}
 	}
 
@@ -242,7 +242,7 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		if (save) {
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(this));
 		}
 	}
 
@@ -267,7 +267,7 @@ internal sealed class GlobalCache : SerializableFile {
 
 		DepotKeys[depotKeyResult.DepotID] = depotKey;
 
-		Utilities.InBackground(Save);
+		Utilities.InBackground(() => Save(this));
 	}
 
 	internal void UpdateSubmittedData(IReadOnlyDictionary<uint, ulong> apps, IReadOnlyDictionary<uint, ulong> packages, IReadOnlyDictionary<uint, string> depots) {
@@ -305,7 +305,7 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		if (save) {
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(this));
 		}
 	}
 

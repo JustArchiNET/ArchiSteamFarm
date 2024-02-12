@@ -84,7 +84,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 			}
 
 			BackingCellID = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(this));
 		}
 	}
 
@@ -97,7 +97,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 			}
 
 			BackingLastChangeNumber = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(this));
 		}
 	}
 
@@ -166,7 +166,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 		if (!File.Exists(filePath)) {
 			GlobalDatabase result = new(filePath);
 
-			Utilities.InBackground(result.Save);
+			Utilities.InBackground(() => Save(result));
 
 			return result;
 		}
@@ -264,7 +264,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 		}
 
 		if (save) {
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(this));
 		}
 	}
 
@@ -298,7 +298,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 				PackagesData[packageID] = packageData;
 			}
 
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(this));
 		} finally {
 			PackagesRefreshSemaphore.Release();
 		}
@@ -309,6 +309,6 @@ public sealed class GlobalDatabase : GenericDatabase {
 			return;
 		}
 
-		await Save().ConfigureAwait(false);
+		await Save(this).ConfigureAwait(false);
 	}
 }

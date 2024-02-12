@@ -86,7 +86,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			BackingAccessToken = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(this));
 		}
 	}
 
@@ -99,7 +99,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			BackingMobileAuthenticator = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(this));
 		}
 	}
 
@@ -112,7 +112,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			BackingRefreshToken = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(this));
 		}
 	}
 
@@ -125,7 +125,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			BackingSteamGuardData = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(this));
 		}
 	}
 
@@ -224,7 +224,7 @@ public sealed class BotDatabase : GenericDatabase {
 		}
 
 		if (save) {
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(this));
 		}
 	}
 
@@ -293,7 +293,7 @@ public sealed class BotDatabase : GenericDatabase {
 			GamesToRedeemInBackground.Remove(key);
 		}
 
-		Utilities.InBackground(Save);
+		Utilities.InBackground(() => Save(this));
 	}
 
 	private async void OnObjectModified(object? sender, EventArgs e) {
@@ -301,6 +301,6 @@ public sealed class BotDatabase : GenericDatabase {
 			return;
 		}
 
-		await Save().ConfigureAwait(false);
+		await Save(this).ConfigureAwait(false);
 	}
 }

@@ -44,7 +44,7 @@ public abstract class GenericDatabase : SerializableFile {
 			return;
 		}
 
-		Utilities.InBackground(Save);
+		Utilities.InBackground(() => Save(this));
 	}
 
 	[PublicAPI]
@@ -70,7 +70,7 @@ public abstract class GenericDatabase : SerializableFile {
 		}
 
 		KeyValueJsonStorage[key] = value;
-		Utilities.InBackground(Save);
+		Utilities.InBackground(() => Save(this));
 	}
 
 	[UsedImplicitly]
