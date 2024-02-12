@@ -825,6 +825,11 @@ public static class ASF {
 	}
 
 	private static async Task<bool> ProtectAgainstCrashes() {
+		if (Debugging.IsDebugBuild) {
+			// Allow debug builds to run unconditionally, we expect to crash a lot in those
+			return true;
+		}
+
 		string crashFilePath = GetFilePath(EFileType.Crash);
 
 		CrashFile crashFile = await CrashFile.CreateOrLoad(crashFilePath).ConfigureAwait(false);
