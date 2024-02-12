@@ -19,7 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
@@ -35,12 +34,6 @@ public sealed class CommandRequest {
 	[JsonRequired]
 	[Required]
 	public string Command { get; private init; } = "";
-
-	internal CommandRequest(string command) {
-		ArgumentException.ThrowIfNullOrEmpty(command);
-
-		Command = command;
-	}
 
 	[JsonConstructor]
 	private CommandRequest() { }
