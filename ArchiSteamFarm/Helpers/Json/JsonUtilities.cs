@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
@@ -55,6 +56,7 @@ public static class JsonUtilities {
 		}
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2075", Justification = "We don't care about trimmed properties, it's not like we can make it work differently")]
 	private static bool? ShouldSerialize(object parent, JsonPropertyInfo property) {
 		ArgumentNullException.ThrowIfNull(parent);
 		ArgumentNullException.ThrowIfNull(property);
@@ -90,6 +92,7 @@ public static class JsonUtilities {
 		}
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2075", Justification = "We don't care about trimmed methods, it's not like we can make it work differently")]
 	private static bool? ShouldSerialize(object parent, string propertyName) {
 		ArgumentNullException.ThrowIfNull(parent);
 		ArgumentException.ThrowIfNullOrEmpty(propertyName);
