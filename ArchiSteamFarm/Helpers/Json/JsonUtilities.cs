@@ -56,7 +56,7 @@ public static class JsonUtilities {
 				continue;
 			}
 
-			// The object should be validated against potential nulls if at least one property has [JsonDisallowNullAttribute] declared, avoid performance penalty otherwise
+			// The object should be validated against potential nulls if at least one property has [JsonDisallowNull] declared, avoid performance penalty otherwise
 			if (!potentialDisallowedNullsPossible && (property.AttributeProvider?.IsDefined(typeof(JsonDisallowNullAttribute), false) == true)) {
 				potentialDisallowedNullsPossible = true;
 			}
