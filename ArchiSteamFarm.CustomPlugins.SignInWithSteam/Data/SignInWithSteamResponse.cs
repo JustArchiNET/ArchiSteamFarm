@@ -27,7 +27,7 @@ namespace ArchiSteamFarm.CustomPlugins.SignInWithSteam.Data;
 public sealed class SignInWithSteamResponse {
 	[JsonInclude]
 	[JsonRequired]
-	public Uri ReturnURL { get; private set; }
+	public Uri ReturnURL { get; private init; }
 
 	internal SignInWithSteamResponse(Uri returnURL) {
 		ArgumentNullException.ThrowIfNull(returnURL);

@@ -28,17 +28,13 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class BackgroundTaskResponse {
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly bool Finished;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	internal bool Finished { get; private init; }
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly Guid RequestID;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	internal Guid RequestID { get; private init; }
 
 	[JsonConstructor]
 	private BackgroundTaskResponse() { }

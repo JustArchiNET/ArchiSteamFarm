@@ -29,7 +29,7 @@ internal class AssetInInventory : AssetForMatching {
 	[JsonInclude]
 	[JsonPropertyName("d")]
 	[JsonRequired]
-	internal readonly ulong AssetID;
+	internal ulong AssetID { get; private init; }
 
 	[JsonConstructor]
 	protected AssetInInventory() { }

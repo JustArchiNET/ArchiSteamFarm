@@ -32,7 +32,7 @@ public sealed class StatusCodeResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public bool Permanent { get; private set; }
+	public bool Permanent { get; private init; }
 
 	/// <summary>
 	///     Status code transmitted in addition to the one in HTTP spec.
@@ -40,7 +40,7 @@ public sealed class StatusCodeResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public HttpStatusCode StatusCode { get; private set; }
+	public HttpStatusCode StatusCode { get; private init; }
 
 	internal StatusCodeResponse(HttpStatusCode statusCode, bool permanent) {
 		StatusCode = statusCode;

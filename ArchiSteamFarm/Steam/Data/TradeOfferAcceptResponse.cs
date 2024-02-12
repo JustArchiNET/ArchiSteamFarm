@@ -30,12 +30,12 @@ internal sealed class TradeOfferAcceptResponse {
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("strError")]
-	internal readonly string ErrorText = "";
+	internal string ErrorText { get; private init; } = "";
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("needs_mobile_confirmation")]
-	internal readonly bool RequiresMobileConfirmation;
+	internal bool RequiresMobileConfirmation { get; private init; }
 
 	[JsonConstructor]
 	private TradeOfferAcceptResponse() { }

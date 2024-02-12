@@ -62,11 +62,11 @@ internal sealed class CrashFile : SerializableFile {
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private DateTime BackingLastStartup;
+	private DateTime BackingLastStartup { get; set; }
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private byte BackingStartupCount;
+	private byte BackingStartupCount { get; set; }
 
 	private CrashFile(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);

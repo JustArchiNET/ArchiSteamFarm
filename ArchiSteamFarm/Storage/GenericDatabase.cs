@@ -34,7 +34,7 @@ namespace ArchiSteamFarm.Storage;
 public abstract class GenericDatabase : SerializableFile {
 	[JsonDisallowNull]
 	[JsonInclude]
-	private readonly ConcurrentDictionary<string, JsonElement> KeyValueJsonStorage = new();
+	private ConcurrentDictionary<string, JsonElement> KeyValueJsonStorage { get; set; } = new();
 
 	[PublicAPI]
 	public void DeleteFromJsonStorage(string key) {

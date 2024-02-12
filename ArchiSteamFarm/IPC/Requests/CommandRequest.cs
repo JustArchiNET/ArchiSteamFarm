@@ -34,7 +34,7 @@ public sealed class CommandRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public string Command { get; private set; } = "";
+	public string Command { get; private init; } = "";
 
 	internal CommandRequest(string command) {
 		ArgumentException.ThrowIfNullOrEmpty(command);

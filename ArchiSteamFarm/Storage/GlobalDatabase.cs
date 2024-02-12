@@ -50,30 +50,30 @@ public sealed class GlobalDatabase : GenericDatabase {
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	internal readonly ConcurrentHashSet<ulong> CachedBadBots = [];
+	internal ConcurrentHashSet<ulong> CachedBadBots { get; private init; } = [];
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	internal readonly ObservableConcurrentDictionary<uint, byte> CardCountsPerGame = new();
+	internal ObservableConcurrentDictionary<uint, byte> CardCountsPerGame { get; private init; } = new();
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	internal readonly InMemoryServerListProvider ServerListProvider = new();
+	internal InMemoryServerListProvider ServerListProvider { get; private init; } = new();
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private readonly ConcurrentDictionary<uint, ulong> PackagesAccessTokens = new();
+	private ConcurrentDictionary<uint, ulong> PackagesAccessTokens { get; init; } = new();
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private readonly ConcurrentDictionary<uint, PackageData> PackagesData = new();
+	private ConcurrentDictionary<uint, PackageData> PackagesData { get; init; } = new();
 
 	private readonly SemaphoreSlim PackagesRefreshSemaphore = new(1, 1);
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[PublicAPI]
-	public Guid Identifier { get; private set; } = Guid.NewGuid();
+	public Guid Identifier { get; private init; } = Guid.NewGuid();
 
 	internal uint CellID {
 		get => BackingCellID;
@@ -104,12 +104,12 @@ public sealed class GlobalDatabase : GenericDatabase {
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName($"_{nameof(CellID)}")]
-	private uint BackingCellID;
+	private uint BackingCellID { get; set; }
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName($"_{nameof(LastChangeNumber)}")]
-	private uint BackingLastChangeNumber;
+	private uint BackingLastChangeNumber { get; set; }
 
 	private GlobalDatabase(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);

@@ -29,31 +29,31 @@ internal sealed class SubmitResponseData {
 	[JsonInclude]
 	[JsonPropertyName("new_apps")]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<uint> NewApps = ImmutableHashSet<uint>.Empty;
+	internal ImmutableHashSet<uint> NewApps { get; private init; } = ImmutableHashSet<uint>.Empty;
 
 	[JsonInclude]
 	[JsonPropertyName("new_depots")]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<uint> NewDepots = ImmutableHashSet<uint>.Empty;
+	internal ImmutableHashSet<uint> NewDepots { get; private init; } = ImmutableHashSet<uint>.Empty;
 
 	[JsonInclude]
 	[JsonPropertyName("new_subs")]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<uint> NewPackages = ImmutableHashSet<uint>.Empty;
+	internal ImmutableHashSet<uint> NewPackages { get; private init; } = ImmutableHashSet<uint>.Empty;
 
 	[JsonInclude]
 	[JsonPropertyName("verified_apps")]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<uint> VerifiedApps = ImmutableHashSet<uint>.Empty;
+	internal ImmutableHashSet<uint> VerifiedApps { get; private init; } = ImmutableHashSet<uint>.Empty;
 
 	[JsonInclude]
 	[JsonPropertyName("verified_depots")]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<uint> VerifiedDepots = ImmutableHashSet<uint>.Empty;
+	internal ImmutableHashSet<uint> VerifiedDepots { get; private init; } = ImmutableHashSet<uint>.Empty;
 
 	[JsonInclude]
 	[JsonPropertyName("verified_subs")]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<uint> VerifiedPackages = ImmutableHashSet<uint>.Empty;
+	internal ImmutableHashSet<uint> VerifiedPackages { get; private init; } = ImmutableHashSet<uint>.Empty;
 }
 #pragma warning restore CA1812 // False positive, the class is used during json deserialization

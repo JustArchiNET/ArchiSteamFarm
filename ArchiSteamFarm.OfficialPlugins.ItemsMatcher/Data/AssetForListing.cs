@@ -29,12 +29,12 @@ internal sealed class AssetForListing : AssetInInventory {
 	[JsonInclude]
 	[JsonPropertyName("i")]
 	[JsonRequired]
-	internal readonly uint Index;
+	internal uint Index { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("l")]
 	[JsonRequired]
-	internal readonly ulong PreviousAssetID;
+	internal ulong PreviousAssetID { get; private init; }
 
 	internal string BackendHashCode => Index + "-" + PreviousAssetID + "-" + AssetID + "-" + ClassID + "-" + Rarity + "-" + RealAppID + "-" + Tradable + "-" + Type + "-" + Amount;
 

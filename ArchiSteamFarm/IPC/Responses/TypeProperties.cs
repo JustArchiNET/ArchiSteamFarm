@@ -33,7 +33,7 @@ public sealed class TypeProperties {
 	///     This can be used for determining how the body of the response should be interpreted.
 	/// </remarks>
 	[JsonInclude]
-	public string? BaseType { get; private set; }
+	public string? BaseType { get; private init; }
 
 	/// <summary>
 	///     Custom attributes of given type, if available.
@@ -42,7 +42,7 @@ public sealed class TypeProperties {
 	///     This can be used for determining main enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 	/// </remarks>
 	[JsonInclude]
-	public HashSet<string>? CustomAttributes { get; private set; }
+	public HashSet<string>? CustomAttributes { get; private init; }
 
 	/// <summary>
 	///     Underlying type of given type, if available.
@@ -51,7 +51,7 @@ public sealed class TypeProperties {
 	///     This can be used for determining underlying enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 	/// </remarks>
 	[JsonInclude]
-	public string? UnderlyingType { get; private set; }
+	public string? UnderlyingType { get; private init; }
 
 	internal TypeProperties(string? baseType = null, HashSet<string>? customAttributes = null, string? underlyingType = null) {
 		BaseType = baseType;

@@ -34,7 +34,7 @@ public sealed class BotRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public BotConfig BotConfig { get; private set; } = new();
+	public BotConfig BotConfig { get; private init; } = new();
 
 	[JsonConstructor]
 	private BotRequest() { }

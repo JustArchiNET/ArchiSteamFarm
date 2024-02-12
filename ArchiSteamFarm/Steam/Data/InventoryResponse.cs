@@ -40,17 +40,17 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("assets")]
-	internal readonly ImmutableList<Asset> Assets = ImmutableList<Asset>.Empty;
+	internal ImmutableList<Asset> Assets { get; private init; } = ImmutableList<Asset>.Empty;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("descriptions")]
-	internal readonly ImmutableHashSet<Description> Descriptions = ImmutableHashSet<Description>.Empty;
+	internal ImmutableHashSet<Description> Descriptions { get; private init; } = ImmutableHashSet<Description>.Empty;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("total_inventory_count")]
-	internal readonly uint TotalInventoryCount;
+	internal uint TotalInventoryCount { get; private init; }
 
 	internal EResult? ErrorCode { get; private set; }
 	internal string? ErrorText { get; private set; }
@@ -61,7 +61,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonInclude]
 	[JsonPropertyName("error")]
 	private string Error {
-		set {
+		init {
 			if (string.IsNullOrEmpty(value)) {
 				ASF.ArchiLogger.LogNullError(value);
 
@@ -77,7 +77,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonInclude]
 	[JsonPropertyName("last_assetid")]
 	private string LastAssetIDText {
-		set {
+		init {
 			if (string.IsNullOrEmpty(value)) {
 				ASF.ArchiLogger.LogNullError(value);
 
@@ -98,7 +98,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonInclude]
 	[JsonPropertyName("more_items")]
 	private byte MoreItemsNumber {
-		set => MoreItems = value > 0;
+		init => MoreItems = value > 0;
 	}
 
 	[JsonConstructor]
@@ -111,12 +111,12 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		[JsonInclude]
 		[JsonPropertyName("appid")]
 		[JsonRequired]
-		internal readonly uint AppID;
+		internal uint AppID { get; private init; }
 
 		[JsonDisallowNull]
 		[JsonInclude]
 		[JsonPropertyName("tags")]
-		internal readonly ImmutableHashSet<Tag> Tags = ImmutableHashSet<Tag>.Empty;
+		internal ImmutableHashSet<Tag> Tags { get; private init; } = ImmutableHashSet<Tag>.Empty;
 
 		internal Asset.ERarity Rarity {
 			get {
@@ -253,7 +253,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		[JsonPropertyName("classid")]
 		[JsonRequired]
 		private string ClassIDText {
-			set {
+			init {
 				if (string.IsNullOrEmpty(value)) {
 					ASF.ArchiLogger.LogNullError(value);
 
@@ -274,7 +274,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		[JsonInclude]
 		[JsonPropertyName("instanceid")]
 		private string InstanceIDText {
-			set {
+			init {
 				if (string.IsNullOrEmpty(value)) {
 					return;
 				}
@@ -293,14 +293,14 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		[JsonPropertyName("marketable")]
 		[JsonRequired]
 		private byte MarketableNumber {
-			set => Marketable = value > 0;
+			init => Marketable = value > 0;
 		}
 
 		[JsonInclude]
 		[JsonPropertyName("tradable")]
 		[JsonRequired]
 		private byte TradableNumber {
-			set => Tradable = value > 0;
+			init => Tradable = value > 0;
 		}
 
 		// Constructed from trades being received/sent

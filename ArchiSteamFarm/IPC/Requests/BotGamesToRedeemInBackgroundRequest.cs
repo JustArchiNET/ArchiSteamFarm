@@ -38,7 +38,7 @@ public sealed class BotGamesToRedeemInBackgroundRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public OrderedDictionary GamesToRedeemInBackground { get; private set; } = new();
+	public OrderedDictionary GamesToRedeemInBackground { get; private init; } = new();
 
 	[JsonConstructor]
 	private BotGamesToRedeemInBackgroundRequest() { }

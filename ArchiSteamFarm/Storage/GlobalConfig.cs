@@ -191,67 +191,67 @@ public sealed class GlobalConfig {
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public bool AutoRestart { get; private set; } = DefaultAutoRestart;
+	public bool AutoRestart { get; private init; } = DefaultAutoRestart;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> Blacklist { get; private set; } = DefaultBlacklist;
+	public ImmutableHashSet<uint> Blacklist { get; private init; } = DefaultBlacklist;
 
 	[JsonInclude]
-	public string? CommandPrefix { get; private set; } = DefaultCommandPrefix;
+	public string? CommandPrefix { get; private init; } = DefaultCommandPrefix;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte ConfirmationsLimiterDelay { get; private set; } = DefaultConfirmationsLimiterDelay;
+	public byte ConfirmationsLimiterDelay { get; private init; } = DefaultConfirmationsLimiterDelay;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(1, byte.MaxValue)]
-	public byte ConnectionTimeout { get; private set; } = DefaultConnectionTimeout;
+	public byte ConnectionTimeout { get; private init; } = DefaultConnectionTimeout;
 
 	[JsonInclude]
-	public string? CurrentCulture { get; private set; } = DefaultCurrentCulture;
+	public string? CurrentCulture { get; private init; } = DefaultCurrentCulture;
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public bool Debug { get; private set; } = DefaultDebug;
+	public bool Debug { get; private init; } = DefaultDebug;
 
 	[JsonInclude]
-	public string? DefaultBot { get; private set; } = DefaultDefaultBot;
+	public string? DefaultBot { get; private init; } = DefaultDefaultBot;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(1, byte.MaxValue)]
-	public byte FarmingDelay { get; private set; } = DefaultFarmingDelay;
+	public byte FarmingDelay { get; private init; } = DefaultFarmingDelay;
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public bool FilterBadBots { get; private set; } = DefaultFilterBadBots;
-
-	[JsonDisallowNull]
-	[JsonInclude]
-	[Range(byte.MinValue, byte.MaxValue)]
-	public byte GiftsLimiterDelay { get; private set; } = DefaultGiftsLimiterDelay;
-
-	[JsonDisallowNull]
-	[JsonInclude]
-	public bool Headless { get; private set; } = DefaultHeadless;
+	public bool FilterBadBots { get; private init; } = DefaultFilterBadBots;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte IdleFarmingPeriod { get; private set; } = DefaultIdleFarmingPeriod;
+	public byte GiftsLimiterDelay { get; private init; } = DefaultGiftsLimiterDelay;
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	public bool Headless { get; private init; } = DefaultHeadless;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte InventoryLimiterDelay { get; private set; } = DefaultInventoryLimiterDelay;
+	public byte IdleFarmingPeriod { get; private init; } = DefaultIdleFarmingPeriod;
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public bool IPC { get; private set; } = DefaultIPC;
+	[Range(byte.MinValue, byte.MaxValue)]
+	public byte InventoryLimiterDelay { get; private init; } = DefaultInventoryLimiterDelay;
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	public bool IPC { get; private init; } = DefaultIPC;
 
 	[JsonInclude]
 	public string? IPCPassword {
@@ -265,70 +265,70 @@ public sealed class GlobalConfig {
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private set; } = DefaultIPCPasswordFormat;
+	public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private init; } = DefaultIPCPasswordFormat;
 
 	[JsonInclude]
-	public Guid? LicenseID { get; private set; } = DefaultLicenseID;
+	public Guid? LicenseID { get; private init; } = DefaultLicenseID;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte LoginLimiterDelay { get; private set; } = DefaultLoginLimiterDelay;
+	public byte LoginLimiterDelay { get; private init; } = DefaultLoginLimiterDelay;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(1, byte.MaxValue)]
-	public byte MaxFarmingTime { get; private set; } = DefaultMaxFarmingTime;
+	public byte MaxFarmingTime { get; private init; } = DefaultMaxFarmingTime;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte MaxTradeHoldDuration { get; private set; } = DefaultMaxTradeHoldDuration;
+	public byte MaxTradeHoldDuration { get; private init; } = DefaultMaxTradeHoldDuration;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte MinFarmingDelayAfterBlock { get; private set; } = DefaultMinFarmingDelayAfterBlock;
+	public byte MinFarmingDelayAfterBlock { get; private init; } = DefaultMinFarmingDelayAfterBlock;
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public EOptimizationMode OptimizationMode { get; private set; } = DefaultOptimizationMode;
+	public EOptimizationMode OptimizationMode { get; private init; } = DefaultOptimizationMode;
 
 	[JsonInclude]
 	[MaxLength(SteamChatMessage.MaxMessagePrefixBytes / SteamChatMessage.ReservedEscapeMessageBytes)]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
-	public string? SteamMessagePrefix { get; private set; } = DefaultSteamMessagePrefix;
+	public string? SteamMessagePrefix { get; private init; } = DefaultSteamMessagePrefix;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[SwaggerSteamIdentifier]
 	[SwaggerValidValues(ValidIntValues = [0])]
-	public ulong SteamOwnerID { get; private set; } = DefaultSteamOwnerID;
+	public ulong SteamOwnerID { get; private init; } = DefaultSteamOwnerID;
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
+	public ProtocolTypes SteamProtocols { get; private init; } = DefaultSteamProtocols;
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public EUpdateChannel UpdateChannel { get; private set; } = DefaultUpdateChannel;
+	public EUpdateChannel UpdateChannel { get; private init; } = DefaultUpdateChannel;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte UpdatePeriod { get; private set; } = DefaultUpdatePeriod;
+	public byte UpdatePeriod { get; private init; } = DefaultUpdatePeriod;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(ushort.MinValue, ushort.MaxValue)]
-	public ushort WebLimiterDelay { get; private set; } = DefaultWebLimiterDelay;
+	public ushort WebLimiterDelay { get; private init; } = DefaultWebLimiterDelay;
 
 	[JsonInclude]
 	[JsonPropertyName(nameof(WebProxy))]
-	public string? WebProxyText { get; private set; } = DefaultWebProxyText;
+	public string? WebProxyText { get; private init; } = DefaultWebProxyText;
 
 	[JsonInclude]
-	public string? WebProxyUsername { get; private set; } = DefaultWebProxyUsername;
+	public string? WebProxyUsername { get; private init; } = DefaultWebProxyUsername;
 
 	[JsonExtensionData]
 	internal Dictionary<string, JsonElement>? AdditionalProperties {
@@ -362,7 +362,7 @@ public sealed class GlobalConfig {
 	private string SSteamOwnerID {
 		get => SteamOwnerID.ToString(CultureInfo.InvariantCulture);
 
-		set {
+		init {
 			if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
 				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SSteamOwnerID)));
 

@@ -48,19 +48,19 @@ internal sealed class SubmitRequest {
 	[JsonInclude]
 	[JsonPropertyName("apps")]
 	[JsonRequired]
-	private readonly ImmutableDictionary<string, string> Apps;
+	private ImmutableDictionary<string, string> Apps { get; init; }
 
 	[JsonInclude]
 	[JsonPropertyName("depots")]
 	[JsonRequired]
-	private readonly ImmutableDictionary<string, string> Depots;
+	private ImmutableDictionary<string, string> Depots { get; init; }
 
 	private readonly ulong SteamID;
 
 	[JsonInclude]
 	[JsonPropertyName("subs")]
 	[JsonRequired]
-	private readonly ImmutableDictionary<string, string> Subs;
+	private ImmutableDictionary<string, string> Subs { get; init; }
 
 	[JsonInclude]
 	[JsonPropertyName("steamid")]

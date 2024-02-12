@@ -34,7 +34,7 @@ public sealed class ASFHashRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public ArchiCryptoHelper.EHashingMethod HashingMethod { get; private set; }
+	public ArchiCryptoHelper.EHashingMethod HashingMethod { get; private init; }
 
 	/// <summary>
 	///     String to hash with provided <see cref="HashingMethod" />.
@@ -42,7 +42,7 @@ public sealed class ASFHashRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public string StringToHash { get; private set; } = "";
+	public string StringToHash { get; private init; } = "";
 
 	[JsonConstructor]
 	private ASFHashRequest() { }

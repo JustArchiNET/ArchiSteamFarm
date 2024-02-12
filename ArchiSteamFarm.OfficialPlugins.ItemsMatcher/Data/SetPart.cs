@@ -28,33 +28,25 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class SetPart {
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonInclude]
 	[JsonPropertyName("c")]
 	[JsonRequired]
-	internal readonly ulong ClassID;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	internal ulong ClassID { get; private init; }
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonInclude]
 	[JsonPropertyName("r")]
 	[JsonRequired]
-	internal readonly Asset.ERarity Rarity;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	internal Asset.ERarity Rarity { get; private init; }
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonInclude]
 	[JsonPropertyName("e")]
 	[JsonRequired]
-	internal readonly uint RealAppID;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	internal uint RealAppID { get; private init; }
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonInclude]
 	[JsonPropertyName("p")]
 	[JsonRequired]
-	internal readonly Asset.EType Type;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	internal Asset.EType Type { get; private init; }
 
 	[JsonConstructor]
 	private SetPart() { }

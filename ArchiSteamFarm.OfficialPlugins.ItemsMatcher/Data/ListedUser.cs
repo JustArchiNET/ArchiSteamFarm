@@ -32,51 +32,39 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 internal sealed class ListedUser {
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<AssetInInventory> Assets = ImmutableHashSet<AssetInInventory>.Empty;
+	internal ImmutableHashSet<AssetInInventory> Assets { get; private init; } = ImmutableHashSet<AssetInInventory>.Empty;
 
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<Asset.EType> MatchableTypes = ImmutableHashSet<Asset.EType>.Empty;
+	internal ImmutableHashSet<Asset.EType> MatchableTypes { get; private init; } = ImmutableHashSet<Asset.EType>.Empty;
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly bool MatchEverything;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	internal bool MatchEverything { get; private init; }
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly byte MaxTradeHoldDuration;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	internal byte MaxTradeHoldDuration { get; private init; }
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonAllowNull]
 	[JsonInclude]
-	internal readonly string? Nickname;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
-
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonInclude]
-	[JsonRequired]
-	internal readonly ulong SteamID;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
-
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonInclude]
-	[JsonRequired]
-	internal readonly uint TotalGamesCount;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
-
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonInclude]
-	[JsonRequired]
-	internal readonly uint TotalInventoryCount;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	internal string? Nickname { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly string TradeToken = "";
+	internal ulong SteamID { get; private init; }
+
+	[JsonInclude]
+	[JsonRequired]
+	internal uint TotalGamesCount { get; private init; }
+
+	[JsonInclude]
+	[JsonRequired]
+	internal uint TotalInventoryCount { get; private init; }
+
+	[JsonInclude]
+	[JsonRequired]
+	internal string TradeToken { get; private init; } = "";
 
 	[JsonConstructor]
 	private ListedUser() { }

@@ -53,7 +53,7 @@ internal sealed class ExamplePlugin : IASF, IBot, IBotCommand2, IBotConnection, 
 
 	// Plugins can expose custom properties for our GET /Api/Plugins API call, simply annotate them with [JsonProperty] (or keep public)
 	[JsonInclude]
-	public bool CustomIsEnabledField { get; private set; } = true;
+	public bool CustomIsEnabledField { get; private init; } = true;
 
 	// This method, apart from being called before any bot initialization takes place, allows you to read custom global config properties that are not recognized by ASF
 	// Thanks to that, you can extend default ASF config with your own stuff, then parse it here in order to customize your plugin during runtime

@@ -33,7 +33,7 @@ public sealed class BotRenameRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public string NewName { get; private set; } = "";
+	public string NewName { get; private init; } = "";
 
 	[JsonConstructor]
 	private BotRenameRequest() { }

@@ -28,19 +28,15 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class SubmitResponse {
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("data")]
-	internal readonly SubmitResponseData? Data;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	internal SubmitResponseData? Data { get; private init; }
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 	[JsonInclude]
 	[JsonPropertyName("success")]
 	[JsonRequired]
-	internal readonly bool Success;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	internal bool Success { get; private init; }
 
 	[JsonConstructor]
 	private SubmitResponse() { }

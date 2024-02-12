@@ -38,7 +38,7 @@ public sealed class TypeResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public Dictionary<string, string> Body { get; private set; }
+	public Dictionary<string, string> Body { get; private init; }
 
 	/// <summary>
 	///     Metadata of given type.
@@ -46,7 +46,7 @@ public sealed class TypeResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public TypeProperties Properties { get; private set; }
+	public TypeProperties Properties { get; private init; }
 
 	internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
 		ArgumentNullException.ThrowIfNull(body);

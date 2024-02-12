@@ -28,7 +28,7 @@ namespace ArchiSteamFarm.OfficialPlugins.MobileAuthenticator;
 internal sealed class MaFileSessionData {
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly ulong SteamID;
+	internal ulong SteamID { get; private init; }
 
 	internal MaFileSessionData(ulong steamID) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {

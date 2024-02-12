@@ -34,21 +34,21 @@ public sealed class SteamTokenDumperConfig {
 	[JsonDisallowNull]
 	[JsonInclude]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> SecretAppIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	public ImmutableHashSet<uint> SecretAppIDs { get; private init; } = ImmutableHashSet<uint>.Empty;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> SecretDepotIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	public ImmutableHashSet<uint> SecretDepotIDs { get; private init; } = ImmutableHashSet<uint>.Empty;
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> SecretPackageIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	public ImmutableHashSet<uint> SecretPackageIDs { get; private init; } = ImmutableHashSet<uint>.Empty;
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public bool SkipAutoGrantPackages { get; private set; } = true;
+	public bool SkipAutoGrantPackages { get; private init; } = true;
 
 	[JsonConstructor]
 	internal SteamTokenDumperConfig() { }

@@ -299,7 +299,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private string? AuthCode;
 
 	[JsonInclude]
-	private string? AvatarHash;
+	private string? AvatarHash { get; set; }
 
 	private string? BackingAccessToken;
 	private Timer? ConnectionFailureTimer;

@@ -30,7 +30,7 @@ internal sealed class NewDiscoveryQueueResponse {
 	[JsonInclude]
 	[JsonPropertyName("queue")]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<uint> Queue = ImmutableHashSet<uint>.Empty;
+	internal ImmutableHashSet<uint> Queue { get; private init; } = ImmutableHashSet<uint>.Empty;
 
 	[JsonConstructor]
 	private NewDiscoveryQueueResponse() { }

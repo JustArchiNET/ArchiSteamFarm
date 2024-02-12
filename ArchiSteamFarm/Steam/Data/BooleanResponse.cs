@@ -33,7 +33,7 @@ public class BooleanResponse {
 	[JsonInclude]
 	[JsonPropertyName("success")]
 	[JsonRequired]
-	public bool Success { get; private set; }
+	public bool Success { get; private init; }
 
 	[JsonConstructor]
 	protected BooleanResponse() { }

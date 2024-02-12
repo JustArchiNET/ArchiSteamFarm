@@ -41,27 +41,27 @@ namespace ArchiSteamFarm.Steam.Storage;
 public sealed class BotDatabase : GenericDatabase {
 	[JsonDisallowNull]
 	[JsonInclude]
-	internal readonly ConcurrentHashSet<uint> FarmingBlacklistAppIDs = [];
+	internal ConcurrentHashSet<uint> FarmingBlacklistAppIDs { get; private init; } = [];
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	internal readonly ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs = [];
+	internal ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs { get; private init; } = [];
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	internal readonly ObservableConcurrentDictionary<uint, DateTime> FarmingRiskyIgnoredAppIDs = new();
+	internal ObservableConcurrentDictionary<uint, DateTime> FarmingRiskyIgnoredAppIDs { get; private init; } = new();
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	internal readonly ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs = [];
+	internal ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs { get; private init; } = [];
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs = [];
+	internal ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs { get; private init; } = [];
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	internal readonly ConcurrentHashSet<ulong> TradingBlacklistSteamIDs = [];
+	internal ConcurrentHashSet<ulong> TradingBlacklistSteamIDs { get; private init; } = [];
 
 	internal uint GamesToRedeemInBackgroundCount {
 		get {
@@ -75,7 +75,7 @@ public sealed class BotDatabase : GenericDatabase {
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private readonly OrderedDictionary GamesToRedeemInBackground = new();
+	private OrderedDictionary GamesToRedeemInBackground { get; init; } = new();
 
 	internal string? AccessToken {
 		get => BackingAccessToken;
@@ -130,17 +130,17 @@ public sealed class BotDatabase : GenericDatabase {
 	}
 
 	[JsonInclude]
-	private string? BackingAccessToken;
+	private string? BackingAccessToken { get; set; }
 
 	[JsonInclude]
 	[JsonPropertyName($"_{nameof(MobileAuthenticator)}")]
-	private MobileAuthenticator? BackingMobileAuthenticator;
+	private MobileAuthenticator? BackingMobileAuthenticator { get; set; }
 
 	[JsonInclude]
-	private string? BackingRefreshToken;
+	private string? BackingRefreshToken { get; set; }
 
 	[JsonInclude]
-	private string? BackingSteamGuardData;
+	private string? BackingSteamGuardData { get; set; }
 
 	private BotDatabase(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);

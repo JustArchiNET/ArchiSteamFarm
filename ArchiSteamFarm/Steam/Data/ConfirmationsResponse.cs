@@ -28,7 +28,7 @@ internal sealed class ConfirmationsResponse : BooleanResponse {
 	[JsonInclude]
 	[JsonPropertyName("conf")]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<Confirmation> Confirmations = ImmutableHashSet<Confirmation>.Empty;
+	internal ImmutableHashSet<Confirmation> Confirmations { get; private init; } = ImmutableHashSet<Confirmation>.Empty;
 
 	[JsonConstructor]
 	private ConfirmationsResponse() { }

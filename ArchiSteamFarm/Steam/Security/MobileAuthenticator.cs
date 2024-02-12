@@ -59,12 +59,12 @@ public sealed class MobileAuthenticator : IDisposable {
 	[JsonInclude]
 	[JsonPropertyName("identity_secret")]
 	[JsonRequired]
-	private readonly string IdentitySecret = "";
+	private string IdentitySecret { get; init; } = "";
 
 	[JsonInclude]
 	[JsonPropertyName("shared_secret")]
 	[JsonRequired]
-	private readonly string SharedSecret = "";
+	private string SharedSecret { get; init; } = "";
 
 	private Bot? Bot;
 

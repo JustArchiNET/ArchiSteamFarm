@@ -34,7 +34,7 @@ namespace ArchiSteamFarm.Steam.SteamKit2;
 internal sealed class InMemoryServerListProvider : IServerListProvider {
 	[JsonDisallowNull]
 	[JsonInclude]
-	private readonly ConcurrentHashSet<ServerRecordEndPoint> ServerRecords = [];
+	private ConcurrentHashSet<ServerRecordEndPoint> ServerRecords { get; init; } = [];
 
 	public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult(ServerRecords.Where(static server => !string.IsNullOrEmpty(server.Host) && server is { Port: > 0, ProtocolTypes: > 0 }).Select(static server => ServerRecord.CreateServer(server.Host, server.Port, server.ProtocolTypes)));
 

@@ -33,7 +33,7 @@ public sealed class GenericResponse<T> : GenericResponse {
 	///     The type of the result depends on the API endpoint that you've called.
 	/// </remarks>
 	[JsonInclude]
-	public T? Result { get; private set; }
+	public T? Result { get; private init; }
 
 	public GenericResponse(T? result) : base(result is not null) => Result = result;
 	public GenericResponse(bool success, string? message) : base(success, message) { }
@@ -52,7 +52,7 @@ public class GenericResponse {
 	///     This property will provide exact reason for majority of expected failures.
 	/// </remarks>
 	[JsonInclude]
-	public string? Message { get; private set; }
+	public string? Message { get; private init; }
 
 	/// <summary>
 	///     Boolean type that specifies if the request has succeeded.
@@ -60,7 +60,7 @@ public class GenericResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public bool Success { get; private set; }
+	public bool Success { get; private init; }
 
 	public GenericResponse(bool success, string? message = null) {
 		Success = success;

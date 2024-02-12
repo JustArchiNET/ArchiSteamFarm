@@ -30,7 +30,7 @@ public class ResultResponse {
 	[JsonInclude]
 	[JsonPropertyName("success")]
 	[JsonRequired]
-	public EResult Result { get; private set; }
+	public EResult Result { get; private init; }
 
 	[JsonConstructor]
 	protected ResultResponse() { }

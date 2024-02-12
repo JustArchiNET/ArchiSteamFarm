@@ -33,7 +33,7 @@ public sealed class LogResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public IReadOnlyList<string> Content { get; private set; }
+	public IReadOnlyList<string> Content { get; private init; }
 
 	/// <summary>
 	///     Total number of lines of the log file returned, can be used as an index for future requests.
@@ -41,7 +41,7 @@ public sealed class LogResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public int TotalLines { get; private set; }
+	public int TotalLines { get; private init; }
 
 	internal LogResponse(int totalLines, IReadOnlyList<string> content) {
 		ArgumentOutOfRangeException.ThrowIfNegative(totalLines);

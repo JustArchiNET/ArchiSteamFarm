@@ -29,27 +29,27 @@ internal class AssetForMatching {
 	[JsonInclude]
 	[JsonPropertyName("c")]
 	[JsonRequired]
-	internal readonly ulong ClassID;
+	internal ulong ClassID { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("r")]
 	[JsonRequired]
-	internal readonly Asset.ERarity Rarity;
+	internal Asset.ERarity Rarity { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("e")]
 	[JsonRequired]
-	internal readonly uint RealAppID;
+	internal uint RealAppID { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("t")]
 	[JsonRequired]
-	internal readonly bool Tradable;
+	internal bool Tradable { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("p")]
 	[JsonRequired]
-	internal readonly Asset.EType Type;
+	internal Asset.EType Type { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("a")]

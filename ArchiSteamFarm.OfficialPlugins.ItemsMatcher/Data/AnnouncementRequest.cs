@@ -32,46 +32,46 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal class AnnouncementRequest {
 	[JsonInclude]
-	private readonly string? AvatarHash;
+	private string? AvatarHash { get; init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	private readonly Guid Guid;
+	private Guid Guid { get; init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	private readonly ImmutableHashSet<AssetForListing> Inventory;
+	private ImmutableHashSet<AssetForListing> Inventory { get; init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	private readonly string InventoryChecksum;
+	private string InventoryChecksum { get; init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	private readonly ImmutableHashSet<Asset.EType> MatchableTypes;
+	private ImmutableHashSet<Asset.EType> MatchableTypes { get; init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	private readonly bool MatchEverything;
+	private bool MatchEverything { get; init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	private readonly byte MaxTradeHoldDuration;
+	private byte MaxTradeHoldDuration { get; init; }
 
 	[JsonInclude]
-	private readonly string? Nickname;
-
-	[JsonInclude]
-	[JsonRequired]
-	private readonly ulong SteamID;
+	private string? Nickname { get; init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	private readonly uint TotalInventoryCount;
+	private ulong SteamID { get; init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	private readonly string TradeToken;
+	private uint TotalInventoryCount { get; init; }
+
+	[JsonInclude]
+	[JsonRequired]
+	private string TradeToken { get; init; }
 
 	internal AnnouncementRequest(Guid guid, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, string? nickname = null, string? avatarHash = null) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);

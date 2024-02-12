@@ -28,17 +28,17 @@ internal sealed class TradeOfferSendRequest {
 	[JsonInclude]
 	[JsonPropertyName("me")]
 	[JsonRequired]
-	internal readonly ItemList ItemsToGive = new();
+	internal ItemList ItemsToGive { get; private init; } = new();
 
 	[JsonInclude]
 	[JsonPropertyName("them")]
 	[JsonRequired]
-	internal readonly ItemList ItemsToReceive = new();
+	internal ItemList ItemsToReceive { get; private init; } = new();
 
 	internal sealed class ItemList {
 		[JsonInclude]
 		[JsonPropertyName("assets")]
 		[JsonRequired]
-		internal readonly HashSet<Asset> Assets = [];
+		internal HashSet<Asset> Assets { get; private init; } = [];
 	}
 }

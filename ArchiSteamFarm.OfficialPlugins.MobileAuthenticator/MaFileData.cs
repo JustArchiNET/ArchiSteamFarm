@@ -30,61 +30,61 @@ internal sealed class MaFileData {
 	[JsonInclude]
 	[JsonPropertyName("account_name")]
 	[JsonRequired]
-	internal readonly string AccountName;
+	internal string AccountName { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("device_id")]
 	[JsonRequired]
-	internal readonly string DeviceID;
+	internal string DeviceID { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("identity_secret")]
 	[JsonRequired]
-	internal readonly string IdentitySecret;
+	internal string IdentitySecret { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("revocation_code")]
 	[JsonRequired]
-	internal readonly string RevocationCode;
+	internal string RevocationCode { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("secret_1")]
 	[JsonRequired]
-	internal readonly string Secret1;
+	internal string Secret1 { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("serial_number")]
 	[JsonRequired]
-	internal readonly ulong SerialNumber;
+	internal ulong SerialNumber { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("server_time")]
 	[JsonRequired]
-	internal readonly ulong ServerTime;
+	internal ulong ServerTime { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly MaFileSessionData Session;
+	internal MaFileSessionData Session { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("shared_secret")]
 	[JsonRequired]
-	internal readonly string SharedSecret;
+	internal string SharedSecret { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("status")]
 	[JsonRequired]
-	internal readonly int Status;
+	internal int Status { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("token_gid")]
 	[JsonRequired]
-	internal readonly string TokenGid;
+	internal string TokenGid { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("uri")]
 	[JsonRequired]
-	internal readonly string Uri;
+	internal string Uri { get; private init; }
 
 	internal MaFileData(CTwoFactor_AddAuthenticator_Response data, ulong steamID, string deviceID) {
 		ArgumentNullException.ThrowIfNull(data);

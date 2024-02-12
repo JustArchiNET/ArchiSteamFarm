@@ -31,7 +31,7 @@ internal sealed class MeowResponse {
 	[JsonInclude]
 	[JsonPropertyName("url")]
 	[JsonRequired]
-	internal readonly Uri URL = null!;
+	internal Uri URL { get; private init; } = null!;
 
 	[JsonConstructor]
 	private MeowResponse() { }

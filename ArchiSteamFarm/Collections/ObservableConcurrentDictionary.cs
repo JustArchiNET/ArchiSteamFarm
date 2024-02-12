@@ -45,7 +45,7 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private readonly ConcurrentDictionary<TKey, TValue> BackingDictionary = new();
+	private ConcurrentDictionary<TKey, TValue> BackingDictionary { get; init; } = new();
 
 	int ICollection<KeyValuePair<TKey, TValue>>.Count => BackingDictionary.Count;
 	int IReadOnlyCollection<KeyValuePair<TKey, TValue>>.Count => BackingDictionary.Count;

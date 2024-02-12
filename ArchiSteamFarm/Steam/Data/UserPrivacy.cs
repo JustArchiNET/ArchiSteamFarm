@@ -32,12 +32,12 @@ internal sealed class UserPrivacy {
 	[JsonInclude]
 	[JsonPropertyName("eCommentPermission")]
 	[JsonRequired]
-	internal readonly ECommentPermission CommentPermission;
+	internal ECommentPermission CommentPermission { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("PrivacySettings")]
 	[JsonRequired]
-	internal readonly PrivacySettings Settings = new();
+	internal PrivacySettings Settings { get; private init; } = new();
 
 	// Constructed from privacy change request
 	internal UserPrivacy(PrivacySettings settings, ECommentPermission commentPermission) {
@@ -58,32 +58,32 @@ internal sealed class UserPrivacy {
 		[JsonInclude]
 		[JsonPropertyName("PrivacyFriendsList")]
 		[JsonRequired]
-		internal readonly ArchiHandler.EPrivacySetting FriendsList;
+		internal ArchiHandler.EPrivacySetting FriendsList { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("PrivacyInventory")]
 		[JsonRequired]
-		internal readonly ArchiHandler.EPrivacySetting Inventory;
+		internal ArchiHandler.EPrivacySetting Inventory { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("PrivacyInventoryGifts")]
 		[JsonRequired]
-		internal readonly ArchiHandler.EPrivacySetting InventoryGifts;
+		internal ArchiHandler.EPrivacySetting InventoryGifts { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("PrivacyOwnedGames")]
 		[JsonRequired]
-		internal readonly ArchiHandler.EPrivacySetting OwnedGames;
+		internal ArchiHandler.EPrivacySetting OwnedGames { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("PrivacyPlaytime")]
 		[JsonRequired]
-		internal readonly ArchiHandler.EPrivacySetting Playtime;
+		internal ArchiHandler.EPrivacySetting Playtime { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("PrivacyProfile")]
 		[JsonRequired]
-		internal readonly ArchiHandler.EPrivacySetting Profile;
+		internal ArchiHandler.EPrivacySetting Profile { get; private init; }
 
 		// Constructed from privacy change request
 		internal PrivacySettings(ArchiHandler.EPrivacySetting profile, ArchiHandler.EPrivacySetting ownedGames, ArchiHandler.EPrivacySetting playtime, ArchiHandler.EPrivacySetting friendsList, ArchiHandler.EPrivacySetting inventory, ArchiHandler.EPrivacySetting inventoryGifts) {

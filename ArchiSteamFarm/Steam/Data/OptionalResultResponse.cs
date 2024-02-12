@@ -31,7 +31,7 @@ public class OptionalResultResponse {
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("success")]
-	public EResult? Result { get; private set; }
+	public EResult? Result { get; private init; }
 
 	[JsonConstructor]
 	protected OptionalResultResponse() { }

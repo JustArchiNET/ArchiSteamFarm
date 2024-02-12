@@ -31,12 +31,12 @@ internal sealed class RedeemWalletResponse : ResultResponse {
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("formattednewwalletbalance")]
-	internal readonly string? BalanceText;
+	internal string? BalanceText { get; private init; }
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("detail")]
-	internal readonly EPurchaseResultDetail PurchaseResultDetail;
+	internal EPurchaseResultDetail PurchaseResultDetail { get; private init; }
 
 	[JsonConstructor]
 	private RedeemWalletResponse() { }

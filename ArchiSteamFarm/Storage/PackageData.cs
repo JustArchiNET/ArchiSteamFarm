@@ -28,18 +28,18 @@ namespace ArchiSteamFarm.Storage;
 
 public sealed class PackageData {
 	[JsonInclude]
-	public ImmutableHashSet<uint>? AppIDs { get; private set; }
+	public ImmutableHashSet<uint>? AppIDs { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	public uint ChangeNumber { get; private set; }
+	public uint ChangeNumber { get; private init; }
 
 	[JsonInclude]
-	public ImmutableHashSet<string>? ProhibitRunInCountries { get; private set; }
+	public ImmutableHashSet<string>? ProhibitRunInCountries { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	public DateTime ValidUntil { get; private set; }
+	public DateTime ValidUntil { get; private init; }
 
 	internal PackageData(uint changeNumber, DateTime validUntil, ImmutableHashSet<uint>? appIDs = null, ImmutableHashSet<string>? prohibitRunInCountries = null) {
 		ArgumentOutOfRangeException.ThrowIfZero(changeNumber);

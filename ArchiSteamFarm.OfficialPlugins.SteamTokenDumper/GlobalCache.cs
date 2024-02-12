@@ -47,27 +47,27 @@ internal sealed class GlobalCache : SerializableFile {
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private readonly ConcurrentDictionary<uint, uint> AppChangeNumbers = new();
+	private ConcurrentDictionary<uint, uint> AppChangeNumbers { get; init; } = new();
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private readonly ConcurrentDictionary<uint, ulong> AppTokens = new();
+	private ConcurrentDictionary<uint, ulong> AppTokens { get; init; } = new();
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private readonly ConcurrentDictionary<uint, string> DepotKeys = new();
+	private ConcurrentDictionary<uint, string> DepotKeys { get; init; } = new();
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private readonly ConcurrentDictionary<uint, ulong> SubmittedApps = new();
+	private ConcurrentDictionary<uint, ulong> SubmittedApps { get; init; } = new();
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private readonly ConcurrentDictionary<uint, string> SubmittedDepots = new();
+	private ConcurrentDictionary<uint, string> SubmittedDepots { get; init; } = new();
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private readonly ConcurrentDictionary<uint, ulong> SubmittedPackages = new();
+	private ConcurrentDictionary<uint, ulong> SubmittedPackages { get; init; } = new();
 
 	[JsonDisallowNull]
 	[JsonInclude]

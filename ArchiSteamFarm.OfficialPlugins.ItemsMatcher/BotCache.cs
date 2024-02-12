@@ -38,7 +38,7 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 internal sealed class BotCache : SerializableFile {
 	[JsonDisallowNull]
 	[JsonInclude]
-	internal readonly ConcurrentList<AssetForListing> LastAnnouncedAssetsForListing = [];
+	internal ConcurrentList<AssetForListing> LastAnnouncedAssetsForListing { get; private init; } = [];
 
 	internal string? LastAnnouncedTradeToken {
 		get => BackingLastAnnouncedTradeToken;
@@ -81,15 +81,15 @@ internal sealed class BotCache : SerializableFile {
 
 	[JsonInclude]
 	[JsonRequired]
-	private string? BackingLastAnnouncedTradeToken;
+	private string? BackingLastAnnouncedTradeToken { get; set; }
 
 	[JsonInclude]
 	[JsonRequired]
-	private string? BackingLastInventoryChecksumBeforeDeduplication;
+	private string? BackingLastInventoryChecksumBeforeDeduplication { get; set; }
 
 	[JsonInclude]
 	[JsonRequired]
-	private DateTime? BackingLastRequestAt;
+	private DateTime? BackingLastRequestAt { get; set; }
 
 	private BotCache(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);

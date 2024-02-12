@@ -31,22 +31,22 @@ public sealed class Confirmation {
 	[JsonInclude]
 	[JsonPropertyName("nonce")]
 	[JsonRequired]
-	internal readonly ulong Nonce;
+	internal ulong Nonce { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("type")]
 	[JsonRequired]
-	public EConfirmationType ConfirmationType { get; private set; }
+	public EConfirmationType ConfirmationType { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("creator_id")]
 	[JsonRequired]
-	public ulong CreatorID { get; private set; }
+	public ulong CreatorID { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("id")]
 	[JsonRequired]
-	public ulong ID { get; private set; }
+	public ulong ID { get; private init; }
 
 	[JsonConstructor]
 	private Confirmation() { }

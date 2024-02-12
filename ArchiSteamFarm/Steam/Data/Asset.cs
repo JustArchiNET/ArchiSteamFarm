@@ -60,7 +60,7 @@ public sealed class Asset {
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("appid")]
-	public uint AppID { get; private set; }
+	public uint AppID { get; private init; }
 
 	[JsonIgnore]
 	[PublicAPI]
@@ -111,7 +111,7 @@ public sealed class Asset {
 	private string AmountText {
 		get => Amount.ToString(CultureInfo.InvariantCulture);
 
-		set {
+		init {
 			if (string.IsNullOrEmpty(value)) {
 				ASF.ArchiLogger.LogNullError(value);
 
@@ -134,7 +134,7 @@ public sealed class Asset {
 	private string AssetIDText {
 		get => AssetID.ToString(CultureInfo.InvariantCulture);
 
-		set {
+		init {
 			if (string.IsNullOrEmpty(value)) {
 				ASF.ArchiLogger.LogNullError(value);
 
@@ -155,7 +155,7 @@ public sealed class Asset {
 	[JsonInclude]
 	[JsonPropertyName("classid")]
 	private string ClassIDText {
-		set {
+		init {
 			if (string.IsNullOrEmpty(value)) {
 				ASF.ArchiLogger.LogNullError(value);
 
@@ -176,7 +176,7 @@ public sealed class Asset {
 	private string ContextIDText {
 		get => ContextID.ToString(CultureInfo.InvariantCulture);
 
-		set {
+		init {
 			if (string.IsNullOrEmpty(value)) {
 				ASF.ArchiLogger.LogNullError(value);
 
@@ -197,14 +197,14 @@ public sealed class Asset {
 	[JsonInclude]
 	[JsonPropertyName("id")]
 	private string IDText {
-		set => AssetIDText = value;
+		init => AssetIDText = value;
 	}
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("instanceid")]
 	private string InstanceIDText {
-		set {
+		init {
 			if (string.IsNullOrEmpty(value)) {
 				return;
 			}

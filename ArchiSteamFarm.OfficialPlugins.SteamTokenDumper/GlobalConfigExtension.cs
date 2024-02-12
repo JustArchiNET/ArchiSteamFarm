@@ -26,11 +26,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
 public sealed class GlobalConfigExtension {
 	[JsonInclude]
-	public SteamTokenDumperConfig? SteamTokenDumperPlugin { get; private set; }
+	public SteamTokenDumperConfig? SteamTokenDumperPlugin { get; private init; }
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public bool SteamTokenDumperPluginEnabled { get; private set; }
+	public bool SteamTokenDumperPluginEnabled { get; private init; }
 
 	[JsonConstructor]
 	internal GlobalConfigExtension() { }

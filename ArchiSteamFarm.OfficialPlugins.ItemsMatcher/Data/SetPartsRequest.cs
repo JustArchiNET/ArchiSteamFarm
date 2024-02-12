@@ -31,19 +31,19 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 internal sealed class SetPartsRequest {
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly Guid Guid;
+	internal Guid Guid { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<Asset.EType> MatchableTypes;
+	internal ImmutableHashSet<Asset.EType> MatchableTypes { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<uint> RealAppIDs;
+	internal ImmutableHashSet<uint> RealAppIDs { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly ulong SteamID;
+	internal ulong SteamID { get; private init; }
 
 	internal SetPartsRequest(Guid guid, ulong steamID, IReadOnlyCollection<Asset.EType> matchableTypes, IReadOnlyCollection<uint> realAppIDs) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);

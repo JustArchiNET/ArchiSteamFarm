@@ -34,7 +34,7 @@ public sealed class ASFRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public GlobalConfig GlobalConfig { get; private set; } = new();
+	public GlobalConfig GlobalConfig { get; private init; } = new();
 
 	[JsonConstructor]
 	private ASFRequest() { }

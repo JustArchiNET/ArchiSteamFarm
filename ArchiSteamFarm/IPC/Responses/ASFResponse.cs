@@ -33,7 +33,7 @@ public sealed class ASFResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public string BuildVariant { get; private set; }
+	public string BuildVariant { get; private init; }
 
 	/// <summary>
 	///     A value specifying whether this variant of ASF is capable of auto-update.
@@ -41,7 +41,7 @@ public sealed class ASFResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public bool CanUpdate { get; private set; }
+	public bool CanUpdate { get; private init; }
 
 	/// <summary>
 	///     Currently loaded ASF's global config.
@@ -49,7 +49,7 @@ public sealed class ASFResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public GlobalConfig GlobalConfig { get; private set; }
+	public GlobalConfig GlobalConfig { get; private init; }
 
 	/// <summary>
 	///     Current amount of managed memory being used by the process, in kilobytes.
@@ -57,7 +57,7 @@ public sealed class ASFResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public uint MemoryUsage { get; private set; }
+	public uint MemoryUsage { get; private init; }
 
 	/// <summary>
 	///     Start date of the process.
@@ -65,7 +65,7 @@ public sealed class ASFResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public DateTime ProcessStartTime { get; private set; }
+	public DateTime ProcessStartTime { get; private init; }
 
 	/// <summary>
 	///     Boolean value specifying whether ASF has been started with a --service parameter.
@@ -73,7 +73,7 @@ public sealed class ASFResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public bool Service { get; private set; }
+	public bool Service { get; private init; }
 
 	/// <summary>
 	///     ASF version of currently running binary.
@@ -81,7 +81,7 @@ public sealed class ASFResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public Version Version { get; private set; }
+	public Version Version { get; private init; }
 
 	internal ASFResponse(string buildVariant, bool canUpdate, GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
 		ArgumentException.ThrowIfNullOrEmpty(buildVariant);

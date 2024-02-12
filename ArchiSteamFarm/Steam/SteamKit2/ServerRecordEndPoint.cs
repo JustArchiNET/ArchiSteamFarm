@@ -29,15 +29,15 @@ namespace ArchiSteamFarm.Steam.SteamKit2;
 internal sealed class ServerRecordEndPoint : IEquatable<ServerRecordEndPoint> {
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly string Host = "";
+	internal string Host { get; private init; } = "";
 
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly ushort Port;
+	internal ushort Port { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly ProtocolTypes ProtocolTypes;
+	internal ProtocolTypes ProtocolTypes { get; private init; }
 
 	internal ServerRecordEndPoint(string host, ushort port, ProtocolTypes protocolTypes) {
 		ArgumentException.ThrowIfNullOrEmpty(host);

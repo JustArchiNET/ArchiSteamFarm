@@ -33,7 +33,7 @@ public sealed class UpdateRequest {
 	/// </summary>
 	[JsonDisallowNull]
 	[JsonInclude]
-	public GlobalConfig.EUpdateChannel? Channel { get; private set; }
+	public GlobalConfig.EUpdateChannel? Channel { get; private init; }
 
 	[JsonConstructor]
 	private UpdateRequest() { }

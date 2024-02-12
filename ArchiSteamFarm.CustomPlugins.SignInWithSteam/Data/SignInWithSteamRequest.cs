@@ -27,5 +27,5 @@ namespace ArchiSteamFarm.CustomPlugins.SignInWithSteam.Data;
 public sealed class SignInWithSteamRequest {
 	[JsonInclude]
 	[JsonRequired]
-	public Uri RedirectURL { get; private set; } = null!;
+	public Uri RedirectURL { get; private init; } = null!;
 }

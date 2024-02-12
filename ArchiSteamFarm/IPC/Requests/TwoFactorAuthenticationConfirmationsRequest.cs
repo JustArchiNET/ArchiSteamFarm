@@ -42,7 +42,7 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public bool Accept { get; private set; }
+	public bool Accept { get; private init; }
 
 	/// <summary>
 	///     Specifies IDs of the confirmations that we're supposed to handle. CreatorID of the confirmation is equal to ID of the object that triggered it - e.g. ID of the trade offer, or ID of the market listing. If not provided, or empty array, all confirmation IDs are considered for an action.
@@ -55,7 +55,7 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 	///     Specifies the type of confirmations to handle. If not provided, all confirmation types are considered for an action.
 	/// </summary>
 	[JsonInclude]
-	public Confirmation.EConfirmationType? AcceptedType { get; private set; }
+	public Confirmation.EConfirmationType? AcceptedType { get; private init; }
 
 	/// <summary>
 	///     A helper property which works the same as <see cref="AcceptedCreatorIDs" /> but with values written as strings - for javascript compatibility purposes. Use either this one, or <see cref="AcceptedCreatorIDs" />, not both.
@@ -66,7 +66,7 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 	public ImmutableHashSet<string> SAcceptedCreatorIDs {
 		get => AcceptedCreatorIDs.Select(static creatorID => creatorID.ToString(CultureInfo.InvariantCulture)).ToImmutableHashSet(StringComparer.Ordinal);
 
-		private set {
+		private init {
 			ArgumentNullException.ThrowIfNull(value);
 
 			HashSet<ulong> acceptedCreatorIDs = [];
@@ -90,7 +90,7 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 	/// </summary>
 	[JsonDisallowNull]
 	[JsonInclude]
-	public bool WaitIfNeeded { get; private set; }
+	public bool WaitIfNeeded { get; private init; }
 
 	[JsonConstructor]
 	private TwoFactorAuthenticationConfirmationsRequest() { }

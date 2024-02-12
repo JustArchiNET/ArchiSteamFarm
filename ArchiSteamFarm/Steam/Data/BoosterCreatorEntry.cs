@@ -29,12 +29,12 @@ public sealed class BoosterCreatorEntry {
 	[JsonInclude]
 	[JsonPropertyName("appid")]
 	[JsonRequired]
-	public uint AppID { get; private set; }
+	public uint AppID { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("name")]
 	[JsonRequired]
-	public string Name { get; private set; } = "";
+	public string Name { get; private init; } = "";
 
 	[JsonConstructor]
 	private BoosterCreatorEntry() { }

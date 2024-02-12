@@ -34,7 +34,7 @@ public sealed class ASFEncryptRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public ArchiCryptoHelper.ECryptoMethod CryptoMethod { get; private set; }
+	public ArchiCryptoHelper.ECryptoMethod CryptoMethod { get; private init; }
 
 	/// <summary>
 	///     String to encrypt with provided <see cref="CryptoMethod" />.
@@ -42,7 +42,7 @@ public sealed class ASFEncryptRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public string StringToEncrypt { get; private set; } = "";
+	public string StringToEncrypt { get; private init; } = "";
 
 	[JsonConstructor]
 	private ASFEncryptRequest() { }

@@ -32,19 +32,19 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 internal sealed class InventoriesRequest {
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly Guid Guid;
+	internal Guid Guid { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<AssetForMatching> Inventory;
+	internal ImmutableHashSet<AssetForMatching> Inventory { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly ImmutableHashSet<Asset.EType> MatchableTypes;
+	internal ImmutableHashSet<Asset.EType> MatchableTypes { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly ulong SteamID;
+	internal ulong SteamID { get; private init; }
 
 	internal InventoriesRequest(Guid guid, ulong steamID, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> matchableTypes) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);

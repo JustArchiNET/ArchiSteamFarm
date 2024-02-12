@@ -60,7 +60,42 @@ public static class JsonUtilities {
 		ArgumentNullException.ThrowIfNull(property);
 
 		try {
-			MethodInfo? shouldSerializeMethod = parent.GetType().GetMethod($"ShouldSerialize{property.Name}", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static, null, Type.EmptyTypes, null);
+			// Handle most common case where ShouldSerializeXYZ() matches property name
+			bool? shouldSerialize = ShouldSerialize(parent, property.Name);
+
+			if (shouldSerialize.HasValue) {
+				return shouldSerialize.Value;
+			}
+
+			// Handle less common case where ShouldSerializeXYZ() matches original member name
+			PropertyInfo? memberNameProperty = property.GetType().GetProperty("MemberName", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
+			if (memberNameProperty == null) {
+				// Should never happen, investigate if it does
+				throw new InvalidOperationException(nameof(memberNameProperty));
+			}
+
+			object? memberNameResult = memberNameProperty.GetValue(property);
+
+			if (memberNameResult is not string memberName) {
+				// Should never happen, investigate if it does
+				throw new InvalidOperationException(nameof(memberName));
+			}
+
+			return !string.IsNullOrEmpty(memberName) ? ShouldSerialize(parent, memberName) : null;
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return null;
+		}
+	}
+
+	private static bool? ShouldSerialize(object parent, string propertyName) {
+		ArgumentNullException.ThrowIfNull(parent);
+		ArgumentException.ThrowIfNullOrEmpty(propertyName);
+
+		try {
+			MethodInfo? shouldSerializeMethod = parent.GetType().GetMethod($"ShouldSerialize{propertyName}", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static, null, Type.EmptyTypes, null);
 
 			if ((shouldSerializeMethod == null) || (shouldSerializeMethod.ReturnType != typeof(bool))) {
 				return null;

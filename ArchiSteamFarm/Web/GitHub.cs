@@ -196,22 +196,22 @@ internal static class GitHub {
 		[JsonInclude]
 		[JsonPropertyName("assets")]
 		[JsonRequired]
-		internal readonly ImmutableHashSet<Asset> Assets = ImmutableHashSet<Asset>.Empty;
+		internal ImmutableHashSet<Asset> Assets { get; private init; } = ImmutableHashSet<Asset>.Empty;
 
 		[JsonInclude]
 		[JsonPropertyName("prerelease")]
 		[JsonRequired]
-		internal readonly bool IsPreRelease;
+		internal bool IsPreRelease { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("published_at")]
 		[JsonRequired]
-		internal readonly DateTime PublishedAt;
+		internal DateTime PublishedAt { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("tag_name")]
 		[JsonRequired]
-		internal readonly string Tag = "";
+		internal string Tag { get; private init; } = "";
 
 		internal string? ChangelogHTML {
 			get {
@@ -266,7 +266,7 @@ internal static class GitHub {
 		[JsonInclude]
 		[JsonPropertyName("body")]
 		[JsonRequired]
-		private readonly string? MarkdownBody = "";
+		private string? MarkdownBody { get; init; } = "";
 
 		private MarkdownDocument? Changelog {
 			get {
@@ -295,17 +295,17 @@ internal static class GitHub {
 			[JsonInclude]
 			[JsonPropertyName("browser_download_url")]
 			[JsonRequired]
-			internal readonly Uri? DownloadURL;
+			internal Uri? DownloadURL { get; private init; }
 
 			[JsonInclude]
 			[JsonPropertyName("name")]
 			[JsonRequired]
-			internal readonly string? Name;
+			internal string? Name { get; private init; }
 
 			[JsonInclude]
 			[JsonPropertyName("size")]
 			[JsonRequired]
-			internal readonly uint Size;
+			internal uint Size { get; private init; }
 
 			[JsonConstructor]
 			private Asset() { }

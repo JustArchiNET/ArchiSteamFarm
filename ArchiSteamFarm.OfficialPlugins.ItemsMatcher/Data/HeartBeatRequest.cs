@@ -28,11 +28,11 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 internal sealed class HeartBeatRequest {
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly Guid Guid;
+	internal Guid Guid { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	internal readonly ulong SteamID;
+	internal ulong SteamID { get; private init; }
 
 	internal HeartBeatRequest(Guid guid, ulong steamID) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);

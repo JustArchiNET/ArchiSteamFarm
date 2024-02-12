@@ -30,13 +30,13 @@ public sealed class Tag {
 	[JsonPropertyName("category")]
 	[JsonRequired]
 	[PublicAPI]
-	public string Identifier { get; private set; } = "";
+	public string Identifier { get; private init; } = "";
 
 	[JsonInclude]
 	[JsonPropertyName("internal_name")]
 	[JsonRequired]
 	[PublicAPI]
-	public string Value { get; private set; } = "";
+	public string Value { get; private init; } = "";
 
 	internal Tag(string identifier, string value) {
 		ArgumentException.ThrowIfNullOrEmpty(identifier);

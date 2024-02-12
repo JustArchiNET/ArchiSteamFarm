@@ -32,14 +32,14 @@ public sealed class BotPauseRequest {
 	/// </summary>
 	[JsonDisallowNull]
 	[JsonInclude]
-	public bool Permanent { get; private set; }
+	public bool Permanent { get; private init; }
 
 	/// <summary>
 	///     Specifies automatic resume action in given seconds. Default value of 0 disables automatic resume.
 	/// </summary>
 	[JsonDisallowNull]
 	[JsonInclude]
-	public ushort ResumeInSeconds { get; private set; }
+	public ushort ResumeInSeconds { get; private init; }
 
 	[JsonConstructor]
 	private BotPauseRequest() { }

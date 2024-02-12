@@ -32,14 +32,14 @@ public sealed class BotInputRequest {
 	/// </summary>
 	[JsonInclude]
 	[JsonRequired]
-	public ASF.EUserInputType Type { get; private set; }
+	public ASF.EUserInputType Type { get; private init; }
 
 	/// <summary>
 	///     Specifies the value for given input type (declared in <see cref="Type" />)
 	/// </summary>
 	[JsonInclude]
 	[JsonRequired]
-	public string Value { get; private set; } = "";
+	public string Value { get; private init; } = "";
 
 	[JsonConstructor]
 	private BotInputRequest() { }
