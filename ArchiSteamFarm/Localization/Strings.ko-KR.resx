@@ -728,14 +728,40 @@ StackTrace:
 	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
 		<value>다운로드한 실행화일의 체크섬을 원격 서버의 체크섬과 비교 확인하는 중입니다.</value>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>원격 서버는 최신 배포본의 업데이트에 대하여 알지 못합니다. 이 상황은 최근에 새로운 배포본이 배포되었을 때 발생할 수 있으며 추가 보안 조치로 업데이트를 즉시 진행하지 않습니다.</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>원격서버와 체크섬이 다릅니다. 다운로드 받은 실행화일이 깨졌거나, 중간자 공격(MITM) 을 받았을 수도 있습니다. 업데이트를 진행하지 않습니다.</value>
+	</data>
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>ASF 파일들을 갱신하는 중입니다.</value>
+	</data>
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Cryptkey를 입력해 주세요: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>IP 주소 {0} 는 금지되지 않았습니다.</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>유료 기능 {0} 을 사용하려고 하지만, ASF global 설정에 유효한 LicenseID가 없습니다. 추가 세부 정보 없이는 동작하지 않으므로 설정을 검토해 주세요.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>ASF는 {2} 까지 지속되는 {1} 국가에 대해 지역 관련 제한이 있기 때문에 앱 {0} 을 실행 할 수 없습니다.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>ASF (버전 {2}) 과 일치하지 않는 공식 플러그인 {0} (버전 {1}) 을 실행하려고 합니다: 심각한 잘못을 저지르지 않기 위하여 setup을 수정하거나, 정확하게 뭘 하고 있는지 알고 있다면 --ignore-unsupported-environment 인자를 사용하세요</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>최근에 ASF가 너무 많이 다운되었으며 이로 인해 프로세스 초기화가 비활성화되었습니다. 원인을 조사하거나 설정을 수정한 다음 구성 디렉토리에서 ASF.crash 파일을 제거하세요. 혹은 작업 내용을 제대로 알고 있는 경우 --ignore-unsupported-environment 인자를 사용하세요.</value>
+	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>{0} ({1}) 게임이 비공개로 설정되어 있기 때문에 농사를 지을 수 없습니다. ASF로 이 게임 농사를 지으려면 공개로 변경해주세요.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 </root>
