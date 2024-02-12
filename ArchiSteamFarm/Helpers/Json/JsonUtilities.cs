@@ -116,7 +116,13 @@ public static class JsonUtilities {
 	private static void OnPotentialDisallowedNullsDeserialized(object obj) {
 		ArgumentNullException.ThrowIfNull(obj);
 
-		foreach (PropertyInfo property in obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static).Where(property => (property.GetMethod != null) && property.IsDefined(typeof(JsonDisallowNullAttribute), false) && (property.GetValue(obj) == null))) {
+		Type type = obj.GetType();
+
+		foreach (FieldInfo field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static).Where(field => field.IsDefined(typeof(JsonDisallowNullAttribute), false) && (field.GetValue(obj) == null))) {
+			throw new JsonException($"Required field {field.Name} expects a non-null value.");
+		}
+
+		foreach (PropertyInfo property in type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static).Where(property => (property.GetMethod != null) && property.IsDefined(typeof(JsonDisallowNullAttribute), false) && (property.GetValue(obj) == null))) {
 			throw new JsonException($"Required property {property.Name} expects a non-null value.");
 		}
 	}
