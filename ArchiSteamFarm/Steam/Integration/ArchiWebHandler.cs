@@ -1595,31 +1595,37 @@ public sealed class ArchiWebHandler : IDisposable {
 				// There is not much we can do apart from trying to extract the result and returning it along with the OK and non-OK response, it's also why it doesn't make any sense to strong-type it
 				EResult result = response.StatusCode.IsSuccessCode() ? EResult.OK : EResult.Fail;
 
-				if (response.Content is not { } jsonNode) {
+				if (response.Content is not JsonObject jsonObject) {
 					// Who knows what piece of crap that is?
 					return (result, EPurchaseResultDetail.NoDetail);
 				}
 
-				byte? numberResult = jsonNode["purchaseresultdetail"]?.GetValue<byte>();
+				try {
+					byte? numberResult = jsonObject["purchaseresultdetail"]?.GetValue<byte>();
 
-				if (numberResult.HasValue) {
-					return (result, (EPurchaseResultDetail) numberResult.Value);
-				}
+					if (numberResult.HasValue) {
+						return (result, (EPurchaseResultDetail) numberResult.Value);
+					}
 
-				// Attempt to do limited parsing from error message, if it exists that is
-				string? errorMessage = jsonNode["error"]?.GetValue<string>();
+					// Attempt to do limited parsing from error message, if it exists that is
+					string? errorMessage = jsonObject["error"]?.GetValue<string>();
 
-				switch (errorMessage) {
-					case null:
-					case "":
-						// Thanks Steam, very useful
-						return (result, EPurchaseResultDetail.NoDetail);
-					case "You got rate limited, try again in an hour.":
-						return (result, EPurchaseResultDetail.RateLimited);
-					default:
-						Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorMessage), errorMessage));
+					switch (errorMessage) {
+						case null:
+						case "":
+							// Thanks Steam, very useful
+							return (result, EPurchaseResultDetail.NoDetail);
+						case "You got rate limited, try again in an hour.":
+							return (result, EPurchaseResultDetail.RateLimited);
+						default:
+							Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorMessage), errorMessage));
 
-						return (result, EPurchaseResultDetail.ContactSupport);
+							return (result, EPurchaseResultDetail.ContactSupport);
+					}
+				} catch (Exception e) {
+					Bot.ArchiLogger.LogGenericException(e);
+
+					return (result, EPurchaseResultDetail.ContactSupport);
 				}
 			case HttpStatusCode.Unauthorized:
 				// Let's convert this into something reasonable
