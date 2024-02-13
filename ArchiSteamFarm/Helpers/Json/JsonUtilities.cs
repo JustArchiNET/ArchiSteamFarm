@@ -101,7 +101,7 @@ public static class JsonUtilities {
 			throw new InvalidOperationException(nameof(memberName));
 		}
 
-		if (string.IsNullOrEmpty(memberName)) {
+		if (string.IsNullOrEmpty(memberName) || (memberName == property.Name)) {
 			// We don't have anything to work with further, there is no ShouldSerialize() method
 			return null;
 		}
