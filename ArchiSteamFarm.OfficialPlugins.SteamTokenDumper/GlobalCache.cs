@@ -73,6 +73,7 @@ internal sealed class GlobalCache : SerializableFile {
 	[JsonInclude]
 	internal uint LastChangeNumber { get; private set; }
 
+	[JsonConstructor]
 	internal GlobalCache() => FilePath = SharedFilePath;
 
 	[UsedImplicitly]
