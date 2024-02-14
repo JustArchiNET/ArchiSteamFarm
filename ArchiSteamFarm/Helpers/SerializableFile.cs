@@ -50,49 +50,49 @@ public abstract class SerializableFile : IDisposable {
 		}
 	}
 
-	protected static async Task Save<T>(T obj) where T : SerializableFile {
-		ArgumentNullException.ThrowIfNull(obj);
+	protected static async Task Save<T>(T serializableFile) where T : SerializableFile {
+		ArgumentNullException.ThrowIfNull(serializableFile);
 
-		if (string.IsNullOrEmpty(obj.FilePath)) {
+		if (string.IsNullOrEmpty(serializableFile.FilePath)) {
 			throw new InvalidOperationException(nameof(FilePath));
 		}
 
-		if (obj.ReadOnly) {
+		if (serializableFile.ReadOnly) {
 			return;
 		}
 
 		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-		lock (obj.FileSemaphore) {
-			if (obj.SavingScheduled) {
+		lock (serializableFile.FileSemaphore) {
+			if (serializableFile.SavingScheduled) {
 				return;
 			}
 
-			obj.SavingScheduled = true;
+			serializableFile.SavingScheduled = true;
 		}
 
-		await obj.FileSemaphore.WaitAsync().ConfigureAwait(false);
+		await serializableFile.FileSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-			lock (obj.FileSemaphore) {
-				obj.SavingScheduled = false;
+			lock (serializableFile.FileSemaphore) {
+				serializableFile.SavingScheduled = false;
 			}
 
-			if (obj.ReadOnly) {
+			if (serializableFile.ReadOnly) {
 				return;
 			}
 
-			string json = JsonSerializer.Serialize(obj, Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions);
+			string json = JsonSerializer.Serialize(serializableFile, Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions);
 
 			if (string.IsNullOrEmpty(json)) {
 				throw new InvalidOperationException(nameof(json));
 			}
 
 			// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-			string newFilePath = $"{obj.FilePath}.new";
+			string newFilePath = $"{serializableFile.FilePath}.new";
 
-			if (File.Exists(obj.FilePath)) {
-				string currentJson = await File.ReadAllTextAsync(obj.FilePath).ConfigureAwait(false);
+			if (File.Exists(serializableFile.FilePath)) {
+				string currentJson = await File.ReadAllTextAsync(serializableFile.FilePath).ConfigureAwait(false);
 
 				if (json == currentJson) {
 					return;
@@ -100,16 +100,16 @@ public abstract class SerializableFile : IDisposable {
 
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				File.Replace(newFilePath, obj.FilePath, null);
+				File.Replace(newFilePath, serializableFile.FilePath, null);
 			} else {
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				File.Move(newFilePath, obj.FilePath);
+				File.Move(newFilePath, serializableFile.FilePath);
 			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		} finally {
-			obj.FileSemaphore.Release();
+			serializableFile.FileSemaphore.Release();
 		}
 	}
 

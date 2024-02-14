@@ -47,6 +47,10 @@ internal sealed class GlobalCache : SerializableFile {
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	internal uint LastChangeNumber { get; private set; }
+
+	[JsonDisallowNull]
+	[JsonInclude]
 	private ConcurrentDictionary<uint, uint> AppChangeNumbers { get; init; } = new();
 
 	[JsonDisallowNull]
@@ -68,10 +72,6 @@ internal sealed class GlobalCache : SerializableFile {
 	[JsonDisallowNull]
 	[JsonInclude]
 	private ConcurrentDictionary<uint, ulong> SubmittedPackages { get; init; } = new();
-
-	[JsonDisallowNull]
-	[JsonInclude]
-	internal uint LastChangeNumber { get; private set; }
 
 	[JsonConstructor]
 	internal GlobalCache() => FilePath = SharedFilePath;
@@ -170,7 +170,7 @@ internal sealed class GlobalCache : SerializableFile {
 			AppChangeNumbers.TryRemove(appID, out _);
 		}
 
-		Utilities.InBackground(() => Save(this));
+		Utilities.InBackground(Save);
 	}
 
 	internal void OnPICSChangesRestart(uint currentChangeNumber) {
@@ -193,7 +193,7 @@ internal sealed class GlobalCache : SerializableFile {
 			DepotKeys.Clear();
 		}
 
-		Utilities.InBackground(() => Save(this));
+		Utilities.InBackground(Save);
 	}
 
 	internal bool ShouldRefreshAppInfo(uint appID) => !AppChangeNumbers.ContainsKey(appID);
@@ -214,7 +214,7 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		if (save) {
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -243,7 +243,7 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		if (save) {
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -268,7 +268,7 @@ internal sealed class GlobalCache : SerializableFile {
 
 		DepotKeys[depotKeyResult.DepotID] = depotKey;
 
-		Utilities.InBackground(() => Save(this));
+		Utilities.InBackground(Save);
 	}
 
 	internal void UpdateSubmittedData(IReadOnlyDictionary<uint, ulong> apps, IReadOnlyDictionary<uint, ulong> packages, IReadOnlyDictionary<uint, string> depots) {
@@ -306,7 +306,7 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		if (save) {
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -361,4 +361,6 @@ internal sealed class GlobalCache : SerializableFile {
 			}
 		}
 	}
+
+	private Task Save() => Save(this);
 }

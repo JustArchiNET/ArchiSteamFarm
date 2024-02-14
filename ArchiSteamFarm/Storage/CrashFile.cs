@@ -43,7 +43,7 @@ internal sealed class CrashFile : SerializableFile {
 			}
 
 			BackingLastStartup = value;
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -56,7 +56,7 @@ internal sealed class CrashFile : SerializableFile {
 			}
 
 			BackingStartupCount = value;
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -118,4 +118,6 @@ internal sealed class CrashFile : SerializableFile {
 
 		return crashFile;
 	}
+
+	private Task Save() => Save(this);
 }

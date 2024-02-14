@@ -48,6 +48,13 @@ public sealed class GlobalDatabase : GenericDatabase {
 	[PublicAPI]
 	public IReadOnlyDictionary<uint, PackageData> PackagesDataReadOnly => PackagesData;
 
+	private readonly SemaphoreSlim PackagesRefreshSemaphore = new(1, 1);
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	[PublicAPI]
+	public Guid Identifier { get; private init; } = Guid.NewGuid();
+
 	[JsonDisallowNull]
 	[JsonInclude]
 	internal ConcurrentHashSet<ulong> CachedBadBots { get; private init; } = [];
@@ -55,25 +62,6 @@ public sealed class GlobalDatabase : GenericDatabase {
 	[JsonDisallowNull]
 	[JsonInclude]
 	internal ObservableConcurrentDictionary<uint, byte> CardCountsPerGame { get; private init; } = new();
-
-	[JsonDisallowNull]
-	[JsonInclude]
-	internal InMemoryServerListProvider ServerListProvider { get; private init; } = new();
-
-	[JsonDisallowNull]
-	[JsonInclude]
-	private ConcurrentDictionary<uint, ulong> PackagesAccessTokens { get; init; } = new();
-
-	[JsonDisallowNull]
-	[JsonInclude]
-	private ConcurrentDictionary<uint, PackageData> PackagesData { get; init; } = new();
-
-	private readonly SemaphoreSlim PackagesRefreshSemaphore = new(1, 1);
-
-	[JsonDisallowNull]
-	[JsonInclude]
-	[PublicAPI]
-	public Guid Identifier { get; private init; } = Guid.NewGuid();
 
 	internal uint CellID {
 		get => BackingCellID;
@@ -84,7 +72,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 			}
 
 			BackingCellID = value;
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -97,9 +85,13 @@ public sealed class GlobalDatabase : GenericDatabase {
 			}
 
 			BackingLastChangeNumber = value;
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	internal InMemoryServerListProvider ServerListProvider { get; private init; } = new();
 
 	[JsonDisallowNull]
 	[JsonInclude]
@@ -110,6 +102,14 @@ public sealed class GlobalDatabase : GenericDatabase {
 	[JsonInclude]
 	[JsonPropertyName($"_{nameof(LastChangeNumber)}")]
 	private uint BackingLastChangeNumber { get; set; }
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentDictionary<uint, ulong> PackagesAccessTokens { get; init; } = new();
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentDictionary<uint, PackageData> PackagesData { get; init; } = new();
 
 	private GlobalDatabase(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -122,6 +122,32 @@ public sealed class GlobalDatabase : GenericDatabase {
 		CachedBadBots.OnModified += OnObjectModified;
 		CardCountsPerGame.OnModified += OnObjectModified;
 		ServerListProvider.ServerListUpdated += OnObjectModified;
+	}
+
+	[PublicAPI]
+	public void DeleteFromJsonStorage(string key) {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+
+		DeleteFromJsonStorage(this, key);
+	}
+
+	[PublicAPI]
+	public void SaveToJsonStorage<T>(string key, T value) {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+		ArgumentNullException.ThrowIfNull(value);
+
+		SaveToJsonStorage(this, key, value);
+	}
+
+	[PublicAPI]
+	public void SaveToJsonStorage(string key, JsonElement value) {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+
+		if (value.ValueKind == JsonValueKind.Undefined) {
+			throw new ArgumentOutOfRangeException(nameof(value));
+		}
+
+		SaveToJsonStorage(this, key, value);
 	}
 
 	[UsedImplicitly]
@@ -264,7 +290,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 		}
 
 		if (save) {
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -298,7 +324,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 				PackagesData[packageID] = packageData;
 			}
 
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		} finally {
 			PackagesRefreshSemaphore.Release();
 		}
@@ -309,6 +335,8 @@ public sealed class GlobalDatabase : GenericDatabase {
 			return;
 		}
 
-		await Save(this).ConfigureAwait(false);
+		await Save().ConfigureAwait(false);
 	}
+
+	private Task Save() => Save(this);
 }

@@ -39,6 +39,29 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Steam.Storage;
 
 public sealed class BotDatabase : GenericDatabase {
+	internal uint GamesToRedeemInBackgroundCount {
+		get {
+			lock (GamesToRedeemInBackground) {
+				return (uint) GamesToRedeemInBackground.Count;
+			}
+		}
+	}
+
+	internal bool HasGamesToRedeemInBackground => GamesToRedeemInBackgroundCount > 0;
+
+	internal string? AccessToken {
+		get => BackingAccessToken;
+
+		set {
+			if (BackingAccessToken == value) {
+				return;
+			}
+
+			BackingAccessToken = value;
+			Utilities.InBackground(Save);
+		}
+	}
+
 	[JsonDisallowNull]
 	[JsonInclude]
 	internal ConcurrentHashSet<uint> FarmingBlacklistAppIDs { get; private init; } = [];
@@ -59,37 +82,6 @@ public sealed class BotDatabase : GenericDatabase {
 	[JsonInclude]
 	internal ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs { get; private init; } = [];
 
-	[JsonDisallowNull]
-	[JsonInclude]
-	internal ConcurrentHashSet<ulong> TradingBlacklistSteamIDs { get; private init; } = [];
-
-	internal uint GamesToRedeemInBackgroundCount {
-		get {
-			lock (GamesToRedeemInBackground) {
-				return (uint) GamesToRedeemInBackground.Count;
-			}
-		}
-	}
-
-	internal bool HasGamesToRedeemInBackground => GamesToRedeemInBackgroundCount > 0;
-
-	[JsonDisallowNull]
-	[JsonInclude]
-	private OrderedDictionary GamesToRedeemInBackground { get; init; } = new();
-
-	internal string? AccessToken {
-		get => BackingAccessToken;
-
-		set {
-			if (BackingAccessToken == value) {
-				return;
-			}
-
-			BackingAccessToken = value;
-			Utilities.InBackground(() => Save(this));
-		}
-	}
-
 	internal MobileAuthenticator? MobileAuthenticator {
 		get => BackingMobileAuthenticator;
 
@@ -99,7 +91,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			BackingMobileAuthenticator = value;
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -112,7 +104,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			BackingRefreshToken = value;
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -125,9 +117,13 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			BackingSteamGuardData = value;
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	internal ConcurrentHashSet<ulong> TradingBlacklistSteamIDs { get; private init; } = [];
 
 	[JsonInclude]
 	private string? BackingAccessToken { get; set; }
@@ -141,6 +137,10 @@ public sealed class BotDatabase : GenericDatabase {
 
 	[JsonInclude]
 	private string? BackingSteamGuardData { get; set; }
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	private OrderedDictionary GamesToRedeemInBackground { get; init; } = new();
 
 	private BotDatabase(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -156,6 +156,32 @@ public sealed class BotDatabase : GenericDatabase {
 		FarmingRiskyPrioritizedAppIDs.OnModified += OnObjectModified;
 		MatchActivelyBlacklistAppIDs.OnModified += OnObjectModified;
 		TradingBlacklistSteamIDs.OnModified += OnObjectModified;
+	}
+
+	[PublicAPI]
+	public void DeleteFromJsonStorage(string key) {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+
+		DeleteFromJsonStorage(this, key);
+	}
+
+	[PublicAPI]
+	public void SaveToJsonStorage<T>(string key, T value) {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+		ArgumentNullException.ThrowIfNull(value);
+
+		SaveToJsonStorage(this, key, value);
+	}
+
+	[PublicAPI]
+	public void SaveToJsonStorage(string key, JsonElement value) {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+
+		if (value.ValueKind == JsonValueKind.Undefined) {
+			throw new ArgumentOutOfRangeException(nameof(value));
+		}
+
+		SaveToJsonStorage(this, key, value);
 	}
 
 	[UsedImplicitly]
@@ -224,7 +250,7 @@ public sealed class BotDatabase : GenericDatabase {
 		}
 
 		if (save) {
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -293,7 +319,7 @@ public sealed class BotDatabase : GenericDatabase {
 			GamesToRedeemInBackground.Remove(key);
 		}
 
-		Utilities.InBackground(() => Save(this));
+		Utilities.InBackground(Save);
 	}
 
 	private async void OnObjectModified(object? sender, EventArgs e) {
@@ -301,6 +327,8 @@ public sealed class BotDatabase : GenericDatabase {
 			return;
 		}
 
-		await Save(this).ConfigureAwait(false);
+		await Save().ConfigureAwait(false);
 	}
+
+	private Task Save() => Save(this);
 }

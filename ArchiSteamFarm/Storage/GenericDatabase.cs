@@ -37,49 +37,49 @@ public abstract class GenericDatabase : SerializableFile {
 	private ConcurrentDictionary<string, JsonElement> KeyValueJsonStorage { get; set; } = new();
 
 	[PublicAPI]
-	public void DeleteFromJsonStorage(string key) {
-		ArgumentException.ThrowIfNullOrEmpty(key);
-
-		if (!KeyValueJsonStorage.TryRemove(key, out _)) {
-			return;
-		}
-
-		Utilities.InBackground(() => Save(this));
-	}
-
-	[PublicAPI]
 	public JsonElement LoadFromJsonStorage(string key) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		return KeyValueJsonStorage.GetValueOrDefault(key);
 	}
 
-	[PublicAPI]
-	public void SaveToJsonStorage<T>(string key, T value) {
+	[UsedImplicitly]
+	public bool ShouldSerializeKeyValueJsonStorage() => !KeyValueJsonStorage.IsEmpty;
+
+	protected static void DeleteFromJsonStorage<T>(T genericDatabase, string key) where T : GenericDatabase {
+		ArgumentNullException.ThrowIfNull(genericDatabase);
+		ArgumentException.ThrowIfNullOrEmpty(key);
+
+		if (!genericDatabase.KeyValueJsonStorage.TryRemove(key, out _)) {
+			return;
+		}
+
+		Utilities.InBackground(() => Save(genericDatabase));
+	}
+
+	protected static void SaveToJsonStorage<TDatabase, TValue>(TDatabase genericDatabase, string key, TValue value) where TDatabase : GenericDatabase {
+		ArgumentNullException.ThrowIfNull(genericDatabase);
 		ArgumentException.ThrowIfNullOrEmpty(key);
 		ArgumentNullException.ThrowIfNull(value);
 
 		JsonElement jsonElement = JsonSerializer.SerializeToElement(value, JsonUtilities.DefaultJsonSerialierOptions);
 
-		SaveToJsonStorage(key, jsonElement);
+		SaveToJsonStorage(genericDatabase, key, jsonElement);
 	}
 
-	[PublicAPI]
-	public void SaveToJsonStorage(string key, JsonElement value) {
+	protected static void SaveToJsonStorage<T>(T genericDatabase, string key, JsonElement value) where T : GenericDatabase {
+		ArgumentNullException.ThrowIfNull(genericDatabase);
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		if (value.ValueKind == JsonValueKind.Undefined) {
 			throw new ArgumentOutOfRangeException(nameof(value));
 		}
 
-		if (KeyValueJsonStorage.TryGetValue(key, out JsonElement currentValue) && currentValue.Equals(value)) {
+		if (genericDatabase.KeyValueJsonStorage.TryGetValue(key, out JsonElement currentValue) && currentValue.Equals(value)) {
 			return;
 		}
 
-		KeyValueJsonStorage[key] = value;
-		Utilities.InBackground(() => Save(this));
+		genericDatabase.KeyValueJsonStorage[key] = value;
+		Utilities.InBackground(() => Save(genericDatabase));
 	}
-
-	[UsedImplicitly]
-	public bool ShouldSerializeKeyValueJsonStorage() => !KeyValueJsonStorage.IsEmpty;
 }

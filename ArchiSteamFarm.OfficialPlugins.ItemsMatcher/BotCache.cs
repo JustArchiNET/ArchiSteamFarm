@@ -49,7 +49,7 @@ internal sealed class BotCache : SerializableFile {
 			}
 
 			BackingLastAnnouncedTradeToken = value;
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -62,7 +62,7 @@ internal sealed class BotCache : SerializableFile {
 			}
 
 			BackingLastInventoryChecksumBeforeDeduplication = value;
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -75,7 +75,7 @@ internal sealed class BotCache : SerializableFile {
 			}
 
 			BackingLastRequestAt = value;
-			Utilities.InBackground(() => Save(this));
+			Utilities.InBackground(Save);
 		}
 	}
 
@@ -163,6 +163,8 @@ internal sealed class BotCache : SerializableFile {
 			return;
 		}
 
-		await Save(this).ConfigureAwait(false);
+		await Save().ConfigureAwait(false);
 	}
+
+	private Task Save() => Save(this);
 }
