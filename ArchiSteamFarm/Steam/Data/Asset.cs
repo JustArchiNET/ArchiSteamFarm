@@ -103,7 +103,8 @@ public sealed class Asset {
 	public EType Type { get; internal set; }
 
 	[JsonExtensionData]
-	internal Dictionary<string, JsonElement>? AdditionalProperties { private get; set; }
+	[JsonInclude]
+	internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
 	[JsonInclude]
 	[JsonPropertyName("amount")]

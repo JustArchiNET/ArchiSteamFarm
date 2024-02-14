@@ -238,11 +238,8 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		}
 
 		[JsonExtensionData]
-		internal Dictionary<string, JsonElement>? AdditionalProperties {
-			get;
-			[UsedImplicitly]
-			set;
-		}
+		[JsonInclude]
+		internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
 		internal ulong ClassID { get; private set; }
 		internal ulong InstanceID { get; private set; }

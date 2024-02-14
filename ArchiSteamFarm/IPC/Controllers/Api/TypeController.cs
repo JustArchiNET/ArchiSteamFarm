@@ -63,7 +63,7 @@ public sealed class TypeController : ArchiController {
 
 		if (targetType.IsClass) {
 			foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(static field => !field.IsPrivate)) {
-				if (!field.IsDefined(typeof(JsonIncludeAttribute), false)) {
+				if (!field.IsDefined(typeof(JsonIncludeAttribute), false) || field.IsDefined(typeof(JsonExtensionDataAttribute), false)) {
 					continue;
 				}
 
@@ -79,7 +79,7 @@ public sealed class TypeController : ArchiController {
 			}
 
 			foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(static property => property is { CanRead: true, GetMethod.IsPrivate: false })) {
-				if (!property.IsDefined(typeof(JsonIncludeAttribute), false)) {
+				if (!property.IsDefined(typeof(JsonIncludeAttribute), false) || property.IsDefined(typeof(JsonExtensionDataAttribute), false)) {
 					continue;
 				}
 

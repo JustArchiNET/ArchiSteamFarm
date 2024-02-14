@@ -283,11 +283,8 @@ public sealed class BotConfig {
 	public ArchiHandler.EUserInterfaceMode UserInterfaceMode { get; private init; } = DefaultUserInterfaceMode;
 
 	[JsonExtensionData]
-	internal Dictionary<string, JsonElement>? AdditionalProperties {
-		get;
-		[UsedImplicitly]
-		set;
-	}
+	[JsonInclude]
+	internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
 	internal bool IsSteamLoginSet { get; set; }
 	internal bool IsSteamParentalCodeSet { get; set; }
