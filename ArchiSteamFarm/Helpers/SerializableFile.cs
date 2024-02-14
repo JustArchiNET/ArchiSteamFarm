@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers;
 
@@ -49,6 +50,17 @@ public abstract class SerializableFile : IDisposable {
 			FileSemaphore.Dispose();
 		}
 	}
+
+	/// <summary>
+	///     Implementing this method in your target class is crucial for providing supported functionality.
+	///     In order to do so, it's enough to call static <see cref="Save" /> function from the parent class, providing <code>this</code> as input parameter.
+	///     Afterwards, simply call your <see cref="Save" /> function whenever you need to save changes.
+	///     This approach will allow JSON serializer used in the <see cref="SerializableFile" /> to properly discover all of the properties used in your class.
+	///     Unfortunately, due to STJ's limitations, called by some "security", it's not possible for base class to resolve your properties automatically otherwise.
+	/// </summary>
+	/// <example>protected override Task Save() => Save(this);</example>
+	[UsedImplicitly]
+	protected abstract Task Save();
 
 	protected static async Task Save<T>(T serializableFile) where T : SerializableFile {
 		ArgumentNullException.ThrowIfNull(serializableFile);

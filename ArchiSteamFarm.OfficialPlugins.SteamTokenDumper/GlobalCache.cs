@@ -97,6 +97,8 @@ internal sealed class GlobalCache : SerializableFile {
 	[UsedImplicitly]
 	public bool ShouldSerializeSubmittedPackages() => !SubmittedPackages.IsEmpty;
 
+	protected override Task Save() => Save(this);
+
 	internal ulong GetAppToken(uint appID) => AppTokens[appID];
 
 	internal Dictionary<uint, ulong> GetAppTokensForSubmission() => AppTokens.Where(appToken => (SteamTokenDumperPlugin.Config?.SecretAppIDs.Contains(appToken.Key) != true) && (appToken.Value > 0) && (!SubmittedApps.TryGetValue(appToken.Key, out ulong token) || (appToken.Value != token))).ToDictionary(static appToken => appToken.Key, static appToken => appToken.Value);
@@ -361,6 +363,4 @@ internal sealed class GlobalCache : SerializableFile {
 			}
 		}
 	}
-
-	private Task Save() => Save(this);
 }

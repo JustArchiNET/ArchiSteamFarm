@@ -83,6 +83,8 @@ internal sealed class CrashFile : SerializableFile {
 	[UsedImplicitly]
 	public bool ShouldSerializeBackingStartupCount() => BackingStartupCount > 0;
 
+	protected override Task Save() => Save(this);
+
 	internal static async Task<CrashFile> CreateOrLoad(string filePath) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
@@ -118,6 +120,4 @@ internal sealed class CrashFile : SerializableFile {
 
 		return crashFile;
 	}
-
-	private Task Save() => Save(this);
 }

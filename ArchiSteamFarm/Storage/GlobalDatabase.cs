@@ -186,6 +186,8 @@ public sealed class GlobalDatabase : GenericDatabase {
 		base.Dispose(disposing);
 	}
 
+	protected override Task Save() => Save(this);
+
 	internal static async Task<GlobalDatabase?> CreateOrLoad(string filePath) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
@@ -337,6 +339,4 @@ public sealed class GlobalDatabase : GenericDatabase {
 
 		await Save().ConfigureAwait(false);
 	}
-
-	private Task Save() => Save(this);
 }

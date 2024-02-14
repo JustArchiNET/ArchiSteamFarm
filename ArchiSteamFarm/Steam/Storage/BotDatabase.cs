@@ -235,6 +235,8 @@ public sealed class BotDatabase : GenericDatabase {
 		base.Dispose(disposing);
 	}
 
+	protected override Task Save() => Save(this);
+
 	internal void AddGamesToRedeemInBackground(IOrderedDictionary games) {
 		if ((games == null) || (games.Count == 0)) {
 			throw new ArgumentNullException(nameof(games));
@@ -329,6 +331,4 @@ public sealed class BotDatabase : GenericDatabase {
 
 		await Save().ConfigureAwait(false);
 	}
-
-	private Task Save() => Save(this);
 }

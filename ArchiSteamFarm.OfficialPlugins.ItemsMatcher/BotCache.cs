@@ -122,6 +122,8 @@ internal sealed class BotCache : SerializableFile {
 		base.Dispose(disposing);
 	}
 
+	protected override Task Save() => Save(this);
+
 	internal static async Task<BotCache> CreateOrLoad(string filePath) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
@@ -165,6 +167,4 @@ internal sealed class BotCache : SerializableFile {
 
 		await Save().ConfigureAwait(false);
 	}
-
-	private Task Save() => Save(this);
 }
