@@ -55,14 +55,21 @@ public abstract class GenericDatabase : SerializableFile {
 	}
 
 	[PublicAPI]
-	public void SaveToJsonStorage(string key, JsonElement value) {
+	public void SaveToJsonStorage<T>(string key, T value) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 		ArgumentNullException.ThrowIfNull(value);
 
-		if (value.ValueKind == JsonValueKind.Null) {
-			DeleteFromJsonStorage(key);
+		JsonElement jsonElement = JsonSerializer.SerializeToElement(value, JsonUtilities.DefaultJsonSerialierOptions);
 
-			return;
+		SaveToJsonStorage(key, jsonElement);
+	}
+
+	[PublicAPI]
+	public void SaveToJsonStorage(string key, JsonElement value) {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+
+		if (value.ValueKind == JsonValueKind.Undefined) {
+			throw new ArgumentOutOfRangeException(nameof(value));
 		}
 
 		if (KeyValueJsonStorage.TryGetValue(key, out JsonElement currentValue) && currentValue.Equals(value)) {

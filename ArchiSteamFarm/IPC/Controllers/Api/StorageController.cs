@@ -72,7 +72,10 @@ public sealed class StorageController : ArchiController {
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StoragePost(string key, [FromBody] JsonElement value) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
-		ArgumentNullException.ThrowIfNull(value);
+
+		if (value.ValueKind == JsonValueKind.Undefined) {
+			throw new ArgumentOutOfRangeException(nameof(value));
+		}
 
 		if (ASF.GlobalDatabase == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));

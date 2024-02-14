@@ -32,7 +32,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
@@ -1193,7 +1192,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		JsonElement matchActivelyTradeOfferIDsToken = Bot.BotDatabase.LoadFromJsonStorage(MatchActivelyTradeOfferIDsStorageKey);
 
-		if (matchActivelyTradeOfferIDsToken is { ValueKind: JsonValueKind.Array }) {
+		if (matchActivelyTradeOfferIDsToken.ValueKind == JsonValueKind.Array) {
 			try {
 				matchActivelyTradeOfferIDs = new HashSet<ulong>(matchActivelyTradeOfferIDsToken.GetArrayLength());
 
@@ -1232,7 +1231,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					matchActivelyTradeOfferIDs = activeTradeOfferIDs;
 
 					if (matchActivelyTradeOfferIDs.Count > 0) {
-						Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, JsonSerializer.SerializeToElement(matchActivelyTradeOfferIDs, JsonUtilities.DefaultJsonSerialierOptions));
+						Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, matchActivelyTradeOfferIDs);
 					} else {
 						Bot.BotDatabase.DeleteFromJsonStorage(MatchActivelyTradeOfferIDsStorageKey);
 					}
@@ -1436,7 +1435,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				if (tradeOfferIDs?.Count > 0) {
 					matchActivelyTradeOfferIDs.UnionWith(tradeOfferIDs);
 
-					Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, JsonSerializer.SerializeToElement(matchActivelyTradeOfferIDs, JsonUtilities.DefaultJsonSerialierOptions));
+					Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, matchActivelyTradeOfferIDs);
 				}
 
 				if (mobileTradeOfferIDs?.Count > 0) {
