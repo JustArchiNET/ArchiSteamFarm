@@ -29,11 +29,6 @@ namespace ArchiSteamFarm.Steam.Data;
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class Confirmation {
 	[JsonInclude]
-	[JsonPropertyName("nonce")]
-	[JsonRequired]
-	internal ulong Nonce { get; private init; }
-
-	[JsonInclude]
 	[JsonPropertyName("type")]
 	[JsonRequired]
 	public EConfirmationType ConfirmationType { get; private init; }
@@ -47,6 +42,11 @@ public sealed class Confirmation {
 	[JsonPropertyName("id")]
 	[JsonRequired]
 	public ulong ID { get; private init; }
+
+	[JsonInclude]
+	[JsonPropertyName("nonce")]
+	[JsonRequired]
+	internal ulong Nonce { get; private init; }
 
 	[JsonConstructor]
 	private Confirmation() { }

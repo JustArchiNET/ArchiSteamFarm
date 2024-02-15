@@ -26,6 +26,8 @@ using ArchiSteamFarm.Steam.Data;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class AssetForListing : AssetInInventory {
+	internal string BackendHashCode => Index + "-" + PreviousAssetID + "-" + AssetID + "-" + ClassID + "-" + Rarity + "-" + RealAppID + "-" + Tradable + "-" + Type + "-" + Amount;
+
 	[JsonInclude]
 	[JsonPropertyName("i")]
 	[JsonRequired]
@@ -35,8 +37,6 @@ internal sealed class AssetForListing : AssetInInventory {
 	[JsonPropertyName("l")]
 	[JsonRequired]
 	internal ulong PreviousAssetID { get; private init; }
-
-	internal string BackendHashCode => Index + "-" + PreviousAssetID + "-" + AssetID + "-" + ClassID + "-" + Rarity + "-" + RealAppID + "-" + Tradable + "-" + Type + "-" + Amount;
 
 	internal AssetForListing(Asset asset, uint index, ulong previousAssetID) : base(asset) {
 		ArgumentNullException.ThrowIfNull(asset);

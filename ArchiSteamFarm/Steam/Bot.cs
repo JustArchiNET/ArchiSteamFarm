@@ -150,6 +150,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[PublicAPI]
 	public string? PublicIP => SteamClient.PublicIP?.ToString();
 
+	[JsonInclude]
+	[JsonPropertyName($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
+	[PublicAPI]
+	[Required]
+	public string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
+
 	[JsonIgnore]
 	[PublicAPI]
 	public SteamApps SteamApps { get; }
@@ -195,12 +201,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	[JsonInclude]
-	[JsonPropertyName($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
-	[PublicAPI]
-	[Required]
-	public string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
-
 	[JsonIgnore]
 	[PublicAPI]
 	public string? AccessToken {
@@ -234,6 +234,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[PublicAPI]
 	[Required]
 	public EAccountFlags AccountFlags { get; private set; }
+
+	[JsonInclude]
+	[PublicAPI]
+	public string? AvatarHash { get; private set; }
 
 	[JsonInclude]
 	[JsonRequired]
@@ -291,10 +295,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private DateTime? AccessTokenValidUntil;
 	private string? AuthCode;
-
-	[JsonInclude]
-	[PublicAPI]
-	public string? AvatarHash { get; private set; }
 
 	private string? BackingAccessToken;
 	private Timer? ConnectionFailureTimer;

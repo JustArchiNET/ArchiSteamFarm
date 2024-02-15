@@ -193,26 +193,6 @@ internal static class GitHub {
 
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class ReleaseResponse {
-		[JsonInclude]
-		[JsonPropertyName("assets")]
-		[JsonRequired]
-		internal ImmutableHashSet<Asset> Assets { get; private init; } = ImmutableHashSet<Asset>.Empty;
-
-		[JsonInclude]
-		[JsonPropertyName("prerelease")]
-		[JsonRequired]
-		internal bool IsPreRelease { get; private init; }
-
-		[JsonInclude]
-		[JsonPropertyName("published_at")]
-		[JsonRequired]
-		internal DateTime PublishedAt { get; private init; }
-
-		[JsonInclude]
-		[JsonPropertyName("tag_name")]
-		[JsonRequired]
-		internal string Tag { get; private init; } = "";
-
 		internal string? ChangelogHTML {
 			get {
 				if (BackingChangelogHTML != null) {
@@ -263,11 +243,6 @@ internal static class GitHub {
 			}
 		}
 
-		[JsonInclude]
-		[JsonPropertyName("body")]
-		[JsonRequired]
-		private string? MarkdownBody { get; init; } = "";
-
 		private MarkdownDocument? Changelog {
 			get {
 				if (BackingChangelog != null) {
@@ -284,9 +259,34 @@ internal static class GitHub {
 			}
 		}
 
+		[JsonInclude]
+		[JsonPropertyName("assets")]
+		[JsonRequired]
+		internal ImmutableHashSet<Asset> Assets { get; private init; } = ImmutableHashSet<Asset>.Empty;
+
+		[JsonInclude]
+		[JsonPropertyName("prerelease")]
+		[JsonRequired]
+		internal bool IsPreRelease { get; private init; }
+
+		[JsonInclude]
+		[JsonPropertyName("published_at")]
+		[JsonRequired]
+		internal DateTime PublishedAt { get; private init; }
+
+		[JsonInclude]
+		[JsonPropertyName("tag_name")]
+		[JsonRequired]
+		internal string Tag { get; private init; } = "";
+
 		private MarkdownDocument? BackingChangelog;
 		private string? BackingChangelogHTML;
 		private string? BackingChangelogPlainText;
+
+		[JsonInclude]
+		[JsonPropertyName("body")]
+		[JsonRequired]
+		private string? MarkdownBody { get; init; } = "";
 
 		[JsonConstructor]
 		private ReleaseResponse() { }

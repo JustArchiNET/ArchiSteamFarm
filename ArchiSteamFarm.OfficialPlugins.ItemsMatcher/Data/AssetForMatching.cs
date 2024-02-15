@@ -27,6 +27,11 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal class AssetForMatching {
 	[JsonInclude]
+	[JsonPropertyName("a")]
+	[JsonRequired]
+	internal uint Amount { get; set; }
+
+	[JsonInclude]
 	[JsonPropertyName("c")]
 	[JsonRequired]
 	internal ulong ClassID { get; private init; }
@@ -50,11 +55,6 @@ internal class AssetForMatching {
 	[JsonPropertyName("p")]
 	[JsonRequired]
 	internal Asset.EType Type { get; private init; }
-
-	[JsonInclude]
-	[JsonPropertyName("a")]
-	[JsonRequired]
-	internal uint Amount { get; set; }
 
 	[JsonConstructor]
 	protected AssetForMatching() { }

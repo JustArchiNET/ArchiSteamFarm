@@ -43,10 +43,6 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 	[PublicAPI]
 	public ICollection<TKey> Keys => BackingDictionary.Keys;
 
-	[JsonDisallowNull]
-	[JsonInclude]
-	private ConcurrentDictionary<TKey, TValue> BackingDictionary { get; init; } = new();
-
 	int ICollection<KeyValuePair<TKey, TValue>>.Count => BackingDictionary.Count;
 	int IReadOnlyCollection<KeyValuePair<TKey, TValue>>.Count => BackingDictionary.Count;
 	IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => BackingDictionary.Keys;
@@ -65,6 +61,10 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 			OnModified?.Invoke(this, EventArgs.Empty);
 		}
 	}
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentDictionary<TKey, TValue> BackingDictionary { get; init; } = new();
 
 	public void Add(KeyValuePair<TKey, TValue> item) {
 		(TKey key, TValue value) = item;

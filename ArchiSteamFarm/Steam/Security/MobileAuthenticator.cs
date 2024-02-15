@@ -56,6 +56,8 @@ public sealed class MobileAuthenticator : IDisposable {
 
 	private readonly ArchiCacheable<string> CachedDeviceID;
 
+	private Bot? Bot;
+
 	[JsonInclude]
 	[JsonPropertyName("identity_secret")]
 	[JsonRequired]
@@ -65,8 +67,6 @@ public sealed class MobileAuthenticator : IDisposable {
 	[JsonPropertyName("shared_secret")]
 	[JsonRequired]
 	private string SharedSecret { get; init; } = "";
-
-	private Bot? Bot;
 
 	[JsonConstructor]
 	private MobileAuthenticator() => CachedDeviceID = new ArchiCacheable<string>(ResolveDeviceID);
