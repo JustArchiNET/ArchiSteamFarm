@@ -42,9 +42,6 @@ public sealed class Asset {
 	[PublicAPI]
 	public const ulong SteamPointsShopInstanceID = 3865004543;
 
-	[UsedImplicitly]
-	public static bool ShouldSerializeAdditionalProperties => false;
-
 	[JsonIgnore]
 	[PublicAPI]
 	public IReadOnlyDictionary<string, JsonElement>? AdditionalPropertiesReadOnly => AdditionalProperties;
@@ -246,6 +243,9 @@ public sealed class Asset {
 
 	[JsonConstructor]
 	private Asset() { }
+
+	[UsedImplicitly]
+	public static bool ShouldSerializeAdditionalProperties() => false;
 
 	internal Asset CreateShallowCopy() => (Asset) MemberwiseClone();
 

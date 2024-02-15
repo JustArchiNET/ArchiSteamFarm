@@ -47,15 +47,15 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonPropertyName("descriptions")]
 	internal ImmutableHashSet<Description> Descriptions { get; private init; } = ImmutableHashSet<Description>.Empty;
 
-	[JsonDisallowNull]
-	[JsonInclude]
-	[JsonPropertyName("total_inventory_count")]
-	internal uint TotalInventoryCount { get; private init; }
-
 	internal EResult? ErrorCode { get; private set; }
 	internal string? ErrorText { get; private set; }
 	internal ulong LastAssetID { get; private set; }
 	internal bool MoreItems { get; private set; }
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("total_inventory_count")]
+	internal uint TotalInventoryCount { get; private init; }
 
 	[JsonDisallowNull]
 	[JsonInclude]
@@ -105,19 +105,6 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	private InventoryResponse() { }
 
 	internal sealed class Description {
-		[UsedImplicitly]
-		public static bool ShouldSerializeAdditionalProperties => false;
-
-		[JsonInclude]
-		[JsonPropertyName("appid")]
-		[JsonRequired]
-		internal uint AppID { get; private init; }
-
-		[JsonDisallowNull]
-		[JsonInclude]
-		[JsonPropertyName("tags")]
-		internal ImmutableHashSet<Tag> Tags { get; private init; } = ImmutableHashSet<Tag>.Empty;
-
 		internal Asset.ERarity Rarity {
 			get {
 				foreach (Tag tag in Tags) {
@@ -241,9 +228,20 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		[JsonInclude]
 		internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
+		[JsonInclude]
+		[JsonPropertyName("appid")]
+		[JsonRequired]
+		internal uint AppID { get; private init; }
+
 		internal ulong ClassID { get; private set; }
 		internal ulong InstanceID { get; private set; }
 		internal bool Marketable { get; private set; }
+
+		[JsonDisallowNull]
+		[JsonInclude]
+		[JsonPropertyName("tags")]
+		internal ImmutableHashSet<Tag> Tags { get; private init; } = ImmutableHashSet<Tag>.Empty;
+
 		internal bool Tradable { get; private set; }
 
 		[JsonInclude]
@@ -318,5 +316,8 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 
 		[JsonConstructor]
 		private Description() { }
+
+		[UsedImplicitly]
+		public static bool ShouldSerializeAdditionalProperties() => false;
 	}
 }
