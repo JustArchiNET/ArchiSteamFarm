@@ -40,6 +40,7 @@ public static class JsonUtilities {
 	public static JsonSerializerOptions CreateDefaultJsonSerializerOptions(bool writeIndented = false) =>
 		new() {
 			PropertyNamingPolicy = null,
+			ReadCommentHandling = JsonCommentHandling.Skip,
 			TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { ApplyCustomModifiers } },
 			WriteIndented = writeIndented
 		};
