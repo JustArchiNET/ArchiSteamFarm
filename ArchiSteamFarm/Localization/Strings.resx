@@ -709,7 +709,7 @@ Process uptime: {1}</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>You're using {0} setting of {1} property, but you didn't provide a custom --cryptkey. You should provide a custom --cryptkey for increased security.</value>
+		<value>You're using {0} setting of {1} property, but you didn't provide a custom --cryptkey. You can optionally provide a custom --cryptkey for increased security if you'd like to.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
