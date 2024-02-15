@@ -26,7 +26,7 @@ using ArchiSteamFarm.Steam.Data;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class AssetForListing : AssetInInventory {
-	internal string BackendHashCode => Index + "-" + PreviousAssetID + "-" + AssetID + "-" + ClassID + "-" + Rarity + "-" + RealAppID + "-" + Tradable + "-" + Type + "-" + Amount;
+	internal string BackendHashCode => $"{Index}-{PreviousAssetID}-{AssetID}-{ClassID}-{Rarity}-{RealAppID}-{Tradable}-{Type}-{Amount}";
 
 	[JsonInclude]
 	[JsonPropertyName("i")]

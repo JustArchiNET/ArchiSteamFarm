@@ -80,15 +80,12 @@ internal sealed class BotCache : SerializableFile {
 	}
 
 	[JsonInclude]
-	[JsonRequired]
 	private string? BackingLastAnnouncedTradeToken { get; set; }
 
 	[JsonInclude]
-	[JsonRequired]
 	private string? BackingLastInventoryChecksumBeforeDeduplication { get; set; }
 
 	[JsonInclude]
-	[JsonRequired]
 	private DateTime? BackingLastRequestAt { get; set; }
 
 	private BotCache(string filePath) : this() {

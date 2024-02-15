@@ -714,7 +714,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		Dictionary<string, string> data = new(6, StringComparer.Ordinal) {
 			{ "partner", steamID.ToString(CultureInfo.InvariantCulture) },
 			{ "serverid", "1" },
-			{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JsonObject { { "trade_offer_access_token", token } }.ToJsonString() : "" },
+			{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JsonObject { { "trade_offer_access_token", token } }.ToJsonString(JsonUtilities.DefaultJsonSerialierOptions) : "" },
 			{ "tradeoffermessage", $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}" }
 		};
 

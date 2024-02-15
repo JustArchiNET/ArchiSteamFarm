@@ -25,20 +25,19 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
-using ArchiSteamFarm.Core;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers.Json;
 
 public static class JsonUtilities {
 	[PublicAPI]
-	public static readonly JsonSerializerOptions DefaultJsonSerialierOptions = CreateDefaultJsonSerializerOption();
+	public static readonly JsonSerializerOptions DefaultJsonSerialierOptions = CreateDefaultJsonSerializerOptions();
 
 	[PublicAPI]
-	public static readonly JsonSerializerOptions IndentedJsonSerialierOptions = CreateDefaultJsonSerializerOption(true);
+	public static readonly JsonSerializerOptions IndentedJsonSerialierOptions = CreateDefaultJsonSerializerOptions(true);
 
 	[PublicAPI]
-	public static JsonSerializerOptions CreateDefaultJsonSerializerOption(bool writeIndented = false) =>
+	public static JsonSerializerOptions CreateDefaultJsonSerializerOptions(bool writeIndented = false) =>
 		new() {
 			PropertyNamingPolicy = null,
 			TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { ApplyCustomModifiers } },
@@ -62,8 +61,10 @@ public static class JsonUtilities {
 			}
 
 			// The property should be checked against ShouldSerialize if there is a valid method to invoke, avoid performance penalty otherwise
-			if (GetShouldSerializeMethod(jsonTypeInfo.Type, property) != null) {
-				property.ShouldSerialize = (parent, _) => ShouldSerialize(parent, property);
+			MethodInfo? shouldSerializeMethod = GetShouldSerializeMethod(jsonTypeInfo.Type, property);
+
+			if (shouldSerializeMethod != null) {
+				property.ShouldSerialize = (parent, _) => ShouldSerialize(shouldSerializeMethod, parent);
 			}
 		}
 
@@ -127,31 +128,21 @@ public static class JsonUtilities {
 		}
 	}
 
-	private static bool ShouldSerialize(object parent, JsonPropertyInfo property) {
+	private static bool ShouldSerialize(MethodInfo shouldSerializeMethod, object parent) {
+		ArgumentNullException.ThrowIfNull(shouldSerializeMethod);
 		ArgumentNullException.ThrowIfNull(parent);
-		ArgumentNullException.ThrowIfNull(property);
 
-		try {
-			MethodInfo? shouldSerializeMethod = GetShouldSerializeMethod(parent.GetType(), property);
-
-			if (shouldSerializeMethod == null) {
-				// Should not happen, we've already determined we have a method to call
-				throw new InvalidOperationException(nameof(shouldSerializeMethod));
-			}
-
-			object? shouldSerialize = shouldSerializeMethod.Invoke(parent, null);
-
-			if (shouldSerialize is not bool result) {
-				// Should not happen, we've already determined we have a method that returns a boolean
-				throw new InvalidOperationException(nameof(shouldSerialize));
-			}
-
-			return result;
-		} catch (Exception e) {
-			// Fallback to always serialize, we can't do much more anyway
-			ASF.ArchiLogger.LogGenericException(e);
-
-			return true;
+		if (shouldSerializeMethod.ReturnType != typeof(bool)) {
+			throw new InvalidOperationException(nameof(shouldSerializeMethod));
 		}
+
+		object? shouldSerialize = shouldSerializeMethod.Invoke(parent, null);
+
+		if (shouldSerialize is not bool result) {
+			// Should not happen, we've already determined we have a method that returns a boolean
+			throw new InvalidOperationException(nameof(shouldSerialize));
+		}
+
+		return result;
 	}
 }
