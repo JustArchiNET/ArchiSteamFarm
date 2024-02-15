@@ -39,6 +39,7 @@ public static class JsonUtilities {
 	[PublicAPI]
 	public static JsonSerializerOptions CreateDefaultJsonSerializerOptions(bool writeIndented = false) =>
 		new() {
+			AllowTrailingCommas = true,
 			PropertyNamingPolicy = null,
 			ReadCommentHandling = JsonCommentHandling.Skip,
 			TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { ApplyCustomModifiers } },
