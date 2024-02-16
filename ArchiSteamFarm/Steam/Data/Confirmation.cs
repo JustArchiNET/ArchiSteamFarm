@@ -20,7 +20,9 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text.Json.Serialization;
+using ArchiSteamFarm.Core;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Steam.Data;
@@ -38,15 +40,34 @@ public sealed class Confirmation {
 	[JsonRequired]
 	public ulong CreatorID { get; private init; }
 
-	[JsonInclude]
-	[JsonPropertyName("id")]
-	[JsonRequired]
+	[JsonIgnore]
 	public ulong ID { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("nonce")]
 	[JsonRequired]
 	internal ulong Nonce { get; private init; }
+
+	[JsonInclude]
+	[JsonPropertyName("id")]
+	[JsonRequired]
+	private string IDText {
+		get => ID.ToString(CultureInfo.InvariantCulture);
+
+		init {
+			if (string.IsNullOrEmpty(value)) {
+				return;
+			}
+
+			if (!ulong.TryParse(value, out ulong id) || (id == 0)) {
+				ASF.ArchiLogger.LogNullError(id);
+
+				return;
+			}
+
+			ID = id;
+		}
+	}
 
 	[JsonConstructor]
 	private Confirmation() { }
