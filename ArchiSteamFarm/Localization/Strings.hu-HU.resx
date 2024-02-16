@@ -700,10 +700,7 @@ Ennyi ideje fut: {1}</value>
 		<value>A titkosítási kulcs túl rövid. Azt javasoljuk, hogy legalább {0} bájt (karakter) hosszúságú legyen.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>A(z) {1} tulajdonság {0} beállítását használja, de nem adott meg egyéni --cryptkey-t. A nagyobb biztonság érdekében egyéni --cryptkey-t kell megadnia.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>A(z) {1} tulajdonság {0} beállítását használja, de nem adott meg egyéni --cryptkey-t. Ez teljesen megsemmisíti a védelmet, mivel az ASF kénytelen a saját (ismert) kulcsát használni. A beállítás által kínált biztonsági előnyök kihasználásához egyéni --cryptkey-t kell megadnia.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

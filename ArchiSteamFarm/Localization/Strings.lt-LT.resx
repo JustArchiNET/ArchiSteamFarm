@@ -705,10 +705,7 @@ Proceso veikimo laikas: {1}</value>
 		<value>Jūsų šifravimo raktas yra per trumpas. Rekomenduojame naudoti raktą, kuris yra bent {0} baitų (simbolių) ilgio.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Jūs naudojate {0} nustatymą is {1} ypatybės, tačiau nenurodėte tinkintos --cryptkey savybės. Privalote pateikti tinkintą --cryptkey savybę padidintai apsaugai.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Jūs naudojate {0} nustatymą is {1} ypatybės, tačiau nenurodėte tinkintos --cryptkey savybės. Tai prieštarauja apsaugai, kadangi ASF bus priversta naudoti savo (žinomą) raktą. Reiktų nurodyti tinkintą --cryptkey savybę, kad šio gautumėte šio nustatymo naudą.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

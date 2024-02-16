@@ -705,10 +705,7 @@ Tempo de execução: {1}</value>
 		<value>A tua chave de encriptação é demasiado curta. Recomendamos uma que seja pelo menos {0} bytes (carateres) de comprimento.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Estás a usar a definição {0} da propriedade {1}, mas não forneceste uma --cryptkey personalizada. Deves fornecer uma --cryptkey personalizada para uma melhor segurança.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Estás a usar a definição {0} da propriedade {1}, mas não forneceste uma --cryptkey personalizada. Isto futiliza a proteção, pois o ASF é forçado a usar a sua chave (que é conhecida). Deves fornecer uma --cryptkey personalizada para usufruires da segurança oferecida por esta definição.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

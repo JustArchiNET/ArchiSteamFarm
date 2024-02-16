@@ -705,10 +705,7 @@ Prosessin käyttöaika: {1}</value>
 		<value>Salausavaimesi on liian lyhyt. Suosittelemme käyttämään salausavainta, joka on vähintään {0} tavua (merkkiä) pitkä.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Käytät ominaisuuden {1} asetusta {0}, mutta et antanut mukautettua --cryptkey -argumenttia. Sinun pitäisi antaa mukautettu --cryptkey lisäturvallisuuden takaamiseksi.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Käytät ominaisuuden {1} asetusta {0}, mutta et antanut mukautettua --cryptkey -argumenttia. Tämä tekee suojauksen täysin tyhjäksi, koska ASF joutuu käyttämään omaa (tunnettua) avaintaan. Sinun tulisi antaa mukautettu --cryptkey tämän asetuksen turvallisuushyöydyn saavuttamiseksi.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

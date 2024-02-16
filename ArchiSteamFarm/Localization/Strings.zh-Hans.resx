@@ -709,7 +709,7 @@
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>您正在为 {1} 属性使用 {0} 设置，但未提供自定义密钥 --cryptkey。您应该提供自定义 --cryptkey 参数来增强安全性。</value>
+		<value>您正在为 {1} 属性使用 {0} 设置，但未提供自定义密钥 --cryptkey。如果您愿意，可以提供自定义 --cryptkey 参数来增强安全性。</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">

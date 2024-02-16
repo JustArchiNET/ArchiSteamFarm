@@ -709,7 +709,7 @@ Czas procesu: {1}</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Używasz {0} ustawienia właściwości {1}, ale nie podałeś niestandardowego --cryptkey. Powinieneś podać niestandardowy --cryptkey, aby zwiększyć bezpieczeństwo.</value>
+		<value>Używasz ustawienia {0} właściwości {1}, ale bez podania niestandardowego klucza --cryptkey. Opcjonalnie możesz podać niestandardowy --cryptkey dla zwiększenia bezpieczeństwa, jeśli chcesz.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">

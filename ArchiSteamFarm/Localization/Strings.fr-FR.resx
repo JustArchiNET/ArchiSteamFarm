@@ -705,10 +705,7 @@ Durée de fonctionnement : {1}</value>
 		<value>Votre clé de chiffrement est trop courte. Nous vous recommandons d'en utiliser une longue d'au moins {0} octets (caractères).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Vous utilisez le paramètre {0} de la propriété {1} , mais vous n'avez pas fourni de --cryptkey personnalisé. Vous devriez fournir une --cryptkey personnalisée pour plus de sécurité.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Vous utilisez le paramètre {0} de la propriété {1} , mais vous n'avez pas fourni de --cryptkey personnalisé. Cela casse complètement la protection, car ASF est forcé d’utiliser sa propre clé (connue). Vous devez fournir une --cryptkey personnalisée pour utiliser les avantages de sécurité offerts par ce paramètre.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

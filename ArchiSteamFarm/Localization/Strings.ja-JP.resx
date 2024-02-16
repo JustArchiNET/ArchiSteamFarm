@@ -702,10 +702,7 @@ Process uptime: {1}</value>
 		<value>暗号化キーが短すぎます。少なくとも {0} バイト (文字) の長いものを使用することをお勧めします。</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>{0} 設定の {1} プロパティを使用していますが、カスタム --cryptkeyを指定していません。セキュリティ強化のためにカスタム --cryptkey を指定する必要があります。</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>{0} 設定の {1} プロパティを使用していますが、カスタム --cryptkey が設定されていません。 ASFは独自の(既知の) キーを使用することを余儀なくされているため、この状態ではセキュリティ保護がされていないことを意味します。 この設定で提供されるセキュリティ上のメリットを利用するためには、カスタム --cryptkey を提供する必要があります。</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
