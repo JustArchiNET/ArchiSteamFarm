@@ -709,7 +709,10 @@ Prozesslaufzeit: {1}</value>
 		<value>Ihr kryptografischer Schlüssel ist zu kurz. Wir empfehlen einen zu verwenden, der mindestens {0} Bytes (Zeichen) lang ist.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Sie verwenden {0} für die Eigenschaft {1}, haben aber keinen eigenen kryptografischen Schlüssel mit --cryptkey spezifiziert. Für erhöhte Sicherheit können Sie optional einen eigenen kryptografischen Schlüssel verwenden.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Sie verwenden {0} für {1}, haben aber keinen eigenen kryptografischen Schlüssel mit --cryptkey spezifiziert. Dies umgeht den Schutz komplett, da ASF gezwungen ist den internen (öffentlich bekannten) Schlüssel zu verwenden. Sie sollten einen eigenen kryptografischen Schlüssel verwenden, um Nutzen von dieser Einstellung zu haben.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
