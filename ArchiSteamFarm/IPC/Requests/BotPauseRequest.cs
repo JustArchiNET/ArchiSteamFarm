@@ -21,7 +21,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 
 namespace ArchiSteamFarm.IPC.Requests;
 
@@ -30,14 +29,12 @@ public sealed class BotPauseRequest {
 	/// <summary>
 	///     Specifies if pause is permanent or temporary (default).
 	/// </summary>
-	[JsonDisallowNull]
 	[JsonInclude]
 	public bool Permanent { get; private init; }
 
 	/// <summary>
 	///     Specifies automatic resume action in given seconds. Default value of 0 disables automatic resume.
 	/// </summary>
-	[JsonDisallowNull]
 	[JsonInclude]
 	public ushort ResumeInSeconds { get; private init; }
 

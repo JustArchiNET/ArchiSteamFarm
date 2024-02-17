@@ -21,10 +21,12 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers.Json;
@@ -58,7 +60,12 @@ public static class JsonUtilities {
 			}
 
 			// The object should be validated against potential nulls if at least one property has [JsonDisallowNull] declared, avoid performance penalty otherwise
-			if (!potentialDisallowedNullsPossible && (property.AttributeProvider?.IsDefined(typeof(JsonDisallowNullAttribute), false) == true)) {
+			if (property.AttributeProvider?.IsDefined(typeof(JsonDisallowNullAttribute), false) == true) {
+				if (property.PropertyType.IsValueType && (Nullable.GetUnderlyingType(property.PropertyType) == null)) {
+					// We should have no [JsonDisallowNull] declared on non-nullable types, this requires developer correction
+					throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(JsonDisallowNullAttribute), $"{property.Name} ({jsonTypeInfo.Type})"));
+				}
+
 				potentialDisallowedNullsPossible = true;
 			}
 

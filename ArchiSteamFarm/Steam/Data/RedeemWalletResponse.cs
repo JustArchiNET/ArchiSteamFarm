@@ -21,7 +21,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Data;
@@ -32,7 +31,6 @@ internal sealed class RedeemWalletResponse : ResultResponse {
 	[JsonPropertyName("formattednewwalletbalance")]
 	internal string? BalanceText { get; private init; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("detail")]
 	internal EPurchaseResultDetail PurchaseResultDetail { get; private init; }

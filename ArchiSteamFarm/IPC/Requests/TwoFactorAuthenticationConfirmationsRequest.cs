@@ -88,7 +88,6 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 	/// <summary>
 	///     Specifies whether we should wait for the confirmations to arrive, in case they're not available immediately. This option makes sense only if <see cref="AcceptedCreatorIDs" /> is specified as well, and in this case ASF will add a few more tries if needed to ensure that all specified IDs are handled. Useful if confirmations are generated with a delay on Steam network side, which happens fairly often.
 	/// </summary>
-	[JsonDisallowNull]
 	[JsonInclude]
 	public bool WaitIfNeeded { get; private init; }
 

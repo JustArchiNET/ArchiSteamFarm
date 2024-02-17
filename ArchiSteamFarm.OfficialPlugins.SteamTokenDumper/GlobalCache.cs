@@ -45,7 +45,6 @@ internal sealed class GlobalCache : SerializableFile {
 
 	private static string SharedFilePath => Path.Combine(ArchiSteamFarm.SharedInfo.ConfigDirectory, $"{nameof(SteamTokenDumper)}.cache");
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	internal uint LastChangeNumber { get; private set; }
 

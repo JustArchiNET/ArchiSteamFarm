@@ -50,7 +50,6 @@ public sealed class GlobalDatabase : GenericDatabase {
 
 	private readonly SemaphoreSlim PackagesRefreshSemaphore = new(1, 1);
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[PublicAPI]
 	public Guid Identifier { get; private init; } = Guid.NewGuid();
@@ -93,12 +92,10 @@ public sealed class GlobalDatabase : GenericDatabase {
 	[JsonInclude]
 	internal InMemoryServerListProvider ServerListProvider { get; private init; } = new();
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName($"_{nameof(CellID)}")]
 	private uint BackingCellID { get; set; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName($"_{nameof(LastChangeNumber)}")]
 	private uint BackingLastChangeNumber { get; set; }

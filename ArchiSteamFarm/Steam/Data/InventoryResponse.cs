@@ -50,7 +50,6 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	internal EResult? ErrorCode { get; private init; }
 	internal string? ErrorText { get; private init; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("last_assetid")]
@@ -58,7 +57,6 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 
 	internal bool MoreItems { get; private init; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("total_inventory_count")]
 	internal uint TotalInventoryCount { get; private init; }
@@ -70,18 +68,13 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		get => ErrorText ?? "";
 
 		init {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
+			ArgumentException.ThrowIfNullOrEmpty(value);
 
 			ErrorCode = SteamUtilities.InterpretError(value);
 			ErrorText = value;
 		}
 	}
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("more_items")]
 	private byte MoreItemsNumber {
@@ -227,7 +220,6 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		[JsonRequired]
 		internal ulong ClassID { get; private init; }
 
-		[JsonDisallowNull]
 		[JsonInclude]
 		[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 		[JsonPropertyName("instanceid")]

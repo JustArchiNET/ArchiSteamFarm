@@ -21,7 +21,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
 
@@ -31,7 +30,6 @@ internal sealed class TradeOfferAcceptResponse {
 	[JsonPropertyName("strError")]
 	internal string? ErrorText { get; private init; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("needs_mobile_confirmation")]
 	internal bool RequiresMobileConfirmation { get; private init; }

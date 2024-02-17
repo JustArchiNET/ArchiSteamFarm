@@ -27,7 +27,6 @@ using ArchiSteamFarm.IPC.Integration;
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
 public sealed class SteamTokenDumperConfig {
-	[JsonDisallowNull]
 	[JsonInclude]
 	public bool Enabled { get; internal set; }
 
@@ -46,7 +45,6 @@ public sealed class SteamTokenDumperConfig {
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
 	public ImmutableHashSet<uint> SecretPackageIDs { get; private init; } = ImmutableHashSet<uint>.Empty;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public bool SkipAutoGrantPackages { get; private init; } = true;
 

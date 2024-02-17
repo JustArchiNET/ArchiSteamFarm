@@ -20,7 +20,6 @@
 // limitations under the License.
 
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
@@ -28,7 +27,6 @@ public sealed class GlobalConfigExtension {
 	[JsonInclude]
 	public SteamTokenDumperConfig? SteamTokenDumperPlugin { get; private init; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public bool SteamTokenDumperPluginEnabled { get; private init; }
 

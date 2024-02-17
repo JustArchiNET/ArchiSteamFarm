@@ -135,11 +135,9 @@ public sealed class BotConfig {
 	[PublicAPI]
 	public static readonly ImmutableHashSet<Asset.EType> DefaultTransferableTypes = ImmutableHashSet.Create(Asset.EType.BoosterPack, Asset.EType.FoilTradingCard, Asset.EType.TradingCard);
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public bool AcceptGifts { get; private init; } = DefaultAcceptGifts;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public EBotBehaviour BotBehaviour { get; private init; } = DefaultBotBehaviour;
 
@@ -154,7 +152,6 @@ public sealed class BotConfig {
 	[JsonInclude]
 	public string? CustomGamePlayedWhileIdle { get; private init; } = DefaultCustomGamePlayedWhileIdle;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public bool Enabled { get; private init; } = DefaultEnabled;
 
@@ -162,7 +159,6 @@ public sealed class BotConfig {
 	[JsonInclude]
 	public ImmutableList<EFarmingOrder> FarmingOrders { get; private init; } = DefaultFarmingOrders;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public EFarmingPreferences FarmingPreferences { get; private init; } = DefaultFarmingPreferences;
 
@@ -173,7 +169,6 @@ public sealed class BotConfig {
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
 	public ImmutableList<uint> GamesPlayedWhileIdle { get; private init; } = DefaultGamesPlayedWhileIdle;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
 	public byte HoursUntilCardDrops { get; private init; } = DefaultHoursUntilCardDrops;
@@ -186,27 +181,21 @@ public sealed class BotConfig {
 	[JsonInclude]
 	public ImmutableHashSet<Asset.EType> MatchableTypes { get; private init; } = DefaultMatchableTypes;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public EPersonaStateFlag OnlineFlags { get; private init; } = DefaultOnlineFlags;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public EPersonaState OnlineStatus { get; private init; } = DefaultOnlineStatus;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public ArchiCryptoHelper.ECryptoMethod PasswordFormat { get; internal set; } = DefaultPasswordFormat;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public ERedeemingPreferences RedeemingPreferences { get; private init; } = DefaultRedeemingPreferences;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public ERemoteCommunication RemoteCommunication { get; private init; } = DefaultRemoteCommunication;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
 	public byte SendTradePeriod { get; private init; } = DefaultSendTradePeriod;
@@ -221,7 +210,6 @@ public sealed class BotConfig {
 		}
 	}
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[SwaggerSteamIdentifier(AccountType = EAccountType.Clan)]
 	[SwaggerValidValues(ValidIntValues = [0])]
@@ -261,12 +249,10 @@ public sealed class BotConfig {
 	[JsonInclude]
 	public ImmutableDictionary<ulong, EAccess> SteamUserPermissions { get; private init; } = DefaultSteamUserPermissions;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
 	public byte TradeCheckPeriod { get; private init; } = DefaultTradeCheckPeriod;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public ETradingPreferences TradingPreferences { get; private init; } = DefaultTradingPreferences;
 
@@ -274,11 +260,9 @@ public sealed class BotConfig {
 	[JsonInclude]
 	public ImmutableHashSet<Asset.EType> TransferableTypes { get; private init; } = DefaultTransferableTypes;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public bool UseLoginKeys { get; private init; } = DefaultUseLoginKeys;
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	public ArchiHandler.EUserInterfaceMode UserInterfaceMode { get; private init; } = DefaultUserInterfaceMode;
 
@@ -302,13 +286,10 @@ public sealed class BotConfig {
 		get => SteamMasterClanID.ToString(CultureInfo.InvariantCulture);
 
 		init {
-			if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SSteamMasterClanID)));
+			ArgumentException.ThrowIfNullOrEmpty(value);
 
-				return;
-			}
-
-			SteamMasterClanID = result;
+			// We intend to throw exception back to caller here
+			SteamMasterClanID = ulong.Parse(value);
 		}
 	}
 

@@ -60,11 +60,9 @@ internal sealed class CrashFile : SerializableFile {
 		}
 	}
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	private DateTime BackingLastStartup { get; set; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	private byte BackingStartupCount { get; set; }
 

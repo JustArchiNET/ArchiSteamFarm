@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Steam.Data;
@@ -55,33 +54,28 @@ public sealed class Asset {
 	[PublicAPI]
 	public uint Amount { get; internal set; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("appid")]
 	public uint AppID { get; private init; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("assetid")]
 	[PublicAPI]
 	public ulong AssetID { get; private init; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("classid")]
 	[PublicAPI]
 	public ulong ClassID { get; private init; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("contextid")]
 	[PublicAPI]
 	public ulong ContextID { get; private init; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("instanceid")]
@@ -116,7 +110,6 @@ public sealed class Asset {
 	[JsonInclude]
 	internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("id")]
