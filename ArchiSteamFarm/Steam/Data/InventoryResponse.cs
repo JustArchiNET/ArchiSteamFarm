@@ -214,7 +214,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 
 		[JsonExtensionData]
 		[JsonInclude]
-		internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
+		internal Dictionary<string, JsonElement>? AdditionalProperties { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("appid")]
