@@ -341,7 +341,7 @@ public sealed class GlobalConfig {
 			ArgumentException.ThrowIfNullOrEmpty(value);
 
 			// We intend to throw exception back to caller here
-			SteamOwnerID = ulong.Parse(value);
+			SteamOwnerID = ulong.Parse(value, CultureInfo.InvariantCulture);
 		}
 	}
 

@@ -289,7 +289,7 @@ public sealed class BotConfig {
 			ArgumentException.ThrowIfNullOrEmpty(value);
 
 			// We intend to throw exception back to caller here
-			SteamMasterClanID = ulong.Parse(value);
+			SteamMasterClanID = ulong.Parse(value, CultureInfo.InvariantCulture);
 		}
 	}
 
