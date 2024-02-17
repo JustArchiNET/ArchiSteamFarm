@@ -28,8 +28,8 @@ using SteamKit2.Internal;
 namespace ArchiSteamFarm.Steam.Integration.CMsgs;
 
 internal sealed class CMsgClientAcknowledgeClanInvite : ISteamSerializableMessage {
-	internal bool AcceptInvite { private get; set; }
-	internal ulong ClanID { private get; set; }
+	internal bool AcceptInvite { get; set; }
+	internal ulong ClanID { get; set; }
 
 	void ISteamSerializable.Deserialize(Stream stream) {
 		ArgumentNullException.ThrowIfNull(stream);

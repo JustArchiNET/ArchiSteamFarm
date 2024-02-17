@@ -30,8 +30,8 @@ namespace ArchiSteamFarm.IPC.Integration;
 
 [PublicAPI]
 public sealed class SwaggerValidValuesAttribute : CustomSwaggerAttribute {
-	public int[]? ValidIntValues { get; set; }
-	public string[]? ValidStringValues { get; set; }
+	public int[]? ValidIntValues { get; init; }
+	public string[]? ValidStringValues { get; init; }
 
 	public override void Apply(OpenApiSchema schema) {
 		ArgumentNullException.ThrowIfNull(schema);
