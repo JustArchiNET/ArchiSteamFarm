@@ -35,18 +35,35 @@ public sealed class Confirmation {
 	[JsonRequired]
 	public EConfirmationType ConfirmationType { get; private init; }
 
-	[JsonInclude]
-	[JsonPropertyName("creator_id")]
-	[JsonRequired]
+	[JsonIgnore]
 	public ulong CreatorID { get; private init; }
 
 	[JsonIgnore]
 	public ulong ID { get; private init; }
 
-	[JsonInclude]
-	[JsonPropertyName("nonce")]
-	[JsonRequired]
+	[JsonIgnore]
 	internal ulong Nonce { get; private init; }
+
+	[JsonInclude]
+	[JsonPropertyName("creator_id")]
+	[JsonRequired]
+	private string CreatorIDText {
+		get => CreatorID.ToString(CultureInfo.InvariantCulture);
+
+		init {
+			if (string.IsNullOrEmpty(value)) {
+				return;
+			}
+
+			if (!ulong.TryParse(value, out ulong creatorID) || (creatorID == 0)) {
+				ASF.ArchiLogger.LogNullError(creatorID);
+
+				return;
+			}
+
+			CreatorID = creatorID;
+		}
+	}
 
 	[JsonInclude]
 	[JsonPropertyName("id")]
@@ -66,6 +83,27 @@ public sealed class Confirmation {
 			}
 
 			ID = id;
+		}
+	}
+
+	[JsonInclude]
+	[JsonPropertyName("nonce")]
+	[JsonRequired]
+	private string NonceText {
+		get => Nonce.ToString(CultureInfo.InvariantCulture);
+
+		init {
+			if (string.IsNullOrEmpty(value)) {
+				return;
+			}
+
+			if (!ulong.TryParse(value, out ulong nonce) || (nonce == 0)) {
+				ASF.ArchiLogger.LogNullError(nonce);
+
+				return;
+			}
+
+			Nonce = nonce;
 		}
 	}
 
