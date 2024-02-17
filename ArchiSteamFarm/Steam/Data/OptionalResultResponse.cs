@@ -20,7 +20,6 @@
 // limitations under the License.
 
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
 using SteamKit2;
 
@@ -28,7 +27,6 @@ namespace ArchiSteamFarm.Steam.Data;
 
 [PublicAPI]
 public class OptionalResultResponse {
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("success")]
 	public EResult? Result { get; private init; }

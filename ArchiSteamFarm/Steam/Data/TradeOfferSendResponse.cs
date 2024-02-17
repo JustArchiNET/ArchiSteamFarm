@@ -27,10 +27,9 @@ namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class TradeOfferSendResponse {
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("strError")]
-	internal string ErrorText { get; private init; } = "";
+	internal string? ErrorText { get; private init; }
 
 	[JsonDisallowNull]
 	[JsonInclude]

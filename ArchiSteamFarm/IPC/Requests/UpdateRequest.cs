@@ -21,7 +21,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Storage;
 
 namespace ArchiSteamFarm.IPC.Requests;
@@ -31,7 +30,6 @@ public sealed class UpdateRequest {
 	/// <summary>
 	///     Target update channel. Not required, will default to UpdateChannel in GlobalConfig if not provided.
 	/// </summary>
-	[JsonDisallowNull]
 	[JsonInclude]
 	public GlobalConfig.EUpdateChannel? Channel { get; private init; }
 

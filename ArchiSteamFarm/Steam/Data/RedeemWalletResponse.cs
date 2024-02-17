@@ -28,7 +28,6 @@ namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class RedeemWalletResponse : ResultResponse {
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("formattednewwalletbalance")]
 	internal string? BalanceText { get; private init; }
