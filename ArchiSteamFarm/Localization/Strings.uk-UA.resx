@@ -705,10 +705,7 @@
 		<value>Ваш ключ шифрування закороткий. Ми рекомендуємо використовувати довжину принаймні {0} байтів (символів).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Ви використовуєте налаштування {0} властивості {1}, але не надали спеціальний --cryptkey. Вам слід надати спеціальний --cryptkey для підвищення безпеки.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Ви використовуєте налаштування {0} властивості {1}, але не надали спеціальний --cryptkey. Це повністю втрачає захист, оскільки ASF змушений використовувати власний (відомий) ключ. Вам слід надати спеціальний --cryptkey, щоб скористатися перевагами безпеки, які пропонує цей параметр.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

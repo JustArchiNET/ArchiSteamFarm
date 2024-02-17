@@ -699,10 +699,7 @@
 		<value>您的加密金鑰太短。 我們建議使用長度至少為{0} 個位元組(字元) 的檔案。</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>您正在使用{1} 内容的{0} 設定，但您沒有提供自定義金鑰。 您應該提供一個自定義密碼金鑰以提高安全性。</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>您正在使用{1} 内容的{0} 設定，但您沒有提供自定義金鑰。 這完全破壞了保護，因為ASF被迫使用自己的（已知的）金鑰。 您應該提供一個自定義密碼金鑰，以利用此設定提供的安全優勢。</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

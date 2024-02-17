@@ -702,10 +702,7 @@
 		<value>Вашият криптиращ ключ е много къс. Препоръчваме да ползвате някой, който е поне {0} байта (символа) голям.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Ползвате {0} настройка от {1} стойност, но не сте осигурили персонализиран крипто-ключ. Трябва да осигурите персонализиран крипто-ключ за увеличена защита.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Ползвате {0} настройка от {1} стойност, но не сте осигурили персонализиран крипто-ключ. Това напълно нарушава защитата, тъй като ASF е принуден да ползва собствен (познат) ключ. Трябва да осигурите персонализиран крипто-ключ, за да ползвате предлаганата защита от тези настройки.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

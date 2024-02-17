@@ -705,10 +705,7 @@ StackTrace:
 		<value>מפתח ההצפנה שלך קצר מדי. אנו ממליצים להשתמש באחד שאורכו לפחות {0} בייטים (תווים).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>אתה משתמש בהגדרה {0} של המאפיין {1}, אך לא סיפקת --cryptkey מותאם אישית. עליך לספק --cryptkey מותאם אישית להגברת האבטחה.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>אתה משתמש בהגדרה {0} של המאפיין {1}, אך לא סיפקת --cryptkey מותאם אישית. זה מביס לחלוטין את ההגנה, מכיוון ש-ASF נאלץ להשתמש במפתח (ידוע) משלו. עליך לספק --cryptkey מותאם אישית כדי לעשות שימוש בהטבת האבטחה שמציעה הגדרה זו.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

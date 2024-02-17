@@ -701,10 +701,7 @@ Proces uptime: {1}</value>
 		<value>Uw encryptiesleutel is te kort. We raden u aan om er één te gebruiken die minstens {0} bytes (tekens) lang is.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>U gebruikt {0} instelling van {1} eigenschap, maar u heeft geen aangepaste --cryptkey opgegeven. U moet een aangepaste --cryptkey verstrekken voor meer veiligheid.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>U gebruikt {0} instelling van {1} eigenschap, maar u heeft geen aangepaste --cryptkey opgegeven. Dit ondermijnt de bescherming volledig, omdat ASF zijn eigen (bekend) sleutel moet gebruiken. U moet een aangepaste --cryptkey opgeven om gebruik te maken van het beveiligingsvoordeel dat deze instelling biedt.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

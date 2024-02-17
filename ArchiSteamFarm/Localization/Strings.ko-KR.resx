@@ -708,10 +708,7 @@ StackTrace:
 		<value>암호키가 너무 짧습니다. 최소한 {0} 바이트(글자수) 길이 이상의 암호키를 사용하는 것을 추천합니다.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>{1} 속성의 {0} 설정을 사용하고 있습니다만, 별도의 -cryptkey를 사용하고 있지 않습니다. 보안을 강화하기 위하여 별도의 -cryptkey를 사용해야 합니다.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>{1} 속성의 {0} 설정을 사용하고 있습니다만, 별도의 -cryptkey를 사용하고 있지 않습니다. ASF는 자체 (이미 알려진) 키를 사용해야하므로 보호 기능이 제대로 동작하지 않습니다. 설정이 제공하는 보안의 효과를 누리기 위하여 별도의 -cryptkey를 사용해야 합니다.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

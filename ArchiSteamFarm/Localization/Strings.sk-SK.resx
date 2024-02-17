@@ -706,10 +706,7 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
 		<value>Váš šifrovací kľuč je príliš krátky. Doporučujeme použiť ten, ktorý je aspoň {0} bajtu (znakov) dlhý.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Používate {0} nastavenie vlastnosti {1}, ale neposkytujete vlastný -cryptkey. Pre zvýšenie bezpečnosti by ste mali poskytnúť vlastný -cryptkey.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Používate {0} nastavenie vlastnosti {1}, ale neposkytujete vlastný --cryptkey. To celkovo ruší ochranu, pretože ASF je nútený použiť svoj vlastný (známy) kľuč. Pre využitie bezpečnostného prínosu ponúkaného týmto nastavením, by ste mali poskytnúť vlastní --cryptkey.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

@@ -705,10 +705,7 @@ Thời gian hoạt động: {1}</value>
 		<value>Khóa mã hóa của bạn quá ngắn. Chúng tôi đề xuất dùng một cái dài ít nhất {0} byte (kí tự).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Bạn đang sử dụng cài đặt {0} của thuộc tính {1}, nhưng bạn đã không cung cấp một --cryptkey tùy chỉnh. Bạn nên cung cấp một --cryptkey tùy chỉnh để tăng tính bảo mật.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Bạn đang sử dụng cài đặt {0} của thuộc tính {1}, nhưng bạn đã không cung cấp một --cryptkey tùy chỉnh. Điều này hoàn toàn tự hủy sự bảo vệ, vì ASF buộc phải sử dụng khóa (đã biết) của nó. Bạn nên cung cấp một --cryptkey tùy chỉnh để nhận được lợi ích bảo mật được cung cấp bởi cài đặt này.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

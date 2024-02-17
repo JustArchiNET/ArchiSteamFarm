@@ -705,10 +705,7 @@ Darbspējas laiks: {1}</value>
 		<value>Šifrēšanas atslēga ir pārāk īsa. Mēs iesakām izmantot tādu, kas ir vismaz {0} baitus (simbolus) gara.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Tu lieto {0} iestatījumu {1} vērtībai, bet neesi nodrošinājis speciālu -cryptkey. Tev vajag nodrošinās speciālo -cryptkey paaugstinātai drošībai.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Tu lieto {0} iestatījumu {1} vērtībai, bet neesi nodrošinājis speciālu -cryptkey. Šī dēļ šim iestatījumam nav jēga, jo ASF ir spiests lietots pats savu (zināmu) atslēgu. Tev vajag nodrošinās speciālo -cryptkey lai šis iestatījums varētu nodrošināt papildu drošību.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

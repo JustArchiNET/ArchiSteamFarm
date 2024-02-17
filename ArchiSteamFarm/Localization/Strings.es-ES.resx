@@ -708,7 +708,7 @@ Tiempo de actividad del proceso: {1}</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Estás usando el ajuste {0} de la propiedad {1}, pero no proporcionaste una --cryptkey personalizada. Deberías proporcionar una --cryptkey personalizada para mayor seguridad.</value>
+		<value>Estás usando la configuración {0} de la propiedad {1}, pero no proporcionaste una --cryptkey personalizada. Opcionalmente puedes proporcionar una --cryptkey personalizada para mayor seguridad si lo deseas.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
