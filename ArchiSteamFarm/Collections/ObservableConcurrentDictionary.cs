@@ -52,6 +52,7 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 
 	public TValue this[TKey key] {
 		get => BackingDictionary[key];
+
 		set {
 			if (BackingDictionary.TryGetValue(key, out TValue? savedValue) && EqualityComparer<TValue>.Default.Equals(savedValue, value)) {
 				return;

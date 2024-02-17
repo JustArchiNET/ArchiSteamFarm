@@ -20,9 +20,7 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Core;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Steam.Data;
@@ -35,77 +33,23 @@ public sealed class Confirmation {
 	[JsonRequired]
 	public EConfirmationType ConfirmationType { get; private init; }
 
-	[JsonIgnore]
-	public ulong CreatorID { get; private init; }
-
-	[JsonIgnore]
-	public ulong ID { get; private init; }
-
-	[JsonIgnore]
-	internal ulong Nonce { get; private init; }
-
 	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("creator_id")]
 	[JsonRequired]
-	private string CreatorIDText {
-		get => CreatorID.ToString(CultureInfo.InvariantCulture);
-
-		init {
-			if (string.IsNullOrEmpty(value)) {
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong creatorID) || (creatorID == 0)) {
-				ASF.ArchiLogger.LogNullError(creatorID);
-
-				return;
-			}
-
-			CreatorID = creatorID;
-		}
-	}
+	public ulong CreatorID { get; private init; }
 
 	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("id")]
 	[JsonRequired]
-	private string IDText {
-		get => ID.ToString(CultureInfo.InvariantCulture);
-
-		init {
-			if (string.IsNullOrEmpty(value)) {
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong id) || (id == 0)) {
-				ASF.ArchiLogger.LogNullError(id);
-
-				return;
-			}
-
-			ID = id;
-		}
-	}
+	public ulong ID { get; private init; }
 
 	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("nonce")]
 	[JsonRequired]
-	private string NonceText {
-		get => Nonce.ToString(CultureInfo.InvariantCulture);
-
-		init {
-			if (string.IsNullOrEmpty(value)) {
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong nonce) || (nonce == 0)) {
-				ASF.ArchiLogger.LogNullError(nonce);
-
-				return;
-			}
-
-			Nonce = nonce;
-		}
-	}
+	internal ulong Nonce { get; private init; }
 
 	[JsonConstructor]
 	private Confirmation() { }

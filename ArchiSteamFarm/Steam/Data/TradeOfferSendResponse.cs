@@ -21,7 +21,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
@@ -38,28 +37,11 @@ internal sealed class TradeOfferSendResponse {
 	[JsonPropertyName("needs_mobile_confirmation")]
 	internal bool RequiresMobileConfirmation { get; private init; }
 
-	internal ulong TradeOfferID { get; private init; }
-
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("tradeofferid")]
-	private string TradeOfferIDText {
-		init {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong tradeOfferID) || (tradeOfferID == 0)) {
-				ASF.ArchiLogger.LogNullError(tradeOfferID);
-
-				return;
-			}
-
-			TradeOfferID = tradeOfferID;
-		}
-	}
+	internal ulong TradeOfferID { get; private init; }
 
 	[JsonConstructor]
 	private TradeOfferSendResponse() { }

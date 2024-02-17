@@ -47,10 +47,16 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonPropertyName("descriptions")]
 	internal ImmutableHashSet<Description> Descriptions { get; private init; } = ImmutableHashSet<Description>.Empty;
 
-	internal EResult? ErrorCode { get; private set; }
-	internal string? ErrorText { get; private set; }
-	internal ulong LastAssetID { get; private set; }
-	internal bool MoreItems { get; private set; }
+	internal EResult? ErrorCode { get; private init; }
+	internal string? ErrorText { get; private init; }
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("last_assetid")]
+	internal ulong LastAssetID { get; private init; }
+
+	internal bool MoreItems { get; private init; }
 
 	[JsonDisallowNull]
 	[JsonInclude]
@@ -61,6 +67,8 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonInclude]
 	[JsonPropertyName("error")]
 	private string Error {
+		get => ErrorText ?? "";
+
 		init {
 			if (string.IsNullOrEmpty(value)) {
 				ASF.ArchiLogger.LogNullError(value);
@@ -75,29 +83,9 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	[JsonPropertyName("last_assetid")]
-	private string LastAssetIDText {
-		init {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong lastAssetID) || (lastAssetID == 0)) {
-				ASF.ArchiLogger.LogNullError(lastAssetID);
-
-				return;
-			}
-
-			LastAssetID = lastAssetID;
-		}
-	}
-
-	[JsonDisallowNull]
-	[JsonInclude]
 	[JsonPropertyName("more_items")]
 	private byte MoreItemsNumber {
+		get => MoreItems ? (byte) 1 : (byte) 0;
 		init => MoreItems = value > 0;
 	}
 
@@ -233,61 +221,32 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		[JsonRequired]
 		internal uint AppID { get; private init; }
 
-		internal ulong ClassID { get; private set; }
-		internal ulong InstanceID { get; private set; }
-		internal bool Marketable { get; private set; }
+		[JsonInclude]
+		[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+		[JsonPropertyName("classid")]
+		[JsonRequired]
+		internal ulong ClassID { get; private init; }
+
+		[JsonDisallowNull]
+		[JsonInclude]
+		[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+		[JsonPropertyName("instanceid")]
+		internal ulong InstanceID { get; private init; }
+
+		internal bool Marketable { get; private init; }
 
 		[JsonDisallowNull]
 		[JsonInclude]
 		[JsonPropertyName("tags")]
 		internal ImmutableHashSet<Tag> Tags { get; private init; } = ImmutableHashSet<Tag>.Empty;
 
-		internal bool Tradable { get; private set; }
-
-		[JsonInclude]
-		[JsonPropertyName("classid")]
-		[JsonRequired]
-		private string ClassIDText {
-			init {
-				if (string.IsNullOrEmpty(value)) {
-					ASF.ArchiLogger.LogNullError(value);
-
-					return;
-				}
-
-				if (!ulong.TryParse(value, out ulong classID) || (classID == 0)) {
-					ASF.ArchiLogger.LogNullError(classID);
-
-					return;
-				}
-
-				ClassID = classID;
-			}
-		}
-
-		[JsonDisallowNull]
-		[JsonInclude]
-		[JsonPropertyName("instanceid")]
-		private string InstanceIDText {
-			init {
-				if (string.IsNullOrEmpty(value)) {
-					return;
-				}
-
-				if (!ulong.TryParse(value, out ulong instanceID)) {
-					ASF.ArchiLogger.LogNullError(instanceID);
-
-					return;
-				}
-
-				InstanceID = instanceID;
-			}
-		}
+		internal bool Tradable { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("marketable")]
 		[JsonRequired]
 		private byte MarketableNumber {
+			get => Marketable ? (byte) 1 : (byte) 0;
 			init => Marketable = value > 0;
 		}
 
@@ -295,6 +254,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 		[JsonPropertyName("tradable")]
 		[JsonRequired]
 		private byte TradableNumber {
+			get => Tradable ? (byte) 1 : (byte) 0;
 			init => Tradable = value > 0;
 		}
 
