@@ -32,7 +32,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -1689,7 +1688,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (Debugging.IsDebugConfigured) {
-			ASF.ArchiLogger.LogGenericDebug($"{configFilePath}: {JsonSerializer.Serialize(botConfig, JsonUtilities.IndentedJsonSerialierOptions)}");
+			ASF.ArchiLogger.LogGenericDebug($"{configFilePath}: {botConfig.ToJsonText(true)}");
 		}
 
 		if (!string.IsNullOrEmpty(latestJson)) {
@@ -1717,7 +1716,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (Debugging.IsDebugConfigured) {
-			ASF.ArchiLogger.LogGenericDebug($"{databaseFilePath}: {JsonSerializer.Serialize(botDatabase, JsonUtilities.IndentedJsonSerialierOptions)}");
+			ASF.ArchiLogger.LogGenericDebug($"{databaseFilePath}: {botDatabase.ToJsonText(true)}");
 		}
 
 		botDatabase.PerformMaintenance();
@@ -2309,7 +2308,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			MobileAuthenticator? authenticator = JsonSerializer.Deserialize<MobileAuthenticator>(json, JsonUtilities.DefaultJsonSerialierOptions);
+			MobileAuthenticator? authenticator = json.ToJsonObject<MobileAuthenticator>();
 
 			if (authenticator == null) {
 				ArchiLogger.LogNullError(authenticator);

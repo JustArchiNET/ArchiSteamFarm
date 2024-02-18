@@ -38,7 +38,6 @@ using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ArchiSteamFarm.Web;
 
@@ -324,7 +323,7 @@ public sealed class WebBrowser : IDisposable {
 				T? obj;
 
 				try {
-					obj = await JsonSerializer.DeserializeAsync<T>(response.Content, JsonUtilities.DefaultJsonSerialierOptions, cancellationToken).ConfigureAwait(false);
+					obj = await response.Content.ToJsonObject<T>(cancellationToken).ConfigureAwait(false);
 				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
@@ -597,7 +596,7 @@ public sealed class WebBrowser : IDisposable {
 				TResult? obj;
 
 				try {
-					obj = await JsonSerializer.DeserializeAsync<TResult>(response.Content, JsonUtilities.DefaultJsonSerialierOptions, cancellationToken).ConfigureAwait(false);
+					obj = await response.Content.ToJsonObject<TResult>(cancellationToken).ConfigureAwait(false);
 				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
@@ -743,7 +742,7 @@ public sealed class WebBrowser : IDisposable {
 
 							break;
 						default:
-							requestMessage.Content = new StringContent(JsonSerializer.Serialize(data, JsonUtilities.DefaultJsonSerialierOptions), Encoding.UTF8, "application/json");
+							requestMessage.Content = new StringContent(data.ToJsonText(), Encoding.UTF8, "application/json");
 
 							break;
 					}

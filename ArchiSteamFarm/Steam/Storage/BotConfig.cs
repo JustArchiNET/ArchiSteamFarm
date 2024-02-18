@@ -391,7 +391,7 @@ public sealed class BotConfig {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 		ArgumentNullException.ThrowIfNull(botConfig);
 
-		string json = JsonSerializer.Serialize(botConfig, JsonUtilities.IndentedJsonSerialierOptions);
+		string json = botConfig.ToJsonText(true);
 
 		return await SerializableFile.Write(filePath, json).ConfigureAwait(false);
 	}
@@ -537,7 +537,7 @@ public sealed class BotConfig {
 				return (null, null);
 			}
 
-			botConfig = JsonSerializer.Deserialize<BotConfig>(json, JsonUtilities.DefaultJsonSerialierOptions);
+			botConfig = json.ToJsonObject<BotConfig>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -600,7 +600,7 @@ public sealed class BotConfig {
 		}
 
 		botConfig.Saving = true;
-		string latestJson = JsonSerializer.Serialize(botConfig, JsonUtilities.IndentedJsonSerialierOptions);
+		string latestJson = botConfig.ToJsonText(true);
 		botConfig.Saving = false;
 
 		return (botConfig, json != latestJson ? latestJson : null);

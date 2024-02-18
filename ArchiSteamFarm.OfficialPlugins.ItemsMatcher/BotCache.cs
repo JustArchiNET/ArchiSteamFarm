@@ -22,7 +22,6 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
@@ -139,7 +138,7 @@ internal sealed class BotCache : SerializableFile {
 				return new BotCache(filePath);
 			}
 
-			botCache = JsonSerializer.Deserialize<BotCache>(json, JsonUtilities.DefaultJsonSerialierOptions);
+			botCache = json.ToJsonObject<BotCache>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

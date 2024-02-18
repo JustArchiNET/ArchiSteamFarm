@@ -57,12 +57,12 @@ public abstract class GenericDatabase : SerializableFile {
 		Utilities.InBackground(() => Save(genericDatabase));
 	}
 
-	protected static void SaveToJsonStorage<TDatabase, TValue>(TDatabase genericDatabase, string key, TValue value) where TDatabase : GenericDatabase {
+	protected static void SaveToJsonStorage<TDatabase, TValue>(TDatabase genericDatabase, string key, TValue value) where TDatabase : GenericDatabase where TValue : notnull {
 		ArgumentNullException.ThrowIfNull(genericDatabase);
 		ArgumentException.ThrowIfNullOrEmpty(key);
 		ArgumentNullException.ThrowIfNull(value);
 
-		JsonElement jsonElement = JsonSerializer.SerializeToElement(value, JsonUtilities.DefaultJsonSerialierOptions);
+		JsonElement jsonElement = value.ToJsonElement();
 
 		SaveToJsonStorage(genericDatabase, key, jsonElement);
 	}

@@ -166,7 +166,7 @@ public sealed class BotDatabase : GenericDatabase {
 	}
 
 	[PublicAPI]
-	public void SaveToJsonStorage<T>(string key, T value) {
+	public void SaveToJsonStorage<T>(string key, T value) where T : notnull {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 		ArgumentNullException.ThrowIfNull(value);
 
@@ -274,7 +274,7 @@ public sealed class BotDatabase : GenericDatabase {
 				return null;
 			}
 
-			botDatabase = JsonSerializer.Deserialize<BotDatabase>(json, JsonUtilities.DefaultJsonSerialierOptions);
+			botDatabase = json.ToJsonObject<BotDatabase>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

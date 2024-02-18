@@ -129,7 +129,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 	}
 
 	[PublicAPI]
-	public void SaveToJsonStorage<T>(string key, T value) {
+	public void SaveToJsonStorage<T>(string key, T value) where T : notnull {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 		ArgumentNullException.ThrowIfNull(value);
 
@@ -207,7 +207,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 				return null;
 			}
 
-			globalDatabase = JsonSerializer.Deserialize<GlobalDatabase>(json, JsonUtilities.DefaultJsonSerialierOptions);
+			globalDatabase = json.ToJsonObject<GlobalDatabase>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

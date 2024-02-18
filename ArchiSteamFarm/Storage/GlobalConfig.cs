@@ -506,7 +506,7 @@ public sealed class GlobalConfig {
 				return (null, null);
 			}
 
-			globalConfig = JsonSerializer.Deserialize<GlobalConfig>(json, JsonUtilities.DefaultJsonSerialierOptions);
+			globalConfig = json.ToJsonObject<GlobalConfig>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -556,7 +556,7 @@ public sealed class GlobalConfig {
 		}
 
 		globalConfig.Saving = true;
-		string latestJson = JsonSerializer.Serialize(globalConfig, JsonUtilities.IndentedJsonSerialierOptions);
+		string latestJson = globalConfig.ToJsonText(true);
 		globalConfig.Saving = false;
 
 		return (globalConfig, json != latestJson ? latestJson : null);
@@ -566,7 +566,7 @@ public sealed class GlobalConfig {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 		ArgumentNullException.ThrowIfNull(globalConfig);
 
-		string json = JsonSerializer.Serialize(globalConfig, JsonUtilities.IndentedJsonSerialierOptions);
+		string json = globalConfig.ToJsonText(true);
 
 		return await SerializableFile.Write(filePath, json).ConfigureAwait(false);
 	}

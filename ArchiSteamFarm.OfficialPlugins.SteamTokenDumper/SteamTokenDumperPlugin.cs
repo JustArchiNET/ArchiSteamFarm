@@ -89,7 +89,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				try {
 					switch (configProperty) {
 						case nameof(GlobalConfigExtension.SteamTokenDumperPlugin):
-							config = configValue.Deserialize<SteamTokenDumperConfig>(JsonUtilities.DefaultJsonSerialierOptions);
+							config = configValue.ToJsonObject<SteamTokenDumperConfig>();
 
 							break;
 						case nameof(GlobalConfigExtension.SteamTokenDumperPluginEnabled) when configValue.ValueKind == JsonValueKind.False:

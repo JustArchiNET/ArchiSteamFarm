@@ -27,7 +27,6 @@ using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -157,7 +156,7 @@ public sealed class NLogController : ArchiController {
 			return;
 		}
 
-		string json = JsonSerializer.Serialize(new GenericResponse<string>(newHistoryEntryArgs.Message), JsonUtilities.DefaultJsonSerialierOptions);
+		string json = new GenericResponse<string>(newHistoryEntryArgs.Message).ToJsonText();
 
 		await Task.WhenAll(ActiveLogWebSockets.Where(static kv => kv.Key.State == WebSocketState.Open).Select(kv => PostLoggedJsonUpdate(kv.Key, json, kv.Value.Semaphore, kv.Value.CancellationToken))).ConfigureAwait(false);
 	}
@@ -207,7 +206,7 @@ public sealed class NLogController : ArchiController {
 			return;
 		}
 
-		string response = JsonSerializer.Serialize(new GenericResponse<string>(loggedMessage), JsonUtilities.DefaultJsonSerialierOptions);
+		string response = new GenericResponse<string>(loggedMessage).ToJsonText();
 
 		await PostLoggedJsonUpdate(webSocket, response, sendSemaphore, cancellationToken).ConfigureAwait(false);
 	}

@@ -22,10 +22,13 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using System.Threading;
+using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 
@@ -39,14 +42,31 @@ public static class JsonUtilities {
 	public static readonly JsonSerializerOptions IndentedJsonSerialierOptions = CreateDefaultJsonSerializerOptions(true);
 
 	[PublicAPI]
-	public static JsonSerializerOptions CreateDefaultJsonSerializerOptions(bool writeIndented = false) =>
-		new() {
-			AllowTrailingCommas = true,
-			PropertyNamingPolicy = null,
-			ReadCommentHandling = JsonCommentHandling.Skip,
-			TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { ApplyCustomModifiers } },
-			WriteIndented = writeIndented
-		};
+	public static JsonElement ToJsonElement<T>(this T obj, bool writeIndented = false) where T : notnull {
+		ArgumentNullException.ThrowIfNull(obj);
+
+		return JsonSerializer.SerializeToElement(obj, writeIndented ? IndentedJsonSerialierOptions : DefaultJsonSerialierOptions);
+	}
+
+	[PublicAPI]
+	public static T? ToJsonObject<T>(this JsonElement jsonElement, CancellationToken cancellationToken = default) => jsonElement.Deserialize<T>(DefaultJsonSerialierOptions);
+
+	[PublicAPI]
+	public static async ValueTask<T?> ToJsonObject<T>(this Stream stream, CancellationToken cancellationToken = default) {
+		ArgumentNullException.ThrowIfNull(stream);
+
+		return await JsonSerializer.DeserializeAsync<T>(stream, DefaultJsonSerialierOptions, cancellationToken).ConfigureAwait(false);
+	}
+
+	[PublicAPI]
+	public static T? ToJsonObject<T>([StringSyntax(StringSyntaxAttribute.Json)] this string json) {
+		ArgumentException.ThrowIfNullOrEmpty(json);
+
+		return JsonSerializer.Deserialize<T>(json, DefaultJsonSerialierOptions);
+	}
+
+	[PublicAPI]
+	public static string ToJsonText<T>(this T obj, bool writeIndented = false) => JsonSerializer.Serialize(obj, writeIndented ? IndentedJsonSerialierOptions : DefaultJsonSerialierOptions);
 
 	private static void ApplyCustomModifiers(JsonTypeInfo jsonTypeInfo) {
 		ArgumentNullException.ThrowIfNull(jsonTypeInfo);
@@ -81,6 +101,15 @@ public static class JsonUtilities {
 			jsonTypeInfo.OnDeserialized = OnPotentialDisallowedNullsDeserialized;
 		}
 	}
+
+	private static JsonSerializerOptions CreateDefaultJsonSerializerOptions(bool writeIndented = false) =>
+		new() {
+			AllowTrailingCommas = true,
+			PropertyNamingPolicy = null,
+			ReadCommentHandling = JsonCommentHandling.Skip,
+			TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { ApplyCustomModifiers } },
+			WriteIndented = writeIndented
+		};
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2070", Justification = "We don't care about trimmed methods, it's not like we can make it work differently anyway")]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2075", Justification = "We don't care about trimmed properties, it's not like we can make it work differently anyway")]

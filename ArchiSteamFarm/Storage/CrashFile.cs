@@ -22,7 +22,6 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -101,7 +100,7 @@ internal sealed class CrashFile : SerializableFile {
 				return new CrashFile(filePath);
 			}
 
-			crashFile = JsonSerializer.Deserialize<CrashFile>(json, JsonUtilities.DefaultJsonSerialierOptions);
+			crashFile = json.ToJsonObject<CrashFile>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

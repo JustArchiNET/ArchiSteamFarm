@@ -85,7 +85,7 @@ internal static class ArchiKestrel {
 				if (!string.IsNullOrEmpty(json)) {
 					JsonNode? jsonNode = JsonNode.Parse(json);
 
-					ASF.ArchiLogger.LogGenericDebug($"{SharedInfo.IPCConfigFile}: {jsonNode?.ToJsonString(JsonUtilities.IndentedJsonSerialierOptions) ?? "null"}");
+					ASF.ArchiLogger.LogGenericDebug($"{SharedInfo.IPCConfigFile}: {jsonNode?.ToJsonText(true) ?? "null"}");
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);

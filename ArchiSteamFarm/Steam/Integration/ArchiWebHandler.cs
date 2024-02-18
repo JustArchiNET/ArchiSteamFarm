@@ -30,7 +30,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
@@ -168,7 +167,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			string json = scriptNode.TextContent[startIndex..(endIndex + 1)];
 
 			try {
-				result = JsonSerializer.Deserialize<ImmutableHashSet<BoosterCreatorEntry>>(json, JsonUtilities.DefaultJsonSerialierOptions);
+				result = json.ToJsonObject<ImmutableHashSet<BoosterCreatorEntry>>();
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericException(e);
 
@@ -714,7 +713,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		Dictionary<string, string> data = new(6, StringComparer.Ordinal) {
 			{ "partner", steamID.ToString(CultureInfo.InvariantCulture) },
 			{ "serverid", "1" },
-			{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JsonObject { { "trade_offer_access_token", token } }.ToJsonString(JsonUtilities.DefaultJsonSerialierOptions) : "" },
+			{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JsonObject { { "trade_offer_access_token", token } }.ToJsonText() : "" },
 			{ "tradeoffermessage", $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}" }
 		};
 
@@ -722,7 +721,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		HashSet<ulong> mobileTradeOfferIDs = new(trades.Count);
 
 		foreach (TradeOfferSendRequest trade in trades) {
-			data["json_tradeoffer"] = JsonSerializer.Serialize(trade, JsonUtilities.DefaultJsonSerialierOptions);
+			data["json_tradeoffer"] = trade.ToJsonText();
 
 			ObjectResponse<TradeOfferSendResponse>? response = null;
 
@@ -1654,7 +1653,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		// Extra entry for sessionID
 		Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
 			{ "eCommentPermission", ((byte) userPrivacy.CommentPermission).ToString(CultureInfo.InvariantCulture) },
-			{ "Privacy", JsonSerializer.Serialize(userPrivacy.Settings, JsonUtilities.DefaultJsonSerialierOptions) }
+			{ "Privacy", userPrivacy.Settings.ToJsonText() }
 		};
 
 		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);

@@ -21,7 +21,6 @@
 
 using System;
 using System.IO;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -94,7 +93,7 @@ public abstract class SerializableFile : IDisposable {
 				return;
 			}
 
-			string json = JsonSerializer.Serialize(serializableFile, Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions);
+			string json = serializableFile.ToJsonText(Debugging.IsUserDebugging);
 
 			if (string.IsNullOrEmpty(json)) {
 				throw new InvalidOperationException(nameof(json));
