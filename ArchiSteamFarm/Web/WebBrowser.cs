@@ -28,7 +28,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -742,7 +742,7 @@ public sealed class WebBrowser : IDisposable {
 
 							break;
 						default:
-							requestMessage.Content = new StringContent(data.ToJsonText(), Encoding.UTF8, "application/json");
+							requestMessage.Content = JsonContent.Create(data, options: JsonUtilities.DefaultJsonSerialierOptions);
 
 							break;
 					}
