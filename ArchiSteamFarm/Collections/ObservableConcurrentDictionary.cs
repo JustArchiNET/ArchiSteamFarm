@@ -23,8 +23,6 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Collections;
@@ -42,6 +40,8 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 
 	[PublicAPI]
 	public ICollection<TKey> Keys => BackingDictionary.Keys;
+
+	private readonly ConcurrentDictionary<TKey, TValue> BackingDictionary = new();
 
 	int ICollection<KeyValuePair<TKey, TValue>>.Count => BackingDictionary.Count;
 	int IReadOnlyCollection<KeyValuePair<TKey, TValue>>.Count => BackingDictionary.Count;
@@ -62,10 +62,6 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 			OnModified?.Invoke(this, EventArgs.Empty);
 		}
 	}
-
-	[JsonDisallowNull]
-	[JsonInclude]
-	private ConcurrentDictionary<TKey, TValue> BackingDictionary { get; init; } = new();
 
 	public void Add(KeyValuePair<TKey, TValue> item) {
 		(TKey key, TValue value) = item;
