@@ -54,6 +54,8 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 		get => BackingDictionary[key];
 
 		set {
+			ArgumentNullException.ThrowIfNull(value);
+
 			if (BackingDictionary.TryGetValue(key, out TValue? savedValue) && EqualityComparer<TValue>.Default.Equals(savedValue, value)) {
 				return;
 			}
@@ -69,7 +71,11 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 		Add(key, value);
 	}
 
-	public void Add(TKey key, TValue value) => TryAdd(key, value);
+	public void Add(TKey key, TValue value) {
+		ArgumentNullException.ThrowIfNull(key);
+
+		TryAdd(key, value);
+	}
 
 	public void Clear() {
 		if (BackingDictionary.IsEmpty) {
@@ -81,7 +87,14 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 	}
 
 	public bool Contains(KeyValuePair<TKey, TValue> item) => ((ICollection<KeyValuePair<TKey, TValue>>) BackingDictionary).Contains(item);
-	public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => ((ICollection<KeyValuePair<TKey, TValue>>) BackingDictionary).CopyTo(array, arrayIndex);
+
+	public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) {
+		ArgumentNullException.ThrowIfNull(array);
+		ArgumentOutOfRangeException.ThrowIfNegative(arrayIndex);
+
+		((ICollection<KeyValuePair<TKey, TValue>>) BackingDictionary).CopyTo(array, arrayIndex);
+	}
+
 	public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => BackingDictionary.GetEnumerator();
 
 	public bool Remove(KeyValuePair<TKey, TValue> item) {
@@ -97,6 +110,8 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 	}
 
 	public bool Remove(TKey key) {
+		ArgumentNullException.ThrowIfNull(key);
+
 		if (!BackingDictionary.TryRemove(key, out _)) {
 			return false;
 		}
@@ -106,14 +121,36 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 		return true;
 	}
 
-	bool IDictionary<TKey, TValue>.ContainsKey(TKey key) => BackingDictionary.ContainsKey(key);
-	bool IReadOnlyDictionary<TKey, TValue>.ContainsKey(TKey key) => BackingDictionary.ContainsKey(key);
+	bool IDictionary<TKey, TValue>.ContainsKey(TKey key) {
+		ArgumentNullException.ThrowIfNull(key);
+
+		return BackingDictionary.ContainsKey(key);
+	}
+
+	bool IReadOnlyDictionary<TKey, TValue>.ContainsKey(TKey key) {
+		ArgumentNullException.ThrowIfNull(key);
+
+		return BackingDictionary.ContainsKey(key);
+	}
+
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-	bool IReadOnlyDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value) => BackingDictionary.TryGetValue(key, out value!);
-	bool IDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value) => BackingDictionary.TryGetValue(key, out value!);
+
+	bool IReadOnlyDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value) {
+		ArgumentNullException.ThrowIfNull(key);
+
+		return BackingDictionary.TryGetValue(key, out value!);
+	}
+
+	bool IDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value) {
+		ArgumentNullException.ThrowIfNull(key);
+
+		return BackingDictionary.TryGetValue(key, out value!);
+	}
 
 	[PublicAPI]
 	public bool TryAdd(TKey key, TValue value) {
+		ArgumentNullException.ThrowIfNull(key);
+
 		if (!BackingDictionary.TryAdd(key, value)) {
 			return false;
 		}
@@ -124,5 +161,9 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 	}
 
 	[PublicAPI]
-	public bool TryGetValue(TKey key, out TValue? value) => BackingDictionary.TryGetValue(key, out value);
+	public bool TryGetValue(TKey key, out TValue? value) {
+		ArgumentNullException.ThrowIfNull(key);
+
+		return BackingDictionary.TryGetValue(key, out value);
+	}
 }

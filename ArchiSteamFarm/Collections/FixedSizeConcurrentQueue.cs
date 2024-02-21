@@ -23,22 +23,17 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using ArchiSteamFarm.Core;
 
 namespace ArchiSteamFarm.Collections;
 
-internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> {
+internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> where T : notnull {
 	private readonly ConcurrentQueue<T> BackingQueue = new();
 
 	internal byte MaxCount {
 		get => BackingMaxCount;
 
 		set {
-			if (value == 0) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
+			ArgumentOutOfRangeException.ThrowIfZero(value);
 
 			BackingMaxCount = value;
 
@@ -58,6 +53,8 @@ internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> {
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	internal void Enqueue(T obj) {
+		ArgumentNullException.ThrowIfNull(obj);
+
 		BackingQueue.Enqueue(obj);
 
 		Resize();

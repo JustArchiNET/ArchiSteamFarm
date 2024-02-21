@@ -46,6 +46,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 	}
 
 	public bool Add(T item) {
+		ArgumentNullException.ThrowIfNull(item);
+
 		if (!BackingCollection.TryAdd(item, true)) {
 			return false;
 		}
@@ -65,9 +67,18 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 		OnModified?.Invoke(this, EventArgs.Empty);
 	}
 
-	public bool Contains(T item) => BackingCollection.ContainsKey(item);
+	public bool Contains(T item) {
+		ArgumentNullException.ThrowIfNull(item);
 
-	public void CopyTo(T[] array, int arrayIndex) => BackingCollection.Keys.CopyTo(array, arrayIndex);
+		return BackingCollection.ContainsKey(item);
+	}
+
+	public void CopyTo(T[] array, int arrayIndex) {
+		ArgumentNullException.ThrowIfNull(array);
+		ArgumentOutOfRangeException.ThrowIfNegative(arrayIndex);
+
+		BackingCollection.Keys.CopyTo(array, arrayIndex);
+	}
 
 	public void ExceptWith(IEnumerable<T> other) {
 		ArgumentNullException.ThrowIfNull(other);
@@ -80,6 +91,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 	public IEnumerator<T> GetEnumerator() => BackingCollection.Keys.GetEnumerator();
 
 	public void IntersectWith(IEnumerable<T> other) {
+		ArgumentNullException.ThrowIfNull(other);
+
 		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
 
 		foreach (T item in this.Where(item => !otherSet.Contains(item))) {
@@ -88,36 +101,48 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 	}
 
 	public bool IsProperSubsetOf(IEnumerable<T> other) {
+		ArgumentNullException.ThrowIfNull(other);
+
 		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
 
 		return (otherSet.Count > Count) && IsSubsetOf(otherSet);
 	}
 
 	public bool IsProperSupersetOf(IEnumerable<T> other) {
+		ArgumentNullException.ThrowIfNull(other);
+
 		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
 
 		return (otherSet.Count < Count) && IsSupersetOf(otherSet);
 	}
 
 	public bool IsSubsetOf(IEnumerable<T> other) {
+		ArgumentNullException.ThrowIfNull(other);
+
 		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
 
 		return this.All(otherSet.Contains);
 	}
 
 	public bool IsSupersetOf(IEnumerable<T> other) {
+		ArgumentNullException.ThrowIfNull(other);
+
 		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
 
 		return otherSet.All(Contains);
 	}
 
 	public bool Overlaps(IEnumerable<T> other) {
+		ArgumentNullException.ThrowIfNull(other);
+
 		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
 
 		return otherSet.Any(Contains);
 	}
 
 	public bool Remove(T item) {
+		ArgumentNullException.ThrowIfNull(item);
+
 		if (!BackingCollection.TryRemove(item, out _)) {
 			return false;
 		}
@@ -128,12 +153,16 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 	}
 
 	public bool SetEquals(IEnumerable<T> other) {
+		ArgumentNullException.ThrowIfNull(other);
+
 		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
 
 		return (otherSet.Count == Count) && otherSet.All(Contains);
 	}
 
 	public void SymmetricExceptWith(IEnumerable<T> other) {
+		ArgumentNullException.ThrowIfNull(other);
+
 		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
 		HashSet<T> removed = [];
 
@@ -155,12 +184,18 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 		}
 	}
 
-	void ICollection<T>.Add(T item) => Add(item);
+	void ICollection<T>.Add(T item) {
+		ArgumentNullException.ThrowIfNull(item);
+
+		Add(item);
+	}
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	[PublicAPI]
 	public bool AddRange(IEnumerable<T> items) {
+		ArgumentNullException.ThrowIfNull(items);
+
 		bool result = false;
 
 		foreach (T _ in items.Where(Add)) {
@@ -172,6 +207,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 
 	[PublicAPI]
 	public bool RemoveRange(IEnumerable<T> items) {
+		ArgumentNullException.ThrowIfNull(items);
+
 		bool result = false;
 
 		foreach (T _ in items.Where(Remove)) {
@@ -182,10 +219,16 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 	}
 
 	[PublicAPI]
-	public int RemoveWhere(Predicate<T> match) => BackingCollection.Keys.Where(match.Invoke).Count(key => BackingCollection.TryRemove(key, out _));
+	public int RemoveWhere(Predicate<T> match) {
+		ArgumentNullException.ThrowIfNull(match);
+
+		return BackingCollection.Keys.Where(match.Invoke).Count(key => BackingCollection.TryRemove(key, out _));
+	}
 
 	[PublicAPI]
 	public bool ReplaceIfNeededWith(IReadOnlyCollection<T> other) {
+		ArgumentNullException.ThrowIfNull(other);
+
 		if (SetEquals(other)) {
 			return false;
 		}
@@ -197,6 +240,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 
 	[PublicAPI]
 	public void ReplaceWith(IEnumerable<T> other) {
+		ArgumentNullException.ThrowIfNull(other);
+
 		Clear();
 		UnionWith(other);
 	}
