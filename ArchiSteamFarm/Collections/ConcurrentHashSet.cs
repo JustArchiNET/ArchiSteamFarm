@@ -182,6 +182,9 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 	}
 
 	[PublicAPI]
+	public int RemoveWhere(Predicate<T> match) => BackingCollection.Keys.Where(match.Invoke).Count(key => BackingCollection.TryRemove(key, out _));
+
+	[PublicAPI]
 	public bool ReplaceIfNeededWith(IReadOnlyCollection<T> other) {
 		if (SetEquals(other)) {
 			return false;
