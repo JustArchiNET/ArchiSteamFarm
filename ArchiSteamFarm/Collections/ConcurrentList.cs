@@ -32,6 +32,7 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 	[PublicAPI]
 	public event EventHandler? OnModified;
 
+	[PublicAPI]
 	public int Count {
 		get {
 			using (Lock.ReaderLock()) {
@@ -157,6 +158,7 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+	[PublicAPI]
 	public void ReplaceWith(IEnumerable<T> collection) {
 		ArgumentNullException.ThrowIfNull(collection);
 

@@ -29,6 +29,7 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Collections;
 
 public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue> where TKey : notnull {
+	[PublicAPI]
 	public event EventHandler? OnModified;
 
 	[PublicAPI]
