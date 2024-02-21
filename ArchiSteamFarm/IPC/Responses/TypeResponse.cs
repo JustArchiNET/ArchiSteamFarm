@@ -22,7 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
@@ -35,16 +35,18 @@ public sealed class TypeResponse {
 	///     For enums, keys are friendly names while values are underlying values of those names.
 	///     For objects, keys are non-private fields and properties, while values are underlying types of those.
 	/// </remarks>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public Dictionary<string, string> Body { get; private set; }
+	public Dictionary<string, string> Body { get; private init; }
 
 	/// <summary>
 	///     Metadata of given type.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public TypeProperties Properties { get; private set; }
+	public TypeProperties Properties { get; private init; }
 
 	internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
 		ArgumentNullException.ThrowIfNull(body);

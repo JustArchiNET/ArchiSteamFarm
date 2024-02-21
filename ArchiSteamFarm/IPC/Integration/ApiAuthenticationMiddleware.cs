@@ -68,7 +68,7 @@ internal sealed class ApiAuthenticationMiddleware {
 	}
 
 	[UsedImplicitly]
-	public async Task InvokeAsync(HttpContext context, IOptions<MvcNewtonsoftJsonOptions> jsonOptions) {
+	public async Task InvokeAsync(HttpContext context, IOptions<JsonOptions> jsonOptions) {
 		ArgumentNullException.ThrowIfNull(context);
 		ArgumentNullException.ThrowIfNull(jsonOptions);
 
@@ -84,7 +84,7 @@ internal sealed class ApiAuthenticationMiddleware {
 
 		StatusCodeResponse statusCodeResponse = new(statusCode, permanent);
 
-		await context.Response.WriteJsonAsync(new GenericResponse<StatusCodeResponse>(false, statusCodeResponse), jsonOptions.Value.SerializerSettings).ConfigureAwait(false);
+		await context.Response.WriteAsJsonAsync(new GenericResponse<StatusCodeResponse>(false, statusCodeResponse), jsonOptions.Value.JsonSerializerOptions).ConfigureAwait(false);
 	}
 
 	internal static void ClearFailedAuthorizations(object? state = null) => FailedAuthorizations.Clear();

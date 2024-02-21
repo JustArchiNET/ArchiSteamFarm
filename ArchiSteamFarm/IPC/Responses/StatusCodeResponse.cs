@@ -21,7 +21,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
@@ -29,16 +29,18 @@ public sealed class StatusCodeResponse {
 	/// <summary>
 	///     Value indicating whether the status is permanent. If yes, retrying the request with exactly the same payload doesn't make sense due to a permanent problem (e.g. ASF misconfiguration).
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public bool Permanent { get; private set; }
+	public bool Permanent { get; private init; }
 
 	/// <summary>
 	///     Status code transmitted in addition to the one in HTTP spec.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public HttpStatusCode StatusCode { get; private set; }
+	public HttpStatusCode StatusCode { get; private init; }
 
 	internal StatusCodeResponse(HttpStatusCode statusCode, bool permanent) {
 		StatusCode = statusCode;

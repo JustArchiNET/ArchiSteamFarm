@@ -20,17 +20,19 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class TradeOfferAcceptResponse {
-	[JsonProperty("strError", Required = Required.DisallowNull)]
-	internal readonly string ErrorText = "";
+	[JsonInclude]
+	[JsonPropertyName("strError")]
+	internal string? ErrorText { get; private init; }
 
-	[JsonProperty("needs_mobile_confirmation", Required = Required.DisallowNull)]
-	internal readonly bool RequiresMobileConfirmation;
+	[JsonInclude]
+	[JsonPropertyName("needs_mobile_confirmation")]
+	internal bool RequiresMobileConfirmation { get; private init; }
 
 	[JsonConstructor]
 	private TradeOfferAcceptResponse() { }

@@ -27,7 +27,7 @@ using Nito.AsyncEx;
 
 namespace ArchiSteamFarm.Collections;
 
-internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
+public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 	[PublicAPI]
 	public event EventHandler? OnModified;
 

@@ -20,17 +20,19 @@
 // limitations under the License.
 
 using System;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class HeartBeatRequest {
-	[JsonProperty(Required = Required.Always)]
-	internal readonly Guid Guid;
+	[JsonInclude]
+	[JsonRequired]
+	internal Guid Guid { get; private init; }
 
-	[JsonProperty(Required = Required.Always)]
-	internal readonly ulong SteamID;
+	[JsonInclude]
+	[JsonRequired]
+	internal ulong SteamID { get; private init; }
 
 	internal HeartBeatRequest(Guid guid, ulong steamID) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);

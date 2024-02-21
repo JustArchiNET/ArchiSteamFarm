@@ -21,7 +21,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC.Requests;
 
@@ -30,9 +30,10 @@ public sealed class BotRenameRequest {
 	/// <summary>
 	///     Specifies the new name for the bot. The new name can't be "ASF", neither the one used by any existing bot.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public string NewName { get; private set; } = "";
+	public string NewName { get; private init; } = "";
 
 	[JsonConstructor]
 	private BotRenameRequest() { }

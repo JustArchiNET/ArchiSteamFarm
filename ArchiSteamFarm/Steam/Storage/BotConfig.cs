@@ -28,16 +28,17 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Storage;
@@ -134,67 +135,72 @@ public sealed class BotConfig {
 	[PublicAPI]
 	public static readonly ImmutableHashSet<Asset.EType> DefaultTransferableTypes = ImmutableHashSet.Create(Asset.EType.BoosterPack, Asset.EType.FoilTradingCard, Asset.EType.TradingCard);
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool AcceptGifts { get; private set; } = DefaultAcceptGifts;
+	[JsonInclude]
+	public bool AcceptGifts { get; private init; } = DefaultAcceptGifts;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public EBotBehaviour BotBehaviour { get; private set; } = DefaultBotBehaviour;
+	[JsonInclude]
+	public EBotBehaviour BotBehaviour { get; private init; } = DefaultBotBehaviour;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	[SwaggerValidValues(ValidIntValues = [(int) Asset.EType.FoilTradingCard, (int) Asset.EType.TradingCard])]
-	public ImmutableHashSet<Asset.EType> CompleteTypesToSend { get; private set; } = DefaultCompleteTypesToSend;
+	public ImmutableHashSet<Asset.EType> CompleteTypesToSend { get; private init; } = DefaultCompleteTypesToSend;
 
-	[JsonProperty]
-	public string? CustomGamePlayedWhileFarming { get; private set; } = DefaultCustomGamePlayedWhileFarming;
+	[JsonInclude]
+	public string? CustomGamePlayedWhileFarming { get; private init; } = DefaultCustomGamePlayedWhileFarming;
 
-	[JsonProperty]
-	public string? CustomGamePlayedWhileIdle { get; private set; } = DefaultCustomGamePlayedWhileIdle;
+	[JsonInclude]
+	public string? CustomGamePlayedWhileIdle { get; private init; } = DefaultCustomGamePlayedWhileIdle;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool Enabled { get; private set; } = DefaultEnabled;
+	[JsonInclude]
+	public bool Enabled { get; private init; } = DefaultEnabled;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public ImmutableList<EFarmingOrder> FarmingOrders { get; private set; } = DefaultFarmingOrders;
+	[JsonDisallowNull]
+	[JsonInclude]
+	public ImmutableList<EFarmingOrder> FarmingOrders { get; private init; } = DefaultFarmingOrders;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public EFarmingPreferences FarmingPreferences { get; private set; } = DefaultFarmingPreferences;
+	[JsonInclude]
+	public EFarmingPreferences FarmingPreferences { get; private init; } = DefaultFarmingPreferences;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	[MaxLength(ArchiHandler.MaxGamesPlayedConcurrently)]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
-	public ImmutableList<uint> GamesPlayedWhileIdle { get; private set; } = DefaultGamesPlayedWhileIdle;
+	public ImmutableList<uint> GamesPlayedWhileIdle { get; private init; } = DefaultGamesPlayedWhileIdle;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte HoursUntilCardDrops { get; private set; } = DefaultHoursUntilCardDrops;
+	public byte HoursUntilCardDrops { get; private init; } = DefaultHoursUntilCardDrops;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public ImmutableHashSet<Asset.EType> LootableTypes { get; private set; } = DefaultLootableTypes;
+	[JsonDisallowNull]
+	[JsonInclude]
+	public ImmutableHashSet<Asset.EType> LootableTypes { get; private init; } = DefaultLootableTypes;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public ImmutableHashSet<Asset.EType> MatchableTypes { get; private set; } = DefaultMatchableTypes;
+	[JsonDisallowNull]
+	[JsonInclude]
+	public ImmutableHashSet<Asset.EType> MatchableTypes { get; private init; } = DefaultMatchableTypes;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public EPersonaStateFlag OnlineFlags { get; private set; } = DefaultOnlineFlags;
+	[JsonInclude]
+	public EPersonaStateFlag OnlineFlags { get; private init; } = DefaultOnlineFlags;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public EPersonaState OnlineStatus { get; private set; } = DefaultOnlineStatus;
+	[JsonInclude]
+	public EPersonaState OnlineStatus { get; private init; } = DefaultOnlineStatus;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	public ArchiCryptoHelper.ECryptoMethod PasswordFormat { get; internal set; } = DefaultPasswordFormat;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public ERedeemingPreferences RedeemingPreferences { get; private set; } = DefaultRedeemingPreferences;
+	[JsonInclude]
+	public ERedeemingPreferences RedeemingPreferences { get; private init; } = DefaultRedeemingPreferences;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public ERemoteCommunication RemoteCommunication { get; private set; } = DefaultRemoteCommunication;
+	[JsonInclude]
+	public ERemoteCommunication RemoteCommunication { get; private init; } = DefaultRemoteCommunication;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte SendTradePeriod { get; private set; } = DefaultSendTradePeriod;
+	public byte SendTradePeriod { get; private init; } = DefaultSendTradePeriod;
 
-	[JsonProperty]
+	[JsonInclude]
 	public string? SteamLogin {
 		get => BackingSteamLogin;
 
@@ -204,12 +210,12 @@ public sealed class BotConfig {
 		}
 	}
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[SwaggerSteamIdentifier(AccountType = EAccountType.Clan)]
 	[SwaggerValidValues(ValidIntValues = [0])]
-	public ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
+	public ulong SteamMasterClanID { get; private init; } = DefaultSteamMasterClanID;
 
-	[JsonProperty]
+	[JsonInclude]
 	[MaxLength(SteamParentalCodeLength)]
 	[MinLength(SteamParentalCodeLength)]
 	[SwaggerValidValues(ValidStringValues = ["0"])]
@@ -223,7 +229,7 @@ public sealed class BotConfig {
 		}
 	}
 
-	[JsonProperty]
+	[JsonInclude]
 	public string? SteamPassword {
 		get => BackingSteamPassword;
 
@@ -233,37 +239,36 @@ public sealed class BotConfig {
 		}
 	}
 
-	[JsonProperty]
+	[JsonInclude]
 	[MaxLength(SteamTradeTokenLength)]
 	[MinLength(SteamTradeTokenLength)]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
-	public string? SteamTradeToken { get; private set; } = DefaultSteamTradeToken;
+	public string? SteamTradeToken { get; private init; } = DefaultSteamTradeToken;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public ImmutableDictionary<ulong, EAccess> SteamUserPermissions { get; private set; } = DefaultSteamUserPermissions;
+	[JsonDisallowNull]
+	[JsonInclude]
+	public ImmutableDictionary<ulong, EAccess> SteamUserPermissions { get; private init; } = DefaultSteamUserPermissions;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte TradeCheckPeriod { get; private set; } = DefaultTradeCheckPeriod;
+	public byte TradeCheckPeriod { get; private init; } = DefaultTradeCheckPeriod;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public ETradingPreferences TradingPreferences { get; private set; } = DefaultTradingPreferences;
+	[JsonInclude]
+	public ETradingPreferences TradingPreferences { get; private init; } = DefaultTradingPreferences;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public ImmutableHashSet<Asset.EType> TransferableTypes { get; private set; } = DefaultTransferableTypes;
+	[JsonDisallowNull]
+	[JsonInclude]
+	public ImmutableHashSet<Asset.EType> TransferableTypes { get; private init; } = DefaultTransferableTypes;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool UseLoginKeys { get; private set; } = DefaultUseLoginKeys;
+	[JsonInclude]
+	public bool UseLoginKeys { get; private init; } = DefaultUseLoginKeys;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public ArchiHandler.EUserInterfaceMode UserInterfaceMode { get; private set; } = DefaultUserInterfaceMode;
+	[JsonInclude]
+	public ArchiHandler.EUserInterfaceMode UserInterfaceMode { get; private init; } = DefaultUserInterfaceMode;
 
 	[JsonExtensionData]
-	internal Dictionary<string, JToken>? AdditionalProperties {
-		get;
-		[UsedImplicitly]
-		set;
-	}
+	[JsonInclude]
+	internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
 	internal bool IsSteamLoginSet { get; set; }
 	internal bool IsSteamParentalCodeSet { get; set; }
@@ -274,18 +279,17 @@ public sealed class BotConfig {
 	private string? BackingSteamParentalCode = DefaultSteamParentalCode;
 	private string? BackingSteamPassword = DefaultSteamPassword;
 
-	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamMasterClanID)}", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamMasterClanID)}")]
 	private string SSteamMasterClanID {
 		get => SteamMasterClanID.ToString(CultureInfo.InvariantCulture);
 
-		set {
-			if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SSteamMasterClanID)));
+		init {
+			ArgumentException.ThrowIfNullOrEmpty(value);
 
-				return;
-			}
-
-			SteamMasterClanID = result;
+			// We intend to throw exception back to caller here
+			SteamMasterClanID = ulong.Parse(value, CultureInfo.InvariantCulture);
 		}
 	}
 
@@ -387,7 +391,7 @@ public sealed class BotConfig {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 		ArgumentNullException.ThrowIfNull(botConfig);
 
-		string json = JsonConvert.SerializeObject(botConfig, Formatting.Indented);
+		string json = botConfig.ToJsonText(true);
 
 		return await SerializableFile.Write(filePath, json).ConfigureAwait(false);
 	}
@@ -533,7 +537,7 @@ public sealed class BotConfig {
 				return (null, null);
 			}
 
-			botConfig = JsonConvert.DeserializeObject<BotConfig>(json);
+			botConfig = json.ToJsonObject<BotConfig>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -596,7 +600,7 @@ public sealed class BotConfig {
 		}
 
 		botConfig.Saving = true;
-		string latestJson = JsonConvert.SerializeObject(botConfig, Formatting.Indented);
+		string latestJson = botConfig.ToJsonText(true);
 		botConfig.Saving = false;
 
 		return (botConfig, json != latestJson ? latestJson : null);

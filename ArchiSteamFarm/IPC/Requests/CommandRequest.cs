@@ -21,7 +21,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC.Requests;
 
@@ -30,9 +30,10 @@ public sealed class CommandRequest {
 	/// <summary>
 	///     Specifies the command that will be executed by ASF.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public string Command { get; private set; } = "";
+	public string Command { get; private init; } = "";
 
 	[JsonConstructor]
 	private CommandRequest() { }

@@ -21,14 +21,16 @@
 
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class NewDiscoveryQueueResponse {
-	[JsonProperty("queue", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> Queue = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("queue")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> Queue { get; private init; } = ImmutableHashSet<uint>.Empty;
 
 	[JsonConstructor]
 	private NewDiscoveryQueueResponse() { }

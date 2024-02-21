@@ -21,22 +21,20 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class BackgroundTaskResponse {
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty(Required = Required.Always)]
-	internal readonly bool Finished;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	[JsonInclude]
+	[JsonRequired]
+	internal bool Finished { get; private init; }
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty(Required = Required.Always)]
-	internal readonly Guid RequestID;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	[JsonInclude]
+	[JsonRequired]
+	internal Guid RequestID { get; private init; }
 
 	[JsonConstructor]
 	private BackgroundTaskResponse() { }

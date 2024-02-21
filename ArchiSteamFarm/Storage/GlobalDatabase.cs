@@ -25,15 +25,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.SteamKit2;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Storage;
 
@@ -46,26 +48,19 @@ public sealed class GlobalDatabase : GenericDatabase {
 	[PublicAPI]
 	public IReadOnlyDictionary<uint, PackageData> PackagesDataReadOnly => PackagesData;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<ulong> CachedBadBots = [];
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ObservableConcurrentDictionary<uint, byte> CardCountsPerGame = new();
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly InMemoryServerListProvider ServerListProvider = new();
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentDictionary<uint, ulong> PackagesAccessTokens = new();
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentDictionary<uint, PackageData> PackagesData = new();
-
 	private readonly SemaphoreSlim PackagesRefreshSemaphore = new(1, 1);
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[PublicAPI]
-	public Guid Identifier { get; private set; } = Guid.NewGuid();
+	public Guid Identifier { get; private init; } = Guid.NewGuid();
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	internal ConcurrentHashSet<ulong> CachedBadBots { get; private init; } = [];
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	internal ObservableConcurrentDictionary<uint, byte> CardCountsPerGame { get; private init; } = new();
 
 	internal uint CellID {
 		get => BackingCellID;
@@ -93,11 +88,25 @@ public sealed class GlobalDatabase : GenericDatabase {
 		}
 	}
 
-	[JsonProperty($"_{nameof(CellID)}", Required = Required.DisallowNull)]
-	private uint BackingCellID;
+	[JsonDisallowNull]
+	[JsonInclude]
+	internal InMemoryServerListProvider ServerListProvider { get; private init; } = new();
 
-	[JsonProperty($"_{nameof(LastChangeNumber)}", Required = Required.DisallowNull)]
-	private uint BackingLastChangeNumber;
+	[JsonInclude]
+	[JsonPropertyName($"_{nameof(CellID)}")]
+	private uint BackingCellID { get; set; }
+
+	[JsonInclude]
+	[JsonPropertyName($"_{nameof(LastChangeNumber)}")]
+	private uint BackingLastChangeNumber { get; set; }
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentDictionary<uint, ulong> PackagesAccessTokens { get; init; } = new();
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentDictionary<uint, PackageData> PackagesData { get; init; } = new();
 
 	private GlobalDatabase(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -112,11 +121,37 @@ public sealed class GlobalDatabase : GenericDatabase {
 		ServerListProvider.ServerListUpdated += OnObjectModified;
 	}
 
+	[PublicAPI]
+	public void DeleteFromJsonStorage(string key) {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+
+		DeleteFromJsonStorage(this, key);
+	}
+
+	[PublicAPI]
+	public void SaveToJsonStorage<T>(string key, T value) where T : notnull {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+		ArgumentNullException.ThrowIfNull(value);
+
+		SaveToJsonStorage(this, key, value);
+	}
+
+	[PublicAPI]
+	public void SaveToJsonStorage(string key, JsonElement value) {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+
+		if (value.ValueKind == JsonValueKind.Undefined) {
+			throw new ArgumentOutOfRangeException(nameof(value));
+		}
+
+		SaveToJsonStorage(this, key, value);
+	}
+
 	[UsedImplicitly]
 	public bool ShouldSerializeBackingCellID() => BackingCellID != 0;
 
 	[UsedImplicitly]
-	public bool ShouldSerializeBackingLastChangeNumber() => LastChangeNumber != 0;
+	public bool ShouldSerializeBackingLastChangeNumber() => BackingLastChangeNumber != 0;
 
 	[UsedImplicitly]
 	public bool ShouldSerializeCachedBadBots() => CachedBadBots.Count > 0;
@@ -148,13 +183,15 @@ public sealed class GlobalDatabase : GenericDatabase {
 		base.Dispose(disposing);
 	}
 
+	protected override Task Save() => Save(this);
+
 	internal static async Task<GlobalDatabase?> CreateOrLoad(string filePath) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
 			GlobalDatabase result = new(filePath);
 
-			Utilities.InBackground(result.Save);
+			Utilities.InBackground(() => Save(result));
 
 			return result;
 		}
@@ -170,7 +207,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 				return null;
 			}
 
-			globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(json);
+			globalDatabase = json.ToJsonObject<GlobalDatabase>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

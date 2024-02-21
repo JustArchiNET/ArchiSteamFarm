@@ -26,11 +26,11 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
@@ -63,27 +63,35 @@ public sealed class TypeController : ArchiController {
 
 		if (targetType.IsClass) {
 			foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(static field => !field.IsPrivate)) {
-				JsonPropertyAttribute? jsonProperty = field.GetCustomAttribute<JsonPropertyAttribute>();
-
-				if (jsonProperty != null) {
-					string? unifiedName = field.FieldType.GetUnifiedName();
-
-					if (!string.IsNullOrEmpty(unifiedName)) {
-						body[jsonProperty.PropertyName ?? field.Name] = unifiedName;
-					}
+				if (!field.IsDefined(typeof(JsonIncludeAttribute), false) || field.IsDefined(typeof(JsonExtensionDataAttribute), false)) {
+					continue;
 				}
+
+				string? unifiedName = field.FieldType.GetUnifiedName();
+
+				if (string.IsNullOrEmpty(unifiedName)) {
+					continue;
+				}
+
+				JsonPropertyNameAttribute? jsonPropertyName = field.GetCustomAttribute<JsonPropertyNameAttribute>();
+
+				body[jsonPropertyName?.Name ?? field.Name] = unifiedName;
 			}
 
 			foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(static property => property is { CanRead: true, GetMethod.IsPrivate: false })) {
-				JsonPropertyAttribute? jsonProperty = property.GetCustomAttribute<JsonPropertyAttribute>();
-
-				if (jsonProperty != null) {
-					string? unifiedName = property.PropertyType.GetUnifiedName();
-
-					if (!string.IsNullOrEmpty(unifiedName)) {
-						body[jsonProperty.PropertyName ?? property.Name] = unifiedName;
-					}
+				if (!property.IsDefined(typeof(JsonIncludeAttribute), false) || property.IsDefined(typeof(JsonExtensionDataAttribute), false)) {
+					continue;
 				}
+
+				string? unifiedName = property.PropertyType.GetUnifiedName();
+
+				if (string.IsNullOrEmpty(unifiedName)) {
+					continue;
+				}
+
+				JsonPropertyNameAttribute? jsonPropertyName = property.GetCustomAttribute<JsonPropertyNameAttribute>();
+
+				body[jsonPropertyName?.Name ?? property.Name] = unifiedName;
 			}
 		} else if (targetType.IsEnum) {
 			Type enumType = Enum.GetUnderlyingType(targetType);

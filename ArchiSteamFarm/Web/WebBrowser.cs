@@ -28,16 +28,16 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Web;
 
@@ -323,17 +323,7 @@ public sealed class WebBrowser : IDisposable {
 				T? obj;
 
 				try {
-					using StreamReader streamReader = new(response.Content);
-
-#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-					JsonTextReader jsonReader = new(streamReader);
-#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-
-					await using (jsonReader.ConfigureAwait(false)) {
-						JsonSerializer serializer = new();
-
-						obj = serializer.Deserialize<T>(jsonReader);
-					}
+					obj = await response.Content.ToJsonObject<T>(cancellationToken).ConfigureAwait(false);
 				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
@@ -606,17 +596,7 @@ public sealed class WebBrowser : IDisposable {
 				TResult? obj;
 
 				try {
-					using StreamReader streamReader = new(response.Content);
-
-#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-					JsonTextReader jsonReader = new(streamReader);
-#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-
-					await using (jsonReader.ConfigureAwait(false)) {
-						JsonSerializer serializer = new();
-
-						obj = serializer.Deserialize<TResult>(jsonReader);
-					}
+					obj = await response.Content.ToJsonObject<TResult>(cancellationToken).ConfigureAwait(false);
 				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
@@ -762,7 +742,7 @@ public sealed class WebBrowser : IDisposable {
 
 							break;
 						default:
-							requestMessage.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+							requestMessage.Content = JsonContent.Create(data, options: JsonUtilities.DefaultJsonSerialierOptions);
 
 							break;
 					}

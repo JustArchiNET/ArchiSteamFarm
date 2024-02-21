@@ -21,7 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
@@ -32,8 +32,8 @@ public sealed class TypeProperties {
 	/// <remarks>
 	///     This can be used for determining how the body of the response should be interpreted.
 	/// </remarks>
-	[JsonProperty]
-	public string? BaseType { get; private set; }
+	[JsonInclude]
+	public string? BaseType { get; private init; }
 
 	/// <summary>
 	///     Custom attributes of given type, if available.
@@ -41,8 +41,8 @@ public sealed class TypeProperties {
 	/// <remarks>
 	///     This can be used for determining main enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 	/// </remarks>
-	[JsonProperty]
-	public HashSet<string>? CustomAttributes { get; private set; }
+	[JsonInclude]
+	public HashSet<string>? CustomAttributes { get; private init; }
 
 	/// <summary>
 	///     Underlying type of given type, if available.
@@ -50,8 +50,8 @@ public sealed class TypeProperties {
 	/// <remarks>
 	///     This can be used for determining underlying enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 	/// </remarks>
-	[JsonProperty]
-	public string? UnderlyingType { get; private set; }
+	[JsonInclude]
+	public string? UnderlyingType { get; private init; }
 
 	internal TypeProperties(string? baseType = null, HashSet<string>? customAttributes = null, string? underlyingType = null) {
 		BaseType = baseType;

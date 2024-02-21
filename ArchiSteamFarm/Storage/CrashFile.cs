@@ -22,12 +22,13 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Storage;
 
@@ -58,11 +59,11 @@ internal sealed class CrashFile : SerializableFile {
 		}
 	}
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	private DateTime BackingLastStartup;
+	[JsonInclude]
+	private DateTime BackingLastStartup { get; set; }
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	private byte BackingStartupCount;
+	[JsonInclude]
+	private byte BackingStartupCount { get; set; }
 
 	private CrashFile(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -78,6 +79,8 @@ internal sealed class CrashFile : SerializableFile {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeBackingStartupCount() => BackingStartupCount > 0;
+
+	protected override Task Save() => Save(this);
 
 	internal static async Task<CrashFile> CreateOrLoad(string filePath) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -97,7 +100,7 @@ internal sealed class CrashFile : SerializableFile {
 				return new CrashFile(filePath);
 			}
 
-			crashFile = JsonConvert.DeserializeObject<CrashFile>(json);
+			crashFile = json.ToJsonObject<CrashFile>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

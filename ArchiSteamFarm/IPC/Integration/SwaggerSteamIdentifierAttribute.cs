@@ -28,10 +28,10 @@ namespace ArchiSteamFarm.IPC.Integration;
 
 [PublicAPI]
 public sealed class SwaggerSteamIdentifierAttribute : CustomSwaggerAttribute {
-	public EAccountType AccountType { get; set; } = EAccountType.Individual;
-	public uint MaximumAccountID { get; set; } = uint.MaxValue;
-	public uint MinimumAccountID { get; set; } = 1;
-	public EUniverse Universe { get; set; } = EUniverse.Public;
+	public EAccountType AccountType { get; init; } = EAccountType.Individual;
+	public uint MaximumAccountID { get; init; } = uint.MaxValue;
+	public uint MinimumAccountID { get; init; } = 1;
+	public EUniverse Universe { get; init; } = EUniverse.Public;
 
 	public override void Apply(OpenApiSchema schema) {
 		ArgumentNullException.ThrowIfNull(schema);

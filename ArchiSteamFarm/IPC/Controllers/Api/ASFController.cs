@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Requests;
@@ -32,7 +33,6 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Interaction;
 using ArchiSteamFarm.Storage;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
@@ -124,9 +124,9 @@ public sealed class ASFController : ArchiController {
 		}
 
 		if (ASF.GlobalConfig.AdditionalProperties is { Count: > 0 }) {
-			request.GlobalConfig.AdditionalProperties ??= new Dictionary<string, JToken>(ASF.GlobalConfig.AdditionalProperties.Count, ASF.GlobalConfig.AdditionalProperties.Comparer);
+			request.GlobalConfig.AdditionalProperties ??= new Dictionary<string, JsonElement>(ASF.GlobalConfig.AdditionalProperties.Count, ASF.GlobalConfig.AdditionalProperties.Comparer);
 
-			foreach ((string key, JToken value) in ASF.GlobalConfig.AdditionalProperties.Where(property => !request.GlobalConfig.AdditionalProperties.ContainsKey(property.Key))) {
+			foreach ((string key, JsonElement value) in ASF.GlobalConfig.AdditionalProperties.Where(property => !request.GlobalConfig.AdditionalProperties.ContainsKey(property.Key))) {
 				request.GlobalConfig.AdditionalProperties.Add(key, value);
 			}
 

@@ -20,10 +20,10 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
@@ -33,5 +33,5 @@ public interface IASF : IPlugin {
 	///     ASF will call this method right after global config initialization.
 	/// </summary>
 	/// <param name="additionalConfigProperties">Extra config properties made out of <see cref="JsonExtensionDataAttribute" />. Can be null if no extra properties are found.</param>
-	Task OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null);
+	Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null);
 }

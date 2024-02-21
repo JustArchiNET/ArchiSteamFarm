@@ -27,10 +27,12 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,6 +40,7 @@ using AngleSharp.Dom;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Plugins;
@@ -53,7 +56,6 @@ using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using Microsoft.IdentityModel.JsonWebTokens;
-using Newtonsoft.Json;
 using SteamKit2;
 using SteamKit2.Authentication;
 using SteamKit2.Internal;
@@ -101,24 +103,28 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[PublicAPI]
 	public BotDatabase BotDatabase { get; }
 
-	[JsonProperty]
+	[JsonInclude]
 	[PublicAPI]
+	[Required]
 	public string BotName { get; }
 
-	[JsonProperty]
+	[JsonInclude]
 	[PublicAPI]
+	[Required]
 	public CardsFarmer CardsFarmer { get; }
 
 	[JsonIgnore]
 	[PublicAPI]
 	public Commands Commands { get; }
 
-	[JsonProperty]
+	[JsonInclude]
 	[PublicAPI]
+	[Required]
 	public uint GamesToRedeemInBackgroundCount => BotDatabase.GamesToRedeemInBackgroundCount;
 
-	[JsonProperty]
+	[JsonInclude]
 	[PublicAPI]
+	[Required]
 	public bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 
 	[JsonIgnore]
@@ -129,17 +135,25 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[PublicAPI]
 	public bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
 
-	[JsonProperty]
+	[JsonInclude]
 	[PublicAPI]
+	[Required]
 	public bool IsConnectedAndLoggedOn => SteamClient.SteamID != null;
 
-	[JsonProperty]
+	[JsonInclude]
 	[PublicAPI]
+	[Required]
 	public bool IsPlayingPossible => !PlayingBlocked && !LibraryLocked;
 
-	[JsonProperty]
+	[JsonInclude]
 	[PublicAPI]
 	public string? PublicIP => SteamClient.PublicIP?.ToString();
+
+	[JsonInclude]
+	[JsonPropertyName($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
+	[PublicAPI]
+	[Required]
+	public string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
 
 	[JsonIgnore]
 	[PublicAPI]
@@ -186,9 +200,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
-	private string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
-
 	[JsonIgnore]
 	[PublicAPI]
 	public string? AccessToken {
@@ -217,19 +228,29 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	[JsonProperty]
+	[JsonInclude]
+	[JsonRequired]
 	[PublicAPI]
+	[Required]
 	public EAccountFlags AccountFlags { get; private set; }
 
-	[JsonProperty]
+	[JsonInclude]
 	[PublicAPI]
+	public string? AvatarHash { get; private set; }
+
+	[JsonInclude]
+	[JsonRequired]
+	[PublicAPI]
+	[Required]
 	public BotConfig BotConfig { get; private set; }
 
-	[JsonProperty]
+	[JsonInclude]
+	[JsonRequired]
 	[PublicAPI]
+	[Required]
 	public bool KeepRunning { get; private set; }
 
-	[JsonProperty]
+	[JsonInclude]
 	[PublicAPI]
 	public string? Nickname { get; private set; }
 
@@ -237,24 +258,34 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[PublicAPI]
 	public FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs { get; private set; } = FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
 
-	[JsonProperty]
+	[JsonInclude]
+	[JsonRequired]
 	[PublicAPI]
+	[Required]
 	public ASF.EUserInputType RequiredInput { get; private set; }
 
-	[JsonProperty]
+	[JsonInclude]
+	[JsonRequired]
 	[PublicAPI]
+	[Required]
 	public ulong SteamID { get; private set; }
 
-	[JsonProperty]
+	[JsonInclude]
+	[JsonRequired]
 	[PublicAPI]
+	[Required]
 	public long WalletBalance { get; private set; }
 
-	[JsonProperty]
+	[JsonInclude]
+	[JsonRequired]
 	[PublicAPI]
+	[Required]
 	public long WalletBalanceDelayed { get; private set; }
 
-	[JsonProperty]
+	[JsonInclude]
+	[JsonRequired]
 	[PublicAPI]
+	[Required]
 	public ECurrencyCode WalletCurrency { get; private set; }
 
 	internal byte HeartBeatFailures { get; private set; }
@@ -263,9 +294,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private DateTime? AccessTokenValidUntil;
 	private string? AuthCode;
-
-	[JsonProperty]
-	private string? AvatarHash;
 
 	private string? BackingAccessToken;
 	private Timer? ConnectionFailureTimer;
@@ -1660,7 +1688,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (Debugging.IsDebugConfigured) {
-			ASF.ArchiLogger.LogGenericDebug($"{configFilePath}: {JsonConvert.SerializeObject(botConfig, Formatting.Indented)}");
+			ASF.ArchiLogger.LogGenericDebug($"{configFilePath}: {botConfig.ToJsonText(true)}");
 		}
 
 		if (!string.IsNullOrEmpty(latestJson)) {
@@ -1688,7 +1716,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (Debugging.IsDebugConfigured) {
-			ASF.ArchiLogger.LogGenericDebug($"{databaseFilePath}: {JsonConvert.SerializeObject(botDatabase, Formatting.Indented)}");
+			ASF.ArchiLogger.LogGenericDebug($"{databaseFilePath}: {botDatabase.ToJsonText(true)}");
 		}
 
 		botDatabase.PerformMaintenance();
@@ -2280,7 +2308,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			MobileAuthenticator? authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(json);
+			MobileAuthenticator? authenticator = json.ToJsonObject<MobileAuthenticator>();
 
 			if (authenticator == null) {
 				ArchiLogger.LogNullError(authenticator);

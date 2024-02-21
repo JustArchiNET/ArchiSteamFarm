@@ -21,23 +21,25 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Storage;
 
 public sealed class PackageData {
-	[JsonProperty]
-	public ImmutableHashSet<uint>? AppIDs { get; private set; }
+	[JsonInclude]
+	public ImmutableHashSet<uint>? AppIDs { get; private init; }
 
-	[JsonProperty(Required = Required.Always)]
-	public uint ChangeNumber { get; private set; }
+	[JsonInclude]
+	[JsonRequired]
+	public uint ChangeNumber { get; private init; }
 
-	[JsonProperty]
-	public ImmutableHashSet<string>? ProhibitRunInCountries { get; private set; }
+	[JsonInclude]
+	public ImmutableHashSet<string>? ProhibitRunInCountries { get; private init; }
 
-	[JsonProperty(Required = Required.Always)]
-	public DateTime ValidUntil { get; private set; }
+	[JsonInclude]
+	[JsonRequired]
+	public DateTime ValidUntil { get; private init; }
 
 	internal PackageData(uint changeNumber, DateTime validUntil, ImmutableHashSet<uint>? appIDs = null, ImmutableHashSet<string>? prohibitRunInCountries = null) {
 		ArgumentOutOfRangeException.ThrowIfZero(changeNumber);

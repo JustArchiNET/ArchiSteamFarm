@@ -21,8 +21,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Storage;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests;
 
@@ -31,9 +31,10 @@ public sealed class BotRequest {
 	/// <summary>
 	///     ASF's bot config structure.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public BotConfig BotConfig { get; private set; } = new();
+	public BotConfig BotConfig { get; private init; } = new();
 
 	[JsonConstructor]
 	private BotRequest() { }

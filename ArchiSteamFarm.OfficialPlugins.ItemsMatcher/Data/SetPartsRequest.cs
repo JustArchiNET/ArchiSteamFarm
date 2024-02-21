@@ -22,24 +22,28 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class SetPartsRequest {
-	[JsonProperty(Required = Required.Always)]
-	internal readonly Guid Guid;
+	[JsonInclude]
+	[JsonRequired]
+	internal Guid Guid { get; private init; }
 
-	[JsonProperty(Required = Required.Always)]
-	internal readonly ImmutableHashSet<Asset.EType> MatchableTypes;
+	[JsonInclude]
+	[JsonRequired]
+	internal ImmutableHashSet<Asset.EType> MatchableTypes { get; private init; }
 
-	[JsonProperty(Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> RealAppIDs;
+	[JsonInclude]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> RealAppIDs { get; private init; }
 
-	[JsonProperty(Required = Required.Always)]
-	internal readonly ulong SteamID;
+	[JsonInclude]
+	[JsonRequired]
+	internal ulong SteamID { get; private init; }
 
 	internal SetPartsRequest(Guid guid, ulong steamID, IReadOnlyCollection<Asset.EType> matchableTypes, IReadOnlyCollection<uint> realAppIDs) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);

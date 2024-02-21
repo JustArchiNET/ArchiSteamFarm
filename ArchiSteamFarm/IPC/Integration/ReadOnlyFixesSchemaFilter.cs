@@ -19,22 +19,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
-using SteamKit2;
+using System;
+using System.Reflection;
+using JetBrains.Annotations;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ArchiSteamFarm.Steam.Data;
+namespace ArchiSteamFarm.IPC.Integration;
 
-[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-internal sealed class RedeemWalletResponse : ResultResponse {
-	[JsonInclude]
-	[JsonPropertyName("formattednewwalletbalance")]
-	internal string? BalanceText { get; private init; }
+[UsedImplicitly]
+internal sealed class ReadOnlyFixesSchemaFilter : ISchemaFilter {
+	public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
+		ArgumentNullException.ThrowIfNull(schema);
+		ArgumentNullException.ThrowIfNull(context);
 
-	[JsonInclude]
-	[JsonPropertyName("detail")]
-	internal EPurchaseResultDetail PurchaseResultDetail { get; private init; }
-
-	[JsonConstructor]
-	private RedeemWalletResponse() { }
+		if (schema.ReadOnly && context.MemberInfo is PropertyInfo { CanWrite: true }) {
+			schema.ReadOnly = false;
+		}
+	}
 }

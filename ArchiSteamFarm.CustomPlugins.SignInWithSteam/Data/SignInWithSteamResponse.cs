@@ -20,13 +20,14 @@
 // limitations under the License.
 
 using System;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.CustomPlugins.SignInWithSteam.Data;
 
 public sealed class SignInWithSteamResponse {
-	[JsonProperty(Required = Required.Always)]
-	public Uri ReturnURL { get; private set; }
+	[JsonInclude]
+	[JsonRequired]
+	public Uri ReturnURL { get; private init; }
 
 	internal SignInWithSteamResponse(Uri returnURL) {
 		ArgumentNullException.ThrowIfNull(returnURL);

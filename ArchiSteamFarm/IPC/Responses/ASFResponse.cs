@@ -21,8 +21,8 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Storage;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
@@ -30,51 +30,58 @@ public sealed class ASFResponse {
 	/// <summary>
 	///     ASF's build variant.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public string BuildVariant { get; private set; }
+	public string BuildVariant { get; private init; }
 
 	/// <summary>
 	///     A value specifying whether this variant of ASF is capable of auto-update.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public bool CanUpdate { get; private set; }
+	public bool CanUpdate { get; private init; }
 
 	/// <summary>
 	///     Currently loaded ASF's global config.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public GlobalConfig GlobalConfig { get; private set; }
+	public GlobalConfig GlobalConfig { get; private init; }
 
 	/// <summary>
 	///     Current amount of managed memory being used by the process, in kilobytes.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public uint MemoryUsage { get; private set; }
+	public uint MemoryUsage { get; private init; }
 
 	/// <summary>
 	///     Start date of the process.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public DateTime ProcessStartTime { get; private set; }
+	public DateTime ProcessStartTime { get; private init; }
 
 	/// <summary>
 	///     Boolean value specifying whether ASF has been started with a --service parameter.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public bool Service { get; private set; }
+	public bool Service { get; private init; }
 
 	/// <summary>
 	///     ASF version of currently running binary.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public Version Version { get; private set; }
+	public Version Version { get; private init; }
 
 	internal ASFResponse(string buildVariant, bool canUpdate, GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
 		ArgumentException.ThrowIfNullOrEmpty(buildVariant);

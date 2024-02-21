@@ -22,20 +22,22 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal sealed class BotCache : SerializableFile {
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentList<AssetForListing> LastAnnouncedAssetsForListing = [];
+	[JsonDisallowNull]
+	[JsonInclude]
+	internal ConcurrentList<AssetForListing> LastAnnouncedAssetsForListing { get; private init; } = [];
 
 	internal string? LastAnnouncedTradeToken {
 		get => BackingLastAnnouncedTradeToken;
@@ -76,14 +78,14 @@ internal sealed class BotCache : SerializableFile {
 		}
 	}
 
-	[JsonProperty]
-	private string? BackingLastAnnouncedTradeToken;
+	[JsonInclude]
+	private string? BackingLastAnnouncedTradeToken { get; set; }
 
-	[JsonProperty]
-	private string? BackingLastInventoryChecksumBeforeDeduplication;
+	[JsonInclude]
+	private string? BackingLastInventoryChecksumBeforeDeduplication { get; set; }
 
-	[JsonProperty]
-	private DateTime? BackingLastRequestAt;
+	[JsonInclude]
+	private DateTime? BackingLastRequestAt { get; set; }
 
 	private BotCache(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -116,6 +118,8 @@ internal sealed class BotCache : SerializableFile {
 		base.Dispose(disposing);
 	}
 
+	protected override Task Save() => Save(this);
+
 	internal static async Task<BotCache> CreateOrLoad(string filePath) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
@@ -134,7 +138,7 @@ internal sealed class BotCache : SerializableFile {
 				return new BotCache(filePath);
 			}
 
-			botCache = JsonConvert.DeserializeObject<BotCache>(json);
+			botCache = json.ToJsonObject<BotCache>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

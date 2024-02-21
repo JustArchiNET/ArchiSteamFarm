@@ -22,18 +22,22 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Integration;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class UserPrivacy {
-	[JsonProperty("eCommentPermission", Required = Required.Always)]
-	internal readonly ECommentPermission CommentPermission;
+	[JsonInclude]
+	[JsonPropertyName("eCommentPermission")]
+	[JsonRequired]
+	internal ECommentPermission CommentPermission { get; private init; }
 
-	[JsonProperty("PrivacySettings", Required = Required.Always)]
-	internal readonly PrivacySettings Settings = new();
+	[JsonInclude]
+	[JsonPropertyName("PrivacySettings")]
+	[JsonRequired]
+	internal PrivacySettings Settings { get; private init; } = new();
 
 	// Constructed from privacy change request
 	internal UserPrivacy(PrivacySettings settings, ECommentPermission commentPermission) {
@@ -51,23 +55,35 @@ internal sealed class UserPrivacy {
 	private UserPrivacy() { }
 
 	internal sealed class PrivacySettings {
-		[JsonProperty("PrivacyFriendsList", Required = Required.Always)]
-		internal readonly ArchiHandler.EPrivacySetting FriendsList;
+		[JsonInclude]
+		[JsonPropertyName("PrivacyFriendsList")]
+		[JsonRequired]
+		internal ArchiHandler.EPrivacySetting FriendsList { get; private init; }
 
-		[JsonProperty("PrivacyInventory", Required = Required.Always)]
-		internal readonly ArchiHandler.EPrivacySetting Inventory;
+		[JsonInclude]
+		[JsonPropertyName("PrivacyInventory")]
+		[JsonRequired]
+		internal ArchiHandler.EPrivacySetting Inventory { get; private init; }
 
-		[JsonProperty("PrivacyInventoryGifts", Required = Required.Always)]
-		internal readonly ArchiHandler.EPrivacySetting InventoryGifts;
+		[JsonInclude]
+		[JsonPropertyName("PrivacyInventoryGifts")]
+		[JsonRequired]
+		internal ArchiHandler.EPrivacySetting InventoryGifts { get; private init; }
 
-		[JsonProperty("PrivacyOwnedGames", Required = Required.Always)]
-		internal readonly ArchiHandler.EPrivacySetting OwnedGames;
+		[JsonInclude]
+		[JsonPropertyName("PrivacyOwnedGames")]
+		[JsonRequired]
+		internal ArchiHandler.EPrivacySetting OwnedGames { get; private init; }
 
-		[JsonProperty("PrivacyPlaytime", Required = Required.Always)]
-		internal readonly ArchiHandler.EPrivacySetting Playtime;
+		[JsonInclude]
+		[JsonPropertyName("PrivacyPlaytime")]
+		[JsonRequired]
+		internal ArchiHandler.EPrivacySetting Playtime { get; private init; }
 
-		[JsonProperty("PrivacyProfile", Required = Required.Always)]
-		internal readonly ArchiHandler.EPrivacySetting Profile;
+		[JsonInclude]
+		[JsonPropertyName("PrivacyProfile")]
+		[JsonRequired]
+		internal ArchiHandler.EPrivacySetting Profile { get; private init; }
 
 		// Constructed from privacy change request
 		internal PrivacySettings(ArchiHandler.EPrivacySetting profile, ArchiHandler.EPrivacySetting ownedGames, ArchiHandler.EPrivacySetting playtime, ArchiHandler.EPrivacySetting friendsList, ArchiHandler.EPrivacySetting inventory, ArchiHandler.EPrivacySetting inventoryGifts) {

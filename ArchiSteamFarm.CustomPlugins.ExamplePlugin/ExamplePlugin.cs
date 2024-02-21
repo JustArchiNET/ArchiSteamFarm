@@ -21,16 +21,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin;
@@ -45,31 +46,35 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin;
 internal sealed class ExamplePlugin : IASF, IBot, IBotCommand2, IBotConnection, IBotFriendRequest, IBotMessage, IBotModules, IBotTradeOffer {
 	// This is used for identification purposes, typically you want to use a friendly name of your plugin here, such as the name of your main class
 	// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place
+	[JsonInclude]
+	[Required]
 	public string Name => nameof(ExamplePlugin);
 
 	// This will be displayed to the user and written in the log file, typically you should point it to the version of your library, but alternatively you can do some more advanced logic if you'd like to
 	// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place
+	[JsonInclude]
+	[Required]
 	public Version Version => typeof(ExamplePlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 	// Plugins can expose custom properties for our GET /Api/Plugins API call, simply annotate them with [JsonProperty] (or keep public)
-	[JsonProperty]
-	public bool CustomIsEnabledField { get; private set; } = true;
+	[JsonInclude]
+	[Required]
+	public bool CustomIsEnabledField { get; private init; } = true;
 
 	// This method, apart from being called before any bot initialization takes place, allows you to read custom global config properties that are not recognized by ASF
 	// Thanks to that, you can extend default ASF config with your own stuff, then parse it here in order to customize your plugin during runtime
 	// Keep in mind that, as noted in the interface, additionalConfigProperties can be null if no custom, unrecognized properties are found by ASF, you should handle that case appropriately
 	// In addition to that, this method also guarantees that all plugins were already OnLoaded(), which allows cross-plugins-communication to be possible
-	public Task OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
+	public Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
 		if (additionalConfigProperties == null) {
 			return Task.CompletedTask;
 		}
 
-		foreach ((string configProperty, JToken configValue) in additionalConfigProperties) {
+		foreach ((string configProperty, JsonElement configValue) in additionalConfigProperties) {
 			// It's a good idea to prefix your custom properties with the name of your plugin, so there will be no possible conflict of ASF or other plugins using the same name, neither now or in the future
 			switch (configProperty) {
-				case $"{nameof(ExamplePlugin)}TestProperty" when configValue.Type == JTokenType.Boolean:
-					bool exampleBooleanValue = configValue.Value<bool>();
-					ASF.ArchiLogger.LogGenericInfo($"{nameof(ExamplePlugin)}TestProperty boolean property has been found with a value of: {exampleBooleanValue}");
+				case $"{nameof(ExamplePlugin)}TestProperty" when configValue.ValueKind == JsonValueKind.True:
+					ASF.ArchiLogger.LogGenericInfo($"{nameof(ExamplePlugin)}TestProperty boolean property has been found with a value of true");
 
 					break;
 			}
@@ -135,7 +140,7 @@ internal sealed class ExamplePlugin : IASF, IBot, IBotCommand2, IBotConnection, 
 	// Keep in mind that, as noted in the interface, additionalConfigProperties can be null if no custom, unrecognized properties are found by ASF, you should handle that case appropriately
 	// Also keep in mind that this function can be called multiple times, e.g. when user edits their bot configs during runtime
 	// Take a look at OnASFInit() for example parsing code
-	public async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
+	public async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
 		// For example, we'll ensure that every bot starts paused regardless of Paused property, in order to do this, we'll just call Pause here in InitModules()
 		// Thanks to the fact that this method is called with each bot config reload, we'll ensure that our bot stays paused even if it'd get unpaused otherwise
 		bot.ArchiLogger.LogGenericInfo("Pausing this bot as asked from the plugin");

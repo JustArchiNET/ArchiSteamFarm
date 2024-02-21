@@ -24,7 +24,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
-using Newtonsoft.Json;
+using ArchiSteamFarm.Helpers.Json;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers;
 
@@ -49,47 +50,60 @@ public abstract class SerializableFile : IDisposable {
 		}
 	}
 
-	protected async Task Save() {
-		if (string.IsNullOrEmpty(FilePath)) {
+	/// <summary>
+	///     Implementing this method in your target class is crucial for providing supported functionality.
+	///     In order to do so, it's enough to call static <see cref="Save" /> function from the parent class, providing <code>this</code> as input parameter.
+	///     Afterwards, simply call your <see cref="Save" /> function whenever you need to save changes.
+	///     This approach will allow JSON serializer used in the <see cref="SerializableFile" /> to properly discover all of the properties used in your class.
+	///     Unfortunately, due to STJ's limitations, called by some "security", it's not possible for base class to resolve your properties automatically otherwise.
+	/// </summary>
+	/// <example>protected override Task Save() => Save(this);</example>
+	[UsedImplicitly]
+	protected abstract Task Save();
+
+	protected static async Task Save<T>(T serializableFile) where T : SerializableFile {
+		ArgumentNullException.ThrowIfNull(serializableFile);
+
+		if (string.IsNullOrEmpty(serializableFile.FilePath)) {
 			throw new InvalidOperationException(nameof(FilePath));
 		}
 
-		if (ReadOnly) {
+		if (serializableFile.ReadOnly) {
 			return;
 		}
 
 		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-		lock (FileSemaphore) {
-			if (SavingScheduled) {
+		lock (serializableFile.FileSemaphore) {
+			if (serializableFile.SavingScheduled) {
 				return;
 			}
 
-			SavingScheduled = true;
+			serializableFile.SavingScheduled = true;
 		}
 
-		await FileSemaphore.WaitAsync().ConfigureAwait(false);
+		await serializableFile.FileSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-			lock (FileSemaphore) {
-				SavingScheduled = false;
+			lock (serializableFile.FileSemaphore) {
+				serializableFile.SavingScheduled = false;
 			}
 
-			if (ReadOnly) {
+			if (serializableFile.ReadOnly) {
 				return;
 			}
 
-			string json = JsonConvert.SerializeObject(this, Debugging.IsUserDebugging ? Formatting.Indented : Formatting.None);
+			string json = serializableFile.ToJsonText(Debugging.IsUserDebugging);
 
 			if (string.IsNullOrEmpty(json)) {
 				throw new InvalidOperationException(nameof(json));
 			}
 
 			// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-			string newFilePath = $"{FilePath}.new";
+			string newFilePath = $"{serializableFile.FilePath}.new";
 
-			if (File.Exists(FilePath)) {
-				string currentJson = await File.ReadAllTextAsync(FilePath).ConfigureAwait(false);
+			if (File.Exists(serializableFile.FilePath)) {
+				string currentJson = await File.ReadAllTextAsync(serializableFile.FilePath).ConfigureAwait(false);
 
 				if (json == currentJson) {
 					return;
@@ -97,16 +111,16 @@ public abstract class SerializableFile : IDisposable {
 
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				File.Replace(newFilePath, FilePath, null);
+				File.Replace(newFilePath, serializableFile.FilePath, null);
 			} else {
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				File.Move(newFilePath, FilePath);
+				File.Move(newFilePath, serializableFile.FilePath);
 			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		} finally {
-			FileSemaphore.Release();
+			serializableFile.FileSemaphore.Release();
 		}
 	}
 

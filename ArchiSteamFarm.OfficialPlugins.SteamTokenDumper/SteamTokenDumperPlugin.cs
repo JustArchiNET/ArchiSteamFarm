@@ -24,14 +24,18 @@ using System.Collections.Concurrent;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Composition;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
 using ArchiSteamFarm.Plugins;
@@ -41,8 +45,6 @@ using ArchiSteamFarm.Steam.Interaction;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
@@ -51,7 +53,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotCommand2, IBotSteamClient, ISteamPICSChanges {
 	private const ushort DepotsRateLimitingDelay = 500;
 
-	[JsonProperty]
+	[JsonInclude]
 	internal static SteamTokenDumperConfig? Config { get; private set; }
 
 	private static readonly ConcurrentDictionary<Bot, IDisposable> BotSubscriptions = new();
@@ -62,15 +64,17 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 	private static GlobalCache? GlobalCache;
 	private static DateTimeOffset LastUploadAt = DateTimeOffset.MinValue;
 
-	[JsonProperty]
+	[JsonInclude]
+	[Required]
 	public override string Name => nameof(SteamTokenDumperPlugin);
 
-	[JsonProperty]
+	[JsonInclude]
+	[Required]
 	public override Version Version => typeof(SteamTokenDumperPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 	public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(GlobalCache?.LastChangeNumber ?? 0);
 
-	public async Task OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
+	public async Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
 		if (!SharedInfo.HasValidToken) {
 			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledMissingBuildToken, nameof(SteamTokenDumperPlugin)));
 
@@ -81,15 +85,19 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		SteamTokenDumperConfig? config = null;
 
 		if (additionalConfigProperties != null) {
-			foreach ((string configProperty, JToken configValue) in additionalConfigProperties) {
+			foreach ((string configProperty, JsonElement configValue) in additionalConfigProperties) {
 				try {
 					switch (configProperty) {
 						case nameof(GlobalConfigExtension.SteamTokenDumperPlugin):
-							config = configValue.ToObject<SteamTokenDumperConfig>();
+							config = configValue.ToJsonObject<SteamTokenDumperConfig>();
 
 							break;
-						case nameof(GlobalConfigExtension.SteamTokenDumperPluginEnabled):
-							isEnabled = configValue.Value<bool>();
+						case nameof(GlobalConfigExtension.SteamTokenDumperPluginEnabled) when configValue.ValueKind == JsonValueKind.False:
+							isEnabled = false;
+
+							break;
+						case nameof(GlobalConfigExtension.SteamTokenDumperPluginEnabled) when configValue.ValueKind == JsonValueKind.True:
+							isEnabled = true;
 
 							break;
 					}

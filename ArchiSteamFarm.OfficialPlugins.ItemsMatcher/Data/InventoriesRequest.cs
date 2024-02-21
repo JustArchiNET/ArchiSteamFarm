@@ -23,24 +23,28 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class InventoriesRequest {
-	[JsonProperty(Required = Required.Always)]
-	internal readonly Guid Guid;
+	[JsonInclude]
+	[JsonRequired]
+	internal Guid Guid { get; private init; }
 
-	[JsonProperty(Required = Required.Always)]
-	internal readonly ImmutableHashSet<AssetForMatching> Inventory;
+	[JsonInclude]
+	[JsonRequired]
+	internal ImmutableHashSet<AssetForMatching> Inventory { get; private init; }
 
-	[JsonProperty(Required = Required.Always)]
-	internal readonly ImmutableHashSet<Asset.EType> MatchableTypes;
+	[JsonInclude]
+	[JsonRequired]
+	internal ImmutableHashSet<Asset.EType> MatchableTypes { get; private init; }
 
-	[JsonProperty(Required = Required.Always)]
-	internal readonly ulong SteamID;
+	[JsonInclude]
+	[JsonRequired]
+	internal ulong SteamID { get; private init; }
 
 	internal InventoriesRequest(Guid guid, ulong steamID, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> matchableTypes) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);

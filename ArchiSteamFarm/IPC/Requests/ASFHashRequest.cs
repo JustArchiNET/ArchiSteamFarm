@@ -21,8 +21,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Helpers;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests;
 
@@ -31,16 +31,18 @@ public sealed class ASFHashRequest {
 	/// <summary>
 	///     Hashing method used for hashing this string.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public ArchiCryptoHelper.EHashingMethod HashingMethod { get; private set; }
+	public ArchiCryptoHelper.EHashingMethod HashingMethod { get; private init; }
 
 	/// <summary>
 	///     String to hash with provided <see cref="HashingMethod" />.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public string StringToHash { get; private set; } = "";
+	public string StringToHash { get; private init; } = "";
 
 	[JsonConstructor]
 	private ASFHashRequest() { }

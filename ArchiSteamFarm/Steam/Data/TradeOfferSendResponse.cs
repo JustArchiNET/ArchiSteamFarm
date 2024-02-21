@@ -20,39 +20,24 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
-using ArchiSteamFarm.Core;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class TradeOfferSendResponse {
-	[JsonProperty("strError", Required = Required.DisallowNull)]
-	internal readonly string ErrorText = "";
+	[JsonInclude]
+	[JsonPropertyName("strError")]
+	internal string? ErrorText { get; private init; }
 
-	[JsonProperty("needs_mobile_confirmation", Required = Required.DisallowNull)]
-	internal readonly bool RequiresMobileConfirmation;
+	[JsonInclude]
+	[JsonPropertyName("needs_mobile_confirmation")]
+	internal bool RequiresMobileConfirmation { get; private init; }
 
-	internal ulong TradeOfferID { get; private set; }
-
-	[JsonProperty("tradeofferid", Required = Required.DisallowNull)]
-	private string TradeOfferIDText {
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong tradeOfferID) || (tradeOfferID == 0)) {
-				ASF.ArchiLogger.LogNullError(tradeOfferID);
-
-				return;
-			}
-
-			TradeOfferID = tradeOfferID;
-		}
-	}
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("tradeofferid")]
+	internal ulong TradeOfferID { get; private init; }
 
 	[JsonConstructor]
 	private TradeOfferSendResponse() { }

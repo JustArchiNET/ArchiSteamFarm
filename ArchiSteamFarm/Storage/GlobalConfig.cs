@@ -28,15 +28,16 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Integration;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Storage;
@@ -188,59 +189,60 @@ public sealed class GlobalConfig {
 		}
 	}
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool AutoRestart { get; private set; } = DefaultAutoRestart;
+	[JsonInclude]
+	public bool AutoRestart { get; private init; } = DefaultAutoRestart;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> Blacklist { get; private set; } = DefaultBlacklist;
+	public ImmutableHashSet<uint> Blacklist { get; private init; } = DefaultBlacklist;
 
-	[JsonProperty]
-	public string? CommandPrefix { get; private set; } = DefaultCommandPrefix;
+	[JsonInclude]
+	public string? CommandPrefix { get; private init; } = DefaultCommandPrefix;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte ConfirmationsLimiterDelay { get; private set; } = DefaultConfirmationsLimiterDelay;
+	public byte ConfirmationsLimiterDelay { get; private init; } = DefaultConfirmationsLimiterDelay;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(1, byte.MaxValue)]
-	public byte ConnectionTimeout { get; private set; } = DefaultConnectionTimeout;
+	public byte ConnectionTimeout { get; private init; } = DefaultConnectionTimeout;
 
-	[JsonProperty]
-	public string? CurrentCulture { get; private set; } = DefaultCurrentCulture;
+	[JsonInclude]
+	public string? CurrentCulture { get; private init; } = DefaultCurrentCulture;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool Debug { get; private set; } = DefaultDebug;
+	[JsonInclude]
+	public bool Debug { get; private init; } = DefaultDebug;
 
-	[JsonProperty]
-	public string? DefaultBot { get; private set; } = DefaultDefaultBot;
+	[JsonInclude]
+	public string? DefaultBot { get; private init; } = DefaultDefaultBot;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(1, byte.MaxValue)]
-	public byte FarmingDelay { get; private set; } = DefaultFarmingDelay;
+	public byte FarmingDelay { get; private init; } = DefaultFarmingDelay;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool FilterBadBots { get; private set; } = DefaultFilterBadBots;
+	[JsonInclude]
+	public bool FilterBadBots { get; private init; } = DefaultFilterBadBots;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte GiftsLimiterDelay { get; private set; } = DefaultGiftsLimiterDelay;
+	public byte GiftsLimiterDelay { get; private init; } = DefaultGiftsLimiterDelay;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool Headless { get; private set; } = DefaultHeadless;
+	[JsonInclude]
+	public bool Headless { get; private init; } = DefaultHeadless;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte IdleFarmingPeriod { get; private set; } = DefaultIdleFarmingPeriod;
+	public byte IdleFarmingPeriod { get; private init; } = DefaultIdleFarmingPeriod;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte InventoryLimiterDelay { get; private set; } = DefaultInventoryLimiterDelay;
+	public byte InventoryLimiterDelay { get; private init; } = DefaultInventoryLimiterDelay;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool IPC { get; private set; } = DefaultIPC;
+	[JsonInclude]
+	public bool IPC { get; private init; } = DefaultIPC;
 
-	[JsonProperty]
+	[JsonInclude]
 	public string? IPCPassword {
 		get => BackingIPCPassword;
 
@@ -250,74 +252,72 @@ public sealed class GlobalConfig {
 		}
 	}
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private set; } = DefaultIPCPasswordFormat;
+	[JsonInclude]
+	public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private init; } = DefaultIPCPasswordFormat;
 
-	[JsonProperty]
-	public Guid? LicenseID { get; private set; } = DefaultLicenseID;
+	[JsonInclude]
+	public Guid? LicenseID { get; private init; } = DefaultLicenseID;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte LoginLimiterDelay { get; private set; } = DefaultLoginLimiterDelay;
+	public byte LoginLimiterDelay { get; private init; } = DefaultLoginLimiterDelay;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(1, byte.MaxValue)]
-	public byte MaxFarmingTime { get; private set; } = DefaultMaxFarmingTime;
+	public byte MaxFarmingTime { get; private init; } = DefaultMaxFarmingTime;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte MaxTradeHoldDuration { get; private set; } = DefaultMaxTradeHoldDuration;
+	public byte MaxTradeHoldDuration { get; private init; } = DefaultMaxTradeHoldDuration;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte MinFarmingDelayAfterBlock { get; private set; } = DefaultMinFarmingDelayAfterBlock;
+	public byte MinFarmingDelayAfterBlock { get; private init; } = DefaultMinFarmingDelayAfterBlock;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public EOptimizationMode OptimizationMode { get; private set; } = DefaultOptimizationMode;
+	[JsonInclude]
+	public EOptimizationMode OptimizationMode { get; private init; } = DefaultOptimizationMode;
 
-	[JsonProperty]
+	[JsonInclude]
 	[MaxLength(SteamChatMessage.MaxMessagePrefixBytes / SteamChatMessage.ReservedEscapeMessageBytes)]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
-	public string? SteamMessagePrefix { get; private set; } = DefaultSteamMessagePrefix;
+	public string? SteamMessagePrefix { get; private init; } = DefaultSteamMessagePrefix;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[SwaggerSteamIdentifier]
 	[SwaggerValidValues(ValidIntValues = [0])]
-	public ulong SteamOwnerID { get; private set; } = DefaultSteamOwnerID;
+	public ulong SteamOwnerID { get; private init; } = DefaultSteamOwnerID;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
+	[JsonInclude]
+	public ProtocolTypes SteamProtocols { get; private init; } = DefaultSteamProtocols;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public EUpdateChannel UpdateChannel { get; private set; } = DefaultUpdateChannel;
+	[JsonInclude]
+	public EUpdateChannel UpdateChannel { get; private init; } = DefaultUpdateChannel;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
-	public byte UpdatePeriod { get; private set; } = DefaultUpdatePeriod;
+	public byte UpdatePeriod { get; private init; } = DefaultUpdatePeriod;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	[Range(ushort.MinValue, ushort.MaxValue)]
-	public ushort WebLimiterDelay { get; private set; } = DefaultWebLimiterDelay;
+	public ushort WebLimiterDelay { get; private init; } = DefaultWebLimiterDelay;
 
-	[JsonProperty(nameof(WebProxy))]
-	public string? WebProxyText { get; private set; } = DefaultWebProxyText;
+	[JsonInclude]
+	[JsonPropertyName(nameof(WebProxy))]
+	public string? WebProxyText { get; private init; } = DefaultWebProxyText;
 
-	[JsonProperty]
-	public string? WebProxyUsername { get; private set; } = DefaultWebProxyUsername;
+	[JsonInclude]
+	public string? WebProxyUsername { get; private init; } = DefaultWebProxyUsername;
 
 	[JsonExtensionData]
-	internal Dictionary<string, JToken>? AdditionalProperties {
-		get;
-		[UsedImplicitly]
-		set;
-	}
+	[JsonInclude]
+	internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
 	internal bool IsIPCPasswordSet { get; private set; }
 	internal bool IsWebProxyPasswordSet { get; private set; }
 
 	internal bool Saving { get; set; }
 
-	[JsonProperty]
+	[JsonInclude]
 	internal string? WebProxyPassword {
 		get => BackingWebProxyPassword;
 
@@ -331,18 +331,17 @@ public sealed class GlobalConfig {
 	private WebProxy? BackingWebProxy;
 	private string? BackingWebProxyPassword = DefaultWebProxyPassword;
 
-	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamOwnerID)}", Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamOwnerID)}")]
 	private string SSteamOwnerID {
 		get => SteamOwnerID.ToString(CultureInfo.InvariantCulture);
 
-		set {
-			if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SSteamOwnerID)));
+		init {
+			ArgumentException.ThrowIfNullOrEmpty(value);
 
-				return;
-			}
-
-			SteamOwnerID = result;
+			// We intend to throw exception back to caller here
+			SteamOwnerID = ulong.Parse(value, CultureInfo.InvariantCulture);
 		}
 	}
 
@@ -507,7 +506,7 @@ public sealed class GlobalConfig {
 				return (null, null);
 			}
 
-			globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(json);
+			globalConfig = json.ToJsonObject<GlobalConfig>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -557,7 +556,7 @@ public sealed class GlobalConfig {
 		}
 
 		globalConfig.Saving = true;
-		string latestJson = JsonConvert.SerializeObject(globalConfig, Formatting.Indented);
+		string latestJson = globalConfig.ToJsonText(true);
 		globalConfig.Saving = false;
 
 		return (globalConfig, json != latestJson ? latestJson : null);
@@ -567,7 +566,7 @@ public sealed class GlobalConfig {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 		ArgumentNullException.ThrowIfNull(globalConfig);
 
-		string json = JsonConvert.SerializeObject(globalConfig, Formatting.Indented);
+		string json = globalConfig.ToJsonText(true);
 
 		return await SerializableFile.Write(filePath, json).ConfigureAwait(false);
 	}

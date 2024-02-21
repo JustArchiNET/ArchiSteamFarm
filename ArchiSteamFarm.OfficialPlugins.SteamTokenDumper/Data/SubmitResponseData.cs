@@ -20,28 +20,40 @@
 // limitations under the License.
 
 using System.Collections.Immutable;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 internal sealed class SubmitResponseData {
-	[JsonProperty("new_apps", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> NewApps = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("new_apps")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> NewApps { get; private init; } = ImmutableHashSet<uint>.Empty;
 
-	[JsonProperty("new_depots", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> NewDepots = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("new_depots")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> NewDepots { get; private init; } = ImmutableHashSet<uint>.Empty;
 
-	[JsonProperty("new_subs", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> NewPackages = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("new_subs")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> NewPackages { get; private init; } = ImmutableHashSet<uint>.Empty;
 
-	[JsonProperty("verified_apps", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> VerifiedApps = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("verified_apps")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> VerifiedApps { get; private init; } = ImmutableHashSet<uint>.Empty;
 
-	[JsonProperty("verified_depots", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> VerifiedDepots = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("verified_depots")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> VerifiedDepots { get; private init; } = ImmutableHashSet<uint>.Empty;
 
-	[JsonProperty("verified_subs", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> VerifiedPackages = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("verified_subs")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> VerifiedPackages { get; private init; } = ImmutableHashSet<uint>.Empty;
 }
 #pragma warning restore CA1812 // False positive, the class is used during json deserialization

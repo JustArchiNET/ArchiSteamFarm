@@ -27,6 +27,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
@@ -36,7 +37,6 @@ using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Web;
 
@@ -193,18 +193,6 @@ internal static class GitHub {
 
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class ReleaseResponse {
-		[JsonProperty("assets", Required = Required.Always)]
-		internal readonly ImmutableHashSet<Asset> Assets = ImmutableHashSet<Asset>.Empty;
-
-		[JsonProperty("prerelease", Required = Required.Always)]
-		internal readonly bool IsPreRelease;
-
-		[JsonProperty("published_at", Required = Required.Always)]
-		internal readonly DateTime PublishedAt;
-
-		[JsonProperty("tag_name", Required = Required.Always)]
-		internal readonly string Tag = "";
-
 		internal string? ChangelogHTML {
 			get {
 				if (BackingChangelogHTML != null) {
@@ -255,9 +243,6 @@ internal static class GitHub {
 			}
 		}
 
-		[JsonProperty("body", Required = Required.Always)]
-		private readonly string? MarkdownBody = "";
-
 		private MarkdownDocument? Changelog {
 			get {
 				if (BackingChangelog != null) {
@@ -274,22 +259,53 @@ internal static class GitHub {
 			}
 		}
 
+		[JsonInclude]
+		[JsonPropertyName("assets")]
+		[JsonRequired]
+		internal ImmutableHashSet<Asset> Assets { get; private init; } = ImmutableHashSet<Asset>.Empty;
+
+		[JsonInclude]
+		[JsonPropertyName("prerelease")]
+		[JsonRequired]
+		internal bool IsPreRelease { get; private init; }
+
+		[JsonInclude]
+		[JsonPropertyName("published_at")]
+		[JsonRequired]
+		internal DateTime PublishedAt { get; private init; }
+
+		[JsonInclude]
+		[JsonPropertyName("tag_name")]
+		[JsonRequired]
+		internal string Tag { get; private init; } = "";
+
 		private MarkdownDocument? BackingChangelog;
 		private string? BackingChangelogHTML;
 		private string? BackingChangelogPlainText;
+
+		[JsonInclude]
+		[JsonPropertyName("body")]
+		[JsonRequired]
+		private string? MarkdownBody { get; init; } = "";
 
 		[JsonConstructor]
 		private ReleaseResponse() { }
 
 		internal sealed class Asset {
-			[JsonProperty("browser_download_url", Required = Required.Always)]
-			internal readonly Uri? DownloadURL;
+			[JsonInclude]
+			[JsonPropertyName("browser_download_url")]
+			[JsonRequired]
+			internal Uri? DownloadURL { get; private init; }
 
-			[JsonProperty("name", Required = Required.Always)]
-			internal readonly string? Name;
+			[JsonInclude]
+			[JsonPropertyName("name")]
+			[JsonRequired]
+			internal string? Name { get; private init; }
 
-			[JsonProperty("size", Required = Required.Always)]
-			internal readonly uint Size;
+			[JsonInclude]
+			[JsonPropertyName("size")]
+			[JsonRequired]
+			internal uint Size { get; private init; }
 
 			[JsonConstructor]
 			private Asset() { }

@@ -20,11 +20,11 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
@@ -35,5 +35,5 @@ public interface IBotModules : IPlugin {
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="additionalConfigProperties">Extra config properties made out of <see cref="JsonExtensionDataAttribute" />. Can be null if no extra properties are found.</param>
-	Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null);
+	Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null);
 }

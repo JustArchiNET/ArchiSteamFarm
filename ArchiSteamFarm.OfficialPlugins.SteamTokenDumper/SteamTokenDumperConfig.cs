@@ -20,29 +20,33 @@
 // limitations under the License.
 
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Integration;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
 public sealed class SteamTokenDumperConfig {
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	public bool Enabled { get; internal set; }
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> SecretAppIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	public ImmutableHashSet<uint> SecretAppIDs { get; private init; } = ImmutableHashSet<uint>.Empty;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> SecretDepotIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	public ImmutableHashSet<uint> SecretDepotIDs { get; private init; } = ImmutableHashSet<uint>.Empty;
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> SecretPackageIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	public ImmutableHashSet<uint> SecretPackageIDs { get; private init; } = ImmutableHashSet<uint>.Empty;
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool SkipAutoGrantPackages { get; private set; } = true;
+	[JsonInclude]
+	public bool SkipAutoGrantPackages { get; private init; } = true;
 
 	[JsonConstructor]
 	internal SteamTokenDumperConfig() { }

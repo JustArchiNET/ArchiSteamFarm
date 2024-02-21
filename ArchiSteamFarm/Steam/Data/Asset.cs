@@ -22,11 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Globalization;
-using ArchiSteamFarm.Core;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.Steam.Data;
 
@@ -43,34 +41,46 @@ public sealed class Asset {
 
 	[JsonIgnore]
 	[PublicAPI]
-	public IReadOnlyDictionary<string, JToken>? AdditionalPropertiesReadOnly => AdditionalProperties;
+	public IReadOnlyDictionary<string, JsonElement>? AdditionalPropertiesReadOnly => AdditionalProperties;
 
 	[JsonIgnore]
 	[PublicAPI]
 	public bool IsSteamPointsShopItem => !Tradable && (InstanceID == SteamPointsShopInstanceID);
 
-	[JsonIgnore]
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("amount")]
+	[JsonRequired]
 	[PublicAPI]
 	public uint Amount { get; internal set; }
 
-	[JsonProperty("appid", Required = Required.DisallowNull)]
-	public uint AppID { get; private set; }
+	[JsonInclude]
+	[JsonPropertyName("appid")]
+	public uint AppID { get; private init; }
 
-	[JsonIgnore]
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("assetid")]
 	[PublicAPI]
-	public ulong AssetID { get; private set; }
+	public ulong AssetID { get; private init; }
 
-	[JsonIgnore]
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("classid")]
 	[PublicAPI]
-	public ulong ClassID { get; private set; }
+	public ulong ClassID { get; private init; }
 
-	[JsonIgnore]
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("contextid")]
 	[PublicAPI]
-	public ulong ContextID { get; private set; }
+	public ulong ContextID { get; private init; }
 
-	[JsonIgnore]
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("instanceid")]
 	[PublicAPI]
-	public ulong InstanceID { get; private set; }
+	public ulong InstanceID { get; private init; }
 
 	[JsonIgnore]
 	[PublicAPI]
@@ -96,109 +106,16 @@ public sealed class Asset {
 	[PublicAPI]
 	public EType Type { get; internal set; }
 
-	[JsonExtensionData(WriteData = false)]
-	internal Dictionary<string, JToken>? AdditionalProperties { private get; set; }
+	[JsonExtensionData]
+	[JsonInclude]
+	internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
-	[JsonProperty("amount", Required = Required.Always)]
-	private string AmountText {
-		get => Amount.ToString(CultureInfo.InvariantCulture);
-
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!uint.TryParse(value, out uint amount) || (amount == 0)) {
-				ASF.ArchiLogger.LogNullError(amount);
-
-				return;
-			}
-
-			Amount = amount;
-		}
-	}
-
-	[JsonProperty("assetid", Required = Required.DisallowNull)]
-	private string AssetIDText {
-		get => AssetID.ToString(CultureInfo.InvariantCulture);
-
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong assetID) || (assetID == 0)) {
-				ASF.ArchiLogger.LogNullError(assetID);
-
-				return;
-			}
-
-			AssetID = assetID;
-		}
-	}
-
-	[JsonProperty("classid", Required = Required.DisallowNull)]
-	private string ClassIDText {
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong classID) || (classID == 0)) {
-				return;
-			}
-
-			ClassID = classID;
-		}
-	}
-
-	[JsonProperty("contextid", Required = Required.DisallowNull)]
-	private string ContextIDText {
-		get => ContextID.ToString(CultureInfo.InvariantCulture);
-
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong contextID) || (contextID == 0)) {
-				ASF.ArchiLogger.LogNullError(contextID);
-
-				return;
-			}
-
-			ContextID = contextID;
-		}
-	}
-
-	[JsonProperty("id", Required = Required.DisallowNull)]
-	private string IDText {
-		set => AssetIDText = value;
-	}
-
-	[JsonProperty("instanceid", Required = Required.DisallowNull)]
-	private string InstanceIDText {
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong instanceID)) {
-				ASF.ArchiLogger.LogNullError(instanceID);
-
-				return;
-			}
-
-			InstanceID = instanceID;
-		}
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("id")]
+	private ulong ID {
+		get => AssetID;
+		init => AssetID = value;
 	}
 
 	// Constructed from trades being received or plugins
@@ -227,6 +144,9 @@ public sealed class Asset {
 
 	[JsonConstructor]
 	private Asset() { }
+
+	[UsedImplicitly]
+	public static bool ShouldSerializeAdditionalProperties() => false;
 
 	internal Asset CreateShallowCopy() => (Asset) MemberwiseClone();
 

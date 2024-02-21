@@ -20,7 +20,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
@@ -28,14 +28,14 @@ public sealed class GamesToRedeemInBackgroundResponse {
 	/// <summary>
 	///     Keys that were redeemed and not used during the process, if available.
 	/// </summary>
-	[JsonProperty]
-	public Dictionary<string, string>? UnusedKeys { get; private set; }
+	[JsonInclude]
+	public Dictionary<string, string>? UnusedKeys { get; private init; }
 
 	/// <summary>
 	///     Keys that were redeemed and used during the process, if available.
 	/// </summary>
-	[JsonProperty]
-	public Dictionary<string, string>? UsedKeys { get; private set; }
+	[JsonInclude]
+	public Dictionary<string, string>? UsedKeys { get; private init; }
 
 	internal GamesToRedeemInBackgroundResponse(Dictionary<string, string>? unusedKeys = null, Dictionary<string, string>? usedKeys = null) {
 		UnusedKeys = unusedKeys;

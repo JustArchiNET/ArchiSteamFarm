@@ -20,48 +20,71 @@
 // limitations under the License.
 
 using System;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using SteamKit2;
 using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.OfficialPlugins.MobileAuthenticator;
 
 internal sealed class MaFileData {
-	[JsonProperty("account_name", Required = Required.Always)]
-	internal readonly string AccountName;
+	[JsonInclude]
+	[JsonPropertyName("account_name")]
+	[JsonRequired]
+	internal string AccountName { get; private init; }
 
-	[JsonProperty("device_id", Required = Required.Always)]
-	internal readonly string DeviceID;
+	[JsonInclude]
+	[JsonPropertyName("device_id")]
+	[JsonRequired]
+	internal string DeviceID { get; private init; }
 
-	[JsonProperty("identity_secret", Required = Required.Always)]
-	internal readonly string IdentitySecret;
+	[JsonInclude]
+	[JsonPropertyName("identity_secret")]
+	[JsonRequired]
+	internal string IdentitySecret { get; private init; }
 
-	[JsonProperty("revocation_code", Required = Required.Always)]
-	internal readonly string RevocationCode;
+	[JsonInclude]
+	[JsonPropertyName("revocation_code")]
+	[JsonRequired]
+	internal string RevocationCode { get; private init; }
 
-	[JsonProperty("secret_1", Required = Required.Always)]
-	internal readonly string Secret1;
+	[JsonInclude]
+	[JsonPropertyName("secret_1")]
+	[JsonRequired]
+	internal string Secret1 { get; private init; }
 
-	[JsonProperty("serial_number", Required = Required.Always)]
-	internal readonly ulong SerialNumber;
+	[JsonInclude]
+	[JsonPropertyName("serial_number")]
+	[JsonRequired]
+	internal ulong SerialNumber { get; private init; }
 
-	[JsonProperty("server_time", Required = Required.Always)]
-	internal readonly ulong ServerTime;
+	[JsonInclude]
+	[JsonPropertyName("server_time")]
+	[JsonRequired]
+	internal ulong ServerTime { get; private init; }
 
-	[JsonProperty(Required = Required.Always)]
-	internal readonly MaFileSessionData Session;
+	[JsonInclude]
+	[JsonRequired]
+	internal MaFileSessionData Session { get; private init; }
 
-	[JsonProperty("shared_secret", Required = Required.Always)]
-	internal readonly string SharedSecret;
+	[JsonInclude]
+	[JsonPropertyName("shared_secret")]
+	[JsonRequired]
+	internal string SharedSecret { get; private init; }
 
-	[JsonProperty("status", Required = Required.Always)]
-	internal readonly int Status;
+	[JsonInclude]
+	[JsonPropertyName("status")]
+	[JsonRequired]
+	internal int Status { get; private init; }
 
-	[JsonProperty("token_gid", Required = Required.Always)]
-	internal readonly string TokenGid;
+	[JsonInclude]
+	[JsonPropertyName("token_gid")]
+	[JsonRequired]
+	internal string TokenGid { get; private init; }
 
-	[JsonProperty("uri", Required = Required.Always)]
-	internal readonly string Uri;
+	[JsonInclude]
+	[JsonPropertyName("uri")]
+	[JsonRequired]
+	internal string Uri { get; private init; }
 
 	internal MaFileData(CTwoFactor_AddAuthenticator_Response data, ulong steamID, string deviceID) {
 		ArgumentNullException.ThrowIfNull(data);

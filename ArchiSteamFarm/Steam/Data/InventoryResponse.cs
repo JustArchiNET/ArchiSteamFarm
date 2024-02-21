@@ -24,80 +24,68 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Integration;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class InventoryResponse : OptionalResultResponse {
-	[JsonProperty("assets", Required = Required.DisallowNull)]
-	internal readonly ImmutableList<Asset> Assets = ImmutableList<Asset>.Empty;
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("assets")]
+	internal ImmutableList<Asset> Assets { get; private init; } = ImmutableList<Asset>.Empty;
 
-	[JsonProperty("descriptions", Required = Required.DisallowNull)]
-	internal readonly ImmutableHashSet<Description> Descriptions = ImmutableHashSet<Description>.Empty;
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("descriptions")]
+	internal ImmutableHashSet<Description> Descriptions { get; private init; } = ImmutableHashSet<Description>.Empty;
 
-	[JsonProperty("total_inventory_count", Required = Required.DisallowNull)]
-	internal readonly uint TotalInventoryCount;
+	internal EResult? ErrorCode { get; private init; }
+	internal string? ErrorText { get; private init; }
 
-	internal EResult? ErrorCode { get; private set; }
-	internal string? ErrorText { get; private set; }
-	internal ulong LastAssetID { get; private set; }
-	internal bool MoreItems { get; private set; }
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("last_assetid")]
+	internal ulong LastAssetID { get; private init; }
 
-	[JsonProperty("error", Required = Required.DisallowNull)]
+	internal bool MoreItems { get; private init; }
+
+	[JsonInclude]
+	[JsonPropertyName("total_inventory_count")]
+	internal uint TotalInventoryCount { get; private init; }
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("error")]
 	private string Error {
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
+		get => ErrorText ?? "";
 
-				return;
-			}
+		init {
+			ArgumentException.ThrowIfNullOrEmpty(value);
 
 			ErrorCode = SteamUtilities.InterpretError(value);
 			ErrorText = value;
 		}
 	}
 
-	[JsonProperty("last_assetid", Required = Required.DisallowNull)]
-	private string LastAssetIDText {
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong lastAssetID) || (lastAssetID == 0)) {
-				ASF.ArchiLogger.LogNullError(lastAssetID);
-
-				return;
-			}
-
-			LastAssetID = lastAssetID;
-		}
-	}
-
-	[JsonProperty("more_items", Required = Required.DisallowNull)]
+	[JsonInclude]
+	[JsonPropertyName("more_items")]
 	private byte MoreItemsNumber {
-		set => MoreItems = value > 0;
+		get => MoreItems ? (byte) 1 : (byte) 0;
+		init => MoreItems = value > 0;
 	}
 
 	[JsonConstructor]
 	private InventoryResponse() { }
 
 	internal sealed class Description {
-		[JsonProperty("appid", Required = Required.Always)]
-		internal readonly uint AppID;
-
-		[JsonProperty("tags", Required = Required.DisallowNull)]
-		internal readonly ImmutableHashSet<Tag> Tags = ImmutableHashSet<Tag>.Empty;
-
 		internal Asset.ERarity Rarity {
 			get {
 				foreach (Tag tag in Tags) {
@@ -217,62 +205,49 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 			}
 		}
 
-		[JsonExtensionData(WriteData = false)]
-		internal Dictionary<string, JToken>? AdditionalProperties {
-			get;
-			[UsedImplicitly]
-			set;
-		}
+		[JsonExtensionData]
+		[JsonInclude]
+		internal Dictionary<string, JsonElement>? AdditionalProperties { get; private init; }
 
-		internal ulong ClassID { get; private set; }
-		internal ulong InstanceID { get; private set; }
-		internal bool Marketable { get; private set; }
-		internal bool Tradable { get; private set; }
+		[JsonInclude]
+		[JsonPropertyName("appid")]
+		[JsonRequired]
+		internal uint AppID { get; private init; }
 
-		[JsonProperty("classid", Required = Required.Always)]
-		private string ClassIDText {
-			set {
-				if (string.IsNullOrEmpty(value)) {
-					ASF.ArchiLogger.LogNullError(value);
+		[JsonInclude]
+		[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+		[JsonPropertyName("classid")]
+		[JsonRequired]
+		internal ulong ClassID { get; private init; }
 
-					return;
-				}
+		[JsonInclude]
+		[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+		[JsonPropertyName("instanceid")]
+		internal ulong InstanceID { get; private init; }
 
-				if (!ulong.TryParse(value, out ulong classID) || (classID == 0)) {
-					ASF.ArchiLogger.LogNullError(classID);
+		internal bool Marketable { get; private init; }
 
-					return;
-				}
+		[JsonDisallowNull]
+		[JsonInclude]
+		[JsonPropertyName("tags")]
+		internal ImmutableHashSet<Tag> Tags { get; private init; } = ImmutableHashSet<Tag>.Empty;
 
-				ClassID = classID;
-			}
-		}
+		internal bool Tradable { get; private init; }
 
-		[JsonProperty("instanceid", Required = Required.DisallowNull)]
-		private string InstanceIDText {
-			set {
-				if (string.IsNullOrEmpty(value)) {
-					return;
-				}
-
-				if (!ulong.TryParse(value, out ulong instanceID)) {
-					ASF.ArchiLogger.LogNullError(instanceID);
-
-					return;
-				}
-
-				InstanceID = instanceID;
-			}
-		}
-
-		[JsonProperty("marketable", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("marketable")]
+		[JsonRequired]
 		private byte MarketableNumber {
-			set => Marketable = value > 0;
+			get => Marketable ? (byte) 1 : (byte) 0;
+			init => Marketable = value > 0;
 		}
 
-		[JsonProperty("tradable", Required = Required.Always)]
+		[JsonInclude]
+		[JsonPropertyName("tradable")]
+		[JsonRequired]
 		private byte TradableNumber {
-			set => Tradable = value > 0;
+			get => Tradable ? (byte) 1 : (byte) 0;
+			init => Tradable = value > 0;
 		}
 
 		// Constructed from trades being received/sent
@@ -293,5 +268,8 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 
 		[JsonConstructor]
 		private Description() { }
+
+		[UsedImplicitly]
+		public static bool ShouldSerializeAdditionalProperties() => false;
 	}
 }

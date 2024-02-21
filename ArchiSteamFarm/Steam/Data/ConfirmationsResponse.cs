@@ -20,13 +20,15 @@
 // limitations under the License.
 
 using System.Collections.Immutable;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 internal sealed class ConfirmationsResponse : BooleanResponse {
-	[JsonProperty("conf", Required = Required.Always)]
-	internal readonly ImmutableHashSet<Confirmation> Confirmations = ImmutableHashSet<Confirmation>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("conf")]
+	[JsonRequired]
+	internal ImmutableHashSet<Confirmation> Confirmations { get; private init; } = ImmutableHashSet<Confirmation>.Empty;
 
 	[JsonConstructor]
 	private ConfirmationsResponse() { }

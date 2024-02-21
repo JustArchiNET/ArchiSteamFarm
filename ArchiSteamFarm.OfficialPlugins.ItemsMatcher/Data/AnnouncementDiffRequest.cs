@@ -22,19 +22,21 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class AnnouncementDiffRequest : AnnouncementRequest {
-	[JsonProperty(Required = Required.Always)]
-	private readonly ImmutableHashSet<AssetForListing> InventoryRemoved;
+	[JsonInclude]
+	[JsonRequired]
+	private ImmutableHashSet<AssetForListing> InventoryRemoved { get; init; }
 
-	[JsonProperty(Required = Required.Always)]
-	private readonly string PreviousInventoryChecksum;
+	[JsonInclude]
+	[JsonRequired]
+	private string PreviousInventoryChecksum { get; init; }
 
 	internal AnnouncementDiffRequest(Guid guid, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, IReadOnlyCollection<AssetForListing> inventoryRemoved, string previousInventoryChecksum, string? nickname = null, string? avatarHash = null) : base(guid, steamID, inventory, inventoryChecksum, matchableTypes, totalInventoryCount, matchEverything, maxTradeHoldDuration, tradeToken, nickname, avatarHash) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);

@@ -33,6 +33,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
@@ -40,7 +41,6 @@ using ArchiSteamFarm.NLog.Targets;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
-using Newtonsoft.Json;
 using NLog;
 using SteamKit2;
 
@@ -353,7 +353,7 @@ internal static class Program {
 		}
 
 		if (globalConfig.Debug) {
-			ASF.ArchiLogger.LogGenericDebug($"{globalConfigFile}: {JsonConvert.SerializeObject(globalConfig, Formatting.Indented)}");
+			ASF.ArchiLogger.LogGenericDebug($"{globalConfigFile}: {globalConfig.ToJsonText(true)}");
 		}
 
 		if (!string.IsNullOrEmpty(globalConfig.CurrentCulture)) {
@@ -414,7 +414,7 @@ internal static class Program {
 		// If debugging is on, we prepare debug directory prior to running
 		if (Debugging.IsUserDebugging) {
 			if (Debugging.IsDebugConfigured) {
-				ASF.ArchiLogger.LogGenericDebug($"{globalDatabaseFile}: {JsonConvert.SerializeObject(ASF.GlobalDatabase, Formatting.Indented)}");
+				ASF.ArchiLogger.LogGenericDebug($"{globalDatabaseFile}: {globalDatabase.ToJsonText(true)}");
 			}
 
 			Logging.EnableTraceLogging();

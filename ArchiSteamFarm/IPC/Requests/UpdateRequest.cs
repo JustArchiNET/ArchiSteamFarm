@@ -20,8 +20,8 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Storage;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests;
 
@@ -30,8 +30,8 @@ public sealed class UpdateRequest {
 	/// <summary>
 	///     Target update channel. Not required, will default to UpdateChannel in GlobalConfig if not provided.
 	/// </summary>
-	[JsonProperty(Required = Required.DisallowNull)]
-	public GlobalConfig.EUpdateChannel? Channel { get; private set; }
+	[JsonInclude]
+	public GlobalConfig.EUpdateChannel? Channel { get; private init; }
 
 	[JsonConstructor]
 	private UpdateRequest() { }

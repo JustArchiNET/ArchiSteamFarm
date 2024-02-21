@@ -19,16 +19,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
 public sealed class GlobalConfigExtension {
-	[JsonProperty]
-	public SteamTokenDumperConfig? SteamTokenDumperPlugin { get; private set; }
+	[JsonInclude]
+	public SteamTokenDumperConfig? SteamTokenDumperPlugin { get; private init; }
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool SteamTokenDumperPluginEnabled { get; private set; }
+	[JsonInclude]
+	public bool SteamTokenDumperPluginEnabled { get; private init; }
 
 	[JsonConstructor]
 	internal GlobalConfigExtension() { }

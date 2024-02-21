@@ -22,55 +22,64 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.Storage;
 
 public abstract class GenericDatabase : SerializableFile {
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentDictionary<string, JToken> KeyValueJsonStorage = new();
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentDictionary<string, JsonElement> KeyValueJsonStorage { get; init; } = new();
 
 	[PublicAPI]
-	public void DeleteFromJsonStorage(string key) {
-		ArgumentException.ThrowIfNullOrEmpty(key);
-
-		if (!KeyValueJsonStorage.TryRemove(key, out _)) {
-			return;
-		}
-
-		Utilities.InBackground(Save);
-	}
-
-	[PublicAPI]
-	public JToken? LoadFromJsonStorage(string key) {
+	public JsonElement LoadFromJsonStorage(string key) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		return KeyValueJsonStorage.GetValueOrDefault(key);
 	}
 
-	[PublicAPI]
-	public void SaveToJsonStorage(string key, JToken value) {
+	[UsedImplicitly]
+	public bool ShouldSerializeKeyValueJsonStorage() => !KeyValueJsonStorage.IsEmpty;
+
+	protected static void DeleteFromJsonStorage<T>(T genericDatabase, string key) where T : GenericDatabase {
+		ArgumentNullException.ThrowIfNull(genericDatabase);
+		ArgumentException.ThrowIfNullOrEmpty(key);
+
+		if (!genericDatabase.KeyValueJsonStorage.TryRemove(key, out _)) {
+			return;
+		}
+
+		Utilities.InBackground(() => Save(genericDatabase));
+	}
+
+	protected static void SaveToJsonStorage<TDatabase, TValue>(TDatabase genericDatabase, string key, TValue value) where TDatabase : GenericDatabase where TValue : notnull {
+		ArgumentNullException.ThrowIfNull(genericDatabase);
 		ArgumentException.ThrowIfNullOrEmpty(key);
 		ArgumentNullException.ThrowIfNull(value);
 
-		if (value.Type == JTokenType.Null) {
-			DeleteFromJsonStorage(key);
+		JsonElement jsonElement = value.ToJsonElement();
 
-			return;
-		}
-
-		if (KeyValueJsonStorage.TryGetValue(key, out JToken? currentValue) && JToken.DeepEquals(currentValue, value)) {
-			return;
-		}
-
-		KeyValueJsonStorage[key] = value;
-		Utilities.InBackground(Save);
+		SaveToJsonStorage(genericDatabase, key, jsonElement);
 	}
 
-	[UsedImplicitly]
-	public bool ShouldSerializeKeyValueJsonStorage() => !KeyValueJsonStorage.IsEmpty;
+	protected static void SaveToJsonStorage<T>(T genericDatabase, string key, JsonElement value) where T : GenericDatabase {
+		ArgumentNullException.ThrowIfNull(genericDatabase);
+		ArgumentException.ThrowIfNullOrEmpty(key);
+
+		if (value.ValueKind == JsonValueKind.Undefined) {
+			throw new ArgumentOutOfRangeException(nameof(value));
+		}
+
+		if (genericDatabase.KeyValueJsonStorage.TryGetValue(key, out JsonElement currentValue) && currentValue.Equals(value)) {
+			return;
+		}
+
+		genericDatabase.KeyValueJsonStorage[key] = value;
+		Utilities.InBackground(() => Save(genericDatabase));
+	}
 }

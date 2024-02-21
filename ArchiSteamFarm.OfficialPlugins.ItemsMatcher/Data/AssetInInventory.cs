@@ -20,14 +20,16 @@
 // limitations under the License.
 
 using System;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal class AssetInInventory : AssetForMatching {
-	[JsonProperty("d", Required = Required.Always)]
-	internal readonly ulong AssetID;
+	[JsonInclude]
+	[JsonPropertyName("d")]
+	[JsonRequired]
+	internal ulong AssetID { get; private init; }
 
 	[JsonConstructor]
 	protected AssetInInventory() { }

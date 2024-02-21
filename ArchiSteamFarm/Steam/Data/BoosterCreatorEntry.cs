@@ -20,17 +20,21 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class BoosterCreatorEntry {
-	[JsonProperty("appid", Required = Required.Always)]
-	public uint AppID { get; private set; }
+	[JsonInclude]
+	[JsonPropertyName("appid")]
+	[JsonRequired]
+	public uint AppID { get; private init; }
 
-	[JsonProperty("name", Required = Required.Always)]
-	public string Name { get; private set; } = "";
+	[JsonInclude]
+	[JsonPropertyName("name")]
+	[JsonRequired]
+	public string Name { get; private init; } = "";
 
 	[JsonConstructor]
 	private BoosterCreatorEntry() { }

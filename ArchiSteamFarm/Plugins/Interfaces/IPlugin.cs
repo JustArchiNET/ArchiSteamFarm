@@ -20,9 +20,10 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
@@ -32,7 +33,8 @@ public interface IPlugin {
 	///     ASF will use this property as general plugin identifier for the user.
 	/// </summary>
 	/// <returns>String that will be used as the name of this plugin.</returns>
-	[JsonProperty]
+	[JsonInclude]
+	[Required]
 	string Name { get; }
 
 	/// <summary>
@@ -40,7 +42,8 @@ public interface IPlugin {
 	///     You have a freedom in deciding what versioning you want to use, this is for identification purposes only.
 	/// </summary>
 	/// <returns>Version that will be shown to the user when plugin is loaded.</returns>
-	[JsonProperty]
+	[JsonInclude]
+	[Required]
 	Version Version { get; }
 
 	/// <summary>

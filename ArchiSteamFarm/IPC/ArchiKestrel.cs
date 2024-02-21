@@ -21,8 +21,10 @@
 
 using System;
 using System.IO;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Controllers.Api;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
@@ -31,8 +33,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NLog.Web;
 
 namespace ArchiSteamFarm.IPC;
@@ -83,9 +83,9 @@ internal static class ArchiKestrel {
 				string json = await File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
 
 				if (!string.IsNullOrEmpty(json)) {
-					JObject jObject = JObject.Parse(json);
+					JsonNode? jsonNode = JsonNode.Parse(json);
 
-					ASF.ArchiLogger.LogGenericDebug($"{SharedInfo.IPCConfigFile}: {jObject.ToString(Formatting.Indented)}");
+					ASF.ArchiLogger.LogGenericDebug($"{SharedInfo.IPCConfigFile}: {jsonNode?.ToJsonText(true) ?? "null"}");
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);

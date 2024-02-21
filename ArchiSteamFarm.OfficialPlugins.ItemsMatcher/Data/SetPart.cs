@@ -20,33 +20,33 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class SetPart {
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty("c", Required = Required.Always)]
-	internal readonly ulong ClassID;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	[JsonInclude]
+	[JsonPropertyName("c")]
+	[JsonRequired]
+	internal ulong ClassID { get; private init; }
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty("r", Required = Required.Always)]
-	internal readonly Asset.ERarity Rarity;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	[JsonInclude]
+	[JsonPropertyName("r")]
+	[JsonRequired]
+	internal Asset.ERarity Rarity { get; private init; }
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty("e", Required = Required.Always)]
-	internal readonly uint RealAppID;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	[JsonInclude]
+	[JsonPropertyName("e")]
+	[JsonRequired]
+	internal uint RealAppID { get; private init; }
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
-	[JsonProperty("p", Required = Required.Always)]
-	internal readonly Asset.EType Type;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+	[JsonInclude]
+	[JsonPropertyName("p")]
+	[JsonRequired]
+	internal Asset.EType Type { get; private init; }
 
 	[JsonConstructor]
 	private SetPart() { }

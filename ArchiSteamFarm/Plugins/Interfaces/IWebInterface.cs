@@ -19,7 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
@@ -35,6 +35,6 @@ public interface IWebInterface : IPlugin {
 	/// <summary>
 	///     Specifies web path (address) under which ASF should host your static WWW files in <see cref="PhysicalPath" /> directory. Default value of "/" allows you to override default ASF files and gives you full flexibility in your <see cref="PhysicalPath" /> directory. However, you can instead host your files under some other fixed location specified here, such as "/MyPlugin".
 	/// </summary>
-	[JsonProperty]
+	[JsonInclude]
 	string WebPath => "/";
 }

@@ -19,22 +19,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Diagnostics.CodeAnalysis;
+using System;
 using System.Text.Json.Serialization;
-using SteamKit2;
+using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Steam.Data;
+namespace ArchiSteamFarm.Helpers.Json;
 
-[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-internal sealed class RedeemWalletResponse : ResultResponse {
-	[JsonInclude]
-	[JsonPropertyName("formattednewwalletbalance")]
-	internal string? BalanceText { get; private init; }
-
-	[JsonInclude]
-	[JsonPropertyName("detail")]
-	internal EPurchaseResultDetail PurchaseResultDetail { get; private init; }
-
-	[JsonConstructor]
-	private RedeemWalletResponse() { }
-}
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+[PublicAPI]
+public sealed class JsonDisallowNullAttribute : JsonAttribute;

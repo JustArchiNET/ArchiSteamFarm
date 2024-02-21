@@ -22,16 +22,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
-using Newtonsoft.Json;
+using ArchiSteamFarm.Helpers.Json;
+using JetBrains.Annotations;
 using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm.Steam.SteamKit2;
 
 internal sealed class InMemoryServerListProvider : IServerListProvider {
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentHashSet<ServerRecordEndPoint> ServerRecords = [];
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentHashSet<ServerRecordEndPoint> ServerRecords { get; init; } = [];
 
 	public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult(ServerRecords.Where(static server => !string.IsNullOrEmpty(server.Host) && server is { Port: > 0, ProtocolTypes: > 0 }).Select(static server => ServerRecord.CreateServer(server.Host, server.Port, server.ProtocolTypes)));
 
@@ -47,6 +50,7 @@ internal sealed class InMemoryServerListProvider : IServerListProvider {
 		return Task.CompletedTask;
 	}
 
+	[UsedImplicitly]
 	public bool ShouldSerializeServerRecords() => ServerRecords.Count > 0;
 
 	internal event EventHandler? ServerListUpdated;
