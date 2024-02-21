@@ -39,10 +39,23 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 
 	public ConcurrentHashSet() => BackingCollection = new ConcurrentDictionary<T, bool>();
 
+	public ConcurrentHashSet(IEnumerable<T> collection) {
+		ArgumentNullException.ThrowIfNull(collection);
+
+		BackingCollection = new ConcurrentDictionary<T, bool>(collection.Select(static item => new KeyValuePair<T, bool>(item, true)));
+	}
+
 	public ConcurrentHashSet(IEqualityComparer<T> comparer) {
 		ArgumentNullException.ThrowIfNull(comparer);
 
 		BackingCollection = new ConcurrentDictionary<T, bool>(comparer);
+	}
+
+	public ConcurrentHashSet(IEnumerable<T> collection, IEqualityComparer<T> comparer) {
+		ArgumentNullException.ThrowIfNull(collection);
+		ArgumentNullException.ThrowIfNull(comparer);
+
+		BackingCollection = new ConcurrentDictionary<T, bool>(collection.Select(static item => new KeyValuePair<T, bool>(item, true)), comparer);
 	}
 
 	public bool Add(T item) {
