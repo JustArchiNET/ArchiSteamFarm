@@ -22,6 +22,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 using Nito.AsyncEx;
 
@@ -31,9 +32,7 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 	[PublicAPI]
 	public event EventHandler? OnModified;
 
-	public bool IsReadOnly => false;
-
-	internal int Count {
+	public int Count {
 		get {
 			using (Lock.ReaderLock()) {
 				return BackingCollection.Count;
@@ -41,7 +40,9 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 		}
 	}
 
-	private readonly List<T> BackingCollection = [];
+	public bool IsReadOnly => false;
+
+	private readonly List<T> BackingCollection;
 	private readonly AsyncReaderWriterLock Lock = new();
 
 	int ICollection<T>.Count => Count;
@@ -63,6 +64,15 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 
 			OnModified?.Invoke(this, EventArgs.Empty);
 		}
+	}
+
+	[JsonConstructor]
+	public ConcurrentList() => BackingCollection = [];
+
+	public ConcurrentList(IEnumerable<T> collection) {
+		ArgumentNullException.ThrowIfNull(collection);
+
+		BackingCollection = [..collection];
 	}
 
 	public void Add(T item) {
@@ -147,7 +157,7 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	internal void ReplaceWith(IEnumerable<T> collection) {
+	public void ReplaceWith(IEnumerable<T> collection) {
 		ArgumentNullException.ThrowIfNull(collection);
 
 		using (Lock.WriterLock()) {

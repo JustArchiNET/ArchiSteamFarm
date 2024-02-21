@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Collections;
@@ -37,6 +38,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 
 	private readonly ConcurrentDictionary<T, bool> BackingCollection;
 
+	[JsonConstructor]
 	public ConcurrentHashSet() => BackingCollection = new ConcurrentDictionary<T, bool>();
 
 	public ConcurrentHashSet(IEnumerable<T> collection) {

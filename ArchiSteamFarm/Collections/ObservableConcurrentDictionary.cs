@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Collections;
@@ -41,7 +42,7 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 	[PublicAPI]
 	public ICollection<TKey> Keys => BackingDictionary.Keys;
 
-	private readonly ConcurrentDictionary<TKey, TValue> BackingDictionary = new();
+	private readonly ConcurrentDictionary<TKey, TValue> BackingDictionary;
 
 	int ICollection<KeyValuePair<TKey, TValue>>.Count => BackingDictionary.Count;
 	int IReadOnlyCollection<KeyValuePair<TKey, TValue>>.Count => BackingDictionary.Count;
@@ -63,6 +64,28 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 			BackingDictionary[key] = value;
 			OnModified?.Invoke(this, EventArgs.Empty);
 		}
+	}
+
+	[JsonConstructor]
+	public ObservableConcurrentDictionary() => BackingDictionary = new ConcurrentDictionary<TKey, TValue>();
+
+	public ObservableConcurrentDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection) {
+		ArgumentNullException.ThrowIfNull(collection);
+
+		BackingDictionary = new ConcurrentDictionary<TKey, TValue>(collection);
+	}
+
+	public ObservableConcurrentDictionary(IEqualityComparer<TKey> comparer) {
+		ArgumentNullException.ThrowIfNull(comparer);
+
+		BackingDictionary = new ConcurrentDictionary<TKey, TValue>(comparer);
+	}
+
+	public ObservableConcurrentDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey> comparer) {
+		ArgumentNullException.ThrowIfNull(collection);
+		ArgumentNullException.ThrowIfNull(comparer);
+
+		BackingDictionary = new ConcurrentDictionary<TKey, TValue>(collection, comparer);
 	}
 
 	public void Add(KeyValuePair<TKey, TValue> item) {
