@@ -64,7 +64,7 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup Condition="Exists($([System.IO.Path]::Combine('overlay', 'variant-base', $(ASFVariant.Split('-')[0]))))">
+	<ItemGroup Condition="'$(ASFVariant)' != '' AND Exists($([System.IO.Path]::Combine('overlay', 'variant-base', $(ASFVariant.Split('-')[0]))))">
 		<Content Include="overlay/variant-base/$(ASFVariant.Split('-')[0])/**/*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -72,7 +72,7 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup Condition="Exists($([System.IO.Path]::Combine('overlay', 'variant-specific', $(ASFVariant))))">
+	<ItemGroup Condition="'$(ASFVariant)' != '' AND Exists($([System.IO.Path]::Combine('overlay', 'variant-specific', $(ASFVariant))))">
 		<Content Include="overlay/variant-specific/$(ASFVariant)/**/*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
