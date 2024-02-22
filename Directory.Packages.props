@@ -7,9 +7,7 @@
 		<PackageVersion Include="JetBrains.Annotations" Version="2023.3.0" />
 		<PackageVersion Include="Markdig.Signed" Version="0.35.0" />
 		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.3.1" />
-		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-		<PackageVersion Include="MSTest.TestAdapter" Version="3.2.1" />
-		<PackageVersion Include="MSTest.TestFramework" Version="3.2.1" />
+		<PackageVersion Include="MSTest" Version="3.2.2" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
 		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.8" />
 		<PackageVersion Include="SteamKit2" Version="2.5.0" />

@@ -55,7 +55,6 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	[ExpectedException(typeof(ArgumentOutOfRangeException))]
 	public void MaxItemsTooSmall() {
 		const uint appID = 42;
 
@@ -64,9 +63,7 @@ public sealed class Bot {
 			CreateCard(2, appID)
 		];
 
-		GetItemsForFullBadge(items, 2, appID, MinCardsPerBadge - 1);
-
-		Assert.Fail();
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => GetItemsForFullBadge(items, 2, appID, MinCardsPerBadge - 1));
 	}
 
 	[TestMethod]
@@ -460,7 +457,6 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	[ExpectedException(typeof(InvalidOperationException))]
 	public void TooManyCardsPerSet() {
 		const uint appID0 = 42;
 		const uint appID1 = 43;
@@ -473,15 +469,15 @@ public sealed class Bot {
 			CreateCard(4, appID0)
 		];
 
-		GetItemsForFullBadge(
-			items, new Dictionary<uint, byte> {
-				{ appID0, 3 },
-				{ appID1, 3 },
-				{ appID2, 3 }
-			}
+		Assert.ThrowsException<InvalidOperationException>(
+			() => GetItemsForFullBadge(
+				items, new Dictionary<uint, byte> {
+					{ appID0, 3 },
+					{ appID1, 3 },
+					{ appID2, 3 }
+				}
+			)
 		);
-
-		Assert.Fail();
 	}
 
 	private static void AssertResultMatchesExpectation(IReadOnlyDictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult, IReadOnlyCollection<Asset> itemsToSend) {

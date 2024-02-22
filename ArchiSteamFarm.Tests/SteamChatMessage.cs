@@ -311,27 +311,21 @@ public sealed class SteamChatMessage {
 		Assert.AreEqual(newlinePart, output[3]);
 	}
 
-	[ExpectedException(typeof(ArgumentOutOfRangeException))]
 	[TestMethod]
 	public async Task ThrowsOnTooLongNewlinesPrefix() {
 		string prefix = new('\n', (MaxMessagePrefixBytes / NewlineWeight) + 1);
 
 		const string message = "asdf";
 
-		await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
-
-		Assert.Fail();
+		await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false)).ConfigureAwait(false);
 	}
 
-	[ExpectedException(typeof(ArgumentOutOfRangeException))]
 	[TestMethod]
 	public async Task ThrowsOnTooLongPrefix() {
 		string prefix = new('x', MaxMessagePrefixBytes + 1);
 
 		const string message = "asdf";
 
-		await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
-
-		Assert.Fail();
+		await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false)).ConfigureAwait(false);
 	}
 }
