@@ -708,7 +708,10 @@ PROCES UPTIME: {1}</value>
 		<value>UR ENCRYPSHUN KEY IZ 2 SHORT. WE RECOMMEND 2 USE WAN DAT IZ AT LEAST {0} BYTEZ (CHARACTERS) LONG.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>URE USIN {0} SETTIN OV {1} PROPERTY, BUT U DIDNT PROVIDE CUSTOM --CRYPTKEY. U CAN OPSHUNALLY PROVIDE CUSTOM --CRYPTKEY 4 INCREASD SECURITY IF UD LIEK 2.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>URE USIN {0} SETTIN OV {1} PROPERTY, BUT U DIDNT PROVIDE CUSTOM --cryptkey. DIS ENTIRELY DEFEATS TEH PROTECSHUN, AS ASF IZ FORCD 2 USE ITZ OWN (KNOWN) KEY. U SHUD PROVIDE CUSTOM --cryptkey 4 MAKIN USE OV TEH SECURITY BENEFIT OFFERD BY DIS SETTIN.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
