@@ -53,7 +53,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotCommand2, IBotSteamClient, ISteamPICSChanges {
 	private const ushort DepotsRateLimitingDelay = 500;
 
-	[JsonInclude]
 	internal static SteamTokenDumperConfig? Config { get; private set; }
 
 	private static readonly ConcurrentDictionary<Bot, IDisposable> BotSubscriptions = new();

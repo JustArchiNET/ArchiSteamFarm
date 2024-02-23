@@ -30,17 +30,23 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 
 internal sealed class SubmitRequest {
+	private readonly ulong SteamID;
+
 	[JsonInclude]
 	[JsonPropertyName("guid")]
-	private static string Guid => ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
+	private string Guid => ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
+
+	[JsonInclude]
+	[JsonPropertyName("steamid")]
+	private string SteamIDText => new SteamID(SteamID).Render();
 
 	[JsonInclude]
 	[JsonPropertyName("token")]
-	private static string Token => SharedInfo.Token;
+	private string Token => SharedInfo.Token;
 
 	[JsonInclude]
 	[JsonPropertyName("v")]
-	private static byte Version => SharedInfo.ApiVersion;
+	private byte Version => SharedInfo.ApiVersion;
 
 	[JsonInclude]
 	[JsonPropertyName("apps")]
@@ -52,16 +58,10 @@ internal sealed class SubmitRequest {
 	[JsonRequired]
 	private ImmutableDictionary<string, string> Depots { get; init; }
 
-	private readonly ulong SteamID;
-
 	[JsonInclude]
 	[JsonPropertyName("subs")]
 	[JsonRequired]
 	private ImmutableDictionary<string, string> Subs { get; init; }
-
-	[JsonInclude]
-	[JsonPropertyName("steamid")]
-	private string SteamIDText => new SteamID(SteamID).Render();
 
 	internal SubmitRequest(ulong steamID, IReadOnlyCollection<KeyValuePair<uint, ulong>> apps, IReadOnlyCollection<KeyValuePair<uint, ulong>> accessTokens, IReadOnlyCollection<KeyValuePair<uint, string>> depots) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
