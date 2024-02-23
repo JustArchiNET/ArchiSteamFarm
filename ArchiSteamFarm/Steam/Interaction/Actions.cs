@@ -79,6 +79,30 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<(EResult Result, IReadOnlyCollection<uint>? GrantedApps, IReadOnlyCollection<uint>? GrantedPackages)> AddFreeLicenseApp(uint appID) {
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+
+		SteamApps.FreeLicenseCallback callback;
+
+		try {
+			callback = await Bot.SteamApps.RequestFreeLicense(appID).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			Bot.ArchiLogger.LogGenericWarningException(e);
+
+			return (EResult.Timeout, null, null);
+		}
+
+		return (callback.Result, callback.GrantedApps, callback.GrantedPackages);
+	}
+
+	[PublicAPI]
+	public async Task<(EResult Result, EPurchaseResultDetail PurchaseResultDetail)> AddFreeLicensePackage(uint subID) {
+		ArgumentOutOfRangeException.ThrowIfZero(subID);
+
+		return await Bot.ArchiWebHandler.AddFreeLicense(subID).ConfigureAwait(false);
+	}
+
+	[PublicAPI]
 	public static string? Encrypt(ArchiCryptoHelper.ECryptoMethod cryptoMethod, string stringToEncrypt) {
 		if (!Enum.IsDefined(cryptoMethod)) {
 			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ArchiCryptoHelper.ECryptoMethod));
