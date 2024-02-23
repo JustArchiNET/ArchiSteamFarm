@@ -27,6 +27,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text.Json;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Integration;
@@ -328,8 +329,11 @@ internal sealed class Startup {
 
 		mvc.AddJsonOptions(
 			static options => {
-				options.JsonSerializerOptions.PropertyNamingPolicy = JsonUtilities.DefaultJsonSerialierOptions.PropertyNamingPolicy;
-				options.JsonSerializerOptions.TypeInfoResolver = JsonUtilities.DefaultJsonSerialierOptions.TypeInfoResolver;
+				JsonSerializerOptions jsonSerializerOptions = Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions;
+
+				options.JsonSerializerOptions.PropertyNamingPolicy = jsonSerializerOptions.PropertyNamingPolicy;
+				options.JsonSerializerOptions.TypeInfoResolver = jsonSerializerOptions.TypeInfoResolver;
+				options.JsonSerializerOptions.WriteIndented = jsonSerializerOptions.WriteIndented;
 			}
 		);
 	}
