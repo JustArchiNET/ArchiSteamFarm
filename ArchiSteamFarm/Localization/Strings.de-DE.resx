@@ -178,7 +178,7 @@ StackTrace:
 		<value>Prüfe auf neue Version...</value>
 	</data>
 	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
-		<value>Lade neue Version herunter: {0} ({1} MB)... Bitte überlegen Sie es sich, uns für unsere geleistete Arbeit eine Spende zu hinterlassen, während Sie warten. :)</value>
+		<value>Lade neue Version herunter: {0} ({1} MB)... Während Sie warten, würden wir uns in der Zwischenzeit über Ihre Spende für unsere geleistete Arbeit eine Spende freuen. :-)</value>
 		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
 	</data>
 	<data name="UpdateFinished" xml:space="preserve">
