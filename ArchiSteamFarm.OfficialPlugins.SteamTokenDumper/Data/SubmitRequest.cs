@@ -32,21 +32,27 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 internal sealed class SubmitRequest {
 	private readonly ulong SteamID;
 
+#pragma warning disable CA1822 // We can't make it static, STJ doesn't serialize it otherwise
 	[JsonInclude]
 	[JsonPropertyName("guid")]
 	private string Guid => ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
+#pragma warning restore CA1822 // We can't make it static, STJ doesn't serialize it otherwise
 
 	[JsonInclude]
 	[JsonPropertyName("steamid")]
 	private string SteamIDText => new SteamID(SteamID).Render();
 
+#pragma warning disable CA1822 // We can't make it static, STJ doesn't serialize it otherwise
 	[JsonInclude]
 	[JsonPropertyName("token")]
 	private string Token => SharedInfo.Token;
+#pragma warning restore CA1822 // We can't make it static, STJ doesn't serialize it otherwise
 
+#pragma warning disable CA1822 // We can't make it static, STJ doesn't serialize it otherwise
 	[JsonInclude]
 	[JsonPropertyName("v")]
 	private byte Version => SharedInfo.ApiVersion;
+#pragma warning restore CA1822 // We can't make it static, STJ doesn't serialize it otherwise
 
 	[JsonInclude]
 	[JsonPropertyName("apps")]
