@@ -42,10 +42,10 @@ public static class JsonUtilities {
 	public static readonly JsonSerializerOptions IndentedJsonSerialierOptions = CreateDefaultJsonSerializerOptions(true);
 
 	[PublicAPI]
-	public static JsonElement ToJsonElement<T>(this T obj, bool writeIndented = false) where T : notnull {
+	public static JsonElement ToJsonElement<T>(this T obj) where T : notnull {
 		ArgumentNullException.ThrowIfNull(obj);
 
-		return JsonSerializer.SerializeToElement(obj, writeIndented ? IndentedJsonSerialierOptions : DefaultJsonSerialierOptions);
+		return JsonSerializer.SerializeToElement(obj, DefaultJsonSerialierOptions);
 	}
 
 	[PublicAPI]
