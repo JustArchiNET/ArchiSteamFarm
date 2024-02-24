@@ -282,15 +282,22 @@
 		<value>Ponuda za razmjenu nije uspjela!</value>
 	</data>
 	
-	
-	
+	<data name="BotLootingSuccess" xml:space="preserve">
+		<value>Ponuda za razmenu je uspešno poslata!</value>
+	</data>
+	<data name="BotSendingTradeToYourself" xml:space="preserve">
+		<value>Ne možete poslati zahtjev za razmjenu sebi!</value>
+	</data>
 	
 	<data name="BotNotConnected" xml:space="preserve">
 		<value>Ova instanca bot-a nije povezana!</value>
 	</data>
 	
 	
-	
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>Stanje bodova: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
 	
 	<data name="BotReconnecting" xml:space="preserve">
 		<value>Ponovno povezivanje...</value>
