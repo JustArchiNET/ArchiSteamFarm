@@ -49,7 +49,7 @@ public static class JsonUtilities {
 	}
 
 	[PublicAPI]
-	public static T? ToJsonObject<T>(this JsonElement jsonElement, CancellationToken cancellationToken = default) => jsonElement.Deserialize<T>(DefaultJsonSerialierOptions);
+	public static T? ToJsonObject<T>(this JsonElement jsonElement) => jsonElement.Deserialize<T>(DefaultJsonSerialierOptions);
 
 	[PublicAPI]
 	public static async ValueTask<T?> ToJsonObject<T>(this Stream stream, CancellationToken cancellationToken = default) {
