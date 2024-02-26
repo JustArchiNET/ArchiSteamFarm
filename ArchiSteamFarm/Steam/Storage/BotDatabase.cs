@@ -242,18 +242,17 @@ public sealed class BotDatabase : GenericDatabase {
 			throw new ArgumentNullException(nameof(games));
 		}
 
-		bool save = false;
-
 		lock (GamesToRedeemInBackground) {
-			foreach (DictionaryEntry game in games.OfType<DictionaryEntry>().Where(game => !GamesToRedeemInBackground.Contains(game.Key))) {
-				GamesToRedeemInBackground.Add(game.Key, game.Value);
-				save = true;
+			foreach (DictionaryEntry game in games) {
+				if (!IsValidGameToRedeemInBackground(game)) {
+					throw new InvalidOperationException(nameof(game));
+				}
+
+				GamesToRedeemInBackground[game.Key] = game.Value;
 			}
 		}
 
-		if (save) {
-			Utilities.InBackground(Save);
-		}
+		Utilities.InBackground(Save);
 	}
 
 	internal static async Task<BotDatabase?> CreateOrLoad(string filePath) {
@@ -287,6 +286,16 @@ public sealed class BotDatabase : GenericDatabase {
 			return null;
 		}
 
+		(bool valid, string? errorMessage) = botDatabase.CheckValidation();
+
+		if (!valid) {
+			if (!string.IsNullOrEmpty(errorMessage)) {
+				ASF.ArchiLogger.LogGenericError(errorMessage);
+			}
+
+			return null;
+		}
+
 		botDatabase.FilePath = filePath;
 
 		return botDatabase;
@@ -295,11 +304,33 @@ public sealed class BotDatabase : GenericDatabase {
 	internal (string? Key, string? Name) GetGameToRedeemInBackground() {
 		lock (GamesToRedeemInBackground) {
 			foreach (DictionaryEntry game in GamesToRedeemInBackground) {
-				return (game.Key as string, game.Value as string);
+				return game.Value switch {
+					string name => (game.Key as string, name),
+					JsonElement { ValueKind: JsonValueKind.String } jsonElement => (game.Key as string, jsonElement.GetString()),
+					_ => throw new InvalidOperationException(nameof(game.Value))
+				};
 			}
 		}
 
 		return (null, null);
+	}
+
+	internal static bool IsValidGameToRedeemInBackground(DictionaryEntry game) {
+		ArgumentNullException.ThrowIfNull(game);
+
+		string? key = game.Key as string;
+
+		if (string.IsNullOrEmpty(key) || !Utilities.IsValidCdKey(key)) {
+			return false;
+		}
+
+		switch (game.Value) {
+			case string name when !string.IsNullOrEmpty(name):
+			case JsonElement { ValueKind: JsonValueKind.String } jsonElement when !string.IsNullOrEmpty(jsonElement.GetString()):
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	internal void PerformMaintenance() {
@@ -323,6 +354,8 @@ public sealed class BotDatabase : GenericDatabase {
 
 		Utilities.InBackground(Save);
 	}
+
+	private (bool Valid, string? ErrorMessage) CheckValidation() => GamesToRedeemInBackground.Cast<DictionaryEntry>().Any(static game => !IsValidGameToRedeemInBackground(game)) ? (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(GamesToRedeemInBackground), string.Join("", GamesToRedeemInBackground))) : (true, null);
 
 	private async void OnObjectModified(object? sender, EventArgs e) {
 		if (string.IsNullOrEmpty(FilePath)) {

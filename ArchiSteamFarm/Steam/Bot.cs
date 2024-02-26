@@ -1970,37 +1970,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new ArgumentNullException(nameof(gamesToRedeemInBackground));
 		}
 
-		HashSet<object> invalidKeys = [];
+		HashSet<object> invalidKeys = gamesToRedeemInBackground.Cast<DictionaryEntry>().Where(static game => !BotDatabase.IsValidGameToRedeemInBackground(game)).Select(static game => game.Key).ToHashSet();
 
-		foreach (DictionaryEntry game in gamesToRedeemInBackground) {
-			bool invalid = false;
-
-			string? key = game.Key as string;
-
-			if (string.IsNullOrEmpty(key)) {
-				invalid = true;
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(key)));
-			} else if (!Utilities.IsValidCdKey(key)) {
-				invalid = true;
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, key));
-			}
-
-			string? name = game.Value as string;
-
-			if (string.IsNullOrEmpty(name)) {
-				invalid = true;
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(name)));
-			}
-
-			if (invalid && (key != null)) {
-				invalidKeys.Add(key);
-			}
-		}
-
-		if (invalidKeys.Count > 0) {
-			foreach (string invalidKey in invalidKeys) {
-				gamesToRedeemInBackground.Remove(invalidKey);
-			}
+		foreach (object invalidKey in invalidKeys) {
+			gamesToRedeemInBackground.Remove(invalidKey);
 		}
 
 		return gamesToRedeemInBackground;
