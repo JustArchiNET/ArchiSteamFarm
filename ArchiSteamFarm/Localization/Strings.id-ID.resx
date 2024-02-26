@@ -532,7 +532,9 @@
 	<data name="BotAccountLocked" xml:space="preserve">
 		<value>Akun ini terkunci, proses farming tidak tersedia secara permanen!</value>
 	</data>
-	
+	<data name="BotStatusLocked" xml:space="preserve">
+		<value>Bot sedang terkundi dan tidak bisa mendapatkan kartu saat farming.</value>
+	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
 		<value>Fungsi ini tersedia hanya dalam mode headless!</value>
 	</data>
@@ -543,8 +545,14 @@
 	<data name="ErrorAccessDenied" xml:space="preserve">
 		<value>Akses ditolak!</value>
 	</data>
-	
-	
+	<data name="WarningPreReleaseVersion" xml:space="preserve">
+		<value>Anda menggunakan versi yang lebih baru dari versi terbaru yang dirilis untuk saluran pembaruan Anda. Harap dicatat bahwa versi pra-rilis ditujukan untuk pengguna yang mengetahui cara melaporkan bug, menangani masalah, dan memberikan umpan balik - tidak ada dukungan teknis yang akan diberikan.</value>
+	</data>
+	<data name="BotStats" xml:space="preserve">
+		<value>Penggunaan memori saat ini: {0} MB.
+Waktu aktif proses: {1}</value>
+		<comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+	</data>
 	<data name="ClearingDiscoveryQueue" xml:space="preserve">
 		<value>Membersihkan antrian penemuan Steam #{0}...</value>
 		<comment>{0} will be replaced by queue number</comment>
@@ -560,13 +568,21 @@
 	<data name="BotRefreshingPackagesData" xml:space="preserve">
 		<value>Menyegarkan data paket...</value>
 	</data>
-	
+	<data name="WarningDeprecated" xml:space="preserve">
+		<value>Penggunaan {0} tidak digunakan lagi dan akan dihapus pada versi program mendatang. Silakan gunakan {1} sebagai gantinya.</value>
+		<comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+	</data>
 	<data name="BotAcceptedDonationTrade" xml:space="preserve">
 		<value>Menerima trade donasi: {0}</value>
 		<comment>{0} will be replaced by trade's ID (number)</comment>
 	</data>
-	
-	
+	<data name="WarningWorkaroundTriggered" xml:space="preserve">
+		<value>Solusi untuk bug {0} telah dipicu.</value>
+		<comment>{0} will be replaced by the bug's name provided by ASF</comment>
+	</data>
+	<data name="TargetBotNotConnected" xml:space="preserve">
+		<value>Bot target tidak terhubung!</value>
+	</data>
 	<data name="BotWalletBalance" xml:space="preserve">
 		<value>Saldo wallet: {0} {1}</value>
 		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
@@ -578,12 +594,21 @@
 		<value>Bot mempunyai level {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
-	
+	<data name="ActivelyMatchingItems" xml:space="preserve">
+		<value>Mencocokkan item dari Steam, fase #{0}...</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
+	<data name="DoneActivelyMatchingItems" xml:space="preserve">
+		<value>Selesai mencocokkan item dari Steam, fase #{0}.</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Dibatalkan!</value>
 	</data>
-	
+	<data name="WarningExcessiveBotsCount" xml:space="preserve">
+		<value>Anda menjalankan lebih banyak akun bot pribadi dari batas maksimum yang kami rekomendasikan ({0}). Perlu diketahui bahwa pengaturan ini tidak didukung dan mungkin menyebabkan berbagai masalah terkait Steam, termasuk penangguhan akun. Lihat FAQ untuk lebih jelasnya.</value>
+		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+	</data>
 	<data name="PluginLoaded" xml:space="preserve">
 		<value>{0} telah berhasil memuat!</value>
 		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
@@ -595,7 +620,9 @@
 	<data name="NothingFound" xml:space="preserve">
 		<value>Tidak ditemukan!</value>
 	</data>
-	
+	<data name="PluginsWarning" xml:space="preserve">
+		<value>Anda telah memuat satu atau beberapa plugin khusus ke ASF. Karena kami tidak dapat menawarkan dukungan untuk pengaturan yang dimodifikasi, harap hubungi pengembang plugin yang sesuai yang Anda putuskan untuk digunakan jika terjadi masalah.</value>
+	</data>
 	<data name="PleaseWait" xml:space="preserve">
 		<value>Harap tunggu...</value>
 	</data>
@@ -605,20 +632,45 @@
 	<data name="Executing" xml:space="preserve">
 		<value>Mengeksekusi...</value>
 	</data>
-	
+	<data name="InteractiveConsoleEnabled" xml:space="preserve">
+		<value>Konsol interaktif sekarang aktif, ketik 'c' untuk masuk ke mode perintah.</value>
+	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Bot mempunyai {0} game tersisa di dalam antrian.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="ErrorSingleInstanceRequired" xml:space="preserve">
+		<value>Proses ASF sudah berjalan untuk direktori kerja ini, dibatalkan!</value>
+	</data>
+	<data name="BotHandledConfirmations" xml:space="preserve">
+		<value>Berhasil menangani {0} konfirmasi!</value>
+		<comment>{0} will be replaced by number of confirmations</comment>
+	</data>
+	<data name="BotExtraIdlingCooldown" xml:space="preserve">
+		<value>Menunggu hingga {0} untuk memastikan bahwa kita bisa memulai farming...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+	</data>
+	<data name="UpdateCleanup" xml:space="preserve">
+		<value>Membersihkan file lama setelah pembaruan...</value>
+	</data>
+	<data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+		<value>Seadng membuat Steam parental code, ini bisa memakan waktu cukup lama, pertimbangkan untuk memasukkannya ke dalam konfigurasi...</value>
+	</data>
+	<data name="IPCConfigChanged" xml:space="preserve">
+		<value>Konfigurasi IPC telah diubah!</value>
+	</data>
+	<data name="BotTradeOfferResult" xml:space="preserve">
+		<value>Penawaran trade {0} ditentukan menjadi {1} karena {2}.</value>
+		<comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
+	</data>
+	<data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
+		<value>Menerima kode kesalahan InvalidPassword {0} kali berturut-turut. Kata sandi Anda untuk akun ini kemungkinan besar salah, batalkan!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
+	</data>
+	<data name="Result" xml:space="preserve">
+		<value>Hasil: {0}</value>
+		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
+	</data>
 	
 	
 	
