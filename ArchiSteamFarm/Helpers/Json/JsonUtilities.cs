@@ -105,6 +105,7 @@ public static class JsonUtilities {
 	private static JsonSerializerOptions CreateDefaultJsonSerializerOptions(bool writeIndented = false) =>
 		new() {
 			AllowTrailingCommas = true,
+			Converters = { GuidJsonConverter.Shared },
 			PropertyNamingPolicy = null,
 			ReadCommentHandling = JsonCommentHandling.Skip,
 			TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { ApplyCustomModifiers } },
