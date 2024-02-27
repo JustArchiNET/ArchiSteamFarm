@@ -34,7 +34,13 @@ internal sealed class GuidJsonConverter : JsonConverter<Guid> {
 	internal static readonly GuidJsonConverter Shared = new();
 
 	public override Guid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+		if (reader.TryGetGuid(out Guid result)) {
+			// Great, we can work with it
+			return result;
+		}
+
 		try {
+			// Try again using more flexible implementation, sigh
 			return Guid.Parse(reader.GetString()!);
 		} catch {
 			// Throw JsonException instead, which will be converted into standard message by STJ
