@@ -383,7 +383,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
 
 					if (state.TryGetValue(key, out Dictionary<ulong, uint>? set)) {
-						set[asset.ClassID] = set.TryGetValue(asset.ClassID, out uint amount) ? amount + asset.Amount : asset.Amount;
+						set[asset.ClassID] = set.GetValueOrDefault(asset.ClassID) + asset.Amount;
 					} else {
 						state[key] = new Dictionary<ulong, uint> { { asset.ClassID, asset.Amount } };
 					}
@@ -977,7 +977,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
 
 				if (setsState.TryGetValue(key, out Dictionary<ulong, uint>? set)) {
-					set[asset.ClassID] = set.TryGetValue(asset.ClassID, out uint amount) ? amount + asset.Amount : asset.Amount;
+					set[asset.ClassID] = set.GetValueOrDefault(asset.ClassID) + asset.Amount;
 				} else {
 					setsState[key] = new Dictionary<ulong, uint> { { asset.ClassID, asset.Amount } };
 				}
@@ -1331,15 +1331,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 								continue;
 							}
 
-							foreach ((ulong theirItem, uint theirTradableAmount) in theirTradableItems.OrderBy(item => ourFullSet.TryGetValue(item.Key, out uint ourAmountOfTheirItem) ? ourAmountOfTheirItem : 0)) {
+							foreach ((ulong theirItem, uint theirTradableAmount) in theirTradableItems.OrderBy(item => ourFullSet.GetValueOrDefault(item.Key))) {
 								if (ourFullSet.TryGetValue(theirItem, out uint ourAmountOfTheirItem) && (ourFullAmount <= ourAmountOfTheirItem + 1)) {
 									continue;
 								}
 
 								if (!listedUser.MatchEverything) {
 									// We have a potential match, let's check fairness for them
-									fairClassIDsToGive.TryGetValue(ourItem, out uint fairGivenAmount);
-									fairClassIDsToReceive.TryGetValue(theirItem, out uint fairReceivedAmount);
+									uint fairGivenAmount = fairClassIDsToGive.GetValueOrDefault(ourItem);
+									uint fairReceivedAmount = fairClassIDsToReceive.GetValueOrDefault(theirItem);
+
 									fairClassIDsToGive[ourItem] = ++fairGivenAmount;
 									fairClassIDsToReceive[theirItem] = ++fairReceivedAmount;
 
@@ -1373,11 +1374,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 								skippedSetsThisTrade.Add(set);
 
 								// Update our state based on given items
-								classIDsToGive[ourItem] = classIDsToGive.TryGetValue(ourItem, out uint ourGivenAmount) ? ourGivenAmount + 1 : 1;
+								classIDsToGive[ourItem] = classIDsToGive.GetValueOrDefault(ourItem) + 1;
 								ourFullSet[ourItem] = ourFullAmount - 1; // We don't need to remove anything here because we can guarantee that ourItem.Value is at least 2
 
 								// Update our state based on received items
-								classIDsToReceive[theirItem] = classIDsToReceive.TryGetValue(theirItem, out uint ourReceivedAmount) ? ourReceivedAmount + 1 : 1;
+								classIDsToReceive[theirItem] = classIDsToReceive.GetValueOrDefault(theirItem) + 1;
 								ourFullSet[theirItem] = ourAmountOfTheirItem + 1;
 
 								if (ourTradableAmount > 1) {
@@ -1515,11 +1516,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 						throw new InvalidOperationException(nameof(fullAmounts));
 					}
 
-					if (!fullAmounts.TryGetValue(itemToReceive.ClassID, out uint fullAmount)) {
-						fullAmount = 0;
-					}
-
-					fullAmounts[itemToReceive.ClassID] = itemToReceive.Amount + fullAmount;
+					fullAmounts[itemToReceive.ClassID] = fullAmounts.GetValueOrDefault(itemToReceive.ClassID) + itemToReceive.Amount;
 				}
 
 				skippedSetsThisUser.UnionWith(skippedSetsThisTrade);

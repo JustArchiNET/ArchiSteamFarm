@@ -164,14 +164,14 @@ internal sealed class ApiAuthenticationMiddleware {
 			}
 
 			try {
-				bool hasFailedAuthorizations = FailedAuthorizations.TryGetValue(clientIP, out attempts);
+				attempts = FailedAuthorizations.GetValueOrDefault(clientIP);
 
-				if (hasFailedAuthorizations && (attempts >= MaxFailedAuthorizationAttempts)) {
+				if (attempts >= MaxFailedAuthorizationAttempts) {
 					return (HttpStatusCode.Forbidden, false);
 				}
 
 				if (!authorized) {
-					FailedAuthorizations[clientIP] = hasFailedAuthorizations ? ++attempts : (byte) 1;
+					FailedAuthorizations[clientIP] = ++attempts;
 				}
 			} finally {
 				AuthorizationTasks.TryRemove(clientIP, out _);

@@ -1906,14 +1906,12 @@ public sealed class Commands {
 			return null;
 		}
 
-		Dictionary<string, (ushort Count, string GameName)> ownedGamesStats = new(StringComparer.Ordinal);
+		Dictionary<string, (ushort Count, string? GameName)> ownedGamesStats = new(StringComparer.Ordinal);
 
 		foreach ((string gameID, string gameName) in validResults.Where(static validResult => validResult.OwnedGames.Count > 0).SelectMany(static validResult => validResult.OwnedGames)) {
-			if (ownedGamesStats.TryGetValue(gameID, out (ushort Count, string GameName) ownedGameStats)) {
-				ownedGameStats.Count++;
-			} else {
-				ownedGameStats.Count = 1;
-			}
+			(ushort Count, string? GameName) ownedGameStats = ownedGamesStats.GetValueOrDefault(gameID);
+
+			ownedGameStats.Count++;
 
 			if (!string.IsNullOrEmpty(gameName)) {
 				ownedGameStats.GameName = gameName;

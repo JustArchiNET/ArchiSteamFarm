@@ -82,14 +82,14 @@ public sealed class Trading : IDisposable {
 
 		foreach (Asset item in itemsToGive) {
 			(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
-			itemsToGiveAmounts[key] = itemsToGiveAmounts.TryGetValue(key, out uint amount) ? amount + item.Amount : item.Amount;
+			itemsToGiveAmounts[key] = itemsToGiveAmounts.GetValueOrDefault(key) + item.Amount;
 		}
 
 		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), uint> itemsToReceiveAmounts = new();
 
 		foreach (Asset item in itemsToReceive) {
 			(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
-			itemsToReceiveAmounts[key] = itemsToReceiveAmounts.TryGetValue(key, out uint amount) ? amount + item.Amount : item.Amount;
+			itemsToReceiveAmounts[key] = itemsToReceiveAmounts.GetValueOrDefault(key) + item.Amount;
 		}
 
 		// Ensure that amount of items to give is at least amount of items to receive (per all fairness factors)
@@ -210,7 +210,7 @@ public sealed class Trading : IDisposable {
 			(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
 			if (fullState.TryGetValue(key, out Dictionary<ulong, uint>? fullSet)) {
-				fullSet[item.ClassID] = fullSet.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
+				fullSet[item.ClassID] = fullSet.GetValueOrDefault(item.ClassID) + item.Amount;
 			} else {
 				fullState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
 			}
@@ -220,7 +220,7 @@ public sealed class Trading : IDisposable {
 			}
 
 			if (tradableState.TryGetValue(key, out Dictionary<ulong, uint>? tradableSet)) {
-				tradableSet[item.ClassID] = tradableSet.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
+				tradableSet[item.ClassID] = tradableSet.GetValueOrDefault(item.ClassID) + item.Amount;
 			} else {
 				tradableState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
 			}
@@ -240,7 +240,7 @@ public sealed class Trading : IDisposable {
 			(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
 			if (tradableState.TryGetValue(key, out Dictionary<ulong, uint>? tradableSet)) {
-				tradableSet[item.ClassID] = tradableSet.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
+				tradableSet[item.ClassID] = tradableSet.GetValueOrDefault(item.ClassID) + item.Amount;
 			} else {
 				tradableState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
 			}
@@ -391,7 +391,7 @@ public sealed class Trading : IDisposable {
 			(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
 			if (state.TryGetValue(key, out Dictionary<ulong, uint>? set)) {
-				set[item.ClassID] = set.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
+				set[item.ClassID] = set.GetValueOrDefault(item.ClassID) + item.Amount;
 			} else {
 				state[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
 			}

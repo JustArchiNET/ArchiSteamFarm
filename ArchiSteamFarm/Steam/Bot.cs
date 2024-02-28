@@ -1189,7 +1189,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return (optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
 		}
 
-		SteamApps.PICSRequest request = new(appID, tokenCallback.AppTokens.TryGetValue(appID, out ulong accessToken) ? accessToken : 0);
+		SteamApps.PICSRequest request = new(appID, tokenCallback.AppTokens.GetValueOrDefault(appID));
 
 		AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet? productInfoResultSet = null;
 
