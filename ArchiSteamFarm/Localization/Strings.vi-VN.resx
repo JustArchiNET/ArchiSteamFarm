@@ -708,7 +708,10 @@ Thời gian hoạt động: {1}</value>
 		<value>Khóa mã hóa của bạn quá ngắn. Chúng tôi đề xuất dùng một cái dài ít nhất {0} byte (kí tự).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Bạn đang sử dụng cài đặt {0} của thuộc tính {1}, nhưng bạn đã không cung cấp một --cryptkey tùy chỉnh. Bạn nên cân nhắc cung cấp một --cryptkey tùy chỉnh để tăng tính bảo mật.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Bạn đang sử dụng cài đặt {0} của thuộc tính {1}, nhưng bạn đã không cung cấp một --cryptkey tùy chỉnh. Điều này hoàn toàn tự hủy sự bảo vệ, vì ASF buộc phải sử dụng khóa (đã biết) của nó. Bạn nên cung cấp một --cryptkey tùy chỉnh để nhận được lợi ích bảo mật được cung cấp bởi cài đặt này.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -750,7 +753,15 @@ Thời gian hoạt động: {1}</value>
 		<value>ASF không thể chạy ứng dụng {0} do có hạn chế liên quan đến khu vực đối với quốc gia {1} kéo dài đến {2}.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
 	</data>
-	
-	
-	
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>Bạn đang cố gắng chạy trình cắm {0} trong một phiên bản ASF không khớp: {1} (lẽ ra là {2}). Việc này nghĩa là bạn đang làm sai trầm trọng điều gì đó, vui lòng sửa thiết lập của bạn hoặc thêm --ignore-unsupported-environment nếu bạn thực sự biết mình đang làm gì.</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>ASF của bạn đã bị văng rất nhiều lần gần đây, vì vậy quá trình khởi tạo đã bị vô hiệu hoá. Hoặc kiểm tra lại, sửa thiết lập của bạn, sau đó xoá tệp ASF.crash khỏi thư mục cấu hình, hoặc thêm --ignore-unsupported-environment nếu bạn thực sự biết mình đang làm gì.</value>
+	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>Việc cày {0} ({1}) đã bị vô hiệu hoá, vì trò chơi đó được đánh dấu là riêng tư. Nếu bạn muốn ASF cày trò chơi này, vui lòng thay đổi cài đặt quyền riêng tư của nó.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 </root>
