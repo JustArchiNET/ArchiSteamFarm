@@ -64,7 +64,7 @@ public sealed class ArchiCacheable<T> : IDisposable {
 		} catch (OperationCanceledException e) {
 			ASF.ArchiLogger.LogGenericDebuggingException(e);
 
-			return ReturnFailedValueFor(cacheFallback);
+			return GetFailedValueFor(cacheFallback);
 		}
 
 		try {
@@ -75,7 +75,7 @@ public sealed class ArchiCacheable<T> : IDisposable {
 			(bool success, T? result) = await ResolveFunction(cancellationToken).ConfigureAwait(false);
 
 			if (!success) {
-				return ReturnFailedValueFor(cacheFallback, result);
+				return GetFailedValueFor(cacheFallback, result);
 			}
 
 			InitializedValue = result;
@@ -85,7 +85,7 @@ public sealed class ArchiCacheable<T> : IDisposable {
 		} catch (OperationCanceledException e) {
 			ASF.ArchiLogger.LogGenericDebuggingException(e);
 
-			return ReturnFailedValueFor(cacheFallback);
+			return GetFailedValueFor(cacheFallback);
 		} finally {
 			InitSemaphore.Release();
 		}
@@ -110,7 +110,7 @@ public sealed class ArchiCacheable<T> : IDisposable {
 		}
 	}
 
-	private (bool Success, T? Result) ReturnFailedValueFor(ECacheFallback cacheFallback, T? result = default) {
+	private (bool Success, T? Result) GetFailedValueFor(ECacheFallback cacheFallback, T? result = default) {
 		if (!Enum.IsDefined(cacheFallback)) {
 			throw new InvalidEnumArgumentException(nameof(cacheFallback), (int) cacheFallback, typeof(ECacheFallback));
 		}
