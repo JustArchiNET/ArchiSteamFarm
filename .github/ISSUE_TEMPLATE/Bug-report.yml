@@ -149,6 +149,7 @@ body:
 
         Ensure that your config has redacted (but NOT removed) potentially-sensitive properties, such as:
         - IPCPassword (recommended)
+        - LicenseID (mandatory)
         - SteamOwnerID (optionally)
         - WebProxy (optionally, if exposing private details)
         - WebProxyPassword (optionally, if exposing private details)
