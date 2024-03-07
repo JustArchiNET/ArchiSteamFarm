@@ -168,9 +168,9 @@
 		<value>STD genel önbelleği yükleniyor...</value>
 	</data>
 	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
-		<value>STD genel önbellek bütünlüğünü doğrulama...</value>
+		<value>STD genel önbellek bütünlüğünü doğruluyor...</value>
 	</data>
 	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
-		<value>STD genel önbellek bütünlüğü doğrulanamadı. Bu, olası bir dosya / bellek bozulmasına işaret eder, bunun yerine yeni bir örnek başlatılır.</value>
+		<value>STD genel önbellek bütünlüğü doğrulanamadı. Bu, olası bir dosya/bellek bozulmasına işaret eder, bunun yerine yeni bir örnek başlatılır.</value>
 	</data>
 </root>
