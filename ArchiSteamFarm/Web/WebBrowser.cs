@@ -22,6 +22,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -707,6 +708,7 @@ public sealed class WebBrowser : IDisposable {
 		return await InternalRequest(request, HttpMethod.Post, headers, data, referer, requestOptions, httpCompletionOption, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	private async Task<HttpResponseMessage?> InternalRequest<T>(Uri request, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentNullException.ThrowIfNull(httpMethod);

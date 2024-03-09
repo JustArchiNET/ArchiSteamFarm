@@ -67,6 +67,7 @@ internal sealed class ApiAuthenticationMiddleware {
 		}
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	[UsedImplicitly]
 	public async Task InvokeAsync(HttpContext context, IOptions<JsonOptions> jsonOptions) {
 		ArgumentNullException.ThrowIfNull(context);

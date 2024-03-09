@@ -20,29 +20,50 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Controllers.Api;
+using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.NLog.Targets;
+using ArchiSteamFarm.Plugins;
+using ArchiSteamFarm.Plugins.Interfaces;
+using ArchiSteamFarm.Storage;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Headers;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+using Microsoft.OpenApi.Models;
 using NLog.Web;
+using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 namespace ArchiSteamFarm.IPC;
 
 internal static class ArchiKestrel {
-	internal static bool IsRunning => KestrelWebHost != null;
+	internal static bool IsRunning => WebApplication != null;
 
 	internal static HistoryTarget? HistoryTarget { get; private set; }
 
-	private static IHost? KestrelWebHost;
+	private static WebApplication? WebApplication;
 
 	internal static void OnNewHistoryTarget(HistoryTarget? historyTarget = null) {
 		if (HistoryTarget != null) {
@@ -57,102 +78,424 @@ internal static class ArchiKestrel {
 	}
 
 	internal static async Task Start() {
-		if (KestrelWebHost != null) {
+		if (WebApplication != null) {
 			return;
 		}
 
 		ASF.ArchiLogger.LogGenericInfo(Strings.IPCStarting);
 
-		// The order of dependency injection matters, pay attention to it
-		HostBuilder builder = new();
-
-		string customDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);
-		string websiteDirectory = Directory.Exists(customDirectory) ? customDirectory : Path.Combine(AppContext.BaseDirectory, SharedInfo.WebsiteDirectory);
-
-		// Set default content root
-		builder.UseContentRoot(SharedInfo.HomeDirectory);
-
-		// Check if custom config is available
-		string absoluteConfigDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.ConfigDirectory);
-		string customConfigPath = Path.Combine(absoluteConfigDirectory, SharedInfo.IPCConfigFile);
-
-		bool customConfigExists = File.Exists(customConfigPath);
-
-		if (customConfigExists && Debugging.IsDebugConfigured) {
-			try {
-				string json = await File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
-
-				if (!string.IsNullOrEmpty(json)) {
-					JsonNode? jsonNode = JsonNode.Parse(json);
-
-					ASF.ArchiLogger.LogGenericDebug($"{SharedInfo.IPCConfigFile}: {jsonNode?.ToJsonText(true) ?? "null"}");
-				}
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-			}
-		}
-
-		// Enable NLog integration for logging
-		builder.ConfigureLogging(
-			static logging => {
-				logging.ClearProviders();
-				logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning);
-			}
-		);
-
-		builder.UseNLog(new NLogAspNetCoreOptions { ShutdownOnDispose = false });
-
-		builder.ConfigureWebHostDefaults(
-			webBuilder => {
-				// Set default web root
-				if (Directory.Exists(websiteDirectory)) {
-					webBuilder.UseWebRoot(websiteDirectory);
-				}
-
-				// Now conditionally initialize settings that are not possible to override
-				if (customConfigExists) {
-					// Set up custom config to be used
-					webBuilder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(SharedInfo.IPCConfigFile, false, Program.ConfigWatch).Build());
-
-					// Use custom config for Kestrel configuration
-					webBuilder.UseKestrel(static (builderContext, options) => options.Configure(builderContext.Configuration.GetSection("Kestrel")));
-				} else {
-					// Use ASF defaults for Kestrel
-					webBuilder.UseKestrel(static options => options.ListenLocalhost(1242));
-				}
-
-				// Specify Startup class for IPC
-				webBuilder.UseStartup<Startup>();
-			}
-		);
-
 		// Init history logger for /Api/Log usage
 		Logging.InitHistoryLogger();
 
-		// Start the server
-		IHost? kestrelWebHost = null;
+		WebApplication webApplication = await CreateWebApplication().ConfigureAwait(false);
 
 		try {
-			kestrelWebHost = builder.Build();
-			await kestrelWebHost.StartAsync().ConfigureAwait(false);
+			// Start the server
+			await webApplication.StartAsync().ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
-			kestrelWebHost?.Dispose();
+
+			await webApplication.DisposeAsync().ConfigureAwait(false);
 
 			return;
 		}
 
-		KestrelWebHost = kestrelWebHost;
+		WebApplication = webApplication;
+
 		ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);
 	}
 
 	internal static async Task Stop() {
-		if (KestrelWebHost == null) {
+		if (WebApplication == null) {
 			return;
 		}
 
-		await KestrelWebHost.StopAsync().ConfigureAwait(false);
-		KestrelWebHost.Dispose();
-		KestrelWebHost = null;
+		await WebApplication.StopAsync().ConfigureAwait(false);
+		await WebApplication.DisposeAsync().ConfigureAwait(false);
+
+		WebApplication = null;
+	}
+
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "PathString is a primitive, it's unlikely to be trimmed to the best of our knowledge")]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL3000", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
+	private static void ConfigureApp([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] ConfigurationManager configuration, IApplicationBuilder app) {
+		ArgumentNullException.ThrowIfNull(configuration);
+		ArgumentNullException.ThrowIfNull(app);
+
+		// The order of dependency injection is super important, doing things in wrong order will break everything
+		// https://docs.microsoft.com/aspnet/core/fundamentals/middleware
+
+		// This one is easy, it's always in the beginning
+		if (Debugging.IsUserDebugging) {
+			app.UseDeveloperExceptionPage();
+		}
+
+		// Add support for proxies, this one comes usually after developer exception page, but could be before
+		app.UseForwardedHeaders();
+
+		if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+			// Add support for response caching - must be called before static files as we want to cache those as well
+			app.UseResponseCaching();
+		}
+
+		// Add support for response compression - must be called before static files as we want to compress those as well
+		app.UseResponseCompression();
+
+		// It's not apparent when UsePathBase() should be called, but definitely before we get down to static files
+		// TODO: Maybe eventually we can get rid of this, https://github.com/aspnet/AspNetCore/issues/5898
+		PathString pathBase = configuration.GetSection("Kestrel").GetValue<PathString>("PathBase");
+
+		if (!string.IsNullOrEmpty(pathBase) && (pathBase != "/")) {
+			app.UsePathBase(pathBase);
+		}
+
+		// The default HTML file (usually index.html) is responsible for IPC GUI routing, so re-execute all non-API calls on /
+		// This must be called before default files, because we don't know the exact file name that will be used for index page
+		app.UseWhen(static context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), static appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
+
+		// Add support for default root path redirection (GET / -> GET /index.html), must come before static files
+		app.UseDefaultFiles();
+
+		Dictionary<string, string> pluginPaths = new(StringComparer.Ordinal);
+
+		if (PluginsCore.ActivePlugins.Count > 0) {
+			foreach (IWebInterface plugin in PluginsCore.ActivePlugins.OfType<IWebInterface>()) {
+				if (string.IsNullOrEmpty(plugin.PhysicalPath) || string.IsNullOrEmpty(plugin.WebPath)) {
+					// Invalid path provided
+					continue;
+				}
+
+				string physicalPath = plugin.PhysicalPath;
+
+				if (!Path.IsPathRooted(physicalPath)) {
+					// Relative path
+					string? assemblyDirectory = Path.GetDirectoryName(plugin.GetType().Assembly.Location);
+
+					if (string.IsNullOrEmpty(assemblyDirectory)) {
+						// Invalid path provided
+						continue;
+					}
+
+					physicalPath = Path.Combine(assemblyDirectory, plugin.PhysicalPath);
+				}
+
+				if (!Directory.Exists(physicalPath)) {
+					// Non-existing path provided
+					continue;
+				}
+
+				pluginPaths[physicalPath] = plugin.WebPath;
+
+				if (plugin.WebPath != "/") {
+					app.UseDefaultFiles(plugin.WebPath);
+				}
+			}
+		}
+
+		// Add support for static files from custom plugins (e.g. HTML, CSS and JS)
+		foreach ((string physicalPath, string webPath) in pluginPaths) {
+			app.UseStaticFiles(
+				new StaticFileOptions {
+					FileProvider = new PhysicalFileProvider(physicalPath),
+					OnPrepareResponse = OnPrepareResponse,
+					RequestPath = webPath
+				}
+			);
+		}
+
+		// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
+		app.UseStaticFiles(
+			new StaticFileOptions {
+				OnPrepareResponse = OnPrepareResponse
+			}
+		);
+
+		// Use routing for our API controllers, this should be called once we're done with all the static files mess
+		app.UseRouting();
+
+		// We want to protect our API with IPCPassword and additional security, this should be called after routing, so the middleware won't have to deal with API endpoints that do not exist
+		app.UseWhen(static context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), static appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
+
+		string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
+
+		if (!string.IsNullOrEmpty(ipcPassword)) {
+			// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API, this should be called before response compression, but can't be due to how our flow works
+			// We apply CORS policy only with IPCPassword set as an extra authentication measure
+			app.UseCors();
+		}
+
+		// Add support for websockets that we use e.g. in /Api/NLog
+		app.UseWebSockets();
+
+		// Finally register proper API endpoints once we're done with routing
+		app.UseEndpoints(static endpoints => endpoints.MapControllers());
+
+		// Add support for swagger, responsible for automatic API documentation generation, this should be on the end, once we're done with API
+		app.UseSwagger();
+
+		// Add support for swagger UI, this should be after swagger, obviously
+		app.UseSwaggerUI(
+			static options => {
+				options.DisplayRequestDuration();
+				options.EnableDeepLinking();
+				options.ShowExtensions();
+				options.SwaggerEndpoint($"{SharedInfo.ASF}/swagger.json", $"{SharedInfo.ASF} API");
+			}
+		);
+	}
+
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
+	private static void ConfigureServices([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] ConfigurationManager configuration, IServiceCollection services) {
+		ArgumentNullException.ThrowIfNull(configuration);
+		ArgumentNullException.ThrowIfNull(services);
+
+		// The order of dependency injection is super important, doing things in wrong order will break everything
+		// Order in Configure() method is a good start
+
+		// Prepare knownNetworks that we'll use in a second
+		HashSet<string>? knownNetworksTexts = configuration.GetSection("Kestrel:KnownNetworks").Get<HashSet<string>>();
+
+		HashSet<IPNetwork>? knownNetworks = null;
+
+		if (knownNetworksTexts?.Count > 0) {
+			// Use specified known networks
+			knownNetworks = new HashSet<IPNetwork>();
+
+			foreach (string knownNetworkText in knownNetworksTexts) {
+				string[] addressParts = knownNetworkText.Split('/', 3, StringSplitOptions.RemoveEmptyEntries);
+
+				if ((addressParts.Length != 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress) || !byte.TryParse(addressParts[1], out byte prefixLength)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(knownNetworkText)));
+					ASF.ArchiLogger.LogGenericDebug($"{nameof(knownNetworkText)}: {knownNetworkText}");
+
+					continue;
+				}
+
+				knownNetworks.Add(new IPNetwork(ipAddress, prefixLength));
+			}
+		}
+
+		// Add support for proxies
+		services.Configure<ForwardedHeadersOptions>(
+			options => {
+				options.ForwardedHeaders = ForwardedHeaders.All;
+
+				if (knownNetworks != null) {
+					foreach (IPNetwork knownNetwork in knownNetworks) {
+						options.KnownNetworks.Add(knownNetwork);
+					}
+				}
+			}
+		);
+
+		if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+			// Add support for response caching
+			services.AddResponseCaching();
+		}
+
+		// Add support for response compression
+		services.AddResponseCompression(static options => options.EnableForHttps = true);
+
+		string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
+
+		if (!string.IsNullOrEmpty(ipcPassword)) {
+			// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API
+			// We apply CORS policy only with IPCPassword set as an extra authentication measure
+			services.AddCors(static options => options.AddDefaultPolicy(static policyBuilder => policyBuilder.AllowAnyOrigin()));
+		}
+
+		// Add support for swagger, responsible for automatic API documentation generation
+		services.AddSwaggerGen(
+			static options => {
+				options.AddSecurityDefinition(
+					nameof(GlobalConfig.IPCPassword), new OpenApiSecurityScheme {
+						Description = $"{nameof(GlobalConfig.IPCPassword)} authentication using request headers. Check {SharedInfo.ProjectURL}/wiki/IPC#authentication for more info.",
+						In = ParameterLocation.Header,
+						Name = ApiAuthenticationMiddleware.HeadersField,
+						Type = SecuritySchemeType.ApiKey
+					}
+				);
+
+				options.AddSecurityRequirement(
+					new OpenApiSecurityRequirement {
+						{
+							new OpenApiSecurityScheme {
+								Reference = new OpenApiReference {
+									Id = nameof(GlobalConfig.IPCPassword),
+									Type = ReferenceType.SecurityScheme
+								}
+							},
+
+							Array.Empty<string>()
+						}
+					}
+				);
+
+				// We require custom schema IDs due to conflicting type names, choosing the proper one is tricky as there is no good answer and any kind of convention has a potential to create conflict
+				// FullName and Name both do, ToString() for unknown to me reason doesn't, and I don't have courage to call our WebUtilities.GetUnifiedName() better than what .NET ships with (because it isn't)
+				// Let's use ToString() until we find a good enough reason to change it, also, the name must pass ^[a-zA-Z0-9.-_]+$ regex
+				options.CustomSchemaIds(static type => type.ToString().Replace('+', '-'));
+
+				options.EnableAnnotations(true, true);
+
+				options.SchemaFilter<CustomAttributesSchemaFilter>();
+				options.SchemaFilter<EnumSchemaFilter>();
+				options.SchemaFilter<ReadOnlyFixesSchemaFilter>();
+
+				options.SwaggerDoc(
+					SharedInfo.ASF, new OpenApiInfo {
+						Contact = new OpenApiContact {
+							Name = SharedInfo.GithubRepo,
+							Url = new Uri(SharedInfo.ProjectURL)
+						},
+
+						License = new OpenApiLicense {
+							Name = SharedInfo.LicenseName,
+							Url = new Uri(SharedInfo.LicenseURL)
+						},
+
+						Title = $"{SharedInfo.AssemblyName} API",
+						Version = SharedInfo.Version.ToString()
+					}
+				);
+
+				string xmlDocumentationFile = Path.Combine(AppContext.BaseDirectory, SharedInfo.AssemblyDocumentation);
+
+				if (File.Exists(xmlDocumentationFile)) {
+					options.IncludeXmlComments(xmlDocumentationFile);
+				}
+			}
+		);
+
+		// We need MVC for /Api, but we're going to use only a small subset of all available features
+		IMvcBuilder mvc = services.AddControllers();
+
+		// Add support for controllers declared in custom plugins
+		if (PluginsCore.ActivePlugins.Count > 0) {
+			HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
+
+			if (assemblies != null) {
+				foreach (Assembly assembly in assemblies) {
+					mvc.AddApplicationPart(assembly);
+				}
+			}
+		}
+
+		mvc.AddControllersAsServices();
+
+		mvc.AddJsonOptions(
+			static options => {
+				JsonSerializerOptions jsonSerializerOptions = Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions;
+
+				foreach (JsonConverter converter in jsonSerializerOptions.Converters) {
+					options.JsonSerializerOptions.Converters.Add(converter);
+				}
+
+				options.JsonSerializerOptions.PropertyNamingPolicy = jsonSerializerOptions.PropertyNamingPolicy;
+				options.JsonSerializerOptions.TypeInfoResolver = jsonSerializerOptions.TypeInfoResolver;
+				options.JsonSerializerOptions.WriteIndented = jsonSerializerOptions.WriteIndented;
+			}
+		);
+	}
+
+	private static async Task<WebApplication> CreateWebApplication() {
+		string customDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);
+		string websiteDirectory = Directory.Exists(customDirectory) ? customDirectory : Path.Combine(AppContext.BaseDirectory, SharedInfo.WebsiteDirectory);
+
+		// The order of dependency injection matters, pay attention to it
+		WebApplicationBuilder builder = WebApplication.CreateEmptyBuilder(
+			new WebApplicationOptions {
+				ApplicationName = SharedInfo.AssemblyName,
+				ContentRootPath = SharedInfo.HomeDirectory,
+				WebRootPath = websiteDirectory
+			}
+		);
+
+		// Enable NLog integration for logging
+		builder.Logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning);
+		builder.Logging.AddNLogWeb(new NLogAspNetCoreOptions { ShutdownOnDispose = false });
+
+		// Check if custom config is available
+		string absoluteConfigDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.ConfigDirectory);
+		string customConfigPath = Path.Combine(absoluteConfigDirectory, SharedInfo.IPCConfigFile);
+		bool customConfigExists = File.Exists(customConfigPath);
+
+		if (customConfigExists) {
+			if (Debugging.IsDebugConfigured) {
+				try {
+					string json = await File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
+
+					if (!string.IsNullOrEmpty(json)) {
+						JsonNode? jsonNode = JsonNode.Parse(json);
+
+						ASF.ArchiLogger.LogGenericDebug($"{SharedInfo.IPCConfigFile}: {jsonNode?.ToJsonText(true) ?? "null"}");
+					}
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+				}
+			}
+
+			// Set up custom config to be used
+			builder.WebHost.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(SharedInfo.IPCConfigFile, false, true).Build());
+		}
+
+		builder.WebHost.ConfigureKestrel(
+			options => {
+				options.AddServerHeader = false;
+
+				if (customConfigExists) {
+					// Use custom config for Kestrel configuration
+					options.Configure(builder.Configuration.GetSection("Kestrel"));
+				} else {
+					// Use ASFB defaults for Kestrel
+					options.ListenLocalhost(1242);
+				}
+			}
+		);
+
+		builder.WebHost.UseKestrelCore();
+
+		ConfigureServices(builder.Configuration, builder.Services);
+
+		WebApplication result = builder.Build();
+
+		ConfigureApp(builder.Configuration, result);
+
+		return result;
+	}
+
+	private static void OnPrepareResponse(StaticFileResponseContext context) {
+		ArgumentNullException.ThrowIfNull(context);
+
+		if (context.File is not { Exists: true, IsDirectory: false } || string.IsNullOrEmpty(context.File.Name)) {
+			return;
+		}
+
+		string extension = Path.GetExtension(context.File.Name);
+
+		CacheControlHeaderValue cacheControl = new();
+
+		switch (extension.ToUpperInvariant()) {
+			case ".CSS" or ".JS":
+				// Add support for SRI-protected static files
+				// SRI requires from us to notify the caller (especially proxy) to avoid modifying the data
+				cacheControl.NoTransform = true;
+
+				goto default;
+			default:
+				// Instruct the caller to always ask us first about every file it requests
+				// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that their cache is still up-to-date
+				// This is used to handle ASF and user updates to WWW root, we don't want the client to ever use outdated scripts
+				cacheControl.NoCache = true;
+
+				// All static files are public by definition, we don't have any authorization here
+				cacheControl.Public = true;
+
+				break;
+		}
+
+		ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
+
+		headers.CacheControl = cacheControl;
 	}
 }

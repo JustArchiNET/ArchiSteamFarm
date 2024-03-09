@@ -42,6 +42,7 @@ public static class JsonUtilities {
 	public static readonly JsonSerializerOptions IndentedJsonSerialierOptions = CreateDefaultJsonSerializerOptions(true);
 
 	[PublicAPI]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	public static JsonElement ToJsonElement<T>(this T obj) where T : notnull {
 		ArgumentNullException.ThrowIfNull(obj);
 
@@ -49,9 +50,11 @@ public static class JsonUtilities {
 	}
 
 	[PublicAPI]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	public static T? ToJsonObject<T>(this JsonElement jsonElement) => jsonElement.Deserialize<T>(DefaultJsonSerialierOptions);
 
 	[PublicAPI]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	public static async ValueTask<T?> ToJsonObject<T>(this Stream stream, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(stream);
 
@@ -59,6 +62,7 @@ public static class JsonUtilities {
 	}
 
 	[PublicAPI]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	public static T? ToJsonObject<T>([StringSyntax(StringSyntaxAttribute.Json)] this string json) {
 		ArgumentException.ThrowIfNullOrEmpty(json);
 
@@ -66,6 +70,7 @@ public static class JsonUtilities {
 	}
 
 	[PublicAPI]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	public static string ToJsonText<T>(this T obj, bool writeIndented = false) => JsonSerializer.Serialize(obj, writeIndented ? IndentedJsonSerialierOptions : DefaultJsonSerialierOptions);
 
 	private static void ApplyCustomModifiers(JsonTypeInfo jsonTypeInfo) {
@@ -102,6 +107,7 @@ public static class JsonUtilities {
 		}
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	private static JsonSerializerOptions CreateDefaultJsonSerializerOptions(bool writeIndented = false) =>
 		new() {
 			AllowTrailingCommas = true,

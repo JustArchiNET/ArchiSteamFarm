@@ -441,9 +441,9 @@ internal static class Logging {
 
 		if (!Debugging.IsUserDebugging) {
 			// Silence default ASP.NET logging
-			config.LoggingRules.Add(new LoggingRule("Microsoft*", target) { FinalMinLevel = LogLevel.Warn });
-			config.LoggingRules.Add(new LoggingRule("Microsoft.Hosting.Lifetime*", target) { FinalMinLevel = LogLevel.Info });
-			config.LoggingRules.Add(new LoggingRule("System*", target) { FinalMinLevel = LogLevel.Warn });
+			config.LoggingRules.Add(new LoggingRule("Microsoft.*", target) { FinalMinLevel = LogLevel.Warn });
+			config.LoggingRules.Add(new LoggingRule("Microsoft.Hosting.Lifetime", target) { FinalMinLevel = LogLevel.Info });
+			config.LoggingRules.Add(new LoggingRule("System.*", target) { FinalMinLevel = LogLevel.Warn });
 		}
 
 		config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, target));
