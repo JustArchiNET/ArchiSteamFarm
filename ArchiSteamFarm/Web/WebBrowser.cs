@@ -177,22 +177,20 @@ public sealed class WebBrowser : IDisposable {
 						while (response.Content.CanRead) {
 							int read = await response.Content.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken).ConfigureAwait(false);
 
-							if (read == 0) {
+							if (read <= 0) {
 								break;
-							}
-
-							await ms.WriteAsync(buffer.AsMemory(0, read), cancellationToken).ConfigureAwait(false);
-
-							if ((progressReporter == null) || (batchIncreaseSize == 0) || (batch >= 99)) {
-								continue;
 							}
 
 							readThisBatch += read;
 
-							while ((readThisBatch >= batchIncreaseSize) && (batch < 99)) {
-								readThisBatch -= batchIncreaseSize;
-								progressReporter.Report(++batch);
+							for (; (readThisBatch >= batchIncreaseSize) && (batch < 99); readThisBatch -= batchIncreaseSize) {
+								// We need a copy of variable being passed when in for loops, as loop will proceed before our event is launched
+								byte progress = ++batch;
+
+								progressReporter?.Report(progress);
 							}
+
+							await ms.WriteAsync(buffer.AsMemory(0, read), cancellationToken).ConfigureAwait(false);
 						}
 					} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 						throw;
