@@ -43,7 +43,7 @@ public interface IPluginUpdates : IPlugin {
 	/// <param name="asfVariant">ASF variant of current instance, which may be useful if you're providing different versions for different ASF variants.</param>
 	/// <param name="newPluginVersion">The target (new) version of the plugin found available in <see cref="RepositoryName" />.</param>
 	/// <param name="releaseAssets">Available release assets for auto-update. Those come directly from your release on GitHub.</param>
-	/// <returns>Target release asset from <see cref="releaseAssets" /> that should be used for auto-update. You may return null if the update is unavailable, for example, because ASF version/variant is determined unsupported, or due to any other custom reason.</returns>
+	/// <returns>Target release asset from those provided that should be used for auto-update. You may return null if the update is unavailable, for example, because ASF version/variant is determined unsupported, or due to any other custom reason.</returns>
 	Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets);
 
 	/// <summary>
