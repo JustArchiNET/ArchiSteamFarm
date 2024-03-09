@@ -659,6 +659,7 @@ public static class PluginsCore {
 		}
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL3000", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool stable) {
 		if (ActivePlugins.Count == 0) {
 			return false;
