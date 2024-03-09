@@ -678,7 +678,7 @@ public static class PluginsCore {
 				continue;
 			}
 
-			Console.WriteLine($"Checking update for {plugin.Name} plugin...");
+			ASF.ArchiLogger.LogGenericInfo($"Checking update for {plugin.Name} plugin...");
 
 			ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(repoName, stable).ConfigureAwait(false);
 
@@ -689,12 +689,12 @@ public static class PluginsCore {
 			Version newVersion = new(releaseResponse.Tag);
 
 			if (plugin.Version >= newVersion) {
-				Console.WriteLine($"No update available for {plugin.Name} plugin: {plugin.Version} >= {newVersion}.");
+				ASF.ArchiLogger.LogGenericInfo($"No update available for {plugin.Name} plugin: {plugin.Version} >= {newVersion}.");
 
 				continue;
 			}
 
-			Console.WriteLine($"Updating {plugin.Name} plugin from version {plugin.Version} to {newVersion}...");
+			ASF.ArchiLogger.LogGenericInfo($"Updating {plugin.Name} plugin from version {plugin.Version} to {newVersion}...");
 
 			ReleaseAsset? asset = await plugin.GetTargetReleaseAsset(asfVersion, SharedInfo.BuildInfo.Variant, newVersion, releaseResponse.Assets).ConfigureAwait(false);
 
@@ -744,7 +744,7 @@ public static class PluginsCore {
 
 				restartNeeded = true;
 
-				Console.WriteLine($"Updating {plugin.Name} plugin has succeeded, the changes will be loaded on the next ASF launch.");
+				ASF.ArchiLogger.LogGenericInfo($"Updating {plugin.Name} plugin has succeeded, the changes will be loaded on the next ASF launch.");
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
