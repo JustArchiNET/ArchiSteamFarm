@@ -453,7 +453,13 @@ internal static class ArchiKestrel {
 			}
 		);
 
-		builder.WebHost.UseKestrelCore();
+		if (customConfigExists) {
+			// User might be using HTTPS when providing custom config, use full implementation of Kestrel for that scenario
+			builder.WebHost.UseKestrel();
+		} else {
+			// We don't need extra features when not using custom config
+			builder.WebHost.UseKestrelCore();
+		}
 
 		ConfigureServices(builder.Configuration, builder.Services);
 
