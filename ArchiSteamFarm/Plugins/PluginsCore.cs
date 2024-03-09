@@ -29,6 +29,7 @@ using System.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -43,6 +44,9 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
+using ArchiSteamFarm.Web.GitHub;
+using ArchiSteamFarm.Web.GitHub.Data;
+using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
 using SteamKit2;
 
@@ -653,6 +657,100 @@ public static class PluginsCore {
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
+	}
+
+	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool stable) {
+		if (ActivePlugins.Count == 0) {
+			return false;
+		}
+
+		if (ASF.WebBrowser == null) {
+			throw new InvalidOperationException(nameof(ASF.WebBrowser));
+		}
+
+		bool restartNeeded = false;
+
+		// We update plugins one-by-one to limit memory pressure from potentially big release assets
+		foreach (IPluginUpdates plugin in ActivePlugins.OfType<IPluginUpdates>()) {
+			string repoName = plugin.RepositoryName;
+
+			if (string.IsNullOrEmpty(repoName)) {
+				continue;
+			}
+
+			Console.WriteLine($"Checking update for {plugin.Name} plugin...");
+
+			ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(repoName, stable).ConfigureAwait(false);
+
+			if (releaseResponse == null) {
+				continue;
+			}
+
+			Version newVersion = new(releaseResponse.Tag);
+
+			if (plugin.Version >= newVersion) {
+				Console.WriteLine($"No update available for {plugin.Name} plugin: {plugin.Version} >= {newVersion}.");
+
+				continue;
+			}
+
+			Console.WriteLine($"Updating {plugin.Name} plugin from version {plugin.Version} to {newVersion}...");
+
+			ReleaseAsset? asset = await plugin.GetTargetReleaseAsset(asfVersion, SharedInfo.BuildInfo.Variant, newVersion, releaseResponse.Assets).ConfigureAwait(false);
+
+			if ((asset == null) || !releaseResponse.Assets.Contains(asset)) {
+				continue;
+			}
+
+			Progress<byte> progressReporter = new();
+
+			progressReporter.ProgressChanged += Utilities.OnProgressChanged;
+
+			BinaryResponse? response;
+
+			try {
+				response = await ASF.WebBrowser.UrlGetToBinary(asset.DownloadURL, progressReporter: progressReporter).ConfigureAwait(false);
+			} finally {
+				progressReporter.ProgressChanged -= Utilities.OnProgressChanged;
+			}
+
+			if (response?.Content == null) {
+				continue;
+			}
+
+			ASF.ArchiLogger.LogGenericInfo(Strings.PatchingFiles);
+
+			string? assemblyDirectory = Path.GetDirectoryName(plugin.GetType().Assembly.Location);
+
+			if (string.IsNullOrEmpty(assemblyDirectory)) {
+				// Invalid path provided
+				continue;
+			}
+
+			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
+
+			try {
+				MemoryStream memoryStream = new(responseBytes);
+
+				await using (memoryStream.ConfigureAwait(false)) {
+					using ZipArchive zipArchive = new(memoryStream);
+
+					if (!Utilities.UpdateFromArchive(zipArchive, assemblyDirectory)) {
+						ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
+
+						continue;
+					}
+				}
+
+				restartNeeded = true;
+
+				Console.WriteLine($"Updating {plugin.Name} plugin has succeeded, the changes will be loaded on the next ASF launch.");
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
+		return restartNeeded;
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]

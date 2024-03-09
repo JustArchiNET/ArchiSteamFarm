@@ -473,19 +473,17 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
 		}
 
-		Version? version = await ASF.Update(channel, true).ConfigureAwait(false);
+		(Version? newVersion, bool restartNeeded) = await ASF.Update(channel, true).ConfigureAwait(false);
 
-		if (version == null) {
+		if (restartNeeded) {
+			Utilities.InBackground(ASF.RestartOrExit);
+		}
+
+		if (newVersion == null) {
 			return (false, null, null);
 		}
 
-		if (SharedInfo.Version >= version) {
-			return (false, $"V{SharedInfo.Version} ≥ V{version}", version);
-		}
-
-		Utilities.InBackground(ASF.RestartOrExit);
-
-		return (true, null, version);
+		return newVersion > SharedInfo.Version ? (true, null, newVersion) : (false, $"V{SharedInfo.Version} ≥ V{newVersion}", newVersion);
 	}
 
 	internal async Task AcceptDigitalGiftCards() {

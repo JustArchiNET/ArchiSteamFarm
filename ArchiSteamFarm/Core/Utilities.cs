@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Resources;
@@ -35,6 +36,7 @@ using System.Threading.Tasks;
 using AngleSharp.Dom;
 using AngleSharp.XPath;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Storage;
 using Humanizer;
 using Humanizer.Localisation;
@@ -263,26 +265,6 @@ public static class Utilities {
 		return true;
 	}
 
-	internal static void DeleteEmptyDirectoriesRecursively(string directory) {
-		ArgumentException.ThrowIfNullOrEmpty(directory);
-
-		if (!Directory.Exists(directory)) {
-			return;
-		}
-
-		try {
-			foreach (string subDirectory in Directory.EnumerateDirectories(directory)) {
-				DeleteEmptyDirectoriesRecursively(subDirectory);
-			}
-
-			if (!Directory.EnumerateFileSystemEntries(directory).Any()) {
-				Directory.Delete(directory);
-			}
-		} catch (Exception e) {
-			ASF.ArchiLogger.LogGenericException(e);
-		}
-	}
-
 	internal static ulong MathAdd(ulong first, int second) {
 		if (second >= 0) {
 			return first + (uint) second;
@@ -291,16 +273,14 @@ public static class Utilities {
 		return first - (uint) -second;
 	}
 
-	internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
-		ArgumentException.ThrowIfNullOrEmpty(directory);
+	internal static void OnProgressChanged(object? sender, byte progressPercentage) {
+		const byte printEveryPercentage = 10;
 
-#pragma warning disable CA1508 // False positive, params could be null when explicitly set
-		if ((prefixes == null) || (prefixes.Length == 0)) {
-#pragma warning restore CA1508 // False positive, params could be null when explicitly set
-			throw new ArgumentNullException(nameof(prefixes));
+		if (progressPercentage % printEveryPercentage != 0) {
+			return;
 		}
 
-		return (from prefix in prefixes where directory.Length > prefix.Length let pathSeparator = directory[prefix.Length] where (pathSeparator == Path.DirectorySeparatorChar) || (pathSeparator == Path.AltDirectorySeparatorChar) select prefix).Any(prefix => directory.StartsWith(prefix, StringComparison.Ordinal));
+		ASF.ArchiLogger.LogGenericDebug($"{progressPercentage}%...");
 	}
 
 	internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, ISet<string>? additionallyForbiddenPhrases = null) {
@@ -335,6 +315,120 @@ public static class Utilities {
 		}
 
 		return (result.Score < 4, suggestions is { Count: > 0 } ? string.Join(' ', suggestions.Where(static suggestion => suggestion.Length > 0)) : null);
+	}
+
+	internal static bool UpdateFromArchive(ZipArchive zipArchive, string targetDirectory) {
+		ArgumentNullException.ThrowIfNull(zipArchive);
+		ArgumentException.ThrowIfNullOrEmpty(targetDirectory);
+
+		// Firstly we'll move all our existing files to a backup directory
+		string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
+
+		foreach (string file in Directory.EnumerateFiles(targetDirectory, "*", SearchOption.AllDirectories)) {
+			string fileName = Path.GetFileName(file);
+
+			if (string.IsNullOrEmpty(fileName)) {
+				ASF.ArchiLogger.LogNullError(fileName);
+
+				return false;
+			}
+
+			string relativeFilePath = Path.GetRelativePath(targetDirectory, file);
+
+			if (string.IsNullOrEmpty(relativeFilePath)) {
+				ASF.ArchiLogger.LogNullError(relativeFilePath);
+
+				return false;
+			}
+
+			string? relativeDirectoryName = Path.GetDirectoryName(relativeFilePath);
+
+			switch (relativeDirectoryName) {
+				case null:
+					ASF.ArchiLogger.LogNullError(relativeDirectoryName);
+
+					return false;
+				case "":
+					// No directory, root folder
+					switch (fileName) {
+						case Logging.NLogConfigurationFile:
+						case SharedInfo.LogFile:
+							// Files with those names in root directory we want to keep
+							continue;
+					}
+
+					break;
+				case SharedInfo.ArchivalLogsDirectory:
+				case SharedInfo.ConfigDirectory:
+				case SharedInfo.DebugDirectory:
+				case SharedInfo.PluginsDirectory:
+				case SharedInfo.UpdateDirectory:
+					// Files in those directories we want to keep in their current place
+					continue;
+				default:
+					// Files in subdirectories of those directories we want to keep as well
+					if (RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.ArchivalLogsDirectory, SharedInfo.ConfigDirectory, SharedInfo.DebugDirectory, SharedInfo.PluginsDirectory, SharedInfo.UpdateDirectory)) {
+						continue;
+					}
+
+					break;
+			}
+
+			string targetBackupDirectory = relativeDirectoryName.Length > 0 ? Path.Combine(backupDirectory, relativeDirectoryName) : backupDirectory;
+			Directory.CreateDirectory(targetBackupDirectory);
+
+			string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
+
+			File.Move(file, targetBackupFile, true);
+		}
+
+		// We can now get rid of directories that are empty
+		DeleteEmptyDirectoriesRecursively(targetDirectory);
+
+		if (!Directory.Exists(targetDirectory)) {
+			Directory.CreateDirectory(targetDirectory);
+		}
+
+		// Now enumerate over files in the zip archive, skip directory entries that we're not interested in (we can create them ourselves if needed)
+		foreach (ZipArchiveEntry zipFile in zipArchive.Entries.Where(static zipFile => !string.IsNullOrEmpty(zipFile.Name))) {
+			string file = Path.GetFullPath(Path.Combine(targetDirectory, zipFile.FullName));
+
+			if (!file.StartsWith(targetDirectory, StringComparison.Ordinal)) {
+				throw new InvalidOperationException(nameof(file));
+			}
+
+			if (File.Exists(file)) {
+				// This is possible only with files that we decided to leave in place during our backup function
+				string targetBackupFile = $"{file}.bak";
+
+				File.Move(file, targetBackupFile, true);
+			}
+
+			// Check if this file requires its own folder
+			if (zipFile.Name != zipFile.FullName) {
+				string? directory = Path.GetDirectoryName(file);
+
+				if (string.IsNullOrEmpty(directory)) {
+					ASF.ArchiLogger.LogNullError(directory);
+
+					return false;
+				}
+
+				if (!Directory.Exists(directory)) {
+					Directory.CreateDirectory(directory);
+				}
+
+				// We're not interested in extracting placeholder files (but we still want directories created for them, done above)
+				switch (zipFile.Name) {
+					case ".gitkeep":
+						continue;
+				}
+			}
+
+			zipFile.ExtractToFile(file);
+		}
+
+		return true;
 	}
 
 	internal static void WarnAboutIncompleteTranslation(ResourceManager resourceManager) {
@@ -390,5 +484,37 @@ public static class Utilities {
 			float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.TranslationIncomplete, $"{CultureInfo.CurrentUICulture.Name} ({CultureInfo.CurrentUICulture.EnglishName})", translationCompleteness.ToString("P1", CultureInfo.CurrentCulture)));
 		}
+	}
+
+	private static void DeleteEmptyDirectoriesRecursively(string directory) {
+		ArgumentException.ThrowIfNullOrEmpty(directory);
+
+		if (!Directory.Exists(directory)) {
+			return;
+		}
+
+		try {
+			foreach (string subDirectory in Directory.EnumerateDirectories(directory)) {
+				DeleteEmptyDirectoriesRecursively(subDirectory);
+			}
+
+			if (!Directory.EnumerateFileSystemEntries(directory).Any()) {
+				Directory.Delete(directory);
+			}
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+		}
+	}
+
+	private static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
+		ArgumentException.ThrowIfNullOrEmpty(directory);
+
+#pragma warning disable CA1508 // False positive, params could be null when explicitly set
+		if ((prefixes == null) || (prefixes.Length == 0)) {
+#pragma warning restore CA1508 // False positive, params could be null when explicitly set
+			throw new ArgumentNullException(nameof(prefixes));
+		}
+
+		return (from prefix in prefixes where directory.Length > prefix.Length let pathSeparator = directory[prefix.Length] where (pathSeparator == Path.DirectorySeparatorChar) || (pathSeparator == Path.AltDirectorySeparatorChar) select prefix).Any(prefix => directory.StartsWith(prefix, StringComparison.Ordinal));
 	}
 }

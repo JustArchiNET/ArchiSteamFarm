@@ -22,27 +22,23 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Web.GitHub.Data;
 using ArchiSteamFarm.Web.Responses;
-using Markdig;
-using Markdig.Renderers;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
 
-namespace ArchiSteamFarm.Web;
+namespace ArchiSteamFarm.Web.GitHub;
 
 internal static class GitHub {
-	internal static async Task<ReleaseResponse?> GetLatestRelease(bool stable = true, CancellationToken cancellationToken = default) {
-		Uri request = new($"{SharedInfo.GithubReleaseURL}{(stable ? "/latest" : "?per_page=1")}");
+	internal static async Task<ReleaseResponse?> GetLatestRelease(string repoName, bool stable = true, CancellationToken cancellationToken = default) {
+		ArgumentException.ThrowIfNullOrEmpty(repoName);
+
+		Uri request = new($"https://api.github.com/repos/{repoName}/releases{(stable ? "/latest" : "?per_page=1")}");
 
 		if (stable) {
 			return await GetReleaseFromURL(request, cancellationToken).ConfigureAwait(false);
@@ -53,10 +49,11 @@ internal static class GitHub {
 		return response?.FirstOrDefault();
 	}
 
-	internal static async Task<ReleaseResponse?> GetRelease(string version, CancellationToken cancellationToken = default) {
+	internal static async Task<ReleaseResponse?> GetRelease(string repoName, string version, CancellationToken cancellationToken = default) {
+		ArgumentException.ThrowIfNullOrEmpty(repoName);
 		ArgumentException.ThrowIfNullOrEmpty(version);
 
-		Uri request = new($"{SharedInfo.GithubReleaseURL}/tags/{version}");
+		Uri request = new($"https://api.github.com/repos/{repoName}/releases/tags/{version}");
 
 		return await GetReleaseFromURL(request, cancellationToken).ConfigureAwait(false);
 	}
@@ -152,21 +149,6 @@ internal static class GitHub {
 		return markdownBodyNode?.InnerHtml.Trim() ?? "";
 	}
 
-	private static MarkdownDocument ExtractChangelogFromBody(string markdownText) {
-		ArgumentException.ThrowIfNullOrEmpty(markdownText);
-
-		MarkdownDocument markdownDocument = Markdown.Parse(markdownText);
-		MarkdownDocument result = [];
-
-		foreach (Block block in markdownDocument.SkipWhile(static block => block is not HeadingBlock { Inline.FirstChild: LiteralInline literalInline } || (literalInline.Content.ToString()?.Equals("Changelog", StringComparison.OrdinalIgnoreCase) != true)).Skip(1).TakeWhile(static block => block is not ThematicBreakBlock).ToList()) {
-			// All blocks that we're interested in must be removed from original markdownDocument firstly
-			markdownDocument.Remove(block);
-			result.Add(block);
-		}
-
-		return result;
-	}
-
 	private static async Task<ReleaseResponse?> GetReleaseFromURL(Uri request, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -189,126 +171,5 @@ internal static class GitHub {
 		ObjectResponse<ImmutableList<ReleaseResponse>>? response = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content;
-	}
-
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class ReleaseResponse {
-		internal string? ChangelogHTML {
-			get {
-				if (BackingChangelogHTML != null) {
-					return BackingChangelogHTML;
-				}
-
-				if (Changelog == null) {
-					ASF.ArchiLogger.LogNullError(Changelog);
-
-					return null;
-				}
-
-				using StringWriter writer = new();
-
-				HtmlRenderer renderer = new(writer);
-
-				renderer.Render(Changelog);
-				writer.Flush();
-
-				return BackingChangelogHTML = writer.ToString();
-			}
-		}
-
-		internal string? ChangelogPlainText {
-			get {
-				if (BackingChangelogPlainText != null) {
-					return BackingChangelogPlainText;
-				}
-
-				if (Changelog == null) {
-					ASF.ArchiLogger.LogNullError(Changelog);
-
-					return null;
-				}
-
-				using StringWriter writer = new();
-
-				HtmlRenderer renderer = new(writer) {
-					EnableHtmlForBlock = false,
-					EnableHtmlForInline = false,
-					EnableHtmlEscape = false
-				};
-
-				renderer.Render(Changelog);
-				writer.Flush();
-
-				return BackingChangelogPlainText = writer.ToString();
-			}
-		}
-
-		private MarkdownDocument? Changelog {
-			get {
-				if (BackingChangelog != null) {
-					return BackingChangelog;
-				}
-
-				if (string.IsNullOrEmpty(MarkdownBody)) {
-					ASF.ArchiLogger.LogNullError(MarkdownBody);
-
-					return null;
-				}
-
-				return BackingChangelog = ExtractChangelogFromBody(MarkdownBody);
-			}
-		}
-
-		[JsonInclude]
-		[JsonPropertyName("assets")]
-		[JsonRequired]
-		internal ImmutableHashSet<Asset> Assets { get; private init; } = ImmutableHashSet<Asset>.Empty;
-
-		[JsonInclude]
-		[JsonPropertyName("prerelease")]
-		[JsonRequired]
-		internal bool IsPreRelease { get; private init; }
-
-		[JsonInclude]
-		[JsonPropertyName("published_at")]
-		[JsonRequired]
-		internal DateTime PublishedAt { get; private init; }
-
-		[JsonInclude]
-		[JsonPropertyName("tag_name")]
-		[JsonRequired]
-		internal string Tag { get; private init; } = "";
-
-		private MarkdownDocument? BackingChangelog;
-		private string? BackingChangelogHTML;
-		private string? BackingChangelogPlainText;
-
-		[JsonInclude]
-		[JsonPropertyName("body")]
-		[JsonRequired]
-		private string? MarkdownBody { get; init; } = "";
-
-		[JsonConstructor]
-		private ReleaseResponse() { }
-
-		internal sealed class Asset {
-			[JsonInclude]
-			[JsonPropertyName("browser_download_url")]
-			[JsonRequired]
-			internal Uri? DownloadURL { get; private init; }
-
-			[JsonInclude]
-			[JsonPropertyName("name")]
-			[JsonRequired]
-			internal string? Name { get; private init; }
-
-			[JsonInclude]
-			[JsonPropertyName("size")]
-			[JsonRequired]
-			internal uint Size { get; private init; }
-
-			[JsonConstructor]
-			private Asset() { }
-		}
 	}
 }

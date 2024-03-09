@@ -20,51 +20,28 @@
 // limitations under the License.
 
 using System;
-using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Web.GitHub.Data;
 
-namespace ArchiSteamFarm.IPC.Responses;
+namespace ArchiSteamFarm.Web.GitHub.Data;
 
-public sealed class GitHubReleaseResponse {
-	/// <summary>
-	///     Changelog of the release rendered in HTML.
-	/// </summary>
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+public sealed class ReleaseAsset {
 	[JsonInclude]
+	[JsonPropertyName("name")]
 	[JsonRequired]
-	[Required]
-	public string ChangelogHTML { get; private init; }
+	public string Name { get; private init; } = "";
 
-	/// <summary>
-	///     Date of the release.
-	/// </summary>
 	[JsonInclude]
+	[JsonPropertyName("browser_download_url")]
 	[JsonRequired]
-	[Required]
-	public DateTime ReleasedAt { get; private init; }
+	internal Uri DownloadURL { get; private init; } = null!;
 
-	/// <summary>
-	///     Boolean value that specifies whether the build is stable or not (pre-release).
-	/// </summary>
 	[JsonInclude]
+	[JsonPropertyName("size")]
 	[JsonRequired]
-	[Required]
-	public bool Stable { get; private init; }
+	internal uint Size { get; private init; }
 
-	/// <summary>
-	///     Version of the release.
-	/// </summary>
-	[JsonInclude]
-	[JsonRequired]
-	[Required]
-	public string Version { get; private init; }
-
-	internal GitHubReleaseResponse(ReleaseResponse releaseResponse) {
-		ArgumentNullException.ThrowIfNull(releaseResponse);
-
-		ChangelogHTML = releaseResponse.ChangelogHTML ?? "";
-		ReleasedAt = releaseResponse.PublishedAt;
-		Stable = !releaseResponse.IsPreRelease;
-		Version = releaseResponse.Tag;
-	}
+	[JsonConstructor]
+	private ReleaseAsset() { }
 }

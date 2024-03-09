@@ -41,6 +41,8 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
+using ArchiSteamFarm.Web.GitHub;
+using ArchiSteamFarm.Web.GitHub.Data;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
 using SteamKit2;
@@ -113,6 +115,10 @@ public static class ASF {
 
 		WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
 
+		if (!await PluginsCore.InitPlugins().ConfigureAwait(false)) {
+			return false;
+		}
+
 		await UpdateAndRestart().ConfigureAwait(false);
 
 		if (!Program.IgnoreUnsupportedEnvironment && !await ProtectAgainstCrashes().ConfigureAwait(false)) {
@@ -122,10 +128,6 @@ public static class ASF {
 		}
 
 		Program.AllowCrashFileRemoval = true;
-
-		if (!await PluginsCore.InitPlugins().ConfigureAwait(false)) {
-			return false;
-		}
 
 		await PluginsCore.OnASFInitModules(GlobalConfig.AdditionalProperties).ConfigureAwait(false);
 		await InitRateLimiters().ConfigureAwait(false);
@@ -185,7 +187,7 @@ public static class ASF {
 		}
 	}
 
-	internal static async Task<Version?> Update(GlobalConfig.EUpdateChannel? channel = null, bool updateOverride = false) {
+	internal static async Task<(Version? NewVersion, bool RestartNeeded)> Update(GlobalConfig.EUpdateChannel? channel = null, bool updateOverride = false) {
 		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
 			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
 		}
@@ -194,203 +196,16 @@ public static class ASF {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
 
-		if (WebBrowser == null) {
-			throw new InvalidOperationException(nameof(WebBrowser));
+		Version? newVersion = await UpdateASF(channel, updateOverride).ConfigureAwait(false);
+
+		bool restartNeeded = newVersion > SharedInfo.Version;
+
+		if (!restartNeeded) {
+			// ASF wasn't updated as part of the process, update the plugins alone
+			restartNeeded = await PluginsCore.UpdatePlugins(SharedInfo.Version, (channel ?? GlobalConfig.UpdateChannel) == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
 		}
 
-		channel ??= GlobalConfig.UpdateChannel;
-
-		if (!SharedInfo.BuildInfo.CanUpdate || (channel == GlobalConfig.EUpdateChannel.None)) {
-			return null;
-		}
-
-		await UpdateSemaphore.WaitAsync().ConfigureAwait(false);
-
-		try {
-			// If backup directory from previous update exists, it's a good idea to purge it now
-			string backupDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectory);
-
-			if (Directory.Exists(backupDirectory)) {
-				ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
-
-				for (byte i = 0; (i < WebBrowser.MaxTries) && Directory.Exists(backupDirectory); i++) {
-					if (i > 0) {
-						// It's entirely possible that old process is still running, wait a short moment for eventual cleanup
-						await Task.Delay(5000).ConfigureAwait(false);
-					}
-
-					try {
-						Directory.Delete(backupDirectory, true);
-					} catch (Exception e) {
-						ArchiLogger.LogGenericDebuggingException(e);
-
-						continue;
-					}
-
-					break;
-				}
-
-				if (Directory.Exists(backupDirectory)) {
-					ArchiLogger.LogGenericError(Strings.WarningFailed);
-
-					return null;
-				}
-
-				ArchiLogger.LogGenericInfo(Strings.Done);
-			}
-
-			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
-
-			GitHub.ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(channel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
-
-			if (releaseResponse == null) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
-
-				return null;
-			}
-
-			if (string.IsNullOrEmpty(releaseResponse.Tag)) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
-
-				return null;
-			}
-
-			Version newVersion = new(releaseResponse.Tag);
-
-			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
-
-			if (SharedInfo.Version >= newVersion) {
-				return newVersion;
-			}
-
-			if (!updateOverride && (GlobalConfig.UpdatePeriod == 0)) {
-				ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
-				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
-
-				return null;
-			}
-
-			// Auto update logic starts here
-			if (releaseResponse.Assets.IsEmpty) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssets);
-
-				return null;
-			}
-
-			string targetFile = $"{SharedInfo.ASF}-{SharedInfo.BuildInfo.Variant}.zip";
-			GitHub.ReleaseResponse.Asset? binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
-
-			if (binaryAsset == null) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisVersion);
-
-				return null;
-			}
-
-			if (binaryAsset.DownloadURL == null) {
-				ArchiLogger.LogNullError(binaryAsset.DownloadURL);
-
-				return null;
-			}
-
-			ArchiLogger.LogGenericInfo(Strings.FetchingChecksumFromRemoteServer);
-
-			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, SharedInfo.BuildInfo.Variant).ConfigureAwait(false);
-
-			switch (remoteChecksum) {
-				case null:
-					// Timeout or error, refuse to update as a security measure
-					return null;
-				case "":
-					// Unknown checksum, release too new or actual malicious build published, no need to scare the user as it's 99.99% the first
-					ArchiLogger.LogGenericWarning(Strings.ChecksumMissing);
-
-					return SharedInfo.Version;
-			}
-
-			if (!string.IsNullOrEmpty(releaseResponse.ChangelogPlainText)) {
-				ArchiLogger.LogGenericInfo(releaseResponse.ChangelogPlainText);
-			}
-
-			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
-
-			Progress<byte> progressReporter = new();
-
-			progressReporter.ProgressChanged += OnProgressChanged;
-
-			BinaryResponse? response;
-
-			try {
-				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL, progressReporter: progressReporter).ConfigureAwait(false);
-			} finally {
-				progressReporter.ProgressChanged -= OnProgressChanged;
-			}
-
-			if (response?.Content == null) {
-				return null;
-			}
-
-			ArchiLogger.LogGenericInfo(Strings.VerifyingChecksumWithRemoteServer);
-
-			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
-
-			string checksum = Utilities.GenerateChecksumFor(responseBytes);
-
-			if (!checksum.Equals(remoteChecksum, StringComparison.OrdinalIgnoreCase)) {
-				ArchiLogger.LogGenericError(Strings.ChecksumWrong);
-
-				return SharedInfo.Version;
-			}
-
-			await PluginsCore.OnUpdateProceeding(newVersion).ConfigureAwait(false);
-
-			bool kestrelWasRunning = ArchiKestrel.IsRunning;
-
-			if (kestrelWasRunning) {
-				// We disable ArchiKestrel here as the update process moves the core files and might result in IPC crash
-				// TODO: It might fail if the update was triggered from the API, this should be something to improve in the future, by changing the structure into request -> return response -> finish update
-				try {
-					await ArchiKestrel.Stop().ConfigureAwait(false);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericWarningException(e);
-				}
-			}
-
-			ArchiLogger.LogGenericInfo(Strings.PatchingFiles);
-
-			MemoryStream ms = new(responseBytes);
-
-			try {
-				await using (ms.ConfigureAwait(false)) {
-					using ZipArchive zipArchive = new(ms);
-
-					if (!UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory)) {
-						ArchiLogger.LogGenericError(Strings.WarningFailed);
-					}
-				}
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-
-				if (kestrelWasRunning) {
-					// We've temporarily disabled ArchiKestrel but the update has failed, let's bring it back up
-					// We can't even be sure if it's possible to bring it back up in this state, but it's worth trying anyway
-					try {
-						await ArchiKestrel.Start().ConfigureAwait(false);
-					} catch (Exception ex) {
-						ArchiLogger.LogGenericWarningException(ex);
-					}
-				}
-
-				return null;
-			}
-
-			ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
-
-			await PluginsCore.OnUpdateFinished(newVersion).ConfigureAwait(false);
-
-			return newVersion;
-		} finally {
-			UpdateSemaphore.Release();
-		}
+		return (newVersion, restartNeeded);
 	}
 
 	private static async Task<bool> CanHandleWriteEvent(string filePath) {
@@ -800,16 +615,6 @@ public static class ASF {
 		}
 	}
 
-	private static void OnProgressChanged(object? sender, byte progressPercentage) {
-		const byte printEveryPercentage = 10;
-
-		if (progressPercentage % printEveryPercentage != 0) {
-			return;
-		}
-
-		ArchiLogger.LogGenericDebug($"{progressPercentage}%...");
-	}
-
 	private static async void OnRenamed(object sender, RenamedEventArgs e) {
 		// This function can be called with a possibility of OldName or (new) Name being null, we have to take it into account
 		ArgumentNullException.ThrowIfNull(sender);
@@ -932,30 +737,231 @@ public static class ASF {
 			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.AutoUpdateCheckInfo, autoUpdatePeriod.ToHumanReadable()));
 		}
 
-		Version? newVersion = await Update().ConfigureAwait(false);
+		(Version? newVersion, bool restartNeeded) = await Update().ConfigureAwait(false);
 
-		if (newVersion == null) {
-			return;
+		if (SharedInfo.Version > newVersion) {
+			// User is running version newer than their channel allows
+			ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
+			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 		}
 
-		if (SharedInfo.Version >= newVersion) {
-			if (SharedInfo.Version > newVersion) {
-				ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
-				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
-			}
-
+		if (!restartNeeded) {
 			return;
 		}
 
 		// Allow crash file recovery, if needed
-		Program.AllowCrashFileRemoval = true;
+		if (newVersion > SharedInfo.Version) {
+			Program.AllowCrashFileRemoval = true;
+		}
 
 		await RestartOrExit().ConfigureAwait(false);
 	}
 
-	private static bool UpdateFromArchive(ZipArchive archive, string targetDirectory) {
-		ArgumentNullException.ThrowIfNull(archive);
-		ArgumentException.ThrowIfNullOrEmpty(targetDirectory);
+	private static async Task<Version?> UpdateASF(GlobalConfig.EUpdateChannel? channel = null, bool updateOverride = false) {
+		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
+			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
+		}
+
+		if (GlobalConfig == null) {
+			throw new InvalidOperationException(nameof(GlobalConfig));
+		}
+
+		if (WebBrowser == null) {
+			throw new InvalidOperationException(nameof(WebBrowser));
+		}
+
+		channel ??= GlobalConfig.UpdateChannel;
+
+		if (!SharedInfo.BuildInfo.CanUpdate || (channel == GlobalConfig.EUpdateChannel.None)) {
+			return null;
+		}
+
+		await UpdateSemaphore.WaitAsync().ConfigureAwait(false);
+
+		try {
+			// If backup directory from previous update exists, it's a good idea to purge it now
+			string backupDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectory);
+
+			if (Directory.Exists(backupDirectory)) {
+				ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+
+				for (byte i = 0; (i < WebBrowser.MaxTries) && Directory.Exists(backupDirectory); i++) {
+					if (i > 0) {
+						// It's entirely possible that old process is still running, wait a short moment for eventual cleanup
+						await Task.Delay(5000).ConfigureAwait(false);
+					}
+
+					try {
+						Directory.Delete(backupDirectory, true);
+					} catch (Exception e) {
+						ArchiLogger.LogGenericDebuggingException(e);
+
+						continue;
+					}
+
+					break;
+				}
+
+				if (Directory.Exists(backupDirectory)) {
+					ArchiLogger.LogGenericError(Strings.WarningFailed);
+
+					return null;
+				}
+
+				ArchiLogger.LogGenericInfo(Strings.Done);
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
+
+			ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(SharedInfo.GithubRepo, channel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
+
+			if (releaseResponse == null) {
+				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
+
+				return null;
+			}
+
+			if (string.IsNullOrEmpty(releaseResponse.Tag)) {
+				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
+
+				return null;
+			}
+
+			Version newVersion = new(releaseResponse.Tag);
+
+			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
+
+			if (SharedInfo.Version >= newVersion) {
+				return newVersion;
+			}
+
+			if (!updateOverride && (GlobalConfig.UpdatePeriod == 0)) {
+				ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
+				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
+
+				return null;
+			}
+
+			// Auto update logic starts here
+			if (releaseResponse.Assets.IsEmpty) {
+				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssets);
+
+				return null;
+			}
+
+			string targetFile = $"{SharedInfo.ASF}-{SharedInfo.BuildInfo.Variant}.zip";
+			ReleaseAsset? binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
+
+			if (binaryAsset == null) {
+				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisVersion);
+
+				return null;
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.FetchingChecksumFromRemoteServer);
+
+			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, SharedInfo.BuildInfo.Variant).ConfigureAwait(false);
+
+			switch (remoteChecksum) {
+				case null:
+					// Timeout or error, refuse to update as a security measure
+					return null;
+				case "":
+					// Unknown checksum, release too new or actual malicious build published, no need to scare the user as it's 99.99% the first
+					ArchiLogger.LogGenericWarning(Strings.ChecksumMissing);
+
+					return SharedInfo.Version;
+			}
+
+			if (!string.IsNullOrEmpty(releaseResponse.ChangelogPlainText)) {
+				ArchiLogger.LogGenericInfo(releaseResponse.ChangelogPlainText);
+			}
+
+			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
+
+			Progress<byte> progressReporter = new();
+
+			progressReporter.ProgressChanged += Utilities.OnProgressChanged;
+
+			BinaryResponse? response;
+
+			try {
+				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL, progressReporter: progressReporter).ConfigureAwait(false);
+			} finally {
+				progressReporter.ProgressChanged -= Utilities.OnProgressChanged;
+			}
+
+			if (response?.Content == null) {
+				return null;
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.VerifyingChecksumWithRemoteServer);
+
+			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
+
+			string checksum = Utilities.GenerateChecksumFor(responseBytes);
+
+			if (!checksum.Equals(remoteChecksum, StringComparison.OrdinalIgnoreCase)) {
+				ArchiLogger.LogGenericError(Strings.ChecksumWrong);
+
+				return SharedInfo.Version;
+			}
+
+			await PluginsCore.OnUpdateProceeding(newVersion).ConfigureAwait(false);
+
+			bool kestrelWasRunning = ArchiKestrel.IsRunning;
+
+			if (kestrelWasRunning) {
+				// We disable ArchiKestrel here as the update process moves the core files and might result in IPC crash
+				// TODO: It might fail if the update was triggered from the API, this should be something to improve in the future, by changing the structure into request -> return response -> finish update
+				try {
+					await ArchiKestrel.Stop().ConfigureAwait(false);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericWarningException(e);
+				}
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.PatchingFiles);
+
+			try {
+				MemoryStream memoryStream = new(responseBytes);
+
+				await using (memoryStream.ConfigureAwait(false)) {
+					using ZipArchive zipArchive = new(memoryStream);
+
+					if (!await UpdateFromArchive(newVersion, channel == GlobalConfig.EUpdateChannel.Stable, zipArchive).ConfigureAwait(false)) {
+						ArchiLogger.LogGenericError(Strings.WarningFailed);
+					}
+				}
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+
+				if (kestrelWasRunning) {
+					// We've temporarily disabled ArchiKestrel but the update has failed, let's bring it back up
+					// We can't even be sure if it's possible to bring it back up in this state, but it's worth trying anyway
+					try {
+						await ArchiKestrel.Start().ConfigureAwait(false);
+					} catch (Exception ex) {
+						ArchiLogger.LogGenericWarningException(ex);
+					}
+				}
+
+				return null;
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
+
+			await PluginsCore.OnUpdateFinished(newVersion).ConfigureAwait(false);
+
+			return newVersion;
+		} finally {
+			UpdateSemaphore.Release();
+		}
+	}
+
+	private static async Task<bool> UpdateFromArchive(Version newVersion, bool stable, ZipArchive zipArchive) {
+		ArgumentNullException.ThrowIfNull(newVersion);
+		ArgumentNullException.ThrowIfNull(zipArchive);
 
 		if (SharedInfo.HomeDirectory == AppContext.BaseDirectory) {
 			// We're running a build that includes our dependencies in ASF's home
@@ -968,114 +974,10 @@ public static class ASF {
 			LoadAssembliesNeededBeforeUpdate();
 		}
 
-		// Firstly we'll move all our existing files to a backup directory
-		string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
+		// We're ready to start update process, handle any plugin updates ready for new version
+		await PluginsCore.UpdatePlugins(newVersion, stable).ConfigureAwait(false);
 
-		foreach (string file in Directory.EnumerateFiles(targetDirectory, "*", SearchOption.AllDirectories)) {
-			string fileName = Path.GetFileName(file);
-
-			if (string.IsNullOrEmpty(fileName)) {
-				ArchiLogger.LogNullError(fileName);
-
-				return false;
-			}
-
-			string relativeFilePath = Path.GetRelativePath(targetDirectory, file);
-
-			if (string.IsNullOrEmpty(relativeFilePath)) {
-				ArchiLogger.LogNullError(relativeFilePath);
-
-				return false;
-			}
-
-			string? relativeDirectoryName = Path.GetDirectoryName(relativeFilePath);
-
-			switch (relativeDirectoryName) {
-				case null:
-					ArchiLogger.LogNullError(relativeDirectoryName);
-
-					return false;
-				case "":
-					// No directory, root folder
-					switch (fileName) {
-						case Logging.NLogConfigurationFile:
-						case SharedInfo.LogFile:
-							// Files with those names in root directory we want to keep
-							continue;
-					}
-
-					break;
-				case SharedInfo.ArchivalLogsDirectory:
-				case SharedInfo.ConfigDirectory:
-				case SharedInfo.DebugDirectory:
-				case SharedInfo.PluginsDirectory:
-				case SharedInfo.UpdateDirectory:
-					// Files in those directories we want to keep in their current place
-					continue;
-				default:
-					// Files in subdirectories of those directories we want to keep as well
-					if (Utilities.RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.ArchivalLogsDirectory, SharedInfo.ConfigDirectory, SharedInfo.DebugDirectory, SharedInfo.PluginsDirectory, SharedInfo.UpdateDirectory)) {
-						continue;
-					}
-
-					break;
-			}
-
-			string targetBackupDirectory = relativeDirectoryName.Length > 0 ? Path.Combine(backupDirectory, relativeDirectoryName) : backupDirectory;
-			Directory.CreateDirectory(targetBackupDirectory);
-
-			string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
-
-			File.Move(file, targetBackupFile, true);
-		}
-
-		// We can now get rid of directories that are empty
-		Utilities.DeleteEmptyDirectoriesRecursively(targetDirectory);
-
-		if (!Directory.Exists(targetDirectory)) {
-			Directory.CreateDirectory(targetDirectory);
-		}
-
-		// Now enumerate over files in the zip archive, skip directory entries that we're not interested in (we can create them ourselves if needed)
-		foreach (ZipArchiveEntry zipFile in archive.Entries.Where(static zipFile => !string.IsNullOrEmpty(zipFile.Name))) {
-			string file = Path.GetFullPath(Path.Combine(targetDirectory, zipFile.FullName));
-
-			if (!file.StartsWith(targetDirectory, StringComparison.Ordinal)) {
-				throw new InvalidOperationException(nameof(file));
-			}
-
-			if (File.Exists(file)) {
-				// This is possible only with files that we decided to leave in place during our backup function
-				string targetBackupFile = $"{file}.bak";
-
-				File.Move(file, targetBackupFile, true);
-			}
-
-			// Check if this file requires its own folder
-			if (zipFile.Name != zipFile.FullName) {
-				string? directory = Path.GetDirectoryName(file);
-
-				if (string.IsNullOrEmpty(directory)) {
-					ArchiLogger.LogNullError(directory);
-
-					return false;
-				}
-
-				if (!Directory.Exists(directory)) {
-					Directory.CreateDirectory(directory);
-				}
-
-				// We're not interested in extracting placeholder files (but we still want directories created for them, done above)
-				switch (zipFile.Name) {
-					case ".gitkeep":
-						continue;
-				}
-			}
-
-			zipFile.ExtractToFile(file);
-		}
-
-		return true;
+		return Utilities.UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory);
 	}
 
 	[PublicAPI]
