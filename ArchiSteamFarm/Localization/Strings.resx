@@ -764,4 +764,8 @@ Process uptime: {1}</value>
 		<value>Farming {0} ({1}) is disabled, as that game is currently marked as private. If you intend from ASF to farm that game, then consider changing its privacy settings.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>Skipping: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
 </root>

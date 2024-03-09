@@ -673,68 +673,80 @@ public static class PluginsCore {
 
 		// We update plugins one-by-one to limit memory pressure from potentially big release assets
 		foreach (IPluginUpdates plugin in ActivePlugins.OfType<IPluginUpdates>()) {
-			string repoName = plugin.RepositoryName;
-
-			if (string.IsNullOrEmpty(repoName)) {
-				continue;
-			}
-
-			ASF.ArchiLogger.LogGenericInfo($"Checking update for {plugin.Name} plugin...");
-
-			ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(repoName, stable).ConfigureAwait(false);
-
-			if (releaseResponse == null) {
-				continue;
-			}
-
-			Version newVersion = new(releaseResponse.Tag);
-
-			if (plugin.Version >= newVersion) {
-				ASF.ArchiLogger.LogGenericInfo($"No update available for {plugin.Name} plugin: {plugin.Version} >= {newVersion}.");
-
-				continue;
-			}
-
-			ASF.ArchiLogger.LogGenericInfo($"Updating {plugin.Name} plugin from version {plugin.Version} to {newVersion}...");
-
-			ReleaseAsset? asset = await plugin.GetTargetReleaseAsset(asfVersion, SharedInfo.BuildInfo.Variant, newVersion, releaseResponse.Assets).ConfigureAwait(false);
-
-			if ((asset == null) || !releaseResponse.Assets.Contains(asset)) {
-				continue;
-			}
-
-			Progress<byte> progressReporter = new();
-
-			progressReporter.ProgressChanged += Utilities.OnProgressChanged;
-
-			BinaryResponse? response;
-
 			try {
-				response = await ASF.WebBrowser.UrlGetToBinary(asset.DownloadURL, progressReporter: progressReporter).ConfigureAwait(false);
-			} finally {
-				progressReporter.ProgressChanged -= Utilities.OnProgressChanged;
-			}
+				ASF.ArchiLogger.LogGenericInfo($"Checking update for {plugin.Name} plugin...");
 
-			if (response?.Content == null) {
-				continue;
-			}
+				string? assemblyDirectory = Path.GetDirectoryName(plugin.GetType().Assembly.Location);
 
-			ASF.ArchiLogger.LogGenericInfo(Strings.PatchingFiles);
+				if (string.IsNullOrEmpty(assemblyDirectory)) {
+					throw new InvalidOperationException(nameof(assemblyDirectory));
+				}
 
-			string? assemblyDirectory = Path.GetDirectoryName(plugin.GetType().Assembly.Location);
+				string backupDirectory = Path.Combine(assemblyDirectory, SharedInfo.UpdateDirectory);
 
-			if (string.IsNullOrEmpty(assemblyDirectory)) {
-				// Invalid path provided
-				continue;
-			}
+				if (Directory.Exists(backupDirectory)) {
+					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
 
-			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
+					Directory.Delete(backupDirectory, true);
+				}
 
-			try {
+				string repoName = plugin.RepositoryName;
+
+				if (string.IsNullOrEmpty(repoName)) {
+					ASF.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(plugin.RepositoryName)));
+
+					continue;
+				}
+
+				ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(repoName, stable).ConfigureAwait(false);
+
+				if (releaseResponse == null) {
+					continue;
+				}
+
+				Version pluginVersion = plugin.Version;
+				Version newVersion = new(releaseResponse.Tag);
+
+				if (pluginVersion >= newVersion) {
+					ASF.ArchiLogger.LogGenericInfo($"No update available for {plugin.Name} plugin: {pluginVersion} >= {newVersion}.");
+
+					continue;
+				}
+
+				ASF.ArchiLogger.LogGenericInfo($"Updating {plugin.Name} plugin from version {pluginVersion} to {newVersion}...");
+
+				ReleaseAsset? asset = await plugin.GetTargetReleaseAsset(asfVersion, SharedInfo.BuildInfo.Variant, newVersion, releaseResponse.Assets).ConfigureAwait(false);
+
+				if ((asset == null) || !releaseResponse.Assets.Contains(asset)) {
+					continue;
+				}
+
+				Progress<byte> progressReporter = new();
+
+				progressReporter.ProgressChanged += Utilities.OnProgressChanged;
+
+				BinaryResponse? response;
+
+				try {
+					response = await ASF.WebBrowser.UrlGetToBinary(asset.DownloadURL, progressReporter: progressReporter).ConfigureAwait(false);
+				} finally {
+					progressReporter.ProgressChanged -= Utilities.OnProgressChanged;
+				}
+
+				if (response?.Content == null) {
+					continue;
+				}
+
+				ASF.ArchiLogger.LogGenericInfo(Strings.PatchingFiles);
+
+				byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
+
 				MemoryStream memoryStream = new(responseBytes);
 
 				await using (memoryStream.ConfigureAwait(false)) {
 					using ZipArchive zipArchive = new(memoryStream);
+
+					await plugin.OnUpdateProceeding(pluginVersion, newVersion).ConfigureAwait(false);
 
 					if (!Utilities.UpdateFromArchive(zipArchive, assemblyDirectory)) {
 						ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
@@ -746,6 +758,8 @@ public static class PluginsCore {
 				restartNeeded = true;
 
 				ASF.ArchiLogger.LogGenericInfo($"Updating {plugin.Name} plugin has succeeded, the changes will be loaded on the next ASF launch.");
+
+				await plugin.OnUpdateFinished(pluginVersion, newVersion).ConfigureAwait(false);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
@@ -766,6 +780,14 @@ public static class PluginsCore {
 
 		try {
 			foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {
+				string? assemblyDirectoryName = Path.GetFileName(Path.GetDirectoryName(assemblyPath));
+
+				if (assemblyDirectoryName == SharedInfo.UpdateDirectory) {
+					ASF.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningSkipping, assemblyPath));
+
+					continue;
+				}
+
 				Assembly assembly;
 
 				try {

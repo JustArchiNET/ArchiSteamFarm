@@ -47,16 +47,16 @@ public interface IPluginUpdates : IPlugin {
 	Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets);
 
 	/// <summary>
-	///     ASF will call this method after update to a particular ASF version has been finished, just before restart of the process.
+	///     ASF will call this method after update to a particular plugin version has been finished, just before restart of the process.
 	/// </summary>
-	/// <param name="currentVersion">The current (old) version of ASF program.</param>
-	/// <param name="newVersion">The target (new) version of ASF program.</param>
+	/// <param name="currentVersion">The current (old) version of plugin assembly.</param>
+	/// <param name="newVersion">The target (new) version of plugin assembly.</param>
 	Task OnUpdateFinished(Version currentVersion, Version newVersion);
 
 	/// <summary>
-	///     ASF will call this method before proceeding with an update to a particular ASF version.
+	///     ASF will call this method before proceeding with an update to a particular plugin version.
 	/// </summary>
-	/// <param name="currentVersion">The current (old) version of ASF program.</param>
-	/// <param name="newVersion">The target (new) version of ASF program.</param>
+	/// <param name="currentVersion">The current (old) version of plugin assembly.</param>
+	/// <param name="newVersion">The target (new) version of plugin assembly.</param>
 	Task OnUpdateProceeding(Version currentVersion, Version newVersion);
 }

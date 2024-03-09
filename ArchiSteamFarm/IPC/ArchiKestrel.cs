@@ -172,8 +172,7 @@ internal static class ArchiKestrel {
 					string? assemblyDirectory = Path.GetDirectoryName(plugin.GetType().Assembly.Location);
 
 					if (string.IsNullOrEmpty(assemblyDirectory)) {
-						// Invalid path provided
-						continue;
+						throw new InvalidOperationException(nameof(assemblyDirectory));
 					}
 
 					physicalPath = Path.Combine(assemblyDirectory, plugin.PhysicalPath);

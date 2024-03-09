@@ -1238,5 +1238,11 @@ namespace ArchiSteamFarm.Localization {
                 return ResourceManager.GetString("IdlingGameNotPossiblePrivate", resourceCulture);
             }
         }
+        
+        public static string WarningSkipping {
+            get {
+                return ResourceManager.GetString("WarningSkipping", resourceCulture);
+            }
+        }
     }
 }
