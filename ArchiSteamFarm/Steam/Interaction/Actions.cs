@@ -425,7 +425,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				TradingScheduled = false;
 			}
 
-			inventory = await Bot.ArchiWebHandler.GetInventoryAsync(appID: appID, contextID: contextID).Where(item => item.Tradable && filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
+			inventory = await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID, true).Where(item => filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
 		} catch (HttpRequestException e) {
 			Bot.ArchiLogger.LogGenericWarningException(e);
 
