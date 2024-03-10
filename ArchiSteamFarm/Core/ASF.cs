@@ -187,22 +187,22 @@ public static class ASF {
 		}
 	}
 
-	internal static async Task<(Version? NewVersion, bool RestartNeeded)> Update(GlobalConfig.EUpdateChannel? channel = null, bool updateOverride = false) {
-		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
-			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
+	internal static async Task<(Version? NewVersion, bool RestartNeeded)> Update(GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false) {
+		if (updateChannel.HasValue && !Enum.IsDefined(updateChannel.Value)) {
+			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
 		}
 
 		if (GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
 
-		Version? newVersion = await UpdateASF(channel, updateOverride).ConfigureAwait(false);
+		Version? newVersion = await UpdateASF(updateChannel, updateOverride).ConfigureAwait(false);
 
 		bool restartNeeded = newVersion > SharedInfo.Version;
 
 		if (!restartNeeded) {
 			// ASF wasn't updated as part of the process, update the plugins alone
-			restartNeeded = await PluginsCore.UpdatePlugins(SharedInfo.Version, (channel ?? GlobalConfig.UpdateChannel) == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
+			restartNeeded = await PluginsCore.UpdatePlugins(SharedInfo.Version, updateChannel).ConfigureAwait(false);
 		}
 
 		return (newVersion, restartNeeded);
@@ -929,7 +929,7 @@ public static class ASF {
 				await using (memoryStream.ConfigureAwait(false)) {
 					using ZipArchive zipArchive = new(memoryStream);
 
-					if (!await UpdateFromArchive(newVersion, channel == GlobalConfig.EUpdateChannel.Stable, zipArchive).ConfigureAwait(false)) {
+					if (!await UpdateFromArchive(newVersion, channel.Value, zipArchive).ConfigureAwait(false)) {
 						ArchiLogger.LogGenericError(Strings.WarningFailed);
 					}
 				}
@@ -959,8 +959,13 @@ public static class ASF {
 		}
 	}
 
-	private static async Task<bool> UpdateFromArchive(Version newVersion, bool stable, ZipArchive zipArchive) {
+	private static async Task<bool> UpdateFromArchive(Version newVersion, GlobalConfig.EUpdateChannel updateChannel, ZipArchive zipArchive) {
 		ArgumentNullException.ThrowIfNull(newVersion);
+
+		if (!Enum.IsDefined(updateChannel)) {
+			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
+		}
+
 		ArgumentNullException.ThrowIfNull(zipArchive);
 
 		if (SharedInfo.HomeDirectory == AppContext.BaseDirectory) {
@@ -975,7 +980,7 @@ public static class ASF {
 		}
 
 		// We're ready to start update process, handle any plugin updates ready for new version
-		await PluginsCore.UpdatePlugins(newVersion, stable).ConfigureAwait(false);
+		await PluginsCore.UpdatePlugins(newVersion, updateChannel).ConfigureAwait(false);
 
 		return Utilities.UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory);
 	}

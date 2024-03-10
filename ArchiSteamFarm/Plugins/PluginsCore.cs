@@ -44,8 +44,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
-using ArchiSteamFarm.Web.GitHub;
-using ArchiSteamFarm.Web.GitHub.Data;
+using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
 using SteamKit2;
@@ -660,7 +659,13 @@ public static class PluginsCore {
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL3000", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool stable) {
+	internal static async Task<bool> UpdatePlugins(Version asfVersion, GlobalConfig.EUpdateChannel? updateChannel) {
+		ArgumentNullException.ThrowIfNull(asfVersion);
+
+		if (updateChannel.HasValue && !Enum.IsDefined(updateChannel.Value)) {
+			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
+		}
+
 		if (ActivePlugins.Count == 0) {
 			return false;
 		}
@@ -668,6 +673,8 @@ public static class PluginsCore {
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
+
+		updateChannel ??= ASF.GlobalConfig?.UpdateChannel ?? GlobalConfig.DefaultUpdateChannel;
 
 		bool restartNeeded = false;
 
@@ -690,34 +697,9 @@ public static class PluginsCore {
 					Directory.Delete(backupDirectory, true);
 				}
 
-				string repoName = plugin.RepositoryName;
+				Uri? releaseURL = await plugin.GetTargetReleaseURL(asfVersion, SharedInfo.BuildInfo.Variant, updateChannel.Value).ConfigureAwait(false);
 
-				if (string.IsNullOrEmpty(repoName)) {
-					ASF.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(plugin.RepositoryName)));
-
-					continue;
-				}
-
-				ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(repoName, stable).ConfigureAwait(false);
-
-				if (releaseResponse == null) {
-					continue;
-				}
-
-				Version pluginVersion = plugin.Version;
-				Version newVersion = new(releaseResponse.Tag);
-
-				if (pluginVersion >= newVersion) {
-					ASF.ArchiLogger.LogGenericInfo($"No update available for {plugin.Name} plugin: {pluginVersion} >= {newVersion}.");
-
-					continue;
-				}
-
-				ASF.ArchiLogger.LogGenericInfo($"Updating {plugin.Name} plugin from version {pluginVersion} to {newVersion}...");
-
-				ReleaseAsset? asset = await plugin.GetTargetReleaseAsset(asfVersion, SharedInfo.BuildInfo.Variant, newVersion, releaseResponse.Assets).ConfigureAwait(false);
-
-				if ((asset == null) || !releaseResponse.Assets.Contains(asset)) {
+				if (releaseURL == null) {
 					continue;
 				}
 
@@ -728,7 +710,7 @@ public static class PluginsCore {
 				BinaryResponse? response;
 
 				try {
-					response = await ASF.WebBrowser.UrlGetToBinary(asset.DownloadURL, progressReporter: progressReporter).ConfigureAwait(false);
+					response = await ASF.WebBrowser.UrlGetToBinary(releaseURL, progressReporter: progressReporter).ConfigureAwait(false);
 				} finally {
 					progressReporter.ProgressChanged -= Utilities.OnProgressChanged;
 				}
@@ -746,7 +728,7 @@ public static class PluginsCore {
 				await using (memoryStream.ConfigureAwait(false)) {
 					using ZipArchive zipArchive = new(memoryStream);
 
-					await plugin.OnUpdateProceeding(pluginVersion, newVersion).ConfigureAwait(false);
+					await plugin.OnUpdateProceeding().ConfigureAwait(false);
 
 					if (!Utilities.UpdateFromArchive(zipArchive, assemblyDirectory)) {
 						ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
@@ -759,7 +741,7 @@ public static class PluginsCore {
 
 				ASF.ArchiLogger.LogGenericInfo($"Updating {plugin.Name} plugin has succeeded, the changes will be loaded on the next ASF launch.");
 
-				await plugin.OnUpdateFinished(pluginVersion, newVersion).ConfigureAwait(false);
+				await plugin.OnUpdateFinished().ConfigureAwait(false);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}

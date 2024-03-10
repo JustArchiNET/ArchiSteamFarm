@@ -34,8 +34,8 @@ using Markdig.Syntax.Inlines;
 namespace ArchiSteamFarm.Web.GitHub.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-internal sealed class ReleaseResponse {
-	internal string? ChangelogHTML {
+public sealed class ReleaseResponse {
+	public string? ChangelogHTML {
 		get {
 			if (BackingChangelogHTML != null) {
 				return BackingChangelogHTML;
@@ -58,7 +58,7 @@ internal sealed class ReleaseResponse {
 		}
 	}
 
-	internal string? ChangelogPlainText {
+	public string? ChangelogPlainText {
 		get {
 			if (BackingChangelogPlainText != null) {
 				return BackingChangelogPlainText;
@@ -104,22 +104,22 @@ internal sealed class ReleaseResponse {
 	[JsonInclude]
 	[JsonPropertyName("assets")]
 	[JsonRequired]
-	internal ImmutableHashSet<ReleaseAsset> Assets { get; private init; } = ImmutableHashSet<ReleaseAsset>.Empty;
+	public ImmutableHashSet<ReleaseAsset> Assets { get; private init; } = ImmutableHashSet<ReleaseAsset>.Empty;
 
 	[JsonInclude]
 	[JsonPropertyName("prerelease")]
 	[JsonRequired]
-	internal bool IsPreRelease { get; private init; }
+	public bool IsPreRelease { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("published_at")]
 	[JsonRequired]
-	internal DateTime PublishedAt { get; private init; }
+	public DateTime PublishedAt { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("tag_name")]
 	[JsonRequired]
-	internal string Tag { get; private init; } = "";
+	public string Tag { get; private init; } = "";
 
 	private MarkdownDocument? BackingChangelog;
 	private string? BackingChangelogHTML;

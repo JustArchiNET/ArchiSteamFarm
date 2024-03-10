@@ -35,12 +35,12 @@ public sealed class ReleaseAsset {
 	[JsonInclude]
 	[JsonPropertyName("browser_download_url")]
 	[JsonRequired]
-	internal Uri DownloadURL { get; private init; } = null!;
+	public Uri DownloadURL { get; private init; } = null!;
 
 	[JsonInclude]
 	[JsonPropertyName("size")]
 	[JsonRequired]
-	internal uint Size { get; private init; }
+	public uint Size { get; private init; }
 
 	[JsonConstructor]
 	private ReleaseAsset() { }

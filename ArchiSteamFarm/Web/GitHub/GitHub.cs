@@ -31,11 +31,14 @@ using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Web.GitHub.Data;
 using ArchiSteamFarm.Web.Responses;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Web.GitHub;
 
-internal static class GitHub {
-	internal static async Task<ReleaseResponse?> GetLatestRelease(string repoName, bool stable = true, CancellationToken cancellationToken = default) {
+#pragma warning disable CA1724 // TODO
+public static class GitHub {
+	[PublicAPI]
+	public static async Task<ReleaseResponse?> GetLatestRelease(string repoName, bool stable = true, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(repoName);
 
 		Uri request = new($"https://api.github.com/repos/{repoName}/releases{(stable ? "/latest" : "?per_page=1")}");
@@ -49,11 +52,12 @@ internal static class GitHub {
 		return response?.FirstOrDefault();
 	}
 
-	internal static async Task<ReleaseResponse?> GetRelease(string repoName, string version, CancellationToken cancellationToken = default) {
+	[PublicAPI]
+	public static async Task<ReleaseResponse?> GetRelease(string repoName, string tag, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(repoName);
-		ArgumentException.ThrowIfNullOrEmpty(version);
+		ArgumentException.ThrowIfNullOrEmpty(tag);
 
-		Uri request = new($"https://api.github.com/repos/{repoName}/releases/tags/{version}");
+		Uri request = new($"https://api.github.com/repos/{repoName}/releases/tags/{tag}");
 
 		return await GetReleaseFromURL(request, cancellationToken).ConfigureAwait(false);
 	}
@@ -173,3 +177,4 @@ internal static class GitHub {
 		return response?.Content;
 	}
 }
+#pragma warning restore CA1724 // TODO
