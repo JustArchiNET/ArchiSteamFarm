@@ -52,7 +52,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	private const string AccountPrivateAppsService = "IAccountPrivateAppsService";
 	private const string EconService = "IEconService";
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
-	private const ushort MaxItemsInSingleInventoryRequest = 5000;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const string SteamAppsService = "ISteamApps";
 	private const string TwoFactorService = "ITwoFactorService";
@@ -230,163 +229,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
-		ArgumentOutOfRangeException.ThrowIfZero(appID);
-		ArgumentOutOfRangeException.ThrowIfZero(contextID);
-
-		if (ASF.InventorySemaphore == null) {
-			throw new InvalidOperationException(nameof(ASF.InventorySemaphore));
-		}
-
-		if (steamID == 0) {
-			if (!Initialized) {
-				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
-
-				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
-
-				if (!Initialized) {
-					throw new HttpRequestException(Strings.WarningFailed);
-				}
-			}
-
-			steamID = Bot.SteamID;
-		} else if (!new SteamID(steamID).IsIndividualAccount) {
-			throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(steamID)));
-		}
-
-		ulong startAssetID = 0;
-
-		// We need to store asset IDs to make sure we won't get duplicate items
-		HashSet<ulong>? assetIDs = null;
-
-		int rateLimitingDelay = (ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay) * 1000;
-
-		while (true) {
-			Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?l=english&count={MaxItemsInSingleInventoryRequest}{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
-
-			await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
-
-			ObjectResponse<InventoryResponse>? response = null;
-
-			try {
-				for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-					if ((i > 0) && (rateLimitingDelay > 0)) {
-						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
-					}
-
-					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
-
-					if (response == null) {
-						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
-					}
-
-					if (response.StatusCode.IsClientErrorCode()) {
-						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode), null, response.StatusCode);
-					}
-
-					if (response.StatusCode.IsServerErrorCode()) {
-						if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
-							// This is a generic server error without a reason, try again
-							response = null;
-
-							continue;
-						}
-
-						// Interpret the reason and see if we should try again
-						switch (response.Content.ErrorCode) {
-							case EResult.DuplicateRequest:
-							case EResult.ServiceUnavailable:
-								response = null;
-
-								continue;
-						}
-
-						// This is actually client error with a reason, so it doesn't make sense to retry
-						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText), null, response.StatusCode);
-					}
-				}
-			} finally {
-				if (rateLimitingDelay == 0) {
-					ASF.InventorySemaphore.Release();
-				} else {
-					Utilities.InBackground(
-						async () => {
-							await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
-							ASF.InventorySemaphore.Release();
-						}
-					);
-				}
-			}
-
-			if (response?.Content == null) {
-				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
-			}
-
-			if (response.Content.Result is not EResult.OK) {
-				throw new HttpRequestException(!string.IsNullOrEmpty(response.Content.ErrorText) ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText) : response.Content.Result.HasValue ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Result) : Strings.WarningFailed);
-			}
-
-			if (response.Content.TotalInventoryCount == 0) {
-				// Empty inventory
-				yield break;
-			}
-
-			if (response.Content.TotalInventoryCount > Array.MaxLength) {
-				throw new InvalidOperationException(nameof(response.Content.TotalInventoryCount));
-			}
-
-			assetIDs ??= new HashSet<ulong>((int) response.Content.TotalInventoryCount);
-
-			if ((response.Content.Assets.Count == 0) || (response.Content.Descriptions.Count == 0)) {
-				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(response.Content.Assets)} || {nameof(response.Content.Descriptions)}"));
-			}
-
-			Dictionary<(ulong ClassID, ulong InstanceID), InventoryResponse.Description> descriptions = new();
-
-			foreach (InventoryResponse.Description description in response.Content.Descriptions) {
-				if (description.ClassID == 0) {
-					throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(description.ClassID)));
-				}
-
-				(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
-
-				descriptions.TryAdd(key, description);
-			}
-
-			foreach (Asset asset in response.Content.Assets) {
-				if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out InventoryResponse.Description? description) || !assetIDs.Add(asset.AssetID)) {
-					continue;
-				}
-
-				asset.Marketable = description.Marketable;
-				asset.Tradable = description.Tradable;
-				asset.Tags = description.Tags;
-				asset.RealAppID = description.RealAppID;
-				asset.Type = description.Type;
-				asset.Rarity = description.Rarity;
-
-				if (description.AdditionalProperties != null) {
-					asset.AdditionalProperties = description.AdditionalProperties;
-				}
-
-				yield return asset;
-			}
-
-			if (!response.Content.MoreItems) {
-				yield break;
-			}
-
-			if (response.Content.LastAssetID == 0) {
-				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.Content.LastAssetID)));
-			}
-
-			startAssetID = response.Content.LastAssetID;
-		}
-	}
-
-	[PublicAPI]
 	public async Task<uint?> GetPointsBalance() {
 		string? accessToken = Bot.AccessToken;
 
@@ -515,7 +357,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryResponse.Description> descriptions = new();
+		Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
 
 		foreach (KeyValue description in response["descriptions"].Children) {
 			uint appID = description["appid"].AsUnsignedInteger();
@@ -573,7 +415,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 			}
 
-			InventoryResponse.Description parsedDescription = new(appID, classID, instanceID, marketable, parsedTags);
+			InventoryDescription parsedDescription = new(appID, classID, instanceID, marketable, true, parsedTags);
 
 			descriptions[key] = parsedDescription;
 		}
@@ -2389,7 +2231,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return uri.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase) || uri.Host.Equals("lostauth", StringComparison.OrdinalIgnoreCase);
 	}
 
-	private static bool ParseItems([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryResponse.Description> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Asset> output) {
+	private static bool ParseItems([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Asset> output) {
 		ArgumentNullException.ThrowIfNull(descriptions);
 
 		if ((input == null) || (input.Count == 0)) {
@@ -2444,7 +2286,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			Asset.EType type = Asset.EType.Unknown;
 			Asset.ERarity rarity = Asset.ERarity.Unknown;
 
-			if (descriptions.TryGetValue(key, out InventoryResponse.Description? description)) {
+			if (descriptions.TryGetValue(key, out InventoryDescription? description)) {
 				marketable = description.Marketable;
 				tradable = description.Tradable;
 				tags = description.Tags;
