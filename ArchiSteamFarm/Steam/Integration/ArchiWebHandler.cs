@@ -52,6 +52,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	private const string AccountPrivateAppsService = "IAccountPrivateAppsService";
 	private const string EconService = "IEconService";
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
+	private const ushort MaxItemsInSingleInventoryRequest = 5000;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const string SteamAppsService = "ISteamApps";
 	private const string TwoFactorService = "ITwoFactorService";
@@ -226,6 +227,144 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		return result;
+	}
+
+	[PublicAPI]
+	public async IAsyncEnumerable<Asset> GetForeignInventoryAsync(ulong steamID, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(contextID);
+
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		if (steamID == Bot.SteamID) {
+			throw new NotSupportedException();
+		}
+
+		if (ASF.InventorySemaphore == null) {
+			throw new InvalidOperationException(nameof(ASF.InventorySemaphore));
+		}
+
+		ulong startAssetID = 0;
+
+		// We need to store asset IDs to make sure we won't get duplicate items
+		HashSet<ulong>? assetIDs = null;
+
+		int rateLimitingDelay = (ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay) * 1000;
+
+		while (true) {
+			Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?l=english&count={MaxItemsInSingleInventoryRequest}{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
+
+			await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
+
+			ObjectResponse<InventoryResponse>? response = null;
+
+			try {
+				for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+					if ((i > 0) && (rateLimitingDelay > 0)) {
+						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+					}
+
+					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
+
+					if (response == null) {
+						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
+					}
+
+					if (response.StatusCode.IsClientErrorCode()) {
+						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode), null, response.StatusCode);
+					}
+
+					if (response.StatusCode.IsServerErrorCode()) {
+						if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
+							// This is a generic server error without a reason, try again
+							response = null;
+
+							continue;
+						}
+
+						// Interpret the reason and see if we should try again
+						switch (response.Content.ErrorCode) {
+							case EResult.DuplicateRequest:
+							case EResult.ServiceUnavailable:
+								response = null;
+
+								continue;
+						}
+
+						// This is actually client error with a reason, so it doesn't make sense to retry
+						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText), null, response.StatusCode);
+					}
+				}
+			} finally {
+				if (rateLimitingDelay == 0) {
+					ASF.InventorySemaphore.Release();
+				} else {
+					Utilities.InBackground(
+						async () => {
+							await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+							ASF.InventorySemaphore.Release();
+						}
+					);
+				}
+			}
+
+			if (response?.Content == null) {
+				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
+			}
+
+			if (response.Content.Result is not EResult.OK) {
+				throw new HttpRequestException(!string.IsNullOrEmpty(response.Content.ErrorText) ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText) : response.Content.Result.HasValue ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Result) : Strings.WarningFailed);
+			}
+
+			if (response.Content.TotalInventoryCount == 0) {
+				// Empty inventory
+				yield break;
+			}
+
+			if (response.Content.TotalInventoryCount > Array.MaxLength) {
+				throw new InvalidOperationException(nameof(response.Content.TotalInventoryCount));
+			}
+
+			assetIDs ??= new HashSet<ulong>((int) response.Content.TotalInventoryCount);
+
+			if ((response.Content.Assets.Count == 0) || (response.Content.Descriptions.Count == 0)) {
+				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(response.Content.Assets)} || {nameof(response.Content.Descriptions)}"));
+			}
+
+			Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
+
+			foreach (InventoryDescription description in response.Content.Descriptions) {
+				if (description.ClassID == 0) {
+					throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(description.ClassID)));
+				}
+
+				(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
+
+				descriptions.TryAdd(key, description);
+			}
+
+			foreach (Asset asset in response.Content.Assets) {
+				if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out InventoryDescription? description) || !assetIDs.Add(asset.AssetID)) {
+					continue;
+				}
+
+				asset.Description = description;
+
+				yield return asset;
+			}
+
+			if (!response.Content.MoreItems) {
+				yield break;
+			}
+
+			if (response.Content.LastAssetID == 0) {
+				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.Content.LastAssetID)));
+			}
+
+			startAssetID = response.Content.LastAssetID;
+		}
 	}
 
 	[PublicAPI]
@@ -411,7 +550,23 @@ public sealed class ArchiWebHandler : IDisposable {
 						return null;
 					}
 
-					parsedTags.Add(new Tag(identifier, value));
+					string? localizedIdentifier = tag["localized_category_name"].AsString();
+
+					if (localizedIdentifier == null) {
+						Bot.ArchiLogger.LogNullError(value);
+
+						return null;
+					}
+
+					string? localizedValue = tag["localized_tag_name"].AsString();
+
+					if (localizedValue == null) {
+						Bot.ArchiLogger.LogNullError(value);
+
+						return null;
+					}
+
+					parsedTags.Add(new Tag(identifier, value, localizedIdentifier, localizedValue));
 				}
 			}
 
@@ -2279,23 +2434,11 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			ulong assetID = item["assetid"].AsUnsignedLong();
 
-			bool marketable = true;
-			bool tradable = true;
-			ImmutableHashSet<Tag>? tags = null;
-			uint realAppID = 0;
-			Asset.EType type = Asset.EType.Unknown;
-			Asset.ERarity rarity = Asset.ERarity.Unknown;
-
-			if (descriptions.TryGetValue(key, out InventoryDescription? description)) {
-				marketable = description.Marketable;
-				tradable = description.Tradable;
-				tags = description.Tags;
-				realAppID = description.RealAppID;
-				type = description.Type;
-				rarity = description.Rarity;
+			if (!descriptions.TryGetValue(key, out InventoryDescription? description)) {
+				description = new InventoryDescription(appID, classID, instanceID, true, true);
 			}
 
-			Asset steamAsset = new(appID, contextID, classID, amount, instanceID, assetID, marketable, tradable, tags, realAppID, type, rarity);
+			Asset steamAsset = new(appID, contextID, classID, amount, description, instanceID, assetID);
 			output.Add(steamAsset);
 		}
 

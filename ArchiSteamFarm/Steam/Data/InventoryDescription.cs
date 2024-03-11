@@ -1,4 +1,4 @@
-//     _                _      _  ____   _                           _____
+// _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -31,10 +31,15 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
+using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.Steam.Data;
 
-internal sealed class InventoryDescription {
+[PublicAPI]
+public sealed class InventoryDescription {
+	[JsonIgnore]
+	public CEconItem_Description ProtobufBody { get; } = new();
+
 	internal Asset.ERarity Rarity {
 		get {
 			foreach (Tag tag in Tags) {
@@ -156,47 +161,187 @@ internal sealed class InventoryDescription {
 
 	[JsonExtensionData]
 	[JsonInclude]
-	internal Dictionary<string, JsonElement>? AdditionalProperties { get; init; }
+	internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
 	[JsonInclude]
 	[JsonPropertyName("appid")]
 	[JsonRequired]
-	internal uint AppID { get; private init; }
+	public uint AppID {
+		get => (uint) ProtobufBody.appid;
+		private init => ProtobufBody.appid = (int) value;
+	}
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("classid")]
 	[JsonRequired]
-	internal ulong ClassID { get; private init; }
+	public ulong ClassID {
+		get => ProtobufBody.classid;
+		private init => ProtobufBody.classid = value;
+	}
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("instanceid")]
-	internal ulong InstanceID { get; private init; }
+	public ulong InstanceID {
+		get => ProtobufBody.instanceid;
+		private init => ProtobufBody.instanceid = value;
+	}
 
-	internal bool Marketable { get; private init; }
-
-	[JsonDisallowNull]
 	[JsonInclude]
-	[JsonPropertyName("tags")]
-	internal ImmutableHashSet<Tag> Tags { get; private init; } = ImmutableHashSet<Tag>.Empty;
+	[JsonPropertyName("currency")]
+	[JsonConverter(typeof(BooleanNumberConverter))]
+	public bool Currency {
+		get => ProtobufBody.currency;
+		private init => ProtobufBody.currency = value;
+	}
 
-	internal bool Tradable { get; private init; }
+	[JsonInclude]
+	[JsonPropertyName("background_color")]
+	public string BackgroundColor {
+		get => ProtobufBody.background_color;
+		private init => ProtobufBody.background_color = value;
+	}
+
+	[JsonInclude]
+	[JsonPropertyName("icon_url")]
+#pragma warning disable CA1056 - this is a JSON/Protobuf field, and even then it doesn't contain full URL
+	public string IconURL {
+#pragma warning restore CA1056 - this is a JSON/Protobuf field, and even then it doesn't contain full URL
+		get => ProtobufBody.icon_url;
+		private init => ProtobufBody.icon_url = value;
+	}
+
+	[JsonInclude]
+	[JsonPropertyName("icon_url_large")]
+#pragma warning disable CA1056 - this is a JSON/Protobuf field, and even then it doesn't contain full URL
+	public string IconURLLarge {
+#pragma warning restore CA1056 - this is a JSON/Protobuf field, and even then it doesn't contain full URL
+		get => ProtobufBody.icon_url_large;
+		private init => ProtobufBody.icon_url_large = value;
+	}
+
+	[JsonInclude]
+	[JsonPropertyName("owner_actions")]
+	public ImmutableHashSet<Action> OwnerActions {
+		get => ProtobufBody.owner_actions.Select(static action => new Action(action.link, action.name)).ToImmutableHashSet();
+		private init {
+			ProtobufBody.owner_actions.Clear();
+
+			foreach (Action action in value) {
+				ProtobufBody.owner_actions.Add(
+					new CEconItem_Action {
+						link = action.Link,
+						name = action.Name
+					}
+				);
+			}
+		}
+	}
+
+	[JsonInclude]
+	[JsonPropertyName("name")]
+	public string Name {
+		get => ProtobufBody.name;
+		private init => ProtobufBody.name = value;
+	}
+
+	[JsonInclude]
+	[JsonPropertyName("type")]
+	public string TypeText {
+		get => ProtobufBody.type;
+		private init => ProtobufBody.type = value;
+	}
+
+	[JsonInclude]
+	[JsonPropertyName("market_name")]
+	public string MarketName {
+		get => ProtobufBody.market_name;
+		private init => ProtobufBody.market_name = value;
+	}
+
+	[JsonInclude]
+	[JsonPropertyName("market_hash_name")]
+	public string MarketHashName {
+		get => ProtobufBody.market_hash_name;
+		private init => ProtobufBody.market_hash_name = value;
+	}
+
+	[JsonInclude]
+	[JsonPropertyName("market_fee_app")]
+	public uint MarketFeeApp {
+		get => (uint) ProtobufBody.market_fee_app;
+		private init => ProtobufBody.market_fee_app = (int) value;
+	}
+
+	[JsonInclude]
+	[JsonPropertyName("commodity")]
+	[JsonConverter(typeof(BooleanNumberConverter))]
+	public bool Commodity {
+		get => ProtobufBody.commodity;
+		private init => ProtobufBody.commodity = value;
+	}
+
+	[JsonInclude]
+	[JsonPropertyName("descriptions")]
+	public ImmutableHashSet<Description> Descriptions {
+		get => ProtobufBody.descriptions.Select(static description => new Description(description.type, description.value, description.color, description.label)).ToImmutableHashSet();
+		private init {
+			ProtobufBody.descriptions.Clear();
+
+			foreach (Description description in value) {
+				ProtobufBody.descriptions.Add(
+					new CEconItem_DescriptionLine {
+						color = description.Color,
+						label = description.Label,
+						type = description.Type,
+						value = description.Value
+					}
+				);
+			}
+		}
+	}
 
 	[JsonInclude]
 	[JsonPropertyName("marketable")]
 	[JsonRequired]
-	private byte MarketableNumber {
-		get => Marketable ? (byte) 1 : (byte) 0;
-		init => Marketable = value > 0;
+	[JsonConverter(typeof(BooleanNumberConverter))]
+	public bool Marketable {
+		get => ProtobufBody.marketable;
+		private init => ProtobufBody.marketable = value;
+	}
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("tags")]
+	internal ImmutableHashSet<Tag> Tags {
+		get => ProtobufBody.tags.Select(static x => new Tag(x.category, x.internal_name, x.localized_category_name, x.localized_tag_name)).ToImmutableHashSet();
+		private init {
+			ProtobufBody.tags.Clear();
+
+			foreach (Tag tag in value) {
+				ProtobufBody.tags.Add(
+					new CEconItem_Tag {
+						appid = AppID,
+						category = tag.Identifier,
+
+						//color =
+						internal_name = tag.Value,
+						localized_category_name = tag.LocalizedIdentifier,
+						localized_tag_name = tag.LocalizedValue
+					}
+				);
+			}
+		}
 	}
 
 	[JsonInclude]
 	[JsonPropertyName("tradable")]
 	[JsonRequired]
-	private byte TradableNumber {
-		get => Tradable ? (byte) 1 : (byte) 0;
-		init => Tradable = value > 0;
+	[JsonConverter(typeof(BooleanNumberConverter))]
+	internal bool Tradable {
+		get => ProtobufBody.tradable;
+		private init => ProtobufBody.tradable = value;
 	}
 
 	// Constructed from trades being received/sent
@@ -218,6 +363,8 @@ internal sealed class InventoryDescription {
 	[JsonConstructor]
 	private InventoryDescription() { }
 
+	internal InventoryDescription(CEconItem_Description description) => ProtobufBody = description;
+
 	[UsedImplicitly]
 	public static bool ShouldSerializeAdditionalProperties() => false;
 
@@ -229,4 +376,50 @@ internal sealed class InventoryDescription {
 		.Select(static attr => attr!.Name)
 		.Where(static name => !string.IsNullOrEmpty(name))
 		.ToImmutableHashSet();
+}
+
+public class Description {
+	[JsonInclude]
+	[JsonPropertyName("type")]
+	public string Type { get; private init; } = null!;
+
+	[JsonInclude]
+	[JsonPropertyName("value")]
+	public string Value { get; private init; } = null!;
+
+	[JsonInclude]
+	[JsonPropertyName("color")]
+	public string Color { get; private init; } = null!;
+
+	[JsonInclude]
+	[JsonPropertyName("label")]
+	public string Label { get; private init; } = null!;
+
+	internal Description(string type, string value, string color, string label) {
+		Type = type;
+		Value = value;
+		Color = color;
+		Label = label;
+	}
+
+	[JsonConstructor]
+	private Description() { }
+}
+
+public class Action {
+	[JsonInclude]
+	[JsonPropertyName("link")]
+	public string Link { get; private init; } = null!;
+
+	[JsonInclude]
+	[JsonPropertyName("name")]
+	public string Name { get; private init; } = null!;
+
+	internal Action(string link, string name) {
+		Link = link;
+		Name = name;
+	}
+
+	[JsonConstructor]
+	private Action() { }
 }

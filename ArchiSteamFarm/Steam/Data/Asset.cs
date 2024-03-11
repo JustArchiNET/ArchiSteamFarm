@@ -20,9 +20,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 
@@ -38,10 +36,6 @@ public sealed class Asset {
 
 	[PublicAPI]
 	public const ulong SteamPointsShopInstanceID = 3865004543;
-
-	[JsonIgnore]
-	[PublicAPI]
-	public IReadOnlyDictionary<string, JsonElement>? AdditionalPropertiesReadOnly => AdditionalProperties;
 
 	[JsonIgnore]
 	[PublicAPI]
@@ -82,33 +76,31 @@ public sealed class Asset {
 	[PublicAPI]
 	public ulong InstanceID { get; private init; }
 
-	[JsonIgnore]
-	[PublicAPI]
-	public bool Marketable { get; internal set; }
+	public InventoryDescription Description { get; internal set; }
 
 	[JsonIgnore]
 	[PublicAPI]
-	public ERarity Rarity { get; internal set; }
+	public bool Marketable => Description.Marketable;
 
 	[JsonIgnore]
 	[PublicAPI]
-	public uint RealAppID { get; internal set; }
+	public ERarity Rarity => Description.Rarity;
 
 	[JsonIgnore]
 	[PublicAPI]
-	public ImmutableHashSet<Tag>? Tags { get; internal set; }
+	public uint RealAppID => Description.RealAppID;
 
 	[JsonIgnore]
 	[PublicAPI]
-	public bool Tradable { get; internal set; }
+	public ImmutableHashSet<Tag> Tags => Description.Tags;
 
 	[JsonIgnore]
 	[PublicAPI]
-	public EType Type { get; internal set; }
+	public bool Tradable => Description.Tradable;
 
-	[JsonExtensionData]
-	[JsonInclude]
-	internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
+	[JsonIgnore]
+	[PublicAPI]
+	public EType Type => Description.Type;
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
@@ -119,7 +111,7 @@ public sealed class Asset {
 	}
 
 	// Constructed from trades being received or plugins
-	public Asset(uint appID, ulong contextID, ulong classID, uint amount, ulong instanceID = 0, ulong assetID = 0, bool marketable = true, bool tradable = true, ImmutableHashSet<Tag>? tags = null, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
+	public Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription description, ulong instanceID = 0, ulong assetID = 0) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(classID);
@@ -129,17 +121,9 @@ public sealed class Asset {
 		ContextID = contextID;
 		ClassID = classID;
 		Amount = amount;
+		Description = description;
 		InstanceID = instanceID;
 		AssetID = assetID;
-		Marketable = marketable;
-		Tradable = tradable;
-		RealAppID = realAppID;
-		Type = type;
-		Rarity = rarity;
-
-		if (tags?.Count > 0) {
-			Tags = tags;
-		}
 	}
 
 	[JsonConstructor]

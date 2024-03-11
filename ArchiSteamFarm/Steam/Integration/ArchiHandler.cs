@@ -224,7 +224,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			}
 
 			List<InventoryDescription> convertedDescriptions = response.descriptions.Select(
-				static description => new InventoryDescription((uint) description.appid, description.classid, description.instanceid, description.marketable, description.tradable, description.tags.Select(static x => new Tag(x.category, x.internal_name)).ToList()) {
+				static description => new InventoryDescription((uint) description.appid, description.classid, description.instanceid, description.marketable, description.tradable, description.tags.Select(static x => new Tag(x.category, x.internal_name, x.localized_category_name, x.localized_tag_name)).ToList()) {
 					AdditionalProperties = description.ToJsonElement().EnumerateObject()
 						.Where(static prop => !InventoryDescription.NonAdditionalProperties.Contains(prop.Name))
 						.ToDictionary(static prop => prop.Name, static prop => prop.Value)
@@ -243,27 +243,14 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				descriptions.TryAdd(key, description);
 			}
 
-			List<Asset> convertedAssets = response.assets.Select(
-				static asset => new Asset(asset.appid, asset.contextid, asset.classid, (uint) asset.amount, asset.instanceid, asset.assetid)
-			).ToList();
-
-			foreach (Asset asset in convertedAssets) {
-				if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out InventoryDescription? description) || !assetIDs.Add(asset.AssetID)) {
+			foreach (CEcon_Asset? asset in response.assets) {
+				if (!descriptions.TryGetValue((asset.classid, asset.instanceid), out InventoryDescription? description) || !assetIDs.Add(asset.assetid)) {
 					continue;
 				}
 
-				asset.Marketable = description.Marketable;
-				asset.Tradable = description.Tradable;
-				asset.Tags = description.Tags;
-				asset.RealAppID = description.RealAppID;
-				asset.Type = description.Type;
-				asset.Rarity = description.Rarity;
+				Asset convertedAsset = new(asset.appid, asset.contextid, asset.classid, (uint) asset.amount, description, asset.instanceid, asset.assetid);
 
-				if (description.AdditionalProperties != null) {
-					asset.AdditionalProperties = description.AdditionalProperties;
-				}
-
-				yield return asset;
+				yield return convertedAsset;
 			}
 
 			if (!response.more_items) {
