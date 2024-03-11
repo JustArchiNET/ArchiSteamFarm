@@ -1,18 +1,20 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
-// |
+// ----------------------------------------------------------------------------------------------
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// |
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// |
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// |
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,8 +30,8 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Storage;
-using ArchiSteamFarm.Web.GitHub;
-using ArchiSteamFarm.Web.GitHub.Data;
+using ArchiSteamFarm.Web.Services;
+using ArchiSteamFarm.Web.Services.Data;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
@@ -48,14 +50,20 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	/// <example>JustArchiNET/ArchiSteamFarm</example>
 	string RepositoryName { get; }
 
-#pragma warning disable CA1033 // TODO
-	async Task<Uri?> IPluginUpdates.GetTargetReleaseURL(Version asfVersion, string asfVariant, GlobalConfig.EUpdateChannel updateChannel) {
+	Task<Uri?> IPluginUpdates.GetTargetReleaseURL(Version asfVersion, string asfVariant, GlobalConfig.EUpdateChannel updateChannel) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 
 		if (!Enum.IsDefined(updateChannel)) {
 			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
 		}
+
+		return GetTargetReleaseURL(asfVersion, asfVariant, updateChannel == GlobalConfig.EUpdateChannel.Stable);
+	}
+
+	protected async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool stable) {
+		ArgumentNullException.ThrowIfNull(asfVersion);
+		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 
 		if (!CanUpdate) {
 			return null;
@@ -67,7 +75,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			return null;
 		}
 
-		ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(RepositoryName, updateChannel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
+		ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(RepositoryName, stable).ConfigureAwait(false);
 
 		if (releaseResponse == null) {
 			return null;
@@ -91,7 +99,6 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 
 		return asset.DownloadURL;
 	}
-#pragma warning restore CA1033 // TODO
 
 	/// <summary>
 	///     ASF will call this function for determining the target asset name to update to. This asset should be available in specified release. It's permitted to return null/empty if you want to cancel update to given version. Default implementation provides simple resolve based on flow from JustArchiNET/ASF-PluginTemplate repository.
