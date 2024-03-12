@@ -42,13 +42,13 @@ public static class GitHub {
 	public static async Task<ReleaseResponse?> GetLatestRelease(string repoName, bool stable = true, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(repoName);
 
-		Uri request = new($"https://api.github.com/repos/{repoName}/releases{(stable ? "/latest" : "?per_page=1")}");
-
 		if (stable) {
+			Uri request = new($"https://api.github.com/repos/{repoName}/releases/latest");
+
 			return await GetReleaseFromURL(request, cancellationToken).ConfigureAwait(false);
 		}
 
-		ImmutableList<ReleaseResponse>? response = await GetReleasesFromURL(request, cancellationToken).ConfigureAwait(false);
+		ImmutableList<ReleaseResponse>? response = await GetReleases(repoName, 1, cancellationToken).ConfigureAwait(false);
 
 		return response?.FirstOrDefault();
 	}
@@ -61,6 +61,17 @@ public static class GitHub {
 		Uri request = new($"https://api.github.com/repos/{repoName}/releases/tags/{tag}");
 
 		return await GetReleaseFromURL(request, cancellationToken).ConfigureAwait(false);
+	}
+
+	[PublicAPI]
+	public static async Task<ImmutableList<ReleaseResponse>?> GetReleases(string repoName, byte count = 10, CancellationToken cancellationToken = default) {
+		ArgumentException.ThrowIfNullOrEmpty(repoName);
+		ArgumentOutOfRangeException.ThrowIfZero(count);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(count, 100);
+
+		Uri request = new($"https://api.github.com/repos/{repoName}/releases?per_page={count}");
+
+		return await GetReleasesFromURL(request, cancellationToken).ConfigureAwait(false);
 	}
 
 	internal static async Task<Dictionary<string, DateTime>?> GetWikiHistory(string page, CancellationToken cancellationToken = default) {
