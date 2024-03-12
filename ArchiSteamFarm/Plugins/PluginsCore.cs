@@ -680,10 +680,12 @@ public static class PluginsCore {
 
 		bool restartNeeded = false;
 
+		ASF.ArchiLogger.LogGenericInfo(Strings.PluginUpdatesChecking);
+
 		// We update plugins one-by-one to limit memory pressure from potentially big release assets
 		foreach (IPluginUpdates plugin in ActivePlugins.OfType<IPluginUpdates>()) {
 			try {
-				ASF.ArchiLogger.LogGenericInfo($"Checking update for {plugin.Name} plugin...");
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateChecking, plugin.Name));
 
 				string? assemblyDirectory = Path.GetDirectoryName(plugin.GetType().Assembly.Location);
 
@@ -704,6 +706,8 @@ public static class PluginsCore {
 				if (releaseURL == null) {
 					continue;
 				}
+
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateInProgress, plugin.Name));
 
 				Progress<byte> progressReporter = new();
 
@@ -741,7 +745,7 @@ public static class PluginsCore {
 
 				restartNeeded = true;
 
-				ASF.ArchiLogger.LogGenericInfo($"Updating {plugin.Name} plugin has succeeded, the changes will be loaded on the next ASF launch.");
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateFinished, plugin.Name));
 
 				await plugin.OnPluginUpdateFinished().ConfigureAwait(false);
 			} catch (Exception e) {

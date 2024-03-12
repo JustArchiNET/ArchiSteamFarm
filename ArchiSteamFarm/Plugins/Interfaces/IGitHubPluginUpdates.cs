@@ -84,18 +84,20 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		Version newVersion = new(releaseResponse.Tag);
 
 		if (Version >= newVersion) {
-			ASF.ArchiLogger.LogGenericInfo($"No update available for {Name} plugin: {Version} >= {newVersion}.");
+			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateNotFound, Name, Version, newVersion));
 
 			return null;
 		}
-
-		ASF.ArchiLogger.LogGenericInfo($"Updating {Name} plugin from version {Version} to {newVersion}...");
 
 		ReleaseAsset? asset = await GetTargetReleaseAsset(asfVersion, asfVariant, newVersion, releaseResponse.Assets).ConfigureAwait(false);
 
 		if ((asset == null) || !releaseResponse.Assets.Contains(asset)) {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateNoAssetFound, Name, Version, newVersion));
+
 			return null;
 		}
+
+		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateFound, Name, Version, newVersion));
 
 		return asset.DownloadURL;
 	}
