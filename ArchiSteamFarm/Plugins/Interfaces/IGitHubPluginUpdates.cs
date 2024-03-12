@@ -70,20 +70,58 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	}
 
 	/// <summary>
-	///     ASF will call this function for determining the target asset name to update to. This asset should be available in specified release. It's permitted to return null if you want to cancel update to given version. Default implementation provides simple resolve based on flow from JustArchiNET/ASF-PluginTemplate repository - you have a single {PluginName}.zip file to update to, with no additional conditions.
+	///     ASF will call this function for determining the target asset name to update to. This asset should be available in specified release. It's permitted to return null if you want to cancel update to given version. Default implementation provides vastly universal generic matching, see remarks for more info.
 	/// </summary>
 	/// <param name="asfVersion">Target ASF version that plugin update should be compatible with. In rare cases, this might not match currently running ASF version, in particular when updating to newer release and checking if any plugins are compatible with it.</param>
 	/// <param name="asfVariant">ASF variant of current instance, which may be useful if you're providing different versions for different ASF variants.</param>
 	/// <param name="newPluginVersion">The target (new) version of the plugin found available in <see cref="RepositoryName" />.</param>
 	/// <param name="releaseAssets">Available release assets for auto-update. Those come directly from your release on GitHub.</param>
+	/// <remarks>
+	///     Default implementation will select release asset in following order:
+	///     - {PluginName}-V{Major}-{Minor}-{Build}-{Revision}.zip
+	///     - {PluginName}-V{Major}-{Minor}-{Build}.zip
+	///     - {PluginName}-V{Major}-{Minor}.zip
+	///     - {PluginName}-V{Major}.zip
+	///     - {PluginName}.zip
+	///     - *.zip, if exactly 1 release asset connected with the release
+	///     Where:
+	///     - {PluginName} is <see cref="IPlugin.Name" />
+	///     - {Major} is target major ASF version (A from A.B.C.D)
+	///     - {Minor} is target major ASF version (B from A.B.C.D)
+	///     - {Build} is target major ASF version (C from A.B.C.D)
+	///     - {Revision} is target major ASF version (D from A.B.C.D)
+	///     - * is a wildcard matching any string value
+	/// </remarks>
 	/// <returns>Target release asset from those provided that should be used for auto-update. You may return null if the update is unavailable, for example, because ASF version/variant is determined unsupported, or due to any other reason.</returns>
 	Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 		ArgumentNullException.ThrowIfNull(newPluginVersion);
-		ArgumentNullException.ThrowIfNull(releaseAssets);
 
-		return Task.FromResult(releaseAssets.FirstOrDefault(asset => asset.Name == $"{Name}.zip"));
+		if ((releaseAssets == null) || (releaseAssets.Count == 0)) {
+			throw new ArgumentNullException(nameof(releaseAssets));
+		}
+
+		Dictionary<string, ReleaseAsset> assetsByName = releaseAssets.ToDictionary(static asset => asset.Name);
+
+		List<string> matches = [
+			$"{Name}-V{asfVersion.Major}-{asfVersion.Minor}-{asfVersion.Build}-{asfVersion.Revision}.zip",
+			$"{Name}-V{asfVersion.Major}-{asfVersion.Minor}-{asfVersion.Build}.zip",
+			$"{Name}-V{asfVersion.Major}-{asfVersion.Minor}.zip",
+			$"{Name}-V{asfVersion.Major}.zip",
+			$"{Name}.zip"
+		];
+
+		foreach (string match in matches) {
+			if (assetsByName.TryGetValue(match, out ReleaseAsset? targetAsset)) {
+				return Task.FromResult<ReleaseAsset?>(targetAsset);
+			}
+		}
+
+		// The very last fallback in case user uses different naming scheme
+		HashSet<ReleaseAsset> zipAssets = releaseAssets.Where(static asset => asset.Name.EndsWith(".zip", StringComparison.Ordinal)).ToHashSet();
+
+		return Task.FromResult(zipAssets.Count == 1 ? zipAssets.First() : null);
 	}
 
 	protected async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool stable) {
@@ -110,6 +148,12 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 
 		if (Version >= newVersion) {
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateNotFound, Name, Version, newVersion));
+
+			return null;
+		}
+
+		if (releaseResponse.Assets.Count == 0) {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateNoAssetFound, Name, Version, newVersion));
 
 			return null;
 		}
