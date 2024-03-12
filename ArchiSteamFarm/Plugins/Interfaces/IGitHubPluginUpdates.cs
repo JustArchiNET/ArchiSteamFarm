@@ -87,9 +87,9 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	///     Where:
 	///     - {PluginName} is <see cref="IPlugin.Name" />
 	///     - {Major} is target major ASF version (A from A.B.C.D)
-	///     - {Minor} is target major ASF version (B from A.B.C.D)
-	///     - {Build} is target major ASF version (C from A.B.C.D)
-	///     - {Revision} is target major ASF version (D from A.B.C.D)
+	///     - {Minor} is target minor ASF version (B from A.B.C.D)
+	///     - {Build} is target build (patch) ASF version (C from A.B.C.D)
+	///     - {Revision} is target revision ASF version (D from A.B.C.D)
 	///     - * is a wildcard matching any string value
 	/// </remarks>
 	/// <returns>Target release asset from those provided that should be used for auto-update. You may return null if the update is unavailable, for example, because ASF version/variant is determined unsupported, or due to any other reason.</returns>
