@@ -31,19 +31,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Web.GitHub.Data;
 using ArchiSteamFarm.Web.Responses;
-using ArchiSteamFarm.Web.Services.Data;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web.Services;
+namespace ArchiSteamFarm.Web.GitHub;
 
-public static class GitHub {
+public static class GitHubService {
+	private static Uri URL => new("https://api.github.com");
+
 	[PublicAPI]
 	public static async Task<ReleaseResponse?> GetLatestRelease(string repoName, bool stable = true, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(repoName);
 
 		if (stable) {
-			Uri request = new($"https://api.github.com/repos/{repoName}/releases/latest");
+			Uri request = new(URL, $"/repos/{repoName}/releases/latest");
 
 			return await GetReleaseFromURL(request, cancellationToken).ConfigureAwait(false);
 		}
@@ -58,7 +60,7 @@ public static class GitHub {
 		ArgumentException.ThrowIfNullOrEmpty(repoName);
 		ArgumentException.ThrowIfNullOrEmpty(tag);
 
-		Uri request = new($"https://api.github.com/repos/{repoName}/releases/tags/{tag}");
+		Uri request = new(URL, $"/repos/{repoName}/releases/tags/{tag}");
 
 		return await GetReleaseFromURL(request, cancellationToken).ConfigureAwait(false);
 	}
@@ -69,7 +71,7 @@ public static class GitHub {
 		ArgumentOutOfRangeException.ThrowIfZero(count);
 		ArgumentOutOfRangeException.ThrowIfGreaterThan(count, 100);
 
-		Uri request = new($"https://api.github.com/repos/{repoName}/releases?per_page={count}");
+		Uri request = new(URL, $"/repos/{repoName}/releases?per_page={count}");
 
 		return await GetReleasesFromURL(request, cancellationToken).ConfigureAwait(false);
 	}

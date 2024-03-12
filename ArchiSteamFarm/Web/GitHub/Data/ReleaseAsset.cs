@@ -25,7 +25,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace ArchiSteamFarm.Web.Services.Data;
+namespace ArchiSteamFarm.Web.GitHub.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class ReleaseAsset {

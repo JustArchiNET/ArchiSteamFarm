@@ -34,7 +34,7 @@ using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 
-namespace ArchiSteamFarm.Web.Services.Data;
+namespace ArchiSteamFarm.Web.GitHub.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class ReleaseResponse {

@@ -24,7 +24,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Web.Services.Data;
+using ArchiSteamFarm.Web.GitHub.Data;
 
 namespace ArchiSteamFarm.IPC.Responses;
 

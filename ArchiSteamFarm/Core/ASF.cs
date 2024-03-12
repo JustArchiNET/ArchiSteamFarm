@@ -43,9 +43,9 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
+using ArchiSteamFarm.Web.GitHub;
+using ArchiSteamFarm.Web.GitHub.Data;
 using ArchiSteamFarm.Web.Responses;
-using ArchiSteamFarm.Web.Services;
-using ArchiSteamFarm.Web.Services.Data;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Discovery;
@@ -815,7 +815,7 @@ public static class ASF {
 
 			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
 
-			ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(SharedInfo.GithubRepo, channel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
+			ReleaseResponse? releaseResponse = await GitHubService.GetLatestRelease(SharedInfo.GithubRepo, channel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
 
 			if (releaseResponse == null) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);

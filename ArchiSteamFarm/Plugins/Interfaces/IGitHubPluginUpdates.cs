@@ -30,8 +30,8 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Storage;
-using ArchiSteamFarm.Web.Services;
-using ArchiSteamFarm.Web.Services.Data;
+using ArchiSteamFarm.Web.GitHub;
+using ArchiSteamFarm.Web.GitHub.Data;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
@@ -75,7 +75,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			return null;
 		}
 
-		ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(RepositoryName, stable).ConfigureAwait(false);
+		ReleaseResponse? releaseResponse = await GitHubService.GetLatestRelease(RepositoryName, stable).ConfigureAwait(false);
 
 		if (releaseResponse == null) {
 			return null;
