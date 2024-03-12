@@ -109,7 +109,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			throw new ArgumentNullException(nameof(releaseAssets));
 		}
 
-		Dictionary<string, ReleaseAsset> assetsByName = releaseAssets.ToDictionary(static asset => asset.Name);
+		Dictionary<string, ReleaseAsset> assetsByName = releaseAssets.ToDictionary(static asset => asset.Name, StringComparer.OrdinalIgnoreCase);
 
 		List<string> matches = [
 			$"{Name}-V{asfVersion.Major}-{asfVersion.Minor}-{asfVersion.Build}-{asfVersion.Revision}.zip",
@@ -126,7 +126,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		}
 
 		// The very last fallback in case user uses different naming scheme
-		HashSet<ReleaseAsset> zipAssets = releaseAssets.Where(static asset => asset.Name.EndsWith(".zip", StringComparison.Ordinal)).ToHashSet();
+		HashSet<ReleaseAsset> zipAssets = releaseAssets.Where(static asset => asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).ToHashSet();
 
 		return Task.FromResult(zipAssets.Count == 1 ? zipAssets.First() : null);
 	}
