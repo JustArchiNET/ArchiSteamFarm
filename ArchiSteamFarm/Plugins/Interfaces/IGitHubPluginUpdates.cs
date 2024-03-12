@@ -128,7 +128,13 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		// The very last fallback in case user uses different naming scheme
 		HashSet<ReleaseAsset> zipAssets = releaseAssets.Where(static asset => asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).ToHashSet();
 
-		return Task.FromResult(zipAssets.Count == 1 ? zipAssets.First() : null);
+		if (zipAssets.Count == 1) {
+			return Task.FromResult<ReleaseAsset?>(zipAssets.First());
+		}
+
+		ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateConflictingAssetsFound, Name, Version, newPluginVersion));
+
+		return Task.FromResult<ReleaseAsset?>(null);
 	}
 
 	protected async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool stable) {

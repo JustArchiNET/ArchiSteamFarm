@@ -1275,6 +1275,12 @@ namespace ArchiSteamFarm.Localization {
             }
         }
         
+        public static string PluginUpdateConflictingAssetsFound {
+            get {
+                return ResourceManager.GetString("PluginUpdateConflictingAssetsFound", resourceCulture);
+            }
+        }
+        
         public static string PluginUpdateInProgress {
             get {
                 return ResourceManager.GetString("PluginUpdateInProgress", resourceCulture);
