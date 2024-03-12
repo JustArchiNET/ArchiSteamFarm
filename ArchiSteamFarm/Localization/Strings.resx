@@ -795,4 +795,15 @@ Process uptime: {1}</value>
 		<value>Updating {0} plugin has succeeded, the changes will be loaded on the next ASF launch.</value>
 		<comment>{0} will be replaced by plugin name (string).</comment>
 	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>{0}/{1} plugin has been registered and enabled for automatic updates.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>{0}/{1} plugin has been disabled from automatic updates, despite supporting such feature.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Custom plugins have been registered for automatic updates. ASF team would like to remind you that, for your own safety, you should enable automatic updates only from trusted parties. If you didn't intend to do this, you can disable plugin updates in ASF global config.</value>
+	</data>
 </root>

@@ -28,6 +28,11 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <summary>
+///     Implementing this interface allows you to provide custom logic for updating your plugin to newer version.
+///     Plugin updates are happening on usual basis per configuration of auto-updates from ASF, as well as other triggers such as update command.
+///     If you're using GitHub platform with plugin releases, you might be interested in <see cref="IGitHubPluginUpdates" /> instead.
+/// </summary>
 [PublicAPI]
 public interface IPluginUpdates : IPlugin {
 	/// <summary>
@@ -36,16 +41,16 @@ public interface IPluginUpdates : IPlugin {
 	/// <param name="asfVersion">Target ASF version that plugin update should be compatible with. In rare cases, this might not match currently running ASF version, in particular when updating to newer release and checking if any plugins are compatible with it.</param>
 	/// <param name="asfVariant">ASF variant of current instance, which may be useful if you're providing different versions for different ASF variants.</param>
 	/// <param name="updateChannel">ASF update channel specified for this request. This might be different from the one specified in <see cref="GlobalConfig" />, as user might've specified other one for this request.</param>
-	/// <returns>Target release asset URL that should be used for auto-update. It's permitted to return null/empty if you want to skip update, e.g. because no new version is available.</returns>
+	/// <returns>Target release asset URL that should be used for auto-update. It's permitted to return null if you want to skip update, e.g. because no new version is available.</returns>
 	Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, GlobalConfig.EUpdateChannel updateChannel);
 
 	/// <summary>
-	///     ASF will call this method after update to a particular plugin version has been finished, just before restart of the process.
+	///     ASF will call this method after update to the new plugin version has been finished, just before restart of the process.
 	/// </summary>
 	Task OnPluginUpdateFinished() => Task.CompletedTask;
 
 	/// <summary>
-	///     ASF will call this method before proceeding with an update to a particular plugin version.
+	///     ASF will call this method before proceeding with an update to the new plugin version.
 	/// </summary>
 	Task OnPluginUpdateProceeding() => Task.CompletedTask;
 }

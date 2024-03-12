@@ -1,18 +1,20 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
-// |
+// ----------------------------------------------------------------------------------------------
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// |
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// |
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// |
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -108,6 +110,9 @@ public sealed class GlobalConfig {
 	public const EOptimizationMode DefaultOptimizationMode = EOptimizationMode.MaxPerformance;
 
 	[PublicAPI]
+	public const EPluginsUpdateMode DefaultPluginsUpdateMode = EPluginsUpdateMode.Blacklist;
+
+	[PublicAPI]
 	public const string? DefaultSteamMessagePrefix = "/me ";
 
 	[PublicAPI]
@@ -139,6 +144,9 @@ public sealed class GlobalConfig {
 
 	[PublicAPI]
 	public static readonly Guid? DefaultLicenseID;
+
+	[PublicAPI]
+	public static readonly ImmutableHashSet<string> DefaultPluginsUpdateList = ImmutableHashSet<string>.Empty;
 
 	private static readonly FrozenSet<string> ForbiddenIPCPasswordPhrases = new HashSet<string>(5, StringComparer.InvariantCultureIgnoreCase) { "ipc", "api", "gui", "asf-ui", "asf-gui" }.ToFrozenSet(StringComparer.InvariantCultureIgnoreCase);
 
@@ -276,6 +284,13 @@ public sealed class GlobalConfig {
 
 	[JsonInclude]
 	public EOptimizationMode OptimizationMode { get; private init; } = DefaultOptimizationMode;
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	public ImmutableHashSet<string> PluginsUpdateList { get; private init; } = DefaultPluginsUpdateList;
+
+	[JsonInclude]
+	public EPluginsUpdateMode PluginsUpdateMode { get; private init; } = DefaultPluginsUpdateMode;
 
 	[JsonInclude]
 	[MaxLength(SteamChatMessage.MaxMessagePrefixBytes / SteamChatMessage.ReservedEscapeMessageBytes)]
@@ -418,6 +433,12 @@ public sealed class GlobalConfig {
 	public bool ShouldSerializeOptimizationMode() => !Saving || (OptimizationMode != DefaultOptimizationMode);
 
 	[UsedImplicitly]
+	public bool ShouldSerializePluginsUpdateList() => !Saving || (PluginsUpdateList != DefaultPluginsUpdateList);
+
+	[UsedImplicitly]
+	public bool ShouldSerializePluginsUpdateMode() => !Saving || (PluginsUpdateMode != DefaultPluginsUpdateMode);
+
+	[UsedImplicitly]
 	public bool ShouldSerializeSSteamOwnerID() => !Saving;
 
 	[UsedImplicitly]
@@ -470,6 +491,10 @@ public sealed class GlobalConfig {
 
 		if (!Enum.IsDefined(OptimizationMode)) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OptimizationMode), OptimizationMode));
+		}
+
+		if (!Enum.IsDefined(PluginsUpdateMode)) {
+			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(PluginsUpdateMode), PluginsUpdateMode));
 		}
 
 		if (!string.IsNullOrEmpty(SteamMessagePrefix) && !SteamChatMessage.IsValidPrefix(SteamMessagePrefix)) {
@@ -575,6 +600,12 @@ public sealed class GlobalConfig {
 	public enum EOptimizationMode : byte {
 		MaxPerformance,
 		MinMemoryUsage
+	}
+
+	[PublicAPI]
+	public enum EPluginsUpdateMode : byte {
+		Blacklist,
+		Whitelist
 	}
 
 	[PublicAPI]

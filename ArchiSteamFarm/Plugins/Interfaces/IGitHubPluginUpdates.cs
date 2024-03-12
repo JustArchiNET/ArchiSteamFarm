@@ -36,10 +36,18 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows your plugin to update from published releases on GitHub.
+///     At the minimum you must provide <see cref="RepositoryName" />.
+///     If you're not following our ASF-PluginTemplate flow, that is, providing release asset named differently than "{PluginName}.zip" then you may also need to override <see cref="GetTargetReleaseAsset" /> function in order to select target asset based on custom rules.
+///     If you have even more complex needs for updating your plugin, you should probably consider implementing base <see cref="IPluginUpdates" /> interface instead, where you can provide your own <see cref="GetTargetReleaseURL" /> implementation, with optional help from our <see cref="GitHubService" />.
+/// </summary>
 [PublicAPI]
 public interface IGitHubPluginUpdates : IPluginUpdates {
 	/// <summary>
 	///     Boolean value that determines whether your plugin is able to update at the time of calling. You may provide false if, for example, you're inside a critical section and you don't want to update at this time, despite supporting updates otherwise.
+	///     This effectively skips unnecessary request to GitHub if you're certain that you're not interested in any updates right now.
 	/// </summary>
 	bool CanUpdate => true;
 
@@ -59,6 +67,23 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		}
 
 		return GetTargetReleaseURL(asfVersion, asfVariant, updateChannel == GlobalConfig.EUpdateChannel.Stable);
+	}
+
+	/// <summary>
+	///     ASF will call this function for determining the target asset name to update to. This asset should be available in specified release. It's permitted to return null if you want to cancel update to given version. Default implementation provides simple resolve based on flow from JustArchiNET/ASF-PluginTemplate repository - you have a single {PluginName}.zip file to update to, with no additional conditions.
+	/// </summary>
+	/// <param name="asfVersion">Target ASF version that plugin update should be compatible with. In rare cases, this might not match currently running ASF version, in particular when updating to newer release and checking if any plugins are compatible with it.</param>
+	/// <param name="asfVariant">ASF variant of current instance, which may be useful if you're providing different versions for different ASF variants.</param>
+	/// <param name="newPluginVersion">The target (new) version of the plugin found available in <see cref="RepositoryName" />.</param>
+	/// <param name="releaseAssets">Available release assets for auto-update. Those come directly from your release on GitHub.</param>
+	/// <returns>Target release asset from those provided that should be used for auto-update. You may return null if the update is unavailable, for example, because ASF version/variant is determined unsupported, or due to any other reason.</returns>
+	Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets) {
+		ArgumentNullException.ThrowIfNull(asfVersion);
+		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
+		ArgumentNullException.ThrowIfNull(newPluginVersion);
+		ArgumentNullException.ThrowIfNull(releaseAssets);
+
+		return Task.FromResult(releaseAssets.FirstOrDefault(asset => asset.Name == $"{Name}.zip"));
 	}
 
 	protected async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool stable) {
@@ -100,22 +125,5 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateFound, Name, Version, newVersion));
 
 		return asset.DownloadURL;
-	}
-
-	/// <summary>
-	///     ASF will call this function for determining the target asset name to update to. This asset should be available in specified release. It's permitted to return null/empty if you want to cancel update to given version. Default implementation provides simple resolve based on flow from JustArchiNET/ASF-PluginTemplate repository.
-	/// </summary>
-	/// <param name="asfVersion">Target ASF version that plugin update should be compatible with. In rare cases, this might not match currently running ASF version, in particular when updating to newer release and checking if any plugins are compatible with it.</param>
-	/// <param name="asfVariant">ASF variant of current instance, which may be useful if you're providing different versions for different ASF variants.</param>
-	/// <param name="newPluginVersion">The target (new) version of the plugin found available in <see cref="RepositoryName" />.</param>
-	/// <param name="releaseAssets">Available release assets for auto-update. Those come directly from your release on GitHub.</param>
-	/// <returns>Target release asset from those provided that should be used for auto-update. You may return null if the update is unavailable, for example, because ASF version/variant is determined unsupported, or due to any other custom reason.</returns>
-	Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets) {
-		ArgumentNullException.ThrowIfNull(asfVersion);
-		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
-		ArgumentNullException.ThrowIfNull(newPluginVersion);
-		ArgumentNullException.ThrowIfNull(releaseAssets);
-
-		return Task.FromResult(releaseAssets.FirstOrDefault(asset => asset.Name == $"{Name}.zip"));
 	}
 }

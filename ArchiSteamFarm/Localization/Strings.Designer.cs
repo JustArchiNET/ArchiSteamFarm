@@ -1286,5 +1286,23 @@ namespace ArchiSteamFarm.Localization {
                 return ResourceManager.GetString("PluginUpdateFinished", resourceCulture);
             }
         }
+        
+        public static string PluginUpdateEnabled {
+            get {
+                return ResourceManager.GetString("PluginUpdateEnabled", resourceCulture);
+            }
+        }
+        
+        public static string PluginUpdateDisabled {
+            get {
+                return ResourceManager.GetString("PluginUpdateDisabled", resourceCulture);
+            }
+        }
+        
+        public static string CustomPluginUpdatesEnabled {
+            get {
+                return ResourceManager.GetString("CustomPluginUpdatesEnabled", resourceCulture);
+            }
+        }
     }
 }

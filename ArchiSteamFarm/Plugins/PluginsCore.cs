@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Composition;
 using System.Composition.Convention;
@@ -58,6 +59,8 @@ public static class PluginsCore {
 
 	[ImportMany]
 	internal static FrozenSet<IPlugin> ActivePlugins { get; private set; } = FrozenSet<IPlugin>.Empty;
+
+	private static FrozenSet<IPluginUpdates> ActivePluginUpdates = FrozenSet<IPluginUpdates>.Empty;
 
 	[PublicAPI]
 	public static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName) {
@@ -243,10 +246,10 @@ public static class PluginsCore {
 			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 			activePlugins.ExceptWith(invalidPlugins);
+		}
 
-			if (activePlugins.Count == 0) {
-				return true;
-			}
+		if (activePlugins.Count == 0) {
+			return true;
 		}
 
 		ActivePlugins = activePlugins.ToFrozenSet();
@@ -256,6 +259,42 @@ public static class PluginsCore {
 
 			// Loading plugins changes the program identifier, refresh the console title
 			Console.Title = SharedInfo.ProgramIdentifier;
+		}
+
+		GlobalConfig.EPluginsUpdateMode pluginsUpdateMode = ASF.GlobalConfig?.PluginsUpdateMode ?? GlobalConfig.DefaultPluginsUpdateMode;
+		ImmutableHashSet<string> pluginsUpdateList = ASF.GlobalConfig?.PluginsUpdateList ?? GlobalConfig.DefaultPluginsUpdateList;
+
+		HashSet<IPluginUpdates> activePluginUpdates = new();
+
+		foreach (IPluginUpdates plugin in activePlugins.OfType<IPluginUpdates>()) {
+			string? pluginAssemblyName = plugin.GetType().Assembly.GetName().Name;
+
+			if (string.IsNullOrEmpty(pluginAssemblyName)) {
+				ASF.ArchiLogger.LogNullError(nameof(pluginAssemblyName));
+
+				continue;
+			}
+
+			switch (pluginsUpdateMode) {
+				case GlobalConfig.EPluginsUpdateMode.Blacklist when !pluginsUpdateList.Contains(pluginAssemblyName):
+				case GlobalConfig.EPluginsUpdateMode.Whitelist when pluginsUpdateList.Contains(pluginAssemblyName):
+					activePluginUpdates.Add(plugin);
+
+					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.InteractiveConsoleEnabled, plugin.Name, pluginAssemblyName));
+
+					break;
+				case GlobalConfig.EPluginsUpdateMode.Blacklist when pluginsUpdateList.Contains(pluginAssemblyName):
+				case GlobalConfig.EPluginsUpdateMode.Whitelist when !pluginsUpdateList.Contains(pluginAssemblyName):
+					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.PluginUpdateDisabled, plugin.Name, pluginAssemblyName));
+
+					break;
+			}
+		}
+
+		if (activePluginUpdates.Count > 0) {
+			ASF.ArchiLogger.LogGenericWarning(Strings.CustomPluginUpdatesEnabled);
+
+			ActivePluginUpdates = activePluginUpdates.ToFrozenSet();
 		}
 
 		return true;
@@ -683,7 +722,7 @@ public static class PluginsCore {
 		ASF.ArchiLogger.LogGenericInfo(Strings.PluginUpdatesChecking);
 
 		// We update plugins one-by-one to limit memory pressure from potentially big release assets
-		foreach (IPluginUpdates plugin in ActivePlugins.OfType<IPluginUpdates>()) {
+		foreach (IPluginUpdates plugin in ActivePluginUpdates) {
 			try {
 				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateChecking, plugin.Name));
 
