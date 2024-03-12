@@ -730,7 +730,7 @@ public static class PluginsCore {
 				await using (memoryStream.ConfigureAwait(false)) {
 					using ZipArchive zipArchive = new(memoryStream);
 
-					await plugin.OnUpdateProceeding().ConfigureAwait(false);
+					await plugin.OnPluginUpdateProceeding().ConfigureAwait(false);
 
 					if (!Utilities.UpdateFromArchive(zipArchive, assemblyDirectory)) {
 						ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
@@ -743,7 +743,7 @@ public static class PluginsCore {
 
 				ASF.ArchiLogger.LogGenericInfo($"Updating {plugin.Name} plugin has succeeded, the changes will be loaded on the next ASF launch.");
 
-				await plugin.OnUpdateFinished().ConfigureAwait(false);
+				await plugin.OnPluginUpdateFinished().ConfigureAwait(false);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}

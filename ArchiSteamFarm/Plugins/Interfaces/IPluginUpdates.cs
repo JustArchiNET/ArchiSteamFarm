@@ -42,10 +42,10 @@ public interface IPluginUpdates : IPlugin {
 	/// <summary>
 	///     ASF will call this method after update to a particular plugin version has been finished, just before restart of the process.
 	/// </summary>
-	Task OnUpdateFinished() => Task.CompletedTask;
+	Task OnPluginUpdateFinished() => Task.CompletedTask;
 
 	/// <summary>
 	///     ASF will call this method before proceeding with an update to a particular plugin version.
 	/// </summary>
-	Task OnUpdateProceeding() => Task.CompletedTask;
+	Task OnPluginUpdateProceeding() => Task.CompletedTask;
 }
