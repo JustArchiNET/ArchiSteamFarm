@@ -91,6 +91,13 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	///     - {Build} is target build (patch) ASF version (C from A.B.C.D)
 	///     - {Revision} is target revision ASF version (D from A.B.C.D)
 	///     - * is a wildcard matching any string value
+	///     For example, when updating MyAwesomePlugin with ASF version V6.0.1.3, it will select first zip file from available ones in the following order:
+	///     - MyAwesomePlugin-V6.0.1.3.zip
+	///     - MyAwesomePlugin-V6.0.1.zip
+	///     - MyAwesomePlugin-V6.0.zip
+	///     - MyAwesomePlugin-V6.zip
+	///     - MyAwesomePlugin.zip
+	///     - *.zip
 	/// </remarks>
 	/// <returns>Target release asset from those provided that should be used for auto-update. You may return null if the update is unavailable, for example, because ASF version/variant is determined unsupported, or due to any other reason.</returns>
 	Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets) {
