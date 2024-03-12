@@ -264,7 +264,7 @@ public static class PluginsCore {
 		GlobalConfig.EPluginsUpdateMode pluginsUpdateMode = ASF.GlobalConfig?.PluginsUpdateMode ?? GlobalConfig.DefaultPluginsUpdateMode;
 		ImmutableHashSet<string> pluginsUpdateList = ASF.GlobalConfig?.PluginsUpdateList ?? GlobalConfig.DefaultPluginsUpdateList;
 
-		HashSet<IPluginUpdates> activePluginUpdates = new();
+		HashSet<IPluginUpdates> activePluginUpdates = [];
 
 		foreach (IPluginUpdates plugin in activePlugins.OfType<IPluginUpdates>()) {
 			string? pluginAssemblyName = plugin.GetType().Assembly.GetName().Name;
