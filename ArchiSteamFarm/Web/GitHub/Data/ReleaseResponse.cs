@@ -116,7 +116,7 @@ public sealed class ReleaseResponse {
 	[JsonInclude]
 	[JsonPropertyName("body")]
 	[JsonRequired]
-	public string? MarkdownBody { get; private init; } = "";
+	public string MarkdownBody { get; private init; } = "";
 
 	[JsonInclude]
 	[JsonPropertyName("published_at")]
