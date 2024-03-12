@@ -83,7 +83,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	///     - {PluginName}-V{Major}-{Minor}.zip
 	///     - {PluginName}-V{Major}.zip
 	///     - {PluginName}.zip
-	///     - *.zip, if exactly 1 release asset connected with the release
+	///     - *.zip, if exactly 1 release asset matching in the release
 	///     Where:
 	///     - {PluginName} is <see cref="IPlugin.Name" />
 	///     - {Major} is target major ASF version (A from A.B.C.D)
