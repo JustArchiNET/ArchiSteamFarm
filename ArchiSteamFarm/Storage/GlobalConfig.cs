@@ -433,7 +433,7 @@ public sealed class GlobalConfig {
 	public bool ShouldSerializeOptimizationMode() => !Saving || (OptimizationMode != DefaultOptimizationMode);
 
 	[UsedImplicitly]
-	public bool ShouldSerializePluginsUpdateList() => !Saving || (PluginsUpdateList != DefaultPluginsUpdateList);
+	public bool ShouldSerializePluginsUpdateList() => !Saving || ((PluginsUpdateList != DefaultPluginsUpdateList) && !PluginsUpdateList.SetEquals(DefaultPluginsUpdateList));
 
 	[UsedImplicitly]
 	public bool ShouldSerializePluginsUpdateMode() => !Saving || (PluginsUpdateMode != DefaultPluginsUpdateMode);
