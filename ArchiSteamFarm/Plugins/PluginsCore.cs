@@ -280,12 +280,12 @@ public static class PluginsCore {
 				case GlobalConfig.EPluginsUpdateMode.Whitelist when pluginsUpdateList.Contains(pluginAssemblyName):
 					activePluginUpdates.Add(plugin);
 
-					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.InteractiveConsoleEnabled, plugin.Name, pluginAssemblyName));
+					ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateEnabled, plugin.Name, pluginAssemblyName));
 
 					break;
 				case GlobalConfig.EPluginsUpdateMode.Blacklist when pluginsUpdateList.Contains(pluginAssemblyName):
 				case GlobalConfig.EPluginsUpdateMode.Whitelist when !pluginsUpdateList.Contains(pluginAssemblyName):
-					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.PluginUpdateDisabled, plugin.Name, pluginAssemblyName));
+					ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateDisabled, plugin.Name, pluginAssemblyName));
 
 					break;
 			}
