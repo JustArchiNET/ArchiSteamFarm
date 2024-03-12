@@ -517,6 +517,8 @@ public static class Utilities {
 			throw new ArgumentNullException(nameof(prefixes));
 		}
 
-		return (from prefix in prefixes where directory.Length > prefix.Length let pathSeparator = directory[prefix.Length] where (pathSeparator == Path.DirectorySeparatorChar) || (pathSeparator == Path.AltDirectorySeparatorChar) select prefix).Any(prefix => directory.StartsWith(prefix, StringComparison.Ordinal));
+		HashSet<char> separators = [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar];
+
+		return prefixes.Where(prefix => (directory.Length > prefix.Length) && separators.Contains(directory[prefix.Length])).Any(prefix => directory.StartsWith(prefix, StringComparison.Ordinal));
 	}
 }
