@@ -28,7 +28,6 @@ using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
-using JetBrains.Annotations;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
@@ -38,8 +37,7 @@ namespace ArchiSteamFarm.Web.GitHub.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class ReleaseResponse {
-	[PublicAPI]
-	public string? ChangelogHTML {
+	internal string? ChangelogHTML {
 		get {
 			if (BackingChangelogHTML != null) {
 				return BackingChangelogHTML;
@@ -62,8 +60,7 @@ public sealed class ReleaseResponse {
 		}
 	}
 
-	[PublicAPI]
-	public string? ChangelogPlainText {
+	internal string? ChangelogPlainText {
 		get {
 			if (BackingChangelogPlainText != null) {
 				return BackingChangelogPlainText;
@@ -117,6 +114,11 @@ public sealed class ReleaseResponse {
 	public bool IsPreRelease { get; private init; }
 
 	[JsonInclude]
+	[JsonPropertyName("body")]
+	[JsonRequired]
+	public string? MarkdownBody { get; private init; } = "";
+
+	[JsonInclude]
 	[JsonPropertyName("published_at")]
 	[JsonRequired]
 	public DateTime PublishedAt { get; private init; }
@@ -129,11 +131,6 @@ public sealed class ReleaseResponse {
 	private MarkdownDocument? BackingChangelog;
 	private string? BackingChangelogHTML;
 	private string? BackingChangelogPlainText;
-
-	[JsonInclude]
-	[JsonPropertyName("body")]
-	[JsonRequired]
-	private string? MarkdownBody { get; init; } = "";
 
 	[JsonConstructor]
 	private ReleaseResponse() { }
