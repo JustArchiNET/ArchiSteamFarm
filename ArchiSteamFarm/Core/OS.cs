@@ -239,7 +239,7 @@ internal static class OS {
 		NativeMethods.FlashWindowInfo flashInfo = new() {
 			StructSize = (uint) Marshal.SizeOf<NativeMethods.FlashWindowInfo>(),
 			Flags = NativeMethods.EFlashFlags.All | NativeMethods.EFlashFlags.Timer,
-			WindowHandle = GetConsoleHandleForFlashing(),
+			WindowHandle = WindowsGetConsoleHandleForFlashing(),
 			Count = uint.MaxValue
 		};
 
@@ -255,28 +255,26 @@ internal static class OS {
 		NativeMethods.FlashWindowInfo flashInfo = new() {
 			StructSize = (uint) Marshal.SizeOf<NativeMethods.FlashWindowInfo>(),
 			Flags = NativeMethods.EFlashFlags.Stop,
-			WindowHandle = GetConsoleHandleForFlashing()
+			WindowHandle = WindowsGetConsoleHandleForFlashing()
 		};
 
 		NativeMethods.FlashWindowEx(ref flashInfo);
 	}
 
-	[SupportedOSPlatform("Windows")]
-	private static nint GetConsoleHandleForFlashing() {
-		if (!OperatingSystem.IsWindows()) {
-			throw new PlatformNotSupportedException();
-		}
+	private static void MinimizeConsoleWindow() {
+		// Will work if the terminal supports XTWINOPS sequences, reference: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+		Console.Write("\x1b[2;2;2t\r");
 
-		using Process process = Process.GetCurrentProcess();
-		Process? winTermProcess = Process.GetProcessesByName("WindowsTerminal").FirstOrDefault();
+		// Fallback if we're using conhost on Windows
+		if (OperatingSystem.IsWindows()) {
+			using Process process = Process.GetCurrentProcess();
 
-		if (winTermProcess != null) {
-			using (winTermProcess) {
-				return winTermProcess.MainWindowHandle;
+			nint windowHandle = process.MainWindowHandle;
+
+			if (windowHandle != nint.Zero) {
+				NativeMethods.ShowWindow(windowHandle, NativeMethods.EShowWindow.Minimize);
 			}
 		}
-
-		return process.MainWindowHandle;
 	}
 
 	[SupportedOSPlatform("Windows")]
@@ -301,6 +299,24 @@ internal static class OS {
 	}
 
 	[SupportedOSPlatform("Windows")]
+	private static nint WindowsGetConsoleHandleForFlashing() {
+		if (!OperatingSystem.IsWindows()) {
+			throw new PlatformNotSupportedException();
+		}
+
+		using Process process = Process.GetCurrentProcess();
+		Process? winTermProcess = Process.GetProcessesByName("WindowsTerminal").FirstOrDefault();
+
+		if (winTermProcess != null) {
+			using (winTermProcess) {
+				return winTermProcess.MainWindowHandle;
+			}
+		}
+
+		return process.MainWindowHandle;
+	}
+
+	[SupportedOSPlatform("Windows")]
 	private static void WindowsKeepSystemActive() {
 		if (!OperatingSystem.IsWindows()) {
 			throw new PlatformNotSupportedException();
@@ -314,22 +330,6 @@ internal static class OS {
 		// SetThreadExecutionState() returns NULL on failure, which is mapped to 0 (EExecutionState.None) in our case
 		if (result == NativeMethods.EExecutionState.None) {
 			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, result));
-		}
-	}
-
-	private static void MinimizeConsoleWindow() {
-		// Will work if the terminal supports XTWINOPS sequences, reference: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
-		Console.Write("\x1b[2;2;2t\r");
-
-		// Fallback if we're using conhost on Windows
-		if (OperatingSystem.IsWindows()) {
-			using Process process = Process.GetCurrentProcess();
-
-			nint windowHandle = process.MainWindowHandle;
-
-			if (windowHandle != nint.Zero) {
-				NativeMethods.ShowWindow(windowHandle, NativeMethods.EShowWindow.Minimize);
-			}
 		}
 	}
 }
