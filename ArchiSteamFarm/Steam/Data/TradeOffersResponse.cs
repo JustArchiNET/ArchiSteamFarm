@@ -1,4 +1,4 @@
-//     _                _      _  ____   _                           _____
+// _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -19,26 +19,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Collections.Immutable;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Steam.Data;
+using ArchiSteamFarm.Helpers.Json;
 
-namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
+namespace ArchiSteamFarm.Steam.Data;
 
-internal class AssetInInventory : AssetForMatching {
+public class TradeOffersResponse {
+	[JsonDisallowNull]
 	[JsonInclude]
-	[JsonPropertyName("d")]
-	[JsonRequired]
-	internal ulong AssetID { get; private init; }
+	[JsonPropertyName("trade_offers_received")]
+	public ImmutableHashSet<TradeOffer> TradeOffersReceived { get; private init; } = [];
 
-	[JsonConstructor]
-	protected AssetInInventory() { }
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("trade_offers_sent")]
+	public ImmutableHashSet<TradeOffer> TradeOffersSent { get; private init; } = [];
 
-	internal AssetInInventory(Asset asset) : base(asset) {
-		ArgumentNullException.ThrowIfNull(asset);
-
-		AssetID = asset.AssetID;
-	}
-
-	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, new InventoryDescription(), assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("descriptions")]
+	public ImmutableHashSet<InventoryDescription> Descriptions { get; private init; } = [];
 }

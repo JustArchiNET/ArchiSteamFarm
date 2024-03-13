@@ -344,6 +344,10 @@ public sealed class InventoryDescription {
 		private init => ProtobufBody.tradable = value;
 	}
 
+	// For stubs and deserialization
+	[JsonConstructor]
+	internal InventoryDescription() { }
+
 	// Constructed from trades being received/sent
 	internal InventoryDescription(uint appID, ulong classID, ulong instanceID, bool marketable, bool tradable, IReadOnlyCollection<Tag>? tags = null) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
@@ -359,9 +363,6 @@ public sealed class InventoryDescription {
 			Tags = tags.ToImmutableHashSet();
 		}
 	}
-
-	[JsonConstructor]
-	private InventoryDescription() { }
 
 	internal InventoryDescription(CEconItem_Description description) => ProtobufBody = description;
 

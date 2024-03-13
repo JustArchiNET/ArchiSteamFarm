@@ -76,7 +76,8 @@ public sealed class Asset {
 	[PublicAPI]
 	public ulong InstanceID { get; private init; }
 
-	public InventoryDescription Description { get; internal set; }
+	[PublicAPI]
+	public InventoryDescription Description { get; internal set; } = null!;
 
 	[JsonIgnore]
 	[PublicAPI]
@@ -84,11 +85,17 @@ public sealed class Asset {
 
 	[JsonIgnore]
 	[PublicAPI]
-	public ERarity Rarity => Description.Rarity;
+	public ERarity Rarity => OverriddenRarity ?? Description.Rarity;
+
+	[JsonIgnore]
+	private ERarity? OverriddenRarity { get; }
 
 	[JsonIgnore]
 	[PublicAPI]
-	public uint RealAppID => Description.RealAppID;
+	public uint RealAppID => OverriddenRealAppID ?? Description.RealAppID;
+
+	[JsonIgnore]
+	private uint? OverriddenRealAppID { get; }
 
 	[JsonIgnore]
 	[PublicAPI]
@@ -100,7 +107,10 @@ public sealed class Asset {
 
 	[JsonIgnore]
 	[PublicAPI]
-	public EType Type => Description.Type;
+	public EType Type => OverriddenType ?? Description.Type;
+
+	[JsonIgnore]
+	private EType? OverriddenType { get; }
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
@@ -110,8 +120,15 @@ public sealed class Asset {
 		init => AssetID = value;
 	}
 
-	// Constructed from trades being received or plugins
-	public Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription description, ulong instanceID = 0, ulong assetID = 0) {
+	internal Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription description, uint realAppID, EType? type, ERarity? rarity, ulong assetID = 0, ulong instanceID = 0) : this(appID, contextID, classID, amount, description, assetID, instanceID) {
+		ArgumentOutOfRangeException.ThrowIfZero(realAppID);
+
+		OverriddenRealAppID = realAppID;
+		OverriddenType = type;
+		OverriddenRarity = rarity;
+	}
+
+	internal Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription description, ulong assetID = 0, ulong instanceID = 0) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(classID);

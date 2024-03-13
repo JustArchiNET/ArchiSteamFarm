@@ -21,14 +21,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class TradeOffer {
 	[PublicAPI]
 	public IReadOnlyCollection<Asset> ItemsToGiveReadOnly => ItemsToGive;
@@ -36,31 +38,32 @@ public sealed class TradeOffer {
 	[PublicAPI]
 	public IReadOnlyCollection<Asset> ItemsToReceiveReadOnly => ItemsToReceive;
 
-	internal readonly HashSet<Asset> ItemsToGive = [];
-	internal readonly HashSet<Asset> ItemsToReceive = [];
+	[JsonInclude]
+	[JsonPropertyName("items_to_give")]
+	[JsonRequired]
+	internal HashSet<Asset> ItemsToGive { get; private init; } = null!;
+
+	[JsonInclude]
+	[JsonPropertyName("items_to_receive")]
+	[JsonRequired]
+	internal HashSet<Asset> ItemsToReceive { get; private init; } = null!;
+
+	[JsonInclude]
+	[JsonPropertyName("accountid_other")]
+	private uint OtherSteamID3 { init => OtherSteamID64 = new SteamID(value, EUniverse.Public, EAccountType.Individual); }
 
 	[PublicAPI]
 	public ulong OtherSteamID64 { get; private set; }
 
+	[JsonInclude]
+	[JsonPropertyName("trade_offer_state")]
 	[PublicAPI]
 	public ETradeOfferState State { get; private set; }
 
+	[JsonInclude]
+	[JsonPropertyName("tradeofferid")]
 	[PublicAPI]
 	public ulong TradeOfferID { get; private set; }
-
-	// Constructed from trades being received
-	internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
-		ArgumentOutOfRangeException.ThrowIfZero(tradeOfferID);
-		ArgumentOutOfRangeException.ThrowIfZero(otherSteamID3);
-
-		if (!Enum.IsDefined(state)) {
-			throw new InvalidEnumArgumentException(nameof(state), (int) state, typeof(ETradeOfferState));
-		}
-
-		TradeOfferID = tradeOfferID;
-		OtherSteamID64 = new SteamID(otherSteamID3, EUniverse.Public, EAccountType.Individual);
-		State = state;
-	}
 
 	[PublicAPI]
 	public bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
@@ -70,4 +73,7 @@ public sealed class TradeOffer {
 
 		return ItemsToGive.All(item => item is { AppID: Asset.SteamAppID, ContextID: Asset.SteamCommunityContextID, AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0 and not Asset.SteamAppID, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown } && acceptedTypes.Contains(item.Type));
 	}
+
+	[JsonConstructor]
+	private TradeOffer() { }
 }

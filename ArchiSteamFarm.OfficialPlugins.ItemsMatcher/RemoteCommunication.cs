@@ -1504,10 +1504,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// However, since this is only an assumption, we must mark newly acquired items as untradable so we're sure that they're not considered for trading, only for matching
 				foreach (Asset itemToReceive in itemsToReceive) {
 					if (ourInventory.TryGetValue(itemToReceive.AssetID, out Asset? item)) {
-						item.Tradable = false;
+						item.Description.ProtobufBody.tradable = false;
 						item.Amount += itemToReceive.Amount;
 					} else {
-						itemToReceive.Tradable = false;
+						itemToReceive.Description.ProtobufBody.tradable = false;
 						ourInventory[itemToReceive.AssetID] = itemToReceive;
 					}
 
