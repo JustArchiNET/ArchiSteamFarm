@@ -275,7 +275,7 @@ internal static class OS {
 
 	private static void MinimizeConsoleWindow() {
 		// Will work if the terminal supports XTWINOPS sequences, reference: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
-		Console.Write("\x1b[2;2;2t\r");
+		Console.Write('\x1b' + @"[2;2;2t\r");
 
 		// Fallback if we're using conhost on Windows
 		if (OperatingSystem.IsWindows()) {
