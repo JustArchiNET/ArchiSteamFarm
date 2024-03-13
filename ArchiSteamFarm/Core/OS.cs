@@ -26,7 +26,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
@@ -236,7 +235,8 @@ internal static class OS {
 			throw new PlatformNotSupportedException();
 		}
 
-		nint handle = WindowsGetConsoleHandleForFlashing();
+		using Process currentProcess = Process.GetCurrentProcess();
+		nint handle = currentProcess.MainWindowHandle;
 
 		if (handle == nint.Zero) {
 			return;
@@ -258,7 +258,8 @@ internal static class OS {
 			throw new PlatformNotSupportedException();
 		}
 
-		nint handle = WindowsGetConsoleHandleForFlashing();
+		using Process currentProcess = Process.GetCurrentProcess();
+		nint handle = currentProcess.MainWindowHandle;
 
 		if (handle == nint.Zero) {
 			return;
@@ -308,29 +309,6 @@ internal static class OS {
 		if (!NativeMethods.SetConsoleMode(consoleHandle, consoleMode)) {
 			ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
 		}
-	}
-
-	[SupportedOSPlatform("Windows")]
-	private static nint WindowsGetConsoleHandleForFlashing() {
-		if (!OperatingSystem.IsWindows()) {
-			throw new PlatformNotSupportedException();
-		}
-
-		using Process process = Process.GetCurrentProcess();
-
-		if (process.MainWindowHandle == IntPtr.Zero) {
-			Process? winTermProcess = Process.GetProcessesByName("WindowsTerminal").FirstOrDefault();
-
-			if (winTermProcess != null) {
-				using (winTermProcess) {
-					return winTermProcess.MainWindowHandle;
-				}
-			}
-
-			return nint.Zero;
-		}
-
-		return process.MainWindowHandle;
 	}
 
 	[SupportedOSPlatform("Windows")]
