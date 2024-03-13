@@ -236,10 +236,16 @@ internal static class OS {
 			throw new PlatformNotSupportedException();
 		}
 
+		nint handle = WindowsGetConsoleHandleForFlashing();
+
+		if (handle == nint.Zero) {
+			return;
+		}
+
 		NativeMethods.FlashWindowInfo flashInfo = new() {
 			StructSize = (uint) Marshal.SizeOf<NativeMethods.FlashWindowInfo>(),
 			Flags = NativeMethods.EFlashFlags.All | NativeMethods.EFlashFlags.Timer,
-			WindowHandle = WindowsGetConsoleHandleForFlashing(),
+			WindowHandle = handle,
 			Count = uint.MaxValue
 		};
 
@@ -252,10 +258,16 @@ internal static class OS {
 			throw new PlatformNotSupportedException();
 		}
 
+		nint handle = WindowsGetConsoleHandleForFlashing();
+
+		if (handle == nint.Zero) {
+			return;
+		}
+
 		NativeMethods.FlashWindowInfo flashInfo = new() {
 			StructSize = (uint) Marshal.SizeOf<NativeMethods.FlashWindowInfo>(),
 			Flags = NativeMethods.EFlashFlags.Stop,
-			WindowHandle = WindowsGetConsoleHandleForFlashing()
+			WindowHandle = handle
 		};
 
 		NativeMethods.FlashWindowEx(ref flashInfo);
@@ -305,12 +317,17 @@ internal static class OS {
 		}
 
 		using Process process = Process.GetCurrentProcess();
-		Process? winTermProcess = Process.GetProcessesByName("WindowsTerminal").FirstOrDefault();
 
-		if (winTermProcess != null) {
-			using (winTermProcess) {
-				return winTermProcess.MainWindowHandle;
+		if (process.MainWindowHandle == IntPtr.Zero) {
+			Process? winTermProcess = Process.GetProcessesByName("WindowsTerminal").FirstOrDefault();
+
+			if (winTermProcess != null) {
+				using (winTermProcess) {
+					return winTermProcess.MainWindowHandle;
+				}
 			}
+
+			return nint.Zero;
 		}
 
 		return process.MainWindowHandle;
