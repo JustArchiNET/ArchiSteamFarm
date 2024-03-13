@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json.Serialization;
+using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
 using SteamKit2;
 
@@ -47,22 +48,24 @@ public sealed class TradeOffer {
 	public ETradeOfferState State { get; private set; }
 
 	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("tradeofferid")]
 	[PublicAPI]
 	public ulong TradeOfferID { get; private set; }
 
+	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("items_to_give")]
-	[JsonRequired]
-	internal HashSet<Asset> ItemsToGive { get; private init; } = null!;
+	internal HashSet<Asset> ItemsToGive { get; private init; } = [];
 
+	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("items_to_receive")]
-	[JsonRequired]
-	internal HashSet<Asset> ItemsToReceive { get; private init; } = null!;
+	internal HashSet<Asset> ItemsToReceive { get; private init; } = [];
 
 	[JsonInclude]
 	[JsonPropertyName("accountid_other")]
+	[JsonRequired]
 	private uint OtherSteamID3 { init => OtherSteamID64 = new SteamID(value, EUniverse.Public, EAccountType.Individual); }
 
 	[JsonConstructor]

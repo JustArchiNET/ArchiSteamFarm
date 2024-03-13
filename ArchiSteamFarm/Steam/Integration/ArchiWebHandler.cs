@@ -478,7 +478,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		string queryString = string.Join('&', arguments.Select(static argument => $"{argument.Key}={HttpUtility.UrlEncode(argument.Value.ToString())}"));
 
-		string request = $"/{EconService}/GetTradeOffers?" + queryString;
+		string request = $"/{EconService}/GetTradeOffers/v1/?" + queryString;
 
 		TradeOffersResponse? response = (await WebLimitRequest(WebAPI.DefaultBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(new Uri(WebAPI.DefaultBaseAddress, request)).ConfigureAwait(false)).ConfigureAwait(false))?.Content?.Response;
 
