@@ -282,7 +282,7 @@ internal static class Logging {
 				return;
 			}
 
-			Console.Beep();
+			Console.Write((char) 7);
 		}
 	}
 

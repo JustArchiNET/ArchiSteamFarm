@@ -32,13 +32,18 @@ internal static partial class NativeMethods {
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
 	[LibraryImport("user32.dll")]
-	internal static partial void FlashWindowEx(ref FlashWInfo pwfi);
+	internal static partial void FlashWindowEx(ref FlashWindowInfo pwfi);
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
 	[LibraryImport("kernel32.dll")]
 	internal static partial bool GetConsoleMode(nint hConsoleHandle, out EConsoleMode lpMode);
+
+	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+	[SupportedOSPlatform("Windows")]
+	[LibraryImport("kernel32.dll")]
+	internal static partial nint GetConsoleWindow();
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("FreeBSD")]
@@ -106,10 +111,10 @@ internal static partial class NativeMethods {
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	internal struct FlashWInfo {
+	internal struct FlashWindowInfo {
 		public uint cbSize;
 		public EFlashFlags dwFlags;
-		public int dwTimeout;
+		public uint dwTimeout;
 		public nint hWnd;
 		public uint uCount;
 	}

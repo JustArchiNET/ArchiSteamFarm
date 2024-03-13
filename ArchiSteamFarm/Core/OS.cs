@@ -26,6 +26,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
@@ -235,13 +236,11 @@ internal static class OS {
 			throw new PlatformNotSupportedException();
 		}
 
-		using Process process = Process.GetCurrentProcess();
-
-		NativeMethods.FlashWInfo flashInfo = new() {
-			cbSize = (uint) Marshal.SizeOf<NativeMethods.FlashWInfo>(),
+		NativeMethods.FlashWindowInfo flashInfo = new() {
+			cbSize = (uint) Marshal.SizeOf<NativeMethods.FlashWindowInfo>(),
 			dwFlags = NativeMethods.EFlashFlags.All | NativeMethods.EFlashFlags.Timer,
 			dwTimeout = 0,
-			hWnd = process.MainWindowHandle,
+			hWnd = GetConsoleHandleForFlashing(),
 			uCount = uint.MaxValue
 		};
 
@@ -254,15 +253,22 @@ internal static class OS {
 			throw new PlatformNotSupportedException();
 		}
 
-		using Process process = Process.GetCurrentProcess();
-
-		NativeMethods.FlashWInfo flashInfo = new() {
-			cbSize = (uint) Marshal.SizeOf<NativeMethods.FlashWInfo>(),
+		NativeMethods.FlashWindowInfo flashInfo = new() {
+			cbSize = (uint) Marshal.SizeOf<NativeMethods.FlashWindowInfo>(),
 			dwFlags = NativeMethods.EFlashFlags.Stop,
-			hWnd = process.MainWindowHandle
+			hWnd = GetConsoleHandleForFlashing()
 		};
 
 		NativeMethods.FlashWindowEx(ref flashInfo);
+	}
+
+	[SupportedOSPlatform("Windows")]
+	private static nint GetConsoleHandleForFlashing() {
+		Process? winTermProcess = Process.GetProcessesByName("WindowsTerminal").FirstOrDefault();
+
+		using (winTermProcess) {
+			return winTermProcess?.MainWindowHandle ?? NativeMethods.GetConsoleWindow();
+		}
 	}
 
 	[SupportedOSPlatform("Windows")]
@@ -309,8 +315,6 @@ internal static class OS {
 			throw new PlatformNotSupportedException();
 		}
 
-		using Process process = Process.GetCurrentProcess();
-
-		NativeMethods.ShowWindow(process.MainWindowHandle, NativeMethods.EShowWindow.Minimize);
+		NativeMethods.ShowWindow(NativeMethods.GetConsoleWindow(), NativeMethods.EShowWindow.Minimize);
 	}
 }
