@@ -112,10 +112,10 @@ internal static partial class NativeMethods {
 
 	[StructLayout(LayoutKind.Sequential)]
 	internal struct FlashWindowInfo {
-		public uint cbSize;
-		public EFlashFlags dwFlags;
-		public uint dwTimeout;
-		public nint hWnd;
-		public uint uCount;
+		public uint StructSize;
+		public nint WindowHandle;
+		public EFlashFlags Flags;
+		public uint Count;
+		public uint TimeoutBetweenFlashes;
 	}
 }

@@ -282,7 +282,7 @@ internal static class Logging {
 				return;
 			}
 
-			Console.Write((char) 7);
+			Console.Write('\a');
 		}
 	}
 

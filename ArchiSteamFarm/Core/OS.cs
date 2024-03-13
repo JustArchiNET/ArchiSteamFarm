@@ -87,11 +87,11 @@ internal static class OS {
 	private static Mutex? SingleInstance;
 
 	internal static void CoreInit(bool minimized, bool systemRequired) {
-		if (OperatingSystem.IsWindows()) {
-			if (minimized) {
-				WindowsMinimizeConsoleWindow();
-			}
+		if (minimized) {
+			MinimizeConsoleWindow();
+		}
 
+		if (OperatingSystem.IsWindows()) {
 			if (systemRequired) {
 				WindowsKeepSystemActive();
 			}
@@ -237,11 +237,10 @@ internal static class OS {
 		}
 
 		NativeMethods.FlashWindowInfo flashInfo = new() {
-			cbSize = (uint) Marshal.SizeOf<NativeMethods.FlashWindowInfo>(),
-			dwFlags = NativeMethods.EFlashFlags.All | NativeMethods.EFlashFlags.Timer,
-			dwTimeout = 0,
-			hWnd = GetConsoleHandleForFlashing(),
-			uCount = uint.MaxValue
+			StructSize = (uint) Marshal.SizeOf<NativeMethods.FlashWindowInfo>(),
+			Flags = NativeMethods.EFlashFlags.All | NativeMethods.EFlashFlags.Timer,
+			WindowHandle = GetConsoleHandleForFlashing(),
+			Count = uint.MaxValue
 		};
 
 		NativeMethods.FlashWindowEx(ref flashInfo);
@@ -254,9 +253,9 @@ internal static class OS {
 		}
 
 		NativeMethods.FlashWindowInfo flashInfo = new() {
-			cbSize = (uint) Marshal.SizeOf<NativeMethods.FlashWindowInfo>(),
-			dwFlags = NativeMethods.EFlashFlags.Stop,
-			hWnd = GetConsoleHandleForFlashing()
+			StructSize = (uint) Marshal.SizeOf<NativeMethods.FlashWindowInfo>(),
+			Flags = NativeMethods.EFlashFlags.Stop,
+			WindowHandle = GetConsoleHandleForFlashing()
 		};
 
 		NativeMethods.FlashWindowEx(ref flashInfo);
@@ -264,11 +263,20 @@ internal static class OS {
 
 	[SupportedOSPlatform("Windows")]
 	private static nint GetConsoleHandleForFlashing() {
+		if (!OperatingSystem.IsWindows()) {
+			throw new PlatformNotSupportedException();
+		}
+
+		using Process process = Process.GetCurrentProcess();
 		Process? winTermProcess = Process.GetProcessesByName("WindowsTerminal").FirstOrDefault();
 
-		using (winTermProcess) {
-			return winTermProcess?.MainWindowHandle ?? NativeMethods.GetConsoleWindow();
+		if (winTermProcess != null) {
+			using (winTermProcess) {
+				return winTermProcess.MainWindowHandle;
+			}
 		}
+
+		return process.MainWindowHandle;
 	}
 
 	[SupportedOSPlatform("Windows")]
@@ -309,12 +317,19 @@ internal static class OS {
 		}
 	}
 
-	[SupportedOSPlatform("Windows")]
-	private static void WindowsMinimizeConsoleWindow() {
-		if (!OperatingSystem.IsWindows()) {
-			throw new PlatformNotSupportedException();
-		}
+	private static void MinimizeConsoleWindow() {
+		// Will work if the terminal supports XTWINOPS sequences, reference: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+		Console.Write("\x1b[2;2;2t\r");
 
-		NativeMethods.ShowWindow(NativeMethods.GetConsoleWindow(), NativeMethods.EShowWindow.Minimize);
+		// Fallback if we're using conhost on Windows
+		if (OperatingSystem.IsWindows()) {
+			using Process process = Process.GetCurrentProcess();
+
+			nint windowHandle = process.MainWindowHandle;
+
+			if (windowHandle != nint.Zero) {
+				NativeMethods.ShowWindow(windowHandle, NativeMethods.EShowWindow.Minimize);
+			}
+		}
 	}
 }
