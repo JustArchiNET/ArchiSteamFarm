@@ -41,11 +41,6 @@ internal static partial class NativeMethods {
 	internal static partial bool GetConsoleMode(nint hConsoleHandle, out EConsoleMode lpMode);
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-	[SupportedOSPlatform("Windows")]
-	[LibraryImport("kernel32.dll")]
-	internal static partial nint GetConsoleWindow();
-
-	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 	[SupportedOSPlatform("FreeBSD")]
 	[SupportedOSPlatform("Linux")]
 	[SupportedOSPlatform("MacOS")]
