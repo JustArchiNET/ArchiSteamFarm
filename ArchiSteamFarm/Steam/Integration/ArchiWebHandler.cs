@@ -231,6 +231,16 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
+	[Obsolete($"Use ArchiHandler.{nameof(ArchiHandler.GetMyInventoryAsync)} for getting bot's own inventory or ArchiWebHandler.${nameof(GetForeignInventoryAsync)} in other cases instead.")]
+	public IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
+		if ((steamID == 0) || (steamID == Bot.SteamID)) {
+			return Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID);
+		}
+
+		return GetForeignInventoryAsync(steamID, appID, contextID);
+	}
+
+	[PublicAPI]
 	public async IAsyncEnumerable<Asset> GetForeignInventoryAsync(ulong steamID, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
