@@ -219,18 +219,18 @@ public sealed class InventoryDescription {
 
 	[JsonInclude]
 	[JsonPropertyName("icon_url")]
-#pragma warning disable CA1056 - this is a JSON/Protobuf field, and even then it doesn't contain full URL
+#pragma warning disable CA1056 // this is a JSON/Protobuf field, and even then it doesn't contain full URL
 	public string IconURL {
-#pragma warning restore CA1056 - this is a JSON/Protobuf field, and even then it doesn't contain full URL
+#pragma warning restore CA1056 // this is a JSON/Protobuf field, and even then it doesn't contain full URL
 		get => ProtobufBody.icon_url;
 		private init => ProtobufBody.icon_url = value;
 	}
 
 	[JsonInclude]
 	[JsonPropertyName("icon_url_large")]
-#pragma warning disable CA1056 - this is a JSON/Protobuf field, and even then it doesn't contain full URL
+#pragma warning disable CA1056 // this is a JSON/Protobuf field, and even then it doesn't contain full URL
 	public string IconURLLarge {
-#pragma warning restore CA1056 - this is a JSON/Protobuf field, and even then it doesn't contain full URL
+#pragma warning restore CA1056 // this is a JSON/Protobuf field, and even then it doesn't contain full URL
 		get => ProtobufBody.icon_url_large;
 		private init => ProtobufBody.icon_url_large = value;
 	}
