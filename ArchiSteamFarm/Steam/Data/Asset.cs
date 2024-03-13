@@ -41,6 +41,39 @@ public sealed class Asset {
 	[PublicAPI]
 	public bool IsSteamPointsShopItem => !Tradable && (InstanceID == SteamPointsShopInstanceID);
 
+	[JsonIgnore]
+	[PublicAPI]
+	public bool Marketable => Description.Marketable;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public ERarity Rarity => OverriddenRarity ?? Description.Rarity;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public uint RealAppID => OverriddenRealAppID ?? Description.RealAppID;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public ImmutableHashSet<Tag> Tags => Description.Tags;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public bool Tradable => Description.Tradable;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public EType Type => OverriddenType ?? Description.Type;
+
+	[JsonIgnore]
+	private ERarity? OverriddenRarity { get; }
+
+	[JsonIgnore]
+	private uint? OverriddenRealAppID { get; }
+
+	[JsonIgnore]
+	private EType? OverriddenType { get; }
+
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("amount")]
@@ -70,47 +103,14 @@ public sealed class Asset {
 	[PublicAPI]
 	public ulong ContextID { get; private init; }
 
+	[PublicAPI]
+	public InventoryDescription Description { get; internal set; } = null!;
+
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("instanceid")]
 	[PublicAPI]
 	public ulong InstanceID { get; private init; }
-
-	[PublicAPI]
-	public InventoryDescription Description { get; internal set; } = null!;
-
-	[JsonIgnore]
-	[PublicAPI]
-	public bool Marketable => Description.Marketable;
-
-	[JsonIgnore]
-	[PublicAPI]
-	public ERarity Rarity => OverriddenRarity ?? Description.Rarity;
-
-	[JsonIgnore]
-	private ERarity? OverriddenRarity { get; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public uint RealAppID => OverriddenRealAppID ?? Description.RealAppID;
-
-	[JsonIgnore]
-	private uint? OverriddenRealAppID { get; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public ImmutableHashSet<Tag> Tags => Description.Tags;
-
-	[JsonIgnore]
-	[PublicAPI]
-	public bool Tradable => Description.Tradable;
-
-	[JsonIgnore]
-	[PublicAPI]
-	public EType Type => OverriddenType ?? Description.Type;
-
-	[JsonIgnore]
-	private EType? OverriddenType { get; }
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]

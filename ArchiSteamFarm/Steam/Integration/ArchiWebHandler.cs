@@ -507,16 +507,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		return result;
 	}
 
-	private static void SetDescriptionsToAssets(IEnumerable<Asset> assets, [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions) {
-		foreach (Asset asset in assets) {
-			if (!descriptions.TryGetValue((asset.AppID, asset.ClassID, asset.InstanceID), out InventoryDescription? description)) {
-				description = new InventoryDescription(asset.AppID, asset.ClassID, asset.InstanceID, true, true);
-			}
-
-			asset.Description = description;
-		}
-	}
-
 	[PublicAPI]
 	public async Task<bool> JoinGroup(ulong groupID) {
 		if ((groupID == 0) || !new SteamID(groupID).IsClanAccount) {
@@ -2366,6 +2356,16 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		return (true, result.ToFrozenSet());
+	}
+
+	private static void SetDescriptionsToAssets(IEnumerable<Asset> assets, [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions) {
+		foreach (Asset asset in assets) {
+			if (!descriptions.TryGetValue((asset.AppID, asset.ClassID, asset.InstanceID), out InventoryDescription? description)) {
+				description = new InventoryDescription(asset.AppID, asset.ClassID, asset.InstanceID, true, true);
+			}
+
+			asset.Description = description;
+		}
 	}
 
 	private async Task<bool> UnlockParentalAccount(string parentalCode) {

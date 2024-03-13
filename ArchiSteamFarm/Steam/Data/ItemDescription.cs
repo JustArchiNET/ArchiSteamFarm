@@ -19,26 +19,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Helpers.Json;
+namespace ArchiSteamFarm.Steam.Data;
 
-[PublicAPI]
-public sealed class BooleanNumberConverter : JsonConverter<bool> {
-	public override bool Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-		reader.TokenType switch {
-			JsonTokenType.True => true,
-			JsonTokenType.False => false,
-			JsonTokenType.Number => reader.GetByte() == 1,
-			_ => throw new JsonException()
-		};
+public class ItemDescription {
+	[JsonInclude]
+	[JsonPropertyName("color")]
+	[PublicAPI]
+	public string? Color { get; private init; }
 
-	public override void Write(Utf8JsonWriter writer, bool value, JsonSerializerOptions options) {
-		ArgumentNullException.ThrowIfNull(writer);
+	[JsonInclude]
+	[JsonPropertyName("label")]
+	[PublicAPI]
+	public string? Label { get; private init; }
 
-		writer.WriteNumberValue(value ? 1 : 0);
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("type")]
+	[PublicAPI]
+	public string Type { get; private init; } = null!;
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("value")]
+	[PublicAPI]
+	public string Value { get; private init; } = null!;
+
+	internal ItemDescription(string type, string value, string color, string label) {
+		Type = type;
+		Value = value;
+		Color = color;
+		Label = label;
 	}
+
+	[JsonConstructor]
+	private ItemDescription() { }
 }

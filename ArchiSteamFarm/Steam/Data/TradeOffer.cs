@@ -38,6 +38,19 @@ public sealed class TradeOffer {
 	[PublicAPI]
 	public IReadOnlyCollection<Asset> ItemsToReceiveReadOnly => ItemsToReceive;
 
+	[PublicAPI]
+	public ulong OtherSteamID64 { get; private set; }
+
+	[JsonInclude]
+	[JsonPropertyName("trade_offer_state")]
+	[PublicAPI]
+	public ETradeOfferState State { get; private set; }
+
+	[JsonInclude]
+	[JsonPropertyName("tradeofferid")]
+	[PublicAPI]
+	public ulong TradeOfferID { get; private set; }
+
 	[JsonInclude]
 	[JsonPropertyName("items_to_give")]
 	[JsonRequired]
@@ -52,18 +65,8 @@ public sealed class TradeOffer {
 	[JsonPropertyName("accountid_other")]
 	private uint OtherSteamID3 { init => OtherSteamID64 = new SteamID(value, EUniverse.Public, EAccountType.Individual); }
 
-	[PublicAPI]
-	public ulong OtherSteamID64 { get; private set; }
-
-	[JsonInclude]
-	[JsonPropertyName("trade_offer_state")]
-	[PublicAPI]
-	public ETradeOfferState State { get; private set; }
-
-	[JsonInclude]
-	[JsonPropertyName("tradeofferid")]
-	[PublicAPI]
-	public ulong TradeOfferID { get; private set; }
+	[JsonConstructor]
+	private TradeOffer() { }
 
 	[PublicAPI]
 	public bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
@@ -73,7 +76,4 @@ public sealed class TradeOffer {
 
 		return ItemsToGive.All(item => item is { AppID: Asset.SteamAppID, ContextID: Asset.SteamCommunityContextID, AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0 and not Asset.SteamAppID, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown } && acceptedTypes.Contains(item.Type));
 	}
-
-	[JsonConstructor]
-	private TradeOffer() { }
 }

@@ -33,12 +33,6 @@ public sealed class Tag {
 	public string Identifier { get; private init; } = "";
 
 	[JsonInclude]
-	[JsonPropertyName("internal_name")]
-	[JsonRequired]
-	[PublicAPI]
-	public string Value { get; private init; } = "";
-
-	[JsonInclude]
 	[JsonPropertyName("localized_category_name")]
 	[JsonRequired]
 	[PublicAPI]
@@ -50,7 +44,18 @@ public sealed class Tag {
 	[PublicAPI]
 	public string LocalizedValue { get; private init; } = "";
 
-	internal Tag(string identifier, string value, string localizedIdentifier, string localizedValue) {
+	[JsonInclude]
+	[JsonPropertyName("internal_name")]
+	[JsonRequired]
+	[PublicAPI]
+	public string Value { get; private init; } = "";
+
+	[JsonInclude]
+	[JsonPropertyName("color")]
+	[PublicAPI]
+	public string? Color { get; private init; }
+
+	internal Tag(string identifier, string value, string localizedIdentifier, string localizedValue, string? color = null) {
 		ArgumentException.ThrowIfNullOrEmpty(identifier);
 		ArgumentNullException.ThrowIfNull(value);
 
@@ -58,6 +63,7 @@ public sealed class Tag {
 		Value = value;
 		LocalizedIdentifier = localizedIdentifier;
 		LocalizedValue = localizedValue;
+		Color = color;
 	}
 
 	[JsonConstructor]

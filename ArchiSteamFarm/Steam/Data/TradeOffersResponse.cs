@@ -1,4 +1,4 @@
-// _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -28,6 +28,11 @@ namespace ArchiSteamFarm.Steam.Data;
 public class TradeOffersResponse {
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonPropertyName("descriptions")]
+	public ImmutableHashSet<InventoryDescription> Descriptions { get; private init; } = [];
+
+	[JsonDisallowNull]
+	[JsonInclude]
 	[JsonPropertyName("trade_offers_received")]
 	public ImmutableHashSet<TradeOffer> TradeOffersReceived { get; private init; } = [];
 
@@ -35,9 +40,4 @@ public class TradeOffersResponse {
 	[JsonInclude]
 	[JsonPropertyName("trade_offers_sent")]
 	public ImmutableHashSet<TradeOffer> TradeOffersSent { get; private init; } = [];
-
-	[JsonDisallowNull]
-	[JsonInclude]
-	[JsonPropertyName("descriptions")]
-	public ImmutableHashSet<InventoryDescription> Descriptions { get; private init; } = [];
 }

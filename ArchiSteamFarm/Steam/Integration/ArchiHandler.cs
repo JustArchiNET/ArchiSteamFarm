@@ -26,7 +26,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Steam.Data;
@@ -223,13 +222,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(response.assets)} || {nameof(response.descriptions)}"));
 			}
 
-			List<InventoryDescription> convertedDescriptions = response.descriptions.Select(
-				static description => new InventoryDescription((uint) description.appid, description.classid, description.instanceid, description.marketable, description.tradable, description.tags.Select(static x => new Tag(x.category, x.internal_name, x.localized_category_name, x.localized_tag_name)).ToList()) {
-					AdditionalProperties = description.ToJsonElement().EnumerateObject()
-						.Where(static prop => !InventoryDescription.NonAdditionalProperties.Contains(prop.Name))
-						.ToDictionary(static prop => prop.Name, static prop => prop.Value)
-				}
-			).ToList();
+			List<InventoryDescription> convertedDescriptions = response.descriptions.Select(static description => new InventoryDescription(description)).ToList();
 
 			Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
 
