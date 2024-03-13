@@ -722,7 +722,7 @@ public static class ASF {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
 
-		if (!SharedInfo.BuildInfo.CanUpdate || (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
+		if (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None) {
 			return;
 		}
 

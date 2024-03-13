@@ -34,6 +34,8 @@ using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Plugins;
+using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Storage;
@@ -486,6 +488,35 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		}
 
 		return newVersion > SharedInfo.Version ? (true, null, newVersion) : (false, $"V{SharedInfo.Version} ≥ V{newVersion}", newVersion);
+	}
+
+	[PublicAPI]
+	public static async Task<(bool Success, string? Message)> UpdatePlugins(IReadOnlyCollection<string> plugins, GlobalConfig.EUpdateChannel? channel = null) {
+		if ((plugins == null) || (plugins.Count == 0)) {
+			throw new ArgumentNullException(nameof(plugins));
+		}
+
+		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
+			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
+		}
+
+		HashSet<string> pluginAssemblyNames = plugins.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+		HashSet<IPluginUpdates> pluginsForUpdate = PluginsCore.GetPluginsForUpdate(pluginAssemblyNames);
+
+		if (pluginsForUpdate.Count == 0) {
+			return (false, Strings.NothingFound);
+		}
+
+		bool restartNeeded = await PluginsCore.UpdatePlugins(SharedInfo.Version, pluginsForUpdate, channel).ConfigureAwait(false);
+
+		if (restartNeeded) {
+			Utilities.InBackground(ASF.RestartOrExit);
+		}
+
+		string message = restartNeeded ? Strings.UpdateFinished : Strings.NothingFound;
+
+		return (true, message);
 	}
 
 	internal async Task AcceptDigitalGiftCards() {
