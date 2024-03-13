@@ -40,5 +40,5 @@ internal class AssetInInventory : AssetForMatching {
 		AssetID = asset.AssetID;
 	}
 
-	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, new InventoryDescription(), assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
+	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, new InventoryDescription { ProtobufBody = { tradable = Tradable } }, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
 }
