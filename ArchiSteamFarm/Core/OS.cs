@@ -236,6 +236,7 @@ internal static class OS {
 		}
 
 		using Process currentProcess = Process.GetCurrentProcess();
+
 		nint handle = currentProcess.MainWindowHandle;
 
 		if (handle == nint.Zero) {
