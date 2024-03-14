@@ -276,8 +276,13 @@ internal static class OS {
 	}
 
 	private static void MinimizeConsoleWindow() {
+		(_, int top) = Console.GetCursorPosition();
+
 		// Will work if the terminal supports XTWINOPS sequences, reference: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
-		Console.Write('\x1b' + @"[2;2;2t\r");
+		Console.Write('\x1b' + @"[2;0;0t");
+
+		// Reset cursor position if terminal outputs escape sequences as-is
+		Console.SetCursorPosition(0, top);
 
 		// Fallback if we're using conhost on Windows
 		if (OperatingSystem.IsWindows()) {
