@@ -1,18 +1,20 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
-// |
+// ----------------------------------------------------------------------------------------------
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// |
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// |
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// |
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -84,11 +86,11 @@ internal static class OS {
 	private static Mutex? SingleInstance;
 
 	internal static void CoreInit(bool minimized, bool systemRequired) {
-		if (OperatingSystem.IsWindows()) {
-			if (minimized) {
-				WindowsMinimizeConsoleWindow();
-			}
+		if (minimized) {
+			MinimizeConsoleWindow();
+		}
 
+		if (OperatingSystem.IsWindows()) {
 			if (systemRequired) {
 				WindowsKeepSystemActive();
 			}
@@ -228,6 +230,67 @@ internal static class OS {
 	}
 
 	[SupportedOSPlatform("Windows")]
+	internal static void WindowsStartFlashingConsoleWindow() {
+		if (!OperatingSystem.IsWindows()) {
+			throw new PlatformNotSupportedException();
+		}
+
+		using Process currentProcess = Process.GetCurrentProcess();
+		nint handle = currentProcess.MainWindowHandle;
+
+		if (handle == nint.Zero) {
+			return;
+		}
+
+		NativeMethods.FlashWindowInfo flashInfo = new() {
+			StructSize = (uint) Marshal.SizeOf<NativeMethods.FlashWindowInfo>(),
+			Flags = NativeMethods.EFlashFlags.All | NativeMethods.EFlashFlags.Timer,
+			WindowHandle = handle,
+			Count = uint.MaxValue
+		};
+
+		NativeMethods.FlashWindowEx(ref flashInfo);
+	}
+
+	[SupportedOSPlatform("Windows")]
+	internal static void WindowsStopFlashingConsoleWindow() {
+		if (!OperatingSystem.IsWindows()) {
+			throw new PlatformNotSupportedException();
+		}
+
+		using Process currentProcess = Process.GetCurrentProcess();
+		nint handle = currentProcess.MainWindowHandle;
+
+		if (handle == nint.Zero) {
+			return;
+		}
+
+		NativeMethods.FlashWindowInfo flashInfo = new() {
+			StructSize = (uint) Marshal.SizeOf<NativeMethods.FlashWindowInfo>(),
+			Flags = NativeMethods.EFlashFlags.Stop,
+			WindowHandle = handle
+		};
+
+		NativeMethods.FlashWindowEx(ref flashInfo);
+	}
+
+	private static void MinimizeConsoleWindow() {
+		// Will work if the terminal supports XTWINOPS sequences, reference: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+		Console.Write('\x1b' + @"[2;2;2t\r");
+
+		// Fallback if we're using conhost on Windows
+		if (OperatingSystem.IsWindows()) {
+			using Process process = Process.GetCurrentProcess();
+
+			nint windowHandle = process.MainWindowHandle;
+
+			if (windowHandle != nint.Zero) {
+				NativeMethods.ShowWindow(windowHandle, NativeMethods.EShowWindow.Minimize);
+			}
+		}
+	}
+
+	[SupportedOSPlatform("Windows")]
 	private static void WindowsDisableQuickEditMode() {
 		if (!OperatingSystem.IsWindows()) {
 			throw new PlatformNotSupportedException();
@@ -263,16 +326,5 @@ internal static class OS {
 		if (result == NativeMethods.EExecutionState.None) {
 			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, result));
 		}
-	}
-
-	[SupportedOSPlatform("Windows")]
-	private static void WindowsMinimizeConsoleWindow() {
-		if (!OperatingSystem.IsWindows()) {
-			throw new PlatformNotSupportedException();
-		}
-
-		using Process process = Process.GetCurrentProcess();
-
-		NativeMethods.ShowWindow(process.MainWindowHandle, NativeMethods.EShowWindow.Minimize);
 	}
 }
