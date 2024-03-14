@@ -155,7 +155,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	[PublicAPI]
-	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false) {
+	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false, ushort itemsCountPerRequest = 40000) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 
@@ -164,21 +164,13 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		}
 
 		SteamID steamID = Client.SteamID;
-		ushort itemsCountPerRequest = 50_000;
 
 		// We need to store asset IDs to make sure we won't get duplicate items
 		HashSet<ulong>? assetIDs = null;
 		ulong startAssetID = 0;
 
 		while (true) {
-			// Steam still does not give us any descriptions, throw error to the user
-			if (itemsCountPerRequest < 5000) {
-				throw new NotSupportedException(nameof(itemsCountPerRequest));
-			}
-
 			ulong currentStartAssetID = startAssetID;
-
-			ushort currentItemsCountPerRequest = itemsCountPerRequest;
 
 			CEcon_GetInventoryItemsWithDescriptions_Request request = new() {
 				appid = appID,
@@ -190,7 +182,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				get_descriptions = true,
 				steamid = steamID.ConvertToUInt64(),
 				start_assetid = currentStartAssetID,
-				count = currentItemsCountPerRequest
+				count = itemsCountPerRequest
 			};
 
 			SteamUnifiedMessages.ServiceMethodResponse genericResponse = await UnifiedEconService
@@ -206,8 +198,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			}
 
 			if (response.descriptions.Count == 0) {
-				// Looks like rate-limiting, reducing count per request helps
-				itemsCountPerRequest /= 2;
+				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(response.descriptions)));
 
 				continue;
 			}
