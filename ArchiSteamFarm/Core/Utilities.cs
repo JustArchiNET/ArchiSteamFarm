@@ -276,7 +276,7 @@ public static class Utilities {
 	}
 
 	internal static void OnProgressChanged(string fileName, byte progressPercentage) {
-		ArgumentNullException.ThrowIfNull(fileName);
+		ArgumentException.ThrowIfNullOrEmpty(fileName);
 		ArgumentOutOfRangeException.ThrowIfGreaterThan(progressPercentage, 100);
 
 		const byte printEveryPercentage = 10;
