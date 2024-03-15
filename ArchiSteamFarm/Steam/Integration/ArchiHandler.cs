@@ -198,9 +198,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			}
 
 			if (response.descriptions.Count == 0) {
-				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(response.descriptions)));
-
-				continue;
+				throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(response.descriptions)));
 			}
 
 			if (response.total_inventory_count > Array.MaxLength) {
