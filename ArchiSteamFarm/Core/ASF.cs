@@ -778,6 +778,8 @@ public static class ASF {
 			return null;
 		}
 
+		string targetFile;
+
 		await UpdateSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
@@ -851,7 +853,7 @@ public static class ASF {
 				return null;
 			}
 
-			string targetFile = $"{SharedInfo.ASF}-{SharedInfo.BuildInfo.Variant}.zip";
+			targetFile = $"{SharedInfo.ASF}-{SharedInfo.BuildInfo.Variant}.zip";
 			ReleaseAsset? binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
@@ -883,14 +885,14 @@ public static class ASF {
 
 			Progress<byte> progressReporter = new();
 
-			progressReporter.ProgressChanged += Utilities.OnProgressChanged;
+			progressReporter.ProgressChanged += onProgressChanged;
 
 			BinaryResponse? response;
 
 			try {
 				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL, progressReporter: progressReporter).ConfigureAwait(false);
 			} finally {
-				progressReporter.ProgressChanged -= Utilities.OnProgressChanged;
+				progressReporter.ProgressChanged -= onProgressChanged;
 			}
 
 			if (response?.Content == null) {
@@ -958,6 +960,12 @@ public static class ASF {
 			return newVersion;
 		} finally {
 			UpdateSemaphore.Release();
+		}
+
+		void onProgressChanged(object? sender, byte progressPercentage) {
+			ArgumentOutOfRangeException.ThrowIfGreaterThan(progressPercentage, 100);
+
+			Utilities.OnProgressChanged(targetFile, progressPercentage);
 		}
 	}
 

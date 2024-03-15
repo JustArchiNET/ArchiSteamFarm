@@ -806,8 +806,12 @@ public static class PluginsCore {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
 
+		string pluginName;
+
 		try {
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateChecking, plugin.Name));
+			pluginName = plugin.Name;
+
+			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateChecking, pluginName));
 
 			string? assemblyDirectory = Path.GetDirectoryName(plugin.GetType().Assembly.Location);
 
@@ -829,18 +833,18 @@ public static class PluginsCore {
 				return false;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateInProgress, plugin.Name));
+			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateInProgress, pluginName));
 
 			Progress<byte> progressReporter = new();
 
-			progressReporter.ProgressChanged += Utilities.OnProgressChanged;
+			progressReporter.ProgressChanged += onProgressChanged;
 
 			BinaryResponse? response;
 
 			try {
 				response = await ASF.WebBrowser.UrlGetToBinary(releaseURL, progressReporter: progressReporter).ConfigureAwait(false);
 			} finally {
-				progressReporter.ProgressChanged -= Utilities.OnProgressChanged;
+				progressReporter.ProgressChanged -= onProgressChanged;
 			}
 
 			if (response?.Content == null) {
@@ -870,7 +874,7 @@ public static class PluginsCore {
 			return false;
 		}
 
-		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateFinished, plugin.Name));
+		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateFinished, pluginName));
 
 		try {
 			await plugin.OnPluginUpdateFinished().ConfigureAwait(false);
@@ -879,5 +883,11 @@ public static class PluginsCore {
 		}
 
 		return true;
+
+		void onProgressChanged(object? sender, byte progressPercentage) {
+			ArgumentOutOfRangeException.ThrowIfGreaterThan(progressPercentage, 100);
+
+			Utilities.OnProgressChanged(pluginName, progressPercentage);
+		}
 	}
 }

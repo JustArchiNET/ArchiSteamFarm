@@ -275,14 +275,17 @@ public static class Utilities {
 		return first - (uint) -second;
 	}
 
-	internal static void OnProgressChanged(object? sender, byte progressPercentage) {
+	internal static void OnProgressChanged(string fileName, byte progressPercentage) {
+		ArgumentNullException.ThrowIfNull(fileName);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(progressPercentage, 100);
+
 		const byte printEveryPercentage = 10;
 
 		if (progressPercentage % printEveryPercentage != 0) {
 			return;
 		}
 
-		ASF.ArchiLogger.LogGenericDebug($"{progressPercentage}%...");
+		ASF.ArchiLogger.LogGenericDebug($"{fileName} {progressPercentage}%...");
 	}
 
 	internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, ISet<string>? additionallyForbiddenPhrases = null) {
