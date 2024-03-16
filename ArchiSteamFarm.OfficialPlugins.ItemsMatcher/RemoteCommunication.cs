@@ -250,7 +250,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			List<Asset> inventory;
 
 			try {
-				inventory = await Bot.ArchiWebHandler.GetInventoryAsync().ToListAsync().ConfigureAwait(false);
+				inventory = await Bot.ArchiHandler.GetMyInventoryAsync().ToListAsync().ConfigureAwait(false);
 			} catch (HttpRequestException e) {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
 				ShouldSendHeartBeats = false;
@@ -937,7 +937,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			HashSet<Asset> assetsForMatching;
 
 			try {
-				assetsForMatching = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown, IsSteamPointsShopItem: false } && acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToHashSetAsync().ConfigureAwait(false);
+				assetsForMatching = await Bot.ArchiHandler.GetMyInventoryAsync().Where(item => item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown, IsSteamPointsShopItem: false } && acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToHashSetAsync().ConfigureAwait(false);
 			} catch (HttpRequestException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(assetsForMatching)));
@@ -1504,10 +1504,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// However, since this is only an assumption, we must mark newly acquired items as untradable so we're sure that they're not considered for trading, only for matching
 				foreach (Asset itemToReceive in itemsToReceive) {
 					if (ourInventory.TryGetValue(itemToReceive.AssetID, out Asset? item)) {
-						item.Tradable = false;
+						item.Description.ProtobufBody.tradable = false;
 						item.Amount += itemToReceive.Amount;
 					} else {
-						itemToReceive.Tradable = false;
+						itemToReceive.Description.ProtobufBody.tradable = false;
 						ourInventory[itemToReceive.AssetID] = itemToReceive;
 					}
 

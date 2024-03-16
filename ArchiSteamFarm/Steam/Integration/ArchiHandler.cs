@@ -22,10 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
 using ArchiSteamFarm.Steam.Integration.CMsgs;
 using JetBrains.Annotations;
@@ -149,6 +152,99 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		}
 
 		return response.Result == EResult.OK ? response.GetDeserializedResponse<CCredentials_LastCredentialChangeTime_Response>() : null;
+	}
+
+	[PublicAPI]
+	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false, ushort itemsCountPerRequest = 40000) {
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(contextID);
+
+		if (Client.SteamID == null) {
+			throw new InvalidOperationException(nameof(Client.SteamID));
+		}
+
+		SteamID steamID = Client.SteamID;
+
+		// We need to store asset IDs to make sure we won't get duplicate items
+		HashSet<ulong>? assetIDs = null;
+		ulong startAssetID = 0;
+
+		while (true) {
+			ulong currentStartAssetID = startAssetID;
+
+			CEcon_GetInventoryItemsWithDescriptions_Request request = new() {
+				appid = appID,
+				contextid = contextID,
+				filters = new CEcon_GetInventoryItemsWithDescriptions_Request.FilterOptions {
+					tradable_only = tradableOnly,
+					marketable_only = marketableOnly
+				},
+				get_descriptions = true,
+				steamid = steamID.ConvertToUInt64(),
+				start_assetid = currentStartAssetID,
+				count = itemsCountPerRequest
+			};
+
+			SteamUnifiedMessages.ServiceMethodResponse genericResponse = await UnifiedEconService
+				.SendMessage(x => x.GetInventoryItemsWithDescriptions(request))
+				.ToLongRunningTask()
+				.ConfigureAwait(false);
+
+			CEcon_GetInventoryItemsWithDescriptions_Response response = genericResponse.GetDeserializedResponse<CEcon_GetInventoryItemsWithDescriptions_Response>();
+
+			if ((response.total_inventory_count == 0) || (response.assets.Count == 0)) {
+				// Empty inventory
+				yield break;
+			}
+
+			if (response.descriptions.Count == 0) {
+				throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(response.descriptions)));
+			}
+
+			if (response.total_inventory_count > Array.MaxLength) {
+				throw new InvalidOperationException(nameof(response.total_inventory_count));
+			}
+
+			assetIDs ??= new HashSet<ulong>((int) response.total_inventory_count);
+
+			if ((response.assets.Count == 0) || (response.descriptions.Count == 0)) {
+				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(response.assets)} || {nameof(response.descriptions)}"));
+			}
+
+			List<InventoryDescription> convertedDescriptions = response.descriptions.Select(static description => new InventoryDescription(description)).ToList();
+
+			Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
+
+			foreach (InventoryDescription description in convertedDescriptions) {
+				if (description.ClassID == 0) {
+					throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(description.ClassID)));
+				}
+
+				(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
+
+				descriptions.TryAdd(key, description);
+			}
+
+			foreach (CEcon_Asset? asset in response.assets) {
+				if (!descriptions.TryGetValue((asset.classid, asset.instanceid), out InventoryDescription? description) || !assetIDs.Add(asset.assetid)) {
+					continue;
+				}
+
+				Asset convertedAsset = new(asset.appid, asset.contextid, asset.classid, (uint) asset.amount, description, asset.assetid, asset.instanceid);
+
+				yield return convertedAsset;
+			}
+
+			if (!response.more_items) {
+				yield break;
+			}
+
+			if (response.last_assetid == 0) {
+				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.last_assetid)));
+			}
+
+			startAssetID = response.last_assetid;
+		}
 	}
 
 	[PublicAPI]

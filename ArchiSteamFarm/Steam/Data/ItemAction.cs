@@ -19,26 +19,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Steam.Data;
+using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
+namespace ArchiSteamFarm.Steam.Data;
 
-internal class AssetInInventory : AssetForMatching {
+public class ItemAction {
 	[JsonInclude]
-	[JsonPropertyName("d")]
-	[JsonRequired]
-	internal ulong AssetID { get; private init; }
+	[JsonPropertyName("link")]
+	[PublicAPI]
+	public string Link { get; private init; } = null!;
 
-	[JsonConstructor]
-	protected AssetInInventory() { }
+	[JsonInclude]
+	[JsonPropertyName("name")]
+	[PublicAPI]
+	public string Name { get; private init; } = null!;
 
-	internal AssetInInventory(Asset asset) : base(asset) {
-		ArgumentNullException.ThrowIfNull(asset);
-
-		AssetID = asset.AssetID;
+	internal ItemAction(string link, string name) {
+		Link = link;
+		Name = name;
 	}
 
-	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, new InventoryDescription { ProtobufBody = { tradable = Tradable } }, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
+	[JsonConstructor]
+	private ItemAction() { }
 }

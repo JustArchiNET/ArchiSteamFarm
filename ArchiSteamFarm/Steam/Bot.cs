@@ -3640,8 +3640,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				HashSet<Asset> inventory;
 
 				try {
-					inventory = await ArchiWebHandler.GetInventoryAsync()
-						.Where(item => item.Tradable && appIDs.Contains(item.RealAppID) && BotConfig.CompleteTypesToSend.Contains(item.Type))
+					inventory = await ArchiHandler.GetMyInventoryAsync(tradableOnly: true)
+						.Where(item => appIDs.Contains(item.RealAppID) && BotConfig.CompleteTypesToSend.Contains(item.Type))
 						.ToHashSetAsync()
 						.ConfigureAwait(false);
 				} catch (HttpRequestException e) {

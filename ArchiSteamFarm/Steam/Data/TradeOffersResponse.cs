@@ -19,59 +19,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using ArchiSteamFarm.Helpers.Json;
-using ArchiSteamFarm.Steam.Integration;
-using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Data;
 
-[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-internal sealed class InventoryResponse : OptionalResultResponse {
-	[JsonDisallowNull]
-	[JsonInclude]
-	[JsonPropertyName("assets")]
-	internal ImmutableList<Asset> Assets { get; private init; } = ImmutableList<Asset>.Empty;
-
+public class TradeOffersResponse {
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("descriptions")]
-	internal ImmutableHashSet<InventoryDescription> Descriptions { get; private init; } = ImmutableHashSet<InventoryDescription>.Empty;
-
-	internal EResult? ErrorCode { get; private init; }
-	internal string? ErrorText { get; private init; }
-
-	[JsonInclude]
-	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
-	[JsonPropertyName("last_assetid")]
-	internal ulong LastAssetID { get; private init; }
-
-	[JsonInclude]
-	[JsonPropertyName("more_items")]
-	[JsonConverter(typeof(BooleanNumberConverter))]
-	internal bool MoreItems { get; private init; }
-
-	[JsonInclude]
-	[JsonPropertyName("total_inventory_count")]
-	internal uint TotalInventoryCount { get; private init; }
+	public ImmutableHashSet<InventoryDescription> Descriptions { get; private init; } = [];
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	[JsonPropertyName("error")]
-	private string Error {
-		get => ErrorText ?? "";
+	[JsonPropertyName("trade_offers_received")]
+	public ImmutableHashSet<TradeOffer> TradeOffersReceived { get; private init; } = [];
 
-		init {
-			ArgumentException.ThrowIfNullOrEmpty(value);
-
-			ErrorCode = SteamUtilities.InterpretError(value);
-			ErrorText = value;
-		}
-	}
-
-	[JsonConstructor]
-	private InventoryResponse() { }
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("trade_offers_sent")]
+	public ImmutableHashSet<TradeOffer> TradeOffersSent { get; private init; } = [];
 }

@@ -20,9 +20,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 
@@ -41,11 +39,40 @@ public sealed class Asset {
 
 	[JsonIgnore]
 	[PublicAPI]
-	public IReadOnlyDictionary<string, JsonElement>? AdditionalPropertiesReadOnly => AdditionalProperties;
+	public bool IsSteamPointsShopItem => !Tradable && (InstanceID == SteamPointsShopInstanceID);
 
 	[JsonIgnore]
 	[PublicAPI]
-	public bool IsSteamPointsShopItem => !Tradable && (InstanceID == SteamPointsShopInstanceID);
+	public bool Marketable => Description.Marketable;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public ERarity Rarity => OverriddenRarity ?? Description.Rarity;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public uint RealAppID => OverriddenRealAppID ?? Description.RealAppID;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public ImmutableHashSet<Tag> Tags => Description.Tags;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public bool Tradable => Description.Tradable;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public EType Type => OverriddenType ?? Description.Type;
+
+	[JsonIgnore]
+	private ERarity? OverriddenRarity { get; }
+
+	[JsonIgnore]
+	private uint? OverriddenRealAppID { get; }
+
+	[JsonIgnore]
+	private EType? OverriddenType { get; }
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
@@ -76,39 +103,14 @@ public sealed class Asset {
 	[PublicAPI]
 	public ulong ContextID { get; private init; }
 
+	[PublicAPI]
+	public InventoryDescription Description { get; internal set; } = null!;
+
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("instanceid")]
 	[PublicAPI]
 	public ulong InstanceID { get; private init; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public bool Marketable { get; internal set; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public ERarity Rarity { get; internal set; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public uint RealAppID { get; internal set; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public ImmutableHashSet<Tag>? Tags { get; internal set; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public bool Tradable { get; internal set; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public EType Type { get; internal set; }
-
-	[JsonExtensionData]
-	[JsonInclude]
-	internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
@@ -118,8 +120,15 @@ public sealed class Asset {
 		init => AssetID = value;
 	}
 
-	// Constructed from trades being received or plugins
-	public Asset(uint appID, ulong contextID, ulong classID, uint amount, ulong instanceID = 0, ulong assetID = 0, bool marketable = true, bool tradable = true, ImmutableHashSet<Tag>? tags = null, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
+	internal Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription description, uint realAppID, EType? type, ERarity? rarity, ulong assetID = 0, ulong instanceID = 0) : this(appID, contextID, classID, amount, description, assetID, instanceID) {
+		ArgumentOutOfRangeException.ThrowIfZero(realAppID);
+
+		OverriddenRealAppID = realAppID;
+		OverriddenType = type;
+		OverriddenRarity = rarity;
+	}
+
+	internal Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription description, ulong assetID = 0, ulong instanceID = 0) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(classID);
@@ -129,17 +138,9 @@ public sealed class Asset {
 		ContextID = contextID;
 		ClassID = classID;
 		Amount = amount;
+		Description = description;
 		InstanceID = instanceID;
 		AssetID = assetID;
-		Marketable = marketable;
-		Tradable = tradable;
-		RealAppID = realAppID;
-		Type = type;
-		Rarity = rarity;
-
-		if (tags?.Count > 0) {
-			Tags = tags;
-		}
 	}
 
 	[JsonConstructor]

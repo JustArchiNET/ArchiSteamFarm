@@ -489,7 +489,7 @@ public sealed class Bot {
 		Assert.IsTrue(expectedResult.All(expectation => realResult.TryGetValue(expectation.Key, out long reality) && (expectation.Value == reality)));
 	}
 
-	private static Asset CreateCard(ulong classID, uint realAppID, uint amount = 1, Asset.EType type = Asset.EType.TradingCard, Asset.ERarity rarity = Asset.ERarity.Common) => new(Asset.SteamAppID, Asset.SteamCommunityContextID, classID, amount, realAppID: realAppID, type: type, rarity: rarity);
+	private static Asset CreateCard(ulong classID, uint realAppID, uint amount = 1, Asset.EType type = Asset.EType.TradingCard, Asset.ERarity rarity = Asset.ERarity.Common) => new(Asset.SteamAppID, Asset.SteamCommunityContextID, classID, amount, new InventoryDescription(), realAppID, type, rarity);
 
 	private static HashSet<Asset> GetItemsForFullBadge(IReadOnlyCollection<Asset> inventory, byte cardsPerSet, uint appID, ushort maxItems = Steam.Exchange.Trading.MaxItemsPerTrade) => GetItemsForFullBadge(inventory, new Dictionary<uint, byte> { { appID, cardsPerSet } }, maxItems);
 

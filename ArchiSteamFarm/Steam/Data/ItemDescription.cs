@@ -19,26 +19,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Steam.Data;
+using ArchiSteamFarm.Helpers.Json;
+using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
+namespace ArchiSteamFarm.Steam.Data;
 
-internal class AssetInInventory : AssetForMatching {
+public class ItemDescription {
 	[JsonInclude]
-	[JsonPropertyName("d")]
-	[JsonRequired]
-	internal ulong AssetID { get; private init; }
+	[JsonPropertyName("color")]
+	[PublicAPI]
+	public string? Color { get; private init; }
 
-	[JsonConstructor]
-	protected AssetInInventory() { }
+	[JsonInclude]
+	[JsonPropertyName("label")]
+	[PublicAPI]
+	public string? Label { get; private init; }
 
-	internal AssetInInventory(Asset asset) : base(asset) {
-		ArgumentNullException.ThrowIfNull(asset);
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("type")]
+	[PublicAPI]
+	public string Type { get; private init; } = null!;
 
-		AssetID = asset.AssetID;
+	[JsonDisallowNull]
+	[JsonInclude]
+	[JsonPropertyName("value")]
+	[PublicAPI]
+	public string Value { get; private init; } = null!;
+
+	internal ItemDescription(string type, string value, string color, string label) {
+		Type = type;
+		Value = value;
+		Color = color;
+		Label = label;
 	}
 
-	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, new InventoryDescription { ProtobufBody = { tradable = Tradable } }, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
+	[JsonConstructor]
+	private ItemDescription() { }
 }

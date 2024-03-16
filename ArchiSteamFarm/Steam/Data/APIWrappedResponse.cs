@@ -19,26 +19,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Steam.Data;
 
-namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
+namespace ArchiSteamFarm.Steam.Data;
 
-internal class AssetInInventory : AssetForMatching {
+public class APIWrappedResponse<T> where T : class {
 	[JsonInclude]
-	[JsonPropertyName("d")]
+	[JsonPropertyName("response")]
 	[JsonRequired]
-	internal ulong AssetID { get; private init; }
-
-	[JsonConstructor]
-	protected AssetInInventory() { }
-
-	internal AssetInInventory(Asset asset) : base(asset) {
-		ArgumentNullException.ThrowIfNull(asset);
-
-		AssetID = asset.AssetID;
-	}
-
-	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, new InventoryDescription { ProtobufBody = { tradable = Tradable } }, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
+	public T Response { get; private init; } = null!;
 }

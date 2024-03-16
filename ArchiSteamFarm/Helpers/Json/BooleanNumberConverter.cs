@@ -20,25 +20,25 @@
 // limitations under the License.
 
 using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Steam.Data;
+using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
+namespace ArchiSteamFarm.Helpers.Json;
 
-internal class AssetInInventory : AssetForMatching {
-	[JsonInclude]
-	[JsonPropertyName("d")]
-	[JsonRequired]
-	internal ulong AssetID { get; private init; }
+[PublicAPI]
+public sealed class BooleanNumberConverter : JsonConverter<bool> {
+	public override bool Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+		reader.TokenType switch {
+			JsonTokenType.True => true,
+			JsonTokenType.False => false,
+			JsonTokenType.Number => reader.GetByte() == 1,
+			_ => throw new JsonException()
+		};
 
-	[JsonConstructor]
-	protected AssetInInventory() { }
+	public override void Write(Utf8JsonWriter writer, bool value, JsonSerializerOptions options) {
+		ArgumentNullException.ThrowIfNull(writer);
 
-	internal AssetInInventory(Asset asset) : base(asset) {
-		ArgumentNullException.ThrowIfNull(asset);
-
-		AssetID = asset.AssetID;
+		writer.WriteNumberValue(value ? 1 : 0);
 	}
-
-	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, new InventoryDescription { ProtobufBody = { tradable = Tradable } }, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
 }

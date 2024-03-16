@@ -426,5 +426,5 @@ public sealed class Trading {
 		Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 	}
 
-	private static Asset CreateItem(ulong classID, uint amount = 1, uint realAppID = Asset.SteamAppID, Asset.EType type = Asset.EType.TradingCard, Asset.ERarity rarity = Asset.ERarity.Common) => new(Asset.SteamAppID, Asset.SteamCommunityContextID, classID, amount, realAppID: realAppID, type: type, rarity: rarity);
+	private static Asset CreateItem(ulong classID, uint amount = 1, uint realAppID = Asset.SteamAppID, Asset.EType type = Asset.EType.TradingCard, Asset.ERarity rarity = Asset.ERarity.Common) => new(Asset.SteamAppID, Asset.SteamCommunityContextID, classID, amount, new InventoryDescription(), realAppID, type, rarity);
 }
