@@ -1,18 +1,20 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
-// |
+// ----------------------------------------------------------------------------------------------
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// |
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// |
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// |
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,43 +24,56 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Web.GitHub.Data;
 using ArchiSteamFarm.Web.Responses;
-using Markdig;
-using Markdig.Renderers;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
+using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web;
+namespace ArchiSteamFarm.Web.GitHub;
 
-internal static class GitHub {
-	internal static async Task<ReleaseResponse?> GetLatestRelease(bool stable = true, CancellationToken cancellationToken = default) {
-		Uri request = new($"{SharedInfo.GithubReleaseURL}{(stable ? "/latest" : "?per_page=1")}");
+public static class GitHubService {
+	private static Uri URL => new("https://api.github.com");
+
+	[PublicAPI]
+	public static async Task<ReleaseResponse?> GetLatestRelease(string repoName, bool stable = true, CancellationToken cancellationToken = default) {
+		ArgumentException.ThrowIfNullOrEmpty(repoName);
 
 		if (stable) {
+			Uri request = new(URL, $"/repos/{repoName}/releases/latest");
+
 			return await GetReleaseFromURL(request, cancellationToken).ConfigureAwait(false);
 		}
 
-		ImmutableList<ReleaseResponse>? response = await GetReleasesFromURL(request, cancellationToken).ConfigureAwait(false);
+		ImmutableList<ReleaseResponse>? response = await GetReleases(repoName, 1, cancellationToken).ConfigureAwait(false);
 
 		return response?.FirstOrDefault();
 	}
 
-	internal static async Task<ReleaseResponse?> GetRelease(string version, CancellationToken cancellationToken = default) {
-		ArgumentException.ThrowIfNullOrEmpty(version);
+	[PublicAPI]
+	public static async Task<ReleaseResponse?> GetRelease(string repoName, string tag, CancellationToken cancellationToken = default) {
+		ArgumentException.ThrowIfNullOrEmpty(repoName);
+		ArgumentException.ThrowIfNullOrEmpty(tag);
 
-		Uri request = new($"{SharedInfo.GithubReleaseURL}/tags/{version}");
+		Uri request = new(URL, $"/repos/{repoName}/releases/tags/{tag}");
 
 		return await GetReleaseFromURL(request, cancellationToken).ConfigureAwait(false);
+	}
+
+	[PublicAPI]
+	public static async Task<ImmutableList<ReleaseResponse>?> GetReleases(string repoName, byte count = 10, CancellationToken cancellationToken = default) {
+		ArgumentException.ThrowIfNullOrEmpty(repoName);
+		ArgumentOutOfRangeException.ThrowIfZero(count);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(count, 100);
+
+		Uri request = new(URL, $"/repos/{repoName}/releases?per_page={count}");
+
+		return await GetReleasesFromURL(request, cancellationToken).ConfigureAwait(false);
 	}
 
 	internal static async Task<Dictionary<string, DateTime>?> GetWikiHistory(string page, CancellationToken cancellationToken = default) {
@@ -152,21 +167,6 @@ internal static class GitHub {
 		return markdownBodyNode?.InnerHtml.Trim() ?? "";
 	}
 
-	private static MarkdownDocument ExtractChangelogFromBody(string markdownText) {
-		ArgumentException.ThrowIfNullOrEmpty(markdownText);
-
-		MarkdownDocument markdownDocument = Markdown.Parse(markdownText);
-		MarkdownDocument result = [];
-
-		foreach (Block block in markdownDocument.SkipWhile(static block => block is not HeadingBlock { Inline.FirstChild: LiteralInline literalInline } || (literalInline.Content.ToString()?.Equals("Changelog", StringComparison.OrdinalIgnoreCase) != true)).Skip(1).TakeWhile(static block => block is not ThematicBreakBlock).ToList()) {
-			// All blocks that we're interested in must be removed from original markdownDocument firstly
-			markdownDocument.Remove(block);
-			result.Add(block);
-		}
-
-		return result;
-	}
-
 	private static async Task<ReleaseResponse?> GetReleaseFromURL(Uri request, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -189,126 +189,5 @@ internal static class GitHub {
 		ObjectResponse<ImmutableList<ReleaseResponse>>? response = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content;
-	}
-
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class ReleaseResponse {
-		internal string? ChangelogHTML {
-			get {
-				if (BackingChangelogHTML != null) {
-					return BackingChangelogHTML;
-				}
-
-				if (Changelog == null) {
-					ASF.ArchiLogger.LogNullError(Changelog);
-
-					return null;
-				}
-
-				using StringWriter writer = new();
-
-				HtmlRenderer renderer = new(writer);
-
-				renderer.Render(Changelog);
-				writer.Flush();
-
-				return BackingChangelogHTML = writer.ToString();
-			}
-		}
-
-		internal string? ChangelogPlainText {
-			get {
-				if (BackingChangelogPlainText != null) {
-					return BackingChangelogPlainText;
-				}
-
-				if (Changelog == null) {
-					ASF.ArchiLogger.LogNullError(Changelog);
-
-					return null;
-				}
-
-				using StringWriter writer = new();
-
-				HtmlRenderer renderer = new(writer) {
-					EnableHtmlForBlock = false,
-					EnableHtmlForInline = false,
-					EnableHtmlEscape = false
-				};
-
-				renderer.Render(Changelog);
-				writer.Flush();
-
-				return BackingChangelogPlainText = writer.ToString();
-			}
-		}
-
-		private MarkdownDocument? Changelog {
-			get {
-				if (BackingChangelog != null) {
-					return BackingChangelog;
-				}
-
-				if (string.IsNullOrEmpty(MarkdownBody)) {
-					ASF.ArchiLogger.LogNullError(MarkdownBody);
-
-					return null;
-				}
-
-				return BackingChangelog = ExtractChangelogFromBody(MarkdownBody);
-			}
-		}
-
-		[JsonInclude]
-		[JsonPropertyName("assets")]
-		[JsonRequired]
-		internal ImmutableHashSet<Asset> Assets { get; private init; } = ImmutableHashSet<Asset>.Empty;
-
-		[JsonInclude]
-		[JsonPropertyName("prerelease")]
-		[JsonRequired]
-		internal bool IsPreRelease { get; private init; }
-
-		[JsonInclude]
-		[JsonPropertyName("published_at")]
-		[JsonRequired]
-		internal DateTime PublishedAt { get; private init; }
-
-		[JsonInclude]
-		[JsonPropertyName("tag_name")]
-		[JsonRequired]
-		internal string Tag { get; private init; } = "";
-
-		private MarkdownDocument? BackingChangelog;
-		private string? BackingChangelogHTML;
-		private string? BackingChangelogPlainText;
-
-		[JsonInclude]
-		[JsonPropertyName("body")]
-		[JsonRequired]
-		private string? MarkdownBody { get; init; } = "";
-
-		[JsonConstructor]
-		private ReleaseResponse() { }
-
-		internal sealed class Asset {
-			[JsonInclude]
-			[JsonPropertyName("browser_download_url")]
-			[JsonRequired]
-			internal Uri? DownloadURL { get; private init; }
-
-			[JsonInclude]
-			[JsonPropertyName("name")]
-			[JsonRequired]
-			internal string? Name { get; private init; }
-
-			[JsonInclude]
-			[JsonPropertyName("size")]
-			[JsonRequired]
-			internal uint Size { get; private init; }
-
-			[JsonConstructor]
-			private Asset() { }
-		}
 	}
 }

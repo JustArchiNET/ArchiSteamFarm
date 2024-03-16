@@ -1,18 +1,20 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
-// |
+// ----------------------------------------------------------------------------------------------
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// |
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// |
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// |
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +31,8 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Web;
+using ArchiSteamFarm.Web.GitHub;
+using ArchiSteamFarm.Web.GitHub.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
@@ -47,7 +51,7 @@ public sealed class GitHubController : ArchiController {
 	public async Task<ActionResult<GenericResponse>> GitHubReleaseGet() {
 		CancellationToken cancellationToken = HttpContext.RequestAborted;
 
-		GitHub.ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(false, cancellationToken).ConfigureAwait(false);
+		ReleaseResponse? releaseResponse = await GitHubService.GetLatestRelease(SharedInfo.GithubRepo, false, cancellationToken).ConfigureAwait(false);
 
 		return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 	}
@@ -67,11 +71,11 @@ public sealed class GitHubController : ArchiController {
 
 		CancellationToken cancellationToken = HttpContext.RequestAborted;
 
-		GitHub.ReleaseResponse? releaseResponse;
+		ReleaseResponse? releaseResponse;
 
 		switch (version.ToUpperInvariant()) {
 			case "LATEST":
-				releaseResponse = await GitHub.GetLatestRelease(cancellationToken: cancellationToken).ConfigureAwait(false);
+				releaseResponse = await GitHubService.GetLatestRelease(SharedInfo.GithubRepo, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				break;
 			default:
@@ -79,7 +83,7 @@ public sealed class GitHubController : ArchiController {
 					return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(version))));
 				}
 
-				releaseResponse = await GitHub.GetRelease(parsedVersion.ToString(4), cancellationToken).ConfigureAwait(false);
+				releaseResponse = await GitHubService.GetRelease(SharedInfo.GithubRepo, parsedVersion.ToString(4), cancellationToken).ConfigureAwait(false);
 
 				break;
 		}
@@ -102,7 +106,7 @@ public sealed class GitHubController : ArchiController {
 
 		CancellationToken cancellationToken = HttpContext.RequestAborted;
 
-		Dictionary<string, DateTime>? revisions = await GitHub.GetWikiHistory(page, cancellationToken).ConfigureAwait(false);
+		Dictionary<string, DateTime>? revisions = await GitHubService.GetWikiHistory(page, cancellationToken).ConfigureAwait(false);
 
 		return revisions != null ? revisions.Count > 0 ? Ok(new GenericResponse<ImmutableDictionary<string, DateTime>>(revisions.ToImmutableDictionary())) : BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(page)))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 	}
@@ -123,7 +127,7 @@ public sealed class GitHubController : ArchiController {
 
 		CancellationToken cancellationToken = HttpContext.RequestAborted;
 
-		string? html = await GitHub.GetWikiPage(page, revision, cancellationToken).ConfigureAwait(false);
+		string? html = await GitHubService.GetWikiPage(page, revision, cancellationToken).ConfigureAwait(false);
 
 		return html switch {
 			null => StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries))),

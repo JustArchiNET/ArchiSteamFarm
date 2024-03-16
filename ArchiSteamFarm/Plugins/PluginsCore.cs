@@ -1,18 +1,20 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
-// |
+// ----------------------------------------------------------------------------------------------
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// |
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// |
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// |
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +24,7 @@
 using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Composition;
 using System.Composition.Convention;
@@ -29,6 +32,7 @@ using System.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -43,6 +47,8 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
+using ArchiSteamFarm.Storage;
+using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
 using SteamKit2;
 
@@ -53,6 +59,8 @@ public static class PluginsCore {
 
 	[ImportMany]
 	internal static FrozenSet<IPlugin> ActivePlugins { get; private set; } = FrozenSet<IPlugin>.Empty;
+
+	private static FrozenSet<IPluginUpdates> ActivePluginUpdates = FrozenSet<IPluginUpdates>.Empty;
 
 	[PublicAPI]
 	public static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName) {
@@ -155,6 +163,16 @@ public static class PluginsCore {
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
+	internal static HashSet<IPluginUpdates> GetPluginsForUpdate(IReadOnlyCollection<string> pluginAssemblyNames) {
+		if ((pluginAssemblyNames == null) || (pluginAssemblyNames.Count == 0)) {
+			throw new ArgumentNullException(nameof(pluginAssemblyNames));
+		}
+
+		// We use ActivePlugins here, since we want to pick up also plugins removed from automatic updates
+		return ActivePlugins.OfType<IPluginUpdates>().Where(plugin => pluginAssemblyNames.Contains(plugin.GetType().Assembly.GetName().Name)).ToHashSet();
+	}
+
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	internal static async Task<bool> InitPlugins() {
 		if (ActivePlugins.Count > 0) {
 			throw new InvalidOperationException(nameof(ActivePlugins));
@@ -238,10 +256,10 @@ public static class PluginsCore {
 			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 			activePlugins.ExceptWith(invalidPlugins);
+		}
 
-			if (activePlugins.Count == 0) {
-				return true;
-			}
+		if (activePlugins.Count == 0) {
+			return true;
 		}
 
 		ActivePlugins = activePlugins.ToFrozenSet();
@@ -251,6 +269,42 @@ public static class PluginsCore {
 
 			// Loading plugins changes the program identifier, refresh the console title
 			Console.Title = SharedInfo.ProgramIdentifier;
+		}
+
+		GlobalConfig.EPluginsUpdateMode pluginsUpdateMode = ASF.GlobalConfig?.PluginsUpdateMode ?? GlobalConfig.DefaultPluginsUpdateMode;
+		ImmutableHashSet<string> pluginsUpdateList = ASF.GlobalConfig?.PluginsUpdateList ?? GlobalConfig.DefaultPluginsUpdateList;
+
+		HashSet<IPluginUpdates> activePluginUpdates = [];
+
+		foreach (IPluginUpdates plugin in activePlugins.OfType<IPluginUpdates>()) {
+			string? pluginAssemblyName = plugin.GetType().Assembly.GetName().Name;
+
+			if (string.IsNullOrEmpty(pluginAssemblyName)) {
+				ASF.ArchiLogger.LogNullError(nameof(pluginAssemblyName));
+
+				continue;
+			}
+
+			switch (pluginsUpdateMode) {
+				case GlobalConfig.EPluginsUpdateMode.Blacklist when !pluginsUpdateList.Contains(pluginAssemblyName):
+				case GlobalConfig.EPluginsUpdateMode.Whitelist when pluginsUpdateList.Contains(pluginAssemblyName):
+					activePluginUpdates.Add(plugin);
+
+					ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateEnabled, plugin.Name, pluginAssemblyName));
+
+					break;
+				case GlobalConfig.EPluginsUpdateMode.Blacklist when pluginsUpdateList.Contains(pluginAssemblyName):
+				case GlobalConfig.EPluginsUpdateMode.Whitelist when !pluginsUpdateList.Contains(pluginAssemblyName):
+					ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateDisabled, plugin.Name, pluginAssemblyName));
+
+					break;
+			}
+		}
+
+		if (activePluginUpdates.Count > 0) {
+			ASF.ArchiLogger.LogGenericWarning(Strings.CustomPluginUpdatesEnabled);
+
+			ActivePluginUpdates = activePluginUpdates.ToFrozenSet();
 		}
 
 		return true;
@@ -655,6 +709,48 @@ public static class PluginsCore {
 		}
 	}
 
+	internal static async Task<bool> UpdatePlugins(Version asfVersion, GlobalConfig.EUpdateChannel? updateChannel = null) {
+		ArgumentNullException.ThrowIfNull(asfVersion);
+
+		if (updateChannel.HasValue && !Enum.IsDefined(updateChannel.Value)) {
+			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
+		}
+
+		if (ActivePluginUpdates.Count == 0) {
+			return false;
+		}
+
+		return await UpdatePlugins(asfVersion, ActivePluginUpdates, updateChannel).ConfigureAwait(false);
+	}
+
+	internal static async Task<bool> UpdatePlugins(Version asfVersion, IReadOnlyCollection<IPluginUpdates> plugins, GlobalConfig.EUpdateChannel? updateChannel = null) {
+		ArgumentNullException.ThrowIfNull(asfVersion);
+
+		if ((plugins == null) || (plugins.Count == 0)) {
+			throw new ArgumentNullException(nameof(plugins));
+		}
+
+		if (updateChannel.HasValue && !Enum.IsDefined(updateChannel.Value)) {
+			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
+		}
+
+		if (ASF.WebBrowser == null) {
+			throw new InvalidOperationException(nameof(ASF.WebBrowser));
+		}
+
+		updateChannel ??= ASF.GlobalConfig?.UpdateChannel ?? GlobalConfig.DefaultUpdateChannel;
+
+		if (updateChannel == GlobalConfig.EUpdateChannel.None) {
+			return false;
+		}
+
+		ASF.ArchiLogger.LogGenericInfo(Strings.PluginUpdatesChecking);
+
+		IList<bool> pluginUpdates = await Utilities.InParallel(plugins.Select(plugin => UpdatePlugin(asfVersion, plugin, updateChannel.Value))).ConfigureAwait(false);
+
+		return pluginUpdates.Any(static restartNeeded => restartNeeded);
+	}
+
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	private static HashSet<Assembly>? LoadAssembliesFrom(string path) {
 		ArgumentException.ThrowIfNullOrEmpty(path);
@@ -667,6 +763,14 @@ public static class PluginsCore {
 
 		try {
 			foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {
+				string? assemblyDirectoryName = Path.GetFileName(Path.GetDirectoryName(assemblyPath));
+
+				if (assemblyDirectoryName == SharedInfo.UpdateDirectory) {
+					ASF.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningSkipping, assemblyPath));
+
+					continue;
+				}
+
 				Assembly assembly;
 
 				try {
@@ -687,5 +791,103 @@ public static class PluginsCore {
 		}
 
 		return assemblies;
+	}
+
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL3000", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
+	private static async Task<bool> UpdatePlugin(Version asfVersion, IPluginUpdates plugin, GlobalConfig.EUpdateChannel updateChannel) {
+		ArgumentNullException.ThrowIfNull(asfVersion);
+		ArgumentNullException.ThrowIfNull(plugin);
+
+		if (!Enum.IsDefined(updateChannel) || (updateChannel == GlobalConfig.EUpdateChannel.None)) {
+			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
+		}
+
+		if (ASF.WebBrowser == null) {
+			throw new InvalidOperationException(nameof(ASF.WebBrowser));
+		}
+
+		string pluginName;
+
+		try {
+			pluginName = plugin.Name;
+
+			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateChecking, pluginName));
+
+			string? assemblyDirectory = Path.GetDirectoryName(plugin.GetType().Assembly.Location);
+
+			if (string.IsNullOrEmpty(assemblyDirectory)) {
+				throw new InvalidOperationException(nameof(assemblyDirectory));
+			}
+
+			string backupDirectory = Path.Combine(assemblyDirectory, SharedInfo.UpdateDirectory);
+
+			if (Directory.Exists(backupDirectory)) {
+				ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+
+				Directory.Delete(backupDirectory, true);
+			}
+
+			Uri? releaseURL = await plugin.GetTargetReleaseURL(asfVersion, SharedInfo.BuildInfo.Variant, updateChannel).ConfigureAwait(false);
+
+			if (releaseURL == null) {
+				return false;
+			}
+
+			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateInProgress, pluginName));
+
+			Progress<byte> progressReporter = new();
+
+			progressReporter.ProgressChanged += onProgressChanged;
+
+			BinaryResponse? response;
+
+			try {
+				response = await ASF.WebBrowser.UrlGetToBinary(releaseURL, progressReporter: progressReporter).ConfigureAwait(false);
+			} finally {
+				progressReporter.ProgressChanged -= onProgressChanged;
+			}
+
+			if (response?.Content == null) {
+				return false;
+			}
+
+			ASF.ArchiLogger.LogGenericInfo(Strings.PatchingFiles);
+
+			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
+
+			MemoryStream memoryStream = new(responseBytes);
+
+			await using (memoryStream.ConfigureAwait(false)) {
+				using ZipArchive zipArchive = new(memoryStream);
+
+				await plugin.OnPluginUpdateProceeding().ConfigureAwait(false);
+
+				if (!Utilities.UpdateFromArchive(zipArchive, assemblyDirectory)) {
+					ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
+
+					return false;
+				}
+			}
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return false;
+		}
+
+		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateFinished, pluginName));
+
+		try {
+			await plugin.OnPluginUpdateFinished().ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+		}
+
+		return true;
+
+		void onProgressChanged(object? sender, byte progressPercentage) {
+			ArgumentOutOfRangeException.ThrowIfGreaterThan(progressPercentage, 100);
+
+			Utilities.OnProgressChanged(pluginName, progressPercentage);
+		}
 	}
 }

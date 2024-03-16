@@ -1,18 +1,20 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
-// |
+// ----------------------------------------------------------------------------------------------
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// |
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// |
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// |
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -327,6 +329,10 @@ public sealed class Commands {
 						return await ResponseUnpackBoosters(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
 					case "UPDATE":
 						return await ResponseUpdate(access, args[1]).ConfigureAwait(false);
+					case "UPDATEPLUGINS" when args.Length > 2:
+						return await ResponseUpdatePlugins(access, Utilities.GetArgsAsText(args, 2, ","), args[1]).ConfigureAwait(false);
+					case "UPDATEPLUGINS":
+						return await ResponseUpdatePlugins(access, args[1]).ConfigureAwait(false);
 					default:
 						string? pluginsResponse = await PluginsCore.OnBotCommand(Bot, access, message, args, steamID).ConfigureAwait(false);
 
@@ -3159,6 +3165,38 @@ public sealed class Commands {
 		(bool success, string? message, Version? version) = await Actions.Update(channel).ConfigureAwait(false);
 
 		return FormatStaticResponse($"{(success ? Strings.Success : Strings.WarningFailed)}{(!string.IsNullOrEmpty(message) ? $" {message}" : version != null ? $" {version}" : "")}");
+	}
+
+	private static async Task<string?> ResponseUpdatePlugins(EAccess access, string pluginsText, string? channelText = null) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(pluginsText);
+
+		if (access < EAccess.Owner) {
+			return null;
+		}
+
+		GlobalConfig.EUpdateChannel? channel = null;
+
+		if (!string.IsNullOrEmpty(channelText)) {
+			if (!Enum.TryParse(channelText, true, out GlobalConfig.EUpdateChannel parsedChannel) || (parsedChannel == GlobalConfig.EUpdateChannel.None)) {
+				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(channelText)));
+			}
+
+			channel = parsedChannel;
+		}
+
+		string[] plugins = pluginsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+		if (plugins.Length == 0) {
+			return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(plugins)));
+		}
+
+		(bool success, string? message) = await Actions.UpdatePlugins(plugins, channel).ConfigureAwait(false);
+
+		return FormatStaticResponse($"{(success ? Strings.Success : Strings.WarningFailed)}{(!string.IsNullOrEmpty(message) ? $" {message}" : "")}");
 	}
 
 	private string? ResponseVersion(EAccess access) {
