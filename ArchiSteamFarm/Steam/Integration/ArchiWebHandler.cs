@@ -1,18 +1,20 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
-// |
+// ----------------------------------------------------------------------------------------------
+// 
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// |
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// |
+// 
 // http://www.apache.org/licenses/LICENSE-2.0
-// |
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -231,16 +233,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	[Obsolete($"Use ArchiHandler.{nameof(ArchiHandler.GetMyInventoryAsync)} for getting bot's own inventory or ArchiWebHandler.${nameof(GetForeignInventoryAsync)} in other cases instead.")]
-	public IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
-		if ((steamID == 0) || (steamID == Bot.SteamID)) {
-			return Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID);
-		}
-
-		return GetForeignInventoryAsync(steamID, appID, contextID);
-	}
-
-	[PublicAPI]
 	public async IAsyncEnumerable<Asset> GetForeignInventoryAsync(ulong steamID, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
@@ -376,6 +368,16 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			startAssetID = response.Content.LastAssetID;
 		}
+	}
+
+	[PublicAPI]
+	[Obsolete($"Use ArchiHandler.{nameof(ArchiHandler.GetMyInventoryAsync)} for getting bot's own inventory or ArchiWebHandler.${nameof(GetForeignInventoryAsync)} in other cases instead.")]
+	public IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
+		if ((steamID == 0) || (steamID == Bot.SteamID)) {
+			return Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID);
+		}
+
+		return GetForeignInventoryAsync(steamID, appID, contextID);
 	}
 
 	[PublicAPI]
