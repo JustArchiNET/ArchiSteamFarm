@@ -110,7 +110,7 @@ public sealed class GlobalConfig {
 	public const EOptimizationMode DefaultOptimizationMode = EOptimizationMode.MaxPerformance;
 
 	[PublicAPI]
-	public const EPluginsUpdateMode DefaultPluginsUpdateMode = EPluginsUpdateMode.Blacklist;
+	public const EPluginsUpdateMode DefaultPluginsUpdateMode = EPluginsUpdateMode.Whitelist;
 
 	[PublicAPI]
 	public const string? DefaultSteamMessagePrefix = "/me ";
@@ -604,8 +604,8 @@ public sealed class GlobalConfig {
 
 	[PublicAPI]
 	public enum EPluginsUpdateMode : byte {
-		Blacklist,
-		Whitelist
+		Whitelist,
+		Blacklist
 	}
 
 	[PublicAPI]
