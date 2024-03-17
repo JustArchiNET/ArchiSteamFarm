@@ -231,7 +231,7 @@ jobs:
             }
         }
 
-        foreach ($plugin in ($env:DEFAULT_PLUGINS + $env:ADDITIONAL_PLUGINS).Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+        foreach ($plugin in ($env:DEFAULT_PLUGINS + " " + $env:ADDITIONAL_PLUGINS).Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
             # Limit active jobs in parallel to help with memory usage
             $jobs = $(Get-Job -State Running)
 
