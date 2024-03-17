@@ -138,39 +138,39 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter = new Meter(MeterName, Version.ToString());
 
-		_ = Meter.CreateObservableGauge(
+		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_memory_usage",
 			static () => GC.GetTotalMemory(false) / 1024,
 			description: "Current memory usage of ASF"
 		);
 
-		_ = Meter.CreateObservableGauge(
+		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_ipc_banned_ips",
 			static () => ApiAuthenticationMiddleware.GetCurrentlyBannedIPs().Count(),
 			description: "Number of IP addresses currently banned by ASFs IPC module"
 		);
 
-		_ = Meter.CreateObservableGauge(
+		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_active_plugins",
 			static () => PluginsCore.ActivePluginCount,
 			description: "Number of plugins currently loaded in ASF"
 		);
 
-		_ = Meter.CreateObservableGauge(
+		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bots", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
 				return new List<Measurement<int>>(4) {
 					new(bots.Count, new KeyValuePair<string, object?>(TagNames.BotState, "configured")),
-					new(bots.Where(static bot => bot.IsConnectedAndLoggedOn).Count(), new KeyValuePair<string, object?>(TagNames.BotState, "online")),
-					new(bots.Where(static bot => !bot.IsConnectedAndLoggedOn).Count(), new KeyValuePair<string, object?>(TagNames.BotState, "offline")),
-					new(bots.Where(static bot => bot.CardsFarmer.NowFarming).Count(), new KeyValuePair<string, object?>(TagNames.BotState, "farming"))
+					new(bots.Count(static bot => bot.IsConnectedAndLoggedOn), new KeyValuePair<string, object?>(TagNames.BotState, "online")),
+					new(bots.Count(static bot => !bot.IsConnectedAndLoggedOn), new KeyValuePair<string, object?>(TagNames.BotState, "offline")),
+					new(bots.Count(static bot => bot.CardsFarmer.NowFarming), new KeyValuePair<string, object?>(TagNames.BotState, "farming"))
 				};
 			},
 			description: "Number of bots that are currently loaded in ASF"
 		);
 
-		_ = Meter.CreateObservableGauge(
+		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_friends", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
@@ -179,7 +179,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			description: "Number of friends each bot has on Steam"
 		);
 
-		_ = Meter.CreateObservableGauge(
+		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_clans", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
@@ -188,7 +188,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			description: "Number of Steam groups each bot is in"
 		);
 
-		_ = Meter.CreateObservableGauge(
+		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_farming_minutes_remaining", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
@@ -197,7 +197,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			description: "Approximate number of minutes remaining until each bot has finished farming all cards"
 		);
 
-		_ = Meter.CreateObservableGauge(
+		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_heartbeat_failures", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
@@ -206,7 +206,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			description: "Number of times a bot has failed to reach Steam servers"
 		);
 
-		_ = Meter.CreateObservableGauge(
+		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_wallet_balance", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
@@ -215,9 +215,9 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			description: "Current Steam wallet balance of each bot"
 		);
 
-		_ = Meter.CreateObservableGauge(
+		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_bgr_keys_remaining", static () => {
-				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
+				ICollection<Bot> bots = Bot.Bots?.Values ?? Array.Empty<Bot>();
 
 				return bots.Select(static bot => new Measurement<long>(bot.GamesToRedeemInBackgroundCount, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
