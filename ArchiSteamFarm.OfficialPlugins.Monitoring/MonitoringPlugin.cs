@@ -126,6 +126,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 		services.AddOpenTelemetry().WithMetrics(
 			static builder => {
 				builder.AddPrometheusExporter(static config => config.ScrapeEndpointPath = "/Api/metrics");
+				builder.AddRuntimeInstrumentation();
 				builder.AddMeter("Microsoft.AspNetCore.Hosting");
 				builder.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
 				builder.AddMeter(MeterName);
@@ -137,12 +138,6 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 		Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
 
 		Meter = new Meter(MeterName, Version.ToString());
-
-		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_memory_usage",
-			static () => GC.GetTotalMemory(false) / 1024,
-			description: "Current memory usage of ASF"
-		);
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_ipc_banned_ips",
