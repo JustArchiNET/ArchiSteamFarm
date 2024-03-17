@@ -101,7 +101,7 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 		ArgumentNullException.ThrowIfNull(key);
 
 		if (!TryAdd(key, value)) {
-			throw new ArgumentException();
+			throw new ArgumentException($"An item with the same key has already been added. Key: {key}");
 		}
 	}
 
