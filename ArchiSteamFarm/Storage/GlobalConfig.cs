@@ -263,6 +263,7 @@ public sealed class GlobalConfig {
 	[JsonInclude]
 	public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private init; } = DefaultIPCPasswordFormat;
 
+	[JsonConverter(typeof(GuidJsonConverter))]
 	[JsonInclude]
 	public Guid? LicenseID { get; private init; } = DefaultLicenseID;
 

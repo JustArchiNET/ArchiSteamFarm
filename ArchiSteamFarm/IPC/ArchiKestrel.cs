@@ -31,7 +31,6 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
@@ -387,10 +386,6 @@ internal static class ArchiKestrel {
 		mvc.AddJsonOptions(
 			static options => {
 				JsonSerializerOptions jsonSerializerOptions = Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions;
-
-				foreach (JsonConverter converter in jsonSerializerOptions.Converters) {
-					options.JsonSerializerOptions.Converters.Add(converter);
-				}
 
 				options.JsonSerializerOptions.PropertyNamingPolicy = jsonSerializerOptions.PropertyNamingPolicy;
 				options.JsonSerializerOptions.TypeInfoResolver = jsonSerializerOptions.TypeInfoResolver;

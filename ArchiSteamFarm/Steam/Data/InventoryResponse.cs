@@ -51,9 +51,9 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonPropertyName("last_assetid")]
 	internal ulong LastAssetID { get; private init; }
 
+	[JsonConverter(typeof(BooleanNumberConverter))]
 	[JsonInclude]
 	[JsonPropertyName("more_items")]
-	[JsonConverter(typeof(BooleanNumberConverter))]
 	internal bool MoreItems { get; private init; }
 
 	[JsonInclude]

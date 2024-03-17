@@ -24,6 +24,7 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers.Json;
 
@@ -32,9 +33,8 @@ namespace ArchiSteamFarm.Helpers.Json;
 ///     TODO: This class exists purely because STJ can't deserialize Guid in other formats than default, at least for now
 ///     https://github.com/dotnet/runtime/issues/30692
 /// </summary>
-internal sealed class GuidJsonConverter : JsonConverter<Guid> {
-	internal static readonly GuidJsonConverter Shared = new();
-
+[PublicAPI]
+public sealed class GuidJsonConverter : JsonConverter<Guid> {
 	public override Guid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
 		if (reader.TryGetGuid(out Guid result)) {
 			// Great, we can work with it
