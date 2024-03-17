@@ -200,7 +200,7 @@ public static class ASF {
 
 		Version? newVersion = await UpdateASF(updateChannel, updateOverride).ConfigureAwait(false);
 
-		bool restartNeeded = newVersion > SharedInfo.Version;
+		bool restartNeeded = (newVersion != null) && (newVersion > SharedInfo.Version);
 
 		if (!restartNeeded) {
 			// ASF wasn't updated as part of the process, update the plugins alone
@@ -741,7 +741,7 @@ public static class ASF {
 
 		(Version? newVersion, bool restartNeeded) = await Update().ConfigureAwait(false);
 
-		if (SharedInfo.Version > newVersion) {
+		if ((newVersion != null) && (SharedInfo.Version > newVersion)) {
 			// User is running version newer than their channel allows
 			ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
 			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
@@ -752,7 +752,7 @@ public static class ASF {
 		}
 
 		// Allow crash file recovery, if needed
-		if (newVersion > SharedInfo.Version) {
+		if ((newVersion != null) && (newVersion > SharedInfo.Version)) {
 			Program.AllowCrashFileRemoval = true;
 		}
 
