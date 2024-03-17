@@ -230,6 +230,16 @@ internal static class ArchiKestrel {
 		// Finally register proper API endpoints once we're done with routing
 		app.UseEndpoints(static endpoints => endpoints.MapControllers());
 
+		if (PluginsCore.ActivePlugins.Count > 0) {
+			foreach (IWebServiceProvider plugin in PluginsCore.ActivePlugins.OfType<IWebServiceProvider>()) {
+				try {
+					plugin.OnConfiguringApplication(app);
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+				}
+			}
+		}
+
 		// Add support for swagger, responsible for automatic API documentation generation, this should be on the end, once we're done with API
 		app.UseSwagger();
 
@@ -377,6 +387,14 @@ internal static class ArchiKestrel {
 			if (assemblies != null) {
 				foreach (Assembly assembly in assemblies) {
 					mvc.AddApplicationPart(assembly);
+				}
+			}
+
+			foreach (IWebServiceProvider plugin in PluginsCore.ActivePlugins.OfType<IWebServiceProvider>()) {
+				try {
+					plugin.OnConfiguringServices(services);
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
 				}
 			}
 		}
