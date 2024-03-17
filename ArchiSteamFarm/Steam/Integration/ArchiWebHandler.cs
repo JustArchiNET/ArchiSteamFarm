@@ -2385,7 +2385,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				// Best effort only - we can guarantee tradable property at best, and only at the time of the trade offer
 				description = new InventoryDescription(asset.AppID, asset.ClassID, asset.InstanceID, tradable: true);
 
-				descriptions.TryAdd(key, description);
+				descriptions.Add(key, description);
 			}
 
 			asset.Description = description;

@@ -100,7 +100,9 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 	public void Add(TKey key, TValue value) {
 		ArgumentNullException.ThrowIfNull(key);
 
-		TryAdd(key, value);
+		if (!TryAdd(key, value)) {
+			throw new ArgumentException();
+		}
 	}
 
 	public void Clear() {

@@ -227,7 +227,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 					continue;
 				}
 
-				descriptions.TryAdd(key, new InventoryDescription(description));
+				descriptions.Add(key, new InventoryDescription(description));
 			}
 
 			foreach (CEcon_Asset? asset in response.assets) {
