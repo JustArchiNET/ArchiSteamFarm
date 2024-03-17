@@ -5,16 +5,16 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
-// 
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -160,16 +160,18 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false, ushort itemsCountPerRequest = 40000) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
+		ArgumentOutOfRangeException.ThrowIfZero(itemsCountPerRequest);
 
 		if (Client.SteamID == null) {
 			throw new InvalidOperationException(nameof(Client.SteamID));
 		}
 
-		SteamID steamID = Client.SteamID;
+		ulong steamID = Client.SteamID;
+
+		ulong startAssetID = 0;
 
 		// We need to store asset IDs to make sure we won't get duplicate items
 		HashSet<ulong>? assetIDs = null;
-		ulong startAssetID = 0;
 
 		while (true) {
 			ulong currentStartAssetID = startAssetID;
@@ -177,20 +179,19 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			CEcon_GetInventoryItemsWithDescriptions_Request request = new() {
 				appid = appID,
 				contextid = contextID,
+
 				filters = new CEcon_GetInventoryItemsWithDescriptions_Request.FilterOptions {
 					tradable_only = tradableOnly,
 					marketable_only = marketableOnly
 				},
+
 				get_descriptions = true,
-				steamid = steamID.ConvertToUInt64(),
+				steamid = steamID,
 				start_assetid = currentStartAssetID,
 				count = itemsCountPerRequest
 			};
 
-			SteamUnifiedMessages.ServiceMethodResponse genericResponse = await UnifiedEconService
-				.SendMessage(x => x.GetInventoryItemsWithDescriptions(request))
-				.ToLongRunningTask()
-				.ConfigureAwait(false);
+			SteamUnifiedMessages.ServiceMethodResponse genericResponse = await UnifiedEconService.SendMessage(x => x.GetInventoryItemsWithDescriptions(request)).ToLongRunningTask().ConfigureAwait(false);
 
 			CEcon_GetInventoryItemsWithDescriptions_Response response = genericResponse.GetDeserializedResponse<CEcon_GetInventoryItemsWithDescriptions_Response>();
 
@@ -213,18 +214,20 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(response.assets)} || {nameof(response.descriptions)}"));
 			}
 
-			List<InventoryDescription> convertedDescriptions = response.descriptions.Select(static description => new InventoryDescription(description)).ToList();
-
 			Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
 
-			foreach (InventoryDescription description in convertedDescriptions) {
-				if (description.ClassID == 0) {
-					throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(description.ClassID)));
+			foreach (CEconItem_Description? description in response.descriptions) {
+				if (description.classid == 0) {
+					throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(description.classid)));
 				}
 
-				(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
+				(ulong ClassID, ulong InstanceID) key = (description.classid, description.instanceid);
 
-				descriptions.TryAdd(key, description);
+				if (descriptions.ContainsKey(key)) {
+					continue;
+				}
+
+				descriptions.TryAdd(key, new InventoryDescription(description));
 			}
 
 			foreach (CEcon_Asset? asset in response.assets) {

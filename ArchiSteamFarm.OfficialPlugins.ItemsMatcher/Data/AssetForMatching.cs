@@ -5,16 +5,16 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
-// 
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,7 +41,7 @@ internal class AssetForMatching {
 	[JsonInclude]
 	[JsonPropertyName("r")]
 	[JsonRequired]
-	internal Asset.ERarity Rarity { get; private init; }
+	internal EAssetRarity Rarity { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("e")]
@@ -56,7 +56,7 @@ internal class AssetForMatching {
 	[JsonInclude]
 	[JsonPropertyName("p")]
 	[JsonRequired]
-	internal Asset.EType Type { get; private init; }
+	internal EAssetType Type { get; private init; }
 
 	[JsonConstructor]
 	protected AssetForMatching() { }

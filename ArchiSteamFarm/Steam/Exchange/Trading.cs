@@ -5,16 +5,16 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
-// 
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,12 +60,12 @@ public sealed class Trading : IDisposable {
 	public void Dispose() => TradesSemaphore.Dispose();
 
 	[PublicAPI]
-	public static Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> GetInventorySets(IReadOnlyCollection<Asset> inventory) {
+	public static Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> GetInventorySets(IReadOnlyCollection<Asset> inventory) {
 		if ((inventory == null) || (inventory.Count == 0)) {
 			throw new ArgumentNullException(nameof(inventory));
 		}
 
-		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> sets = GetInventoryState(inventory);
+		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> sets = GetInventoryState(inventory);
 
 		return sets.ToDictionary(static set => set.Key, static set => set.Value.Values.OrderBy(static amount => amount).ToList());
 	}
@@ -80,22 +80,22 @@ public sealed class Trading : IDisposable {
 			throw new ArgumentNullException(nameof(itemsToReceive));
 		}
 
-		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), uint> itemsToGiveAmounts = new();
+		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> itemsToGiveAmounts = new();
 
 		foreach (Asset item in itemsToGive) {
-			(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
+			(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 			itemsToGiveAmounts[key] = itemsToGiveAmounts.GetValueOrDefault(key) + item.Amount;
 		}
 
-		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), uint> itemsToReceiveAmounts = new();
+		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> itemsToReceiveAmounts = new();
 
 		foreach (Asset item in itemsToReceive) {
-			(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
+			(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 			itemsToReceiveAmounts[key] = itemsToReceiveAmounts.GetValueOrDefault(key) + item.Amount;
 		}
 
 		// Ensure that amount of items to give is at least amount of items to receive (per all fairness factors)
-		foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key, uint amountToGive) in itemsToGiveAmounts) {
+		foreach (((uint RealAppID, EAssetType Type, EAssetRarity Rarity) key, uint amountToGive) in itemsToGiveAmounts) {
 			if (!itemsToReceiveAmounts.TryGetValue(key, out uint amountToReceive) || (amountToGive > amountToReceive)) {
 				return false;
 			}
@@ -124,7 +124,7 @@ public sealed class Trading : IDisposable {
 		// All of those cases should be verified by our unit tests to ensure that the logic here matches all possible cases, especially those that were incorrectly handled previously
 
 		// Firstly we get initial sets state of our inventory
-		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> initialSets = GetInventorySets(inventory);
+		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> initialSets = GetInventorySets(inventory);
 
 		// Once we have initial state, we remove items that we're supposed to give from our inventory
 		// This loop is a bit more complex due to the fact that we might have a mix of the same item splitted into different amounts
@@ -162,10 +162,10 @@ public sealed class Trading : IDisposable {
 		}
 
 		// Now we can get final sets state of our inventory after the exchange
-		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> finalSets = GetInventorySets(inventory);
+		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> finalSets = GetInventorySets(inventory);
 
 		// Once we have both states, we can check overall fairness
-		foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) set, List<uint> beforeAmounts) in initialSets) {
+		foreach (((uint RealAppID, EAssetType Type, EAssetRarity Rarity) set, List<uint> beforeAmounts) in initialSets) {
 			if (!finalSets.TryGetValue(set, out List<uint>? afterAmounts)) {
 				// If we have no info about this set, then it has to be a bad one
 				return false;
@@ -200,16 +200,16 @@ public sealed class Trading : IDisposable {
 		return true;
 	}
 
-	internal static (Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> FullState, Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> TradableState) GetDividedInventoryState(IReadOnlyCollection<Asset> inventory) {
+	internal static (Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> FullState, Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> TradableState) GetDividedInventoryState(IReadOnlyCollection<Asset> inventory) {
 		if ((inventory == null) || (inventory.Count == 0)) {
 			throw new ArgumentNullException(nameof(inventory));
 		}
 
-		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> fullState = new();
-		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState = new();
+		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> fullState = new();
+		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> tradableState = new();
 
 		foreach (Asset item in inventory) {
-			(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
+			(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
 			if (fullState.TryGetValue(key, out Dictionary<ulong, uint>? fullSet)) {
 				fullSet[item.ClassID] = fullSet.GetValueOrDefault(item.ClassID) + item.Amount;
@@ -231,15 +231,15 @@ public sealed class Trading : IDisposable {
 		return (fullState, tradableState);
 	}
 
-	internal static Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> GetTradableInventoryState(IReadOnlyCollection<Asset> inventory) {
+	internal static Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> GetTradableInventoryState(IReadOnlyCollection<Asset> inventory) {
 		if ((inventory == null) || (inventory.Count == 0)) {
 			throw new ArgumentNullException(nameof(inventory));
 		}
 
-		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState = new();
+		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> tradableState = new();
 
 		foreach (Asset item in inventory.Where(static item => item.Tradable)) {
-			(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
+			(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
 			if (tradableState.TryGetValue(key, out Dictionary<ulong, uint>? tradableSet)) {
 				tradableSet[item.ClassID] = tradableSet.GetValueOrDefault(item.ClassID) + item.Amount;
@@ -295,11 +295,11 @@ public sealed class Trading : IDisposable {
 		return result;
 	}
 
-	internal static bool IsEmptyForMatching(IReadOnlyDictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> fullState, IReadOnlyDictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState) {
+	internal static bool IsEmptyForMatching(IReadOnlyDictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> fullState, IReadOnlyDictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> tradableState) {
 		ArgumentNullException.ThrowIfNull(fullState);
 		ArgumentNullException.ThrowIfNull(tradableState);
 
-		foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) set, IReadOnlyDictionary<ulong, uint> state) in tradableState) {
+		foreach (((uint RealAppID, EAssetType Type, EAssetRarity Rarity) set, IReadOnlyDictionary<ulong, uint> state) in tradableState) {
 			if (!fullState.TryGetValue(set, out Dictionary<ulong, uint>? fullSet) || (fullSet.Count == 0)) {
 				throw new InvalidOperationException(nameof(fullSet));
 			}
@@ -382,15 +382,15 @@ public sealed class Trading : IDisposable {
 		}
 	}
 
-	private static Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> GetInventoryState(IReadOnlyCollection<Asset> inventory) {
+	private static Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> GetInventoryState(IReadOnlyCollection<Asset> inventory) {
 		if ((inventory == null) || (inventory.Count == 0)) {
 			throw new ArgumentNullException(nameof(inventory));
 		}
 
-		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> state = new();
+		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> state = new();
 
 		foreach (Asset item in inventory) {
-			(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
+			(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
 			if (state.TryGetValue(key, out Dictionary<ulong, uint>? set)) {
 				set[item.ClassID] = set.GetValueOrDefault(item.ClassID) + item.Amount;
@@ -621,7 +621,7 @@ public sealed class Trading : IDisposable {
 
 			// If user has a trade hold, we add extra logic
 			// If trade hold duration exceeds our max, or user asks for cards with short lifespan, reject the trade
-			case > 0 when (holdDuration.Value > (ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration)) || tradeOffer.ItemsToGive.Any(static item => item.Type is Asset.EType.FoilTradingCard or Asset.EType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)):
+			case > 0 when (holdDuration.Value > (ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration)) || tradeOffer.ItemsToGive.Any(static item => item.Type is EAssetType.FoilTradingCard or EAssetType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)):
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(holdDuration)} > 0: {holdDuration.Value}"));
 
 				return ParseTradeResult.EResult.Rejected;
@@ -635,7 +635,7 @@ public sealed class Trading : IDisposable {
 		}
 
 		// Get sets we're interested in
-		HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> wantedSets = tradeOffer.ItemsToGive.Select(static item => (item.RealAppID, item.Type, item.Rarity)).ToHashSet();
+		HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> wantedSets = tradeOffer.ItemsToGive.Select(static item => (item.RealAppID, item.Type, item.Rarity)).ToHashSet();
 
 		// Now check if it's worth for us to do the trade
 		HashSet<Asset> inventory;

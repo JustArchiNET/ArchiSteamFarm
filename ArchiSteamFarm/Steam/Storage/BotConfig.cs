@@ -5,16 +5,16 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
-// 
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -117,7 +117,7 @@ public sealed class BotConfig {
 	internal const byte SteamTradeTokenLength = 8;
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<Asset.EType> DefaultCompleteTypesToSend = ImmutableHashSet<Asset.EType>.Empty;
+	public static readonly ImmutableHashSet<EAssetType> DefaultCompleteTypesToSend = ImmutableHashSet<EAssetType>.Empty;
 
 	[PublicAPI]
 	public static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
@@ -126,16 +126,16 @@ public sealed class BotConfig {
 	public static readonly ImmutableList<uint> DefaultGamesPlayedWhileIdle = ImmutableList<uint>.Empty;
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<Asset.EType> DefaultLootableTypes = ImmutableHashSet.Create(Asset.EType.BoosterPack, Asset.EType.FoilTradingCard, Asset.EType.TradingCard);
+	public static readonly ImmutableHashSet<EAssetType> DefaultLootableTypes = ImmutableHashSet.Create(EAssetType.BoosterPack, EAssetType.FoilTradingCard, EAssetType.TradingCard);
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<Asset.EType> DefaultMatchableTypes = ImmutableHashSet.Create(Asset.EType.TradingCard);
+	public static readonly ImmutableHashSet<EAssetType> DefaultMatchableTypes = ImmutableHashSet.Create(EAssetType.TradingCard);
 
 	[PublicAPI]
 	public static readonly ImmutableDictionary<ulong, EAccess> DefaultSteamUserPermissions = ImmutableDictionary<ulong, EAccess>.Empty;
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<Asset.EType> DefaultTransferableTypes = ImmutableHashSet.Create(Asset.EType.BoosterPack, Asset.EType.FoilTradingCard, Asset.EType.TradingCard);
+	public static readonly ImmutableHashSet<EAssetType> DefaultTransferableTypes = ImmutableHashSet.Create(EAssetType.BoosterPack, EAssetType.FoilTradingCard, EAssetType.TradingCard);
 
 	[JsonInclude]
 	public bool AcceptGifts { get; private init; } = DefaultAcceptGifts;
@@ -145,8 +145,8 @@ public sealed class BotConfig {
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	[SwaggerValidValues(ValidIntValues = [(int) Asset.EType.FoilTradingCard, (int) Asset.EType.TradingCard])]
-	public ImmutableHashSet<Asset.EType> CompleteTypesToSend { get; private init; } = DefaultCompleteTypesToSend;
+	[SwaggerValidValues(ValidIntValues = [(int) EAssetType.FoilTradingCard, (int) EAssetType.TradingCard])]
+	public ImmutableHashSet<EAssetType> CompleteTypesToSend { get; private init; } = DefaultCompleteTypesToSend;
 
 	[JsonInclude]
 	public string? CustomGamePlayedWhileFarming { get; private init; } = DefaultCustomGamePlayedWhileFarming;
@@ -177,11 +177,11 @@ public sealed class BotConfig {
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public ImmutableHashSet<Asset.EType> LootableTypes { get; private init; } = DefaultLootableTypes;
+	public ImmutableHashSet<EAssetType> LootableTypes { get; private init; } = DefaultLootableTypes;
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public ImmutableHashSet<Asset.EType> MatchableTypes { get; private init; } = DefaultMatchableTypes;
+	public ImmutableHashSet<EAssetType> MatchableTypes { get; private init; } = DefaultMatchableTypes;
 
 	[JsonInclude]
 	public EPersonaStateFlag OnlineFlags { get; private init; } = DefaultOnlineFlags;
@@ -260,7 +260,7 @@ public sealed class BotConfig {
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public ImmutableHashSet<Asset.EType> TransferableTypes { get; private init; } = DefaultTransferableTypes;
+	public ImmutableHashSet<EAssetType> TransferableTypes { get; private init; } = DefaultTransferableTypes;
 
 	[JsonInclude]
 	public bool UseLoginKeys { get; private init; } = DefaultUseLoginKeys;
@@ -424,13 +424,13 @@ public sealed class BotConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(GamesPlayedWhileIdle), $"{nameof(GamesPlayedWhileIdle.Count)} {GamesPlayedWhileIdle.Count} > {ArchiHandler.MaxGamesPlayedConcurrently}"));
 		}
 
-		foreach (Asset.EType lootableType in LootableTypes.Where(static lootableType => !Enum.IsDefined(lootableType))) {
+		foreach (EAssetType lootableType in LootableTypes.Where(static lootableType => !Enum.IsDefined(lootableType))) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
 		}
 
-		HashSet<Asset.EType>? completeTypesToSendValidTypes = null;
+		HashSet<EAssetType>? completeTypesToSendValidTypes = null;
 
-		foreach (Asset.EType completableType in CompleteTypesToSend) {
+		foreach (EAssetType completableType in CompleteTypesToSend) {
 			if (!Enum.IsDefined(completableType)) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(CompleteTypesToSend), completableType));
 			}
@@ -442,7 +442,7 @@ public sealed class BotConfig {
 					throw new InvalidOperationException(nameof(completeTypesToSendValidValues));
 				}
 
-				completeTypesToSendValidTypes = completeTypesToSendValidValues.ValidIntValues.Select(static value => (Asset.EType) value).ToHashSet();
+				completeTypesToSendValidTypes = completeTypesToSendValidValues.ValidIntValues.Select(static value => (EAssetType) value).ToHashSet();
 			}
 
 			if (!completeTypesToSendValidTypes.Contains(completableType)) {
@@ -450,7 +450,7 @@ public sealed class BotConfig {
 			}
 		}
 
-		foreach (Asset.EType matchableType in MatchableTypes.Where(static matchableType => !Enum.IsDefined(matchableType))) {
+		foreach (EAssetType matchableType in MatchableTypes.Where(static matchableType => !Enum.IsDefined(matchableType))) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
 		}
 

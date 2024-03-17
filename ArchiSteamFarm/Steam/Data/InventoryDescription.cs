@@ -5,16 +5,16 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
-// 
+// |
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+// |
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+// |
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+// |
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,8 +22,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -38,140 +38,21 @@ namespace ArchiSteamFarm.Steam.Data;
 [PublicAPI]
 public sealed class InventoryDescription {
 	[JsonIgnore]
-	public CEconItem_Description ProtobufBody { get; } = new();
-
-	internal Asset.ERarity Rarity {
-		get {
-			foreach (Tag tag in Tags) {
-				switch (tag.Identifier) {
-					case "droprate":
-						switch (tag.Value) {
-							case "droprate_0":
-								return Asset.ERarity.Common;
-							case "droprate_1":
-								return Asset.ERarity.Uncommon;
-							case "droprate_2":
-								return Asset.ERarity.Rare;
-							default:
-								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
-
-								break;
-						}
-
-						break;
-				}
-			}
-
-			return Asset.ERarity.Unknown;
-		}
-	}
-
-	internal uint RealAppID {
-		get {
-			foreach (Tag tag in Tags) {
-				switch (tag.Identifier) {
-					case "Game":
-						if (string.IsNullOrEmpty(tag.Value) || (tag.Value.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
-							ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
-
-							break;
-						}
-
-						string appIDText = tag.Value[4..];
-
-						if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
-							ASF.ArchiLogger.LogNullError(appID);
-
-							break;
-						}
-
-						return appID;
-				}
-			}
-
-			return 0;
-		}
-	}
-
-	internal Asset.EType Type {
-		get {
-			Asset.EType type = Asset.EType.Unknown;
-
-			foreach (Tag tag in Tags) {
-				switch (tag.Identifier) {
-					case "cardborder":
-						switch (tag.Value) {
-							case "cardborder_0":
-								return Asset.EType.TradingCard;
-							case "cardborder_1":
-								return Asset.EType.FoilTradingCard;
-							default:
-								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
-
-								return Asset.EType.Unknown;
-						}
-					case "item_class":
-						switch (tag.Value) {
-							case "item_class_2":
-								if (type == Asset.EType.Unknown) {
-									// This is a fallback in case we'd have no cardborder available to interpret
-									type = Asset.EType.TradingCard;
-								}
-
-								continue;
-							case "item_class_3":
-								return Asset.EType.ProfileBackground;
-							case "item_class_4":
-								return Asset.EType.Emoticon;
-							case "item_class_5":
-								return Asset.EType.BoosterPack;
-							case "item_class_6":
-								return Asset.EType.Consumable;
-							case "item_class_7":
-								return Asset.EType.SteamGems;
-							case "item_class_8":
-								return Asset.EType.ProfileModifier;
-							case "item_class_10":
-								return Asset.EType.SaleItem;
-							case "item_class_11":
-								return Asset.EType.Sticker;
-							case "item_class_12":
-								return Asset.EType.ChatEffect;
-							case "item_class_13":
-								return Asset.EType.MiniProfileBackground;
-							case "item_class_14":
-								return Asset.EType.AvatarProfileFrame;
-							case "item_class_15":
-								return Asset.EType.AnimatedAvatar;
-							case "item_class_16":
-								return Asset.EType.KeyboardSkin;
-							case "item_class_17":
-								return Asset.EType.StartupVideo;
-							default:
-								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
-
-								return Asset.EType.Unknown;
-						}
-				}
-			}
-
-			return type;
-		}
-	}
+	public CEconItem_Description Body { get; } = new();
 
 	[JsonInclude]
 	[JsonPropertyName("appid")]
 	[JsonRequired]
 	public uint AppID {
-		get => (uint) ProtobufBody.appid;
-		private init => ProtobufBody.appid = (int) value;
+		get => (uint) Body.appid;
+		private init => Body.appid = (int) value;
 	}
 
 	[JsonInclude]
 	[JsonPropertyName("background_color")]
 	public string BackgroundColor {
-		get => ProtobufBody.background_color;
-		private init => ProtobufBody.background_color = value;
+		get => Body.background_color;
+		private init => Body.background_color = value;
 	}
 
 	[JsonInclude]
@@ -179,70 +60,71 @@ public sealed class InventoryDescription {
 	[JsonPropertyName("classid")]
 	[JsonRequired]
 	public ulong ClassID {
-		get => ProtobufBody.classid;
-		private init => ProtobufBody.classid = value;
+		get => Body.classid;
+		private init => Body.classid = value;
 	}
 
 	[JsonInclude]
 	[JsonPropertyName("commodity")]
 	[JsonConverter(typeof(BooleanNumberConverter))]
 	public bool Commodity {
-		get => ProtobufBody.commodity;
-		private init => ProtobufBody.commodity = value;
+		get => Body.commodity;
+		private init => Body.commodity = value;
 	}
 
 	[JsonInclude]
 	[JsonPropertyName("currency")]
 	[JsonConverter(typeof(BooleanNumberConverter))]
 	public bool Currency {
-		get => ProtobufBody.currency;
-		private init => ProtobufBody.currency = value;
+		get => Body.currency;
+		private init => Body.currency = value;
 	}
 
 	[JsonInclude]
 	[JsonPropertyName("descriptions")]
 	public ImmutableHashSet<ItemDescription> Descriptions {
-		get => ProtobufBody.descriptions.Select(static description => new ItemDescription(description.type, description.value, description.color, description.label)).ToImmutableHashSet();
-		private init {
-			ProtobufBody.descriptions.Clear();
+		get => Body.descriptions.Select(static description => new ItemDescription(description.type, description.value, description.color, description.label)).ToImmutableHashSet();
 
-			foreach (ItemDescription description in value) {
-				ProtobufBody.descriptions.Add(
-					new CEconItem_DescriptionLine {
+		private init {
+			Body.descriptions.Clear();
+
+			Body.descriptions.AddRange(
+				value.Select(
+					static description => new CEconItem_DescriptionLine {
 						color = description.Color,
 						label = description.Label,
 						type = description.Type,
 						value = description.Value
 					}
-				);
-			}
+				)
+			);
 		}
 	}
 
+#pragma warning disable CA1056 // This property is not guaranteed to have parsable Uri
 	[JsonInclude]
 	[JsonPropertyName("icon_url")]
-#pragma warning disable CA1056 // this is a JSON/Protobuf field, and even then it doesn't contain full URL
 	public string IconURL {
-#pragma warning restore CA1056 // this is a JSON/Protobuf field, and even then it doesn't contain full URL
-		get => ProtobufBody.icon_url;
-		private init => ProtobufBody.icon_url = value;
+		get => Body.icon_url;
+		private init => Body.icon_url = value;
 	}
+#pragma warning restore CA1056 // This property is not guaranteed to have parsable Uri
 
+#pragma warning disable CA1056 // This property is not guaranteed to have parsable Uri
 	[JsonInclude]
 	[JsonPropertyName("icon_url_large")]
-#pragma warning disable CA1056 // this is a JSON/Protobuf field, and even then it doesn't contain full URL
 	public string IconURLLarge {
-#pragma warning restore CA1056 // this is a JSON/Protobuf field, and even then it doesn't contain full URL
-		get => ProtobufBody.icon_url_large;
-		private init => ProtobufBody.icon_url_large = value;
+		get => Body.icon_url_large;
+		private init => Body.icon_url_large = value;
 	}
+#pragma warning restore CA1056 // This property is not guaranteed to have parsable Uri
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("instanceid")]
 	public ulong InstanceID {
-		get => ProtobufBody.instanceid;
-		private init => ProtobufBody.instanceid = value;
+		get => Body.instanceid;
+		private init => Body.instanceid = value;
 	}
 
 	[JsonInclude]
@@ -250,74 +132,163 @@ public sealed class InventoryDescription {
 	[JsonRequired]
 	[JsonConverter(typeof(BooleanNumberConverter))]
 	public bool Marketable {
-		get => ProtobufBody.marketable;
-		private init => ProtobufBody.marketable = value;
+		get => Body.marketable;
+		private init => Body.marketable = value;
 	}
 
 	[JsonInclude]
 	[JsonPropertyName("market_fee_app")]
 	public uint MarketFeeApp {
-		get => (uint) ProtobufBody.market_fee_app;
-		private init => ProtobufBody.market_fee_app = (int) value;
+		get => (uint) Body.market_fee_app;
+		private init => Body.market_fee_app = (int) value;
 	}
 
 	[JsonInclude]
 	[JsonPropertyName("market_hash_name")]
 	public string MarketHashName {
-		get => ProtobufBody.market_hash_name;
-		private init => ProtobufBody.market_hash_name = value;
+		get => Body.market_hash_name;
+		private init => Body.market_hash_name = value;
 	}
 
 	[JsonInclude]
 	[JsonPropertyName("market_name")]
 	public string MarketName {
-		get => ProtobufBody.market_name;
-		private init => ProtobufBody.market_name = value;
+		get => Body.market_name;
+		private init => Body.market_name = value;
 	}
 
 	[JsonInclude]
 	[JsonPropertyName("name")]
 	public string Name {
-		get => ProtobufBody.name;
-		private init => ProtobufBody.name = value;
+		get => Body.name;
+		private init => Body.name = value;
 	}
 
 	[JsonInclude]
 	[JsonPropertyName("owner_actions")]
 	public ImmutableHashSet<ItemAction> OwnerActions {
-		get => ProtobufBody.owner_actions.Select(static action => new ItemAction(action.link, action.name)).ToImmutableHashSet();
-		private init {
-			ProtobufBody.owner_actions.Clear();
+		get => Body.owner_actions.Select(static action => new ItemAction(action.link, action.name)).ToImmutableHashSet();
 
-			foreach (ItemAction action in value) {
-				ProtobufBody.owner_actions.Add(
-					new CEconItem_Action {
+		private init {
+			Body.owner_actions.Clear();
+
+			Body.owner_actions.AddRange(
+				value.Select(
+					static action => new CEconItem_Action {
 						link = action.Link,
 						name = action.Name
 					}
-				);
-			}
+				)
+			);
 		}
 	}
 
 	[JsonInclude]
 	[JsonPropertyName("type")]
 	public string TypeText {
-		get => ProtobufBody.type;
-		private init => ProtobufBody.type = value;
+		get => Body.type;
+		private init => Body.type = value;
+	}
+
+	internal EAssetRarity Rarity {
+		get {
+			if (CachedRarity.HasValue) {
+				return CachedRarity.Value;
+			}
+
+			foreach (CEconItem_Tag? tag in Body.tags) {
+				switch (tag.category) {
+					case "droprate":
+						switch (tag.internal_name) {
+							case "droprate_0":
+								CachedRarity = EAssetRarity.Common;
+
+								return CachedRarity.Value;
+							case "droprate_1":
+								CachedRarity = EAssetRarity.Uncommon;
+
+								return CachedRarity.Value;
+							case "droprate_2":
+								CachedRarity = EAssetRarity.Rare;
+
+								return CachedRarity.Value;
+							default:
+								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.internal_name), tag.internal_name));
+
+								CachedRarity = EAssetRarity.Unknown;
+
+								return CachedRarity.Value;
+						}
+				}
+			}
+
+			CachedRarity = EAssetRarity.Unknown;
+
+			return CachedRarity.Value;
+		}
+
+		private init {
+			if (!Enum.IsDefined(value)) {
+				throw new InvalidEnumArgumentException(nameof(value), (int) value, typeof(EAssetRarity));
+			}
+
+			CachedRarity = value;
+		}
+	}
+
+	internal uint RealAppID {
+		get {
+			if (CachedRealAppID.HasValue) {
+				return CachedRealAppID.Value;
+			}
+
+			foreach (CEconItem_Tag? tag in Body.tags) {
+				switch (tag.category) {
+					case "Game":
+						if (string.IsNullOrEmpty(tag.internal_name) || (tag.internal_name.Length <= 4) || !tag.internal_name.StartsWith("app_", StringComparison.Ordinal)) {
+							ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.internal_name), tag.internal_name));
+
+							break;
+						}
+
+						string appIDText = tag.internal_name[4..];
+
+						if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+							ASF.ArchiLogger.LogNullError(appID);
+
+							break;
+						}
+
+						CachedRealAppID = appID;
+
+						return CachedRealAppID.Value;
+				}
+			}
+
+			CachedRealAppID = 0;
+
+			return CachedRealAppID.Value;
+		}
+
+		private init {
+			ArgumentOutOfRangeException.ThrowIfZero(value);
+
+			CachedRealAppID = value;
+		}
 	}
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("tags")]
 	internal ImmutableHashSet<Tag> Tags {
-		get => ProtobufBody.tags.Select(static x => new Tag(x.category, x.internal_name, x.localized_category_name, x.localized_tag_name)).ToImmutableHashSet();
-		private init {
-			ProtobufBody.tags.Clear();
+		get => Body.tags.Select(static tag => new Tag(tag.category, tag.internal_name, tag.localized_category_name, tag.localized_tag_name, tag.color)).ToImmutableHashSet();
 
-			foreach (Tag tag in value) {
-				ProtobufBody.tags.Add(
-					new CEconItem_Tag {
+		private init {
+			Body.tags.Clear();
+
+			Body.tags.AddRange(
+				value.Select(
+					tag => new CEconItem_Tag {
 						appid = AppID,
 						category = tag.Identifier,
 						color = tag.Color,
@@ -325,8 +296,8 @@ public sealed class InventoryDescription {
 						localized_category_name = tag.LocalizedIdentifier,
 						localized_tag_name = tag.LocalizedValue
 					}
-				);
-			}
+				)
+			);
 		}
 	}
 
@@ -335,32 +306,160 @@ public sealed class InventoryDescription {
 	[JsonRequired]
 	[JsonConverter(typeof(BooleanNumberConverter))]
 	internal bool Tradable {
-		get => ProtobufBody.tradable;
-		private init => ProtobufBody.tradable = value;
+		get => Body.tradable;
+		private init => Body.tradable = value;
 	}
 
-	// For stubs and deserialization
-	[JsonConstructor]
-	internal InventoryDescription() { }
+	internal EAssetType Type {
+		get {
+			if (CachedType.HasValue) {
+				return CachedType.Value;
+			}
 
-	// Constructed from trades being received/sent
-	internal InventoryDescription(uint appID, ulong classID, ulong instanceID, bool marketable, bool tradable, IReadOnlyCollection<Tag>? tags = null) {
-		ArgumentOutOfRangeException.ThrowIfZero(appID);
-		ArgumentOutOfRangeException.ThrowIfZero(classID);
+			EAssetType type = EAssetType.Unknown;
 
-		AppID = appID;
-		ClassID = classID;
-		InstanceID = instanceID;
-		Marketable = marketable;
-		Tradable = tradable;
+			foreach (CEconItem_Tag? tag in Body.tags) {
+				switch (tag.category) {
+					case "cardborder":
+						switch (tag.internal_name) {
+							case "cardborder_0":
+								CachedType = EAssetType.TradingCard;
 
-		if (tags?.Count > 0) {
-			Tags = tags.ToImmutableHashSet();
+								return CachedType.Value;
+							case "cardborder_1":
+								CachedType = EAssetType.FoilTradingCard;
+
+								return CachedType.Value;
+							default:
+								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.internal_name), tag.internal_name));
+
+								CachedType = EAssetType.Unknown;
+
+								return CachedType.Value;
+						}
+					case "item_class":
+						switch (tag.internal_name) {
+							case "item_class_2":
+								if (type == EAssetType.Unknown) {
+									// This is a fallback in case we'd have no cardborder available to interpret
+									type = EAssetType.TradingCard;
+								}
+
+								continue;
+							case "item_class_3":
+								CachedType = EAssetType.ProfileBackground;
+
+								return CachedType.Value;
+							case "item_class_4":
+								CachedType = EAssetType.Emoticon;
+
+								return CachedType.Value;
+							case "item_class_5":
+								CachedType = EAssetType.BoosterPack;
+
+								return CachedType.Value;
+							case "item_class_6":
+								CachedType = EAssetType.Consumable;
+
+								return CachedType.Value;
+							case "item_class_7":
+								CachedType = EAssetType.SteamGems;
+
+								return CachedType.Value;
+							case "item_class_8":
+								CachedType = EAssetType.ProfileModifier;
+
+								return CachedType.Value;
+							case "item_class_10":
+								CachedType = EAssetType.SaleItem;
+
+								return CachedType.Value;
+							case "item_class_11":
+								CachedType = EAssetType.Sticker;
+
+								return CachedType.Value;
+							case "item_class_12":
+								CachedType = EAssetType.ChatEffect;
+
+								return CachedType.Value;
+							case "item_class_13":
+								CachedType = EAssetType.MiniProfileBackground;
+
+								return CachedType.Value;
+							case "item_class_14":
+								CachedType = EAssetType.AvatarProfileFrame;
+
+								return CachedType.Value;
+							case "item_class_15":
+								CachedType = EAssetType.AnimatedAvatar;
+
+								return CachedType.Value;
+							case "item_class_16":
+								CachedType = EAssetType.KeyboardSkin;
+
+								return CachedType.Value;
+							case "item_class_17":
+								CachedType = EAssetType.StartupVideo;
+
+								return CachedType.Value;
+							default:
+								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.internal_name), tag.internal_name));
+
+								CachedType = EAssetType.Unknown;
+
+								return CachedType.Value;
+						}
+				}
+			}
+
+			CachedType = type;
+
+			return CachedType.Value;
+		}
+
+		private init {
+			if (!Enum.IsDefined(value)) {
+				throw new InvalidEnumArgumentException(nameof(value), (int) value, typeof(EAssetType));
+			}
+
+			CachedType = value;
 		}
 	}
 
-	internal InventoryDescription(CEconItem_Description description) => ProtobufBody = description;
+	private EAssetRarity? CachedRarity;
+	private uint? CachedRealAppID;
+	private EAssetType? CachedType;
 
-	[UsedImplicitly]
-	public static bool ShouldSerializeAdditionalProperties() => false;
+	internal InventoryDescription(CEconItem_Description description) {
+		ArgumentNullException.ThrowIfNull(description);
+
+		Body = description;
+	}
+
+	// For self-created stubs
+	internal InventoryDescription(uint appID, ulong classID, ulong instanceID = 0, bool marketable = false, bool tradable = false, uint realAppID = 0, EAssetType type = EAssetType.Unknown, EAssetRarity rarity = EAssetRarity.Unknown) {
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(classID);
+
+		if (!Enum.IsDefined(type)) {
+			throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(EAssetType));
+		}
+
+		if (!Enum.IsDefined(rarity)) {
+			throw new InvalidEnumArgumentException(nameof(rarity), (int) rarity, typeof(EAssetRarity));
+		}
+
+		AppID = appID;
+		ClassID = classID;
+
+		InstanceID = instanceID;
+		Marketable = marketable;
+		Tradable = tradable;
+		RealAppID = realAppID;
+		Type = type;
+		Rarity = rarity;
+	}
+
+	[JsonConstructor]
+	private InventoryDescription() { }
 }

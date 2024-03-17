@@ -5,16 +5,16 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
-// 
+// |
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+// |
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+// |
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+// |
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -232,17 +232,31 @@ public sealed class ArchiWebHandler : IDisposable {
 		return result;
 	}
 
+	/// <remarks>
+	///     If targetting inventory of this <see cref="Bot" /> instance, consider using much more efficient <see cref="ArchiHandler.GetMyInventoryAsync" /> instead.
+	///     This method should be used exclusively for foreign inventories (other users), but in special circumstances it can be used for fetching bot's own inventory as well.
+	/// </remarks>
 	[PublicAPI]
-	public async IAsyncEnumerable<Asset> GetForeignInventoryAsync(ulong steamID, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
+	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 
-		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-			throw new ArgumentOutOfRangeException(nameof(steamID));
-		}
+		if (steamID == 0) {
+			if (!Initialized) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
-		if (steamID == Bot.SteamID) {
-			throw new NotSupportedException();
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (!Initialized) {
+					throw new HttpRequestException(Strings.WarningFailed);
+				}
+			}
+
+			steamID = Bot.SteamID;
+		} else if (!new SteamID(steamID).IsIndividualAccount) {
+			throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(steamID)));
 		}
 
 		if (ASF.InventorySemaphore == null) {
@@ -371,16 +385,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	[Obsolete($"Use ArchiHandler.{nameof(ArchiHandler.GetMyInventoryAsync)} for getting bot's own inventory or ArchiWebHandler.${nameof(GetForeignInventoryAsync)} in other cases instead.")]
-	public IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
-		if ((steamID == 0) || (steamID == Bot.SteamID)) {
-			return Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID);
-		}
-
-		return GetForeignInventoryAsync(steamID, appID, contextID);
-	}
-
-	[PublicAPI]
 	public async Task<uint?> GetPointsBalance() {
 		string? accessToken = Bot.AccessToken;
 
@@ -480,9 +484,9 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		string queryString = string.Join('&', arguments.Select(static argument => $"{argument.Key}={HttpUtility.UrlEncode(argument.Value.ToString())}"));
 
-		string request = $"/{EconService}/GetTradeOffers/v1/?" + queryString;
+		Uri request = new(WebAPI.DefaultBaseAddress, $"/{EconService}/GetTradeOffers/v1?{queryString}");
 
-		TradeOffersResponse? response = (await WebLimitRequest(WebAPI.DefaultBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(new Uri(WebAPI.DefaultBaseAddress, request)).ConfigureAwait(false)).ConfigureAwait(false))?.Content?.Response;
+		TradeOffersResponse? response = (await WebLimitRequest(WebAPI.DefaultBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(request).ConfigureAwait(false)).ConfigureAwait(false))?.Content?.Response;
 
 		if (response == null) {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
@@ -2371,9 +2375,13 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	private static void SetDescriptionsToAssets(IEnumerable<Asset> assets, [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions) {
+		ArgumentNullException.ThrowIfNull(assets);
+		ArgumentNullException.ThrowIfNull(descriptions);
+
 		foreach (Asset asset in assets) {
 			if (!descriptions.TryGetValue((asset.AppID, asset.ClassID, asset.InstanceID), out InventoryDescription? description)) {
-				description = new InventoryDescription(asset.AppID, asset.ClassID, asset.InstanceID, true, true);
+				// No description, deal with it
+				continue;
 			}
 
 			asset.Description = description;

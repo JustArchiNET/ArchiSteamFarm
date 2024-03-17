@@ -5,16 +5,16 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
-// 
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,15 +41,13 @@ public sealed class Tag {
 
 	[JsonInclude]
 	[JsonPropertyName("localized_category_name")]
-	[JsonRequired]
 	[PublicAPI]
-	public string LocalizedIdentifier { get; private init; } = "";
+	public string? LocalizedIdentifier { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("localized_tag_name")]
-	[JsonRequired]
 	[PublicAPI]
-	public string LocalizedValue { get; private init; } = "";
+	public string? LocalizedValue { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("internal_name")]
@@ -57,7 +55,7 @@ public sealed class Tag {
 	[PublicAPI]
 	public string Value { get; private init; } = "";
 
-	internal Tag(string identifier, string value, string localizedIdentifier, string localizedValue, string? color = null) {
+	internal Tag(string identifier, string value, string? localizedIdentifier = null, string? localizedValue = null, string? color = null) {
 		ArgumentException.ThrowIfNullOrEmpty(identifier);
 		ArgumentNullException.ThrowIfNull(value);
 

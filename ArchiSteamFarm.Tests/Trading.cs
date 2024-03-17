@@ -5,16 +5,16 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
-// 
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,18 +33,18 @@ public sealed class Trading {
 	[TestMethod]
 	public void ExploitingNewSetsIsFairButNotNeutral() {
 		HashSet<Asset> inventory = [
-			CreateItem(1, 40),
-			CreateItem(2, 10),
-			CreateItem(3, 10)
+			CreateItem(1, amount: 40),
+			CreateItem(2, amount: 10),
+			CreateItem(3, amount: 10)
 		];
 
 		HashSet<Asset> itemsToGive = [
-			CreateItem(2, 5),
-			CreateItem(3, 5)
+			CreateItem(2, amount: 5),
+			CreateItem(3, amount: 5)
 		];
 
 		HashSet<Asset> itemsToReceive = [
-			CreateItem(1, 9),
+			CreateItem(1, amount: 9),
 			CreateItem(4)
 		];
 
@@ -54,24 +54,39 @@ public sealed class Trading {
 
 	[TestMethod]
 	public void MismatchRarityIsNotFair() {
-		HashSet<Asset> itemsToGive = [CreateItem(1, rarity: Asset.ERarity.Rare)];
-		HashSet<Asset> itemsToReceive = [CreateItem(2)];
+		HashSet<Asset> itemsToGive = [
+			CreateItem(1, rarity: EAssetRarity.Rare)
+		];
+
+		HashSet<Asset> itemsToReceive = [
+			CreateItem(2)
+		];
 
 		Assert.IsFalse(IsFairExchange(itemsToGive, itemsToReceive));
 	}
 
 	[TestMethod]
 	public void MismatchRealAppIDsIsNotFair() {
-		HashSet<Asset> itemsToGive = [CreateItem(1, realAppID: 570)];
-		HashSet<Asset> itemsToReceive = [CreateItem(2)];
+		HashSet<Asset> itemsToGive = [
+			CreateItem(1, realAppID: 570)
+		];
+
+		HashSet<Asset> itemsToReceive = [
+			CreateItem(2)
+		];
 
 		Assert.IsFalse(IsFairExchange(itemsToGive, itemsToReceive));
 	}
 
 	[TestMethod]
 	public void MismatchTypesIsNotFair() {
-		HashSet<Asset> itemsToGive = [CreateItem(1, type: Asset.EType.Emoticon)];
-		HashSet<Asset> itemsToReceive = [CreateItem(2)];
+		HashSet<Asset> itemsToGive = [
+			CreateItem(1, type: EAssetType.Emoticon)
+		];
+
+		HashSet<Asset> itemsToReceive = [
+			CreateItem(2)
+		];
 
 		Assert.IsFalse(IsFairExchange(itemsToGive, itemsToReceive));
 	}
@@ -79,19 +94,19 @@ public sealed class Trading {
 	[TestMethod]
 	public void MultiGameMultiTypeBadReject() {
 		HashSet<Asset> inventory = [
-			CreateItem(1, 9),
-			CreateItem(3, 9, 730, Asset.EType.Emoticon),
-			CreateItem(4, realAppID: 730, type: Asset.EType.Emoticon)
+			CreateItem(1, amount: 9),
+			CreateItem(3, amount: 9, realAppID: 730, type: EAssetType.Emoticon),
+			CreateItem(4, realAppID: 730, type: EAssetType.Emoticon)
 		];
 
 		HashSet<Asset> itemsToGive = [
 			CreateItem(1),
-			CreateItem(4, realAppID: 730, type: Asset.EType.Emoticon)
+			CreateItem(4, realAppID: 730, type: EAssetType.Emoticon)
 		];
 
 		HashSet<Asset> itemsToReceive = [
 			CreateItem(2),
-			CreateItem(3, realAppID: 730, type: Asset.EType.Emoticon)
+			CreateItem(3, realAppID: 730, type: EAssetType.Emoticon)
 		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
@@ -101,18 +116,18 @@ public sealed class Trading {
 	[TestMethod]
 	public void MultiGameMultiTypeNeutralAccept() {
 		HashSet<Asset> inventory = [
-			CreateItem(1, 9),
-			CreateItem(3, realAppID: 730, type: Asset.EType.Emoticon)
+			CreateItem(1, amount: 9),
+			CreateItem(3, realAppID: 730, type: EAssetType.Emoticon)
 		];
 
 		HashSet<Asset> itemsToGive = [
 			CreateItem(1),
-			CreateItem(3, realAppID: 730, type: Asset.EType.Emoticon)
+			CreateItem(3, realAppID: 730, type: EAssetType.Emoticon)
 		];
 
 		HashSet<Asset> itemsToReceive = [
 			CreateItem(2),
-			CreateItem(4, realAppID: 730, type: Asset.EType.Emoticon)
+			CreateItem(4, realAppID: 730, type: EAssetType.Emoticon)
 		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
@@ -122,7 +137,7 @@ public sealed class Trading {
 	[TestMethod]
 	public void MultiGameSingleTypeBadReject() {
 		HashSet<Asset> inventory = [
-			CreateItem(1, 9),
+			CreateItem(1, amount: 9),
 			CreateItem(3, realAppID: 730),
 			CreateItem(4, realAppID: 730)
 		];
@@ -144,7 +159,7 @@ public sealed class Trading {
 	[TestMethod]
 	public void MultiGameSingleTypeNeutralAccept() {
 		HashSet<Asset> inventory = [
-			CreateItem(1, 2),
+			CreateItem(1, amount: 2),
 			CreateItem(3, realAppID: 730)
 		];
 
@@ -166,15 +181,19 @@ public sealed class Trading {
 	public void SingleGameAbrynosWasWrongNeutralAccept() {
 		HashSet<Asset> inventory = [
 			CreateItem(1),
-			CreateItem(2, 2),
+			CreateItem(2, amount: 2),
 			CreateItem(3),
 			CreateItem(4),
 			CreateItem(5)
 		];
 
-		HashSet<Asset> itemsToGive = [CreateItem(2)];
+		HashSet<Asset> itemsToGive = [
+			CreateItem(2)
+		];
 
-		HashSet<Asset> itemsToReceive = [CreateItem(3)];
+		HashSet<Asset> itemsToReceive = [
+			CreateItem(3)
+		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 		Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
@@ -182,13 +201,17 @@ public sealed class Trading {
 
 	[TestMethod]
 	public void SingleGameDonationAccept() {
-		HashSet<Asset> inventory = [CreateItem(1)];
+		HashSet<Asset> inventory = [
+			CreateItem(1)
+		];
 
-		HashSet<Asset> itemsToGive = [CreateItem(1)];
+		HashSet<Asset> itemsToGive = [
+			CreateItem(1)
+		];
 
 		HashSet<Asset> itemsToReceive = [
 			CreateItem(2),
-			CreateItem(3, type: Asset.EType.SteamGems)
+			CreateItem(3, type: EAssetType.SteamGems)
 		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
@@ -198,19 +221,19 @@ public sealed class Trading {
 	[TestMethod]
 	public void SingleGameMultiTypeBadReject() {
 		HashSet<Asset> inventory = [
-			CreateItem(1, 9),
-			CreateItem(3, 9, type: Asset.EType.Emoticon),
-			CreateItem(4, type: Asset.EType.Emoticon)
+			CreateItem(1, amount: 9),
+			CreateItem(3, amount: 9, type: EAssetType.Emoticon),
+			CreateItem(4, type: EAssetType.Emoticon)
 		];
 
 		HashSet<Asset> itemsToGive = [
 			CreateItem(1),
-			CreateItem(4, type: Asset.EType.Emoticon)
+			CreateItem(4, type: EAssetType.Emoticon)
 		];
 
 		HashSet<Asset> itemsToReceive = [
 			CreateItem(2),
-			CreateItem(3, type: Asset.EType.Emoticon)
+			CreateItem(3, type: EAssetType.Emoticon)
 		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
@@ -220,18 +243,18 @@ public sealed class Trading {
 	[TestMethod]
 	public void SingleGameMultiTypeNeutralAccept() {
 		HashSet<Asset> inventory = [
-			CreateItem(1, 9),
-			CreateItem(3, type: Asset.EType.Emoticon)
+			CreateItem(1, amount: 9),
+			CreateItem(3, type: EAssetType.Emoticon)
 		];
 
 		HashSet<Asset> itemsToGive = [
 			CreateItem(1),
-			CreateItem(3, type: Asset.EType.Emoticon)
+			CreateItem(3, type: EAssetType.Emoticon)
 		];
 
 		HashSet<Asset> itemsToReceive = [
 			CreateItem(2),
-			CreateItem(4, type: Asset.EType.Emoticon)
+			CreateItem(4, type: EAssetType.Emoticon)
 		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
@@ -252,7 +275,9 @@ public sealed class Trading {
 			CreateItem(3)
 		];
 
-		HashSet<Asset> itemsToReceive = [CreateItem(4, 3)];
+		HashSet<Asset> itemsToReceive = [
+			CreateItem(4, amount: 3)
+		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 		Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
@@ -262,15 +287,17 @@ public sealed class Trading {
 	public void SingleGameQuantityBadReject2() {
 		HashSet<Asset> inventory = [
 			CreateItem(1),
-			CreateItem(2, 2)
+			CreateItem(2, amount: 2)
 		];
 
 		HashSet<Asset> itemsToGive = [
 			CreateItem(1),
-			CreateItem(2, 2)
+			CreateItem(2, amount: 2)
 		];
 
-		HashSet<Asset> itemsToReceive = [CreateItem(3, 3)];
+		HashSet<Asset> itemsToReceive = [
+			CreateItem(3, amount: 3)
+		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 		Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
@@ -279,7 +306,7 @@ public sealed class Trading {
 	[TestMethod]
 	public void SingleGameQuantityNeutralAccept() {
 		HashSet<Asset> inventory = [
-			CreateItem(1, 2),
+			CreateItem(1, amount: 2),
 			CreateItem(2)
 		];
 
@@ -288,7 +315,9 @@ public sealed class Trading {
 			CreateItem(2)
 		];
 
-		HashSet<Asset> itemsToReceive = [CreateItem(3, 2)];
+		HashSet<Asset> itemsToReceive = [
+			CreateItem(3, amount: 2)
+		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 		Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
@@ -301,8 +330,13 @@ public sealed class Trading {
 			CreateItem(2)
 		];
 
-		HashSet<Asset> itemsToGive = [CreateItem(1)];
-		HashSet<Asset> itemsToReceive = [CreateItem(2)];
+		HashSet<Asset> itemsToGive = [
+			CreateItem(1)
+		];
+
+		HashSet<Asset> itemsToReceive = [
+			CreateItem(2)
+		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 		Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
@@ -311,12 +345,14 @@ public sealed class Trading {
 	[TestMethod]
 	public void SingleGameSingleTypeBadWithOverpayingReject() {
 		HashSet<Asset> inventory = [
-			CreateItem(1, 2),
-			CreateItem(2, 2),
-			CreateItem(3, 2)
+			CreateItem(1, amount: 2),
+			CreateItem(2, amount: 2),
+			CreateItem(3, amount: 2)
 		];
 
-		HashSet<Asset> itemsToGive = [CreateItem(2)];
+		HashSet<Asset> itemsToGive = [
+			CreateItem(2)
+		];
 
 		HashSet<Asset> itemsToReceive = [
 			CreateItem(1),
@@ -331,12 +367,17 @@ public sealed class Trading {
 	public void SingleGameSingleTypeBigDifferenceAccept() {
 		HashSet<Asset> inventory = [
 			CreateItem(1),
-			CreateItem(2, 5),
+			CreateItem(2, amount: 5),
 			CreateItem(3)
 		];
 
-		HashSet<Asset> itemsToGive = [CreateItem(2)];
-		HashSet<Asset> itemsToReceive = [CreateItem(3)];
+		HashSet<Asset> itemsToGive = [
+			CreateItem(2)
+		];
+
+		HashSet<Asset> itemsToReceive = [
+			CreateItem(3)
+		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 		Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
@@ -346,10 +387,10 @@ public sealed class Trading {
 	public void SingleGameSingleTypeBigDifferenceReject() {
 		HashSet<Asset> inventory = [
 			CreateItem(1),
-			CreateItem(2, 2),
-			CreateItem(3, 2),
-			CreateItem(4, 3),
-			CreateItem(5, 10)
+			CreateItem(2, amount: 2),
+			CreateItem(3, amount: 2),
+			CreateItem(4, amount: 3),
+			CreateItem(5, amount: 10)
 		];
 
 		HashSet<Asset> itemsToGive = [
@@ -368,9 +409,17 @@ public sealed class Trading {
 
 	[TestMethod]
 	public void SingleGameSingleTypeGoodAccept() {
-		HashSet<Asset> inventory = [CreateItem(1, 2)];
-		HashSet<Asset> itemsToGive = [CreateItem(1)];
-		HashSet<Asset> itemsToReceive = [CreateItem(2)];
+		HashSet<Asset> inventory = [
+			CreateItem(1, amount: 2)
+		];
+
+		HashSet<Asset> itemsToGive = [
+			CreateItem(1)
+		];
+
+		HashSet<Asset> itemsToReceive = [
+			CreateItem(2)
+		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 		Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
@@ -378,9 +427,17 @@ public sealed class Trading {
 
 	[TestMethod]
 	public void SingleGameSingleTypeNeutralAccept() {
-		HashSet<Asset> inventory = [CreateItem(1)];
-		HashSet<Asset> itemsToGive = [CreateItem(1)];
-		HashSet<Asset> itemsToReceive = [CreateItem(2)];
+		HashSet<Asset> inventory = [
+			CreateItem(1)
+		];
+
+		HashSet<Asset> itemsToGive = [
+			CreateItem(1)
+		];
+
+		HashSet<Asset> itemsToReceive = [
+			CreateItem(2)
+		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 		Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
@@ -389,11 +446,13 @@ public sealed class Trading {
 	[TestMethod]
 	public void SingleGameSingleTypeNeutralWithOverpayingAccept() {
 		HashSet<Asset> inventory = [
-			CreateItem(1, 2),
-			CreateItem(2, 2)
+			CreateItem(1, amount: 2),
+			CreateItem(2, amount: 2)
 		];
 
-		HashSet<Asset> itemsToGive = [CreateItem(2)];
+		HashSet<Asset> itemsToGive = [
+			CreateItem(2)
+		];
 
 		HashSet<Asset> itemsToReceive = [
 			CreateItem(1),
@@ -407,26 +466,28 @@ public sealed class Trading {
 	[TestMethod]
 	public void TakingExcessiveAmountOfSingleCardCanStillBeFairAndNeutral() {
 		HashSet<Asset> inventory = [
-			CreateItem(1, 52),
-			CreateItem(2, 73),
-			CreateItem(3, 52),
-			CreateItem(4, 47),
+			CreateItem(1, amount: 52),
+			CreateItem(2, amount: 73),
+			CreateItem(3, amount: 52),
+			CreateItem(4, amount: 47),
 			CreateItem(5)
 		];
 
-		HashSet<Asset> itemsToGive = [CreateItem(2, 73)];
+		HashSet<Asset> itemsToGive = [
+			CreateItem(2, amount: 73)
+		];
 
 		HashSet<Asset> itemsToReceive = [
-			CreateItem(1, 9),
-			CreateItem(3, 9),
-			CreateItem(4, 8),
-			CreateItem(5, 24),
-			CreateItem(6, 23)
+			CreateItem(1, amount: 9),
+			CreateItem(3, amount: 9),
+			CreateItem(4, amount: 8),
+			CreateItem(5, amount: 24),
+			CreateItem(6, amount: 23)
 		];
 
 		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 		Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 	}
 
-	private static Asset CreateItem(ulong classID, uint amount = 1, uint realAppID = Asset.SteamAppID, Asset.EType type = Asset.EType.TradingCard, Asset.ERarity rarity = Asset.ERarity.Common) => new(Asset.SteamAppID, Asset.SteamCommunityContextID, classID, amount, new InventoryDescription(), realAppID, type, rarity);
+	private static Asset CreateItem(ulong classID, ulong instanceID = 0, uint amount = 1, bool marketable = false, bool tradable = false, uint realAppID = Asset.SteamAppID, EAssetType type = EAssetType.TradingCard, EAssetRarity rarity = EAssetRarity.Common) => new(Asset.SteamAppID, Asset.SteamCommunityContextID, classID, amount, new InventoryDescription(Asset.SteamAppID, classID, instanceID, marketable, tradable, realAppID, type, rarity));
 }

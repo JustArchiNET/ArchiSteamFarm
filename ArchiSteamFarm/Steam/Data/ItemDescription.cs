@@ -5,16 +5,16 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
-// 
+// |
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+// |
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+// |
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+// |
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,12 +22,11 @@
 // limitations under the License.
 
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Steam.Data;
 
-public class ItemDescription {
+public sealed class ItemDescription {
 	[JsonInclude]
 	[JsonPropertyName("color")]
 	[PublicAPI]
@@ -38,19 +37,17 @@ public class ItemDescription {
 	[PublicAPI]
 	public string? Label { get; private init; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("type")]
 	[PublicAPI]
-	public string Type { get; private init; } = null!;
+	public string? Type { get; private init; }
 
-	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("value")]
 	[PublicAPI]
-	public string Value { get; private init; } = null!;
+	public string? Value { get; private init; }
 
-	internal ItemDescription(string type, string value, string color, string label) {
+	internal ItemDescription(string? type = null, string? value = null, string? color = null, string? label = null) {
 		Type = type;
 		Value = value;
 		Color = color;

@@ -5,16 +5,16 @@
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
-// 
+//
 // Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,7 +45,7 @@ public sealed class Bot {
 
 		foreach ((uint appID, byte cards) in itemsPerSet) {
 			for (byte i = 1; i <= cards; i++) {
-				items.Add(CreateCard(i, appID));
+				items.Add(CreateCard(i, realAppID: appID));
 			}
 		}
 
@@ -61,8 +61,8 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID),
-			CreateCard(2, appID)
+			CreateCard(1, realAppID: appID),
+			CreateCard(2, realAppID: appID)
 		];
 
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => GetItemsForFullBadge(items, 2, appID, MinCardsPerBadge - 1));
@@ -73,10 +73,10 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID),
-			CreateCard(1, appID),
-			CreateCard(2, appID),
-			CreateCard(3, appID)
+			CreateCard(1, realAppID: appID),
+			CreateCard(1, realAppID: appID),
+			CreateCard(2, realAppID: appID),
+			CreateCard(3, realAppID: appID)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
@@ -95,10 +95,10 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID),
-			CreateCard(1, appID),
-			CreateCard(2, appID),
-			CreateCard(2, appID)
+			CreateCard(1, realAppID: appID),
+			CreateCard(1, realAppID: appID),
+			CreateCard(2, realAppID: appID),
+			CreateCard(2, realAppID: appID)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
@@ -116,9 +116,9 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID, 2),
-			CreateCard(2, appID),
-			CreateCard(2, appID)
+			CreateCard(1, amount: 2, realAppID: appID),
+			CreateCard(2, realAppID: appID),
+			CreateCard(2, realAppID: appID)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
@@ -136,27 +136,27 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID, type: Asset.EType.TradingCard, rarity: Asset.ERarity.Common),
-			CreateCard(2, appID, type: Asset.EType.TradingCard, rarity: Asset.ERarity.Common),
+			CreateCard(1, realAppID: appID, type: EAssetType.TradingCard, rarity: EAssetRarity.Common),
+			CreateCard(2, realAppID: appID, type: EAssetType.TradingCard, rarity: EAssetRarity.Common),
 
-			CreateCard(1, appID, type: Asset.EType.FoilTradingCard, rarity: Asset.ERarity.Uncommon),
-			CreateCard(2, appID, type: Asset.EType.FoilTradingCard, rarity: Asset.ERarity.Uncommon),
+			CreateCard(1, realAppID: appID, type: EAssetType.FoilTradingCard, rarity: EAssetRarity.Uncommon),
+			CreateCard(2, realAppID: appID, type: EAssetType.FoilTradingCard, rarity: EAssetRarity.Uncommon),
 
-			CreateCard(1, appID, type: Asset.EType.FoilTradingCard, rarity: Asset.ERarity.Rare),
-			CreateCard(2, appID, type: Asset.EType.FoilTradingCard, rarity: Asset.ERarity.Rare),
+			CreateCard(1, realAppID: appID, type: EAssetType.FoilTradingCard, rarity: EAssetRarity.Rare),
+			CreateCard(2, realAppID: appID, type: EAssetType.FoilTradingCard, rarity: EAssetRarity.Rare),
 
 			// for better readability and easier verification when thinking about this test the items that shall be selected for sending are the ones below this comment
-			CreateCard(1, appID, type: Asset.EType.TradingCard, rarity: Asset.ERarity.Uncommon),
-			CreateCard(2, appID, type: Asset.EType.TradingCard, rarity: Asset.ERarity.Uncommon),
-			CreateCard(3, appID, type: Asset.EType.TradingCard, rarity: Asset.ERarity.Uncommon),
+			CreateCard(1, realAppID: appID, type: EAssetType.TradingCard, rarity: EAssetRarity.Uncommon),
+			CreateCard(2, realAppID: appID, type: EAssetType.TradingCard, rarity: EAssetRarity.Uncommon),
+			CreateCard(3, realAppID: appID, type: EAssetType.TradingCard, rarity: EAssetRarity.Uncommon),
 
-			CreateCard(1, appID, type: Asset.EType.FoilTradingCard, rarity: Asset.ERarity.Common),
-			CreateCard(3, appID, type: Asset.EType.FoilTradingCard, rarity: Asset.ERarity.Common),
-			CreateCard(7, appID, type: Asset.EType.FoilTradingCard, rarity: Asset.ERarity.Common),
+			CreateCard(1, realAppID: appID, type: EAssetType.FoilTradingCard, rarity: EAssetRarity.Common),
+			CreateCard(3, realAppID: appID, type: EAssetType.FoilTradingCard, rarity: EAssetRarity.Common),
+			CreateCard(7, realAppID: appID, type: EAssetType.FoilTradingCard, rarity: EAssetRarity.Common),
 
-			CreateCard(2, appID, type: Asset.EType.Unknown, rarity: Asset.ERarity.Rare),
-			CreateCard(3, appID, type: Asset.EType.Unknown, rarity: Asset.ERarity.Rare),
-			CreateCard(4, appID, type: Asset.EType.Unknown, rarity: Asset.ERarity.Rare)
+			CreateCard(2, realAppID: appID, type: EAssetType.Unknown, rarity: EAssetRarity.Rare),
+			CreateCard(3, realAppID: appID, type: EAssetType.Unknown, rarity: EAssetRarity.Rare),
+			CreateCard(4, realAppID: appID, type: EAssetType.Unknown, rarity: EAssetRarity.Rare)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
@@ -177,8 +177,8 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID),
-			CreateCard(2, appID)
+			CreateCard(1, realAppID: appID),
+			CreateCard(2, realAppID: appID)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
@@ -192,8 +192,8 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID),
-			CreateCard(2, appID)
+			CreateCard(1, realAppID: appID),
+			CreateCard(2, realAppID: appID)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
@@ -212,8 +212,8 @@ public sealed class Bot {
 		const uint appID1 = 43;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID0),
-			CreateCard(1, appID1)
+			CreateCard(1, realAppID: appID0),
+			CreateCard(1, realAppID: appID1)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(
@@ -237,8 +237,8 @@ public sealed class Bot {
 		const uint appID1 = 43;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID0),
-			CreateCard(1, appID1)
+			CreateCard(1, realAppID: appID0),
+			CreateCard(1, realAppID: appID1)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(
@@ -260,12 +260,12 @@ public sealed class Bot {
 		const uint appID2 = 44;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID0),
-			CreateCard(2, appID0),
+			CreateCard(1, realAppID: appID0),
+			CreateCard(2, realAppID: appID0),
 
-			CreateCard(1, appID1),
-			CreateCard(2, appID1),
-			CreateCard(3, appID1)
+			CreateCard(1, realAppID: appID1),
+			CreateCard(2, realAppID: appID1),
+			CreateCard(3, realAppID: appID1)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(
@@ -290,8 +290,8 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID, rarity: Asset.ERarity.Common),
-			CreateCard(1, appID, rarity: Asset.ERarity.Rare)
+			CreateCard(1, realAppID: appID, rarity: EAssetRarity.Common),
+			CreateCard(1, realAppID: appID, rarity: EAssetRarity.Rare)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 1, appID);
@@ -308,8 +308,8 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID, rarity: Asset.ERarity.Common),
-			CreateCard(1, appID, rarity: Asset.ERarity.Rare)
+			CreateCard(1, realAppID: appID, rarity: EAssetRarity.Common),
+			CreateCard(1, realAppID: appID, rarity: EAssetRarity.Rare)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
@@ -324,11 +324,11 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID, rarity: Asset.ERarity.Common),
-			CreateCard(2, appID, rarity: Asset.ERarity.Common),
-			CreateCard(1, appID, rarity: Asset.ERarity.Uncommon),
-			CreateCard(2, appID, rarity: Asset.ERarity.Uncommon),
-			CreateCard(3, appID, rarity: Asset.ERarity.Uncommon)
+			CreateCard(1, realAppID: appID, rarity: EAssetRarity.Common),
+			CreateCard(2, realAppID: appID, rarity: EAssetRarity.Common),
+			CreateCard(1, realAppID: appID, rarity: EAssetRarity.Uncommon),
+			CreateCard(2, realAppID: appID, rarity: EAssetRarity.Uncommon),
+			CreateCard(3, realAppID: appID, rarity: EAssetRarity.Uncommon)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
@@ -347,8 +347,8 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID, type: Asset.EType.TradingCard),
-			CreateCard(1, appID, type: Asset.EType.FoilTradingCard)
+			CreateCard(1, realAppID: appID, type: EAssetType.TradingCard),
+			CreateCard(1, realAppID: appID, type: EAssetType.FoilTradingCard)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 1, appID);
@@ -365,8 +365,8 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID, type: Asset.EType.TradingCard),
-			CreateCard(1, appID, type: Asset.EType.FoilTradingCard)
+			CreateCard(1, realAppID: appID, type: EAssetType.TradingCard),
+			CreateCard(1, realAppID: appID, type: EAssetType.FoilTradingCard)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
@@ -381,11 +381,11 @@ public sealed class Bot {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID, type: Asset.EType.TradingCard),
-			CreateCard(2, appID, type: Asset.EType.TradingCard),
-			CreateCard(1, appID, type: Asset.EType.FoilTradingCard),
-			CreateCard(2, appID, type: Asset.EType.FoilTradingCard),
-			CreateCard(3, appID, type: Asset.EType.FoilTradingCard)
+			CreateCard(1, realAppID: appID, type: EAssetType.TradingCard),
+			CreateCard(2, realAppID: appID, type: EAssetType.TradingCard),
+			CreateCard(1, realAppID: appID, type: EAssetType.FoilTradingCard),
+			CreateCard(2, realAppID: appID, type: EAssetType.FoilTradingCard),
+			CreateCard(3, realAppID: appID, type: EAssetType.FoilTradingCard)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
@@ -404,8 +404,8 @@ public sealed class Bot {
 		const uint appID0 = 42;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID0, 2),
-			CreateCard(2, appID0)
+			CreateCard(1, amount: 2, realAppID: appID0),
+			CreateCard(2, realAppID: appID0)
 		];
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID0);
@@ -425,8 +425,8 @@ public sealed class Bot {
 		HashSet<Asset> items = [];
 
 		for (byte i = 0; i < Steam.Exchange.Trading.MaxItemsPerTrade; i++) {
-			items.Add(CreateCard(1, appID));
-			items.Add(CreateCard(2, appID));
+			items.Add(CreateCard(1, realAppID: appID));
+			items.Add(CreateCard(2, realAppID: appID));
 		}
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
@@ -442,10 +442,10 @@ public sealed class Bot {
 		HashSet<Asset> items = [];
 
 		for (byte i = 0; i < 100; i++) {
-			items.Add(CreateCard(1, appID0));
-			items.Add(CreateCard(2, appID0));
-			items.Add(CreateCard(1, appID1));
-			items.Add(CreateCard(2, appID1));
+			items.Add(CreateCard(1, realAppID: appID0));
+			items.Add(CreateCard(2, realAppID: appID0));
+			items.Add(CreateCard(1, realAppID: appID1));
+			items.Add(CreateCard(2, realAppID: appID1));
 		}
 
 		Dictionary<uint, byte> itemsPerSet = new() {
@@ -465,10 +465,10 @@ public sealed class Bot {
 		const uint appID2 = 44;
 
 		HashSet<Asset> items = [
-			CreateCard(1, appID0),
-			CreateCard(2, appID0),
-			CreateCard(3, appID0),
-			CreateCard(4, appID0)
+			CreateCard(1, realAppID: appID0),
+			CreateCard(2, realAppID: appID0),
+			CreateCard(3, realAppID: appID0),
+			CreateCard(4, realAppID: appID0)
 		];
 
 		Assert.ThrowsException<InvalidOperationException>(
@@ -491,12 +491,12 @@ public sealed class Bot {
 		Assert.IsTrue(expectedResult.All(expectation => realResult.TryGetValue(expectation.Key, out long reality) && (expectation.Value == reality)));
 	}
 
-	private static Asset CreateCard(ulong classID, uint realAppID, uint amount = 1, Asset.EType type = Asset.EType.TradingCard, Asset.ERarity rarity = Asset.ERarity.Common) => new(Asset.SteamAppID, Asset.SteamCommunityContextID, classID, amount, new InventoryDescription(), realAppID, type, rarity);
+	private static Asset CreateCard(ulong classID, ulong instanceID = 0, uint amount = 1, bool marketable = false, bool tradable = false, uint realAppID = Asset.SteamAppID, EAssetType type = EAssetType.TradingCard, EAssetRarity rarity = EAssetRarity.Common) => new(Asset.SteamAppID, Asset.SteamCommunityContextID, classID, amount, new InventoryDescription(Asset.SteamAppID, classID, instanceID, marketable, tradable, realAppID, type, rarity));
 
 	private static HashSet<Asset> GetItemsForFullBadge(IReadOnlyCollection<Asset> inventory, byte cardsPerSet, uint appID, ushort maxItems = Steam.Exchange.Trading.MaxItemsPerTrade) => GetItemsForFullBadge(inventory, new Dictionary<uint, byte> { { appID, cardsPerSet } }, maxItems);
 
 	private static HashSet<Asset> GetItemsForFullBadge(IReadOnlyCollection<Asset> inventory, IDictionary<uint, byte> cardsPerSet, ushort maxItems = Steam.Exchange.Trading.MaxItemsPerTrade) {
-		Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> inventorySets = Steam.Exchange.Trading.GetInventorySets(inventory);
+		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> inventorySets = Steam.Exchange.Trading.GetInventorySets(inventory);
 
 		return GetItemsForFullSets(inventory, inventorySets.ToDictionary(static kv => kv.Key, kv => (SetsToExtract: inventorySets[kv.Key][0], cardsPerSet[kv.Key.RealAppID])), maxItems).ToHashSet();
 	}
