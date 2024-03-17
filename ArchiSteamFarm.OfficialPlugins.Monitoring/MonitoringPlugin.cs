@@ -127,8 +127,8 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			static builder => {
 				builder.AddPrometheusExporter(static config => config.ScrapeEndpointPath = "/Api/metrics");
 				builder.AddRuntimeInstrumentation();
-				builder.AddMeter("Microsoft.AspNetCore.Hosting");
-				builder.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
+				builder.AddAspNetCoreInstrumentation();
+				builder.AddHttpClientInstrumentation();
 				builder.AddMeter(MeterName);
 			}
 		);
