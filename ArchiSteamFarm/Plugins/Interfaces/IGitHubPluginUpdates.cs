@@ -145,7 +145,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			return null;
 		}
 
-		if (string.IsNullOrEmpty(RepositoryName)) {
+		if (string.IsNullOrEmpty(RepositoryName) || (RepositoryName == SharedInfo.DefaultPluginTemplateGithubRepo)) {
 			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(RepositoryName)));
 
 			return null;
