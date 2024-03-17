@@ -23,7 +23,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Composition;
 using System.Diagnostics.CodeAnalysis;
@@ -92,14 +91,13 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 		}
 
 		config ??= new MonitoringConfig();
+		Config = config;
 
 		if (!Enabled) {
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(MonitoringPlugin)));
 
 			return Task.CompletedTask;
 		}
-
-		Config = config;
 
 		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginInitializedAndEnabled, nameof(MonitoringPlugin)));
 
