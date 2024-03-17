@@ -233,6 +233,25 @@ public sealed class InventoryDescription {
 			}
 
 			CachedRarity = value;
+
+			if (value == EAssetRarity.Unknown) {
+				return;
+			}
+
+			CEconItem_Tag? tag = Body.tags.FirstOrDefault(static tag => tag.category == "droprate");
+
+			if (tag == null) {
+				tag = new CEconItem_Tag { category = "droprate" };
+
+				Body.tags.Add(tag);
+			}
+
+			tag.internal_name = value switch {
+				EAssetRarity.Common => "droprate_0",
+				EAssetRarity.Uncommon => "droprate_1",
+				EAssetRarity.Rare => "droprate_2",
+				_ => throw new InvalidOperationException(nameof(value))
+			};
 		}
 	}
 
@@ -271,9 +290,21 @@ public sealed class InventoryDescription {
 		}
 
 		private init {
-			ArgumentOutOfRangeException.ThrowIfZero(value);
-
 			CachedRealAppID = value;
+
+			if (value == 0) {
+				return;
+			}
+
+			CEconItem_Tag? tag = Body.tags.FirstOrDefault(static tag => tag.category == "Game");
+
+			if (tag == null) {
+				tag = new CEconItem_Tag { category = "Game" };
+
+				Body.tags.Add(tag);
+			}
+
+			tag.internal_name = $"app_{value}";
 		}
 	}
 
@@ -423,6 +454,57 @@ public sealed class InventoryDescription {
 			}
 
 			CachedType = value;
+
+			switch (value) {
+				case EAssetType.Unknown:
+					return;
+				case EAssetType.TradingCard:
+				case EAssetType.FoilTradingCard:
+					CEconItem_Tag? cardTag = Body.tags.FirstOrDefault(static tag => tag.category == "cardborder");
+
+					if (cardTag == null) {
+						cardTag = new CEconItem_Tag { category = "cardborder" };
+
+						Body.tags.Add(cardTag);
+					}
+
+					cardTag.internal_name = value switch {
+						EAssetType.TradingCard => "cardborder_0",
+						EAssetType.FoilTradingCard => "cardborder_1",
+						_ => throw new InvalidOperationException(nameof(value))
+					};
+
+					// We're still going to add item_class tag below
+					break;
+			}
+
+			CEconItem_Tag? tag = Body.tags.FirstOrDefault(static tag => tag.category == "item_class");
+
+			if (tag == null) {
+				tag = new CEconItem_Tag { category = "item_class" };
+
+				Body.tags.Add(tag);
+			}
+
+			tag.internal_name = value switch {
+				EAssetType.TradingCard => "item_class_2",
+				EAssetType.FoilTradingCard => "item_class_2",
+				EAssetType.ProfileBackground => "item_class_3",
+				EAssetType.Emoticon => "item_class_4",
+				EAssetType.BoosterPack => "item_class_5",
+				EAssetType.Consumable => "item_class_6",
+				EAssetType.SteamGems => "item_class_7",
+				EAssetType.ProfileModifier => "item_class_8",
+				EAssetType.SaleItem => "item_class_10",
+				EAssetType.Sticker => "item_class_11",
+				EAssetType.ChatEffect => "item_class_12",
+				EAssetType.MiniProfileBackground => "item_class_13",
+				EAssetType.AvatarProfileFrame => "item_class_14",
+				EAssetType.AnimatedAvatar => "item_class_15",
+				EAssetType.KeyboardSkin => "item_class_16",
+				EAssetType.StartupVideo => "item_class_17",
+				_ => throw new InvalidOperationException(nameof(value))
+			};
 		}
 	}
 
