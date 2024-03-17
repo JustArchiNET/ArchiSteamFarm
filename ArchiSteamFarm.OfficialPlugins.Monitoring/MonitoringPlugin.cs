@@ -49,9 +49,16 @@ namespace ArchiSteamFarm.OfficialPlugins.Monitoring;
 [Export(typeof(IPlugin))]
 [SuppressMessage("ReSharper", "MemberCanBeFileLocal")]
 internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IGitHubPluginUpdates, IASF, IDisposable {
+	private const string MeterName = nameof(ArchiSteamFarm);
+
+	private const string MetricNamePrefix = "asf";
+
 	[JsonInclude]
 	[Required]
 	public override string Name => nameof(MonitoringPlugin);
+
+	/// <inheritdoc />
+	public string RepositoryName => SharedInfo.GithubRepo;
 
 	[JsonInclude]
 	[Required]
@@ -59,48 +66,12 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 	private bool Enabled => (ASF.GlobalConfig?.IPC ?? false) && (Config?.Enabled ?? MonitoringConfig.DefaultEnabled);
 
-	private const string MeterName = nameof(ArchiSteamFarm);
-
-	private const string MetricNamePrefix = "asf";
-
 	private Meter? Meter;
-
-	public void OnConfiguringServices(IServiceCollection services) {
-		ArgumentNullException.ThrowIfNull(services);
-
-		if (!Enabled) {
-			return;
-		}
-
-		services.AddOpenTelemetry().WithMetrics(
-			static builder => {
-				builder.AddPrometheusExporter(static config => config.ScrapeEndpointPath = "/Api/metrics");
-				builder.AddMeter("Microsoft.AspNetCore.Hosting");
-				builder.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
-				builder.AddMeter(MeterName);
-
-				builder.AddView(
-					"http.server.request.duration",
-					new ExplicitBucketHistogramConfiguration {
-						Boundaries = [0, 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10]
-					}
-				);
-			}
-		);
-	}
-
-	public void OnConfiguringApplication(IApplicationBuilder app) {
-		ArgumentNullException.ThrowIfNull(app);
-
-		if (!Enabled) {
-			return;
-		}
-
-		app.UseEndpoints(static builder => builder.MapPrometheusScrapingEndpoint());
-	}
 
 	[JsonInclude]
 	private MonitoringConfig? Config { get; set; }
+
+	public void Dispose() => Meter?.Dispose();
 
 	public Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
 		if (additionalConfigProperties == null) {
@@ -109,12 +80,9 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		MonitoringConfig? config = null;
 
-		foreach ((string configProperty, JsonElement configValue) in additionalConfigProperties) {
+		if (additionalConfigProperties.TryGetValue(nameof(Monitoring), out JsonElement configValue)) {
 			try {
-				config = configProperty switch {
-					nameof(Monitoring) => configValue.Deserialize<MonitoringConfig>(),
-					_ => config
-				};
+				config = configValue.Deserialize<MonitoringConfig>();
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(MonitoringPlugin)));
@@ -138,6 +106,33 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 		return Task.CompletedTask;
 	}
 
+	public void OnConfiguringEndpoints(IApplicationBuilder app) {
+		ArgumentNullException.ThrowIfNull(app);
+
+		if (!Enabled) {
+			return;
+		}
+
+		app.UseEndpoints(static builder => builder.MapPrometheusScrapingEndpoint());
+	}
+
+	public void OnConfiguringServices(IServiceCollection services) {
+		ArgumentNullException.ThrowIfNull(services);
+
+		if (!Enabled) {
+			return;
+		}
+
+		services.AddOpenTelemetry().WithMetrics(
+			static builder => {
+				builder.AddPrometheusExporter(static config => config.ScrapeEndpointPath = "/Api/metrics");
+				builder.AddMeter("Microsoft.AspNetCore.Hosting");
+				builder.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
+				builder.AddMeter(MeterName);
+			}
+		);
+	}
+
 	public override Task OnLoaded() {
 		Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
 
@@ -157,7 +152,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		_ = Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_active_plugins",
-			static () => PluginsCore.ActivePlugins.Count,
+			static () => PluginsCore.ActivePluginCount,
 			description: "Number of plugins currently loaded in ASF"
 		);
 
@@ -165,7 +160,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			$"{MetricNamePrefix}_bots", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
-				return new List<Measurement<int>>(5) {
+				return new List<Measurement<int>>(4) {
 					new(bots.Count, new KeyValuePair<string, object?>(TagNames.BotState, "configured")),
 					new(bots.Where(static bot => bot.IsConnectedAndLoggedOn).Count(), new KeyValuePair<string, object?>(TagNames.BotState, "online")),
 					new(bots.Where(static bot => !bot.IsConnectedAndLoggedOn).Count(), new KeyValuePair<string, object?>(TagNames.BotState, "offline")),
@@ -231,9 +226,4 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		return Task.CompletedTask;
 	}
-
-	/// <inheritdoc />
-	public string RepositoryName => SharedInfo.GithubRepo;
-
-	public void Dispose() => Meter?.Dispose();
 }

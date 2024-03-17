@@ -233,7 +233,7 @@ internal static class ArchiKestrel {
 		if (PluginsCore.ActivePlugins.Count > 0) {
 			foreach (IWebServiceProvider plugin in PluginsCore.ActivePlugins.OfType<IWebServiceProvider>()) {
 				try {
-					plugin.OnConfiguringApplication(app);
+					plugin.OnConfiguringEndpoints(app);
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericException(e);
 				}

@@ -55,6 +55,9 @@ using SteamKit2;
 namespace ArchiSteamFarm.Plugins;
 
 public static class PluginsCore {
+	[PublicAPI]
+	public static int ActivePluginCount => ActivePlugins.Count;
+
 	internal static bool HasCustomPluginsLoaded => ActivePlugins.Any(static plugin => plugin is not OfficialPlugin officialPlugin || !officialPlugin.HasSameVersion());
 
 	[ImportMany]

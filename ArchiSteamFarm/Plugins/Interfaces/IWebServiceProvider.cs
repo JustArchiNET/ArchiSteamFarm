@@ -33,13 +33,13 @@ namespace ArchiSteamFarm.Plugins.Interfaces;
 [PublicAPI]
 public interface IWebServiceProvider {
 	/// <summary>
-	///     ASF will call this method during IPC initialization.
+	///     ASF will call this method during configuration of the IPC endpoints
 	/// </summary>
 	/// <param name="app">Application builder related to this callback.</param>
-	void OnConfiguringApplication(IApplicationBuilder app);
+	void OnConfiguringEndpoints(IApplicationBuilder app);
 
 	/// <summary>
-	///     ASF will call this method during IPC initialization.
+	///     ASF will call this method during configuration of the IPC services
 	/// </summary>
 	/// <param name="services">Service collection related to this callback.</param>
 	void OnConfiguringServices(IServiceCollection services);
