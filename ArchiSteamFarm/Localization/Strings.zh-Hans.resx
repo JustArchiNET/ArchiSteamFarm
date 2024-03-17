@@ -764,4 +764,16 @@
 		<value>已禁用 {0}（{1}）的挂卡，因为此游戏目前被标记为私密。如果您希望 ASF 挂这款游戏，请考虑更改它的隐私设置。</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </root>

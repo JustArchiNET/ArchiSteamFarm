@@ -763,4 +763,50 @@ Tiempo de actividad del proceso: {1}</value>
 		<value>La recolección para {0} ({1}) está deshabilitada, debido a que ese juego actualmente está marcado como privado. Si deseas que ASF recolecte ese juego, considera cambiar su configuración de privacidad.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>Omitiendo: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>Buscando actualizaciones de plugins...</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>Comprobando actualización del plugin {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>No hay actualizaciones disponibles para el plugin {0}: {1} ≥ {2}.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>Se encontró una actualización del plugin {0} de la versión {1} a {2}...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>Ningún recurso disponible para la actualización del plugin {0} de la versión {1} a {2}, esto generalmente significa que la actualización estará disponible más adelante.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>No se pudo determinar ningún recurso para la actualización del plugin {0} de la versión {1} a {2}. Esto puede suceder si la versión aún no está terminada - si sigue sucediendo, deberías notificar al creador del plugin.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>Actualizando plugin {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>La actualización del plugin {0} ha sido exitosa, los cambios se cargarán en la siguiente ejecución de ASF.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>El plugin {0}/{1} ha sido registrado y habilitado para actualizaciones automáticas.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>El plugin {0}/{1} ha sido deshabilitado para las actualizaciones automáticas, a pesar de soportar dicha función.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Los plugins personalizados han sido registados para actualizaciones automáticas. El equipo de ASF desea recordarte que, por tu propia seguridad, únicamente deberías habilitar las actualizaciones automáticas de fuentes confiables. Si no pretendías hacer esto, puedes deshabilitar la actualización de plugins en la configuración global de ASF.</value>
+	</data>
 </root>
