@@ -8,7 +8,8 @@ env:
   DOTNET_NOLOGO: true
   DOTNET_SDK_VERSION: 8.0
   NODE_JS_VERSION: 'lts/*'
-  PLUGINS: ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+  DEFAULT_PLUGINS: ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+  ADDITIONAL_PLUGINS: ArchiSteamFarm.OfficialPlugins.Monitoring
 
 permissions: {}
 
@@ -193,7 +194,8 @@ jobs:
             dotnet publish "$1" -c "$CONFIGURATION" -o "out/${1}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
         }
 
-        for plugin in $PLUGINS; do
+        ALL_PLUGINS=$DEFAULT_PLUGINS" "$ADDITIONAL_PLUGINS
+        for plugin in $ALL_PLUGINS; do
             while [ "$(jobs -p | wc -l)" -ge "$MAX_JOBS" ]; do
                 sleep 1
             done
@@ -229,7 +231,7 @@ jobs:
             }
         }
 
-        foreach ($plugin in $env:PLUGINS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+        foreach ($plugin in ($env:DEFAULT_PLUGINS + $env:ADDITIONAL_PLUGINS).Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
             # Limit active jobs in parallel to help with memory usage
             $jobs = $(Get-Job -State Running)
 
@@ -261,7 +263,7 @@ jobs:
         dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${VARIANT}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
 
         # If we're including official plugins for this framework, copy them to output directory
-        for plugin in $PLUGINS; do
+        for plugin in $DEFAULT_PLUGINS; do
             if [ -d "out/${plugin}" ]; then
                 mkdir -p "out/${VARIANT}/plugins/${plugin}"
                 cp -pR "out/${plugin}/"* "out/${VARIANT}/plugins/${plugin}"
@@ -346,7 +348,7 @@ jobs:
         }
 
         # If we're including official plugins for this framework, copy them to output directory
-        foreach ($plugin in $env:PLUGINS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+        foreach ($plugin in $env:DEFAULT_PLUGINS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
             if (Test-Path "out\$plugin" -PathType Container) {
                 if (!(Test-Path "out\$env:VARIANT\plugins\$plugin" -PathType Container)) {
                     New-Item -ItemType Directory -Path "out\$env:VARIANT\plugins\$plugin" > $null
