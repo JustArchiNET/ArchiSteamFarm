@@ -140,13 +140,13 @@ public sealed class GlobalConfig {
 	public const string? DefaultWebProxyUsername = null;
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet<uint>.Empty;
+	public static readonly ImmutableHashSet<uint> DefaultBlacklist = [];
 
 	[PublicAPI]
 	public static readonly Guid? DefaultLicenseID;
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<string> DefaultPluginsUpdateList = ImmutableHashSet<string>.Empty;
+	public static readonly ImmutableHashSet<string> DefaultPluginsUpdateList = [];
 
 	private static readonly FrozenSet<string> ForbiddenIPCPasswordPhrases = new HashSet<string>(5, StringComparer.InvariantCultureIgnoreCase) { "ipc", "api", "gui", "asf-ui", "asf-gui" }.ToFrozenSet(StringComparer.InvariantCultureIgnoreCase);
 

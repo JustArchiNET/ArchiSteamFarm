@@ -117,13 +117,13 @@ public sealed class BotConfig {
 	internal const byte SteamTradeTokenLength = 8;
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<EAssetType> DefaultCompleteTypesToSend = ImmutableHashSet<EAssetType>.Empty;
+	public static readonly ImmutableHashSet<EAssetType> DefaultCompleteTypesToSend = [];
 
 	[PublicAPI]
-	public static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
+	public static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = [];
 
 	[PublicAPI]
-	public static readonly ImmutableList<uint> DefaultGamesPlayedWhileIdle = ImmutableList<uint>.Empty;
+	public static readonly ImmutableList<uint> DefaultGamesPlayedWhileIdle = [];
 
 	[PublicAPI]
 	public static readonly ImmutableHashSet<EAssetType> DefaultLootableTypes = ImmutableHashSet.Create(EAssetType.BoosterPack, EAssetType.FoilTradingCard, EAssetType.TradingCard);

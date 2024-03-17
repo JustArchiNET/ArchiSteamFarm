@@ -36,12 +36,12 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("assets")]
-	internal ImmutableList<Asset> Assets { get; private init; } = ImmutableList<Asset>.Empty;
+	internal ImmutableList<Asset> Assets { get; private init; } = [];
 
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("descriptions")]
-	internal ImmutableHashSet<InventoryDescription> Descriptions { get; private init; } = ImmutableHashSet<InventoryDescription>.Empty;
+	internal ImmutableHashSet<InventoryDescription> Descriptions { get; private init; } = [];
 
 	internal EResult? ErrorCode { get; private init; }
 	internal string? ErrorText { get; private init; }

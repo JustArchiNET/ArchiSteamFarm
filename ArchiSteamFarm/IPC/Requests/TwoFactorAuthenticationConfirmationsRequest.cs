@@ -51,7 +51,7 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 	/// </summary>
 	[JsonDisallowNull]
 	[JsonInclude]
-	public ImmutableHashSet<ulong> AcceptedCreatorIDs { get; private init; } = ImmutableHashSet<ulong>.Empty;
+	public ImmutableHashSet<ulong> AcceptedCreatorIDs { get; private init; } = [];
 
 	/// <summary>
 	///     Specifies the type of confirmations to handle. If not provided, all confirmation types are considered for an action.

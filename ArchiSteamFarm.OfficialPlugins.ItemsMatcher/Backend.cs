@@ -158,7 +158,7 @@ internal static class Backend {
 			return null;
 		}
 
-		return (response.StatusCode, response.Content?.Result ?? ImmutableHashSet<ListedUser>.Empty);
+		return (response.StatusCode, response.Content?.Result ?? []);
 	}
 
 	internal static async Task<ObjectResponse<GenericResponse<ImmutableHashSet<SetPart>>>?> GetSetParts(WebBrowser webBrowser, ulong steamID, IReadOnlyCollection<EAssetType> matchableTypes, IReadOnlyCollection<uint> realAppIDs, CancellationToken cancellationToken = default) {

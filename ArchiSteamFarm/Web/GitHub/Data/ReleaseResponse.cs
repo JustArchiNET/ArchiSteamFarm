@@ -106,7 +106,7 @@ public sealed class ReleaseResponse {
 	[JsonInclude]
 	[JsonPropertyName("assets")]
 	[JsonRequired]
-	public ImmutableHashSet<ReleaseAsset> Assets { get; private init; } = ImmutableHashSet<ReleaseAsset>.Empty;
+	public ImmutableHashSet<ReleaseAsset> Assets { get; private init; } = [];
 
 	[JsonInclude]
 	[JsonPropertyName("prerelease")]
