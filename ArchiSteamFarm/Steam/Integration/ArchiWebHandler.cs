@@ -363,8 +363,17 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			foreach (Asset asset in response.Content.Assets) {
-				if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out InventoryDescription? description) || !assetIDs.Add(asset.AssetID)) {
+				if (!assetIDs.Add(asset.AssetID)) {
 					continue;
+				}
+
+				(ulong ClassID, ulong InstanceID) key = (asset.ClassID, asset.InstanceID);
+
+				if (!descriptions.TryGetValue(key, out InventoryDescription? description)) {
+					// Best effort only
+					description = new InventoryDescription(appID, asset.ClassID, asset.InstanceID);
+
+					descriptions.Add(key, description);
 				}
 
 				asset.Description = description;

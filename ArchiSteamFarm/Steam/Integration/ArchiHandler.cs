@@ -231,7 +231,21 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			}
 
 			foreach (CEcon_Asset? asset in response.assets) {
-				if (!descriptions.TryGetValue((asset.classid, asset.instanceid), out InventoryDescription? description) || !assetIDs.Add(asset.assetid)) {
+				if (!assetIDs.Add(asset.assetid)) {
+					continue;
+				}
+
+				(ulong ClassID, ulong InstanceID) key = (asset.classid, asset.instanceid);
+
+				if (!descriptions.TryGetValue(key, out InventoryDescription? description)) {
+					// Best effort only
+					description = new InventoryDescription(appID, asset.classid, asset.instanceid);
+
+					descriptions.Add(key, description);
+				}
+
+				// Extra bulletproofing against Steam showing us middle finger
+				if ((tradableOnly && !description.Tradable) || (marketableOnly && !description.Marketable)) {
 					continue;
 				}
 
