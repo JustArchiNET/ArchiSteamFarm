@@ -153,7 +153,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bots", static () => {
-				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
+				ICollection<Bot> bots = Bot.Bots?.Values ?? Array.Empty<Bot>();
 
 				return new List<Measurement<int>>(4) {
 					new(bots.Count, new KeyValuePair<string, object?>(TagNames.BotState, "configured")),
@@ -167,7 +167,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_friends", static () => {
-				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
+				ICollection<Bot> bots = Bot.Bots?.Values ?? Array.Empty<Bot>();
 
 				return bots.Where(static bot => bot.IsConnectedAndLoggedOn).Select(static bot => new Measurement<int>(bot.SteamFriends.GetFriendCount(), new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
@@ -176,7 +176,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_clans", static () => {
-				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
+				ICollection<Bot> bots = Bot.Bots?.Values ?? Array.Empty<Bot>();
 
 				return bots.Where(static bot => bot.IsConnectedAndLoggedOn).Select(static bot => new Measurement<int>(bot.SteamFriends.GetClanCount(), new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
@@ -185,7 +185,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_farming_minutes_remaining", static () => {
-				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
+				ICollection<Bot> bots = Bot.Bots?.Values ?? Array.Empty<Bot>();
 
 				return bots.Select(static bot => new Measurement<double>(bot.CardsFarmer.TimeRemaining.TotalMinutes, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
@@ -194,7 +194,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_heartbeat_failures", static () => {
-				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
+				ICollection<Bot> bots = Bot.Bots?.Values ?? Array.Empty<Bot>();
 
 				return bots.Select(static bot => new Measurement<byte>(bot.HeartBeatFailures, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
@@ -203,7 +203,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_wallet_balance", static () => {
-				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
+				ICollection<Bot> bots = Bot.Bots?.Values ?? Array.Empty<Bot>();
 
 				return bots.Where(static bot => bot.WalletCurrency != ECurrencyCode.Invalid).Select(static bot => new Measurement<long>(bot.WalletBalance, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID), new KeyValuePair<string, object?>(TagNames.CurrencyCode, bot.WalletCurrency.ToString())));
 			},
