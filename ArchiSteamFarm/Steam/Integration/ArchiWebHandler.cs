@@ -2379,9 +2379,13 @@ public sealed class ArchiWebHandler : IDisposable {
 		ArgumentNullException.ThrowIfNull(descriptions);
 
 		foreach (Asset asset in assets) {
-			if (!descriptions.TryGetValue((asset.AppID, asset.ClassID, asset.InstanceID), out InventoryDescription? description)) {
-				// No description, deal with it
-				continue;
+			(uint AppID, ulong ClassID, ulong InstanceID) key = (asset.AppID, asset.ClassID, asset.InstanceID);
+
+			if (!descriptions.TryGetValue(key, out InventoryDescription? description)) {
+				// Best effort only - we can guarantee tradable property at best, and only at the time of the trade offer
+				description = new InventoryDescription(asset.AppID, asset.ClassID, asset.InstanceID, tradable: true);
+
+				descriptions.TryAdd(key, description);
 			}
 
 			asset.Description = description;
