@@ -174,7 +174,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			$"{MetricNamePrefix}_bot_friends", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
-				return bots.Where(static bot => bot.IsConnectedAndLoggedOn).Select(static bot => new Measurement<int>(bot.SteamFriends.GetFriendCount(), new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName)));
+				return bots.Where(static bot => bot.IsConnectedAndLoggedOn).Select(static bot => new Measurement<int>(bot.SteamFriends.GetFriendCount(), new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
 			description: "Number of friends each bot has on Steam"
 		);
@@ -183,7 +183,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			$"{MetricNamePrefix}_bot_clans", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
-				return bots.Where(static bot => bot.IsConnectedAndLoggedOn).Select(static bot => new Measurement<int>(bot.SteamFriends.GetClanCount(), new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName)));
+				return bots.Where(static bot => bot.IsConnectedAndLoggedOn).Select(static bot => new Measurement<int>(bot.SteamFriends.GetClanCount(), new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
 			description: "Number of Steam groups each bot is in"
 		);
@@ -192,7 +192,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			$"{MetricNamePrefix}_bot_farming_minutes_remaining", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
-				return bots.Select(static bot => new Measurement<double>(bot.CardsFarmer.TimeRemaining.TotalMinutes, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName)));
+				return bots.Select(static bot => new Measurement<double>(bot.CardsFarmer.TimeRemaining.TotalMinutes, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
 			description: "Approximate number of minutes remaining until each bot has finished farming all cards"
 		);
@@ -201,7 +201,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			$"{MetricNamePrefix}_bot_heartbeat_failures", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
-				return bots.Select(static bot => new Measurement<byte>(bot.HeartBeatFailures, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName)));
+				return bots.Select(static bot => new Measurement<byte>(bot.HeartBeatFailures, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
 			description: "Number of times a bot has failed to reach Steam servers"
 		);
@@ -210,7 +210,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			$"{MetricNamePrefix}_bot_wallet_balance", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
-				return bots.Where(static bot => bot.WalletCurrency != ECurrencyCode.Invalid).Select(static bot => new Measurement<long>(bot.WalletBalance, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.CurrencyCode, bot.WalletCurrency.ToString())));
+				return bots.Where(static bot => bot.WalletCurrency != ECurrencyCode.Invalid).Select(static bot => new Measurement<long>(bot.WalletBalance, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID), new KeyValuePair<string, object?>(TagNames.CurrencyCode, bot.WalletCurrency.ToString())));
 			},
 			description: "Current Steam wallet balance of each bot"
 		);
@@ -219,7 +219,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			$"{MetricNamePrefix}_bot_bgr_keys_remaining", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? ImmutableHashSet<Bot>.Empty;
 
-				return bots.Select(static bot => new Measurement<long>(bot.GamesToRedeemInBackgroundCount, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName)));
+				return bots.Select(static bot => new Measurement<long>(bot.GamesToRedeemInBackgroundCount, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
 			description: "Remaining games to redeem in background per bot"
 		);

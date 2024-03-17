@@ -27,4 +27,5 @@ internal static class TagNames {
 	internal const string BotName = "bot";
 	internal const string BotState = "state";
 	internal const string CurrencyCode = "currency";
+	internal const string SteamID = "steamid";
 }
