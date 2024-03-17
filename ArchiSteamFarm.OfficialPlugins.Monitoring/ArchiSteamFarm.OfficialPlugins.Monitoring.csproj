@@ -8,6 +8,7 @@
 		<PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
 		<PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" />
 		<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+		<PackageReference Include="SteamKit2" IncludeAssets="compile" />
 		<PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" />
 	</ItemGroup>
 
@@ -28,11 +29,5 @@
 			<DependentUpon>Strings.resx</DependentUpon>
 			<DesignTime>True</DesignTime>
 		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Reference Include="SteamKit2">
-	    <HintPath>..\..\..\.nuget\packages\steamkit2\2.5.0\lib\net6.0\SteamKit2.dll</HintPath>
-	  </Reference>
 	</ItemGroup>
 </Project>
