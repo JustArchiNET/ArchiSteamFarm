@@ -623,6 +623,36 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		return body.privacy_settings;
 	}
 
+	internal async Task<ulong> GetServerTime() {
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return 0;
+		}
+
+		CTwoFactor_Time_Request request = new();
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedTwoFactorService.SendMessage(x => x.QueryTime(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return 0;
+		}
+
+		if (response.Result != EResult.OK) {
+			return 0;
+		}
+
+		CTwoFactor_Time_Response body = response.GetDeserializedResponse<CTwoFactor_Time_Response>();
+
+		return body.server_time;
+	}
+
 	internal async Task<string?> GetTwoFactorDeviceIdentifier(ulong steamID) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));

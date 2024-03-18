@@ -208,7 +208,7 @@ public sealed class MobileAuthenticator : IDisposable {
 				return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
 			}
 
-			ulong serverTime = await Bot.ArchiWebHandler.GetServerTime().ConfigureAwait(false);
+			ulong serverTime = await Bot.ArchiHandler.GetServerTime().ConfigureAwait(false);
 
 			if (serverTime == 0) {
 				return Utilities.GetUnixTime();

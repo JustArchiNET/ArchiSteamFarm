@@ -58,7 +58,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	private const ushort MaxItemsInSingleInventoryRequest = 5000;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const string SteamAppsService = "ISteamApps";
-	private const string TwoFactorService = "ITwoFactorService";
 
 	[PublicAPI]
 	public static Uri SteamCheckoutURL => new("https://checkout.steampowered.com");
@@ -1857,49 +1856,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
 		return response?.Content;
-	}
-
-	internal async Task<ulong> GetServerTime() {
-		KeyValue? response = null;
-
-		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			if ((i > 0) && (WebLimiterDelay > 0)) {
-				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
-			}
-
-			using WebAPI.AsyncInterface twoFactorService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(TwoFactorService);
-
-			twoFactorService.Timeout = WebBrowser.Timeout;
-
-			try {
-				response = await WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
-
-					// ReSharper disable once AccessToDisposedClosure
-					async () => await twoFactorService.CallAsync(HttpMethod.Post, "QueryTime").ConfigureAwait(false)
-				).ConfigureAwait(false);
-			} catch (TaskCanceledException e) {
-				Bot.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-			}
-		}
-
-		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-
-			return 0;
-		}
-
-		ulong result = response["server_time"].AsUnsignedLong();
-
-		if (result == 0) {
-			Bot.ArchiLogger.LogNullError(result);
-
-			return 0;
-		}
-
-		return result;
 	}
 
 	internal async Task<byte?> GetTradeHoldDurationForTrade(ulong tradeID) {
