@@ -755,15 +755,35 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
 	
 	
 	
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>Kontrolujem aktualizácie pluginov...</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>Kontrolujem aktualizácie pre {0} plugin...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>Žiadne dostupné aktualizácie pre {0} plugin: {1} ≥ {2}.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>Našla sa aktualizácia pre {0} plugin z verzie {1} na {2}...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
 	
 	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>Aktualizujem {0} plugin...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>Aktualizovanie {0} pluginu bolo úspešné, zmeny sa načítajú pri ďalšom spustení ASF.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>{0}/{1} plugin bol zaregistrovaný a automatické aktualizácie boli aktivované.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
 	
 	
 </root>
