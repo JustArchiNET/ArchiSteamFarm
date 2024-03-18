@@ -1250,6 +1250,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		byte failuresInRow = 0;
 		uint matchedSets = 0;
 
+		HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> skippedSetsThisUser = [];
+		HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> skippedSetsThisTrade = [];
+
+		Dictionary<ulong, uint> classIDsToGive = new();
+		Dictionary<ulong, uint> classIDsToReceive = new();
+		Dictionary<ulong, uint> fairClassIDsToGive = new();
+		Dictionary<ulong, uint> fairClassIDsToReceive = new();
+
 		foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => !deprioritizedSteamIDs.Contains(listedUser.SteamID)).ThenByDescending(static listedUser => listedUser.TotalGamesCount > 1).ThenByDescending(static listedUser => listedUser.MatchEverything).ThenBy(static listedUser => listedUser.TotalInventoryCount)) {
 			if (failuresInRow >= WebBrowser.MaxTries) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(failuresInRow)} >= {WebBrowser.MaxTries}"));
@@ -1290,18 +1298,19 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				continue;
 			}
 
-			HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> skippedSetsThisUser = [];
+			skippedSetsThisUser.Clear();
 
 			Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> theirTradableState = MatchingUtilities.GetTradableInventoryState(theirInventory);
 
 			for (byte i = 0; i < Trading.MaxTradesPerAccount; i++) {
 				byte itemsInTrade = 0;
-				HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> skippedSetsThisTrade = [];
 
-				Dictionary<ulong, uint> classIDsToGive = new();
-				Dictionary<ulong, uint> classIDsToReceive = new();
-				Dictionary<ulong, uint> fairClassIDsToGive = new();
-				Dictionary<ulong, uint> fairClassIDsToReceive = new();
+				skippedSetsThisTrade.Clear();
+
+				classIDsToGive.Clear();
+				classIDsToReceive.Clear();
+				fairClassIDsToGive.Clear();
+				fairClassIDsToReceive.Clear();
 
 				foreach (((uint RealAppID, EAssetType Type, EAssetRarity Rarity) set, Dictionary<ulong, uint> ourFullItems) in ourFullState.Where(set => !skippedSetsThisUser.Contains(set.Key) && listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(static count => count > 1))) {
 					if (!ourTradableState.TryGetValue(set, out Dictionary<ulong, uint>? ourTradableItems) || (ourTradableItems.Count == 0)) {
@@ -1320,8 +1329,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					}
 
 					// Those 2 collections are on user-basis since we can't be sure that the trade passes through (and therefore we need to keep original state in case of a failure)
-					Dictionary<ulong, uint> ourFullSet = new(ourFullItems);
-					Dictionary<ulong, uint> ourTradableSet = new(ourTradableItems);
+					Dictionary<ulong, uint> ourFullSet = ourFullItems.ToDictionary();
+					Dictionary<ulong, uint> ourTradableSet = ourTradableItems.ToDictionary();
 
 					bool match;
 
