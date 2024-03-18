@@ -504,6 +504,7 @@ jobs:
     - name: Create ArchiSteamFarm GitHub release
       uses: ncipollo/release-action@v1.14.0
       with:
+        artifactErrorsFailBuild: true
         artifacts: "out/*"
         bodyFile: .github/RELEASE_TEMPLATE.md
         makeLatest: false
