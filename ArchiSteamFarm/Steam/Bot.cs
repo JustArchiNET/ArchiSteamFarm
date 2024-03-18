@@ -722,16 +722,16 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				ushort classRemaining = realSetsToExtract;
 
 				foreach (Asset item in itemsOfClass.TakeWhile(_ => classRemaining > 0)) {
-					if (item.Amount > classRemaining) {
+					if (classRemaining >= item.Amount) {
+						result.Add(item);
+
+						classRemaining -= (ushort) item.Amount;
+					} else {
 						Asset itemToSend = item.DeepClone();
 						itemToSend.Amount = classRemaining;
 						result.Add(itemToSend);
 
 						classRemaining = 0;
-					} else {
-						result.Add(item);
-
-						classRemaining -= (ushort) item.Amount;
 					}
 				}
 			}

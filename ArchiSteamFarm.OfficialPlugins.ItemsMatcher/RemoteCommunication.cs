@@ -1180,9 +1180,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
 		}
 
-		(Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> ourFullState, Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> ourTradableState) = Trading.GetDividedInventoryState(ourAssets);
+		(Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> ourFullState, Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> ourTradableState) = MatchingUtilities.GetDividedInventoryState(ourAssets);
 
-		if (Trading.IsEmptyForMatching(ourFullState, ourTradableState)) {
+		if (MatchingUtilities.IsEmptyForMatching(ourFullState, ourTradableState)) {
 			// User doesn't have any more dupes in the inventory
 			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, $"{nameof(ourFullState)} || {nameof(ourTradableState)}"));
 
@@ -1292,7 +1292,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> skippedSetsThisUser = [];
 
-			Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> theirTradableState = Trading.GetTradableInventoryState(theirInventory);
+			Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> theirTradableState = MatchingUtilities.GetTradableInventoryState(theirInventory);
 
 			for (byte i = 0; i < Trading.MaxTradesPerAccount; i++) {
 				byte itemsInTrade = 0;
@@ -1314,7 +1314,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 						continue;
 					}
 
-					if (Trading.IsEmptyForMatching(ourFullItems, ourTradableItems)) {
+					if (MatchingUtilities.IsEmptyForMatching(ourFullItems, ourTradableItems)) {
 						// We may have no more matchable items from this set
 						continue;
 					}
@@ -1347,13 +1347,13 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 									fairClassIDsToReceive[theirItem] = ++fairReceivedAmount;
 
 									// Filter their inventory for the sets we're trading or have traded with this user
-									HashSet<Asset> fairFiltered = theirInventory.Where(item => ((item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.RealAppID, item.Type, item.Rarity))).Select(static item => item.DeepClone()).ToHashSet();
+									HashSet<Asset> fairFiltered = theirInventory.Where(item => ((item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSet();
 
-									// Copy list to HashSet<Steam.Asset>
-									HashSet<Asset> fairItemsToGive = Trading.GetTradableItemsFromInventory(ourInventory.Values.Where(item => ((item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.RealAppID, item.Type, item.Rarity))).Select(static item => item.DeepClone()).ToHashSet(), fairClassIDsToGive.ToDictionary(static classID => classID.Key, static classID => classID.Value));
-									HashSet<Asset> fairItemsToReceive = Trading.GetTradableItemsFromInventory(fairFiltered.Select(static item => item.DeepClone()).ToHashSet(), fairClassIDsToReceive.ToDictionary(static classID => classID.Key, static classID => classID.Value));
+									// Get tradable items from our and their inventory
+									HashSet<Asset> fairItemsToGive = MatchingUtilities.GetTradableItemsFromInventory(ourInventory.Values.Where(item => ((item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSet(), fairClassIDsToGive);
+									HashSet<Asset> fairItemsToReceive = MatchingUtilities.GetTradableItemsFromInventory(fairFiltered, fairClassIDsToReceive);
 
-									// Actual check
+									// Actual check, since we do this against remote user, we flip places for items
 									if (!Trading.IsTradeNeutralOrBetter(fairFiltered, fairItemsToReceive, fairItemsToGive)) {
 										// Revert the changes
 										if (fairGivenAmount > 1) {
@@ -1421,8 +1421,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 
 				// Remove the items from inventories
-				HashSet<Asset> itemsToGive = Trading.GetTradableItemsFromInventory(ourInventory.Values, classIDsToGive);
-				HashSet<Asset> itemsToReceive = Trading.GetTradableItemsFromInventory(theirInventory, classIDsToReceive, true);
+				HashSet<Asset> itemsToGive = MatchingUtilities.GetTradableItemsFromInventory(ourInventory.Values, classIDsToGive);
+				HashSet<Asset> itemsToReceive = MatchingUtilities.GetTradableItemsFromInventory(theirInventory, classIDsToReceive, true);
 
 				if ((itemsToGive.Count != itemsToReceive.Count) || !Trading.IsFairExchange(itemsToGive, itemsToReceive)) {
 					// Failsafe
@@ -1534,7 +1534,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			matchedSets += (uint) skippedSetsThisUser.Count;
 
-			if (Trading.IsEmptyForMatching(ourFullState, ourTradableState)) {
+			if (MatchingUtilities.IsEmptyForMatching(ourFullState, ourTradableState)) {
 				// User doesn't have any more dupes in the inventory
 				break;
 			}
