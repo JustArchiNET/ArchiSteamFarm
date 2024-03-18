@@ -63,12 +63,9 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 	[Required]
 	public override Version Version => typeof(MonitoringPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-	private bool Enabled => (ASF.GlobalConfig?.IPC ?? false) && (Config?.Enabled ?? MonitoringConfig.DefaultEnabled);
+	private static bool Enabled => ASF.GlobalConfig?.IPC ?? false;
 
 	private Meter? Meter;
-
-	[JsonInclude]
-	private MonitoringConfig? Config { get; set; }
 
 	public void Dispose() => Meter?.Dispose();
 
@@ -76,22 +73,6 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 		if (additionalConfigProperties == null) {
 			return Task.CompletedTask;
 		}
-
-		MonitoringConfig? config = null;
-
-		if (additionalConfigProperties.TryGetValue(nameof(Monitoring), out JsonElement configValue)) {
-			try {
-				config = configValue.Deserialize<MonitoringConfig>();
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(MonitoringPlugin)));
-
-				return Task.CompletedTask;
-			}
-		}
-
-		config ??= new MonitoringConfig();
-		Config = config;
 
 		if (!Enabled) {
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(MonitoringPlugin)));
