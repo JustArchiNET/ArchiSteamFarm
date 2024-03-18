@@ -24,6 +24,7 @@
 using System;
 using System.Text.Json.Serialization;
 using JetBrains.Annotations;
+using ProtoBuf;
 using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.Steam.Data;
@@ -141,5 +142,5 @@ public sealed class Asset {
 	[JsonConstructor]
 	private Asset() { }
 
-	internal Asset CreateShallowCopy() => (Asset) MemberwiseClone();
+	public Asset DeepClone() => new(Serializer.DeepClone(Body), Description?.DeepClone());
 }

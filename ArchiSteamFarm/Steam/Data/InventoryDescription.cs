@@ -31,6 +31,7 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
+using ProtoBuf;
 using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.Steam.Data;
@@ -543,4 +544,6 @@ public sealed class InventoryDescription {
 
 	[JsonConstructor]
 	private InventoryDescription() { }
+
+	public InventoryDescription DeepClone() => new(Serializer.DeepClone(Body));
 }

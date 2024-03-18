@@ -723,7 +723,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				foreach (Asset item in itemsOfClass.TakeWhile(_ => classRemaining > 0)) {
 					if (item.Amount > classRemaining) {
-						Asset itemToSend = item.CreateShallowCopy();
+						Asset itemToSend = item.DeepClone();
 						itemToSend.Amount = classRemaining;
 						result.Add(itemToSend);
 

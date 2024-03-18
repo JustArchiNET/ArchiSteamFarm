@@ -276,7 +276,7 @@ public sealed class Trading : IDisposable {
 				continue;
 			}
 
-			Asset itemToAdd = item.CreateShallowCopy();
+			Asset itemToAdd = item.DeepClone();
 
 			if (amount < itemToAdd.Amount) {
 				// We give only a fraction of this item
@@ -664,7 +664,7 @@ public sealed class Trading : IDisposable {
 			return ParseTradeResult.EResult.TryAgain;
 		}
 
-		bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive.Select(static item => item.CreateShallowCopy()).ToHashSet(), tradeOffer.ItemsToReceive.Select(static item => item.CreateShallowCopy()).ToHashSet());
+		bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive.Select(static item => item.DeepClone()).ToHashSet(), tradeOffer.ItemsToReceive.Select(static item => item.DeepClone()).ToHashSet());
 
 		// We're now sure whether the trade is neutral+ for us or not
 		ParseTradeResult.EResult acceptResult = accept ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected;
