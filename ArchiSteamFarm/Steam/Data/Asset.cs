@@ -24,6 +24,7 @@
 using System;
 using System.Text.Json.Serialization;
 using JetBrains.Annotations;
+using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.Steam.Data;
 
@@ -33,6 +34,9 @@ public sealed class Asset {
 	public const uint SteamAppID = 753;
 	public const ulong SteamCommunityContextID = 6;
 	public const ulong SteamPointsShopInstanceID = 3865004543;
+
+	[JsonIgnore]
+	public CEcon_Asset Body { get; } = new();
 
 	[JsonIgnore]
 	public bool IsSteamPointsShopItem => !Tradable && (InstanceID == SteamPointsShopInstanceID);
@@ -56,26 +60,41 @@ public sealed class Asset {
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("amount")]
 	[JsonRequired]
-	public uint Amount { get; internal set; }
+	public uint Amount {
+		get => (uint) Body.amount;
+		internal set => Body.amount = value;
+	}
 
 	[JsonInclude]
 	[JsonPropertyName("appid")]
-	public uint AppID { get; private init; }
+	public uint AppID {
+		get => Body.appid;
+		private init => Body.appid = value;
+	}
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("assetid")]
-	public ulong AssetID { get; private init; }
+	public ulong AssetID {
+		get => Body.assetid;
+		private init => Body.assetid = value;
+	}
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("classid")]
-	public ulong ClassID { get; private init; }
+	public ulong ClassID {
+		get => Body.classid;
+		private init => Body.classid = value;
+	}
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("contextid")]
-	public ulong ContextID { get; private init; }
+	public ulong ContextID {
+		get => Body.contextid;
+		private init => Body.contextid = value;
+	}
 
 	[JsonIgnore]
 	public InventoryDescription? Description { get; internal set; }
@@ -83,7 +102,10 @@ public sealed class Asset {
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("instanceid")]
-	public ulong InstanceID { get; private init; }
+	public ulong InstanceID {
+		get => Body.instanceid;
+		private init => Body.instanceid = value;
+	}
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
@@ -91,6 +113,13 @@ public sealed class Asset {
 	private ulong ID {
 		get => AssetID;
 		init => AssetID = value;
+	}
+
+	public Asset(CEcon_Asset asset, InventoryDescription? description = null) {
+		ArgumentNullException.ThrowIfNull(asset);
+
+		Body = asset;
+		Description = description;
 	}
 
 	public Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription? description = null, ulong assetID = 0, ulong instanceID = 0) {

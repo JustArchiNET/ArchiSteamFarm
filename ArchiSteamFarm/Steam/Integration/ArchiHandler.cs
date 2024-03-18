@@ -238,7 +238,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 					continue;
 				}
 
-				yield return new Asset(asset.appid, asset.contextid, asset.classid, (uint) asset.amount, description, asset.assetid, asset.instanceid);
+				yield return new Asset(asset, description);
 			}
 
 			if (!response.more_items) {
