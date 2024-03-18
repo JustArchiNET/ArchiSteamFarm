@@ -230,28 +230,15 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				descriptions.Add(key, new InventoryDescription(description));
 			}
 
-			foreach (CEcon_Asset? asset in response.assets) {
-				if (!assetIDs.Add(asset.assetid)) {
-					continue;
-				}
-
-				(ulong ClassID, ulong InstanceID) key = (asset.classid, asset.instanceid);
-
-				if (!descriptions.TryGetValue(key, out InventoryDescription? description)) {
-					// Best effort only
-					description = new InventoryDescription(appID, asset.classid, asset.instanceid);
-
-					descriptions.Add(key, description);
-				}
+			foreach (CEcon_Asset? asset in response.assets.Where(asset => assetIDs.Add(asset.assetid))) {
+				InventoryDescription? description = descriptions.GetValueOrDefault((asset.classid, asset.instanceid));
 
 				// Extra bulletproofing against Steam showing us middle finger
-				if ((tradableOnly && !description.Tradable) || (marketableOnly && !description.Marketable)) {
+				if ((tradableOnly && (description?.Tradable != true)) || (marketableOnly && (description?.Marketable != true))) {
 					continue;
 				}
 
-				Asset convertedAsset = new(asset.appid, asset.contextid, asset.classid, (uint) asset.amount, description, asset.assetid, asset.instanceid);
-
-				yield return convertedAsset;
+				yield return new Asset(asset.appid, asset.contextid, asset.classid, (uint) asset.amount, description, asset.assetid, asset.instanceid);
 			}
 
 			if (!response.more_items) {

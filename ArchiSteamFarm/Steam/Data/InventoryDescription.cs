@@ -512,14 +512,13 @@ public sealed class InventoryDescription {
 	private uint? CachedRealAppID;
 	private EAssetType? CachedType;
 
-	internal InventoryDescription(CEconItem_Description description) {
+	public InventoryDescription(CEconItem_Description description) {
 		ArgumentNullException.ThrowIfNull(description);
 
 		Body = description;
 	}
 
-	// For self-created stubs
-	internal InventoryDescription(uint appID, ulong classID, ulong instanceID = 0, bool marketable = false, bool tradable = false, uint realAppID = 0, EAssetType type = EAssetType.Unknown, EAssetRarity rarity = EAssetRarity.Unknown) {
+	public InventoryDescription(uint appID, ulong classID, ulong instanceID = 0, bool marketable = false, bool tradable = false, uint realAppID = 0, EAssetType type = EAssetType.Unknown, EAssetRarity rarity = EAssetRarity.Unknown) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(classID);
 

@@ -362,21 +362,10 @@ public sealed class ArchiWebHandler : IDisposable {
 				descriptions.TryAdd(key, description);
 			}
 
-			foreach (Asset asset in response.Content.Assets) {
-				if (!assetIDs.Add(asset.AssetID)) {
-					continue;
+			foreach (Asset asset in response.Content.Assets.Where(asset => assetIDs.Add(asset.AssetID))) {
+				if (descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out InventoryDescription? description)) {
+					asset.Description = description;
 				}
-
-				(ulong ClassID, ulong InstanceID) key = (asset.ClassID, asset.InstanceID);
-
-				if (!descriptions.TryGetValue(key, out InventoryDescription? description)) {
-					// Best effort only
-					description = new InventoryDescription(appID, asset.ClassID, asset.InstanceID);
-
-					descriptions.Add(key, description);
-				}
-
-				asset.Description = description;
 
 				yield return asset;
 			}
@@ -2390,14 +2379,9 @@ public sealed class ArchiWebHandler : IDisposable {
 		foreach (Asset asset in assets) {
 			(uint AppID, ulong ClassID, ulong InstanceID) key = (asset.AppID, asset.ClassID, asset.InstanceID);
 
-			if (!descriptions.TryGetValue(key, out InventoryDescription? description)) {
-				// Best effort only - we can guarantee tradable property at best, and only at the time of the trade offer
-				description = new InventoryDescription(asset.AppID, asset.ClassID, asset.InstanceID, tradable: true);
-
-				descriptions.Add(key, description);
+			if (descriptions.TryGetValue(key, out InventoryDescription? description)) {
+				asset.Description = description;
 			}
-
-			asset.Description = description;
 		}
 	}
 

@@ -28,45 +28,34 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Steam.Data;
 
 // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
+[PublicAPI]
 public sealed class Asset {
-	[PublicAPI]
 	public const uint SteamAppID = 753;
-
-	[PublicAPI]
 	public const ulong SteamCommunityContextID = 6;
-
-	[PublicAPI]
 	public const ulong SteamPointsShopInstanceID = 3865004543;
 
 	[JsonIgnore]
-	[PublicAPI]
 	public bool IsSteamPointsShopItem => !Tradable && (InstanceID == SteamPointsShopInstanceID);
 
 	[JsonIgnore]
-	[PublicAPI]
 	public bool Marketable => Description?.Marketable ?? false;
 
 	[JsonIgnore]
-	[PublicAPI]
 	public EAssetRarity Rarity => Description?.Rarity ?? EAssetRarity.Unknown;
 
 	[JsonIgnore]
-	[PublicAPI]
 	public uint RealAppID => Description?.RealAppID ?? 0;
 
 	[JsonIgnore]
-	[PublicAPI]
 	public bool Tradable => Description?.Tradable ?? false;
 
 	[JsonIgnore]
-	[PublicAPI]
 	public EAssetType Type => Description?.Type ?? EAssetType.Unknown;
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("amount")]
 	[JsonRequired]
-	[PublicAPI]
 	public uint Amount { get; internal set; }
 
 	[JsonInclude]
@@ -76,29 +65,24 @@ public sealed class Asset {
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("assetid")]
-	[PublicAPI]
 	public ulong AssetID { get; private init; }
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("classid")]
-	[PublicAPI]
 	public ulong ClassID { get; private init; }
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("contextid")]
-	[PublicAPI]
 	public ulong ContextID { get; private init; }
 
 	[JsonIgnore]
-	[PublicAPI]
 	public InventoryDescription? Description { get; internal set; }
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("instanceid")]
-	[PublicAPI]
 	public ulong InstanceID { get; private init; }
 
 	[JsonInclude]
@@ -109,19 +93,19 @@ public sealed class Asset {
 		init => AssetID = value;
 	}
 
-	internal Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription description, ulong assetID = 0, ulong instanceID = 0) {
+	[PublicAPI]
+	public Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription? description = null, ulong assetID = 0, ulong instanceID = 0) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(classID);
 		ArgumentOutOfRangeException.ThrowIfZero(amount);
-		ArgumentNullException.ThrowIfNull(description);
 
 		AppID = appID;
 		ContextID = contextID;
 		ClassID = classID;
 		Amount = amount;
-		Description = description;
 
+		Description = description;
 		AssetID = assetID;
 		InstanceID = instanceID;
 	}
