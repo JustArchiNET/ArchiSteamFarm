@@ -93,7 +93,6 @@ public sealed class Asset {
 		init => AssetID = value;
 	}
 
-	[PublicAPI]
 	public Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription? description = null, ulong assetID = 0, ulong instanceID = 0) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
