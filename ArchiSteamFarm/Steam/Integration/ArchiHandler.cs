@@ -36,6 +36,16 @@ using ArchiSteamFarm.Steam.Integration.CMsgs;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
+using SteamKit2.WebUI.Internal;
+using CMsgClientChangeStatus = SteamKit2.Internal.CMsgClientChangeStatus;
+using CMsgClientCommentNotifications = SteamKit2.Internal.CMsgClientCommentNotifications;
+using CMsgClientGamesPlayed = SteamKit2.Internal.CMsgClientGamesPlayed;
+using CMsgClientItemAnnouncements = SteamKit2.Internal.CMsgClientItemAnnouncements;
+using CMsgClientRedeemGuestPass = SteamKit2.Internal.CMsgClientRedeemGuestPass;
+using CMsgClientRequestItemAnnouncements = SteamKit2.Internal.CMsgClientRequestItemAnnouncements;
+using CMsgClientSharedLibraryLockStatus = SteamKit2.Internal.CMsgClientSharedLibraryLockStatus;
+using CMsgClientUIMode = SteamKit2.Internal.CMsgClientUIMode;
+using CMsgClientUserNotifications = SteamKit2.Internal.CMsgClientUserNotifications;
 using EPersonaStateFlag = SteamKit2.EPersonaStateFlag;
 
 namespace ArchiSteamFarm.Steam.Integration;
@@ -44,6 +54,8 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
 
 	private readonly ArchiLogger ArchiLogger;
+
+	private readonly SteamUnifiedMessages.UnifiedService<IAccountPrivateApps> UnifiedAccountPrivateApps;
 	private readonly SteamUnifiedMessages.UnifiedService<IChatRoom> UnifiedChatRoomService;
 	private readonly SteamUnifiedMessages.UnifiedService<IClanChatRooms> UnifiedClanChatRoomsService;
 	private readonly SteamUnifiedMessages.UnifiedService<ICredentials> UnifiedCredentialsService;
@@ -60,6 +72,8 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		ArgumentNullException.ThrowIfNull(steamUnifiedMessages);
 
 		ArchiLogger = archiLogger;
+
+		UnifiedAccountPrivateApps = steamUnifiedMessages.CreateService<IAccountPrivateApps>();
 		UnifiedChatRoomService = steamUnifiedMessages.CreateService<IChatRoom>();
 		UnifiedClanChatRoomsService = steamUnifiedMessages.CreateService<IClanChatRooms>();
 		UnifiedCredentialsService = steamUnifiedMessages.CreateService<ICredentials>();
@@ -251,6 +265,36 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 			startAssetID = response.last_assetid;
 		}
+	}
+
+	internal async Task<HashSet<uint>?> GetPrivateAppIDs() {
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return null;
+		}
+
+		CAccountPrivateApps_GetPrivateAppList_Request request = new();
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedAccountPrivateApps.SendMessage(x => x.GetPrivateAppList(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return null;
+		}
+
+		if (response.Result != EResult.OK) {
+			return null;
+		}
+
+		CAccountPrivateApps_GetPrivateAppList_Response body = response.GetDeserializedResponse<CAccountPrivateApps_GetPrivateAppList_Response>();
+
+		return body.private_apps.appids.Select(static appID => (uint) appID).ToHashSet();
 	}
 
 	[PublicAPI]

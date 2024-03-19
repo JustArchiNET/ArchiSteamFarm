@@ -2437,7 +2437,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			);
 		}
 
-		ArchiWebHandler.OnInitModules();
 		BotDatabase.MobileAuthenticator?.OnInitModules();
 
 		await PluginsCore.OnBotInitModules(this, BotConfig.AdditionalProperties).ConfigureAwait(false);

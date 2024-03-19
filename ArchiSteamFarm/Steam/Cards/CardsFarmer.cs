@@ -37,7 +37,6 @@ using AngleSharp.Dom;
 using AngleSharp.XPath;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Steam.Data;
@@ -1177,7 +1176,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		GamesToFarm.Clear();
 
-		(_, FrozenSet<uint>? privateAppIDs) = await Bot.ArchiWebHandler.CachedPrivateAppIDs.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		HashSet<uint>? privateAppIDs = await Bot.ArchiHandler.GetPrivateAppIDs().ConfigureAwait(false);
 
 		ConcurrentHashSet<uint> parsedAppIDs = [];
 
@@ -1276,7 +1275,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		// Lastly, we forcefully apply random order to those considered the same in value, as we can't really afford massive amount of misses in a row
 		Dictionary<uint, string> gamesToFarm = boosterCreatorEntries.Where(entry => !boosterElibility.Contains(entry.AppID) && (!Bot.BotDatabase.FarmingRiskyIgnoredAppIDs.TryGetValue(entry.AppID, out DateTime ignoredUntil) || (ignoredUntil < now)) && ShouldIdle(entry.AppID)).ToDictionary(static entry => entry.AppID, static entry => entry.Name);
 
-		(_, FrozenSet<uint>? privateAppIDs) = await Bot.ArchiWebHandler.CachedPrivateAppIDs.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		HashSet<uint>? privateAppIDs = await Bot.ArchiHandler.GetPrivateAppIDs().ConfigureAwait(false);
 
 		if (privateAppIDs != null) {
 			foreach (uint appID in privateAppIDs) {

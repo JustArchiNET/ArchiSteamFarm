@@ -44,7 +44,8 @@ namespace ArchiSteamFarm.Steam.Security;
 public sealed class MobileAuthenticator : IDisposable {
 	internal const byte BackupCodeDigits = 7;
 	internal const byte CodeDigits = 5;
-	internal const byte CodeInterval = 30;
+
+	private const byte CodeInterval = 30;
 
 	// For how many minutes we can assume that SteamTimeDifference is correct
 	private const byte SteamTimeTTL = 15;
