@@ -586,7 +586,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 		CFamilyGroups_GetFamilyGroupForUser_Response body = response.GetDeserializedResponse<CFamilyGroups_GetFamilyGroupForUser_Response>();
 
-		return body.family_group.members.Where(member => member.steamid != steamID).Select(static member => member.steamid).ToHashSet();
+		return body.family_group?.members.Where(member => member.steamid != steamID).Select(static member => member.steamid).ToHashSet() ?? [];
 	}
 
 	internal async Task<uint?> GetLevel() {
