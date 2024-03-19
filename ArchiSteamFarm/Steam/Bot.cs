@@ -2190,6 +2190,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			case EResult.AccessDenied: // Usually means refresh token is no longer authorized to use, otherwise just try again
 			case EResult.AccountLoginDeniedNeedTwoFactor:
 			case EResult.AccountLoginDeniedThrottle:
+			case EResult.Busy:
 			case EResult.DuplicateRequest: // This will happen if user reacts to popup and tries to use the code afterwards, we have the code saved in ASF, we just need to try again
 			case EResult.Expired: // Refresh token expired
 			case EResult.FileNotFound: // User denied approval despite telling us that they accepted it, just try again
