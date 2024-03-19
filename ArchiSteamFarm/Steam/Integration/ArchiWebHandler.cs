@@ -501,7 +501,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			trades = trades.Concat(response.TradeOffersSent);
 		}
 
-		Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = response.Descriptions.ToDictionary(static description => (description.AppID, description.ClassID, description.InstanceID), static description => description);
+		Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = response.Descriptions.GroupBy(static description => (description.AppID, description.ClassID, description.InstanceID)).ToDictionary(static group => group.Key, static group => group.First());
 
 		HashSet<TradeOffer> result = [];
 
