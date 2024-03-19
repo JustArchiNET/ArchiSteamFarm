@@ -2317,13 +2317,25 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task InitializeFamilySharing() {
-		HashSet<ulong>? steamIDs = await ArchiWebHandler.GetFamilySharingSteamIDs().ConfigureAwait(false);
+		// TODO: Old call should be removed eventually when Steam stops supporting both systems at once
+		Task<HashSet<ulong>?> oldFamilySharingSteamIDsTask = ArchiWebHandler.GetFamilySharingSteamIDs();
 
-		if (steamIDs == null) {
+		HashSet<ulong>? steamIDs = await ArchiHandler.GetFamilyGroupSteamIDs().ConfigureAwait(false);
+		HashSet<ulong>? oldSteamIDs = await oldFamilySharingSteamIDsTask.ConfigureAwait(false);
+
+		if ((steamIDs == null) && (oldSteamIDs == null)) {
 			return;
 		}
 
-		SteamFamilySharingIDs.ReplaceWith(steamIDs);
+		SteamFamilySharingIDs.Clear();
+
+		if (steamIDs is { Count: > 0 }) {
+			SteamFamilySharingIDs.AddRange(steamIDs);
+		}
+
+		if (oldSteamIDs is { Count: > 0 }) {
+			SteamFamilySharingIDs.AddRange(oldSteamIDs);
+		}
 	}
 
 	private async Task<bool> InitLoginAndPassword(bool requiresPassword) {

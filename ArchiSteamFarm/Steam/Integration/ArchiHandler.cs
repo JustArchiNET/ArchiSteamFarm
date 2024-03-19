@@ -60,6 +60,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	private readonly SteamUnifiedMessages.UnifiedService<IClanChatRooms> UnifiedClanChatRoomsService;
 	private readonly SteamUnifiedMessages.UnifiedService<ICredentials> UnifiedCredentialsService;
 	private readonly SteamUnifiedMessages.UnifiedService<IEcon> UnifiedEconService;
+	private readonly SteamUnifiedMessages.UnifiedService<IFamilyGroups> UnifiedFamilyGroups;
 	private readonly SteamUnifiedMessages.UnifiedService<IFriendMessages> UnifiedFriendMessagesService;
 	private readonly SteamUnifiedMessages.UnifiedService<IPlayer> UnifiedPlayerService;
 	private readonly SteamUnifiedMessages.UnifiedService<IStore> UnifiedStoreService;
@@ -78,6 +79,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		UnifiedClanChatRoomsService = steamUnifiedMessages.CreateService<IClanChatRooms>();
 		UnifiedCredentialsService = steamUnifiedMessages.CreateService<ICredentials>();
 		UnifiedEconService = steamUnifiedMessages.CreateService<IEcon>();
+		UnifiedFamilyGroups = steamUnifiedMessages.CreateService<IFamilyGroups>();
 		UnifiedFriendMessagesService = steamUnifiedMessages.CreateService<IFriendMessages>();
 		UnifiedPlayerService = steamUnifiedMessages.CreateService<IPlayer>();
 		UnifiedStoreService = steamUnifiedMessages.CreateService<IStore>();
@@ -265,36 +267,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 			startAssetID = response.last_assetid;
 		}
-	}
-
-	internal async Task<HashSet<uint>?> GetPrivateAppIDs() {
-		if (Client == null) {
-			throw new InvalidOperationException(nameof(Client));
-		}
-
-		if (!Client.IsConnected) {
-			return null;
-		}
-
-		CAccountPrivateApps_GetPrivateAppList_Request request = new();
-
-		SteamUnifiedMessages.ServiceMethodResponse response;
-
-		try {
-			response = await UnifiedAccountPrivateApps.SendMessage(x => x.GetPrivateAppList(request)).ToLongRunningTask().ConfigureAwait(false);
-		} catch (Exception e) {
-			ArchiLogger.LogGenericWarningException(e);
-
-			return null;
-		}
-
-		if (response.Result != EResult.OK) {
-			return null;
-		}
-
-		CAccountPrivateApps_GetPrivateAppList_Response body = response.GetDeserializedResponse<CAccountPrivateApps_GetPrivateAppList_Response>();
-
-		return body.private_apps.appids.Select(static appID => (uint) appID).ToHashSet();
 	}
 
 	[PublicAPI]
@@ -578,6 +550,45 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		Client.Send(request);
 	}
 
+	internal async Task<HashSet<ulong>?> GetFamilyGroupSteamIDs() {
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return null;
+		}
+
+		if (Client.SteamID == null) {
+			throw new InvalidOperationException(nameof(Client.SteamID));
+		}
+
+		ulong steamID = Client.SteamID;
+
+		CFamilyGroups_GetFamilyGroupForUser_Request request = new() {
+			include_family_group_response = true,
+			steamid = steamID
+		};
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedFamilyGroups.SendMessage(x => x.GetFamilyGroupForUser(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return null;
+		}
+
+		if (response.Result != EResult.OK) {
+			return null;
+		}
+
+		CFamilyGroups_GetFamilyGroupForUser_Response body = response.GetDeserializedResponse<CFamilyGroups_GetFamilyGroupForUser_Response>();
+
+		return body.family_group.members.Where(member => member.steamid != steamID).Select(static member => member.steamid).ToHashSet();
+	}
+
 	internal async Task<uint?> GetLevel() {
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -665,6 +676,36 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		CPlayer_GetPrivacySettings_Response body = response.GetDeserializedResponse<CPlayer_GetPrivacySettings_Response>();
 
 		return body.privacy_settings;
+	}
+
+	internal async Task<HashSet<uint>?> GetPrivateAppIDs() {
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return null;
+		}
+
+		CAccountPrivateApps_GetPrivateAppList_Request request = new();
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedAccountPrivateApps.SendMessage(x => x.GetPrivateAppList(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return null;
+		}
+
+		if (response.Result != EResult.OK) {
+			return null;
+		}
+
+		CAccountPrivateApps_GetPrivateAppList_Response body = response.GetDeserializedResponse<CAccountPrivateApps_GetPrivateAppList_Response>();
+
+		return body.private_apps.appids.Select(static appID => (uint) appID).ToHashSet();
 	}
 
 	internal async Task<ulong> GetServerTime() {
