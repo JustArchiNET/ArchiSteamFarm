@@ -2330,11 +2330,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		SteamFamilySharingIDs.Clear();
 
 		if (steamIDs is { Count: > 0 }) {
-			SteamFamilySharingIDs.AddRange(steamIDs);
+			SteamFamilySharingIDs.UnionWith(steamIDs);
 		}
 
 		if (oldSteamIDs is { Count: > 0 }) {
-			SteamFamilySharingIDs.AddRange(oldSteamIDs);
+			SteamFamilySharingIDs.UnionWith(oldSteamIDs);
 		}
 	}
 
