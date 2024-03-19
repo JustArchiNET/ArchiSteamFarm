@@ -445,7 +445,11 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HashSet<TradeOffer>?> GetTradeOffers(bool? activeOnly = null, bool? receivedOffers = null, bool? sentOffers = null, bool? withDescriptions = null) {
+	public async Task<HashSet<TradeOffer>?> GetTradeOffers(bool? activeOffers = null, bool? receivedOffers = null, bool? sentOffers = null, bool? withDescriptions = null) {
+		if ((receivedOffers == false) && (sentOffers == false)) {
+			throw new ArgumentException($"{nameof(receivedOffers)} && {nameof(sentOffers)}");
+		}
+
 		string? accessToken = Bot.AccessToken;
 
 		if (string.IsNullOrEmpty(accessToken)) {
@@ -456,13 +460,13 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "access_token", accessToken }
 		};
 
-		if (activeOnly.HasValue) {
-			arguments["active_only"] = activeOnly.Value ? "true" : "false";
+		if (activeOffers.HasValue) {
+			arguments["active_only"] = activeOffers.Value ? "true" : "false";
 
 			// This is ridiculous, active_only without historical cutoff is actually active right now + inactive ones that changed their status since our preview request, what the fuck
 			// We're going to make it work as everybody sane expects, by being active ONLY, as the name implies, not active + some shit nobody asked for
 			// https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#GetTradeOffers_.28v1.29
-			if (activeOnly.Value) {
+			if (activeOffers.Value) {
 				arguments["time_historical_cutoff"] = uint.MaxValue;
 			}
 		}
@@ -501,11 +505,38 @@ public sealed class ArchiWebHandler : IDisposable {
 			trades = trades.Concat(response.TradeOffersSent);
 		}
 
-		Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = response.Descriptions.GroupBy(static description => (description.AppID, description.ClassID, description.InstanceID)).ToDictionary(static group => group.Key, static group => group.First());
+		HashSet<TradeOffer> result = trades.Where(tradeOffer => !activeOffers.HasValue || ((!activeOffers.Value || (tradeOffer.State == ETradeOfferState.Active)) && (activeOffers.Value || (tradeOffer.State != ETradeOfferState.Active)))).ToHashSet();
 
-		HashSet<TradeOffer> result = [];
+		if ((result.Count == 0) || (response.Descriptions.Count == 0)) {
+			return result;
+		}
 
-		foreach (TradeOffer tradeOffer in trades.Where(tradeOffer => !activeOnly.HasValue || ((!activeOnly.Value || (tradeOffer.State == ETradeOfferState.Active)) && (activeOnly.Value || (tradeOffer.State != ETradeOfferState.Active))))) {
+		// Due to a possibility of duplicate descriptions, we can't simply call ToDictionary() here
+		Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
+
+		foreach (InventoryDescription description in response.Descriptions) {
+			if (description.AppID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(description.AppID));
+
+				continue;
+			}
+
+			if (description.ClassID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(description.ClassID));
+
+				continue;
+			}
+
+			(uint AppID, ulong ClassID, ulong InstanceID) key = (description.AppID, description.ClassID, description.InstanceID);
+
+			descriptions.TryAdd(key, description);
+		}
+
+		if (descriptions.Count == 0) {
+			return result;
+		}
+
+		foreach (TradeOffer tradeOffer in result) {
 			if (tradeOffer.ItemsToGive.Count > 0) {
 				SetDescriptionsToAssets(tradeOffer.ItemsToGive, descriptions);
 			}
@@ -513,8 +544,6 @@ public sealed class ArchiWebHandler : IDisposable {
 			if (tradeOffer.ItemsToReceive.Count > 0) {
 				SetDescriptionsToAssets(tradeOffer.ItemsToReceive, descriptions);
 			}
-
-			result.Add(tradeOffer);
 		}
 
 		return result;
