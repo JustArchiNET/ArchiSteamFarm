@@ -2312,16 +2312,16 @@ public sealed class ArchiWebHandler : IDisposable {
 				await Task.Delay(WebLimiterDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			using WebAPI.AsyncInterface loyaltyRewardsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(AccountPrivateAppsService);
+			using WebAPI.AsyncInterface accountPrivateAppsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(AccountPrivateAppsService);
 
-			loyaltyRewardsService.Timeout = WebBrowser.Timeout;
+			accountPrivateAppsService.Timeout = WebBrowser.Timeout;
 
 			try {
 				response = await WebLimitRequest(
 					WebAPI.DefaultBaseAddress,
 
 					// ReSharper disable once AccessToDisposedClosure
-					async () => await loyaltyRewardsService.CallAsync(HttpMethod.Get, "GetPrivateAppList", args: arguments).ConfigureAwait(false), cancellationToken
+					async () => await accountPrivateAppsService.CallAsync(HttpMethod.Get, "GetPrivateAppList", args: arguments).ConfigureAwait(false), cancellationToken
 				).ConfigureAwait(false);
 			} catch (TaskCanceledException e) {
 				Bot.ArchiLogger.LogGenericDebuggingException(e);
