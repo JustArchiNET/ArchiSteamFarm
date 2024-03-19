@@ -511,6 +511,5 @@ jobs:
         makeLatest: false
         name: ArchiSteamFarm V${{ github.ref_name }}
         prerelease: true
-        skipIfReleaseExists: true
         token: ${{ secrets.ARCHIBOT_GITHUB_TOKEN }}
         updateOnlyUnreleased: true
