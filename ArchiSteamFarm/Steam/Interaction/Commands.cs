@@ -3180,8 +3180,6 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		ArgumentException.ThrowIfNullOrEmpty(pluginsText);
-
 		if (access < EAccess.Owner) {
 			return null;
 		}
