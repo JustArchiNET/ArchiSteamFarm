@@ -36,9 +36,8 @@ public sealed class Confirmation {
 	public EConfirmationType ConfirmationType { get; private init; }
 
 	[JsonInclude]
-	[JsonPropertyName("type_text")]
-	[JsonRequired]
-	public string ConfirmationTypeText { get; private init; } = "";
+	[JsonPropertyName("type_name")]
+	public string? ConfirmationTypeName { get; private init; }
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]

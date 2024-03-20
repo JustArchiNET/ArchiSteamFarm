@@ -183,7 +183,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		}
 
 		foreach (Confirmation? confirmation in response.Confirmations.Where(static confirmation => (confirmation.ConfirmationType == Confirmation.EConfirmationType.Unknown) || !Enum.IsDefined(confirmation.ConfirmationType))) {
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(confirmation.ConfirmationType), $"{confirmation.ConfirmationType} ({confirmation.ConfirmationTypeText})"));
+			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(confirmation.ConfirmationType), $"{confirmation.ConfirmationType} ({confirmation.ConfirmationTypeName ?? "null"})"));
 		}
 
 		return response.Confirmations;
