@@ -172,6 +172,8 @@ public sealed class Commands {
 						return await ResponseUnpackBoosters(access).ConfigureAwait(false);
 					case "UPDATE":
 						return await ResponseUpdate(access).ConfigureAwait(false);
+					case "UPDATEPLUGINS":
+						return await ResponseUpdatePlugins(access).ConfigureAwait(false);
 					case "VERSION":
 						return ResponseVersion(access);
 					default:
@@ -330,7 +332,7 @@ public sealed class Commands {
 					case "UPDATE":
 						return await ResponseUpdate(access, args[1]).ConfigureAwait(false);
 					case "UPDATEPLUGINS" when args.Length > 2:
-						return await ResponseUpdatePlugins(access, Utilities.GetArgsAsText(args, 2, ","), args[1]).ConfigureAwait(false);
+						return await ResponseUpdatePlugins(access, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 					case "UPDATEPLUGINS":
 						return await ResponseUpdatePlugins(access, args[1]).ConfigureAwait(false);
 					default:
@@ -3173,7 +3175,7 @@ public sealed class Commands {
 		return FormatStaticResponse($"{(success ? Strings.Success : Strings.WarningFailed)}{(!string.IsNullOrEmpty(message) ? $" {message}" : version != null ? $" {version}" : "")}");
 	}
 
-	private static async Task<string?> ResponseUpdatePlugins(EAccess access, string pluginsText, string? channelText = null) {
+	private static async Task<string?> ResponseUpdatePlugins(EAccess access, string? channelText = null, string? pluginsText = null) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -3200,13 +3202,20 @@ public sealed class Commands {
 			channel = parsedChannel;
 		}
 
-		string[] plugins = pluginsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
+		bool success;
+		string? message;
 
-		if (plugins.Length == 0) {
-			return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(plugins)));
+		if (!string.IsNullOrEmpty(pluginsText)) {
+			string[] plugins = pluginsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+			if (plugins.Length == 0) {
+				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(plugins)));
+			}
+
+			(success, message) = await Actions.UpdatePlugins(channel, plugins, forced).ConfigureAwait(false);
+		} else {
+			(success, message) = await Actions.UpdatePlugins(channel, forced: forced).ConfigureAwait(false);
 		}
-
-		(bool success, string? message) = await Actions.UpdatePlugins(plugins, channel, forced).ConfigureAwait(false);
 
 		return FormatStaticResponse($"{(success ? Strings.Success : Strings.WarningFailed)}{(!string.IsNullOrEmpty(message) ? $" {message}" : "")}");
 	}
