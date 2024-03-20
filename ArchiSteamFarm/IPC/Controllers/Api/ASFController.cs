@@ -182,7 +182,7 @@ public sealed class ASFController : ArchiController {
 			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.Channel))));
 		}
 
-		(bool success, string? message, Version? version) = await Actions.Update(request.Channel).ConfigureAwait(false);
+		(bool success, string? message, Version? version) = await Actions.Update(request.Channel, request.Forced).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(message)) {
 			message = success ? Strings.Success : Strings.WarningFailed;

@@ -3154,15 +3154,21 @@ public sealed class Commands {
 			return null;
 		}
 
+		bool forced = false;
 		GlobalConfig.EUpdateChannel channel = ASF.GlobalConfig?.UpdateChannel ?? GlobalConfig.DefaultUpdateChannel;
 
 		if (!string.IsNullOrEmpty(channelText)) {
+			if (channelText.EndsWith('!')) {
+				forced = true;
+				channelText = channelText[..^1];
+			}
+
 			if (!Enum.TryParse(channelText, true, out channel) || (channel == GlobalConfig.EUpdateChannel.None)) {
 				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(channelText)));
 			}
 		}
 
-		(bool success, string? message, Version? version) = await Actions.Update(channel).ConfigureAwait(false);
+		(bool success, string? message, Version? version) = await Actions.Update(channel, forced).ConfigureAwait(false);
 
 		return FormatStaticResponse($"{(success ? Strings.Success : Strings.WarningFailed)}{(!string.IsNullOrEmpty(message) ? $" {message}" : version != null ? $" {version}" : "")}");
 	}

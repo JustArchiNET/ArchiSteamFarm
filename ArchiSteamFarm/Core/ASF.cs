@@ -189,7 +189,7 @@ public static class ASF {
 		}
 	}
 
-	internal static async Task<(Version? NewVersion, bool RestartNeeded)> Update(GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false) {
+	internal static async Task<(bool Updated, Version? NewVersion)> Update(GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false) {
 		if (updateChannel.HasValue && !Enum.IsDefined(updateChannel.Value)) {
 			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
 		}
@@ -198,16 +198,14 @@ public static class ASF {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
 
-		Version? newVersion = await UpdateASF(updateChannel, updateOverride).ConfigureAwait(false);
+		(bool updated, Version? newVersion) = await UpdateASF(updateChannel, updateOverride, forced).ConfigureAwait(false);
 
-		bool restartNeeded = (newVersion != null) && (newVersion > SharedInfo.Version);
-
-		if (!restartNeeded) {
+		if (!updated) {
 			// ASF wasn't updated as part of the process, update the plugins alone
-			restartNeeded = await PluginsCore.UpdatePlugins(SharedInfo.Version, updateChannel).ConfigureAwait(false);
+			updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, updateChannel).ConfigureAwait(false);
 		}
 
-		return (newVersion, restartNeeded);
+		return (updated, newVersion);
 	}
 
 	private static async Task<bool> CanHandleWriteEvent(string filePath) {
@@ -739,27 +737,25 @@ public static class ASF {
 			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.AutoUpdateCheckInfo, autoUpdatePeriod.ToHumanReadable()));
 		}
 
-		(Version? newVersion, bool restartNeeded) = await Update().ConfigureAwait(false);
+		(bool updated, Version? newVersion) = await Update().ConfigureAwait(false);
 
-		if ((newVersion != null) && (SharedInfo.Version > newVersion)) {
-			// User is running version newer than their channel allows
-			ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
-			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
-		}
+		if (!updated) {
+			if ((newVersion != null) && (SharedInfo.Version > newVersion)) {
+				// User is running version newer than their channel allows
+				ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+			}
 
-		if (!restartNeeded) {
 			return;
 		}
 
 		// Allow crash file recovery, if needed
-		if ((newVersion != null) && (newVersion > SharedInfo.Version)) {
-			Program.AllowCrashFileRemoval = true;
-		}
+		Program.AllowCrashFileRemoval = true;
 
 		await RestartOrExit().ConfigureAwait(false);
 	}
 
-	private static async Task<Version?> UpdateASF(GlobalConfig.EUpdateChannel? channel = null, bool updateOverride = false) {
+	private static async Task<(bool Updated, Version? NewVersion)> UpdateASF(GlobalConfig.EUpdateChannel? channel = null, bool updateOverride = false, bool forced = false) {
 		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
 			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
 		}
@@ -775,7 +771,7 @@ public static class ASF {
 		channel ??= GlobalConfig.UpdateChannel;
 
 		if (!SharedInfo.BuildInfo.CanUpdate || (channel == GlobalConfig.EUpdateChannel.None)) {
-			return null;
+			return (false, null);
 		}
 
 		string targetFile;
@@ -809,7 +805,7 @@ public static class ASF {
 				if (Directory.Exists(backupDirectory)) {
 					ArchiLogger.LogGenericError(Strings.WarningFailed);
 
-					return null;
+					return (false, null);
 				}
 
 				ArchiLogger.LogGenericInfo(Strings.Done);
@@ -822,35 +818,35 @@ public static class ASF {
 			if (releaseResponse == null) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
 
-				return null;
+				return (false, null);
 			}
 
 			if (string.IsNullOrEmpty(releaseResponse.Tag)) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
 
-				return null;
+				return (false, null);
 			}
 
 			Version newVersion = new(releaseResponse.Tag);
 
 			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
 
-			if (SharedInfo.Version >= newVersion) {
-				return newVersion;
+			if (!forced && (SharedInfo.Version >= newVersion)) {
+				return (false, newVersion);
 			}
 
 			if (!updateOverride && (GlobalConfig.UpdatePeriod == 0)) {
 				ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
 				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 
-				return null;
+				return (false, newVersion);
 			}
 
 			// Auto update logic starts here
 			if (releaseResponse.Assets.IsEmpty) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssets);
 
-				return null;
+				return (false, newVersion);
 			}
 
 			targetFile = $"{SharedInfo.ASF}-{SharedInfo.BuildInfo.Variant}.zip";
@@ -859,7 +855,7 @@ public static class ASF {
 			if (binaryAsset == null) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisVersion);
 
-				return null;
+				return (false, newVersion);
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.FetchingChecksumFromRemoteServer);
@@ -869,12 +865,12 @@ public static class ASF {
 			switch (remoteChecksum) {
 				case null:
 					// Timeout or error, refuse to update as a security measure
-					return null;
+					return (false, newVersion);
 				case "":
 					// Unknown checksum, release too new or actual malicious build published, no need to scare the user as it's 99.99% the first
 					ArchiLogger.LogGenericWarning(Strings.ChecksumMissing);
 
-					return SharedInfo.Version;
+					return (false, newVersion);
 			}
 
 			if (!string.IsNullOrEmpty(releaseResponse.ChangelogPlainText)) {
@@ -896,7 +892,7 @@ public static class ASF {
 			}
 
 			if (response?.Content == null) {
-				return null;
+				return (false, newVersion);
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.VerifyingChecksumWithRemoteServer);
@@ -908,7 +904,7 @@ public static class ASF {
 			if (!checksum.Equals(remoteChecksum, StringComparison.OrdinalIgnoreCase)) {
 				ArchiLogger.LogGenericError(Strings.ChecksumWrong);
 
-				return SharedInfo.Version;
+				return (false, newVersion);
 			}
 
 			await PluginsCore.OnUpdateProceeding(newVersion).ConfigureAwait(false);
@@ -950,14 +946,14 @@ public static class ASF {
 					}
 				}
 
-				return null;
+				return (false, newVersion);
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
 
 			await PluginsCore.OnUpdateFinished(newVersion).ConfigureAwait(false);
 
-			return newVersion;
+			return (true, newVersion);
 		} finally {
 			UpdateSemaphore.Release();
 		}
