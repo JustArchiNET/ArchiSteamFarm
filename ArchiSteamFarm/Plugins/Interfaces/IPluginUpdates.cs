@@ -40,7 +40,7 @@ public interface IPluginUpdates : IPlugin {
 	/// </summary>
 	/// <param name="asfVersion">Target ASF version that plugin update should be compatible with. In rare cases, this might not match currently running ASF version, in particular when updating to newer release and checking if any plugins are compatible with it.</param>
 	/// <param name="asfVariant">ASF variant of current instance, which may be useful if you're providing different versions for different ASF variants.</param>
-	/// <param name="asfUpdate">Boolean value specifying whether ASF is being updated right now to given <see cref="asfVersion"/></param>
+	/// <param name="asfUpdate">Boolean value specifying whether ASF is being updated right now to given version.</param>
 	/// <param name="updateChannel">ASF update channel specified for this request. This might be different from the one specified in <see cref="GlobalConfig" />, as user might've specified other one for this request.</param>
 	/// <returns>Target release asset URL that should be used for auto-update. It's permitted to return null if you want to skip update, e.g. because no new version is available.</returns>
 	Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, GlobalConfig.EUpdateChannel updateChannel);
