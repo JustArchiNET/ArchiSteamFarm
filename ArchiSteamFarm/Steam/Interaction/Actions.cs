@@ -504,7 +504,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return (false, Strings.NothingFound);
 		}
 
-		bool updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, pluginsForUpdate, channel, forced).ConfigureAwait(false);
+		bool updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, pluginsForUpdate, channel, true, forced).ConfigureAwait(false);
 
 		if (updated) {
 			Utilities.InBackground(ASF.RestartOrExit);

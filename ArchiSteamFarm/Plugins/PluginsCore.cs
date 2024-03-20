@@ -709,7 +709,7 @@ public static class PluginsCore {
 		}
 	}
 
-	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool asfUpdate, GlobalConfig.EUpdateChannel? updateChannel = null, bool forced = false) {
+	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool asfUpdate, GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 
 		if (updateChannel.HasValue && !Enum.IsDefined(updateChannel.Value)) {
@@ -720,10 +720,10 @@ public static class PluginsCore {
 			return false;
 		}
 
-		return await UpdatePlugins(asfVersion, asfUpdate, ActivePluginUpdates, updateChannel, forced).ConfigureAwait(false);
+		return await UpdatePlugins(asfVersion, asfUpdate, ActivePluginUpdates, updateChannel, updateOverride, forced).ConfigureAwait(false);
 	}
 
-	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool asfUpdate, IReadOnlyCollection<IPluginUpdates> plugins, GlobalConfig.EUpdateChannel? updateChannel = null, bool forced = false) {
+	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool asfUpdate, IReadOnlyCollection<IPluginUpdates> plugins, GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 
 		if ((plugins == null) || (plugins.Count == 0)) {
@@ -746,7 +746,7 @@ public static class PluginsCore {
 
 		ASF.ArchiLogger.LogGenericInfo(Strings.PluginUpdatesChecking);
 
-		IList<bool> pluginUpdates = await Utilities.InParallel(plugins.Select(plugin => UpdatePlugin(asfVersion, asfUpdate, plugin, updateChannel.Value, forced))).ConfigureAwait(false);
+		IList<bool> pluginUpdates = await Utilities.InParallel(plugins.Select(plugin => UpdatePlugin(asfVersion, asfUpdate, plugin, updateChannel.Value, updateOverride, forced))).ConfigureAwait(false);
 
 		return pluginUpdates.Any(static updated => updated);
 	}
@@ -794,7 +794,7 @@ public static class PluginsCore {
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL3000", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	private static async Task<bool> UpdatePlugin(Version asfVersion, bool asfUpdate, IPluginUpdates plugin, GlobalConfig.EUpdateChannel updateChannel, bool forced) {
+	private static async Task<bool> UpdatePlugin(Version asfVersion, bool asfUpdate, IPluginUpdates plugin, GlobalConfig.EUpdateChannel updateChannel, bool updateOverride, bool forced) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentNullException.ThrowIfNull(plugin);
 
@@ -830,6 +830,12 @@ public static class PluginsCore {
 			Uri? releaseURL = await plugin.GetTargetReleaseURL(asfVersion, SharedInfo.BuildInfo.Variant, asfUpdate, updateChannel, forced).ConfigureAwait(false);
 
 			if (releaseURL == null) {
+				return false;
+			}
+
+			if (!updateOverride && ((ASF.GlobalConfig?.UpdatePeriod ?? GlobalConfig.DefaultUpdatePeriod) == 0)) {
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateNewVersionAvailable, pluginName));
+
 				return false;
 			}
 

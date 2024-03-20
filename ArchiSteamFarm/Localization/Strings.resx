@@ -779,6 +779,10 @@ Process uptime: {1}</value>
 		<value>No update available for {0} plugin: {1} ≥ {2}.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>New {0} plugin version is available! Consider updating yourself!</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
 	<data name="PluginUpdateFound" xml:space="preserve">
 		<value>Found {0} plugin update from version {1} to {2}...</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
