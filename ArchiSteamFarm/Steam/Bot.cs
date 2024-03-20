@@ -2157,12 +2157,44 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		switch (result) {
 			case EResult.AccountDisabled:
 				// Those failures are permanent, we should Stop() the bot if any of those happen
-				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, result, extendedResult));
+				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, result, extendedResult));
+
 				Stop();
+
+				break;
+			case EResult.AccessDenied when string.IsNullOrEmpty(RefreshToken) && (++LoginFailures >= MaxLoginFailures):
+			case EResult.InvalidPassword when string.IsNullOrEmpty(RefreshToken) && (++LoginFailures >= MaxLoginFailures):
+				// Likely permanently wrong account credentials
+				LoginFailures = 0;
+
+				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidPasswordDuringLogin, MaxLoginFailures));
+
+				Stop();
+
+				break;
+			case EResult.AccountLoginDeniedNeedTwoFactor when HasMobileAuthenticator && (++LoginFailures >= MaxLoginFailures):
+			case EResult.TwoFactorCodeMismatch when HasMobileAuthenticator && (++LoginFailures >= MaxLoginFailures):
+				// Likely permanently wrong 2FA credentials that provide automatic TwoFactorAuthentication input
+				LoginFailures = 0;
+
+				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidAuthenticatorDuringLogin, MaxLoginFailures));
+
+				Stop();
+
+				break;
+			case EResult.AccountLoginDeniedNeedTwoFactor when HasMobileAuthenticator:
+			case EResult.TwoFactorCodeMismatch when HasMobileAuthenticator:
+				// Automatic TwoFactorAuthentication input provided
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, result, extendedResult));
+
+				// There is a possibility that our cached time is no longer appropriate, so we should reset the cache in this case in order to fetch it upon the next login attempt
+				// Yes, this might as well be just invalid 2FA credentials, but we can't be sure about that, and we have LoginFailures designed to verify that for us
+				await MobileAuthenticator.ResetSteamTimeDifference().ConfigureAwait(false);
 
 				break;
 			case EResult.AccountLogonDenied:
 			case EResult.InvalidLoginAuthCode:
+				// SteamGuard input required
 				RequiredInput = ASF.EUserInputType.SteamGuard;
 
 				string? authCode = await Logging.GetUserInput(ASF.EUserInputType.SteamGuard, BotName).ConfigureAwait(false);
@@ -2174,8 +2206,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 
 				break;
-			case EResult.AccountLoginDeniedNeedTwoFactor when !HasMobileAuthenticator:
-			case EResult.TwoFactorCodeMismatch when !HasMobileAuthenticator:
+			case EResult.AccountLoginDeniedNeedTwoFactor:
+			case EResult.TwoFactorCodeMismatch:
+				// TwoFactorAuthentication input required
 				RequiredInput = ASF.EUserInputType.TwoFactorAuthentication;
 
 				string? twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName).ConfigureAwait(false);
@@ -2188,47 +2221,25 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				break;
 			case EResult.AccessDenied: // Usually means refresh token is no longer authorized to use, otherwise just try again
-			case EResult.AccountLoginDeniedNeedTwoFactor:
-			case EResult.AccountLoginDeniedThrottle:
-			case EResult.Busy:
+			case EResult.AccountLoginDeniedThrottle: // Rate-limiting
+			case EResult.AlreadyLoggedInElsewhere: // No clue, we might need to handle it differenty but it's so rare it's unknown for now why it happens
+			case EResult.Busy: // No clue, might be some internal gateway timeout, just try again
 			case EResult.DuplicateRequest: // This will happen if user reacts to popup and tries to use the code afterwards, we have the code saved in ASF, we just need to try again
-			case EResult.Expired: // Refresh token expired
+			case EResult.Expired: // Usually means refresh token is no longer authorized to use, otherwise just try again
 			case EResult.FileNotFound: // User denied approval despite telling us that they accepted it, just try again
-			case EResult.InvalidPassword:
-			case EResult.NoConnection:
+			case EResult.InvalidPassword: // Usually means refresh token is no longer authorized to use, otherwise just try again
+			case EResult.NoConnection: // Usually network issues
 			case EResult.PasswordRequiredToKickSession: // Not sure about this one, it seems to be just generic "try again"? #694
-			case EResult.RateLimitExceeded:
-			case EResult.ServiceUnavailable:
-			case EResult.Timeout:
-			case EResult.TryAnotherCM:
-			case EResult.TwoFactorCodeMismatch:
+			case EResult.RateLimitExceeded: // Rate-limiting
+			case EResult.ServiceUnavailable: // Usually Steam maintenance
+			case EResult.Timeout: // Usually network issues
+			case EResult.TryAnotherCM: // Usually Steam maintenance
+				// Generic retry pattern against common/expected problems
 				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, result, extendedResult));
-
-				switch (result) {
-					case EResult.AccountLoginDeniedNeedTwoFactor:
-					case EResult.TwoFactorCodeMismatch:
-						// There is a possibility that our cached time is no longer appropriate, so we should reset the cache in this case in order to fetch it upon the next login attempt
-						// Yes, this might as well be just invalid 2FA credentials, but we can't be sure about that, and we have LoginFailures designed to verify that for us
-						await MobileAuthenticator.ResetSteamTimeDifference().ConfigureAwait(false);
-
-						if (++LoginFailures >= MaxLoginFailures) {
-							LoginFailures = 0;
-							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidAuthenticatorDuringLogin, MaxLoginFailures));
-							Stop();
-						}
-
-						break;
-					case EResult.AccessDenied when string.IsNullOrEmpty(RefreshToken) && (++LoginFailures >= MaxLoginFailures):
-					case EResult.InvalidPassword when string.IsNullOrEmpty(RefreshToken) && (++LoginFailures >= MaxLoginFailures):
-						LoginFailures = 0;
-						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidPasswordDuringLogin, MaxLoginFailures));
-						Stop();
-
-						break;
-				}
 
 				break;
 			case EResult.OK:
+				// Login succeeded
 				break;
 			default:
 				// Unexpected result, shutdown immediately

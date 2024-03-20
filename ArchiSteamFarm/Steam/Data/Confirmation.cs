@@ -38,7 +38,7 @@ public sealed class Confirmation {
 	[JsonInclude]
 	[JsonPropertyName("type_text")]
 	[JsonRequired]
-	public string ConfirmationTypeText { get; private init; } = null!;
+	public string ConfirmationTypeText { get; private init; } = "";
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
