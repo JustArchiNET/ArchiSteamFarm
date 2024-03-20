@@ -66,7 +66,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
 		}
 
-		return GetTargetReleaseURL(asfVersion, asfVariant, updateChannel == GlobalConfig.EUpdateChannel.Stable);
+		return GetTargetReleaseURL(asfVersion, asfVariant, asfUpdate, updateChannel == GlobalConfig.EUpdateChannel.Stable);
 	}
 
 	/// <summary>
@@ -137,7 +137,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		return Task.FromResult<ReleaseAsset?>(null);
 	}
 
-	protected async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool stable) {
+	protected async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, bool stable) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 
