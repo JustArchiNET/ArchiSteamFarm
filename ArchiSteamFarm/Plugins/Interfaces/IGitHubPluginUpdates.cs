@@ -58,7 +58,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	/// <example>JustArchiNET/ArchiSteamFarm</example>
 	string RepositoryName { get; }
 
-	Task<Uri?> IPluginUpdates.GetTargetReleaseURL(Version asfVersion, string asfVariant, GlobalConfig.EUpdateChannel updateChannel) {
+	Task<Uri?> IPluginUpdates.GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, GlobalConfig.EUpdateChannel updateChannel) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 

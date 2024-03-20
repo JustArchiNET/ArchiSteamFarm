@@ -504,7 +504,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return (false, Strings.NothingFound);
 		}
 
-		bool restartNeeded = await PluginsCore.UpdatePlugins(SharedInfo.Version, pluginsForUpdate, channel).ConfigureAwait(false);
+		bool restartNeeded = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, pluginsForUpdate, channel).ConfigureAwait(false);
 
 		if (restartNeeded) {
 			Utilities.InBackground(ASF.RestartOrExit);

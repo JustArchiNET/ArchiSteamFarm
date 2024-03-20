@@ -202,7 +202,7 @@ public static class ASF {
 
 		if (!updated) {
 			// ASF wasn't updated as part of the process, update the plugins alone
-			updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, updateChannel).ConfigureAwait(false);
+			updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, updateChannel).ConfigureAwait(false);
 		}
 
 		return (updated, newVersion);
@@ -986,7 +986,7 @@ public static class ASF {
 		}
 
 		// We're ready to start update process, handle any plugin updates ready for new version
-		await PluginsCore.UpdatePlugins(newVersion, updateChannel).ConfigureAwait(false);
+		await PluginsCore.UpdatePlugins(newVersion, true, updateChannel).ConfigureAwait(false);
 
 		return Utilities.UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory);
 	}
