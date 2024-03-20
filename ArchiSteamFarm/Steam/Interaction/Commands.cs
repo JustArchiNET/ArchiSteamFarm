@@ -3184,9 +3184,15 @@ public sealed class Commands {
 			return null;
 		}
 
+		bool forced = false;
 		GlobalConfig.EUpdateChannel? channel = null;
 
 		if (!string.IsNullOrEmpty(channelText)) {
+			if (channelText.EndsWith('!')) {
+				forced = true;
+				channelText = channelText[..^1];
+			}
+
 			if (!Enum.TryParse(channelText, true, out GlobalConfig.EUpdateChannel parsedChannel) || (parsedChannel == GlobalConfig.EUpdateChannel.None)) {
 				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(channelText)));
 			}
@@ -3200,7 +3206,7 @@ public sealed class Commands {
 			return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(plugins)));
 		}
 
-		(bool success, string? message) = await Actions.UpdatePlugins(plugins, channel).ConfigureAwait(false);
+		(bool success, string? message) = await Actions.UpdatePlugins(plugins, channel, forced).ConfigureAwait(false);
 
 		return FormatStaticResponse($"{(success ? Strings.Success : Strings.WarningFailed)}{(!string.IsNullOrEmpty(message) ? $" {message}" : "")}");
 	}

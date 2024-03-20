@@ -58,7 +58,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	/// <example>JustArchiNET/ArchiSteamFarm</example>
 	string RepositoryName { get; }
 
-	Task<Uri?> IPluginUpdates.GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, GlobalConfig.EUpdateChannel updateChannel) {
+	Task<Uri?> IPluginUpdates.GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, GlobalConfig.EUpdateChannel updateChannel, bool forced) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 
@@ -66,7 +66,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
 		}
 
-		return GetTargetReleaseURL(asfVersion, asfVariant, asfUpdate, updateChannel == GlobalConfig.EUpdateChannel.Stable);
+		return GetTargetReleaseURL(asfVersion, asfVariant, asfUpdate, updateChannel == GlobalConfig.EUpdateChannel.Stable, forced);
 	}
 
 	/// <summary>
@@ -137,7 +137,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		return Task.FromResult<ReleaseAsset?>(null);
 	}
 
-	protected async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, bool stable) {
+	protected async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, bool stable, bool forced) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 
@@ -159,7 +159,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 
 		Version newVersion = new(releaseResponse.Tag);
 
-		if (Version >= newVersion) {
+		if (!forced && (Version >= newVersion)) {
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateNotFound, Name, Version, newVersion));
 
 			return null;

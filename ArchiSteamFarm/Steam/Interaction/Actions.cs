@@ -487,7 +487,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public static async Task<(bool Success, string? Message)> UpdatePlugins(IReadOnlyCollection<string> plugins, GlobalConfig.EUpdateChannel? channel = null) {
+	public static async Task<(bool Success, string? Message)> UpdatePlugins(IReadOnlyCollection<string> plugins, GlobalConfig.EUpdateChannel? channel = null, bool forced = false) {
 		if ((plugins == null) || (plugins.Count == 0)) {
 			throw new ArgumentNullException(nameof(plugins));
 		}
@@ -504,13 +504,13 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return (false, Strings.NothingFound);
 		}
 
-		bool restartNeeded = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, pluginsForUpdate, channel).ConfigureAwait(false);
+		bool updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, pluginsForUpdate, channel, forced).ConfigureAwait(false);
 
-		if (restartNeeded) {
+		if (updated) {
 			Utilities.InBackground(ASF.RestartOrExit);
 		}
 
-		string message = restartNeeded ? Strings.UpdateFinished : Strings.NothingFound;
+		string message = updated ? Strings.UpdateFinished : Strings.NothingFound;
 
 		return (true, message);
 	}
