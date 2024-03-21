@@ -29,44 +29,44 @@ namespace ArchiSteamFarm.Core;
 
 internal static partial class NativeMethods {
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+	[LibraryImport("user32.dll")]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
-	[LibraryImport("user32.dll")]
 	internal static partial void FlashWindowEx(ref FlashWindowInfo pwfi);
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+	[LibraryImport("kernel32.dll")]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
-	[LibraryImport("kernel32.dll")]
 	internal static partial bool GetConsoleMode(nint hConsoleHandle, out EConsoleMode lpMode);
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+	[LibraryImport("libc", EntryPoint = "geteuid", SetLastError = true)]
 	[SupportedOSPlatform("FreeBSD")]
 	[SupportedOSPlatform("Linux")]
 	[SupportedOSPlatform("MacOS")]
-	[LibraryImport("libc", EntryPoint = "geteuid", SetLastError = true)]
 	internal static partial uint GetEuid();
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-	[SupportedOSPlatform("Windows")]
 	[LibraryImport("kernel32.dll")]
+	[SupportedOSPlatform("Windows")]
 	internal static partial nint GetStdHandle(EStandardHandle nStdHandle);
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+	[LibraryImport("kernel32.dll")]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
-	[LibraryImport("kernel32.dll")]
 	internal static partial bool SetConsoleMode(nint hConsoleHandle, EConsoleMode dwMode);
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-	[SupportedOSPlatform("Windows")]
 	[LibraryImport("kernel32.dll")]
+	[SupportedOSPlatform("Windows")]
 	internal static partial EExecutionState SetThreadExecutionState(EExecutionState executionState);
 
 	[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+	[LibraryImport("user32.dll")]
 	[SupportedOSPlatform("Windows")]
 	[return: MarshalAs(UnmanagedType.Bool)]
-	[LibraryImport("user32.dll")]
 	internal static partial void ShowWindow(nint hWnd, EShowWindow nCmdShow);
 
 	[Flags]
@@ -85,8 +85,8 @@ internal static partial class NativeMethods {
 		Awake = SystemRequired | AwayModeRequired | Continuous
 	}
 
-	[SupportedOSPlatform("Windows")]
 	[Flags]
+	[SupportedOSPlatform("Windows")]
 	internal enum EFlashFlags : uint {
 		Stop = 0,
 		Caption = 1,
@@ -106,6 +106,7 @@ internal static partial class NativeMethods {
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
+	[SupportedOSPlatform("Windows")]
 	internal struct FlashWindowInfo {
 #pragma warning disable Reordering // TODO: This silly pragma doesn't do anything, but it stops Rider from reordering, we may be able to get rid of it later
 		public uint StructSize;
