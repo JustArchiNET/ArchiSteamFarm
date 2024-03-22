@@ -779,6 +779,10 @@
 		<value>外掛程式 {0} 沒有可供使用的更新：{1} ≥ {2}。</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>外掛程式 {0} 有新版本可用！請考慮手動更新！</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
 	<data name="PluginUpdateFound" xml:space="preserve">
 		<value>找到外掛程式 {0} 的更新，版本 {1} 至 {2}…</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>

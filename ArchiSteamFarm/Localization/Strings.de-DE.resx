@@ -780,6 +780,10 @@ Prozesslaufzeit: {1}</value>
 		<value>Kein Update für {0}-Erweiterung verfügbar: {1} ≥ {2}.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>Es ist eine neue ASF-Version verfügbar! Erwägen Sie, das Programm selbst zu aktualisieren!</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
 	<data name="PluginUpdateFound" xml:space="preserve">
 		<value>{0} Erweiterungsaktualisierung von Version {1} auf {2} gefunden...</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
