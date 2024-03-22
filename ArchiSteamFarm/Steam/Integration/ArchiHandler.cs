@@ -173,7 +173,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	[PublicAPI]
-	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false, ushort itemsCountPerRequest = 10000) {
+	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false, ushort itemsCountPerRequest = ArchiWebHandler.MaxItemsInSingleInventoryRequest) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(itemsCountPerRequest);
@@ -188,6 +188,8 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 		// We need to store asset IDs to make sure we won't get duplicate items
 		HashSet<ulong>? assetIDs = null;
+
+		Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>? descriptions = null;
 
 		while (true) {
 			ulong currentStartAssetID = startAssetID;
@@ -226,11 +228,12 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 			assetIDs ??= new HashSet<ulong>((int) response.total_inventory_count);
 
-			if ((response.assets.Count == 0) || (response.descriptions.Count == 0)) {
-				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(response.assets)} || {nameof(response.descriptions)}"));
+			if (descriptions == null) {
+				descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>();
+			} else {
+				// We don't need descriptions from the previous request
+				descriptions.Clear();
 			}
-
-			Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
 
 			foreach (CEconItem_Description? description in response.descriptions) {
 				if (description.classid == 0) {

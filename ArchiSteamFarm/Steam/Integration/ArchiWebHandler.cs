@@ -51,9 +51,11 @@ using SteamKit2;
 namespace ArchiSteamFarm.Steam.Integration;
 
 public sealed class ArchiWebHandler : IDisposable {
+	// Steam network (ArchiHandler) works unstable with more items than this (throwing upon description details), while Steam web (ArchiWebHandler) silently limits to this value maximum
+	internal const ushort MaxItemsInSingleInventoryRequest = 5000;
+
 	private const string EconService = "IEconService";
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
-	private const ushort MaxItemsInSingleInventoryRequest = 5000;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const string SteamAppsService = "ISteamApps";
 
@@ -261,6 +263,8 @@ public sealed class ArchiWebHandler : IDisposable {
 		// We need to store asset IDs to make sure we won't get duplicate items
 		HashSet<ulong>? assetIDs = null;
 
+		Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>? descriptions = null;
+
 		int rateLimitingDelay = (ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay) * 1000;
 
 		while (true) {
@@ -328,9 +332,13 @@ public sealed class ArchiWebHandler : IDisposable {
 				throw new HttpRequestException(!string.IsNullOrEmpty(response.Content.ErrorText) ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText) : response.Content.Result.HasValue ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Result) : Strings.WarningFailed);
 			}
 
-			if (response.Content.TotalInventoryCount == 0) {
+			if ((response.Content.TotalInventoryCount == 0) || (response.Content.Assets.Count == 0)) {
 				// Empty inventory
 				yield break;
+			}
+
+			if (response.Content.Descriptions.Count == 0) {
+				throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(response.Content.Descriptions)));
 			}
 
 			if (response.Content.TotalInventoryCount > Array.MaxLength) {
@@ -339,11 +347,12 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			assetIDs ??= new HashSet<ulong>((int) response.Content.TotalInventoryCount);
 
-			if ((response.Content.Assets.Count == 0) || (response.Content.Descriptions.Count == 0)) {
-				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(response.Content.Assets)} || {nameof(response.Content.Descriptions)}"));
+			if (descriptions == null) {
+				descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>();
+			} else {
+				// We don't need descriptions from the previous request
+				descriptions.Clear();
 			}
-
-			Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
 
 			foreach (InventoryDescription description in response.Content.Descriptions) {
 				if (description.ClassID == 0) {
