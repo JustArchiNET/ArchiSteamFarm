@@ -63,7 +63,6 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 			authenticator_type = 1,
 			authenticator_time = Utilities.GetUnixTime(),
 			device_identifier = deviceID,
-			sms_phone_id = "1",
 			steamid = steamID
 		};
 

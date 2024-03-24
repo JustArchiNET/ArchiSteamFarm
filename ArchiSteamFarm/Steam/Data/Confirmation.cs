@@ -36,6 +36,10 @@ public sealed class Confirmation {
 	public EConfirmationType ConfirmationType { get; private init; }
 
 	[JsonInclude]
+	[JsonPropertyName("type_name")]
+	public string? ConfirmationTypeName { get; private init; }
+
+	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("creator_id")]
 	[JsonRequired]
@@ -67,6 +71,7 @@ public sealed class Confirmation {
 		Market,
 		PhoneNumberChange = 5,
 		AccountRecovery = 6,
-		ApiKeyRegistration = 9
+		ApiKeyRegistration = 9,
+		FamilyJoin = 11
 	}
 }

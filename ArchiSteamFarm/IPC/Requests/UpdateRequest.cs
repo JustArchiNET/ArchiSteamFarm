@@ -35,6 +35,12 @@ public sealed class UpdateRequest {
 	[JsonInclude]
 	public GlobalConfig.EUpdateChannel? Channel { get; private init; }
 
+	/// <summary>
+	///     Forced update. This allows ASF to potentially downgrade to previous version available on selected <see cref="Channel" />, which isn't permitted normally.
+	/// </summary>
+	[JsonInclude]
+	public bool Forced { get; private init; }
+
 	[JsonConstructor]
 	private UpdateRequest() { }
 }

@@ -42,6 +42,7 @@ public static class SharedInfo {
 	internal const string AssemblyName = nameof(ArchiSteamFarm);
 	internal const string DatabaseExtension = ".db";
 	internal const string DebugDirectory = "debug";
+	internal const string DefaultPluginTemplateGithubRepo = "JustArchiNET/ASF-PluginTemplate";
 	internal const string EnvironmentVariableArguments = $"{ASF}_ARGS";
 	internal const string EnvironmentVariableCryptKey = $"{ASF}_CRYPTKEY";
 	internal const string EnvironmentVariableCryptKeyFile = $"{EnvironmentVariableCryptKey}_FILE";

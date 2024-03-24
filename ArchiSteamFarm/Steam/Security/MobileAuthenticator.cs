@@ -44,7 +44,8 @@ namespace ArchiSteamFarm.Steam.Security;
 public sealed class MobileAuthenticator : IDisposable {
 	internal const byte BackupCodeDigits = 7;
 	internal const byte CodeDigits = 5;
-	internal const byte CodeInterval = 30;
+
+	private const byte CodeInterval = 30;
 
 	// For how many minutes we can assume that SteamTimeDifference is correct
 	private const byte SteamTimeTTL = 15;
@@ -182,7 +183,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		}
 
 		foreach (Confirmation? confirmation in response.Confirmations.Where(static confirmation => (confirmation.ConfirmationType == Confirmation.EConfirmationType.Unknown) || !Enum.IsDefined(confirmation.ConfirmationType))) {
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(confirmation.ConfirmationType), confirmation.ConfirmationType));
+			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(confirmation.ConfirmationType), $"{confirmation.ConfirmationType} ({confirmation.ConfirmationTypeName ?? "null"})"));
 		}
 
 		return response.Confirmations;
@@ -208,7 +209,7 @@ public sealed class MobileAuthenticator : IDisposable {
 				return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
 			}
 
-			ulong serverTime = await Bot.ArchiWebHandler.GetServerTime().ConfigureAwait(false);
+			ulong serverTime = await Bot.ArchiHandler.GetServerTime().ConfigureAwait(false);
 
 			if (serverTime == 0) {
 				return Utilities.GetUnixTime();

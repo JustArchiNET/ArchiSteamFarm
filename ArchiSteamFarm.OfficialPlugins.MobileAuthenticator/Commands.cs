@@ -38,8 +38,6 @@ using SteamKit2.Internal;
 namespace ArchiSteamFarm.OfficialPlugins.MobileAuthenticator;
 
 internal static class Commands {
-	private const byte MaxFinalizationAttempts = 900 / Steam.Security.MobileAuthenticator.CodeInterval;
-
 	internal static async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
 		ArgumentNullException.ThrowIfNull(bot);
 
@@ -146,43 +144,22 @@ internal static class Commands {
 
 		ulong steamTime = await mobileAuthenticator.GetSteamTime().ConfigureAwait(false);
 
-		bool successFinalizing = false;
+		string? code = mobileAuthenticator.GenerateTokenForTime(steamTime);
 
-		for (byte i = 0; i < MaxFinalizationAttempts; i++) {
-			if (i > 0) {
-				steamTime += Steam.Security.MobileAuthenticator.CodeInterval;
-			}
-
-			string? code = mobileAuthenticator.GenerateTokenForTime(steamTime);
-
-			if (string.IsNullOrEmpty(code)) {
-				return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(mobileAuthenticator.GenerateTokenForTime)));
-			}
-
-			CTwoFactor_FinalizeAddAuthenticator_Response? response = await mobileAuthenticatorHandler.FinalizeAuthenticator(bot.SteamID, activationCode, code, steamTime).ConfigureAwait(false);
-
-			if (response == null) {
-				return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(mobileAuthenticatorHandler.FinalizeAuthenticator)));
-			}
-
-			if (response.want_more) {
-				// OK, whatever
-				continue;
-			}
-
-			if (!response.success) {
-				EResult result = (EResult) response.status;
-
-				return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, result));
-			}
-
-			successFinalizing = true;
-
-			break;
+		if (string.IsNullOrEmpty(code)) {
+			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(mobileAuthenticator.GenerateTokenForTime)));
 		}
 
-		if (!successFinalizing) {
-			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, MaxFinalizationAttempts));
+		CTwoFactor_FinalizeAddAuthenticator_Response? response = await mobileAuthenticatorHandler.FinalizeAuthenticator(bot.SteamID, activationCode, code, steamTime).ConfigureAwait(false);
+
+		if (response == null) {
+			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(mobileAuthenticatorHandler.FinalizeAuthenticator)));
+		}
+
+		if (!response.success) {
+			EResult result = (EResult) response.status;
+
+			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, result));
 		}
 
 		if (!bot.TryImportAuthenticator(mobileAuthenticator)) {

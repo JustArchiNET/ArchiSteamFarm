@@ -23,20 +23,16 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using ArchiSteamFarm.Steam.Data;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-internal sealed class SubmitResponse {
+internal sealed class SubmitResponse : BooleanResponse {
 	[JsonInclude]
 	[JsonPropertyName("data")]
 	internal SubmitResponseData? Data { get; private init; }
-
-	[JsonInclude]
-	[JsonPropertyName("success")]
-	[JsonRequired]
-	internal bool Success { get; private init; }
 
 	[JsonConstructor]
 	private SubmitResponse() { }

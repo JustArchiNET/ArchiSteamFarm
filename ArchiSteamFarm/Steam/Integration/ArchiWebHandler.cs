@@ -22,7 +22,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
@@ -52,13 +51,13 @@ using SteamKit2;
 namespace ArchiSteamFarm.Steam.Integration;
 
 public sealed class ArchiWebHandler : IDisposable {
-	private const string AccountPrivateAppsService = "IAccountPrivateAppsService";
+	// Steam network (ArchiHandler) works unstable with more items than this (throwing upon description details), while Steam web (ArchiWebHandler) silently limits to this value maximum
+	internal const ushort MaxItemsInSingleInventoryRequest = 5000;
+
 	private const string EconService = "IEconService";
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
-	private const ushort MaxItemsInSingleInventoryRequest = 5000;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const string SteamAppsService = "ISteamApps";
-	private const string TwoFactorService = "ITwoFactorService";
 
 	[PublicAPI]
 	public static Uri SteamCheckoutURL => new("https://checkout.steampowered.com");
@@ -77,8 +76,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	[PublicAPI]
 	public WebBrowser WebBrowser { get; }
 
-	internal readonly ArchiCacheable<FrozenSet<uint>> CachedPrivateAppIDs;
-
 	private readonly Bot Bot;
 	private readonly SemaphoreSlim SessionSemaphore = new(1, 1);
 
@@ -92,12 +89,10 @@ public sealed class ArchiWebHandler : IDisposable {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		Bot = bot;
-		CachedPrivateAppIDs = new ArchiCacheable<FrozenSet<uint>>(ResolvePrivateAppIDs, TimeSpan.FromMinutes(5));
 		WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy);
 	}
 
 	public void Dispose() {
-		CachedPrivateAppIDs.Dispose();
 		SessionSemaphore.Dispose();
 		WebBrowser.Dispose();
 	}
@@ -268,6 +263,8 @@ public sealed class ArchiWebHandler : IDisposable {
 		// We need to store asset IDs to make sure we won't get duplicate items
 		HashSet<ulong>? assetIDs = null;
 
+		Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>? descriptions = null;
+
 		int rateLimitingDelay = (ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay) * 1000;
 
 		while (true) {
@@ -335,9 +332,13 @@ public sealed class ArchiWebHandler : IDisposable {
 				throw new HttpRequestException(!string.IsNullOrEmpty(response.Content.ErrorText) ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText) : response.Content.Result.HasValue ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Result) : Strings.WarningFailed);
 			}
 
-			if (response.Content.TotalInventoryCount == 0) {
+			if ((response.Content.TotalInventoryCount == 0) || (response.Content.Assets.Count == 0)) {
 				// Empty inventory
 				yield break;
+			}
+
+			if (response.Content.Descriptions.Count == 0) {
+				throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(response.Content.Descriptions)));
 			}
 
 			if (response.Content.TotalInventoryCount > Array.MaxLength) {
@@ -346,11 +347,12 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			assetIDs ??= new HashSet<ulong>((int) response.Content.TotalInventoryCount);
 
-			if ((response.Content.Assets.Count == 0) || (response.Content.Descriptions.Count == 0)) {
-				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(response.Content.Assets)} || {nameof(response.Content.Descriptions)}"));
+			if (descriptions == null) {
+				descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>();
+			} else {
+				// We don't need descriptions from the previous request
+				descriptions.Clear();
 			}
-
-			Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
 
 			foreach (InventoryDescription description in response.Content.Descriptions) {
 				if (description.ClassID == 0) {
@@ -362,12 +364,10 @@ public sealed class ArchiWebHandler : IDisposable {
 				descriptions.TryAdd(key, description);
 			}
 
-			foreach (Asset asset in response.Content.Assets) {
-				if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out InventoryDescription? description) || !assetIDs.Add(asset.AssetID)) {
-					continue;
+			foreach (Asset asset in response.Content.Assets.Where(asset => assetIDs.Add(asset.AssetID))) {
+				if (descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out InventoryDescription? description)) {
+					asset.Description = description;
 				}
-
-				asset.Description = description;
 
 				yield return asset;
 			}
@@ -448,7 +448,11 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HashSet<TradeOffer>?> GetTradeOffers(bool? activeOnly = null, bool? receivedOffers = null, bool? sentOffers = null, bool? withDescriptions = null) {
+	public async Task<HashSet<TradeOffer>?> GetTradeOffers(bool? activeOffers = null, bool? receivedOffers = null, bool? sentOffers = null, bool? withDescriptions = null) {
+		if ((receivedOffers == false) && (sentOffers == false)) {
+			throw new ArgumentException($"{nameof(receivedOffers)} && {nameof(sentOffers)}");
+		}
+
 		string? accessToken = Bot.AccessToken;
 
 		if (string.IsNullOrEmpty(accessToken)) {
@@ -459,13 +463,13 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "access_token", accessToken }
 		};
 
-		if (activeOnly.HasValue) {
-			arguments["active_only"] = activeOnly.Value ? "true" : "false";
+		if (activeOffers.HasValue) {
+			arguments["active_only"] = activeOffers.Value ? "true" : "false";
 
 			// This is ridiculous, active_only without historical cutoff is actually active right now + inactive ones that changed their status since our preview request, what the fuck
 			// We're going to make it work as everybody sane expects, by being active ONLY, as the name implies, not active + some shit nobody asked for
 			// https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#GetTradeOffers_.28v1.29
-			if (activeOnly.Value) {
+			if (activeOffers.Value) {
 				arguments["time_historical_cutoff"] = uint.MaxValue;
 			}
 		}
@@ -504,11 +508,38 @@ public sealed class ArchiWebHandler : IDisposable {
 			trades = trades.Concat(response.TradeOffersSent);
 		}
 
-		Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = response.Descriptions.ToDictionary(static description => (description.AppID, description.ClassID, description.InstanceID), static description => description);
+		HashSet<TradeOffer> result = trades.Where(tradeOffer => !activeOffers.HasValue || ((!activeOffers.Value || (tradeOffer.State == ETradeOfferState.Active)) && (activeOffers.Value || (tradeOffer.State != ETradeOfferState.Active)))).ToHashSet();
 
-		HashSet<TradeOffer> result = [];
+		if ((result.Count == 0) || (response.Descriptions.Count == 0)) {
+			return result;
+		}
 
-		foreach (TradeOffer tradeOffer in trades.Where(tradeOffer => !activeOnly.HasValue || ((!activeOnly.Value || (tradeOffer.State == ETradeOfferState.Active)) && (activeOnly.Value || (tradeOffer.State != ETradeOfferState.Active))))) {
+		// Due to a possibility of duplicate descriptions, we can't simply call ToDictionary() here
+		Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
+
+		foreach (InventoryDescription description in response.Descriptions) {
+			if (description.AppID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(description.AppID));
+
+				continue;
+			}
+
+			if (description.ClassID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(description.ClassID));
+
+				continue;
+			}
+
+			(uint AppID, ulong ClassID, ulong InstanceID) key = (description.AppID, description.ClassID, description.InstanceID);
+
+			descriptions.TryAdd(key, description);
+		}
+
+		if (descriptions.Count == 0) {
+			return result;
+		}
+
+		foreach (TradeOffer tradeOffer in result) {
 			if (tradeOffer.ItemsToGive.Count > 0) {
 				SetDescriptionsToAssets(tradeOffer.ItemsToGive, descriptions);
 			}
@@ -516,8 +547,6 @@ public sealed class ArchiWebHandler : IDisposable {
 			if (tradeOffer.ItemsToReceive.Count > 0) {
 				SetDescriptionsToAssets(tradeOffer.ItemsToReceive, descriptions);
 			}
-
-			result.Add(tradeOffer);
 		}
 
 		return result;
@@ -1861,49 +1890,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		return response?.Content;
 	}
 
-	internal async Task<ulong> GetServerTime() {
-		KeyValue? response = null;
-
-		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			if ((i > 0) && (WebLimiterDelay > 0)) {
-				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
-			}
-
-			using WebAPI.AsyncInterface twoFactorService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(TwoFactorService);
-
-			twoFactorService.Timeout = WebBrowser.Timeout;
-
-			try {
-				response = await WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
-
-					// ReSharper disable once AccessToDisposedClosure
-					async () => await twoFactorService.CallAsync(HttpMethod.Post, "QueryTime").ConfigureAwait(false)
-				).ConfigureAwait(false);
-			} catch (TaskCanceledException e) {
-				Bot.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-			}
-		}
-
-		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-
-			return 0;
-		}
-
-		ulong result = response["server_time"].AsUnsignedLong();
-
-		if (result == 0) {
-			Bot.ArchiLogger.LogNullError(result);
-
-			return 0;
-		}
-
-		return result;
-	}
-
 	internal async Task<byte?> GetTradeHoldDurationForTrade(ulong tradeID) {
 		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
@@ -2140,8 +2126,6 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	internal void OnDisconnected() => Initialized = false;
 
-	internal void OnInitModules() => Utilities.InBackground(() => CachedPrivateAppIDs.Reset());
-
 	internal void OnVanityURLChanged(string? vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
 
 	internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)?> RedeemWalletKey(string key) {
@@ -2311,69 +2295,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	private async Task<(bool Success, FrozenSet<uint>? Result)> ResolvePrivateAppIDs(CancellationToken cancellationToken) {
-		string? accessToken = Bot.AccessToken;
-
-		if (string.IsNullOrEmpty(accessToken)) {
-			return (false, null);
-		}
-
-		Dictionary<string, object?> arguments = new(1, StringComparer.Ordinal) {
-			{ "access_token", accessToken }
-		};
-
-		KeyValue? response = null;
-
-		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			if ((i > 0) && (WebLimiterDelay > 0)) {
-				await Task.Delay(WebLimiterDelay, cancellationToken).ConfigureAwait(false);
-			}
-
-			using WebAPI.AsyncInterface loyaltyRewardsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(AccountPrivateAppsService);
-
-			loyaltyRewardsService.Timeout = WebBrowser.Timeout;
-
-			try {
-				response = await WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
-
-					// ReSharper disable once AccessToDisposedClosure
-					async () => await loyaltyRewardsService.CallAsync(HttpMethod.Get, "GetPrivateAppList", args: arguments).ConfigureAwait(false), cancellationToken
-				).ConfigureAwait(false);
-			} catch (TaskCanceledException e) {
-				Bot.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-			}
-		}
-
-		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-
-			return (false, null);
-		}
-
-		List<KeyValue> nodes = response["private_apps"]["appids"].Children;
-
-		if (nodes.Count == 0) {
-			return (true, FrozenSet<uint>.Empty);
-		}
-
-		HashSet<uint> result = new(nodes.Count);
-
-		foreach (uint appID in nodes.Select(static node => node.AsUnsignedInteger())) {
-			if (appID == 0) {
-				Bot.ArchiLogger.LogNullError(appID);
-
-				return (false, null);
-			}
-
-			result.Add(appID);
-		}
-
-		return (true, result.ToFrozenSet());
-	}
-
 	private static void SetDescriptionsToAssets(IEnumerable<Asset> assets, [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions) {
 		ArgumentNullException.ThrowIfNull(assets);
 		ArgumentNullException.ThrowIfNull(descriptions);
@@ -2381,14 +2302,9 @@ public sealed class ArchiWebHandler : IDisposable {
 		foreach (Asset asset in assets) {
 			(uint AppID, ulong ClassID, ulong InstanceID) key = (asset.AppID, asset.ClassID, asset.InstanceID);
 
-			if (!descriptions.TryGetValue(key, out InventoryDescription? description)) {
-				// Best effort only - we can guarantee tradable property at best, and only at the time of the trade offer
-				description = new InventoryDescription(asset.AppID, asset.ClassID, asset.InstanceID, tradable: true);
-
-				descriptions.Add(key, description);
+			if (descriptions.TryGetValue(key, out InventoryDescription? description)) {
+				asset.Description = description;
 			}
-
-			asset.Description = description;
 		}
 	}
 

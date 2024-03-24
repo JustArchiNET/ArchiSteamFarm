@@ -24,82 +24,89 @@
 using System;
 using System.Text.Json.Serialization;
 using JetBrains.Annotations;
+using ProtoBuf;
+using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
+[PublicAPI]
 public sealed class Asset {
-	[PublicAPI]
 	public const uint SteamAppID = 753;
-
-	[PublicAPI]
 	public const ulong SteamCommunityContextID = 6;
-
-	[PublicAPI]
 	public const ulong SteamPointsShopInstanceID = 3865004543;
 
 	[JsonIgnore]
-	[PublicAPI]
+	public CEcon_Asset Body { get; } = new();
+
+	[JsonIgnore]
 	public bool IsSteamPointsShopItem => !Tradable && (InstanceID == SteamPointsShopInstanceID);
 
 	[JsonIgnore]
-	[PublicAPI]
 	public bool Marketable => Description?.Marketable ?? false;
 
 	[JsonIgnore]
-	[PublicAPI]
 	public EAssetRarity Rarity => Description?.Rarity ?? EAssetRarity.Unknown;
 
 	[JsonIgnore]
-	[PublicAPI]
 	public uint RealAppID => Description?.RealAppID ?? 0;
 
 	[JsonIgnore]
-	[PublicAPI]
 	public bool Tradable => Description?.Tradable ?? false;
 
 	[JsonIgnore]
-	[PublicAPI]
 	public EAssetType Type => Description?.Type ?? EAssetType.Unknown;
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("amount")]
 	[JsonRequired]
-	[PublicAPI]
-	public uint Amount { get; internal set; }
+	public uint Amount {
+		get => (uint) Body.amount;
+		internal set => Body.amount = value;
+	}
 
 	[JsonInclude]
 	[JsonPropertyName("appid")]
-	public uint AppID { get; private init; }
+	public uint AppID {
+		get => Body.appid;
+		private init => Body.appid = value;
+	}
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("assetid")]
-	[PublicAPI]
-	public ulong AssetID { get; private init; }
+	public ulong AssetID {
+		get => Body.assetid;
+		private init => Body.assetid = value;
+	}
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("classid")]
-	[PublicAPI]
-	public ulong ClassID { get; private init; }
+	public ulong ClassID {
+		get => Body.classid;
+		private init => Body.classid = value;
+	}
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("contextid")]
-	[PublicAPI]
-	public ulong ContextID { get; private init; }
+	public ulong ContextID {
+		get => Body.contextid;
+		private init => Body.contextid = value;
+	}
 
 	[JsonIgnore]
-	[PublicAPI]
 	public InventoryDescription? Description { get; internal set; }
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("instanceid")]
-	[PublicAPI]
-	public ulong InstanceID { get; private init; }
+	public ulong InstanceID {
+		get => Body.instanceid;
+		private init => Body.instanceid = value;
+	}
 
 	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
@@ -109,19 +116,25 @@ public sealed class Asset {
 		init => AssetID = value;
 	}
 
-	internal Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription description, ulong assetID = 0, ulong instanceID = 0) {
+	public Asset(CEcon_Asset asset, InventoryDescription? description = null) {
+		ArgumentNullException.ThrowIfNull(asset);
+
+		Body = asset;
+		Description = description;
+	}
+
+	public Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription? description = null, ulong assetID = 0, ulong instanceID = 0) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(classID);
 		ArgumentOutOfRangeException.ThrowIfZero(amount);
-		ArgumentNullException.ThrowIfNull(description);
 
 		AppID = appID;
 		ContextID = contextID;
 		ClassID = classID;
 		Amount = amount;
-		Description = description;
 
+		Description = description;
 		AssetID = assetID;
 		InstanceID = instanceID;
 	}
@@ -129,5 +142,5 @@ public sealed class Asset {
 	[JsonConstructor]
 	private Asset() { }
 
-	internal Asset CreateShallowCopy() => (Asset) MemberwiseClone();
+	public Asset DeepClone() => new(Serializer.DeepClone(Body), Description?.DeepClone());
 }

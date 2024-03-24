@@ -21,7 +21,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
@@ -33,6 +32,22 @@ namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class InventoryResponse : OptionalResultResponse {
+	internal EResult? ErrorCode {
+		get {
+			if (CachedErrorCode.HasValue) {
+				return CachedErrorCode;
+			}
+
+			if (string.IsNullOrEmpty(ErrorText)) {
+				return null;
+			}
+
+			CachedErrorCode = SteamUtilities.InterpretError(ErrorText);
+
+			return CachedErrorCode;
+		}
+	}
+
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("assets")]
@@ -43,7 +58,8 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonPropertyName("descriptions")]
 	internal ImmutableHashSet<InventoryDescription> Descriptions { get; private init; } = [];
 
-	internal EResult? ErrorCode { get; private init; }
+	[JsonInclude]
+	[JsonPropertyName("error")]
 	internal string? ErrorText { get; private init; }
 
 	[JsonInclude]
@@ -60,19 +76,7 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonPropertyName("total_inventory_count")]
 	internal uint TotalInventoryCount { get; private init; }
 
-	[JsonDisallowNull]
-	[JsonInclude]
-	[JsonPropertyName("error")]
-	private string Error {
-		get => ErrorText ?? "";
-
-		init {
-			ArgumentException.ThrowIfNullOrEmpty(value);
-
-			ErrorCode = SteamUtilities.InterpretError(value);
-			ErrorText = value;
-		}
-	}
+	private EResult? CachedErrorCode;
 
 	[JsonConstructor]
 	private InventoryResponse() { }

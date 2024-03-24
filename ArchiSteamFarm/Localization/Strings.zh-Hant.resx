@@ -764,16 +764,54 @@
 		<value>已停用 {0}（{1}）的掛卡，因為該遊戲目前被標示為私人。若您想要 ASF 掛該遊戲，請更改它的隱私設定。</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>正在跳過：{0}…</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>正在檢查外掛程式更新…</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>正在檢查外掛程式 {0} 的更新…</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>外掛程式 {0} 沒有可供使用的更新：{1} ≥ {2}。</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>外掛程式 {0} 有新版本可用！請考慮手動更新！</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>找到外掛程式 {0} 的更新，版本 {1} 至 {2}…</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>外掛程式 {0} 版本 {1} 至 {2} 的更新沒有可供使用的資源檔案，這通常代表稍後才能更新。</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>無法確定外掛程式 {0} 版本 {1} 至 {2} 的更新資源檔案。若檔案尚未發布完成，則可能會出現這種情形；如果此問題持續發生，您應通知外掛程式作者。</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>正在更新外掛程式 {0}…</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>成功更新外掛程式 {0}，變更將於 ASF 下次啟動時生效。</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>外掛程式 {0}/{1} 已被登錄，並已啟用自動更新。</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>外掛程式 {0}/{1} 已被停用自動更新，但它支援此功能。</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>自訂外掛程式已被登錄自動更新。ASF 團隊提醒您，為了您的安全，您應僅為受信任的內容啟用自動更新。若您不想啟用，您可以在 ASF 全域設定中停用外掛程式更新。</value>
+	</data>
 </root>

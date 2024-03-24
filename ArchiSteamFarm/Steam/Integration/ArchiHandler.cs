@@ -36,6 +36,16 @@ using ArchiSteamFarm.Steam.Integration.CMsgs;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
+using SteamKit2.WebUI.Internal;
+using CMsgClientChangeStatus = SteamKit2.Internal.CMsgClientChangeStatus;
+using CMsgClientCommentNotifications = SteamKit2.Internal.CMsgClientCommentNotifications;
+using CMsgClientGamesPlayed = SteamKit2.Internal.CMsgClientGamesPlayed;
+using CMsgClientItemAnnouncements = SteamKit2.Internal.CMsgClientItemAnnouncements;
+using CMsgClientRedeemGuestPass = SteamKit2.Internal.CMsgClientRedeemGuestPass;
+using CMsgClientRequestItemAnnouncements = SteamKit2.Internal.CMsgClientRequestItemAnnouncements;
+using CMsgClientSharedLibraryLockStatus = SteamKit2.Internal.CMsgClientSharedLibraryLockStatus;
+using CMsgClientUIMode = SteamKit2.Internal.CMsgClientUIMode;
+using CMsgClientUserNotifications = SteamKit2.Internal.CMsgClientUserNotifications;
 using EPersonaStateFlag = SteamKit2.EPersonaStateFlag;
 
 namespace ArchiSteamFarm.Steam.Integration;
@@ -44,10 +54,13 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
 
 	private readonly ArchiLogger ArchiLogger;
+
+	private readonly SteamUnifiedMessages.UnifiedService<IAccountPrivateApps> UnifiedAccountPrivateApps;
 	private readonly SteamUnifiedMessages.UnifiedService<IChatRoom> UnifiedChatRoomService;
 	private readonly SteamUnifiedMessages.UnifiedService<IClanChatRooms> UnifiedClanChatRoomsService;
 	private readonly SteamUnifiedMessages.UnifiedService<ICredentials> UnifiedCredentialsService;
 	private readonly SteamUnifiedMessages.UnifiedService<IEcon> UnifiedEconService;
+	private readonly SteamUnifiedMessages.UnifiedService<IFamilyGroups> UnifiedFamilyGroups;
 	private readonly SteamUnifiedMessages.UnifiedService<IFriendMessages> UnifiedFriendMessagesService;
 	private readonly SteamUnifiedMessages.UnifiedService<IPlayer> UnifiedPlayerService;
 	private readonly SteamUnifiedMessages.UnifiedService<IStore> UnifiedStoreService;
@@ -60,10 +73,13 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		ArgumentNullException.ThrowIfNull(steamUnifiedMessages);
 
 		ArchiLogger = archiLogger;
+
+		UnifiedAccountPrivateApps = steamUnifiedMessages.CreateService<IAccountPrivateApps>();
 		UnifiedChatRoomService = steamUnifiedMessages.CreateService<IChatRoom>();
 		UnifiedClanChatRoomsService = steamUnifiedMessages.CreateService<IClanChatRooms>();
 		UnifiedCredentialsService = steamUnifiedMessages.CreateService<ICredentials>();
 		UnifiedEconService = steamUnifiedMessages.CreateService<IEcon>();
+		UnifiedFamilyGroups = steamUnifiedMessages.CreateService<IFamilyGroups>();
 		UnifiedFriendMessagesService = steamUnifiedMessages.CreateService<IFriendMessages>();
 		UnifiedPlayerService = steamUnifiedMessages.CreateService<IPlayer>();
 		UnifiedStoreService = steamUnifiedMessages.CreateService<IStore>();
@@ -157,7 +173,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	[PublicAPI]
-	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false, ushort itemsCountPerRequest = 40000) {
+	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false, ushort itemsCountPerRequest = ArchiWebHandler.MaxItemsInSingleInventoryRequest) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(itemsCountPerRequest);
@@ -172,6 +188,8 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 		// We need to store asset IDs to make sure we won't get duplicate items
 		HashSet<ulong>? assetIDs = null;
+
+		Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>? descriptions = null;
 
 		while (true) {
 			ulong currentStartAssetID = startAssetID;
@@ -210,11 +228,12 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 			assetIDs ??= new HashSet<ulong>((int) response.total_inventory_count);
 
-			if ((response.assets.Count == 0) || (response.descriptions.Count == 0)) {
-				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(response.assets)} || {nameof(response.descriptions)}"));
+			if (descriptions == null) {
+				descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>();
+			} else {
+				// We don't need descriptions from the previous request
+				descriptions.Clear();
 			}
-
-			Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
 
 			foreach (CEconItem_Description? description in response.descriptions) {
 				if (description.classid == 0) {
@@ -230,14 +249,15 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				descriptions.Add(key, new InventoryDescription(description));
 			}
 
-			foreach (CEcon_Asset? asset in response.assets) {
-				if (!descriptions.TryGetValue((asset.classid, asset.instanceid), out InventoryDescription? description) || !assetIDs.Add(asset.assetid)) {
+			foreach (CEcon_Asset? asset in response.assets.Where(asset => assetIDs.Add(asset.assetid))) {
+				InventoryDescription? description = descriptions.GetValueOrDefault((asset.classid, asset.instanceid));
+
+				// Extra bulletproofing against Steam showing us middle finger
+				if ((tradableOnly && (description?.Tradable != true)) || (marketableOnly && (description?.Marketable != true))) {
 					continue;
 				}
 
-				Asset convertedAsset = new(asset.appid, asset.contextid, asset.classid, (uint) asset.amount, description, asset.assetid, asset.instanceid);
-
-				yield return convertedAsset;
+				yield return new Asset(asset, description);
 			}
 
 			if (!response.more_items) {
@@ -533,6 +553,45 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		Client.Send(request);
 	}
 
+	internal async Task<HashSet<ulong>?> GetFamilyGroupSteamIDs() {
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return null;
+		}
+
+		if (Client.SteamID == null) {
+			throw new InvalidOperationException(nameof(Client.SteamID));
+		}
+
+		ulong steamID = Client.SteamID;
+
+		CFamilyGroups_GetFamilyGroupForUser_Request request = new() {
+			include_family_group_response = true,
+			steamid = steamID
+		};
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedFamilyGroups.SendMessage(x => x.GetFamilyGroupForUser(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return null;
+		}
+
+		if (response.Result != EResult.OK) {
+			return null;
+		}
+
+		CFamilyGroups_GetFamilyGroupForUser_Response body = response.GetDeserializedResponse<CFamilyGroups_GetFamilyGroupForUser_Response>();
+
+		return body.family_group?.members.Where(member => member.steamid != steamID).Select(static member => member.steamid).ToHashSet() ?? [];
+	}
+
 	internal async Task<uint?> GetLevel() {
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -620,6 +679,66 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		CPlayer_GetPrivacySettings_Response body = response.GetDeserializedResponse<CPlayer_GetPrivacySettings_Response>();
 
 		return body.privacy_settings;
+	}
+
+	internal async Task<HashSet<uint>?> GetPrivateAppIDs() {
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return null;
+		}
+
+		CAccountPrivateApps_GetPrivateAppList_Request request = new();
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedAccountPrivateApps.SendMessage(x => x.GetPrivateAppList(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return null;
+		}
+
+		if (response.Result != EResult.OK) {
+			return null;
+		}
+
+		CAccountPrivateApps_GetPrivateAppList_Response body = response.GetDeserializedResponse<CAccountPrivateApps_GetPrivateAppList_Response>();
+
+		return body.private_apps.appids.Select(static appID => (uint) appID).ToHashSet();
+	}
+
+	internal async Task<ulong> GetServerTime() {
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return 0;
+		}
+
+		CTwoFactor_Time_Request request = new();
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedTwoFactorService.SendMessage(x => x.QueryTime(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return 0;
+		}
+
+		if (response.Result != EResult.OK) {
+			return 0;
+		}
+
+		CTwoFactor_Time_Response body = response.GetDeserializedResponse<CTwoFactor_Time_Response>();
+
+		return body.server_time;
 	}
 
 	internal async Task<string?> GetTwoFactorDeviceIdentifier(ulong steamID) {

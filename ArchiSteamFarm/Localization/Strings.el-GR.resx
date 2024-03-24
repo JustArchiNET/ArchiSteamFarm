@@ -188,7 +188,10 @@ StackTrace:
 		<value>Τοπική έκδοση: {0} | Απομακρυσμένη έκδοση: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Παρακαλώ ελέγξτε την εφαρμογή Steam για κινητά, θα πρέπει να έχετε λάβει μια ειδοποίηση έγκρισης σύνδεσης. Πληκτρολογήστε το Y εάν λάβατε και εγκρίνατε την ειδοποίηση, Ν αν θέλετε να παρέχετε τον κωδικό: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Εισάγετε τον κωδικό από την εφαρμογή επαληθευτή Steam σας: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -741,9 +744,21 @@ StackTrace:
 	
 	
 	
-	
-	
-	
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>Παράλειψη: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>Έλεγχος για ενημερώσεις πρόσθετων...</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>Έλεγχος ενημέρωσης για το πρόσθετο {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>Δεν υπάρχει διαθέσιμη ενημέρωση για το πρόσθετο {0}: {1} ≥ {2}.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
 	
 	
 	

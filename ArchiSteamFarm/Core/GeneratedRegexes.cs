@@ -26,21 +26,17 @@ using System.Text.RegularExpressions;
 namespace ArchiSteamFarm.Core;
 
 internal static partial class GeneratedRegexes {
-	private const string CdKeyPattern = @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$";
-	private const string DecimalPattern = @"[0-9\.,]+";
 	private const RegexOptions DefaultOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
-	private const string DigitsPattern = @"\d+";
-	private const string NonAsciiPattern = @"[^\u0000-\u007F]+";
 
-	[GeneratedRegex(CdKeyPattern, DefaultOptions)]
+	[GeneratedRegex(@"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", DefaultOptions)]
 	internal static partial Regex CdKey();
 
-	[GeneratedRegex(DecimalPattern, DefaultOptions)]
+	[GeneratedRegex(@"[0-9\.,]+", DefaultOptions)]
 	internal static partial Regex Decimal();
 
-	[GeneratedRegex(DigitsPattern, DefaultOptions)]
+	[GeneratedRegex(@"\d+", DefaultOptions)]
 	internal static partial Regex Digits();
 
-	[GeneratedRegex(NonAsciiPattern, DefaultOptions)]
+	[GeneratedRegex(@"[^\u0000-\u007F]+", DefaultOptions)]
 	internal static partial Regex NonAscii();
 }

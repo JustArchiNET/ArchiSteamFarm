@@ -105,7 +105,7 @@ public sealed class Trading : IDisposable {
 	}
 
 	[PublicAPI]
-	public static bool IsTradeNeutralOrBetter(HashSet<Asset> inventory, IReadOnlyCollection<Asset> itemsToGive, IReadOnlyCollection<Asset> itemsToReceive) {
+	public static bool IsTradeNeutralOrBetter(IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset> itemsToGive, IReadOnlyCollection<Asset> itemsToReceive) {
 		if ((inventory == null) || (inventory.Count == 0)) {
 			throw new ArgumentNullException(nameof(inventory));
 		}
@@ -123,8 +123,11 @@ public sealed class Trading : IDisposable {
 		// There are a lot of factors involved here - different realAppIDs, different item types, possibility of user overpaying and more
 		// All of those cases should be verified by our unit tests to ensure that the logic here matches all possible cases, especially those that were incorrectly handled previously
 
+		// We start from a deep copy of the inventory, along with its assets, since we'll be manipulating amounts in them
+		HashSet<Asset> inventoryState = inventory.Select(static item => item.DeepClone()).ToHashSet();
+
 		// Firstly we get initial sets state of our inventory
-		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> initialSets = GetInventorySets(inventory);
+		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> initialSets = GetInventorySets(inventoryState);
 
 		// Once we have initial state, we remove items that we're supposed to give from our inventory
 		// This loop is a bit more complex due to the fact that we might have a mix of the same item splitted into different amounts
@@ -132,8 +135,7 @@ public sealed class Trading : IDisposable {
 			uint amountToGive = itemToGive.Amount;
 			HashSet<Asset> itemsToRemove = [];
 
-			// Keep in mind that ClassID is unique only within appID scope - we can do it like this because we're not dealing with non-Steam items here (otherwise we'd need to check appID too)
-			foreach (Asset item in inventory.Where(item => item.ClassID == itemToGive.ClassID)) {
+			foreach (Asset item in inventoryState.Where(item => (item.AppID == itemToGive.AppID) && (item.ClassID == itemToGive.ClassID) && (item.InstanceID == itemToGive.InstanceID))) {
 				if (amountToGive >= item.Amount) {
 					itemsToRemove.Add(item);
 					amountToGive -= item.Amount;
@@ -152,17 +154,17 @@ public sealed class Trading : IDisposable {
 			}
 
 			if (itemsToRemove.Count > 0) {
-				inventory.ExceptWith(itemsToRemove);
+				inventoryState.ExceptWith(itemsToRemove);
 			}
 		}
 
 		// Now we can add items that we're supposed to receive, this one doesn't require advanced amounts logic since we can just add items regardless
 		foreach (Asset itemToReceive in itemsToReceive) {
-			inventory.Add(itemToReceive);
+			inventoryState.Add(itemToReceive);
 		}
 
 		// Now we can get final sets state of our inventory after the exchange
-		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> finalSets = GetInventorySets(inventory);
+		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> finalSets = GetInventorySets(inventoryState);
 
 		// Once we have both states, we can check overall fairness
 		foreach (((uint RealAppID, EAssetType Type, EAssetRarity Rarity) set, List<uint> beforeAmounts) in initialSets) {
@@ -197,151 +199,6 @@ public sealed class Trading : IDisposable {
 		}
 
 		// If we didn't find any reason above to reject this trade, it's at least neutral+ for us - it increases our progress towards badge completion
-		return true;
-	}
-
-	internal static (Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> FullState, Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> TradableState) GetDividedInventoryState(IReadOnlyCollection<Asset> inventory) {
-		if ((inventory == null) || (inventory.Count == 0)) {
-			throw new ArgumentNullException(nameof(inventory));
-		}
-
-		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> fullState = new();
-		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> tradableState = new();
-
-		foreach (Asset item in inventory) {
-			(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
-
-			if (fullState.TryGetValue(key, out Dictionary<ulong, uint>? fullSet)) {
-				fullSet[item.ClassID] = fullSet.GetValueOrDefault(item.ClassID) + item.Amount;
-			} else {
-				fullState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
-			}
-
-			if (!item.Tradable) {
-				continue;
-			}
-
-			if (tradableState.TryGetValue(key, out Dictionary<ulong, uint>? tradableSet)) {
-				tradableSet[item.ClassID] = tradableSet.GetValueOrDefault(item.ClassID) + item.Amount;
-			} else {
-				tradableState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
-			}
-		}
-
-		return (fullState, tradableState);
-	}
-
-	internal static Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> GetTradableInventoryState(IReadOnlyCollection<Asset> inventory) {
-		if ((inventory == null) || (inventory.Count == 0)) {
-			throw new ArgumentNullException(nameof(inventory));
-		}
-
-		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> tradableState = new();
-
-		foreach (Asset item in inventory.Where(static item => item.Tradable)) {
-			(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
-
-			if (tradableState.TryGetValue(key, out Dictionary<ulong, uint>? tradableSet)) {
-				tradableSet[item.ClassID] = tradableSet.GetValueOrDefault(item.ClassID) + item.Amount;
-			} else {
-				tradableState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
-			}
-		}
-
-		return tradableState;
-	}
-
-	internal static HashSet<Asset> GetTradableItemsFromInventory(IReadOnlyCollection<Asset> inventory, IDictionary<ulong, uint> classIDs, bool randomize = false) {
-		if ((inventory == null) || (inventory.Count == 0)) {
-			throw new ArgumentNullException(nameof(inventory));
-		}
-
-		if ((classIDs == null) || (classIDs.Count == 0)) {
-			throw new ArgumentNullException(nameof(classIDs));
-		}
-
-		HashSet<Asset> result = [];
-
-		IEnumerable<Asset> items = inventory.Where(static item => item.Tradable);
-
-		// Randomization helps to decrease "items no longer available" in regards to sending offers to other users
-		if (randomize) {
-#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
-			items = items.Where(item => classIDs.ContainsKey(item.ClassID)).OrderBy(static _ => Random.Shared.Next());
-#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
-		}
-
-		foreach (Asset item in items) {
-			if (!classIDs.TryGetValue(item.ClassID, out uint amount)) {
-				continue;
-			}
-
-			Asset itemToAdd = item.CreateShallowCopy();
-
-			if (amount < itemToAdd.Amount) {
-				// We give only a fraction of this item
-				itemToAdd.Amount = amount;
-			}
-
-			result.Add(itemToAdd);
-
-			if (amount == itemToAdd.Amount) {
-				classIDs.Remove(itemToAdd.ClassID);
-			} else {
-				classIDs[itemToAdd.ClassID] = amount - itemToAdd.Amount;
-			}
-		}
-
-		return result;
-	}
-
-	internal static bool IsEmptyForMatching(IReadOnlyDictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> fullState, IReadOnlyDictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> tradableState) {
-		ArgumentNullException.ThrowIfNull(fullState);
-		ArgumentNullException.ThrowIfNull(tradableState);
-
-		foreach (((uint RealAppID, EAssetType Type, EAssetRarity Rarity) set, IReadOnlyDictionary<ulong, uint> state) in tradableState) {
-			if (!fullState.TryGetValue(set, out Dictionary<ulong, uint>? fullSet) || (fullSet.Count == 0)) {
-				throw new InvalidOperationException(nameof(fullSet));
-			}
-
-			if (!IsEmptyForMatching(fullSet, state)) {
-				return false;
-			}
-		}
-
-		// We didn't find any matchable combinations, so this inventory is empty
-		return true;
-	}
-
-	internal static bool IsEmptyForMatching(IReadOnlyDictionary<ulong, uint> fullSet, IReadOnlyDictionary<ulong, uint> tradableSet) {
-		ArgumentNullException.ThrowIfNull(fullSet);
-		ArgumentNullException.ThrowIfNull(tradableSet);
-
-		foreach ((ulong classID, uint amount) in tradableSet) {
-			switch (amount) {
-				case 0:
-					// No tradable items, this should never happen, dictionary should not have this key to begin with
-					throw new InvalidOperationException(nameof(amount));
-				case 1:
-					// Single tradable item, can be matchable or not depending on the rest of the inventory
-					if (!fullSet.TryGetValue(classID, out uint fullAmount) || (fullAmount == 0)) {
-						throw new InvalidOperationException(nameof(fullAmount));
-					}
-
-					if (fullAmount > 1) {
-						// If we have a single tradable item but more than 1 in total, this is matchable
-						return false;
-					}
-
-					// A single exclusive tradable item is not matchable, continue
-					continue;
-				default:
-					// Any other combination of tradable items is always matchable
-					return false;
-			}
-		}
-
-		// We didn't find any matchable combinations, so this inventory is empty
 		return true;
 	}
 
@@ -664,7 +521,7 @@ public sealed class Trading : IDisposable {
 			return ParseTradeResult.EResult.TryAgain;
 		}
 
-		bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive.Select(static item => item.CreateShallowCopy()).ToHashSet(), tradeOffer.ItemsToReceive.Select(static item => item.CreateShallowCopy()).ToHashSet());
+		bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 
 		// We're now sure whether the trade is neutral+ for us or not
 		ParseTradeResult.EResult acceptResult = accept ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected;

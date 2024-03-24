@@ -472,49 +472,47 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public static async Task<(bool Success, string? Message, Version? Version)> Update(GlobalConfig.EUpdateChannel? channel = null) {
+	public static async Task<(bool Success, string? Message, Version? Version)> Update(GlobalConfig.EUpdateChannel? channel = null, bool forced = false) {
 		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
 			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
 		}
 
-		(Version? newVersion, bool restartNeeded) = await ASF.Update(channel, true).ConfigureAwait(false);
+		(bool updated, Version? newVersion) = await ASF.Update(channel, true, forced).ConfigureAwait(false);
 
-		if (restartNeeded) {
+		if (updated) {
 			Utilities.InBackground(ASF.RestartOrExit);
 		}
 
-		if (newVersion == null) {
-			return (false, null, null);
-		}
-
-		return newVersion > SharedInfo.Version ? (true, null, newVersion) : (false, $"V{SharedInfo.Version} ≥ V{newVersion}", newVersion);
+		return updated ? (true, null, newVersion) : SharedInfo.Version >= newVersion ? (false, $"V{SharedInfo.Version} ≥ V{newVersion}", newVersion) : (false, null, newVersion);
 	}
 
 	[PublicAPI]
-	public static async Task<(bool Success, string? Message)> UpdatePlugins(IReadOnlyCollection<string> plugins, GlobalConfig.EUpdateChannel? channel = null) {
-		if ((plugins == null) || (plugins.Count == 0)) {
-			throw new ArgumentNullException(nameof(plugins));
-		}
-
+	public static async Task<(bool Success, string? Message)> UpdatePlugins(GlobalConfig.EUpdateChannel? channel = null, IReadOnlyCollection<string>? plugins = null, bool forced = false) {
 		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
 			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
 		}
 
-		HashSet<string> pluginAssemblyNames = plugins.ToHashSet(StringComparer.OrdinalIgnoreCase);
+		bool updated;
 
-		HashSet<IPluginUpdates> pluginsForUpdate = PluginsCore.GetPluginsForUpdate(pluginAssemblyNames);
+		if (plugins is { Count: > 0 }) {
+			HashSet<string> pluginAssemblyNames = plugins.ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-		if (pluginsForUpdate.Count == 0) {
-			return (false, Strings.NothingFound);
+			HashSet<IPluginUpdates> pluginsForUpdate = PluginsCore.GetPluginsForUpdate(pluginAssemblyNames);
+
+			if (pluginsForUpdate.Count == 0) {
+				return (false, Strings.NothingFound);
+			}
+
+			updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, pluginsForUpdate, channel, true, forced).ConfigureAwait(false);
+		} else {
+			updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, channel, true, forced).ConfigureAwait(false);
 		}
 
-		bool restartNeeded = await PluginsCore.UpdatePlugins(SharedInfo.Version, pluginsForUpdate, channel).ConfigureAwait(false);
-
-		if (restartNeeded) {
+		if (updated) {
 			Utilities.InBackground(ASF.RestartOrExit);
 		}
 
-		string message = restartNeeded ? Strings.UpdateFinished : Strings.NothingFound;
+		string message = updated ? Strings.UpdateFinished : Strings.NothingFound;
 
 		return (true, message);
 	}
