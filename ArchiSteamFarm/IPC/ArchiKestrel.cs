@@ -159,7 +159,7 @@ internal static class ArchiKestrel {
 
 		Dictionary<string, string> pluginPaths = new(StringComparer.Ordinal);
 
-		if (PluginsCore.ActivePlugins.Count > 0) {
+		if (PluginsCore.ActivePluginsCount > 0) {
 			foreach (IWebInterface plugin in PluginsCore.ActivePlugins.OfType<IWebInterface>()) {
 				if (string.IsNullOrEmpty(plugin.PhysicalPath) || string.IsNullOrEmpty(plugin.WebPath)) {
 					// Invalid path provided
@@ -230,7 +230,7 @@ internal static class ArchiKestrel {
 		// Finally register proper API endpoints once we're done with routing
 		app.UseEndpoints(static endpoints => endpoints.MapControllers());
 
-		if (PluginsCore.ActivePlugins.Count > 0) {
+		if (PluginsCore.ActivePluginsCount > 0) {
 			foreach (IWebServiceProvider plugin in PluginsCore.ActivePlugins.OfType<IWebServiceProvider>()) {
 				try {
 					plugin.OnConfiguringEndpoints(app);
@@ -381,7 +381,7 @@ internal static class ArchiKestrel {
 		IMvcBuilder mvc = services.AddControllers();
 
 		// Add support for controllers declared in custom plugins
-		if (PluginsCore.ActivePlugins.Count > 0) {
+		if (PluginsCore.ActivePluginsCount > 0) {
 			HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
 
 			if (assemblies != null) {

@@ -45,9 +45,11 @@ namespace ArchiSteamFarm.OfficialPlugins.Monitoring;
 [Export(typeof(IPlugin))]
 [SuppressMessage("ReSharper", "MemberCanBeFileLocal")]
 internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IGitHubPluginUpdates, IDisposable {
-	private const string MeterName = nameof(ArchiSteamFarm);
+	private const string MeterName = SharedInfo.AssemblyName;
 
 	private const string MetricNamePrefix = "asf";
+
+	private static bool Enabled => ASF.GlobalConfig?.IPC ?? false;
 
 	[JsonInclude]
 	[Required]
@@ -59,8 +61,6 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 	[JsonInclude]
 	[Required]
 	public override Version Version => typeof(MonitoringPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
-
-	private static bool Enabled => ASF.GlobalConfig?.IPC ?? false;
 
 	private Meter? Meter;
 
@@ -84,17 +84,26 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 		}
 
 		services.AddOpenTelemetry().WithMetrics(
-			static builder => {
+			builder => {
+				InitializeMeter();
+
 				builder.AddPrometheusExporter(static config => config.ScrapeEndpointPath = "/Api/metrics");
 				builder.AddRuntimeInstrumentation();
 				builder.AddAspNetCoreInstrumentation();
 				builder.AddHttpClientInstrumentation();
-				builder.AddMeter(MeterName);
+				builder.AddMeter(Meter.Name);
 			}
 		);
 	}
 
-	public override Task OnLoaded() {
+	public override Task OnLoaded() => Task.CompletedTask;
+
+	[MemberNotNull(nameof(Meter))]
+	private void InitializeMeter() {
+		if (Meter != null) {
+			return;
+		}
+
 		Meter = new Meter(MeterName, Version.ToString());
 
 		Meter.CreateObservableGauge(
@@ -105,7 +114,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_active_plugins",
-			static () => PluginsCore.ActivePluginCount,
+			static () => PluginsCore.ActivePluginsCount,
 			description: "Number of plugins currently loaded in ASF"
 		);
 
@@ -176,7 +185,5 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			},
 			description: "Remaining games to redeem in background per bot"
 		);
-
-		return Task.CompletedTask;
 	}
 }
