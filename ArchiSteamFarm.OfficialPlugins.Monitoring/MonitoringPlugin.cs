@@ -35,6 +35,7 @@ using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Metrics;
@@ -49,7 +50,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 	private const string MetricNamePrefix = "asf";
 
-	private static bool Enabled => ASF.GlobalConfig?.IPC ?? false;
+	private static bool Enabled => ASF.GlobalConfig?.IPC ?? GlobalConfig.DefaultIPC;
 
 	[JsonInclude]
 	[Required]
@@ -83,10 +84,10 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			return;
 		}
 
+		InitializeMeter();
+
 		services.AddOpenTelemetry().WithMetrics(
 			builder => {
-				InitializeMeter();
-
 				builder.AddPrometheusExporter(static config => config.ScrapeEndpointPath = "/Api/metrics");
 				builder.AddRuntimeInstrumentation();
 				builder.AddAspNetCoreInstrumentation();
