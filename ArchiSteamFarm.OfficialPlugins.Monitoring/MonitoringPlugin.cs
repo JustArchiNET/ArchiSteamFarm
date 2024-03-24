@@ -27,14 +27,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Metrics;
-using System.Globalization;
 using System.Linq;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Integration;
-using ArchiSteamFarm.OfficialPlugins.Monitoring.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
@@ -47,7 +44,7 @@ namespace ArchiSteamFarm.OfficialPlugins.Monitoring;
 
 [Export(typeof(IPlugin))]
 [SuppressMessage("ReSharper", "MemberCanBeFileLocal")]
-internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IGitHubPluginUpdates, IASF, IDisposable {
+internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IGitHubPluginUpdates, IDisposable {
 	private const string MeterName = nameof(ArchiSteamFarm);
 
 	private const string MetricNamePrefix = "asf";
@@ -68,22 +65,6 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 	private Meter? Meter;
 
 	public void Dispose() => Meter?.Dispose();
-
-	public Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
-		if (additionalConfigProperties == null) {
-			return Task.CompletedTask;
-		}
-
-		if (!Enabled) {
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(MonitoringPlugin)));
-
-			return Task.CompletedTask;
-		}
-
-		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginInitializedAndEnabled, nameof(MonitoringPlugin)));
-
-		return Task.CompletedTask;
-	}
 
 	public void OnConfiguringEndpoints(IApplicationBuilder app) {
 		ArgumentNullException.ThrowIfNull(app);
@@ -114,8 +95,6 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 	}
 
 	public override Task OnLoaded() {
-		Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
-
 		Meter = new Meter(MeterName, Version.ToString());
 
 		Meter.CreateObservableGauge(
