@@ -21,11 +21,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
+using System.Threading.Tasks;
+using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
+using ArchiSteamFarm.Steam.Interaction;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
@@ -35,4 +41,25 @@ public sealed class PluginsController : ArchiController {
 	[HttpGet]
 	[ProducesResponseType<GenericResponse<IReadOnlyCollection<IPlugin>>>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse<IReadOnlyCollection<IPlugin>>> PluginsGet() => Ok(new GenericResponse<IReadOnlyCollection<IPlugin>>(PluginsCore.ActivePlugins));
+
+	/// <summary>
+	///     Makes ASF update loaded plugins.
+	/// </summary>
+	[HttpPost("Update")]
+	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
+	public async Task<ActionResult<GenericResponse<string>>> UpdatePost([FromBody] PluginUpdateRequest request) {
+		ArgumentNullException.ThrowIfNull(request);
+
+		if (request.Channel.HasValue && !Enum.IsDefined(request.Channel.Value)) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.Channel))));
+		}
+
+		(bool success, string? message) = await Actions.UpdatePlugins(request.Channel, request.Plugins, request.Forced).ConfigureAwait(false);
+
+		if (string.IsNullOrEmpty(message)) {
+			message = success ? Strings.Success : Strings.WarningFailed;
+		}
+
+		return Ok(new GenericResponse<string>(success, message));
+	}
 }
