@@ -8,7 +8,8 @@ env:
   DOTNET_NOLOGO: true
   DOTNET_SDK_VERSION: 8.0
   NODE_JS_VERSION: 'lts/*'
-  PLUGINS: ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+  PLUGINS_BUNDLED: ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+  PLUGINS_INCLUDED: ArchiSteamFarm.OfficialPlugins.Monitoring # Apart from declaring them here, there is certain amount of hardcoding needed below for uploading
 
 permissions: {}
 
@@ -181,7 +182,7 @@ jobs:
             (Get-Content "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs").Replace('STEAM_TOKEN_DUMPER_TOKEN', "$env:STEAM_TOKEN_DUMPER_TOKEN") | Set-Content "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs"
         }
 
-    - name: Publish official plugins on Unix
+    - name: Publish bundled plugins on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       env:
         MAX_JOBS: 4
@@ -193,7 +194,7 @@ jobs:
             dotnet publish "$1" -c "$CONFIGURATION" -o "out/${1}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
         }
 
-        for plugin in $PLUGINS; do
+        for plugin in $PLUGINS_BUNDLED; do
             while [ "$(jobs -p | wc -l)" -ge "$MAX_JOBS" ]; do
                 sleep 1
             done
@@ -203,7 +204,7 @@ jobs:
 
         wait
 
-    - name: Publish official plugins on Windows
+    - name: Publish bundled plugins on Windows
       if: startsWith(matrix.os, 'windows-')
       env:
         MAX_JOBS: 4
@@ -229,7 +230,7 @@ jobs:
             }
         }
 
-        foreach ($plugin in $env:PLUGINS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+        foreach ($plugin in $env:PLUGINS_BUNDLED.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
             # Limit active jobs in parallel to help with memory usage
             $jobs = $(Get-Job -State Running)
 
@@ -243,6 +244,58 @@ jobs:
         }
 
         Get-Job | Receive-Job -Wait
+
+    - name: Publish included plugins on Unix
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
+      env:
+        MAX_JOBS: 4
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        publish() {
+            dotnet publish "$1" -c "$CONFIGURATION" -o "out/${1}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+
+            # By default use fastest compression
+            seven_zip_args="-mx=1"
+            zip_args="-1"
+
+            # Include extra logic for builds marked for release
+            case "$GITHUB_REF" in
+                "refs/tags/"*)
+                    # Tweak compression args for release publishing
+                    seven_zip_args="-mx=9 -mfb=258 -mpass=15"
+                    zip_args="-9"
+                    ;;
+            esac
+
+            # Create the final zip file
+            if command -v 7z >/dev/null; then
+                7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/${1}.zip" "${GITHUB_WORKSPACE}/out/${1}/*"
+            else
+                (
+                    cd "${GITHUB_WORKSPACE}/out/${1}"
+                    zip -q -r $zip_args "../${1}.zip" .
+                )
+            fi
+        }
+
+        for plugin in $PLUGINS_INCLUDED; do
+            while [ "$(jobs -p | wc -l)" -ge "$MAX_JOBS" ]; do
+                sleep 1
+            done
+
+            publish "$plugin" &
+        done
+
+        wait
+
+    - name: Upload ArchiSteamFarm.OfficialPlugins.Monitoring
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
+      uses: actions/upload-artifact@v4.3.1
+      with:
+        name: ArchiSteamFarm.OfficialPlugins.Monitoring
+        path: out/ArchiSteamFarm.OfficialPlugins.Monitoring.zip
 
     - name: Publish ASF-${{ matrix.variant }} on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
@@ -261,7 +314,7 @@ jobs:
         dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${VARIANT}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
 
         # If we're including official plugins for this framework, copy them to output directory
-        for plugin in $PLUGINS; do
+        for plugin in $PLUGINS_BUNDLED; do
             if [ -d "out/${plugin}" ]; then
                 mkdir -p "out/${VARIANT}/plugins/${plugin}"
                 cp -pR "out/${plugin}/"* "out/${VARIANT}/plugins/${plugin}"
@@ -301,24 +354,18 @@ jobs:
                         cd "${GITHUB_WORKSPACE}/out/${VARIANT}"
                         zip -q -r $zip_args "../ASF-${VARIANT}.zip" .
                     )
-                elif command -v 7z >/dev/null; then
-                    7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/ASF-${VARIANT}.zip" "${GITHUB_WORKSPACE}/out/${VARIANT}/*"
                 else
-                    echo "ERROR: No supported zip tool!"
-                    return 1
+                    7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/ASF-${VARIANT}.zip" "${GITHUB_WORKSPACE}/out/${VARIANT}/*"
                 fi
                 ;;
             *)
                 if command -v 7z >/dev/null; then
                     7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/ASF-${VARIANT}.zip" "${GITHUB_WORKSPACE}/out/${VARIANT}/*"
-                elif command -v zip >/dev/null; then
+                else
                     (
                         cd "${GITHUB_WORKSPACE}/out/${VARIANT}"
                         zip -q -r $zip_args "../ASF-${VARIANT}.zip" .
                     )
-                else
-                    echo "ERROR: No supported zip tool!"
-                    return 1
                 fi
                 ;;
         esac
@@ -346,7 +393,7 @@ jobs:
         }
 
         # If we're including official plugins for this framework, copy them to output directory
-        foreach ($plugin in $env:PLUGINS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+        foreach ($plugin in $env:PLUGINS_BUNDLED.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
             if (Test-Path "out\$plugin" -PathType Container) {
                 if (!(Test-Path "out\$env:VARIANT\plugins\$plugin" -PathType Container)) {
                     New-Item -ItemType Directory -Path "out\$env:VARIANT\plugins\$plugin" > $null
@@ -423,6 +470,12 @@ jobs:
       uses: actions/checkout@v4.1.1
       with:
         show-progress: false
+
+    - name: Download ArchiSteamFarm.OfficialPlugins.Monitoring artifact from ubuntu-latest
+      uses: actions/download-artifact@v4.1.4
+      with:
+        name: ArchiSteamFarm.OfficialPlugins.Monitoring
+        path: out
 
     - name: Download ASF-generic artifact from ubuntu-latest
       uses: actions/download-artifact@v4.1.4
