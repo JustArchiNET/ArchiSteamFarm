@@ -31,7 +31,7 @@ namespace ArchiSteamFarm.IPC.Requests;
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class PluginUpdateRequest {
 	/// <summary>
-	///     Target update channel. Not required, will default to UpdateChannel in <see cref="GlobalConfig" /> if not provided.
+	///     Target update channel. Not required, will default to <see cref="GlobalConfig.UpdateChannel" /> if not provided.
 	/// </summary>
 	[JsonInclude]
 	public GlobalConfig.EUpdateChannel? Channel { get; private init; }
@@ -43,7 +43,7 @@ public sealed class PluginUpdateRequest {
 	public bool Forced { get; private init; }
 
 	/// <summary>
-	///     Target plugins. Not required, will default to plugin update configuration in <see cref="GlobalConfig" /> if not provided
+	///     Target plugins. Not required, will default to plugin update configuration in <see cref="GlobalConfig" /> if not provided.
 	/// </summary>
 	[JsonInclude]
 	public ImmutableHashSet<string>? Plugins { get; private init; }

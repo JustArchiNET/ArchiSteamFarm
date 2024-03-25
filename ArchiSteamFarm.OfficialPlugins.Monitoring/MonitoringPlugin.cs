@@ -56,7 +56,6 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 	[Required]
 	public override string Name => nameof(MonitoringPlugin);
 
-	/// <inheritdoc />
 	public string RepositoryName => SharedInfo.GithubRepo;
 
 	[JsonInclude]

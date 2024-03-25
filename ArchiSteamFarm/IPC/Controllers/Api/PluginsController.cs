@@ -43,7 +43,7 @@ public sealed class PluginsController : ArchiController {
 	public ActionResult<GenericResponse<IReadOnlyCollection<IPlugin>>> PluginsGet() => Ok(new GenericResponse<IReadOnlyCollection<IPlugin>>(PluginsCore.ActivePlugins));
 
 	/// <summary>
-	///     Makes ASF update loaded plugins.
+	///     Makes ASF update selected plugins.
 	/// </summary>
 	[HttpPost("Update")]
 	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
