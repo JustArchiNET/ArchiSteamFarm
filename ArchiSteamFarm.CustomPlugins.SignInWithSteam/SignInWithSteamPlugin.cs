@@ -37,7 +37,7 @@ namespace ArchiSteamFarm.CustomPlugins.SignInWithSteam;
 internal sealed class SignInWithSteamPlugin : IPlugin {
 	[JsonInclude]
 	[Required]
-	public string Name => typeof(SignInWithSteamPlugin).Assembly.GetName().Name ?? throw new InvalidOperationException(nameof(Name));
+	public string Name => nameof(SignInWithSteamPlugin);
 
 	[JsonInclude]
 	[Required]

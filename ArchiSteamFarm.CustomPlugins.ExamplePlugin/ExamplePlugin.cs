@@ -50,7 +50,7 @@ internal sealed class ExamplePlugin : IASF, IBot, IBotCommand2, IBotConnection, 
 	// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place
 	[JsonInclude]
 	[Required]
-	public string Name => typeof(ExamplePlugin).Assembly.GetName().Name ?? throw new InvalidOperationException(nameof(Name));
+	public string Name => nameof(ExamplePlugin);
 
 	// This will be displayed to the user and written in the log file, typically you should point it to the version of your library, but alternatively you can do some more advanced logic if you'd like to
 	// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place

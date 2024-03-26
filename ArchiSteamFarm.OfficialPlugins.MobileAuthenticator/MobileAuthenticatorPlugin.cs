@@ -43,7 +43,7 @@ namespace ArchiSteamFarm.OfficialPlugins.MobileAuthenticator;
 internal sealed class MobileAuthenticatorPlugin : OfficialPlugin, IBotCommand2, IBotSteamClient {
 	[JsonInclude]
 	[Required]
-	public override string Name => typeof(MobileAuthenticatorPlugin).Assembly.GetName().Name ?? throw new InvalidOperationException(nameof(Name));
+	public override string Name => nameof(MobileAuthenticatorPlugin);
 
 	[JsonInclude]
 	[Required]

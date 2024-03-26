@@ -78,26 +78,31 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	/// <param name="releaseAssets">Available release assets for auto-update. Those come directly from your release on GitHub.</param>
 	/// <remarks>
 	///     Default implementation will select release asset in following order:
-	///     - {PluginName}-V{Major}-{Minor}-{Build}-{Revision}.zip
-	///     - {PluginName}-V{Major}-{Minor}-{Build}.zip
-	///     - {PluginName}-V{Major}-{Minor}.zip
-	///     - {PluginName}-V{Major}.zip
-	///     - {PluginName}.zip
+	///     - {Name}-V{Major}-{Minor}-{Build}-{Revision}.zip
+	///     - {Name}-V{Major}-{Minor}-{Build}.zip
+	///     - {Name}-V{Major}-{Minor}.zip
+	///     - {Name}-V{Major}.zip
+	///     - {Name}.zip
 	///     - *.zip, if exactly 1 release asset matching in the release
 	///     Where:
-	///     - {PluginName} is <see cref="IPlugin.Name" />
+	///     - {Name} will be tried out of <see cref="IPlugin.Name" /> and assembly name that provides your plugin type
 	///     - {Major} is target major ASF version (A from A.B.C.D)
 	///     - {Minor} is target minor ASF version (B from A.B.C.D)
 	///     - {Build} is target build (patch) ASF version (C from A.B.C.D)
 	///     - {Revision} is target revision ASF version (D from A.B.C.D)
 	///     - * is a wildcard matching any string value
-	///     For example, when updating MyAwesomePlugin with ASF version V6.0.1.3, it will select first zip file from available ones in the following order:
+	///     For example, when updating MyAwesomePlugin declared in JustArchiNET.MyAwesomePlugin assembly with ASF version V6.0.1.3, it will select the first zip file available from those below:
 	///     - MyAwesomePlugin-V6.0.1.3.zip
 	///     - MyAwesomePlugin-V6.0.1.zip
 	///     - MyAwesomePlugin-V6.0.zip
 	///     - MyAwesomePlugin-V6.zip
 	///     - MyAwesomePlugin.zip
-	///     - *.zip
+	///     - JustArchiNET.MyAwesomePlugin-V6.0.1.3.zip
+	///     - JustArchiNET.MyAwesomePlugin-V6.0.1.zip
+	///     - JustArchiNET.MyAwesomePlugin-V6.0.zip
+	///     - JustArchiNET.MyAwesomePlugin-V6.zip
+	///     - JustArchiNET.MyAwesomePlugin.zip
+	///     - *.zip, if exactly one match is found
 	/// </remarks>
 	/// <returns>Target release asset from those provided that should be used for auto-update. You may return null if the update is unavailable, for example, because ASF version/variant is determined unsupported, or due to any other reason.</returns>
 	Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets) {
@@ -111,16 +116,8 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 
 		Dictionary<string, ReleaseAsset> assetsByName = releaseAssets.ToDictionary(static asset => asset.Name, StringComparer.OrdinalIgnoreCase);
 
-		List<string> matches = [
-			$"{Name}-V{asfVersion.Major}-{asfVersion.Minor}-{asfVersion.Build}-{asfVersion.Revision}.zip",
-			$"{Name}-V{asfVersion.Major}-{asfVersion.Minor}-{asfVersion.Build}.zip",
-			$"{Name}-V{asfVersion.Major}-{asfVersion.Minor}.zip",
-			$"{Name}-V{asfVersion.Major}.zip",
-			$"{Name}.zip"
-		];
-
-		foreach (string match in matches) {
-			if (assetsByName.TryGetValue(match, out ReleaseAsset? targetAsset)) {
+		foreach (string possibleMatch in GetPossibleMatches(asfVersion)) {
+			if (assetsByName.TryGetValue(possibleMatch, out ReleaseAsset? targetAsset)) {
 				return Task.FromResult<ReleaseAsset?>(targetAsset);
 			}
 		}
@@ -182,5 +179,36 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateFound, Name, Version, newVersion));
 
 		return asset.DownloadURL;
+	}
+
+	private IEnumerable<string> GetPossibleMatches(Version version) {
+		ArgumentNullException.ThrowIfNull(version);
+
+		string pluginName = Name;
+
+		if (!string.IsNullOrEmpty(pluginName)) {
+			foreach (string possibleMatch in GetPossibleMatchesByName(version, pluginName)) {
+				yield return possibleMatch;
+			}
+		}
+
+		string? assemblyName = GetType().Assembly.GetName().Name;
+
+		if (!string.IsNullOrEmpty(assemblyName)) {
+			foreach (string possibleMatch in GetPossibleMatchesByName(version, assemblyName)) {
+				yield return possibleMatch;
+			}
+		}
+	}
+
+	private static IEnumerable<string> GetPossibleMatchesByName(Version version, string name) {
+		ArgumentNullException.ThrowIfNull(version);
+		ArgumentException.ThrowIfNullOrEmpty(name);
+
+		yield return $"{name}-V{version.Major}-{version.Minor}-{version.Build}-{version.Revision}.zip";
+		yield return $"{name}-V{version.Major}-{version.Minor}-{version.Build}.zip";
+		yield return $"{name}-V{version.Major}-{version.Minor}.zip";
+		yield return $"{name}-V{version.Major}.zip";
+		yield return $"{name}.zip";
 	}
 }
