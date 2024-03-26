@@ -45,6 +45,7 @@ jobs:
     - name: Upload ASF-ui
       uses: actions/upload-artifact@v4.3.1
       with:
+        if-no-files-found: error
         name: ASF-ui
         path: ASF-ui/dist
 
@@ -128,28 +129,44 @@ jobs:
 
     - name: Prepare for publishing on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      env:
+        VARIANT: ${{ matrix.variant }}
       shell: bash
       run: |
         set -euo pipefail
 
-        dotnet restore
-        dotnet build ArchiSteamFarm -c "$CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+        if [ "$VARIANT" = 'generic' ]; then
+            variantArgs="-p:TargetLatestRuntimePatch=false -p:UseAppHost=false"
+        else
+            variantArgs="-r $VARIANT"
+        fi
+
+        dotnet restore $variantArgs
+        dotnet build ArchiSteamFarm -c "$CONFIGURATION" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
 
     - name: Prepare for publishing on Windows
       if: startsWith(matrix.os, 'windows-')
+      env:
+        VARIANT: ${{ matrix.variant }}
       shell: pwsh
       run: |
         Set-StrictMode -Version Latest
         $ErrorActionPreference = 'Stop'
         $ProgressPreference = 'SilentlyContinue'
 
-        dotnet restore
+        if ($env:VARIANT -like 'generic*') {
+            $variantArgs = '-p:TargetLatestRuntimePatch=false', '-p:UseAppHost=false'
+        } else {
+            $variantArgs = '-r', "$env:VARIANT"
+        }
+
+        dotnet restore $variantArgs
 
         if ($LastExitCode -ne 0) {
             throw "Last command failed."
         }
 
-        dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+        dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
 
         if ($LastExitCode -ne 0) {
             throw "Last command failed."
@@ -186,12 +203,19 @@ jobs:
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       env:
         MAX_JOBS: 4
+        VARIANT: ${{ matrix.variant }}
       shell: bash
       run: |
         set -euo pipefail
 
         publish() {
-            dotnet publish "$1" -c "$CONFIGURATION" -o "out/${1}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+            if [ "$VARIANT" = 'generic' ]; then
+                variantArgs="-p:TargetLatestRuntimePatch=false -p:UseAppHost=false"
+            else
+                variantArgs="-r $VARIANT"
+            fi
+
+            dotnet publish "$1" -c "$CONFIGURATION" -o "out/${1}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
         }
 
         for plugin in $PLUGINS_BUNDLED; do
@@ -208,6 +232,7 @@ jobs:
       if: startsWith(matrix.os, 'windows-')
       env:
         MAX_JOBS: 4
+        VARIANT: ${{ matrix.variant }}
       shell: pwsh
       run: |
         Set-StrictMode -Version Latest
@@ -223,7 +248,13 @@ jobs:
 
             Set-Location "$env:GITHUB_WORKSPACE"
 
-            dotnet publish "$plugin" -c "$env:CONFIGURATION" -o "out\$plugin" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+            if ($env:VARIANT -like 'generic*') {
+                $variantArgs = '-p:TargetLatestRuntimePatch=false', '-p:UseAppHost=false'
+            } else {
+                $variantArgs = '-r', "$env:VARIANT"
+            }
+
+            dotnet publish "$plugin" -c "$env:CONFIGURATION" -o "out\$plugin" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
 
             if ($LastExitCode -ne 0) {
                 throw "Last command failed."
@@ -249,12 +280,13 @@ jobs:
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
       env:
         MAX_JOBS: 4
+        VARIANT: ${{ matrix.variant }}
       shell: bash
       run: |
         set -euo pipefail
 
         publish() {
-            dotnet publish "$1" -c "$CONFIGURATION" -o "out/${1}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --no-restore --nologo
+            dotnet publish "$1" -c "$CONFIGURATION" -o "out/${1}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
             # By default use fastest compression
             seven_zip_args="-mx=1"
@@ -294,6 +326,7 @@ jobs:
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
       uses: actions/upload-artifact@v4.3.1
       with:
+        if-no-files-found: error
         name: ArchiSteamFarm.OfficialPlugins.Monitoring
         path: out/ArchiSteamFarm.OfficialPlugins.Monitoring.zip
 
@@ -454,6 +487,7 @@ jobs:
     - name: Upload ASF-${{ matrix.variant }}
       uses: actions/upload-artifact@v4.3.1
       with:
+        if-no-files-found: error
         name: ${{ matrix.os }}_ASF-${{ matrix.variant }}
         path: out/ASF-${{ matrix.variant }}.zip
 
@@ -545,12 +579,14 @@ jobs:
     - name: Upload SHA512SUMS
       uses: actions/upload-artifact@v4.3.1
       with:
+        if-no-files-found: error
         name: SHA512SUMS
         path: out/SHA512SUMS
 
     - name: Upload SHA512SUMS.sign
       uses: actions/upload-artifact@v4.3.1
       with:
+        if-no-files-found: error
         name: SHA512SUMS.sign
         path: out/SHA512SUMS.sign
 

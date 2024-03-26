@@ -51,8 +51,10 @@ RUN set -eu; \
     fi; \
     \
     for plugin in $PLUGINS_BUNDLED; do \
-      dotnet publish "$plugin" -c "$CONFIGURATION" -o "out/plugins/$plugin" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained; \
-    done
+      dotnet publish "$plugin" -c "$CONFIGURATION" -o "out/plugins/$plugin" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo & \
+    done; \
+    \
+    wait
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0${IMAGESUFFIX} AS runtime
 ENV ASF_PATH /app
