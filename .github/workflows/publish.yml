@@ -141,7 +141,6 @@ jobs:
             variantArgs="-r $VARIANT"
         fi
 
-        dotnet restore $variantArgs
         dotnet build ArchiSteamFarm -c "$CONFIGURATION" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
 
     - name: Prepare for publishing on Windows
@@ -158,12 +157,6 @@ jobs:
             $variantArgs = '-p:TargetLatestRuntimePatch=false', '-p:UseAppHost=false'
         } else {
             $variantArgs = '-r', "$env:VARIANT"
-        }
-
-        dotnet restore $variantArgs
-
-        if ($LastExitCode -ne 0) {
-            throw "Last command failed."
         }
 
         dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
