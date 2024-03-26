@@ -173,6 +173,19 @@ jobs:
         # Include .ico file for all platforms, since only Windows script can bundle it inside the exe
         cp "resources/ASF.ico" "out/${VARIANT}/ArchiSteamFarm.ico"
 
+        # Include extra logic for builds marked for release
+        case "$GITHUB_REF" in
+            "refs/tags/"*)
+                # Update link in Changelog.html accordingly
+                if [ -f "out/${VARIANT}/Changelog.html" ]; then
+                    tag="$(echo "$GITHUB_REF" | cut -c 11-)"
+
+                    sed "s/ArchiSteamFarm\/commits\/main/ArchiSteamFarm\/releases\/tag\/${tag}/g" "out/${VARIANT}/Changelog.html" > "out/${VARIANT}/Changelog.html.new"
+                    mv "out/${VARIANT}/Changelog.html.new" "out/${VARIANT}/Changelog.html"
+                fi
+                ;;
+        esac
+
     - name: Publish ASF-${{ matrix.variant }} on Windows
       if: startsWith(matrix.os, 'windows-')
       env:
@@ -198,6 +211,16 @@ jobs:
         # Icon is available only in .exe Windows builds, we'll bundle the .ico file for other flavours
         if (!(Test-Path "out\$env:VARIANT\ArchiSteamFarm.exe" -PathType Leaf)) {
             Copy-Item 'resources\ASF.ico' "out\$env:VARIANT\ArchiSteamFarm.ico"
+        }
+
+        # Include extra logic for builds marked for release
+        if ($env:GITHUB_REF -like 'refs/tags/*') {
+            # Update link in Changelog.html accordingly
+            if (Test-Path "out\$env:VARIANT\Changelog.html" -PathType Leaf) {
+                $tag = $env:GITHUB_REF.Substring(10)
+
+                (Get-Content "out\$env:VARIANT\Changelog.html").Replace('ArchiSteamFarm/commits/main', "ArchiSteamFarm/releases/tag/$tag") | Set-Content "out\$env:VARIANT\Changelog.html"
+            }
         }
 
     - name: Publish bundled plugins on Unix
@@ -254,20 +277,11 @@ jobs:
         seven_zip_args="-mx=1"
         zip_args="-1"
 
-        # Include extra logic for builds marked for release
+        # Tweak compression args for release publishing
         case "$GITHUB_REF" in
             "refs/tags/"*)
-                # Tweak compression args for release publishing
                 seven_zip_args="-mx=9 -mfb=258 -mpass=15"
                 zip_args="-9"
-
-                # Update link in Changelog.html accordingly
-                if [ -f "out/${VARIANT}/Changelog.html" ]; then
-                    tag="$(echo "$GITHUB_REF" | cut -c 11-)"
-
-                    sed "s/ArchiSteamFarm\/commits\/main/ArchiSteamFarm\/releases\/tag\/${tag}/g" "out/${VARIANT}/Changelog.html" > "out/${VARIANT}/Changelog.html.new"
-                    mv "out/${VARIANT}/Changelog.html.new" "out/${VARIANT}/Changelog.html"
-                fi
                 ;;
         esac
 
@@ -309,17 +323,9 @@ jobs:
         # By default use fastest compression
         $compressionArgs = '-mx=1'
 
-        # Include extra logic for builds marked for release
+        # Tweak compression args for release publishing
         if ($env:GITHUB_REF -like 'refs/tags/*') {
-            # Tweak compression args for release publishing
             $compressionArgs = '-mx=9', '-mfb=258', '-mpass=15'
-
-            # Update link in Changelog.html accordingly
-            if (Test-Path "out\$env:VARIANT\Changelog.html" -PathType Leaf) {
-                $tag = $env:GITHUB_REF.Substring(10)
-
-                (Get-Content "out\$env:VARIANT\Changelog.html").Replace('ArchiSteamFarm/commits/main', "ArchiSteamFarm/releases/tag/$tag") | Set-Content "out\$env:VARIANT\Changelog.html"
-            }
         }
 
         # Create the final zip file
@@ -364,35 +370,30 @@ jobs:
       run: |
         set -euo pipefail
 
-        publish() {
-            dotnet publish "$1" -c "$CONFIGURATION" -o "out/${1}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+        # By default use fastest compression
+        seven_zip_args="-mx=1"
+        zip_args="-1"
 
-            # By default use fastest compression
-            seven_zip_args="-mx=1"
-            zip_args="-1"
+        # Tweak compression args for release publishing
+        case "$GITHUB_REF" in
+            "refs/tags/"*)
+                seven_zip_args="-mx=9 -mfb=258 -mpass=15"
+                zip_args="-9"
+                ;;
+        esac
 
-            # Include extra logic for builds marked for release
-            case "$GITHUB_REF" in
-                "refs/tags/"*)
-                    # Tweak compression args for release publishing
-                    seven_zip_args="-mx=9 -mfb=258 -mpass=15"
-                    zip_args="-9"
-                    ;;
-            esac
+        for plugin in $PLUGINS_INCLUDED; do
+            dotnet publish "$plugin" -c "$CONFIGURATION" -o "out/${plugin}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
             # Create the final zip file
             if command -v 7z >/dev/null; then
-                7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/${1}.zip" "${GITHUB_WORKSPACE}/out/${1}/*"
+                7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/${plugin}.zip" "${GITHUB_WORKSPACE}/out/${plugin}/*"
             else
                 (
-                    cd "${GITHUB_WORKSPACE}/out/${1}"
-                    zip -q -r $zip_args "../${1}.zip" .
+                    cd "${GITHUB_WORKSPACE}/out/${plugin}"
+                    zip -q -r $zip_args "../${plugin}.zip" .
                 )
             fi
-        }
-
-        for plugin in $PLUGINS_INCLUDED; do
-            publish "$plugin"
         done
 
     - name: Upload ArchiSteamFarm.OfficialPlugins.Monitoring
