@@ -3760,6 +3760,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 
 				switch (result) {
+					case EResult.Blocked:
+						// No point in retrying, those failures are permanent
+						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, result));
+
+						return false;
 					case EResult.Busy:
 					case EResult.Fail:
 					case EResult.LimitExceeded:
