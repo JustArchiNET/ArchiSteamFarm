@@ -127,44 +127,6 @@ jobs:
             }
         }
 
-    - name: Prepare for publishing on Unix
-      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
-      env:
-        VARIANT: ${{ matrix.variant }}
-      shell: bash
-      run: |
-        set -euo pipefail
-
-        if [ "$VARIANT" = 'generic' ]; then
-            variantArgs="-p:TargetLatestRuntimePatch=false -p:UseAppHost=false"
-        else
-            variantArgs="-r $VARIANT"
-        fi
-
-        dotnet build ArchiSteamFarm -c "$CONFIGURATION" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
-
-    - name: Prepare for publishing on Windows
-      if: startsWith(matrix.os, 'windows-')
-      env:
-        VARIANT: ${{ matrix.variant }}
-      shell: pwsh
-      run: |
-        Set-StrictMode -Version Latest
-        $ErrorActionPreference = 'Stop'
-        $ProgressPreference = 'SilentlyContinue'
-
-        if ($env:VARIANT -like 'generic*') {
-            $variantArgs = '-p:TargetLatestRuntimePatch=false', '-p:UseAppHost=false'
-        } else {
-            $variantArgs = '-r', "$env:VARIANT"
-        }
-
-        dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
-
-        if ($LastExitCode -ne 0) {
-            throw "Last command failed."
-        }
-
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       env:
@@ -192,137 +154,6 @@ jobs:
             (Get-Content "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs").Replace('STEAM_TOKEN_DUMPER_TOKEN', "$env:STEAM_TOKEN_DUMPER_TOKEN") | Set-Content "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs"
         }
 
-    - name: Publish bundled plugins on Unix
-      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
-      env:
-        MAX_JOBS: 4
-        VARIANT: ${{ matrix.variant }}
-      shell: bash
-      run: |
-        set -euo pipefail
-
-        publish() {
-            if [ "$VARIANT" = 'generic' ]; then
-                variantArgs="-p:TargetLatestRuntimePatch=false -p:UseAppHost=false"
-            else
-                variantArgs="-r $VARIANT"
-            fi
-
-            dotnet publish "$1" -c "$CONFIGURATION" -o "out/${1}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
-        }
-
-        for plugin in $PLUGINS_BUNDLED; do
-            while [ "$(jobs -p | wc -l)" -ge "$MAX_JOBS" ]; do
-                sleep 1
-            done
-
-            publish "$plugin" &
-        done
-
-        wait
-
-    - name: Publish bundled plugins on Windows
-      if: startsWith(matrix.os, 'windows-')
-      env:
-        MAX_JOBS: 4
-        VARIANT: ${{ matrix.variant }}
-      shell: pwsh
-      run: |
-        Set-StrictMode -Version Latest
-        $ErrorActionPreference = 'Stop'
-        $ProgressPreference = 'SilentlyContinue'
-
-        $PublishBlock = {
-            param($plugin)
-
-            Set-StrictMode -Version Latest
-            $ErrorActionPreference = 'Stop'
-            $ProgressPreference = 'SilentlyContinue'
-
-            Set-Location "$env:GITHUB_WORKSPACE"
-
-            if ($env:VARIANT -like 'generic*') {
-                $variantArgs = '-p:TargetLatestRuntimePatch=false', '-p:UseAppHost=false'
-            } else {
-                $variantArgs = '-r', "$env:VARIANT"
-            }
-
-            dotnet publish "$plugin" -c "$env:CONFIGURATION" -o "out\$plugin" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
-
-            if ($LastExitCode -ne 0) {
-                throw "Last command failed."
-            }
-        }
-
-        foreach ($plugin in $env:PLUGINS_BUNDLED.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
-            # Limit active jobs in parallel to help with memory usage
-            $jobs = $(Get-Job -State Running)
-
-            while (@($jobs).Count -ge $env:MAX_JOBS) {
-                Wait-Job -Job $jobs -Any | Out-Null
-
-                $jobs = $(Get-Job -State Running)
-            }
-
-            Start-Job -Name "$plugin" $PublishBlock -ArgumentList "$plugin"
-        }
-
-        Get-Job | Receive-Job -Wait
-
-    - name: Publish included plugins on Unix
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
-      env:
-        MAX_JOBS: 4
-        VARIANT: ${{ matrix.variant }}
-      shell: bash
-      run: |
-        set -euo pipefail
-
-        publish() {
-            dotnet publish "$1" -c "$CONFIGURATION" -o "out/${1}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
-
-            # By default use fastest compression
-            seven_zip_args="-mx=1"
-            zip_args="-1"
-
-            # Include extra logic for builds marked for release
-            case "$GITHUB_REF" in
-                "refs/tags/"*)
-                    # Tweak compression args for release publishing
-                    seven_zip_args="-mx=9 -mfb=258 -mpass=15"
-                    zip_args="-9"
-                    ;;
-            esac
-
-            # Create the final zip file
-            if command -v 7z >/dev/null; then
-                7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/${1}.zip" "${GITHUB_WORKSPACE}/out/${1}/*"
-            else
-                (
-                    cd "${GITHUB_WORKSPACE}/out/${1}"
-                    zip -q -r $zip_args "../${1}.zip" .
-                )
-            fi
-        }
-
-        for plugin in $PLUGINS_INCLUDED; do
-            while [ "$(jobs -p | wc -l)" -ge "$MAX_JOBS" ]; do
-                sleep 1
-            done
-
-            publish "$plugin" &
-        done
-
-        wait
-
-    - name: Upload ArchiSteamFarm.OfficialPlugins.Monitoring
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
-      uses: actions/upload-artifact@v4.3.1
-      with:
-        if-no-files-found: error
-        name: ArchiSteamFarm.OfficialPlugins.Monitoring
-        path: out/ArchiSteamFarm.OfficialPlugins.Monitoring.zip
-
     - name: Publish ASF-${{ matrix.variant }} on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       env:
@@ -339,16 +170,85 @@ jobs:
 
         dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${VARIANT}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
 
-        # If we're including official plugins for this framework, copy them to output directory
-        for plugin in $PLUGINS_BUNDLED; do
-            if [ -d "out/${plugin}" ]; then
-                mkdir -p "out/${VARIANT}/plugins/${plugin}"
-                cp -pR "out/${plugin}/"* "out/${VARIANT}/plugins/${plugin}"
-            fi
-        done
-
         # Include .ico file for all platforms, since only Windows script can bundle it inside the exe
         cp "resources/ASF.ico" "out/${VARIANT}/ArchiSteamFarm.ico"
+
+    - name: Publish ASF-${{ matrix.variant }} on Windows
+      if: startsWith(matrix.os, 'windows-')
+      env:
+        VARIANT: ${{ matrix.variant }}
+      shell: pwsh
+      run: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        $ProgressPreference = 'SilentlyContinue'
+
+        if ($env:VARIANT -like 'generic*') {
+            $variantArgs = '-p:TargetLatestRuntimePatch=false', '-p:UseAppHost=false'
+        } else {
+            $variantArgs = '-p:PublishSingleFile=true', '-p:PublishTrimmed=true', '-r', "$env:VARIANT", '--self-contained'
+        }
+
+        dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$env:VARIANT" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
+
+        if ($LastExitCode -ne 0) {
+            throw "Last command failed."
+        }
+
+        # Icon is available only in .exe Windows builds, we'll bundle the .ico file for other flavours
+        if (!(Test-Path "out\$env:VARIANT\ArchiSteamFarm.exe" -PathType Leaf)) {
+            Copy-Item 'resources\ASF.ico' "out\$env:VARIANT\ArchiSteamFarm.ico"
+        }
+
+    - name: Publish bundled plugins on Unix
+      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      env:
+        VARIANT: ${{ matrix.variant }}
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        if [ "$VARIANT" = 'generic' ]; then
+            variantArgs="-p:TargetLatestRuntimePatch=false -p:UseAppHost=false"
+        else
+            variantArgs="-r $VARIANT"
+        fi
+
+        for plugin in $PLUGINS_BUNDLED; do
+            dotnet publish "$plugin" -c "$CONFIGURATION" -o "out/${VARIANT}/plugins/${plugin}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
+        done
+
+    - name: Publish bundled plugins on Windows
+      if: startsWith(matrix.os, 'windows-')
+      env:
+        VARIANT: ${{ matrix.variant }}
+      shell: pwsh
+      run: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        $ProgressPreference = 'SilentlyContinue'
+
+        if ($env:VARIANT -like 'generic*') {
+            $variantArgs = '-p:TargetLatestRuntimePatch=false', '-p:UseAppHost=false'
+        } else {
+            $variantArgs = '-r', "$env:VARIANT"
+        }
+
+        foreach ($plugin in $env:PLUGINS_BUNDLED.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+            dotnet publish "$plugin" -c "$env:CONFIGURATION" -o "out\$env:VARIANT\plugins\$plugin" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
+
+            if ($LastExitCode -ne 0) {
+                throw "Last command failed."
+            }
+        }
+
+    - name: Zip ASF-${{ matrix.variant }} on Unix
+      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      env:
+        VARIANT: ${{ matrix.variant }}
+      shell: bash
+      run: |
+        set -euo pipefail
 
         # By default use fastest compression
         seven_zip_args="-mx=1"
@@ -396,7 +296,7 @@ jobs:
                 ;;
         esac
 
-    - name: Publish ASF-${{ matrix.variant }} on Windows
+    - name: Zip ASF-${{ matrix.variant }} on Windows
       if: startsWith(matrix.os, 'windows-')
       env:
         VARIANT: ${{ matrix.variant }}
@@ -405,34 +305,6 @@ jobs:
         Set-StrictMode -Version Latest
         $ErrorActionPreference = 'Stop'
         $ProgressPreference = 'SilentlyContinue'
-
-        if ($env:VARIANT -like 'generic*') {
-            $variantArgs = '-p:TargetLatestRuntimePatch=false', '-p:UseAppHost=false'
-        } else {
-            $variantArgs = '-p:PublishSingleFile=true', '-p:PublishTrimmed=true', '-r', "$env:VARIANT", '--self-contained'
-        }
-
-        dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$env:VARIANT" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
-
-        if ($LastExitCode -ne 0) {
-            throw "Last command failed."
-        }
-
-        # If we're including official plugins for this framework, copy them to output directory
-        foreach ($plugin in $env:PLUGINS_BUNDLED.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
-            if (Test-Path "out\$plugin" -PathType Container) {
-                if (!(Test-Path "out\$env:VARIANT\plugins\$plugin" -PathType Container)) {
-                    New-Item -ItemType Directory -Path "out\$env:VARIANT\plugins\$plugin" > $null
-                }
-
-                Copy-Item "out\$plugin\*" "out\$env:VARIANT\plugins\$plugin" -Recurse
-            }
-        }
-
-        # Icon is available only in .exe Windows builds, we'll bundle the .ico file for other flavours
-        if (!(Test-Path "out\$env:VARIANT\ArchiSteamFarm.exe" -PathType Leaf)) {
-            Copy-Item 'resources\ASF.ico' "out\$env:VARIANT\ArchiSteamFarm.ico"
-        }
 
         # By default use fastest compression
         $compressionArgs = '-mx=1'
@@ -484,6 +356,53 @@ jobs:
         name: ${{ matrix.os }}_ASF-${{ matrix.variant }}
         path: out/ASF-${{ matrix.variant }}.zip
 
+    - name: Publish included plugins on Unix
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
+      env:
+        VARIANT: ${{ matrix.variant }}
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        publish() {
+            dotnet publish "$1" -c "$CONFIGURATION" -o "out/${1}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+
+            # By default use fastest compression
+            seven_zip_args="-mx=1"
+            zip_args="-1"
+
+            # Include extra logic for builds marked for release
+            case "$GITHUB_REF" in
+                "refs/tags/"*)
+                    # Tweak compression args for release publishing
+                    seven_zip_args="-mx=9 -mfb=258 -mpass=15"
+                    zip_args="-9"
+                    ;;
+            esac
+
+            # Create the final zip file
+            if command -v 7z >/dev/null; then
+                7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/${1}.zip" "${GITHUB_WORKSPACE}/out/${1}/*"
+            else
+                (
+                    cd "${GITHUB_WORKSPACE}/out/${1}"
+                    zip -q -r $zip_args "../${1}.zip" .
+                )
+            fi
+        }
+
+        for plugin in $PLUGINS_INCLUDED; do
+            publish "$plugin"
+        done
+
+    - name: Upload ArchiSteamFarm.OfficialPlugins.Monitoring
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
+      uses: actions/upload-artifact@v4.3.1
+      with:
+        if-no-files-found: error
+        name: ArchiSteamFarm.OfficialPlugins.Monitoring
+        path: out/ArchiSteamFarm.OfficialPlugins.Monitoring.zip
+
   release:
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') }}
     needs: publish-asf
@@ -497,12 +416,6 @@ jobs:
       uses: actions/checkout@v4.1.1
       with:
         show-progress: false
-
-    - name: Download ArchiSteamFarm.OfficialPlugins.Monitoring artifact
-      uses: actions/download-artifact@v4.1.4
-      with:
-        name: ArchiSteamFarm.OfficialPlugins.Monitoring
-        path: out
 
     - name: Download ASF-generic artifact from ubuntu-latest
       uses: actions/download-artifact@v4.1.4
@@ -550,6 +463,12 @@ jobs:
       uses: actions/download-artifact@v4.1.4
       with:
         name: windows-latest_ASF-win-x64
+        path: out
+
+    - name: Download ArchiSteamFarm.OfficialPlugins.Monitoring artifact
+      uses: actions/download-artifact@v4.1.4
+      with:
+        name: ArchiSteamFarm.OfficialPlugins.Monitoring
         path: out
 
     - name: Import GPG key for signing
