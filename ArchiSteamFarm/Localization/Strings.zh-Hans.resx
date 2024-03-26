@@ -807,10 +807,7 @@
 		<value>插件 {0}/{1} 已被注册并启用自动更新。</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
 	</data>
-	<data name="PluginUpdateDisabled" xml:space="preserve">
-		<value>插件 {0}/{1} 已被禁用自动更新，但它支持此功能。</value>
-		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
-	</data>
+	
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>自定义插件已被注册自动更新。ASF 团队提醒您，为了您的安全，您只应该为信任来源启用自动更新，如果您不想这样做，则应该在 ASF 全局配置中禁用插件更新。</value>
 	</data>

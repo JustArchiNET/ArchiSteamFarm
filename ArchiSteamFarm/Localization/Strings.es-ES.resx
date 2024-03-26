@@ -807,7 +807,7 @@ Tiempo de actividad del proceso: {1}</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
 	</data>
 	<data name="PluginUpdateDisabled" xml:space="preserve">
-		<value>El plugin {0}/{1} ha sido deshabilitado para las actualizaciones automáticas, a pesar de soportar dicha función.</value>
+		<value>El plugin {0} ({1}) ha sido deshabilitado para las actualizaciones automáticas, a pesar de soportar dicha función.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
 	</data>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">

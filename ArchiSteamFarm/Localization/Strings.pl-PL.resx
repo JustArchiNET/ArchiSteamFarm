@@ -807,10 +807,7 @@ Czas procesu: {1}</value>
 		<value>Wtyczka {0}/{1} została zarejestrowana i włączona do automatycznych aktualizacji.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
 	</data>
-	<data name="PluginUpdateDisabled" xml:space="preserve">
-		<value>Wtyczka {0}/{1} została wyłączona z automatycznych aktualizacji, mimo że obsługuje taką funkcję.</value>
-		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
-	</data>
+	
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Wtyczki niestandardowe zostały zarejestrowane do automatycznych aktualizacji. Zespół ASF przypomina, że dla własnego bezpieczeństwa należy włączyć automatyczne aktualizacje tylko od zaufanych stron. Jeśli nie masz tego zamiaru, możesz wyłączyć aktualizacje wtyczek w globalnej konfiguracji ASF.</value>
 	</data>
