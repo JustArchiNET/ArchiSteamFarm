@@ -54,7 +54,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 	[JsonInclude]
 	[Required]
-	public override string Name => nameof(MonitoringPlugin);
+	public override string Name => typeof(MonitoringPlugin).Assembly.GetName().Name ?? throw new InvalidOperationException(nameof(Name));
 
 	public string RepositoryName => SharedInfo.GithubRepo;
 

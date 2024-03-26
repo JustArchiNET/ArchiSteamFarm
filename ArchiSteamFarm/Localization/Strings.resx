@@ -808,7 +808,7 @@ Process uptime: {1}</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
 	</data>
 	<data name="PluginUpdateDisabled" xml:space="preserve">
-		<value>{0}/{1} plugin has been disabled from automatic updates, despite supporting such feature.</value>
+		<value>{0} ({1}) plugin has been disabled from automatic updates, despite supporting such feature.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
 	</data>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">

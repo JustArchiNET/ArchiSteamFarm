@@ -44,7 +44,7 @@ internal sealed class PeriodicGCPlugin : IPlugin {
 
 	[JsonInclude]
 	[Required]
-	public string Name => nameof(PeriodicGCPlugin);
+	public string Name => typeof(PeriodicGCPlugin).Assembly.GetName().Name ?? throw new InvalidOperationException(nameof(Name));
 
 	[JsonInclude]
 	[Required]

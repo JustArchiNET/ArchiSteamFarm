@@ -48,7 +48,7 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 
 	[JsonInclude]
 	[Required]
-	public override string Name => nameof(ItemsMatcherPlugin);
+	public override string Name => typeof(ItemsMatcherPlugin).Assembly.GetName().Name ?? throw new InvalidOperationException(nameof(Name));
 
 	[JsonInclude]
 	[Required]
