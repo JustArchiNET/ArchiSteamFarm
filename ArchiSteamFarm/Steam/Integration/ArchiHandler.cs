@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -209,11 +210,11 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 
-				throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(serviceMethodResponse)));
+				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(serviceMethodResponse)));
 			}
 
 			if (serviceMethodResponse.Result != EResult.OK) {
-				throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
+				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
 			}
 
 			CEcon_GetInventoryItemsWithDescriptions_Response response = serviceMethodResponse.GetDeserializedResponse<CEcon_GetInventoryItemsWithDescriptions_Response>();
