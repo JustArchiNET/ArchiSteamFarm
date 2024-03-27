@@ -807,7 +807,10 @@
 		<value>外掛程式 {0}/{1} 已被登錄，並已啟用自動更新。</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
 	</data>
-	
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>外掛程式 {0} ({1}) 已被停用自動更新，但它支援此功能。</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>自訂外掛程式已被登錄自動更新。ASF 團隊提醒您，為了您的安全，您應僅為受信任的內容啟用自動更新。若您不想啟用，您可以在 ASF 全域設定中停用外掛程式更新。</value>
 	</data>
