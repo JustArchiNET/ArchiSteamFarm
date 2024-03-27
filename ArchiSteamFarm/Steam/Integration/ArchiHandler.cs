@@ -26,7 +26,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -34,6 +33,7 @@ using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
 using ArchiSteamFarm.Steam.Integration.CMsgs;
+using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
@@ -179,14 +179,15 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(itemsCountPerRequest);
 
-		if (Client.SteamID == null) {
-			throw new InvalidOperationException(nameof(Client.SteamID));
+		if (!Client.IsConnected || (Client.SteamID == null)) {
+			throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Client.IsConnected)));
 		}
 
-		// We need to store asset IDs to make sure we won't get duplicate items
-		HashSet<ulong>? assetIDs = null;
+		ulong steamID = Client.SteamID;
 
-		Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>? descriptions = null;
+		if (steamID == 0) {
+			throw new InvalidOperationException(nameof(Client.SteamID));
+		}
 
 		CEcon_GetInventoryItemsWithDescriptions_Request request = new() {
 			appid = appID,
@@ -198,23 +199,58 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			},
 
 			get_descriptions = true,
-			steamid = Client.SteamID,
+			steamid = steamID,
 			count = itemsCountPerRequest
 		};
 
+		// We need to store asset IDs to make sure we won't get duplicate items
+		HashSet<ulong>? assetIDs = null;
+
+		Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>? descriptions = null;
+
 		while (true) {
-			SteamUnifiedMessages.ServiceMethodResponse serviceMethodResponse;
+			SteamUnifiedMessages.ServiceMethodResponse? serviceMethodResponse = null;
 
-			try {
-				serviceMethodResponse = await UnifiedEconService.SendMessage(x => x.GetInventoryItemsWithDescriptions(request)).ToLongRunningTask().ConfigureAwait(false);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericWarningException(e);
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (serviceMethodResponse?.Result != EResult.OK) && Client.IsConnected && (Client.SteamID != null); i++) {
+				if (i > 0) {
+					// It seems 2 seconds is enough to win over DuplicateRequest, so we'll use that for this and also other network-related failures
+					await Task.Delay(2000).ConfigureAwait(false);
+				}
 
-				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(serviceMethodResponse)));
+				try {
+					serviceMethodResponse = await UnifiedEconService.SendMessage(x => x.GetInventoryItemsWithDescriptions(request)).ToLongRunningTask().ConfigureAwait(false);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericWarningException(e);
+
+					continue;
+				}
+
+				// Interpret the result and see what we should do about it
+				switch (serviceMethodResponse.Result) {
+					case EResult.Busy:
+					case EResult.DuplicateRequest:
+					case EResult.ServiceUnavailable:
+						// Those are generic failures that we should be able to retry
+						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
+
+						continue;
+					case EResult.OK:
+						// Success, we can continue
+						break;
+					default:
+						// Unknown failures, report them and do not retry since we're unsure if we should
+						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(serviceMethodResponse.Result), serviceMethodResponse.Result));
+
+						throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
+				}
+			}
+
+			if (serviceMethodResponse == null) {
+				throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(serviceMethodResponse)));
 			}
 
 			if (serviceMethodResponse.Result != EResult.OK) {
-				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
+				throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
 			}
 
 			CEcon_GetInventoryItemsWithDescriptions_Response response = serviceMethodResponse.GetDeserializedResponse<CEcon_GetInventoryItemsWithDescriptions_Response>();

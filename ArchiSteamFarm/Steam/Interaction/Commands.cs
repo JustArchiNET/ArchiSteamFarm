@@ -26,7 +26,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -3114,7 +3113,7 @@ public sealed class Commands {
 					completeSuccess = false;
 				}
 			}
-		} catch (HttpRequestException e) {
+		} catch (TimeoutException e) {
 			Bot.ArchiLogger.LogGenericWarningException(e);
 
 			completeSuccess = false;

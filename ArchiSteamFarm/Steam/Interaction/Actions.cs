@@ -27,7 +27,6 @@ using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
@@ -430,7 +429,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			}
 
 			inventory = await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID, true).Where(item => filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
-		} catch (HttpRequestException e) {
+		} catch (TimeoutException e) {
 			Bot.ArchiLogger.LogGenericWarningException(e);
 
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, e.Message));

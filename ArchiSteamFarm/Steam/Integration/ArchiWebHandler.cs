@@ -275,7 +275,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			ObjectResponse<InventoryResponse>? response = null;
 
 			try {
-				for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+				for (byte i = 0; (i < WebBrowser.MaxTries) && (response?.StatusCode.IsSuccessCode() != true); i++) {
 					if ((i > 0) && (rateLimitingDelay > 0)) {
 						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 					}
@@ -293,22 +293,24 @@ public sealed class ArchiWebHandler : IDisposable {
 					if (response.StatusCode.IsServerErrorCode()) {
 						if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
 							// This is a generic server error without a reason, try again
-							response = null;
-
 							continue;
 						}
 
-						// Interpret the reason and see if we should try again
+						Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText));
+
+						// Try to interpret the failure reason and see if we should try again
 						switch (response.Content.ErrorCode) {
+							case EResult.Busy:
 							case EResult.DuplicateRequest:
 							case EResult.ServiceUnavailable:
-								response = null;
-
+								// Those are generic failures that we should be able to retry
 								continue;
-						}
+							default:
+								// Unknown failures, report them and do not retry since we're unsure if we should
+								Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.Content.ErrorText), response.Content.ErrorText));
 
-						// This is actually client error with a reason, so it doesn't make sense to retry
-						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText), null, response.StatusCode);
+								throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText), null, response.StatusCode);
+						}
 					}
 				}
 			} finally {
@@ -324,12 +326,12 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 			}
 
-			if (response?.Content == null) {
+			if (response == null) {
 				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
 			}
 
-			if (response.Content.Result is not EResult.OK) {
-				throw new HttpRequestException(!string.IsNullOrEmpty(response.Content.ErrorText) ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText) : response.Content.Result.HasValue ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Result) : Strings.WarningFailed);
+			if ((response.Content == null) || (response.StatusCode.IsSuccessCode() != true)) {
+				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, !string.IsNullOrEmpty(response.Content?.ErrorText) ? response.Content.ErrorText : response.Content?.Result.HasValue == true ? response.Content.Result : response.StatusCode));
 			}
 
 			if ((response.Content.TotalInventoryCount == 0) || (response.Content.Assets.Count == 0)) {

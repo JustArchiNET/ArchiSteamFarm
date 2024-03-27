@@ -33,7 +33,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -3669,7 +3668,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						.Where(item => appIDs.Contains(item.RealAppID) && BotConfig.CompleteTypesToSend.Contains(item.Type))
 						.ToHashSetAsync()
 						.ConfigureAwait(false);
-				} catch (HttpRequestException e) {
+				} catch (TimeoutException e) {
 					ArchiLogger.LogGenericWarningException(e);
 
 					return;
