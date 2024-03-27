@@ -300,6 +300,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 						// Try to interpret the failure reason and see if we should try again
 						switch (response.Content.ErrorCode) {
+							case null:
 							case EResult.Busy:
 							case EResult.DuplicateRequest:
 							case EResult.ServiceUnavailable:
