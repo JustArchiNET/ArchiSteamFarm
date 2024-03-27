@@ -71,10 +71,6 @@ public static class SteamUtilities {
 	internal static EResult? InterpretError(string errorText) {
 		ArgumentException.ThrowIfNullOrEmpty(errorText);
 
-		if (errorText.StartsWith("EYldRefreshAppIfNecessary", StringComparison.Ordinal)) {
-			return EResult.ServiceUnavailable;
-		}
-
 		int startIndex = errorText.LastIndexOf('(');
 
 		if (startIndex < 0) {
@@ -96,7 +92,7 @@ public static class SteamUtilities {
 		string errorCodeText = errorText[startIndex..endIndex];
 
 		if (!byte.TryParse(errorCodeText, out byte errorCode)) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorCodeText), errorCodeText));
+			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorText), errorText));
 
 			return null;
 		}
@@ -104,7 +100,7 @@ public static class SteamUtilities {
 		EResult result = (EResult) errorCode;
 
 		if (!Enum.IsDefined(result)) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(EResult), result));
+			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorText), errorText));
 
 			return null;
 		}

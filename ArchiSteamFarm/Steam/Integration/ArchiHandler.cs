@@ -227,16 +227,21 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 				// Interpret the result and see what we should do about it
 				switch (serviceMethodResponse.Result) {
-					case EResult.Busy:
-					case EResult.DuplicateRequest:
-					case EResult.ServiceUnavailable:
-						// Those are generic failures that we should be able to retry
-						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
-
-						continue;
 					case EResult.OK:
 						// Success, we can continue
 						break;
+					case EResult.Busy:
+					case EResult.DuplicateRequest:
+					case EResult.RemoteCallFailed:
+					case EResult.ServiceUnavailable:
+					case EResult.Timeout:
+						// Expected failures that we should be able to retry
+						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
+
+						continue;
+					case EResult.NoMatch:
+						// Expected failures that we're not going to retry
+						throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
 					default:
 						// Unknown failures, report them and do not retry since we're unsure if we should
 						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(serviceMethodResponse.Result), serviceMethodResponse.Result));
@@ -261,7 +266,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			}
 
 			if (response.descriptions.Count == 0) {
-				throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(response.descriptions)));
+				throw new InvalidOperationException(nameof(response.descriptions));
 			}
 
 			if (response.total_inventory_count > Array.MaxLength) {

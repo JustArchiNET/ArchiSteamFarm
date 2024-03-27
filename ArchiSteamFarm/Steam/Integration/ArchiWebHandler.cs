@@ -275,7 +275,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			ObjectResponse<InventoryResponse>? response = null;
 
 			try {
-				for (byte i = 0; (i < WebBrowser.MaxTries) && (response?.StatusCode.IsSuccessCode() != true); i++) {
+				for (byte i = 0; (i < WebBrowser.MaxTries) && (response?.Content is not { Result: EResult.OK } || !response.StatusCode.IsSuccessCode()); i++) {
 					if ((i > 0) && (rateLimitingDelay > 0)) {
 						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 					}
@@ -300,12 +300,16 @@ public sealed class ArchiWebHandler : IDisposable {
 
 						// Try to interpret the failure reason and see if we should try again
 						switch (response.Content.ErrorCode) {
-							case null:
 							case EResult.Busy:
 							case EResult.DuplicateRequest:
+							case EResult.RemoteCallFailed:
 							case EResult.ServiceUnavailable:
-								// Those are generic failures that we should be able to retry
+							case EResult.Timeout:
+								// Expected failures that we should be able to retry
 								continue;
+							case EResult.NoMatch:
+								// Expected failures that we're not going to retry
+								throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText), null, response.StatusCode);
 							default:
 								// Unknown failures, report them and do not retry since we're unsure if we should
 								Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.Content.ErrorText), response.Content.ErrorText));
@@ -331,8 +335,8 @@ public sealed class ArchiWebHandler : IDisposable {
 				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
 			}
 
-			if ((response.Content == null) || (response.StatusCode.IsSuccessCode() != true)) {
-				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, !string.IsNullOrEmpty(response.Content?.ErrorText) ? response.Content.ErrorText : response.Content?.Result.HasValue == true ? response.Content.Result : response.StatusCode));
+			if (response.Content is not { Result: EResult.OK } || !response.StatusCode.IsSuccessCode()) {
+				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content?.ErrorText ?? response.Content?.Result?.ToString() ?? response.StatusCode.ToString()));
 			}
 
 			if ((response.Content.TotalInventoryCount == 0) || (response.Content.Assets.Count == 0)) {
@@ -341,7 +345,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			if (response.Content.Descriptions.Count == 0) {
-				throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(response.Content.Descriptions)));
+				throw new InvalidOperationException(nameof(response.Content.Descriptions));
 			}
 
 			if (response.Content.TotalInventoryCount > Array.MaxLength) {
