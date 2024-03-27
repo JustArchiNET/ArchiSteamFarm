@@ -182,36 +182,41 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			throw new InvalidOperationException(nameof(Client.SteamID));
 		}
 
-		ulong steamID = Client.SteamID;
-
-		ulong startAssetID = 0;
-
 		// We need to store asset IDs to make sure we won't get duplicate items
 		HashSet<ulong>? assetIDs = null;
 
 		Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>? descriptions = null;
 
+		CEcon_GetInventoryItemsWithDescriptions_Request request = new() {
+			appid = appID,
+			contextid = contextID,
+
+			filters = new CEcon_GetInventoryItemsWithDescriptions_Request.FilterOptions {
+				tradable_only = tradableOnly,
+				marketable_only = marketableOnly
+			},
+
+			get_descriptions = true,
+			steamid = Client.SteamID,
+			count = itemsCountPerRequest
+		};
+
 		while (true) {
-			ulong currentStartAssetID = startAssetID;
+			SteamUnifiedMessages.ServiceMethodResponse serviceMethodResponse;
 
-			CEcon_GetInventoryItemsWithDescriptions_Request request = new() {
-				appid = appID,
-				contextid = contextID,
+			try {
+				serviceMethodResponse = await UnifiedEconService.SendMessage(x => x.GetInventoryItemsWithDescriptions(request)).ToLongRunningTask().ConfigureAwait(false);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
 
-				filters = new CEcon_GetInventoryItemsWithDescriptions_Request.FilterOptions {
-					tradable_only = tradableOnly,
-					marketable_only = marketableOnly
-				},
+				throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(serviceMethodResponse)));
+			}
 
-				get_descriptions = true,
-				steamid = steamID,
-				start_assetid = currentStartAssetID,
-				count = itemsCountPerRequest
-			};
+			if (serviceMethodResponse.Result != EResult.OK) {
+				throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
+			}
 
-			SteamUnifiedMessages.ServiceMethodResponse genericResponse = await UnifiedEconService.SendMessage(x => x.GetInventoryItemsWithDescriptions(request)).ToLongRunningTask().ConfigureAwait(false);
-
-			CEcon_GetInventoryItemsWithDescriptions_Response response = genericResponse.GetDeserializedResponse<CEcon_GetInventoryItemsWithDescriptions_Response>();
+			CEcon_GetInventoryItemsWithDescriptions_Response response = serviceMethodResponse.GetDeserializedResponse<CEcon_GetInventoryItemsWithDescriptions_Response>();
 
 			if ((response.total_inventory_count == 0) || (response.assets.Count == 0)) {
 				// Empty inventory
@@ -268,7 +273,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.last_assetid)));
 			}
 
-			startAssetID = response.last_assetid;
+			request.start_assetid = response.last_assetid;
 		}
 	}
 
