@@ -71,6 +71,10 @@ public static class SteamUtilities {
 	internal static EResult? InterpretError(string errorText) {
 		ArgumentException.ThrowIfNullOrEmpty(errorText);
 
+		if (errorText.StartsWith("batched request timeout", StringComparison.Ordinal)) {
+			return EResult.RemoteCallFailed;
+		}
+
 		int startIndex = errorText.LastIndexOf('(');
 
 		if (startIndex < 0) {
