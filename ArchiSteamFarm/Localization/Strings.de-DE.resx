@@ -808,7 +808,10 @@ Prozesslaufzeit: {1}</value>
 		<value>{0}/{1}-Erweiterung wurde registriert und für automatische Updates aktiviert.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
 	</data>
-	
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>Die {0} ({1})-Erweiterungsaktualisierung wurde trotz Unterstützung dieser automatischen Funktion deaktiviert.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Benutzerdefinierte Erweiterungen wurden für automatische Updates registriert. Das ASF-Team möchte Sie daran erinnern, dass Sie zu Ihrer eigenen Sicherheit automatische Updates nur von vertrauenswürdigen Parteien aktivieren sollten. Wenn Sie dies nicht beabsichtigen, können Sie Plugin-Updates in der globalen ASF-Konfuguration deaktivieren.</value>
 	</data>

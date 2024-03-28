@@ -783,12 +783,35 @@ Tempo de execução: {1}</value>
 		<value>Uma nova versão do plugin {0} está disponível! Considere atualizá-lo!</value>
 		<comment>{0} will be replaced by plugin name (string).</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>Encontrado atualização do plugin {0} da versão {1} para {2}...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>Não há recurso disponível para a atualização do plugin {0} da versão {1} para {2}, isso geralmente significa que a atualização estará disponível em um momento posterior.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>Nenhum recurso pôde ser determinado para a atualização do plugin {0} da versão {1} para {2}. Isso pode acontecer se a atualização ainda não estiver concluída - se isso continuar acontecendo, você deve notificar o criador do plugin sobre isso.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>Atualizando plugin {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>A atualização do plugin {0} foi bem-sucedida. As alterações serão carregadas na próxima inicialização do ASF.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>O plugin {0}/{1} foi registrado e ativado para atualizações automáticas.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>O plugin {0} ({1}) foi desativado das atualizações automáticas, apesar de suportar tal funcionalidade.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Os plugins personalizados foram registrados para atualizações automáticas. A equipe do ASF gostaria de lembrá-lo de que, para sua própria segurança, você deve habilitar atualizações automáticas apenas de desenvolvedores confiáveis. Caso você não pretendia fazer isso, pode desabilitar as atualizações de plugin na configuração global do ASF.</value>
+	</data>
 </root>
