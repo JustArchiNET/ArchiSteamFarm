@@ -37,6 +37,9 @@ internal static partial class GeneratedRegexes {
 	[GeneratedRegex(@"\d+", DefaultOptions)]
 	internal static partial Regex Digits();
 
+	[GeneratedRegex(@"EResult (?<EResult>\d+)$", DefaultOptions)]
+	internal static partial Regex InventoryEResult();
+
 	[GeneratedRegex(@"[^\u0000-\u007F]+", DefaultOptions)]
 	internal static partial Regex NonAscii();
 }

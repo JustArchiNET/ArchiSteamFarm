@@ -23,6 +23,7 @@
 
 using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
@@ -75,29 +76,37 @@ public static class SteamUtilities {
 			return EResult.Timeout;
 		}
 
-		if (errorText.StartsWith("batched request timeout", StringComparison.Ordinal)) {
+		if (errorText.StartsWith("batched request timeout", StringComparison.Ordinal) || errorText.StartsWith("Failed to send", StringComparison.Ordinal)) {
 			return EResult.RemoteCallFailed;
 		}
 
-		int startIndex = errorText.LastIndexOf('(');
+		string errorCodeText;
 
-		if (startIndex < 0) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorText), errorText));
+		Match match = GeneratedRegexes.InventoryEResult().Match(errorText);
 
-			return null;
+		if (match.Success && match.Groups.TryGetValue("EResult", out Group? groupResult)) {
+			errorCodeText = groupResult.Value;
+		} else {
+			int startIndex = errorText.LastIndexOf('(');
+
+			if (startIndex < 0) {
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorText), errorText));
+
+				return null;
+			}
+
+			startIndex++;
+
+			int endIndex = errorText.IndexOf(')', startIndex + 1);
+
+			if (endIndex < 0) {
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorText), errorText));
+
+				return null;
+			}
+
+			errorCodeText = errorText[startIndex..endIndex];
 		}
-
-		startIndex++;
-
-		int endIndex = errorText.IndexOf(')', startIndex + 1);
-
-		if (endIndex < 0) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorText), errorText));
-
-			return null;
-		}
-
-		string errorCodeText = errorText[startIndex..endIndex];
 
 		if (!byte.TryParse(errorCodeText, out byte errorCode)) {
 			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorText), errorText));
