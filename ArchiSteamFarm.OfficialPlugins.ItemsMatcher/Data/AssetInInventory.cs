@@ -42,5 +42,5 @@ internal class AssetInInventory : AssetForMatching {
 		AssetID = asset.AssetID;
 	}
 
-	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, new InventoryDescription(Asset.SteamAppID, ClassID, tradable: false, realAppID: RealAppID, type: Type, rarity: Rarity), AssetID);
+	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, new InventoryDescription(Asset.SteamAppID, ClassID, tradable: Tradable, realAppID: RealAppID, type: Type, rarity: Rarity), AssetID);
 }
