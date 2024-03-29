@@ -3860,7 +3860,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private (bool IsSteamParentalEnabled, string? SteamParentalCode) ValidateSteamParental(ParentalSettings settings, string? steamParentalCode = null, bool allowGeneration = true) {
 		ArgumentNullException.ThrowIfNull(settings);
 
-		if (!settings.is_enabled) {
+		if (!settings.is_enabled || (settings.passwordhash == null)) {
 			return (false, null);
 		}
 
