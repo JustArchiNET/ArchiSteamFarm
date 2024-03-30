@@ -72,11 +72,11 @@ public static class SteamUtilities {
 	internal static EResult? InterpretError(string errorText) {
 		ArgumentException.ThrowIfNullOrEmpty(errorText);
 
-		if (errorText == "Timeout") {
+		if ((errorText == "Timeout") || errorText.StartsWith("batched request timeout", StringComparison.Ordinal)) {
 			return EResult.Timeout;
 		}
 
-		if (errorText.StartsWith("batched request timeout", StringComparison.Ordinal) || errorText.StartsWith("Failed to send", StringComparison.Ordinal)) {
+		if (errorText.StartsWith("Failed to get", StringComparison.Ordinal) || errorText.StartsWith("Failed to send", StringComparison.Ordinal)) {
 			return EResult.RemoteCallFailed;
 		}
 
