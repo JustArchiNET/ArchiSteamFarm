@@ -764,9 +764,17 @@ Süreç çalışma zamanı: {1}</value>
 		<value>{0} ({1}) kart düşürmesi, oyun şu anda özel olarak işaretlendiğinden devre dışı bırakıldı. ASF'den bu oyunu kart düşürmesini düşünüyorsanız gizlilik ayarlarını değiştirmeyi düşünün.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
-	
-	
-	
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>Atlaniyor:{0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>Eklenti güncellemeleri denetleniyor...</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>{0} eklentisi için güncellemesi denetleniyor...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
 	
 	
 	
