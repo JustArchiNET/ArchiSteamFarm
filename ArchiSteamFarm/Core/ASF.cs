@@ -860,11 +860,16 @@ public static class ASF {
 
 			ArchiLogger.LogGenericInfo(Strings.FetchingChecksumFromRemoteServer);
 
-			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, SharedInfo.BuildInfo.Variant).ConfigureAwait(false);
+			// Keep short timeout allowed for this call, as we don't want to hold the flow for too long
+			using CancellationTokenSource archiNetCancellation = new(TimeSpan.FromSeconds(15));
+
+			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, SharedInfo.BuildInfo.Variant, archiNetCancellation.Token).ConfigureAwait(false);
 
 			switch (remoteChecksum) {
 				case null:
 					// Timeout or error, refuse to update as a security measure
+					ArchiLogger.LogGenericWarning(Strings.ChecksumTimeout);
+
 					return (false, newVersion);
 				case "":
 					// Unknown checksum, release too new or actual malicious build published, no need to scare the user as it's 99.99% the first
@@ -886,6 +891,7 @@ public static class ASF {
 			BinaryResponse? response;
 
 			try {
+				// ReSharper disable once MethodSupportsCancellation - the token initialized above is not meant to be passed here
 				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL, progressReporter: progressReporter).ConfigureAwait(false);
 			} finally {
 				progressReporter.ProgressChanged -= onProgressChanged;

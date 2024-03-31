@@ -1185,6 +1185,12 @@ namespace ArchiSteamFarm.Localization {
             }
         }
         
+        public static string ChecksumTimeout {
+            get {
+                return ResourceManager.GetString("ChecksumTimeout", resourceCulture);
+            }
+        }
+        
         public static string ChecksumWrong {
             get {
                 return ResourceManager.GetString("ChecksumWrong", resourceCulture);

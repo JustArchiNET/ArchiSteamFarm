@@ -731,6 +731,9 @@ Process uptime: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Remote server doesn't know anything about the release we're updating to. This situation is possible if the release was published recently - refusing to proceed with the update procedure right away as an additional security measure.</value>
 	</data>
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>Failed to fetch checksum of the downloaded binary - refusing to proceed with the update procedure at this time as an additional security measure.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Remote server has replied with a different checksum, this might indicate corrupted download or MITM attack, refusing to proceed with the update procedure!</value>
 	</data>

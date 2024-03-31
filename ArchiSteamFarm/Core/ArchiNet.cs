@@ -55,7 +55,15 @@ internal static class ArchiNet {
 
 		Uri request = new(URL, $"/Api/Checksum/{version}/{variant}");
 
-		ObjectResponse<GenericResponse<string>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<string>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<string>>? response;
+
+		try {
+			response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<string>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
+		} catch (OperationCanceledException e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+			return null;
+		}
 
 		if (response?.Content == null) {
 			return null;
@@ -184,12 +192,14 @@ internal static class ArchiNet {
 
 		Uri request = new(URL, "/Api/BadBots");
 
-		ObjectResponse<GenericResponse<ImmutableHashSet<ulong>>>? response = null;
+		ObjectResponse<GenericResponse<ImmutableHashSet<ulong>>>? response;
 
 		try {
 			response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<ImmutableHashSet<ulong>>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 		} catch (OperationCanceledException e) {
 			ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+			return (false, ASF.GlobalDatabase.CachedBadBots);
 		}
 
 		if (response?.Content?.Result == null) {
