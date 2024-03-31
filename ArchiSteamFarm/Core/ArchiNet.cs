@@ -184,7 +184,13 @@ internal static class ArchiNet {
 
 		Uri request = new(URL, "/Api/BadBots");
 
-		ObjectResponse<GenericResponse<ImmutableHashSet<ulong>>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<ImmutableHashSet<ulong>>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<ImmutableHashSet<ulong>>>? response = null;
+
+		try {
+			response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<ImmutableHashSet<ulong>>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
+		} catch (OperationCanceledException e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+		}
 
 		if (response?.Content?.Result == null) {
 			return (false, ASF.GlobalDatabase.CachedBadBots);
