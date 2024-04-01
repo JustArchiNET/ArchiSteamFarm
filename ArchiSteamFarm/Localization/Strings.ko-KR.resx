@@ -728,6 +728,7 @@ StackTrace:
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>원격 서버는 최신 배포본의 업데이트에 대하여 알지 못합니다. 이 상황은 최근에 새로운 배포본이 배포되었을 때 발생할 수 있으며 추가 보안 조치로 업데이트를 즉시 진행하지 않습니다.</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>원격서버와 체크섬이 다릅니다. 다운로드 받은 실행화일이 깨졌거나, 중간자 공격(MITM) 을 받았을 수도 있습니다. 업데이트를 진행하지 않습니다.</value>
 	</data>

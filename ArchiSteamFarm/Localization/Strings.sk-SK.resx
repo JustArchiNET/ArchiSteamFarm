@@ -729,6 +729,7 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Vzdialený server nepozná verziu na ktorú se snažíte aktualizovať. Táto situácia nastáva, pokiaľ verzia bola vydaná nedávno - aktualizácia nebude z bezpečnostných dôvodov pokračovať.</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Vzdialený server odpovedal s iným kontrolným súčtom, čo môže naznačovať chybu pri sťahovaní alebo útok MITM, proces aktualizácie preto nebude pokračovať!</value>
 	</data>

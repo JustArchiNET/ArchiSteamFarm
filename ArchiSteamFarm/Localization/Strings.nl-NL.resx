@@ -721,6 +721,7 @@ Proces uptime: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Externe server weet niets over de release waar we naar bijwerken. Deze situatie is mogelijk als de vrijlating onlangs werd gepubliceerd - door als aanvullende veiligheidsmaatregel de actualiseringsprocedure onmiddellijk te weigeren.</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Externe server heeft geantwoord met een andere checksum, dit kan duiden op corrupte download of MITM aanval, de update procedure zal gestopt worden!</value>
 	</data>

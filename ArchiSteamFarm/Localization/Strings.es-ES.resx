@@ -730,6 +730,7 @@ Tiempo de actividad del proceso: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>El servidor remoto no tiene conocimiento acerca de la versión a la que estamos actualizando. Esta situación es posible si la versión fue publicada recientemente - negándose a proceder con el procedimiento de actualización inmediatamente como medida de seguridad adicional.</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>El servidor remoto ha respondido con una suma de verificación diferente, esto podría indicar una descarga corrupta o un ataque MITM, ¡negándose a continuar con el procedimiento de actualización!</value>
 	</data>

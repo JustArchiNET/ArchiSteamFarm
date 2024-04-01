@@ -725,6 +725,7 @@ StackTrace:
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>השרת המרוחק לא יודע כלום על המהדורה שאליה אנחנו מעדכנים. מצב זה אפשרי אם המהדורה פורסמה לאחרונה - מסרב להמשיך בהליך העדכון באופן מיידי כאמצעי אבטחה נוסף.</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>שרת מרוחק השיב עם סכום ביקורת אחר, זה עשוי להצביע על הורדה פגומה או התקפת MITM, מסרב להמשיך בהליך העדכון!</value>
 	</data>

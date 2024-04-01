@@ -731,6 +731,7 @@ Süreç çalışma zamanı: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Uzak sunucu, güncelleme yaptığımız sürüm hakkında hiçbir şey bilmiyor. Bu durum, sürüm yakın zamanda yayınlandıysa mümkündür - ek bir güvenlik önlemi olarak güncelleme prosedürüne hemen devam etmeyi reddeder.</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Uzak sunucu farklı bir sağlama sayısı ile yanıt verdi, bu güncelleme dosyalarının bozuk indiğine veya MITM saldırısına işaret olabilir, güncelleme durduruluyor!</value>
 	</data>

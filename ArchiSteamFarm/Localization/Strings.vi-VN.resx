@@ -731,6 +731,7 @@ Thời gian hoạt động: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Máy chủ từ xa không biết gì về phiên bản chúng ta đang chuẩn bị cập nhật lên. Tình huống này có thể do phiên bản đó vừa được phát hành gần đây - đang từ chối việc tiếp tục quá trình cập nhật ngay lập tức để đề phòng bảo mật.</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Máy chủ từ xa vừa trả lại một checksum khác, điều này có thể nghĩa là phần tải xuống bị hỏng hoặc một vụ tấn cống MITM, đang từ chối việc tiếp tục quá trình cập nhật!</value>
 	</data>

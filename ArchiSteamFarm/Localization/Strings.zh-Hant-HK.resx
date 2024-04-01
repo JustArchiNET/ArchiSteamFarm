@@ -719,6 +719,7 @@
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>遠程服務器對我們要更新的版本一無所知。如果該版本是最近發佈的，則可能出現這種情況-作為額外的安全措施，拒絕立即繼續更新過程。</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>遠程服務器已回復不同的校驗和，這可能表明下載已損壞或MITM攻擊，拒絕繼續更新過程！</value>
 	</data>

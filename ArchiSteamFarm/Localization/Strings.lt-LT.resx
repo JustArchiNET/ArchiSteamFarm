@@ -725,6 +725,7 @@ Proceso veikimo laikas: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Nuotolinis serveris nežino apie išleidimą, į kurį bandote atsinaujinti. Ši situacija galima, jeigu išleidimas buvo neseniai paskelbtas - neleidžiama atnaujinti iš karto dėl papildomos apsaugos.</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Nuotolinis serveris atsakė su nesutampančia kontroline suma. Tai gali būti dėl sugadinto atsisiuntimo arba MITM atakos. Atsisakoma tęsti atnaujinimo procesą!</value>
 	</data>

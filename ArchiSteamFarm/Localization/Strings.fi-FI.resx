@@ -725,6 +725,7 @@ Prosessin käyttöaika: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Etäpalvelin ei tiedä mitään julkaisusta, johon olemme päivittämässä. Tämä tilanne on mahdollinen, jos julkistaminen on hiljattain julkaistu - kieltäydytään jatkamasta päivitystä ylimääräisenä turvatoimenpiteenä.</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Etäpalvelin on vastannut eri tarkistussummalla, mikä saattaa merkitä viallista latausta tai MITM-hyökkäystä, kieltäydytään jatkamasta päivitystä!</value>
 	</data>

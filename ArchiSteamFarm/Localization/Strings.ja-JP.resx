@@ -722,6 +722,7 @@ Process uptime: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>リモートサーバーがアップデート中のリリースを認知していません。このリリースが直近に公開された場合、この状況が起こることがあります - 万全なセキュリティ対策を期すため、このアップデートを却下します。</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>リモートサーバーがチェックサムの不一致を確認しました。これはダウンロードが破損しているか、MITM攻撃を示す可能性があります。このアップデートを却下します！</value>
 	</data>

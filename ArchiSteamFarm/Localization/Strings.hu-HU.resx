@@ -720,6 +720,7 @@ Ennyi ideje fut: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>A távoli szerver semmit sem tud a verzióról, amelyre frissítünk. Ez a helyzet akkor lehetséges, ha a verzió a közelmúltban jelent meg – további biztonsági intézkedésként nem hajlandó azonnal folytatni a frissítési eljárást.</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>A távoli szerver más ellenőrzőösszeggel válaszolt, ez hibás letöltésre vagy MITM-támadásra utalhat, és nem hajlandó folytatni a frissítési eljárást!</value>
 	</data>

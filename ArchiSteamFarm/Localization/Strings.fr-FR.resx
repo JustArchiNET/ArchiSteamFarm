@@ -725,6 +725,7 @@ Durée de fonctionnement : {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Le serveur distant n'a pas d'informations sur la version vers laquelle nous mettons à jour. Il est possible que la version ai été publiée récemment. Refus de procéder à la mise à jour pour plus de sécurité.</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Le serveur distant a répondu avec une somme de contrôle différente, ce qui pourrait indiquer un téléchargement corrompu ou une attaque de type MITM. Refus de procéder à la mise à jour !</value>
 	</data>

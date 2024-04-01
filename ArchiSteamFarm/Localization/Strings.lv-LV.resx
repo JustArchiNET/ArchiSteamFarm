@@ -725,6 +725,7 @@ Darbspējas laiks: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Attālinātais serveris neko nezin par versiju uz kuru tiek veikta atjaunināšana. Šāda situācija ir iespējama, ja versija ir svaigi publicēta. Drošības apsvērumu dēļ atjaunināšanas procedūra tiek pārtraukta.</value>
 	</data>
+	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Attālinātais serveris atbildēja ar citādāku kontrolsummu, tas nozīmē, ka lejupielāde ir bojāta vai ir noticis MITM uzbrukums. Atjaunināšanas procedūra tiek pārtraukta!</value>
 	</data>
