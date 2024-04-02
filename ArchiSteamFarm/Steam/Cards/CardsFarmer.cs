@@ -409,7 +409,10 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 			if (NowFarming) {
 				Bot.ArchiLogger.LogGenericError(Strings.WarningFailed);
+
 				NowFarming = false;
+
+				GamesToFarm.Clear();
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.IdlingStopped);
@@ -799,6 +802,8 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 						NowFarming = false;
 
+						GamesToFarm.Clear();
+
 						return;
 					}
 
@@ -831,6 +836,8 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 						Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingFinishedForGames, string.Join(", ", innerGamesToFarm.Select(static game => game.AppID))));
 					} else {
 						NowFarming = false;
+
+						GamesToFarm.Clear();
 
 						return;
 					}
