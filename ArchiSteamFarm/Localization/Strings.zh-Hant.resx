@@ -731,7 +731,9 @@
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>遠端伺服器對我們要更新到的版本一無所知。若該版本是最近發布的，則可能出現這種情形⸺作為額外的安全措施，已立刻拒絕進行更新程序。</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>無法提取已下載二進制檔案的核對和⸺出於安全考量，拒絕繼續執行更新程序。</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>遠端伺服器回覆了不同的核對和，這可能代表下載的檔案已損壞或遭到了中間人攻擊，拒絕繼續更新程序！</value>
 	</data>

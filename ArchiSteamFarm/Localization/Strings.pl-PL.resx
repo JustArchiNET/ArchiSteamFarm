@@ -731,7 +731,9 @@ Czas procesu: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Serwer zdalny nie wie nic o wydaniu, do którego aktualizujemy. Taka sytuacja jest możliwa, jeśli wydanie zostało opublikowane niedawno – odmowa natychmiastowego przeprowadzenia procedury aktualizacji jako dodatkowy środek bezpieczeństwa.</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>Nie udało się pobrać sumy kontrolnej pobranego pliku binarnego – odmowa kontynuowania procedury aktualizacji w ramach dodatkowego środka bezpieczeństwa.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Serwer zdalny odpowiedział inną sumą kontrolną, co może wskazywać na uszkodzenie pobranego pliku lub atak MITM, odmowa kontynuowania procedury aktualizacji!</value>
 	</data>

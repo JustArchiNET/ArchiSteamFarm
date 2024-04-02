@@ -731,7 +731,9 @@ PROCES UPTIME: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>REMOTE SERVR DOESNT KNOE ANYTHIN BOUT TEH RELEASE WERE UPDATIN 2. DIS SITUASHUN IZ POSIBLE IF TEH RELEASE WUZ PUBLISHD RESENTLY - REFUSIN 2 PROCED WIF TEH UPDATE PROCEDURE RITE AWAY AS AN ADDISHUNAL SECURITY MEASURE.</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>FAILD 2 FETCH CHECKSUM OV TEH DOWNLOADD BINARY - REFUSIN 2 PROCED WIF TEH UPDATE PROCEDURE AT DIS TIEM AS AN ADDISHUNAL SECURITY MEASURE.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>REMOTE SERVR HAS REPLID WIF DIFFERENT CHECKSUM, DIS MITE INDICATE CORRUPTD DOWNLOAD OR MITM ATTACK, REFUSIN 2 PROCED WIF TEH UPDATE PROCEDURE!</value>
 	</data>
@@ -808,7 +810,10 @@ PROCES UPTIME: {1}</value>
 		<value>{0}/{1} PLUGIN HAS BEEN REGISTERD AN ENABLD 4 AUTOMATIC UPDATEZ.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
 	</data>
-	
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>{0} ({1}) PLUGIN HAS BEEN DISABLD FRUM AUTOMATIC UPDATEZ, DESPITE SUPPORTIN SUCH FEACHUR.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>CUSTOM PLUGINS HAS BEEN REGISTERD 4 AUTOMATIC UPDATEZ. ASF TEAM WUD LIEK 2 REMIND U DAT, 4 UR OWN SAFETY, U SHUD ENABLE AUTOMATIC UPDATEZ ONLY FRUM TRUSTD PARTIEZ. IF U DIDNT INTEND 2 DO DIS, U CAN DISABLE PLUGIN UPDATEZ IN ASF GLOBAL CONFIG.</value>
 	</data>
