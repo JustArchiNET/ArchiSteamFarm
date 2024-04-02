@@ -37,6 +37,11 @@
 		<DefineConstants>$(DefineConstants);ASF_VARIANT_$(ASFVariant.Replace('-', '_').ToUpperInvariant())</DefineConstants>
 	</PropertyGroup>
 
+	<!-- TODO: https://github.com/dotnet/runtime/issues/100264 -->
+	<PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+		<RuntimeFrameworkVersion>8.0.2</RuntimeFrameworkVersion>
+	</PropertyGroup>
+
 	<!-- Default configuration for fast-debugging builds -->
 	<PropertyGroup Condition="'$(Configuration)' == 'DebugFast'">
 		<AnalysisMode>AllDisabledByDefault</AnalysisMode>
