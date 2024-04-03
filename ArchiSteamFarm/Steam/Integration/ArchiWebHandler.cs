@@ -30,7 +30,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
+using System.Security.Cryptography;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,6 +57,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	private const string EconService = "IEconService";
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
 	private const byte MinimumSessionValidityInSeconds = 10;
+	private const byte SessionIDLength = 24; // For maximum compatibility, should be divisible by 2 and match the length of "sessionid" property that Steam uses across their websites
 	private const string SteamAppsService = "ISteamApps";
 
 	[PublicAPI]
@@ -2048,7 +2049,9 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Initialized = false;
 
-		string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString(CultureInfo.InvariantCulture)));
+#pragma warning disable CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
+		string sessionID = Convert.ToHexString(RandomNumberGenerator.GetBytes(SessionIDLength / 2)).ToLowerInvariant();
+#pragma warning restore CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
 
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamCheckoutURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamCommunityURL.Host}"));
