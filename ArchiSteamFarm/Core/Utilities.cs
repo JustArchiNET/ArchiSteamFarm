@@ -489,7 +489,7 @@ public static class Utilities {
 					break;
 			}
 
-			// We're going to move this file out of the current place
+			// We're going to move this file out of the current place, overwriting existing one if needed
 			string targetBackupDirectory;
 
 			if (relativeDirectoryName.Length > 0) {
@@ -504,7 +504,7 @@ public static class Utilities {
 
 			string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
 
-			File.Move(file, targetBackupFile);
+			File.Move(file, targetBackupFile, true);
 		}
 
 		// Finally, we can move the newly extracted files to target directory
