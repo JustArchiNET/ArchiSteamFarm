@@ -779,36 +779,12 @@ public static class ASF {
 		await UpdateSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
-			// If backup directory from previous update exists, it's a good idea to purge it now
-			string backupDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectory);
+			// If directories from previous update exists, it's a good idea to purge them now
+			string updateDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectoryNew);
+			string backupDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectoryOld);
 
-			if (Directory.Exists(backupDirectory)) {
-				ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
-
-				for (byte i = 0; (i < WebBrowser.MaxTries) && Directory.Exists(backupDirectory); i++) {
-					if (i > 0) {
-						// It's entirely possible that old process is still running, wait a short moment for eventual cleanup
-						await Task.Delay(5000).ConfigureAwait(false);
-					}
-
-					try {
-						Directory.Delete(backupDirectory, true);
-					} catch (Exception e) {
-						ArchiLogger.LogGenericDebuggingException(e);
-
-						continue;
-					}
-
-					break;
-				}
-
-				if (Directory.Exists(backupDirectory)) {
-					ArchiLogger.LogGenericError(Strings.WarningFailed);
-
-					return (false, null);
-				}
-
-				ArchiLogger.LogGenericInfo(Strings.Done);
+			if (!await Utilities.EnsureUpdateDirectoriesPurged(updateDirectory, backupDirectory).ConfigureAwait(false)) {
+				return (false, null);
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
@@ -994,7 +970,7 @@ public static class ASF {
 		// We're ready to start update process, handle any plugin updates ready for new version
 		await PluginsCore.UpdatePlugins(newVersion, true, updateChannel, updateOverride, forced).ConfigureAwait(false);
 
-		return Utilities.UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory);
+		return await Utilities.UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory).ConfigureAwait(false);
 	}
 
 	[PublicAPI]

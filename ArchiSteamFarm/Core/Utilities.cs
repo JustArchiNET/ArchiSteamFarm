@@ -40,6 +40,7 @@ using AngleSharp.XPath;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Storage;
+using ArchiSteamFarm.Web;
 using Humanizer;
 using Humanizer.Localisation;
 using JetBrains.Annotations;
@@ -267,6 +268,78 @@ public static class Utilities {
 		return true;
 	}
 
+	internal static async Task<bool> EnsureUpdateDirectoriesPurged(params string[] directories) {
+		if ((directories == null) || (directories.Length == 0)) {
+			throw new ArgumentNullException(nameof(directories));
+		}
+
+		foreach (string directory in directories.Where(Directory.Exists)) {
+			ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+
+			// Apart from simple removal, we're also going to do two additional things:
+			// 1. We're going to retry if the directory is still being used
+			// 2. We're going to ensure the changes were synchronized to disk, aka fsync()
+			using FileSystemWatcher watcher = new(Path.Combine(directory, ".."), Path.GetFileName(directory));
+
+			watcher.NotifyFilter = NotifyFilters.DirectoryName;
+
+			TaskCompletionSource<bool> tcs = new();
+
+			watcher.Deleted += onDeleted;
+
+			watcher.EnableRaisingEvents = true;
+
+			bool deleted = false;
+
+			for (byte i = 1; (i <= WebBrowser.MaxTries) && Directory.Exists(directory); i++) {
+				if (i > 1) {
+					await Task.Delay(5000).ConfigureAwait(false);
+				}
+
+				try {
+					Directory.Delete(directory, true);
+				} catch (IOException e) when ((i < WebBrowser.MaxTries) && ((uint) e.HResult == 0x80070020)) {
+					// It's entirely possible that old process is still running, we allow this to happen and add additional delay
+					ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+					continue;
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+
+					return false;
+				}
+
+				deleted = true;
+
+				break;
+			}
+
+			if (deleted) {
+				try {
+					// Wait for the event to arrive
+					await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+				} catch (TimeoutException e) {
+					// The event didn't arrive on time, let's assume the directory was purged as requested
+					ASF.ArchiLogger.LogGenericDebuggingException(e);
+				}
+			}
+
+			if (Directory.Exists(directory)) {
+				ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
+
+				return false;
+			}
+
+			ASF.ArchiLogger.LogGenericInfo(Strings.Done);
+
+			continue;
+
+			void onDeleted(object sender, FileSystemEventArgs e) => tcs.TrySetResult(true);
+		}
+
+		return true;
+	}
+
 	internal static ulong MathAdd(ulong first, int second) {
 		if (second >= 0) {
 			return first + (uint) second;
@@ -322,37 +395,73 @@ public static class Utilities {
 		return (result.Score < 4, suggestions is { Count: > 0 } ? string.Join(' ', suggestions.Where(static suggestion => suggestion.Length > 0)) : null);
 	}
 
-	internal static bool UpdateFromArchive(ZipArchive zipArchive, string targetDirectory) {
+	internal static async Task<bool> UpdateFromArchive(ZipArchive zipArchive, string targetDirectory) {
 		ArgumentNullException.ThrowIfNull(zipArchive);
 		ArgumentException.ThrowIfNullOrEmpty(targetDirectory);
 
-		// Firstly we'll move all our existing files to a backup directory
-		string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
+		// Firstly, ensure once again our directories are purged and ready to work with
+		string updateDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryNew);
+		string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryOld);
+
+		if (!await EnsureUpdateDirectoriesPurged(updateDirectory, backupDirectory).ConfigureAwait(false)) {
+			return false;
+		}
+
+		// Now enumerate over files in the zip archive and extract them to entirely new location, this decreases chance of corruptions if user kills the process during this stage
+		Directory.CreateDirectory(updateDirectory);
+
+		foreach (ZipArchiveEntry zipFile in zipArchive.Entries) {
+			switch (zipFile.Name) {
+				case null:
+				case "":
+				case ".gitkeep":
+					// We're not interested in extracting placeholder files
+					continue;
+			}
+
+			string file = Path.GetFullPath(Path.Combine(updateDirectory, zipFile.FullName));
+
+			if (!file.StartsWith(updateDirectory, StringComparison.Ordinal)) {
+				throw new InvalidOperationException(nameof(file));
+			}
+
+			// Check if this file requires its own folder
+			if (zipFile.Name != zipFile.FullName) {
+				string? directory = Path.GetDirectoryName(file);
+
+				if (string.IsNullOrEmpty(directory)) {
+					throw new InvalidOperationException(nameof(directory));
+				}
+
+				if (!Directory.Exists(directory)) {
+					Directory.CreateDirectory(directory);
+				}
+			}
+
+			zipFile.ExtractToFile(file);
+		}
+
+		// Now, critical section begins, we're going to move all files from target directory to a backup directory
+		Directory.CreateDirectory(backupDirectory);
 
 		foreach (string file in Directory.EnumerateFiles(targetDirectory, "*", SearchOption.AllDirectories)) {
 			string fileName = Path.GetFileName(file);
 
 			if (string.IsNullOrEmpty(fileName)) {
-				ASF.ArchiLogger.LogNullError(fileName);
-
-				return false;
+				throw new InvalidOperationException(nameof(fileName));
 			}
 
 			string relativeFilePath = Path.GetRelativePath(targetDirectory, file);
 
 			if (string.IsNullOrEmpty(relativeFilePath)) {
-				ASF.ArchiLogger.LogNullError(relativeFilePath);
-
-				return false;
+				throw new InvalidOperationException(nameof(relativeFilePath));
 			}
 
 			string? relativeDirectoryName = Path.GetDirectoryName(relativeFilePath);
 
 			switch (relativeDirectoryName) {
 				case null:
-					ASF.ArchiLogger.LogNullError(relativeDirectoryName);
-
-					return false;
+					throw new InvalidOperationException(nameof(relativeDirectoryName));
 				case "":
 					// No directory, root folder
 					switch (fileName) {
@@ -367,72 +476,79 @@ public static class Utilities {
 				case SharedInfo.ConfigDirectory:
 				case SharedInfo.DebugDirectory:
 				case SharedInfo.PluginsDirectory:
-				case SharedInfo.UpdateDirectory:
+				case SharedInfo.UpdateDirectoryNew:
+				case SharedInfo.UpdateDirectoryOld:
 					// Files in those directories we want to keep in their current place
 					continue;
 				default:
 					// Files in subdirectories of those directories we want to keep as well
-					if (RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.ArchivalLogsDirectory, SharedInfo.ConfigDirectory, SharedInfo.DebugDirectory, SharedInfo.PluginsDirectory, SharedInfo.UpdateDirectory)) {
+					if (RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.ArchivalLogsDirectory, SharedInfo.ConfigDirectory, SharedInfo.DebugDirectory, SharedInfo.PluginsDirectory, SharedInfo.UpdateDirectoryNew, SharedInfo.UpdateDirectoryOld)) {
 						continue;
 					}
 
 					break;
 			}
 
-			string targetBackupDirectory = relativeDirectoryName.Length > 0 ? Path.Combine(backupDirectory, relativeDirectoryName) : backupDirectory;
-			Directory.CreateDirectory(targetBackupDirectory);
+			// We're going to move this file out of the current place
+			string targetBackupDirectory;
+
+			if (relativeDirectoryName.Length > 0) {
+				// File inside a subdirectory
+				targetBackupDirectory = Path.Combine(backupDirectory, relativeDirectoryName);
+
+				Directory.CreateDirectory(targetBackupDirectory);
+			} else {
+				// File in root directory
+				targetBackupDirectory = backupDirectory;
+			}
 
 			string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
 
-			File.Move(file, targetBackupFile, true);
+			File.Move(file, targetBackupFile);
 		}
 
-		// We can now get rid of directories that are empty
-		DeleteEmptyDirectoriesRecursively(targetDirectory);
+		// Finally, we can move the newly extracted files to target directory
+		foreach (string file in Directory.EnumerateFiles(updateDirectory, "*", SearchOption.AllDirectories)) {
+			string fileName = Path.GetFileName(file);
 
-		if (!Directory.Exists(targetDirectory)) {
-			Directory.CreateDirectory(targetDirectory);
+			if (string.IsNullOrEmpty(fileName)) {
+				throw new InvalidOperationException(nameof(fileName));
+			}
+
+			string relativeFilePath = Path.GetRelativePath(updateDirectory, file);
+
+			if (string.IsNullOrEmpty(relativeFilePath)) {
+				throw new InvalidOperationException(nameof(relativeFilePath));
+			}
+
+			string? relativeDirectoryName = Path.GetDirectoryName(relativeFilePath);
+
+			if (relativeDirectoryName == null) {
+				throw new InvalidOperationException(nameof(relativeDirectoryName));
+			}
+
+			// We're going to move this file out of the current place, overwriting existing one if needed
+			string targetUpdateDirectory;
+
+			if (relativeDirectoryName.Length > 0) {
+				// File inside a subdirectory
+				targetUpdateDirectory = Path.Combine(targetDirectory, relativeDirectoryName);
+
+				Directory.CreateDirectory(targetUpdateDirectory);
+			} else {
+				// File in root directory
+				targetUpdateDirectory = targetDirectory;
+			}
+
+			string targetUpdateFile = Path.Combine(targetUpdateDirectory, fileName);
+
+			File.Move(file, targetUpdateFile, true);
 		}
 
-		// Now enumerate over files in the zip archive, skip directory entries that we're not interested in (we can create them ourselves if needed)
-		foreach (ZipArchiveEntry zipFile in zipArchive.Entries.Where(static zipFile => !string.IsNullOrEmpty(zipFile.Name))) {
-			string file = Path.GetFullPath(Path.Combine(targetDirectory, zipFile.FullName));
+		// Critical section has finished, we can now cleanup the update directory, backup directory must wait for the process restart
+		Directory.Delete(updateDirectory, true);
 
-			if (!file.StartsWith(targetDirectory, StringComparison.Ordinal)) {
-				throw new InvalidOperationException(nameof(file));
-			}
-
-			if (File.Exists(file)) {
-				// This is possible only with files that we decided to leave in place during our backup function
-				string targetBackupFile = $"{file}.bak";
-
-				File.Move(file, targetBackupFile, true);
-			}
-
-			// Check if this file requires its own folder
-			if (zipFile.Name != zipFile.FullName) {
-				string? directory = Path.GetDirectoryName(file);
-
-				if (string.IsNullOrEmpty(directory)) {
-					ASF.ArchiLogger.LogNullError(directory);
-
-					return false;
-				}
-
-				if (!Directory.Exists(directory)) {
-					Directory.CreateDirectory(directory);
-				}
-
-				// We're not interested in extracting placeholder files (but we still want directories created for them, done above)
-				switch (zipFile.Name) {
-					case ".gitkeep":
-						continue;
-				}
-			}
-
-			zipFile.ExtractToFile(file);
-		}
-
+		// The update process is done
 		return true;
 	}
 
@@ -491,32 +607,10 @@ public static class Utilities {
 		}
 	}
 
-	private static void DeleteEmptyDirectoriesRecursively(string directory) {
-		ArgumentException.ThrowIfNullOrEmpty(directory);
-
-		if (!Directory.Exists(directory)) {
-			return;
-		}
-
-		try {
-			foreach (string subDirectory in Directory.EnumerateDirectories(directory)) {
-				DeleteEmptyDirectoriesRecursively(subDirectory);
-			}
-
-			if (!Directory.EnumerateFileSystemEntries(directory).Any()) {
-				Directory.Delete(directory);
-			}
-		} catch (Exception e) {
-			ASF.ArchiLogger.LogGenericException(e);
-		}
-	}
-
 	private static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
 		ArgumentException.ThrowIfNullOrEmpty(directory);
 
-#pragma warning disable CA1508 // False positive, params could be null when explicitly set
 		if ((prefixes == null) || (prefixes.Length == 0)) {
-#pragma warning restore CA1508 // False positive, params could be null when explicitly set
 			throw new ArgumentNullException(nameof(prefixes));
 		}
 

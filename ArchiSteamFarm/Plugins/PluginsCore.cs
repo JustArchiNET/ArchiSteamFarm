@@ -768,10 +768,12 @@ public static class PluginsCore {
 			foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {
 				string? assemblyDirectoryName = Path.GetFileName(Path.GetDirectoryName(assemblyPath));
 
-				if (assemblyDirectoryName == SharedInfo.UpdateDirectory) {
-					ASF.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningSkipping, assemblyPath));
+				switch (assemblyDirectoryName) {
+					case SharedInfo.UpdateDirectoryNew:
+					case SharedInfo.UpdateDirectoryOld:
+						ASF.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningSkipping, assemblyPath));
 
-					continue;
+						continue;
 				}
 
 				Assembly assembly;
@@ -822,12 +824,12 @@ public static class PluginsCore {
 				throw new InvalidOperationException(nameof(assemblyDirectory));
 			}
 
-			string backupDirectory = Path.Combine(assemblyDirectory, SharedInfo.UpdateDirectory);
+			// If directories from previous update exists, it's a good idea to purge them now
+			string updateDirectory = Path.Combine(assemblyDirectory, SharedInfo.UpdateDirectoryNew);
+			string backupDirectory = Path.Combine(assemblyDirectory, SharedInfo.UpdateDirectoryOld);
 
-			if (Directory.Exists(backupDirectory)) {
-				ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
-
-				Directory.Delete(backupDirectory, true);
+			if (!await Utilities.EnsureUpdateDirectoriesPurged(updateDirectory, backupDirectory).ConfigureAwait(false)) {
+				return false;
 			}
 
 			Uri? releaseURL = await plugin.GetTargetReleaseURL(asfVersion, SharedInfo.BuildInfo.Variant, asfUpdate, updateChannel, forced).ConfigureAwait(false);
@@ -871,7 +873,7 @@ public static class PluginsCore {
 
 				await plugin.OnPluginUpdateProceeding().ConfigureAwait(false);
 
-				if (!Utilities.UpdateFromArchive(zipArchive, assemblyDirectory)) {
+				if (!await Utilities.UpdateFromArchive(zipArchive, assemblyDirectory).ConfigureAwait(false)) {
 					ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
 
 					return false;
