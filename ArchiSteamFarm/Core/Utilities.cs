@@ -288,7 +288,7 @@ public static class Utilities {
 		ASF.ArchiLogger.LogGenericDebug($"{fileName} {progressPercentage}%...");
 	}
 
-	internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, ISet<string>? additionallyForbiddenPhrases = null) {
+	internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, IEnumerable<string>? additionallyForbiddenPhrases = null) {
 		ArgumentException.ThrowIfNullOrEmpty(password);
 
 		HashSet<string> forbiddenPhrases = ForbiddenPasswordPhrases.ToHashSet(StringComparer.InvariantCultureIgnoreCase);
@@ -514,9 +514,7 @@ public static class Utilities {
 	private static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
 		ArgumentException.ThrowIfNullOrEmpty(directory);
 
-#pragma warning disable CA1508 // False positive, params could be null when explicitly set
 		if ((prefixes == null) || (prefixes.Length == 0)) {
-#pragma warning restore CA1508 // False positive, params could be null when explicitly set
 			throw new ArgumentNullException(nameof(prefixes));
 		}
 
