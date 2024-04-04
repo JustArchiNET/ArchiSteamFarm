@@ -24,8 +24,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AngleSharp;
 using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
+using AngleSharp.Html.Parser;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Web.Responses;
@@ -46,12 +47,16 @@ public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
 	public void Dispose() => Content?.Dispose();
 
 	[PublicAPI]
-	public static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse, CancellationToken cancellationToken = default) {
+	public static async Task<HtmlDocumentResponse> Create(StreamResponse streamResponse, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(streamResponse);
 
-		IBrowsingContext context = BrowsingContext.New();
+		if (streamResponse.Content == null) {
+			throw new InvalidOperationException(nameof(streamResponse.Content));
+		}
 
-		IDocument document = await context.OpenAsync(request => request.Content(streamResponse.Content, true), cancellationToken).ConfigureAwait(false);
+		HtmlParser htmlParser = new();
+
+		IHtmlDocument document = await htmlParser.ParseDocumentAsync(streamResponse.Content, cancellationToken).ConfigureAwait(false);
 
 		return new HtmlDocumentResponse(streamResponse, document);
 	}
