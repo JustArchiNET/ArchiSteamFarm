@@ -40,7 +40,6 @@ using AngleSharp.XPath;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Storage;
-using ArchiSteamFarm.Web;
 using Humanizer;
 using Humanizer.Localisation;
 using JetBrains.Annotations;
@@ -51,6 +50,8 @@ using Zxcvbn;
 namespace ArchiSteamFarm.Core;
 
 public static class Utilities {
+	private const byte MaxSharingViolationTries = 15;
+	private const uint SharingViolationHResult = 0x80070020;
 	private const byte TimeoutForLongRunningTasksInSeconds = 60;
 
 	// normally we'd just use words like "steam" and "farm", but the library we're currently using is a bit iffy about banned words, so we need to also add combinations such as "steamfarm"
@@ -291,14 +292,14 @@ public static class Utilities {
 
 			bool deleted = false;
 
-			for (byte i = 1; (i <= WebBrowser.MaxTries) && Directory.Exists(directory); i++) {
+			for (byte i = 1; (i <= MaxSharingViolationTries) && Directory.Exists(directory); i++) {
 				if (i > 1) {
-					await Task.Delay(5000).ConfigureAwait(false);
+					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
 				try {
 					Directory.Delete(directory, true);
-				} catch (IOException e) when ((i < WebBrowser.MaxTries) && ((uint) e.HResult == 0x80070020)) {
+				} catch (IOException e) when ((i < MaxSharingViolationTries) && ((uint) e.HResult == SharingViolationHResult)) {
 					// It's entirely possible that old process is still running, we allow this to happen and add additional delay
 					ASF.ArchiLogger.LogGenericDebuggingException(e);
 
