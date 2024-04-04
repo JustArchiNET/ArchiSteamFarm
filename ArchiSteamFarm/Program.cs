@@ -415,30 +415,20 @@ internal static class Program {
 
 		// If debugging is on, we prepare debug directory prior to running
 		if (Debugging.IsUserDebugging) {
-			if (Debugging.IsDebugConfigured) {
-				ASF.ArchiLogger.LogGenericDebug($"{globalDatabaseFile}: {globalDatabase.ToJsonText(true)}");
-			}
-
 			Logging.EnableTraceLogging();
 
 			if (Debugging.IsDebugConfigured) {
+				ASF.ArchiLogger.LogGenericDebug($"{globalDatabaseFile}: {globalDatabase.ToJsonText(true)}");
+
 				DebugLog.AddListener(new Debugging.DebugListener());
+
 				DebugLog.Enabled = true;
 
-				if (Directory.Exists(SharedInfo.DebugDirectory)) {
-					try {
-						Directory.Delete(SharedInfo.DebugDirectory, true);
-						await Task.Delay(1000).ConfigureAwait(false); // Dirty workaround giving Windows some time to sync
-					} catch (Exception e) {
-						ASF.ArchiLogger.LogGenericException(e);
-					}
+				try {
+					Directory.CreateDirectory(ASF.DebugDirectory);
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
 				}
-			}
-
-			try {
-				Directory.CreateDirectory(SharedInfo.DebugDirectory);
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
 

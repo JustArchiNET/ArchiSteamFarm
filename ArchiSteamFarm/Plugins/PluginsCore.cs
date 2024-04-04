@@ -766,9 +766,31 @@ public static class PluginsCore {
 
 		try {
 			foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {
-				string? assemblyDirectoryName = Path.GetFileName(Path.GetDirectoryName(assemblyPath));
+				string? assemblyDirectory = Path.GetDirectoryName(assemblyPath);
 
-				if (assemblyDirectoryName == SharedInfo.UpdateDirectory) {
+				if (string.IsNullOrEmpty(assemblyDirectory)) {
+					throw new InvalidOperationException(nameof(assemblyDirectory));
+				}
+
+				// Skip from loading those files that come from update directories
+				// We determine that by checking if any directory name along the path to the assembly matches
+				bool skip = false;
+
+				string? relativeAssemblyDirectory = Path.GetRelativePath(path, assemblyDirectory);
+				string? relativeAssemblyDirectoryName = Path.GetFileName(relativeAssemblyDirectory);
+
+				while (!string.IsNullOrEmpty(relativeAssemblyDirectoryName)) {
+					if (relativeAssemblyDirectoryName is SharedInfo.UpdateDirectoryOld or SharedInfo.UpdateDirectoryNew) {
+						skip = true;
+
+						break;
+					}
+
+					relativeAssemblyDirectory = Path.GetDirectoryName(relativeAssemblyDirectory);
+					relativeAssemblyDirectoryName = Path.GetFileName(relativeAssemblyDirectory);
+				}
+
+				if (skip) {
 					ASF.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningSkipping, assemblyPath));
 
 					continue;
@@ -822,12 +844,9 @@ public static class PluginsCore {
 				throw new InvalidOperationException(nameof(assemblyDirectory));
 			}
 
-			string backupDirectory = Path.Combine(assemblyDirectory, SharedInfo.UpdateDirectory);
-
-			if (Directory.Exists(backupDirectory)) {
-				ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
-
-				Directory.Delete(backupDirectory, true);
+			// If directories from previous update exist, it's a good idea to purge them now
+			if (!await Utilities.UpdateCleanup(assemblyDirectory).ConfigureAwait(false)) {
+				return false;
 			}
 
 			Uri? releaseURL = await plugin.GetTargetReleaseURL(asfVersion, SharedInfo.BuildInfo.Variant, asfUpdate, updateChannel, forced).ConfigureAwait(false);
@@ -871,7 +890,7 @@ public static class PluginsCore {
 
 				await plugin.OnPluginUpdateProceeding().ConfigureAwait(false);
 
-				if (!Utilities.UpdateFromArchive(zipArchive, assemblyDirectory)) {
+				if (!await Utilities.UpdateFromArchive(zipArchive, assemblyDirectory).ConfigureAwait(false)) {
 					ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
 
 					return false;

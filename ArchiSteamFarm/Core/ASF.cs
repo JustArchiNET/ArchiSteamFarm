@@ -73,6 +73,8 @@ public static class ASF {
 
 	internal static readonly SemaphoreSlim OpenConnectionsSemaphore = new(WebBrowser.MaxConnections, WebBrowser.MaxConnections);
 
+	internal static string DebugDirectory => Path.Combine(SharedInfo.DebugDirectory, OS.ProcessStartTime.ToString("yyyy-MM-dd-THH-mm-ss", CultureInfo.InvariantCulture));
+
 	internal static ICrossProcessSemaphore? ConfirmationsSemaphore { get; private set; }
 	internal static ICrossProcessSemaphore? GiftsSemaphore { get; private set; }
 	internal static ICrossProcessSemaphore? InventorySemaphore { get; private set; }
@@ -779,36 +781,9 @@ public static class ASF {
 		await UpdateSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
-			// If backup directory from previous update exists, it's a good idea to purge it now
-			string backupDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectory);
-
-			if (Directory.Exists(backupDirectory)) {
-				ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
-
-				for (byte i = 0; (i < WebBrowser.MaxTries) && Directory.Exists(backupDirectory); i++) {
-					if (i > 0) {
-						// It's entirely possible that old process is still running, wait a short moment for eventual cleanup
-						await Task.Delay(5000).ConfigureAwait(false);
-					}
-
-					try {
-						Directory.Delete(backupDirectory, true);
-					} catch (Exception e) {
-						ArchiLogger.LogGenericDebuggingException(e);
-
-						continue;
-					}
-
-					break;
-				}
-
-				if (Directory.Exists(backupDirectory)) {
-					ArchiLogger.LogGenericError(Strings.WarningFailed);
-
-					return (false, null);
-				}
-
-				ArchiLogger.LogGenericInfo(Strings.Done);
+			// If directories from previous update exist, it's a good idea to purge them now
+			if (!await Utilities.UpdateCleanup(SharedInfo.HomeDirectory).ConfigureAwait(false)) {
+				return (false, null);
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
@@ -994,7 +969,7 @@ public static class ASF {
 		// We're ready to start update process, handle any plugin updates ready for new version
 		await PluginsCore.UpdatePlugins(newVersion, true, updateChannel, updateOverride, forced).ConfigureAwait(false);
 
-		return Utilities.UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory);
+		return await Utilities.UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
