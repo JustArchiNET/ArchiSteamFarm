@@ -54,6 +54,8 @@ public static class Utilities {
 	private const uint SharingViolationHResult = 0x80070020;
 	private const byte TimeoutForLongRunningTasksInSeconds = 60;
 
+	private static readonly FrozenSet<char> DirectorySeparators = new HashSet<char>(2) { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }.ToFrozenSet();
+
 	// normally we'd just use words like "steam" and "farm", but the library we're currently using is a bit iffy about banned words, so we need to also add combinations such as "steamfarm"
 	private static readonly FrozenSet<string> ForbiddenPasswordPhrases = new HashSet<string>(10, StringComparer.InvariantCultureIgnoreCase) { "archisteamfarm", "archi", "steam", "farm", "archisteam", "archifarm", "steamfarm", "asf", "asffarm", "password" }.ToFrozenSet(StringComparer.InvariantCultureIgnoreCase);
 
@@ -269,76 +271,25 @@ public static class Utilities {
 		return true;
 	}
 
-	internal static async Task<bool> EnsureUpdateDirectoriesPurged(params string[] directories) {
-		if ((directories == null) || (directories.Length == 0)) {
-			throw new ArgumentNullException(nameof(directories));
+	internal static async Task DeletePotentiallyUsedDirectory(string directory) {
+		ArgumentException.ThrowIfNullOrEmpty(directory);
+
+		for (byte i = 1; (i <= MaxSharingViolationTries) && Directory.Exists(directory); i++) {
+			if (i > 1) {
+				await Task.Delay(1000).ConfigureAwait(false);
+			}
+
+			try {
+				Directory.Delete(directory, true);
+			} catch (IOException e) when ((i < MaxSharingViolationTries) && ((uint) e.HResult == SharingViolationHResult)) {
+				// It's entirely possible that old process is still running, we allow this to happen and add additional delay
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+				continue;
+			}
+
+			return;
 		}
-
-		foreach (string directory in directories.Where(Directory.Exists)) {
-			ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
-
-			// Apart from simple removal, we're also going to do two additional things:
-			// 1. We're going to retry if the directory is still being used
-			// 2. We're going to ensure the changes were synchronized to disk, aka fsync()
-			using FileSystemWatcher watcher = new(Path.Combine(directory, ".."), Path.GetFileName(directory));
-
-			watcher.NotifyFilter = NotifyFilters.DirectoryName;
-
-			TaskCompletionSource<bool> tcs = new();
-
-			watcher.Deleted += onDeleted;
-
-			watcher.EnableRaisingEvents = true;
-
-			bool deleted = false;
-
-			for (byte i = 1; (i <= MaxSharingViolationTries) && Directory.Exists(directory); i++) {
-				if (i > 1) {
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
-
-				try {
-					Directory.Delete(directory, true);
-				} catch (IOException e) when ((i < MaxSharingViolationTries) && ((uint) e.HResult == SharingViolationHResult)) {
-					// It's entirely possible that old process is still running, we allow this to happen and add additional delay
-					ASF.ArchiLogger.LogGenericDebuggingException(e);
-
-					continue;
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-
-					return false;
-				}
-
-				deleted = true;
-
-				break;
-			}
-
-			if (deleted) {
-				try {
-					// Wait for the event to arrive
-					await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
-				} catch (TimeoutException e) {
-					// The event didn't arrive on time, let's assume the directory was purged as requested
-					ASF.ArchiLogger.LogGenericDebuggingException(e);
-				}
-			}
-
-			if (Directory.Exists(directory)) {
-				ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
-
-				return false;
-			}
-
-			ASF.ArchiLogger.LogGenericInfo(Strings.Done);
-
-			continue;
-
-			void onDeleted(object sender, FileSystemEventArgs e) => tcs.TrySetResult(true);
-		}
-
-		return true;
 	}
 
 	internal static ulong MathAdd(ulong first, int second) {
@@ -400,13 +351,47 @@ public static class Utilities {
 		ArgumentNullException.ThrowIfNull(zipArchive);
 		ArgumentException.ThrowIfNullOrEmpty(targetDirectory);
 
-		// Firstly, ensure once again our directories are purged and ready to work with
-		string updateDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryNew);
-		string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryOld);
+		try {
+			// Firstly, ensure once again our directories are purged and ready to work with
+			foreach (string directory in Directory.EnumerateDirectories(targetDirectory, $"{SharedInfo.UpdateDirectoryNewPrefix}*")) {
+				ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
 
-		if (!await EnsureUpdateDirectoriesPurged(updateDirectory, backupDirectory).ConfigureAwait(false)) {
+				Directory.Delete(directory, true);
+
+				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
+			}
+
+			foreach (string directory in Directory.EnumerateDirectories(targetDirectory, $"{SharedInfo.UpdateDirectoryOldPrefix}*")) {
+				ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+
+				await DeletePotentiallyUsedDirectory(directory).ConfigureAwait(false);
+
+				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
+			}
+
+			string oldBackupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryOld);
+
+			if (Directory.Exists(oldBackupDirectory)) {
+				ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+
+				await DeletePotentiallyUsedDirectory(oldBackupDirectory).ConfigureAwait(false);
+
+				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
+			}
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
 			return false;
 		}
+
+		// Create temporary directories, we append current unix timestamp to ensure that our folders are unique, which helps to avoid delete-create race conditions for the same path
+		ulong unixTime = GetUnixTime();
+
+		string backupDirectoryName = $"{SharedInfo.UpdateDirectoryOldPrefix}{unixTime}";
+		string updateDirectoryName = $"{SharedInfo.UpdateDirectoryNewPrefix}{unixTime}";
+
+		string backupDirectory = Path.Combine(targetDirectory, backupDirectoryName);
+		string updateDirectory = Path.Combine(targetDirectory, updateDirectoryName);
 
 		// Now enumerate over files in the zip archive and extract them to entirely new location, this decreases chance of corruptions if user kills the process during this stage
 		Directory.CreateDirectory(updateDirectory);
@@ -434,9 +419,7 @@ public static class Utilities {
 					throw new InvalidOperationException(nameof(directory));
 				}
 
-				if (!Directory.Exists(directory)) {
-					Directory.CreateDirectory(directory);
-				}
+				Directory.CreateDirectory(directory);
 			}
 
 			zipFile.ExtractToFile(file);
@@ -477,13 +460,17 @@ public static class Utilities {
 				case SharedInfo.ConfigDirectory:
 				case SharedInfo.DebugDirectory:
 				case SharedInfo.PluginsDirectory:
-				case SharedInfo.UpdateDirectoryNew:
 				case SharedInfo.UpdateDirectoryOld:
-					// Files in those directories we want to keep in their current place
+					// Files in those constant directories we want to keep in their current place
 					continue;
 				default:
+					// Files in those non-constant directories we want to keep in their current place
+					if ((relativeDirectoryName == backupDirectoryName) || (relativeDirectoryName == updateDirectoryName)) {
+						continue;
+					}
+
 					// Files in subdirectories of those directories we want to keep as well
-					if (RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.ArchivalLogsDirectory, SharedInfo.ConfigDirectory, SharedInfo.DebugDirectory, SharedInfo.PluginsDirectory, SharedInfo.UpdateDirectoryNew, SharedInfo.UpdateDirectoryOld)) {
+					if (RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.ArchivalLogsDirectory, SharedInfo.ConfigDirectory, SharedInfo.DebugDirectory, SharedInfo.PluginsDirectory, SharedInfo.UpdateDirectoryOld, backupDirectoryName, updateDirectoryName)) {
 						continue;
 					}
 
@@ -615,8 +602,6 @@ public static class Utilities {
 			throw new ArgumentNullException(nameof(prefixes));
 		}
 
-		HashSet<char> separators = [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar];
-
-		return prefixes.Where(prefix => (directory.Length > prefix.Length) && separators.Contains(directory[prefix.Length])).Any(prefix => directory.StartsWith(prefix, StringComparison.Ordinal));
+		return prefixes.Any(prefix => (directory.Length > prefix.Length) && DirectorySeparators.Contains(directory[prefix.Length]) && directory.StartsWith(prefix, StringComparison.Ordinal));
 	}
 }

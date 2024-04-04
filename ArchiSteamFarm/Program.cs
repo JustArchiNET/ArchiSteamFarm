@@ -421,14 +421,11 @@ internal static class Program {
 				ASF.ArchiLogger.LogGenericDebug($"{globalDatabaseFile}: {globalDatabase.ToJsonText(true)}");
 
 				DebugLog.AddListener(new Debugging.DebugListener());
+
 				DebugLog.Enabled = true;
 
-				if (!await Utilities.EnsureUpdateDirectoriesPurged(SharedInfo.DebugDirectory).ConfigureAwait(false)) {
-					return false;
-				}
-
 				try {
-					Directory.CreateDirectory(SharedInfo.DebugDirectory);
+					Directory.CreateDirectory(ASF.DebugDirectory);
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericException(e);
 

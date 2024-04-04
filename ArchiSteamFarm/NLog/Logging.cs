@@ -183,9 +183,7 @@ internal static class Logging {
 
 		if (uniqueInstance) {
 			try {
-				if (!Directory.Exists(SharedInfo.ArchivalLogsDirectory)) {
-					Directory.CreateDirectory(SharedInfo.ArchivalLogsDirectory);
-				}
+				Directory.CreateDirectory(SharedInfo.ArchivalLogsDirectory);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}

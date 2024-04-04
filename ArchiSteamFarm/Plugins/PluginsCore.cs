@@ -766,14 +766,34 @@ public static class PluginsCore {
 
 		try {
 			foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {
-				string? assemblyDirectoryName = Path.GetFileName(Path.GetDirectoryName(assemblyPath));
+				string? assemblyDirectory = Path.GetDirectoryName(assemblyPath);
 
-				switch (assemblyDirectoryName) {
-					case SharedInfo.UpdateDirectoryNew:
-					case SharedInfo.UpdateDirectoryOld:
-						ASF.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningSkipping, assemblyPath));
+				if (string.IsNullOrEmpty(assemblyDirectory)) {
+					throw new InvalidOperationException(nameof(assemblyDirectory));
+				}
 
-						continue;
+				// Skip from loading those files that come from update directories
+				// We determine that by checking if any directory name along the path to the assembly matches
+				bool skip = false;
+
+				string? relativeAssemblyDirectory = Path.GetRelativePath(path, assemblyDirectory);
+				string? relativeAssemblyDirectoryName = Path.GetFileName(relativeAssemblyDirectory);
+
+				while (!string.IsNullOrEmpty(relativeAssemblyDirectoryName)) {
+					if ((relativeAssemblyDirectoryName == SharedInfo.UpdateDirectoryOld) || relativeAssemblyDirectoryName.StartsWith(SharedInfo.UpdateDirectoryOldPrefix, StringComparison.Ordinal) || relativeAssemblyDirectoryName.StartsWith(SharedInfo.UpdateDirectoryNewPrefix, StringComparison.Ordinal)) {
+						skip = true;
+
+						break;
+					}
+
+					relativeAssemblyDirectory = Path.GetDirectoryName(relativeAssemblyDirectory);
+					relativeAssemblyDirectoryName = Path.GetFileName(relativeAssemblyDirectory);
+				}
+
+				if (skip) {
+					ASF.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningSkipping, assemblyPath));
+
+					continue;
 				}
 
 				Assembly assembly;
@@ -824,11 +844,36 @@ public static class PluginsCore {
 				throw new InvalidOperationException(nameof(assemblyDirectory));
 			}
 
-			// If directories from previous update exists, it's a good idea to purge them now
-			string updateDirectory = Path.Combine(assemblyDirectory, SharedInfo.UpdateDirectoryNew);
-			string backupDirectory = Path.Combine(assemblyDirectory, SharedInfo.UpdateDirectoryOld);
+			try {
+				// If directories from previous update exist, it's a good idea to purge them now
+				foreach (string directory in Directory.EnumerateDirectories(assemblyDirectory, $"{SharedInfo.UpdateDirectoryNewPrefix}*")) {
+					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
 
-			if (!await Utilities.EnsureUpdateDirectoriesPurged(updateDirectory, backupDirectory).ConfigureAwait(false)) {
+					Directory.Delete(directory, true);
+
+					ASF.ArchiLogger.LogGenericInfo(Strings.Done);
+				}
+
+				foreach (string directory in Directory.EnumerateDirectories(assemblyDirectory, $"{SharedInfo.UpdateDirectoryOldPrefix}*")) {
+					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+
+					await Utilities.DeletePotentiallyUsedDirectory(directory).ConfigureAwait(false);
+
+					ASF.ArchiLogger.LogGenericInfo(Strings.Done);
+				}
+
+				string backupDirectory = Path.Combine(assemblyDirectory, SharedInfo.UpdateDirectoryOld);
+
+				if (Directory.Exists(backupDirectory)) {
+					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+
+					await Utilities.DeletePotentiallyUsedDirectory(backupDirectory).ConfigureAwait(false);
+
+					ASF.ArchiLogger.LogGenericInfo(Strings.Done);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
 				return false;
 			}
 

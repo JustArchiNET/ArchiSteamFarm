@@ -73,6 +73,8 @@ public static class ASF {
 
 	internal static readonly SemaphoreSlim OpenConnectionsSemaphore = new(WebBrowser.MaxConnections, WebBrowser.MaxConnections);
 
+	internal static string DebugDirectory => Path.Combine(SharedInfo.DebugDirectory, OS.ProcessStartTime.ToString("yyyy-MM-dd-THH-mm-ss", CultureInfo.InvariantCulture));
+
 	internal static ICrossProcessSemaphore? ConfirmationsSemaphore { get; private set; }
 	internal static ICrossProcessSemaphore? GiftsSemaphore { get; private set; }
 	internal static ICrossProcessSemaphore? InventorySemaphore { get; private set; }
@@ -779,11 +781,36 @@ public static class ASF {
 		await UpdateSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
-			// If directories from previous update exists, it's a good idea to purge them now
-			string updateDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectoryNew);
-			string backupDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectoryOld);
+			try {
+				// If directories from previous update exist, it's a good idea to purge them now
+				foreach (string directory in Directory.EnumerateDirectories(SharedInfo.HomeDirectory, $"{SharedInfo.UpdateDirectoryNewPrefix}*")) {
+					ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
 
-			if (!await Utilities.EnsureUpdateDirectoriesPurged(updateDirectory, backupDirectory).ConfigureAwait(false)) {
+					Directory.Delete(directory, true);
+
+					ArchiLogger.LogGenericInfo(Strings.Done);
+				}
+
+				foreach (string directory in Directory.EnumerateDirectories(SharedInfo.HomeDirectory, $"{SharedInfo.UpdateDirectoryOldPrefix}*")) {
+					ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+
+					await Utilities.DeletePotentiallyUsedDirectory(directory).ConfigureAwait(false);
+
+					ArchiLogger.LogGenericInfo(Strings.Done);
+				}
+
+				string backupDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectoryOld);
+
+				if (Directory.Exists(backupDirectory)) {
+					ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+
+					await Utilities.DeletePotentiallyUsedDirectory(backupDirectory).ConfigureAwait(false);
+
+					ArchiLogger.LogGenericInfo(Strings.Done);
+				}
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+
 				return (false, null);
 			}
 

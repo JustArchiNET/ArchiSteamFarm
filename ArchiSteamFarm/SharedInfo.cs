@@ -68,8 +68,9 @@ public static class SharedInfo {
 	internal const string ProjectURL = $"https://github.com/{GithubRepo}";
 	internal const ushort ShortInformationDelay = InformationDelay / 2;
 	internal const string UlongCompatibilityStringPrefix = "s_";
-	internal const string UpdateDirectoryNew = "_new";
+	internal const string UpdateDirectoryNewPrefix = "_new-";
 	internal const string UpdateDirectoryOld = "_old";
+	internal const string UpdateDirectoryOldPrefix = "_old-";
 	internal const string WebsiteDirectory = "www";
 
 	[PublicAPI]
