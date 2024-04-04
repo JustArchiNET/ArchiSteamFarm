@@ -387,8 +387,6 @@ public static class Utilities {
 
 		foreach (ZipArchiveEntry zipFile in zipArchive.Entries) {
 			switch (zipFile.Name) {
-				case null:
-				case "":
 				case ".gitkeep":
 					// We're not interested in extracting placeholder files
 					continue;
