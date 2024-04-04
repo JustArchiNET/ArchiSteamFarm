@@ -271,27 +271,6 @@ public static class Utilities {
 		return true;
 	}
 
-	internal static async Task DeletePotentiallyUsedDirectory(string directory) {
-		ArgumentException.ThrowIfNullOrEmpty(directory);
-
-		for (byte i = 1; (i <= MaxSharingViolationTries) && Directory.Exists(directory); i++) {
-			if (i > 1) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
-
-			try {
-				Directory.Delete(directory, true);
-			} catch (IOException e) when ((i < MaxSharingViolationTries) && ((uint) e.HResult == SharingViolationHResult)) {
-				// It's entirely possible that old process is still running, we allow this to happen and add additional delay
-				ASF.ArchiLogger.LogGenericDebuggingException(e);
-
-				continue;
-			}
-
-			return;
-		}
-	}
-
 	internal static ulong MathAdd(ulong first, int second) {
 		if (second >= 0) {
 			return first + (uint) second;
@@ -347,12 +326,10 @@ public static class Utilities {
 		return (result.Score < 4, suggestions is { Count: > 0 } ? string.Join(' ', suggestions.Where(static suggestion => suggestion.Length > 0)) : null);
 	}
 
-	internal static async Task<bool> UpdateFromArchive(ZipArchive zipArchive, string targetDirectory) {
-		ArgumentNullException.ThrowIfNull(zipArchive);
+	internal static async Task<bool> UpdateCleanup(string targetDirectory) {
 		ArgumentException.ThrowIfNullOrEmpty(targetDirectory);
 
 		try {
-			// Firstly, ensure once again our directories are purged and ready to work with
 			foreach (string directory in Directory.EnumerateDirectories(targetDirectory, $"{SharedInfo.UpdateDirectoryNewPrefix}*")) {
 				ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
 
@@ -381,6 +358,18 @@ public static class Utilities {
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
+			return false;
+		}
+
+		return true;
+	}
+
+	internal static async Task<bool> UpdateFromArchive(ZipArchive zipArchive, string targetDirectory) {
+		ArgumentNullException.ThrowIfNull(zipArchive);
+		ArgumentException.ThrowIfNullOrEmpty(targetDirectory);
+
+		// Firstly, ensure once again our directories are purged and ready to work with
+		if (!await UpdateCleanup(targetDirectory).ConfigureAwait(false)) {
 			return false;
 		}
 
@@ -592,6 +581,27 @@ public static class Utilities {
 		if (currentStringObjects.Count < defaultStringObjects.Count) {
 			float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.TranslationIncomplete, $"{CultureInfo.CurrentUICulture.Name} ({CultureInfo.CurrentUICulture.EnglishName})", translationCompleteness.ToString("P1", CultureInfo.CurrentCulture)));
+		}
+	}
+
+	private static async Task DeletePotentiallyUsedDirectory(string directory) {
+		ArgumentException.ThrowIfNullOrEmpty(directory);
+
+		for (byte i = 1; (i <= MaxSharingViolationTries) && Directory.Exists(directory); i++) {
+			if (i > 1) {
+				await Task.Delay(1000).ConfigureAwait(false);
+			}
+
+			try {
+				Directory.Delete(directory, true);
+			} catch (IOException e) when ((i < MaxSharingViolationTries) && ((uint) e.HResult == SharingViolationHResult)) {
+				// It's entirely possible that old process is still running, we allow this to happen and add additional delay
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+				continue;
+			}
+
+			return;
 		}
 	}
 

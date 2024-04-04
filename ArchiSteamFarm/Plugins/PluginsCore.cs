@@ -844,36 +844,8 @@ public static class PluginsCore {
 				throw new InvalidOperationException(nameof(assemblyDirectory));
 			}
 
-			try {
-				// If directories from previous update exist, it's a good idea to purge them now
-				foreach (string directory in Directory.EnumerateDirectories(assemblyDirectory, $"{SharedInfo.UpdateDirectoryNewPrefix}*")) {
-					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
-
-					Directory.Delete(directory, true);
-
-					ASF.ArchiLogger.LogGenericInfo(Strings.Done);
-				}
-
-				foreach (string directory in Directory.EnumerateDirectories(assemblyDirectory, $"{SharedInfo.UpdateDirectoryOldPrefix}*")) {
-					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
-
-					await Utilities.DeletePotentiallyUsedDirectory(directory).ConfigureAwait(false);
-
-					ASF.ArchiLogger.LogGenericInfo(Strings.Done);
-				}
-
-				string backupDirectory = Path.Combine(assemblyDirectory, SharedInfo.UpdateDirectoryOld);
-
-				if (Directory.Exists(backupDirectory)) {
-					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
-
-					await Utilities.DeletePotentiallyUsedDirectory(backupDirectory).ConfigureAwait(false);
-
-					ASF.ArchiLogger.LogGenericInfo(Strings.Done);
-				}
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-
+			// If directories from previous update exist, it's a good idea to purge them now
+			if (!await Utilities.UpdateCleanup(assemblyDirectory).ConfigureAwait(false)) {
 				return false;
 			}
 
