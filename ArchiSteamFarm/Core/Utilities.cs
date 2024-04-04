@@ -329,36 +329,48 @@ public static class Utilities {
 	internal static async Task<bool> UpdateCleanup(string targetDirectory) {
 		ArgumentException.ThrowIfNullOrEmpty(targetDirectory);
 
+		bool updateCleanup = false;
+
 		try {
 			foreach (string directory in Directory.EnumerateDirectories(targetDirectory, $"{SharedInfo.UpdateDirectoryNewPrefix}*")) {
-				ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+				if (!updateCleanup) {
+					updateCleanup = true;
+
+					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+				}
 
 				Directory.Delete(directory, true);
-
-				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 			}
 
 			foreach (string directory in Directory.EnumerateDirectories(targetDirectory, $"{SharedInfo.UpdateDirectoryOldPrefix}*")) {
-				ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+				if (!updateCleanup) {
+					updateCleanup = true;
+
+					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+				}
 
 				await DeletePotentiallyUsedDirectory(directory).ConfigureAwait(false);
-
-				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 			}
 
 			string oldBackupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryOld);
 
 			if (Directory.Exists(oldBackupDirectory)) {
-				ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+				if (!updateCleanup) {
+					updateCleanup = true;
+
+					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+				}
 
 				await DeletePotentiallyUsedDirectory(oldBackupDirectory).ConfigureAwait(false);
-
-				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return false;
+		}
+
+		if (updateCleanup) {
+			ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 		}
 
 		return true;
