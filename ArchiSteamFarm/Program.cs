@@ -428,8 +428,6 @@ internal static class Program {
 					Directory.CreateDirectory(ASF.DebugDirectory);
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericException(e);
-
-					return false;
 				}
 			}
 		}
