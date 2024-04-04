@@ -303,12 +303,12 @@ public sealed class ArchiWebHandler : IDisposable {
 						switch (response.Content.ErrorCode) {
 							case EResult.Busy:
 							case EResult.DuplicateRequest:
+							case EResult.Fail:
 							case EResult.RemoteCallFailed:
 							case EResult.ServiceUnavailable:
 							case EResult.Timeout:
 								// Expected failures that we should be able to retry
 								continue;
-							case EResult.Fail:
 							case EResult.NoMatch:
 								// Expected failures that we're not going to retry
 								throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText), null, response.StatusCode);
