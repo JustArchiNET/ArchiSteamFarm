@@ -332,36 +332,28 @@ public static class Utilities {
 		bool updateCleanup = false;
 
 		try {
-			foreach (string directory in Directory.EnumerateDirectories(targetDirectory, $"{SharedInfo.UpdateDirectoryNewPrefix}*")) {
+			string updateDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryNew);
+
+			if (Directory.Exists(updateDirectory)) {
 				if (!updateCleanup) {
 					updateCleanup = true;
 
 					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
 				}
 
-				Directory.Delete(directory, true);
+				Directory.Delete(updateDirectory, true);
 			}
 
-			foreach (string directory in Directory.EnumerateDirectories(targetDirectory, $"{SharedInfo.UpdateDirectoryOldPrefix}*")) {
+			string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryOld);
+
+			if (Directory.Exists(backupDirectory)) {
 				if (!updateCleanup) {
 					updateCleanup = true;
 
 					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
 				}
 
-				await DeletePotentiallyUsedDirectory(directory).ConfigureAwait(false);
-			}
-
-			string oldBackupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryOld);
-
-			if (Directory.Exists(oldBackupDirectory)) {
-				if (!updateCleanup) {
-					updateCleanup = true;
-
-					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
-				}
-
-				await DeletePotentiallyUsedDirectory(oldBackupDirectory).ConfigureAwait(false);
+				await DeletePotentiallyUsedDirectory(backupDirectory).ConfigureAwait(false);
 			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
@@ -385,20 +377,15 @@ public static class Utilities {
 			return false;
 		}
 
-		// Create temporary directories, we append current unix timestamp to ensure that our folders are unique, which helps to avoid delete-create race conditions for the same path
-		ulong unixTime = GetUnixTime();
-
-		string backupDirectoryName = $"{SharedInfo.UpdateDirectoryOldPrefix}{unixTime}";
-		string updateDirectoryName = $"{SharedInfo.UpdateDirectoryNewPrefix}{unixTime}";
-
-		string backupDirectory = Path.Combine(targetDirectory, backupDirectoryName);
-		string updateDirectory = Path.Combine(targetDirectory, updateDirectoryName);
+		string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryOld);
+		string updateDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryNew);
 
 		// Now enumerate over files in the zip archive and extract them to entirely new location, this decreases chance of corruptions if user kills the process during this stage
 		Directory.CreateDirectory(updateDirectory);
 
 		foreach (ZipArchiveEntry zipFile in zipArchive.Entries) {
 			switch (zipFile.Name) {
+				case "":
 				case ".gitkeep":
 					// We're not interested in extracting placeholder files
 					continue;
@@ -427,110 +414,10 @@ public static class Utilities {
 		// Now, critical section begins, we're going to move all files from target directory to a backup directory
 		Directory.CreateDirectory(backupDirectory);
 
-		foreach (string file in Directory.EnumerateFiles(targetDirectory, "*", SearchOption.AllDirectories)) {
-			string fileName = Path.GetFileName(file);
-
-			if (string.IsNullOrEmpty(fileName)) {
-				throw new InvalidOperationException(nameof(fileName));
-			}
-
-			string relativeFilePath = Path.GetRelativePath(targetDirectory, file);
-
-			if (string.IsNullOrEmpty(relativeFilePath)) {
-				throw new InvalidOperationException(nameof(relativeFilePath));
-			}
-
-			string? relativeDirectoryName = Path.GetDirectoryName(relativeFilePath);
-
-			switch (relativeDirectoryName) {
-				case null:
-					throw new InvalidOperationException(nameof(relativeDirectoryName));
-				case "":
-					// No directory, root folder
-					switch (fileName) {
-						case Logging.NLogConfigurationFile:
-						case SharedInfo.LogFile:
-							// Files with those names in root directory we want to keep
-							continue;
-					}
-
-					break;
-				case SharedInfo.ArchivalLogsDirectory:
-				case SharedInfo.ConfigDirectory:
-				case SharedInfo.DebugDirectory:
-				case SharedInfo.PluginsDirectory:
-				case SharedInfo.UpdateDirectoryOld:
-					// Files in those constant directories we want to keep in their current place
-					continue;
-				default:
-					// Files in those non-constant directories we want to keep in their current place
-					if ((relativeDirectoryName == backupDirectoryName) || (relativeDirectoryName == updateDirectoryName)) {
-						continue;
-					}
-
-					// Files in subdirectories of those directories we want to keep as well
-					if (RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.ArchivalLogsDirectory, SharedInfo.ConfigDirectory, SharedInfo.DebugDirectory, SharedInfo.PluginsDirectory, SharedInfo.UpdateDirectoryOld, backupDirectoryName, updateDirectoryName)) {
-						continue;
-					}
-
-					break;
-			}
-
-			// We're going to move this file out of the current place, overwriting existing one if needed
-			string targetBackupDirectory;
-
-			if (relativeDirectoryName.Length > 0) {
-				// File inside a subdirectory
-				targetBackupDirectory = Path.Combine(backupDirectory, relativeDirectoryName);
-
-				Directory.CreateDirectory(targetBackupDirectory);
-			} else {
-				// File in root directory
-				targetBackupDirectory = backupDirectory;
-			}
-
-			string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
-
-			File.Move(file, targetBackupFile, true);
-		}
+		MoveAllUpdateFiles(targetDirectory, backupDirectory, true);
 
 		// Finally, we can move the newly extracted files to target directory
-		foreach (string file in Directory.EnumerateFiles(updateDirectory, "*", SearchOption.AllDirectories)) {
-			string fileName = Path.GetFileName(file);
-
-			if (string.IsNullOrEmpty(fileName)) {
-				throw new InvalidOperationException(nameof(fileName));
-			}
-
-			string relativeFilePath = Path.GetRelativePath(updateDirectory, file);
-
-			if (string.IsNullOrEmpty(relativeFilePath)) {
-				throw new InvalidOperationException(nameof(relativeFilePath));
-			}
-
-			string? relativeDirectoryName = Path.GetDirectoryName(relativeFilePath);
-
-			if (relativeDirectoryName == null) {
-				throw new InvalidOperationException(nameof(relativeDirectoryName));
-			}
-
-			// We're going to move this file out of the current place, overwriting existing one if needed
-			string targetUpdateDirectory;
-
-			if (relativeDirectoryName.Length > 0) {
-				// File inside a subdirectory
-				targetUpdateDirectory = Path.Combine(targetDirectory, relativeDirectoryName);
-
-				Directory.CreateDirectory(targetUpdateDirectory);
-			} else {
-				// File in root directory
-				targetUpdateDirectory = targetDirectory;
-			}
-
-			string targetUpdateFile = Path.Combine(targetUpdateDirectory, fileName);
-
-			File.Move(file, targetUpdateFile, true);
-		}
+		MoveAllUpdateFiles(updateDirectory, targetDirectory, false);
 
 		// Critical section has finished, we can now cleanup the update directory, backup directory must wait for the process restart
 		Directory.Delete(updateDirectory, true);
@@ -615,6 +502,86 @@ public static class Utilities {
 		}
 	}
 
+	private static void MoveAllUpdateFiles(string sourceDirectory, string targetDirectory, bool keepUserFiles) {
+		ArgumentException.ThrowIfNullOrEmpty(sourceDirectory);
+		ArgumentException.ThrowIfNullOrEmpty(sourceDirectory);
+
+		// Determine if targetDirectory is within sourceDirectory, if yes we need to skip it from enumeration further below
+		string targetRelativeDirectoryPath = Path.GetRelativePath(sourceDirectory, targetDirectory);
+
+		foreach (string file in Directory.EnumerateFiles(sourceDirectory, "*", SearchOption.AllDirectories)) {
+			string fileName = Path.GetFileName(file);
+
+			if (string.IsNullOrEmpty(fileName)) {
+				throw new InvalidOperationException(nameof(fileName));
+			}
+
+			string relativeFilePath = Path.GetRelativePath(sourceDirectory, file);
+
+			if (string.IsNullOrEmpty(relativeFilePath)) {
+				throw new InvalidOperationException(nameof(relativeFilePath));
+			}
+
+			string? relativeDirectoryName = Path.GetDirectoryName(relativeFilePath);
+
+			switch (relativeDirectoryName) {
+				case null:
+					throw new InvalidOperationException(nameof(keepUserFiles));
+				case "":
+					// No directory, root folder
+					switch (fileName) {
+						case Logging.NLogConfigurationFile when keepUserFiles:
+						case SharedInfo.LogFile when keepUserFiles:
+							// Files with those names in root directory we want to keep
+							continue;
+					}
+
+					break;
+				case SharedInfo.ArchivalLogsDirectory when keepUserFiles:
+				case SharedInfo.ConfigDirectory when keepUserFiles:
+				case SharedInfo.DebugDirectory when keepUserFiles:
+				case SharedInfo.PluginsDirectory when keepUserFiles:
+				case SharedInfo.UpdateDirectoryNew:
+				case SharedInfo.UpdateDirectoryOld:
+					// Files in those constant directories we want to keep in their current place
+					continue;
+				default:
+					// If we're moving files deeper into source location, we need to skip the newly created location from it
+					if (!string.IsNullOrEmpty(targetRelativeDirectoryPath) && ((relativeDirectoryName == targetRelativeDirectoryPath) || RelativeDirectoryStartsWith(relativeDirectoryName, targetRelativeDirectoryPath))) {
+						continue;
+					}
+
+					// Below code block should match the case above, it handles subdirectories
+					if (RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.UpdateDirectoryNew, SharedInfo.UpdateDirectoryOld)) {
+						continue;
+					}
+
+					if (keepUserFiles && RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.ArchivalLogsDirectory, SharedInfo.ConfigDirectory, SharedInfo.DebugDirectory, SharedInfo.PluginsDirectory)) {
+						continue;
+					}
+
+					break;
+			}
+
+			// We're going to move this file out of the current place, overwriting existing one if needed
+			string targetUpdateDirectory;
+
+			if (relativeDirectoryName.Length > 0) {
+				// File inside a subdirectory
+				targetUpdateDirectory = Path.Combine(targetDirectory, relativeDirectoryName);
+
+				Directory.CreateDirectory(targetUpdateDirectory);
+			} else {
+				// File in root directory
+				targetUpdateDirectory = targetDirectory;
+			}
+
+			string targetUpdateFile = Path.Combine(targetUpdateDirectory, fileName);
+
+			File.Move(file, targetUpdateFile, true);
+		}
+	}
+
 	private static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
 		ArgumentException.ThrowIfNullOrEmpty(directory);
 
@@ -622,6 +589,6 @@ public static class Utilities {
 			throw new ArgumentNullException(nameof(prefixes));
 		}
 
-		return prefixes.Any(prefix => (directory.Length > prefix.Length) && DirectorySeparators.Contains(directory[prefix.Length]) && directory.StartsWith(prefix, StringComparison.Ordinal));
+		return prefixes.Any(prefix => !string.IsNullOrEmpty(prefix) && (directory.Length > prefix.Length) && DirectorySeparators.Contains(directory[prefix.Length]) && directory.StartsWith(prefix, StringComparison.Ordinal));
 	}
 }

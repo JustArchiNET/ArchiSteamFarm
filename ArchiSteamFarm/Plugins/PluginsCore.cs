@@ -780,7 +780,7 @@ public static class PluginsCore {
 				string? relativeAssemblyDirectoryName = Path.GetFileName(relativeAssemblyDirectory);
 
 				while (!string.IsNullOrEmpty(relativeAssemblyDirectoryName)) {
-					if ((relativeAssemblyDirectoryName == SharedInfo.UpdateDirectoryOld) || relativeAssemblyDirectoryName.StartsWith(SharedInfo.UpdateDirectoryOldPrefix, StringComparison.Ordinal) || relativeAssemblyDirectoryName.StartsWith(SharedInfo.UpdateDirectoryNewPrefix, StringComparison.Ordinal)) {
+					if (relativeAssemblyDirectoryName is SharedInfo.UpdateDirectoryOld or SharedInfo.UpdateDirectoryNew) {
 						skip = true;
 
 						break;
