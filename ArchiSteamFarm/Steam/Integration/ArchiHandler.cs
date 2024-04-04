@@ -239,6 +239,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
 
 						continue;
+					case EResult.Fail:
 					case EResult.NoMatch:
 						// Expected failures that we're not going to retry
 						throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
