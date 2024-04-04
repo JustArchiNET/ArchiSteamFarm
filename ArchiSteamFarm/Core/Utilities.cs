@@ -377,41 +377,14 @@ public static class Utilities {
 			return false;
 		}
 
-		string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryOld);
+		// Now extract the zip file to entirely new location, this decreases chance of corruptions if user kills the process during this stage
 		string updateDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryNew);
 
-		// Now enumerate over files in the zip archive and extract them to entirely new location, this decreases chance of corruptions if user kills the process during this stage
-		Directory.CreateDirectory(updateDirectory);
-
-		foreach (ZipArchiveEntry zipFile in zipArchive.Entries) {
-			switch (zipFile.Name) {
-				case "":
-				case ".gitkeep":
-					// We're not interested in extracting placeholder files
-					continue;
-			}
-
-			string file = Path.GetFullPath(Path.Combine(updateDirectory, zipFile.FullName));
-
-			if (!file.StartsWith(updateDirectory, StringComparison.Ordinal)) {
-				throw new InvalidOperationException(nameof(file));
-			}
-
-			// Check if this file requires its own folder
-			if (zipFile.Name != zipFile.FullName) {
-				string? directory = Path.GetDirectoryName(file);
-
-				if (string.IsNullOrEmpty(directory)) {
-					throw new InvalidOperationException(nameof(directory));
-				}
-
-				Directory.CreateDirectory(directory);
-			}
-
-			zipFile.ExtractToFile(file);
-		}
+		zipArchive.ExtractToDirectory(updateDirectory, true);
 
 		// Now, critical section begins, we're going to move all files from target directory to a backup directory
+		string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryOld);
+
 		Directory.CreateDirectory(backupDirectory);
 
 		MoveAllUpdateFiles(targetDirectory, backupDirectory, true);
