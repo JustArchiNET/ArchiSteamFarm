@@ -361,7 +361,7 @@ public static class Utilities {
 		ASF.ArchiLogger.LogGenericDebug($"{fileName} {progressPercentage}%...");
 	}
 
-	internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, ISet<string>? additionallyForbiddenPhrases = null) {
+	internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, IEnumerable<string>? additionallyForbiddenPhrases = null) {
 		ArgumentException.ThrowIfNullOrEmpty(password);
 
 		HashSet<string> forbiddenPhrases = ForbiddenPasswordPhrases.ToHashSet(StringComparer.InvariantCultureIgnoreCase);

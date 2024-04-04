@@ -860,9 +860,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		}
 
 		if (gameIDs.Count > 0) {
-#pragma warning disable CA1508 // False positive, not every IReadOnlyCollection is ISet
-			ISet<uint> uniqueGameIDs = gameIDs as ISet<uint> ?? gameIDs.ToHashSet();
-#pragma warning restore CA1508 // False positive, not every IReadOnlyCollection is ISet
+			IReadOnlySet<uint> uniqueGameIDs = gameIDs as IReadOnlySet<uint> ?? gameIDs.ToHashSet();
 
 			foreach (uint gameID in uniqueGameIDs.Where(static gameID => gameID > 0)) {
 				if (request.Body.games_played.Count >= MaxGamesPlayedConcurrently) {

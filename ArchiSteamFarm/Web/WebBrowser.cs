@@ -161,9 +161,7 @@ public sealed class WebBrowser : IDisposable {
 
 				progressReporter?.Report(0);
 
-#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 				MemoryStream ms = new((int) response.Length);
-#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 
 				await using (ms.ConfigureAwait(false)) {
 					byte batch = 0;

@@ -72,6 +72,6 @@ public sealed class IPCBansController : ArchiController {
 	///     Gets all IP addresses currently blocked by ASFs IPC module
 	/// </summary>
 	[HttpGet]
-	[ProducesResponseType<GenericResponse<ISet<string>>>((int) HttpStatusCode.OK)]
-	public ActionResult<GenericResponse<ISet<string>>> Get() => Ok(new GenericResponse<ISet<string>>(ApiAuthenticationMiddleware.GetCurrentlyBannedIPs().Select(static ip => ip.ToString()).ToHashSet()));
+	[ProducesResponseType<GenericResponse<IReadOnlySet<string>>>((int) HttpStatusCode.OK)]
+	public ActionResult<GenericResponse<IReadOnlySet<string>>> Get() => Ok(new GenericResponse<IReadOnlySet<string>>(ApiAuthenticationMiddleware.GetCurrentlyBannedIPs().Select(static ip => ip.ToString()).ToHashSet()));
 }

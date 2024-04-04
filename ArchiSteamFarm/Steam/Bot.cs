@@ -622,17 +622,22 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				Regex regex;
 
 				try {
-#pragma warning disable CA3012
-					regex = new Regex(botsPattern, botsRegex);
-#pragma warning restore CA3012
+#pragma warning disable CA3012 // We're aware of a potential denial of service here, this is why we limit maximum matching time to a sane value
+					regex = new Regex(botsPattern, botsRegex, TimeSpan.FromSeconds(1));
+#pragma warning restore CA3012 // We're aware of a potential denial of service here, this is why we limit maximum matching time to a sane value
 				} catch (ArgumentException e) {
 					ASF.ArchiLogger.LogGenericWarningException(e);
 
 					return null;
 				}
 
-				IEnumerable<Bot> regexMatches = Bots.Where(kvp => regex.IsMatch(kvp.Key)).Select(static kvp => kvp.Value);
-				result.UnionWith(regexMatches);
+				try {
+					IEnumerable<Bot> regexMatches = Bots.Where(kvp => regex.IsMatch(kvp.Key)).Select(static kvp => kvp.Value);
+
+					result.UnionWith(regexMatches);
+				} catch (RegexMatchTimeoutException e) {
+					ASF.ArchiLogger.LogGenericException(e);
+				}
 
 				continue;
 			}
@@ -857,9 +862,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new ArgumentNullException(nameof(appIDs));
 		}
 
-#pragma warning disable CA1508 // False positive, not every IReadOnlyCollection is ISet, and this is public API
-		ISet<uint> uniqueAppIDs = appIDs as ISet<uint> ?? appIDs.ToHashSet();
-#pragma warning restore CA1508 // False positive, not every IReadOnlyCollection is ISet, and this is public API
+		IReadOnlySet<uint> uniqueAppIDs = appIDs as IReadOnlySet<uint> ?? appIDs.ToHashSet();
 
 		switch (ASF.GlobalConfig?.OptimizationMode) {
 			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -3113,6 +3116,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			bool displayFinish = false;
 
 			Task refreshTask = ASF.GlobalDatabase.RefreshPackages(this, packagesToRefresh);
+
+			try {
+				await refreshTask.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+			} catch (TimeoutException) {
+				ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
+
+				displayFinish = true;
+			}
 
 			if (await Task.WhenAny(refreshTask, Task.Delay(5000)).ConfigureAwait(false) != refreshTask) {
 				ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
