@@ -156,7 +156,8 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 				return bots.Select(static bot => new Measurement<double>(bot.CardsFarmer.TimeRemaining.TotalMinutes, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
-			description: "Approximate number of minutes remaining until each bot has finished farming all cards"
+			Units.Minutes,
+			"Approximate number of minutes remaining until each bot has finished farming all cards"
 		);
 
 		Meter.CreateObservableGauge(
