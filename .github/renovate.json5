@@ -19,6 +19,12 @@
 			"allowedVersions": "<= 3.1",
 			"matchManagers": [ "nuget" ],
 			"matchPackageNames": [ "Microsoft.Extensions.Configuration.Json", "Microsoft.Extensions.Logging.Configuration" ]
+		},
+		{
+			// TODO: <= 1.7.0-rc.1 for invalid response on monitoring endpoint, last failed version 1.8.0-rc.1
+			"allowedVersions": "<= 1.7.0-rc.1",
+			"matchManagers": [ "nuget" ],
+			"matchPackageNames": [ "OpenTelemetry.Exporter.Prometheus.AspNetCore" ]
 		}
 	]
 }
