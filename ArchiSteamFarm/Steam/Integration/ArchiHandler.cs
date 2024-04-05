@@ -237,8 +237,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 					case EResult.ServiceUnavailable:
 					case EResult.Timeout:
 						// Expected failures that we should be able to retry
-						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
-
 						continue;
 					case EResult.NoMatch:
 						// Expected failures that we're not going to retry
