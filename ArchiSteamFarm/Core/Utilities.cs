@@ -53,6 +53,7 @@ public static class Utilities {
 	private const byte MaxSharingViolationTries = 15;
 	private const uint SharingViolationHResult = 0x80070020;
 	private const byte TimeoutForLongRunningTasksInSeconds = 60;
+	private const uint UnauthorizedAccessHResult = 0x80070005;
 
 	private static readonly FrozenSet<char> DirectorySeparators = new HashSet<char>(2) { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }.ToFrozenSet();
 
@@ -469,8 +470,7 @@ public static class Utilities {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 
 				continue;
-			} catch (UnauthorizedAccessException e) when (i < MaxSharingViolationTries) {
-				// TODO: What HResult here?
+			} catch (UnauthorizedAccessException e) when ((i < MaxSharingViolationTries) && ((uint) e.HResult == UnauthorizedAccessHResult)) {
 				// It's entirely possible that old process is still running, we allow this to happen and add additional delay
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 
