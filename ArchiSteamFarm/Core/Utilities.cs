@@ -469,6 +469,12 @@ public static class Utilities {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 
 				continue;
+			} catch (UnauthorizedAccessException e) when (i < MaxSharingViolationTries) {
+				// TODO: What HResult here?
+				// It's entirely possible that old process is still running, we allow this to happen and add additional delay
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+				continue;
 			}
 
 			return;
