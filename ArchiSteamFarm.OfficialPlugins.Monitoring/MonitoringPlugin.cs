@@ -28,6 +28,7 @@ using System.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -49,6 +50,16 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 	private const string MeterName = SharedInfo.AssemblyName;
 
 	private const string MetricNamePrefix = "asf";
+
+	private static readonly Measurement<int> BuildInfo =
+		new(
+			1,
+			new KeyValuePair<string, object?>(TagNames.Version, SharedInfo.Version.ToString()),
+			new KeyValuePair<string, object?>(TagNames.Variant, SharedInfo.BuildInfo.Variant),
+			new KeyValuePair<string, object?>(TagNames.ModuleVersion, SharedInfo.ModuleVersion.ToString())
+		);
+
+	private static readonly Measurement<int> RuntimeInfo = CreateRuntimeInformation();
 
 	private static bool Enabled => ASF.GlobalConfig?.IPC ?? GlobalConfig.DefaultIPC;
 
@@ -98,6 +109,33 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 	public override Task OnLoaded() => Task.CompletedTask;
 
+	private static Measurement<int> CreateRuntimeInformation() {
+		string framework = RuntimeInformation.FrameworkDescription.Trim();
+
+		if (framework.Length == 0) {
+			framework = "unknown";
+		}
+
+		string runtime = RuntimeInformation.RuntimeIdentifier.Trim();
+
+		if (runtime.Length == 0) {
+			runtime = "unknown";
+		}
+
+		string description = RuntimeInformation.OSDescription.Trim();
+
+		if (description.Length == 0) {
+			description = "unknown";
+		}
+
+		return new Measurement<int>(
+			1,
+			new KeyValuePair<string, object?>(TagNames.Framework, framework),
+			new KeyValuePair<string, object?>(TagNames.Runtime, runtime),
+			new KeyValuePair<string, object?>(TagNames.OS, description)
+		);
+	}
+
 	[MemberNotNull(nameof(Meter))]
 	private void InitializeMeter() {
 		if (Meter != null) {
@@ -105,6 +143,18 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 		}
 
 		Meter = new Meter(MeterName, Version.ToString());
+
+		Meter.CreateObservableGauge(
+			$"{MetricNamePrefix}_build_info",
+			static () => BuildInfo,
+			description: "Build information about ASF in form of label values"
+		);
+
+		Meter.CreateObservableGauge(
+			$"{MetricNamePrefix}_runtime_info",
+			static () => RuntimeInfo,
+			description: "Runtime information about ASF in form of label values"
+		);
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_ipc_banned_ips",
