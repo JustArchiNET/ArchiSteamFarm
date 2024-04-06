@@ -388,10 +388,10 @@ public static class Utilities {
 
 		Directory.CreateDirectory(backupDirectory);
 
-		MoveAllUpdateFiles(targetDirectory, backupDirectory, true);
+		MoveAllUpdateFiles(targetDirectory, backupDirectory);
 
 		// Finally, we can move the newly extracted files to target directory
-		MoveAllUpdateFiles(updateDirectory, targetDirectory, false);
+		MoveAllUpdateFiles(updateDirectory, targetDirectory, backupDirectory);
 
 		// Critical section has finished, we can now cleanup the update directory, backup directory must wait for the process restart
 		Directory.Delete(updateDirectory, true);
@@ -481,12 +481,15 @@ public static class Utilities {
 		}
 	}
 
-	private static void MoveAllUpdateFiles(string sourceDirectory, string targetDirectory, bool keepUserFiles) {
+	private static void MoveAllUpdateFiles(string sourceDirectory, string targetDirectory, string? backupDirectory = null) {
 		ArgumentException.ThrowIfNullOrEmpty(sourceDirectory);
-		ArgumentException.ThrowIfNullOrEmpty(sourceDirectory);
+		ArgumentException.ThrowIfNullOrEmpty(targetDirectory);
 
 		// Determine if targetDirectory is within sourceDirectory, if yes we need to skip it from enumeration further below
 		string targetRelativeDirectoryPath = Path.GetRelativePath(sourceDirectory, targetDirectory);
+
+		// We keep user files if backup directory is null, as it means we're creating one
+		bool keepUserFiles = string.IsNullOrEmpty(backupDirectory);
 
 		foreach (string file in Directory.EnumerateFiles(sourceDirectory, "*", SearchOption.AllDirectories)) {
 			string fileName = Path.GetFileName(file);
@@ -505,7 +508,7 @@ public static class Utilities {
 
 			switch (relativeDirectoryName) {
 				case null:
-					throw new InvalidOperationException(nameof(keepUserFiles));
+					throw new InvalidOperationException(nameof(relativeDirectoryName));
 				case "":
 					// No directory, root folder
 					switch (fileName) {
@@ -556,6 +559,26 @@ public static class Utilities {
 			}
 
 			string targetUpdateFile = Path.Combine(targetUpdateDirectory, fileName);
+
+			// If target update file exists and we have a backup directory, we should consider moving it to the backup directory regardless whether or not we did that before as part of backup procedure
+			// This achieves two purposes, firstly, we ensure additional backup of user file in case something goes wrong, and secondly, we decrease a possibility of overwriting files that are in-use on Windows, since we move them out of the picture first
+			if (!string.IsNullOrEmpty(backupDirectory) && File.Exists(targetUpdateFile)) {
+				string targetBackupDirectory;
+
+				if (relativeDirectoryName.Length > 0) {
+					// File inside a subdirectory
+					targetBackupDirectory = Path.Combine(backupDirectory, relativeDirectoryName);
+
+					Directory.CreateDirectory(targetBackupDirectory);
+				} else {
+					// File in root directory
+					targetBackupDirectory = backupDirectory;
+				}
+
+				string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
+
+				File.Move(targetUpdateFile, targetBackupFile, true);
+			}
 
 			File.Move(file, targetUpdateFile, true);
 		}
