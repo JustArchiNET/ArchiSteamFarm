@@ -28,7 +28,6 @@ internal static class TagNames {
 	internal const string BotState = "state";
 	internal const string CurrencyCode = "currency";
 	internal const string Framework = "framework";
-	internal const string ModuleVersion = "module_version";
 	internal const string OS = "operating_system";
 	internal const string Runtime = "runtime";
 	internal const string SteamID = "steamid";

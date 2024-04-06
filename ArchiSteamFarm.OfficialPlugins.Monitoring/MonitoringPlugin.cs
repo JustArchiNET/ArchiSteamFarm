@@ -55,8 +55,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 		new(
 			1,
 			new KeyValuePair<string, object?>(TagNames.Version, SharedInfo.Version.ToString()),
-			new KeyValuePair<string, object?>(TagNames.Variant, SharedInfo.BuildInfo.Variant),
-			new KeyValuePair<string, object?>(TagNames.ModuleVersion, SharedInfo.ModuleVersion.ToString())
+			new KeyValuePair<string, object?>(TagNames.Variant, SharedInfo.BuildInfo.Variant)
 		);
 
 	private static readonly Measurement<int> RuntimeInfo = CreateRuntimeInformation();
