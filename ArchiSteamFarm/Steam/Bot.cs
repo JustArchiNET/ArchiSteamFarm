@@ -354,11 +354,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		// Initialize
 		SteamClient = new SteamClient(SteamConfiguration, botName);
 
-		if (Debugging.IsDebugConfigured && Directory.Exists(SharedInfo.DebugDirectory)) {
-			string debugListenerPath = Path.Combine(SharedInfo.DebugDirectory, botName);
+		if (Debugging.IsDebugConfigured && Directory.Exists(ASF.DebugDirectory)) {
+			string debugListenerPath = Path.Combine(ASF.DebugDirectory, botName);
 
 			try {
 				Directory.CreateDirectory(debugListenerPath);
+
 				SteamClient.DebugNetworkListener = new NetHookNetworkListener(debugListenerPath, SteamClient);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
