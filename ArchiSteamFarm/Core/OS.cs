@@ -43,31 +43,13 @@ namespace ArchiSteamFarm.Core;
 
 internal static class OS {
 	[PublicAPI]
-	public static string? Description {
-		get {
-			string description = RuntimeInformation.OSDescription.Trim();
-
-			return description.Length == 0 ? null : description;
-		}
-	}
+	public static string? Description => TrimAndNullifyEmptyString(RuntimeInformation.OSDescription);
 
 	[PublicAPI]
-	public static string? Framework {
-		get {
-			string framework = RuntimeInformation.FrameworkDescription.Trim();
-
-			return framework.Length == 0 ? null : framework;
-		}
-	}
+	public static string? Framework => TrimAndNullifyEmptyString(RuntimeInformation.FrameworkDescription);
 
 	[PublicAPI]
-	public static string? Runtime {
-		get {
-			string runtime = RuntimeInformation.RuntimeIdentifier.Trim();
-
-			return runtime.Length == 0 ? null : runtime;
-		}
-	}
+	public static string? Runtime => TrimAndNullifyEmptyString(RuntimeInformation.RuntimeIdentifier);
 
 	// We need to keep this one assigned and not calculated on-demand
 	internal static readonly string ProcessFileName = Environment.ProcessPath ?? throw new InvalidOperationException(nameof(ProcessFileName));
@@ -304,6 +286,14 @@ internal static class OS {
 				NativeMethods.ShowWindow(windowHandle, NativeMethods.EShowWindow.Minimize);
 			}
 		}
+	}
+
+	private static string? TrimAndNullifyEmptyString(string s) {
+		ArgumentNullException.ThrowIfNull(s);
+
+		s = s.Trim();
+
+		return s.Length == 0 ? null : s;
 	}
 
 	[SupportedOSPlatform("Windows")]
