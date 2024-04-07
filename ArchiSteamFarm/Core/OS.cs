@@ -37,22 +37,15 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
-using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Core;
 
 internal static class OS {
-	[PublicAPI]
-	public static string? Description => TrimAndNullifyEmptyString(RuntimeInformation.OSDescription);
-
-	[PublicAPI]
-	public static string? Framework => TrimAndNullifyEmptyString(RuntimeInformation.FrameworkDescription);
-
-	[PublicAPI]
-	public static string? Runtime => TrimAndNullifyEmptyString(RuntimeInformation.RuntimeIdentifier);
-
 	// We need to keep this one assigned and not calculated on-demand
 	internal static readonly string ProcessFileName = Environment.ProcessPath ?? throw new InvalidOperationException(nameof(ProcessFileName));
+
+	internal static string? Description => TrimAndNullifyEmptyText(RuntimeInformation.OSDescription);
+	internal static string? Framework => TrimAndNullifyEmptyText(RuntimeInformation.FrameworkDescription);
 
 	internal static DateTime ProcessStartTime {
 		get {
@@ -61,6 +54,8 @@ internal static class OS {
 			return process.StartTime.ToUniversalTime();
 		}
 	}
+
+	internal static string? Runtime => TrimAndNullifyEmptyText(RuntimeInformation.RuntimeIdentifier);
 
 	internal static string Version {
 		get {
@@ -288,12 +283,12 @@ internal static class OS {
 		}
 	}
 
-	private static string? TrimAndNullifyEmptyString(string s) {
-		ArgumentNullException.ThrowIfNull(s);
+	private static string? TrimAndNullifyEmptyText(string text) {
+		ArgumentNullException.ThrowIfNull(text);
 
-		s = s.Trim();
+		text = text.Trim();
 
-		return s.Length == 0 ? null : s;
+		return text.Length > 0 ? text : null;
 	}
 
 	[SupportedOSPlatform("Windows")]
