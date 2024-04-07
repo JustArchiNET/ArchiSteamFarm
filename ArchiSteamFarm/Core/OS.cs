@@ -37,10 +37,20 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Core;
 
 internal static class OS {
+	[PublicAPI]
+	public static string? Description => TrimAndNullifyEmptyString(RuntimeInformation.OSDescription);
+
+	[PublicAPI]
+	public static string? Framework => TrimAndNullifyEmptyString(RuntimeInformation.FrameworkDescription);
+
+	[PublicAPI]
+	public static string? Runtime => TrimAndNullifyEmptyString(RuntimeInformation.RuntimeIdentifier);
+
 	// We need to keep this one assigned and not calculated on-demand
 	internal static readonly string ProcessFileName = Environment.ProcessPath ?? throw new InvalidOperationException(nameof(ProcessFileName));
 
@@ -58,25 +68,7 @@ internal static class OS {
 				return BackingVersion;
 			}
 
-			string framework = RuntimeInformation.FrameworkDescription.Trim();
-
-			if (framework.Length == 0) {
-				framework = "Unknown Framework";
-			}
-
-			string runtime = RuntimeInformation.RuntimeIdentifier.Trim();
-
-			if (runtime.Length == 0) {
-				runtime = "Unknown Runtime";
-			}
-
-			string description = RuntimeInformation.OSDescription.Trim();
-
-			if (description.Length == 0) {
-				description = "Unknown OS";
-			}
-
-			BackingVersion = $"{framework}; {runtime}; {description}";
+			BackingVersion = $"{Framework ?? "Unknown Framework"}; {Runtime ?? "Unknown Runtime"}; {Description ?? "Unknown OS"}";
 
 			return BackingVersion;
 		}
@@ -294,6 +286,14 @@ internal static class OS {
 				NativeMethods.ShowWindow(windowHandle, NativeMethods.EShowWindow.Minimize);
 			}
 		}
+	}
+
+	private static string? TrimAndNullifyEmptyString(string s) {
+		ArgumentNullException.ThrowIfNull(s);
+
+		s = s.Trim();
+
+		return s.Length == 0 ? null : s;
 	}
 
 	[SupportedOSPlatform("Windows")]

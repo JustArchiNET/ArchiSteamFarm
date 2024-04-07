@@ -50,6 +50,21 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 	private const string MetricNamePrefix = "asf";
 
+	private const string UnknownLabelValueFallback = "unknown";
+
+	private static readonly Measurement<int> BuildInfo = new(
+		1,
+		new KeyValuePair<string, object?>(TagNames.Version, SharedInfo.Version.ToString()),
+		new KeyValuePair<string, object?>(TagNames.Variant, SharedInfo.BuildInfo.Variant)
+	);
+
+	private static readonly Measurement<int> RuntimeInfo = new(
+		1,
+		new KeyValuePair<string, object?>(TagNames.Framework, OS.Framework ?? UnknownLabelValueFallback),
+		new KeyValuePair<string, object?>(TagNames.Runtime, OS.Runtime ?? UnknownLabelValueFallback),
+		new KeyValuePair<string, object?>(TagNames.OS, OS.Description ?? UnknownLabelValueFallback)
+	);
+
 	private static bool Enabled => ASF.GlobalConfig?.IPC ?? GlobalConfig.DefaultIPC;
 
 	[JsonInclude]
@@ -107,6 +122,18 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 		Meter = new Meter(MeterName, Version.ToString());
 
 		Meter.CreateObservableGauge(
+			$"{MetricNamePrefix}_build_info",
+			static () => BuildInfo,
+			description: "Build information about ASF in form of label values"
+		);
+
+		Meter.CreateObservableGauge(
+			$"{MetricNamePrefix}_runtime_info",
+			static () => RuntimeInfo,
+			description: "Runtime information about ASF in form of label values"
+		);
+
+		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_ipc_banned_ips",
 			static () => ApiAuthenticationMiddleware.GetCurrentlyBannedIPs().Count(),
 			description: "Number of IP addresses currently banned by ASFs IPC module"
@@ -150,13 +177,15 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 			description: "Number of Steam groups each bot is in"
 		);
 
+		// Keep in mind that we use a unit here and the unit needs to be a suffix to the name
 		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_bot_farming_minutes_remaining", static () => {
+			$"{MetricNamePrefix}_bot_farming_time_remaining_{Units.Minutes}", static () => {
 				ICollection<Bot> bots = Bot.Bots?.Values ?? Array.Empty<Bot>();
 
 				return bots.Select(static bot => new Measurement<double>(bot.CardsFarmer.TimeRemaining.TotalMinutes, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
-			description: "Approximate number of minutes remaining until each bot has finished farming all cards"
+			Units.Minutes,
+			"Approximate number of minutes remaining until each bot has finished farming all cards"
 		);
 
 		Meter.CreateObservableGauge(
