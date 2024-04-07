@@ -28,7 +28,6 @@ using System.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Metrics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -51,14 +50,20 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 	private const string MetricNamePrefix = "asf";
 
-	private static readonly Measurement<int> BuildInfo =
-		new(
-			1,
-			new KeyValuePair<string, object?>(TagNames.Version, SharedInfo.Version.ToString()),
-			new KeyValuePair<string, object?>(TagNames.Variant, SharedInfo.BuildInfo.Variant)
-		);
+	private const string UnknownLabelValueFallback = "unknown";
 
-	private static readonly Measurement<int> RuntimeInfo = CreateRuntimeInformation();
+	private static readonly Measurement<int> BuildInfo = new(
+		1,
+		new KeyValuePair<string, object?>(TagNames.Version, SharedInfo.Version.ToString()),
+		new KeyValuePair<string, object?>(TagNames.Variant, SharedInfo.BuildInfo.Variant)
+	);
+
+	private static readonly Measurement<int> RuntimeInfo = new(
+		1,
+		new KeyValuePair<string, object?>(TagNames.Framework, OS.Framework ?? UnknownLabelValueFallback),
+		new KeyValuePair<string, object?>(TagNames.Runtime, OS.Runtime ?? UnknownLabelValueFallback),
+		new KeyValuePair<string, object?>(TagNames.OS, OS.Description ?? UnknownLabelValueFallback)
+	);
 
 	private static bool Enabled => ASF.GlobalConfig?.IPC ?? GlobalConfig.DefaultIPC;
 
@@ -107,33 +112,6 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 	}
 
 	public override Task OnLoaded() => Task.CompletedTask;
-
-	private static Measurement<int> CreateRuntimeInformation() {
-		string framework = RuntimeInformation.FrameworkDescription.Trim();
-
-		if (framework.Length == 0) {
-			framework = "unknown";
-		}
-
-		string runtime = RuntimeInformation.RuntimeIdentifier.Trim();
-
-		if (runtime.Length == 0) {
-			runtime = "unknown";
-		}
-
-		string description = RuntimeInformation.OSDescription.Trim();
-
-		if (description.Length == 0) {
-			description = "unknown";
-		}
-
-		return new Measurement<int>(
-			1,
-			new KeyValuePair<string, object?>(TagNames.Framework, framework),
-			new KeyValuePair<string, object?>(TagNames.Runtime, runtime),
-			new KeyValuePair<string, object?>(TagNames.OS, description)
-		);
-	}
 
 	[MemberNotNull(nameof(Meter))]
 	private void InitializeMeter() {

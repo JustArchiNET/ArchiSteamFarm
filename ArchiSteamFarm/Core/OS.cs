@@ -37,10 +37,38 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Core;
 
 internal static class OS {
+	[PublicAPI]
+	public static string? Description {
+		get {
+			string description = RuntimeInformation.OSDescription.Trim();
+
+			return description.Length == 0 ? null : description;
+		}
+	}
+
+	[PublicAPI]
+	public static string? Framework {
+		get {
+			string framework = RuntimeInformation.FrameworkDescription.Trim();
+
+			return framework.Length == 0 ? null : framework;
+		}
+	}
+
+	[PublicAPI]
+	public static string? Runtime {
+		get {
+			string runtime = RuntimeInformation.RuntimeIdentifier.Trim();
+
+			return runtime.Length == 0 ? null : runtime;
+		}
+	}
+
 	// We need to keep this one assigned and not calculated on-demand
 	internal static readonly string ProcessFileName = Environment.ProcessPath ?? throw new InvalidOperationException(nameof(ProcessFileName));
 
@@ -58,25 +86,7 @@ internal static class OS {
 				return BackingVersion;
 			}
 
-			string framework = RuntimeInformation.FrameworkDescription.Trim();
-
-			if (framework.Length == 0) {
-				framework = "Unknown Framework";
-			}
-
-			string runtime = RuntimeInformation.RuntimeIdentifier.Trim();
-
-			if (runtime.Length == 0) {
-				runtime = "Unknown Runtime";
-			}
-
-			string description = RuntimeInformation.OSDescription.Trim();
-
-			if (description.Length == 0) {
-				description = "Unknown OS";
-			}
-
-			BackingVersion = $"{framework}; {runtime}; {description}";
+			BackingVersion = $"{Framework ?? "Unknown Framework"}; {Runtime ?? "Unknown Runtime"}; {Description ?? "Unknown OS"}";
 
 			return BackingVersion;
 		}
