@@ -83,7 +83,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	public TimeSpan TimeRemaining {
 		get {
 			if (GamesToFarm.Count == 0) {
-				return new TimeSpan(0);
+				return TimeSpan.Zero;
 			}
 
 			byte hoursRequired = Bot.BotConfig.HoursUntilCardDrops;
