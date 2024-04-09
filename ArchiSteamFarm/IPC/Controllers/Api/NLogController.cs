@@ -122,7 +122,7 @@ public sealed class NLogController : ArchiController {
 				}
 
 				while (webSocket.State == WebSocketState.Open) {
-					WebSocketReceiveResult result = await webSocket.ReceiveAsync([], cancellationToken).ConfigureAwait(false);
+					WebSocketReceiveResult result = await webSocket.ReceiveAsync(Array.Empty<byte>(), cancellationToken).ConfigureAwait(false);
 
 					if (result.MessageType != WebSocketMessageType.Close) {
 						await webSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", cancellationToken).ConfigureAwait(false);
