@@ -647,8 +647,8 @@ public sealed class Commands {
 						break;
 					}
 
-					grantedApps ??= Array.Empty<uint>();
-					grantedPackages ??= Array.Empty<uint>();
+					grantedApps ??= [];
+					grantedPackages ??= [];
 
 					response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicenseWithItems, $"app/{gameID}", result, string.Join(", ", grantedApps.Select(static appID => $"app/{appID}").Union(grantedPackages.Select(static subID => $"sub/{subID}"))))));
 

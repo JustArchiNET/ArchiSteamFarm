@@ -336,7 +336,7 @@ internal static class ArchiKestrel {
 								}
 							},
 
-							Array.Empty<string>()
+							[]
 						}
 					}
 				);

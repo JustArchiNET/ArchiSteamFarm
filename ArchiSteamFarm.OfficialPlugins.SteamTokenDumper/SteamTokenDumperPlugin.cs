@@ -385,7 +385,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 					SteamApps.PICSTokensCallback response;
 
 					try {
-						response = await bot.SteamApps.PICSGetAccessTokens(appIDsThisRound, Enumerable.Empty<uint>()).ToLongRunningTask().ConfigureAwait(false);
+						response = await bot.SteamApps.PICSGetAccessTokens(appIDsThisRound, []).ToLongRunningTask().ConfigureAwait(false);
 					} catch (Exception e) {
 						bot.ArchiLogger.LogGenericWarningException(e);
 
@@ -426,7 +426,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 					AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet response;
 
 					try {
-						response = await bot.SteamApps.PICSGetProductInfo(appIDsThisRound.Select(static appID => new SteamApps.PICSRequest(appID, GlobalCache.GetAppToken(appID))), Enumerable.Empty<SteamApps.PICSRequest>()).ToLongRunningTask().ConfigureAwait(false);
+						response = await bot.SteamApps.PICSGetProductInfo(appIDsThisRound.Select(static appID => new SteamApps.PICSRequest(appID, GlobalCache.GetAppToken(appID))), []).ToLongRunningTask().ConfigureAwait(false);
 					} catch (Exception e) {
 						bot.ArchiLogger.LogGenericWarningException(e);
 

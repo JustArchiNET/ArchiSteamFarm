@@ -1200,7 +1200,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null) && IsConnectedAndLoggedOn; i++) {
 			try {
-				productInfoResultSet = await SteamApps.PICSGetProductInfo(request.ToEnumerable(), Enumerable.Empty<SteamApps.PICSRequest>()).ToLongRunningTask().ConfigureAwait(false);
+				productInfoResultSet = await SteamApps.PICSGetProductInfo(request.ToEnumerable(), []).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 			}
@@ -1338,7 +1338,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null) && IsConnectedAndLoggedOn; i++) {
 			try {
-				productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<SteamApps.PICSRequest>(), packageRequests).ToLongRunningTask().ConfigureAwait(false);
+				productInfoResultSet = await SteamApps.PICSGetProductInfo([], packageRequests).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 			}

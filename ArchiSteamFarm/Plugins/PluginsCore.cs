@@ -579,7 +579,7 @@ public static class PluginsCore {
 			return null;
 		}
 
-		return responses.Where(static response => response != null).SelectMany(static handlers => handlers ?? Enumerable.Empty<ClientMsgHandler>()).ToHashSet();
+		return responses.Where(static response => response != null).SelectMany(static handlers => handlers ?? []).ToHashSet();
 	}
 
 	internal static async Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer) {

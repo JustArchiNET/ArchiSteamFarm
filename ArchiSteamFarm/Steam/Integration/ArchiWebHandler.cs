@@ -507,7 +507,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		IEnumerable<TradeOffer> trades = Enumerable.Empty<TradeOffer>();
+		IEnumerable<TradeOffer> trades = [];
 
 		if (receivedOffers.GetValueOrDefault(true)) {
 			trades = trades.Concat(response.TradeOffersReceived);

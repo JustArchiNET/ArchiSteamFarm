@@ -147,7 +147,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bots", static () => {
-				IEnumerable<Bot> bots = Bot.Bots?.Values ?? Enumerable.Empty<Bot>();
+				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				int onlineCount = 0;
 				int offlineCount = 0;
@@ -177,7 +177,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_friends", static () => {
-				IEnumerable<Bot> bots = Bot.Bots?.Values ?? Enumerable.Empty<Bot>();
+				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				return bots.Where(static bot => bot.IsConnectedAndLoggedOn).Select(static bot => new Measurement<int>(bot.SteamFriends.GetFriendCount(), new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
@@ -186,7 +186,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_clans", static () => {
-				IEnumerable<Bot> bots = Bot.Bots?.Values ?? Enumerable.Empty<Bot>();
+				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				return bots.Where(static bot => bot.IsConnectedAndLoggedOn).Select(static bot => new Measurement<int>(bot.SteamFriends.GetClanCount(), new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
@@ -196,7 +196,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 		// Keep in mind that we use a unit here and the unit needs to be a suffix to the name
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_farming_time_remaining_{Units.Minutes}", static () => {
-				IEnumerable<Bot> bots = Bot.Bots?.Values ?? Enumerable.Empty<Bot>();
+				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				return bots.Select(static bot => new Measurement<double>(bot.CardsFarmer.TimeRemaining.TotalMinutes, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
@@ -206,7 +206,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_heartbeat_failures", static () => {
-				IEnumerable<Bot> bots = Bot.Bots?.Values ?? Enumerable.Empty<Bot>();
+				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				return bots.Select(static bot => new Measurement<byte>(bot.HeartBeatFailures, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
@@ -215,7 +215,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_wallet_balance", static () => {
-				IEnumerable<Bot> bots = Bot.Bots?.Values ?? Enumerable.Empty<Bot>();
+				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				return bots.Where(static bot => bot.WalletCurrency != ECurrencyCode.Invalid).Select(static bot => new Measurement<long>(bot.WalletBalance, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID), new KeyValuePair<string, object?>(TagNames.CurrencyCode, bot.WalletCurrency.ToString())));
 			},
@@ -224,7 +224,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_bot_bgr_keys_remaining", static () => {
-				IEnumerable<Bot> bots = Bot.Bots?.Values ?? Enumerable.Empty<Bot>();
+				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				return bots.Select(static bot => new Measurement<int>((int) bot.GamesToRedeemInBackgroundCount, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
