@@ -24,6 +24,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -695,17 +696,29 @@ public sealed class WebBrowser : IDisposable {
 	private async Task<HttpResponseMessage?> InternalGet(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
+		if (!Enum.IsDefined(httpCompletionOption)) {
+			throw new InvalidEnumArgumentException(nameof(httpCompletionOption), (int) httpCompletionOption, typeof(HttpCompletionOption));
+		}
+
 		return await InternalRequest<object>(request, HttpMethod.Get, headers, null, referer, requestOptions, httpCompletionOption, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	private async Task<HttpResponseMessage?> InternalHead(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
+		if (!Enum.IsDefined(httpCompletionOption)) {
+			throw new InvalidEnumArgumentException(nameof(httpCompletionOption), (int) httpCompletionOption, typeof(HttpCompletionOption));
+		}
+
 		return await InternalRequest<object>(request, HttpMethod.Head, headers, null, referer, requestOptions, httpCompletionOption, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	private async Task<HttpResponseMessage?> InternalPost<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
+
+		if (!Enum.IsDefined(httpCompletionOption)) {
+			throw new InvalidEnumArgumentException(nameof(httpCompletionOption), (int) httpCompletionOption, typeof(HttpCompletionOption));
+		}
 
 		return await InternalRequest(request, HttpMethod.Post, headers, data, referer, requestOptions, httpCompletionOption, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
@@ -714,6 +727,10 @@ public sealed class WebBrowser : IDisposable {
 	private async Task<HttpResponseMessage?> InternalRequest<T>(Uri request, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentNullException.ThrowIfNull(httpMethod);
+
+		if (!Enum.IsDefined(httpCompletionOption)) {
+			throw new InvalidEnumArgumentException(nameof(httpCompletionOption), (int) httpCompletionOption, typeof(HttpCompletionOption));
+		}
 
 		HttpResponseMessage response;
 
