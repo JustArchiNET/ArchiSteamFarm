@@ -25,6 +25,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 
@@ -163,16 +164,16 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	bool IReadOnlyDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value) {
+	bool IReadOnlyDictionary<TKey, TValue>.TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) {
 		ArgumentNullException.ThrowIfNull(key);
 
-		return BackingDictionary.TryGetValue(key, out value!);
+		return BackingDictionary.TryGetValue(key, out value);
 	}
 
-	bool IDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value) {
+	bool IDictionary<TKey, TValue>.TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) {
 		ArgumentNullException.ThrowIfNull(key);
 
-		return BackingDictionary.TryGetValue(key, out value!);
+		return BackingDictionary.TryGetValue(key, out value);
 	}
 
 	[PublicAPI]
