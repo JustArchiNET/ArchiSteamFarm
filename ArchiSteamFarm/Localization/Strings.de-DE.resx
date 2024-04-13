@@ -730,7 +730,9 @@ Prozesslaufzeit: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Die angeforderte Version, zu der wir versuchen zu aktualisieren, ist auf dem Server nicht Verfügbar. Diese Situation ist möglich, wenn die Version erst kürzlich veröffentlicht wurde. Als zusätzliche Sicherheitsmaßnahme wird das Updateprozedere zum jetzigen Zeitpunkt nicht fortgesetzt.</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>Fehler beim Abrufen der Prüfsumme der heruntergeladenen Binärdatei – der Aktualisierungsvorgang wird zu diesem Zeitpunkt als zusätzliche Sicherheitsmaßnahme verweigert.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Der Server antwortete mit einer unterschiedlichen Prüfsumme. Dies kann einen korrupten Download oder eine MITM-Attacke indizieren; Das Update wird abgebrochen!</value>
 	</data>
