@@ -87,7 +87,10 @@ StackTrace :
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Erreur : Sortie avec un code d'erreur non nul {0}!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
+	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Échec de la requête : {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -703,7 +706,10 @@ Durée de fonctionnement : {1}</value>
 		<value>Votre clé de chiffrement est trop courte. Nous vous recommandons d'en utiliser une longue d'au moins {0} octets (caractères).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Vous utilisez le paramètre {0} de la propriété {1} , mais vous n'avez pas fourni de --cryptkey personnalisé. Vous devriez fournir une --cryptkey personnalisée pour plus de sécurité.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Vous utilisez le paramètre {0} de la propriété {1} , mais vous n'avez pas fourni de --cryptkey personnalisé. Cela casse complètement la protection, car ASF est forcé d’utiliser sa propre clé (connue). Vous devez fournir une --cryptkey personnalisée pour utiliser les avantages de sécurité offerts par ce paramètre.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -723,7 +729,9 @@ Durée de fonctionnement : {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Le serveur distant n'a pas d'informations sur la version vers laquelle nous mettons à jour. Il est possible que la version ai été publiée récemment. Refus de procéder à la mise à jour pour plus de sécurité.</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>Impossible de récupérer la somme de contrôle du binaire téléchargé - refusant de procéder à la procédure de mise à jour en ce moment comme mesure de sécurité supplémentaire.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Le serveur distant a répondu avec une somme de contrôle différente, ce qui pourrait indiquer un téléchargement corrompu ou une attaque de type MITM. Refus de procéder à la mise à jour !</value>
 	</data>
@@ -746,20 +754,65 @@ Durée de fonctionnement : {1}</value>
 		<value>ASF ne peut pas jouer l'application {0} car elle a une restriction relative à la région pour le pays {1} qui dure jusqu'à {2}.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>Vous essayez d'exécuter le plugin officiel {0} en ne correspondant pas à la version ASF: {1} (attendu {2}). Cela suggère que vous fassiez quelque chose d'horriblement mauvais, que ce soit pour réparer votre configuration ou pour fournir --ignore-unsupported-environment argument si vous savez vraiment ce que vous faites.</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>Votre ASF a planté trop de fois récemment, et en raison de cela l'initialisation du processus a été désactivée. Recherchez, corrigez votre configuration, puis supprimez ASF. rash file from your config directory, or supply --ignore-unsupported-environment argument si vous savez vraiment ce que vous faites.</value>
+	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>L'agriculture {0} ({1}) est désactivée, car ce jeu est actuellement marqué comme privé. Si vous avez l'intention d'ASF de cultiver ce jeu, alors envisagez de modifier ses paramètres de confidentialité.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>Ignorer : {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>Vérification des mises à jour du plugin...</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>Vérification de la mise à jour du plugin {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>Aucune mise à jour disponible pour le plugin {0} : {1} † {2}.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>La nouvelle version du plugin {0} est disponible! Pensez à vous mettre à jour !</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>Mise à jour du plugin {0} trouvée de la version {1} à {2}...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>Aucune ressource disponible pour la mise à jour du plugin {0} de la version {1} vers {2}, cela signifie généralement que la mise à jour sera disponible plus tard.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>Aucune ressource n'a pu être déterminée pour la mise à jour du plugin {0} de la version {1} à {2}. Cela peut se produire si la version n'est pas encore terminée - si cela continue de se produire, vous devriez en informer le créateur du plugin.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>Mise à jour du plugin {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>La mise à jour du plugin {0} a réussi, les modifications seront chargées au prochain lancement d'ASF.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>Le plugin {0}/{1} a été enregistré et activé pour les mises à jour automatiques.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>Le plugin {0} ({1}) a été désactivé à partir des mises à jour automatiques, malgré la prise en charge de cette fonctionnalité.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Les plugins personnalisés ont été enregistrés pour les mises à jour automatiques. L'équipe ASF voudrait vous rappeler que, pour votre propre sécurité, vous ne devriez activer les mises à jour automatiques que des groupes de confiance. Si vous n'aviez pas l'intention de le faire, vous pouvez désactiver les mises à jour de plugin dans la configuration globale d'ASF.</value>
+	</data>
 </root>
