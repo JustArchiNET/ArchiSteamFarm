@@ -45,7 +45,7 @@ namespace ArchiSteamFarm.OfficialPlugins.Monitoring;
 
 [Export(typeof(IPlugin))]
 [SuppressMessage("ReSharper", "MemberCanBeFileLocal")]
-internal sealed class MonitoringPlugin : OfficialPlugin, IWebServiceProvider, IGitHubPluginUpdates, IDisposable {
+internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IGitHubPluginUpdates, IWebInterface, IWebServiceProvider {
 	private const string MeterName = SharedInfo.AssemblyName;
 
 	private const string MetricNamePrefix = "asf";
