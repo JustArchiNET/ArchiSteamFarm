@@ -770,10 +770,10 @@ Tempo de execução: {1}</value>
 		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
 	</data>
 	<data name="PluginUpdatesChecking" xml:space="preserve">
-		<value>Procurando por atualizações dos plugins...</value>
+		<value>Procurando por atualizações de plugins...</value>
 	</data>
 	<data name="PluginUpdateChecking" xml:space="preserve">
-		<value>Verificando atualizações para o plugin {0}...</value>
+		<value>Verificando atualização para o plugin {0}...</value>
 		<comment>{0} will be replaced by plugin name (string).</comment>
 	</data>
 	<data name="PluginUpdateNotFound" xml:space="preserve">
@@ -793,7 +793,7 @@ Tempo de execução: {1}</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
 	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
-		<value>Nenhum recurso pôde ser determinado para a atualização do plugin {0} da versão {1} para {2}. Isso pode acontecer se a atualização ainda não estiver concluída - se isso continuar acontecendo, você deve notificar o criador do plugin sobre isso.</value>
+		<value>Nenhum recurso pôde ser determinado para a atualização do plugin {0} da versão {1} para {2}. Isso pode acontecer caso a atualização ainda não estiver concluída - se isso continuar acontecendo, você deve notificar o criador do plugin sobre isso.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
 	<data name="PluginUpdateInProgress" xml:space="preserve">
@@ -801,7 +801,7 @@ Tempo de execução: {1}</value>
 		<comment>{0} will be replaced by plugin name (string).</comment>
 	</data>
 	<data name="PluginUpdateFinished" xml:space="preserve">
-		<value>A atualização do plugin {0} foi bem-sucedida. As alterações serão carregadas na próxima inicialização do ASF.</value>
+		<value>A atualização do plugin {0} foi bem-sucedida, as alterações serão carregadas na próxima inicialização do ASF.</value>
 		<comment>{0} will be replaced by plugin name (string).</comment>
 	</data>
 	<data name="PluginUpdateEnabled" xml:space="preserve">
