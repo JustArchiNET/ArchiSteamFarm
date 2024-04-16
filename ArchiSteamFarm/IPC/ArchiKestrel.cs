@@ -377,6 +377,9 @@ internal static class ArchiKestrel {
 			}
 		);
 
+		// Add support for optional healtchecks
+		services.AddHealthChecks();
+
 		// We need MVC for /Api, but we're going to use only a small subset of all available features
 		IMvcBuilder mvc = services.AddControllers();
 
