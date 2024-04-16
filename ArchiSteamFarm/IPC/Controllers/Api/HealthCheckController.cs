@@ -53,6 +53,6 @@ public sealed class HealthCheckController : ControllerBase {
 
 		HealthCheckResponse response = new(report);
 
-		return report.Status == HealthStatus.Healthy ? Ok(response) : StatusCode((int) HttpStatusCode.ServiceUnavailable, response);
+		return response.Status == HealthStatus.Healthy ? Ok(response) : StatusCode((int) HttpStatusCode.ServiceUnavailable, response);
 	}
 }
