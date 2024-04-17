@@ -12,7 +12,6 @@ RUN set -eu; \
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0${IMAGESUFFIX} AS build-dotnet
 ARG CONFIGURATION=Release
-ARG STEAM_TOKEN_DUMPER_TOKEN
 ARG TARGETARCH
 ARG TARGETOS
 ENV DOTNET_CLI_TELEMETRY_OPTOUT true
@@ -29,7 +28,7 @@ COPY .editorconfig .editorconfig
 COPY Directory.Build.props Directory.Build.props
 COPY Directory.Packages.props Directory.Packages.props
 COPY LICENSE.txt LICENSE.txt
-RUN set -eu; \
+RUN --mount=type=secret,id=STEAM_TOKEN_DUMPER_TOKEN set -eu; \
     dotnet --info; \
     \
     case "$TARGETOS" in \
@@ -46,8 +45,16 @@ RUN set -eu; \
     \
     dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained; \
     \
-    if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" ]; then \
-      sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs"; \
+    if [ -f "/run/secrets/STEAM_TOKEN_DUMPER_TOKEN" ]; then \
+      STEAM_TOKEN_DUMPER_TOKEN="$(cat "/run/secrets/STEAM_TOKEN_DUMPER_TOKEN")"; \
+      \
+      if [ -n "$STEAM_TOKEN_DUMPER_TOKEN" ] && [ -f "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" ]; then \
+        sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs"; \
+      else \
+        echo "WARN: STEAM_TOKEN_DUMPER_TOKEN not applied!"; \
+      fi; \
+    else \
+      echo "WARN: No STEAM_TOKEN_DUMPER_TOKEN provided!"; \
     fi; \
     \
     for plugin in $PLUGINS_BUNDLED; do \

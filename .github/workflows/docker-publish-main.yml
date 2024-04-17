@@ -63,7 +63,9 @@ jobs:
       with:
         context: .
         platforms: ${{ env.PLATFORMS }}
-        build-args: STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
+        provenance: true
+        sbom: true
+        secrets: STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
         labels: |
           org.opencontainers.image.created=${{ env.DATE_ISO8601 }}
           org.opencontainers.image.version=${{ github.sha }}

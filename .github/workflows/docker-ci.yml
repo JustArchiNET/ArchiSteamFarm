@@ -30,9 +30,10 @@ jobs:
     - name: Build ${{ matrix.configuration }} Docker image from ${{ matrix.file }}
       uses: docker/build-push-action@v5.3.0
       with:
+        build-args: CONFIGURATION=${{ matrix.configuration }}
         context: .
         file: ${{ matrix.file }}
         platforms: ${{ env.PLATFORMS }}
-        build-args: |
-          CONFIGURATION=${{ matrix.configuration }}
-          STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
+        provenance: true
+        sbom: true
+        secrets: STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
