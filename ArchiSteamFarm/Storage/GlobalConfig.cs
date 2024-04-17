@@ -113,6 +113,9 @@ public sealed class GlobalConfig {
 	public const EPluginsUpdateMode DefaultPluginsUpdateMode = EPluginsUpdateMode.Whitelist;
 
 	[PublicAPI]
+	public const bool DefaultShutdownIfPossible = true;
+
+	[PublicAPI]
 	public const string? DefaultSteamMessagePrefix = "/me ";
 
 	[PublicAPI]
@@ -294,6 +297,9 @@ public sealed class GlobalConfig {
 	public EPluginsUpdateMode PluginsUpdateMode { get; private init; } = DefaultPluginsUpdateMode;
 
 	[JsonInclude]
+	public bool ShutdownIfPossible { get; private init; } = DefaultShutdownIfPossible;
+
+	[JsonInclude]
 	[MaxLength(SteamChatMessage.MaxMessagePrefixBytes / SteamChatMessage.ReservedEscapeMessageBytes)]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
 	public string? SteamMessagePrefix { get; private init; } = DefaultSteamMessagePrefix;
@@ -438,6 +444,9 @@ public sealed class GlobalConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializePluginsUpdateMode() => !Saving || (PluginsUpdateMode != DefaultPluginsUpdateMode);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeShutdownIfPossible() => !Saving || (ShutdownIfPossible != DefaultShutdownIfPossible);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSSteamOwnerID() => !Saving;

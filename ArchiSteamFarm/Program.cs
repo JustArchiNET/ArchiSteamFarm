@@ -54,7 +54,6 @@ internal static class Program {
 	internal static bool ConfigWatch { get; private set; } = true;
 	internal static bool IgnoreUnsupportedEnvironment { get; private set; }
 	internal static string? NetworkGroup { get; private set; }
-	internal static bool ProcessRequired { get; private set; }
 	internal static bool RestartAllowed { get; private set; } = true;
 	internal static bool Service { get; private set; }
 	internal static bool ShutdownSequenceInitialized { get; private set; }
@@ -592,10 +591,6 @@ internal static class Program {
 					break;
 				case "--NO-STEAM-PARENTAL-GENERATION" when noArgumentValueNext():
 					SteamParentalGeneration = false;
-
-					break;
-				case "--PROCESS-REQUIRED" when noArgumentValueNext():
-					ProcessRequired = true;
 
 					break;
 				case "--PATH" when noArgumentValueNext():
