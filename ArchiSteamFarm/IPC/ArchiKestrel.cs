@@ -194,13 +194,16 @@ internal static class ArchiKestrel {
 
 		// Add support for static files from custom plugins (e.g. HTML, CSS and JS)
 		foreach ((string physicalPath, string webPath) in pluginPaths) {
-			app.UseStaticFiles(
-				new StaticFileOptions {
-					FileProvider = new PhysicalFileProvider(physicalPath),
-					OnPrepareResponse = OnPrepareResponse,
-					RequestPath = webPath
-				}
-			);
+			StaticFileOptions options = new() {
+				FileProvider = new PhysicalFileProvider(physicalPath),
+				OnPrepareResponse = OnPrepareResponse
+			};
+
+			if (webPath != "/") {
+				options.RequestPath = webPath;
+			}
+
+			app.UseStaticFiles(options);
 		}
 
 		// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
