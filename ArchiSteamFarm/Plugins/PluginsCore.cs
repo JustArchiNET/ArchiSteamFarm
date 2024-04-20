@@ -304,7 +304,7 @@ public static class PluginsCore {
 			}
 		}
 
-		if (activePluginUpdates.Count > 0) {
+		if (activePluginUpdates.Any(static plugin => plugin is not OfficialPlugin)) {
 			ASF.ArchiLogger.LogGenericWarning(Strings.CustomPluginUpdatesEnabled);
 
 			ActivePluginUpdates = activePluginUpdates.ToFrozenSet();
