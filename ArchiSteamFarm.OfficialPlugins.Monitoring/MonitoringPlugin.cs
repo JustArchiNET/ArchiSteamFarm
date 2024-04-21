@@ -77,8 +77,6 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IGitHubPlu
 	[Required]
 	public override Version Version => typeof(MonitoringPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-	public string WebPath => "/monitoring";
-
 	private Meter? Meter;
 
 	public void Dispose() => Meter?.Dispose();
