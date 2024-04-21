@@ -123,7 +123,7 @@ internal static class ArchiKestrel {
 		ArgumentNullException.ThrowIfNull(configuration);
 		ArgumentNullException.ThrowIfNull(app);
 
-		// The order of dependency injection is super important, doing things in wrong order will break everything
+		// The order of dependency injection is super important, doing things in wrong order will most likely break everything
 		// https://docs.microsoft.com/aspnet/core/fundamentals/middleware
 
 		// This one is easy, it's always in the beginning
@@ -134,8 +134,9 @@ internal static class ArchiKestrel {
 		// Add support for proxies, this one comes usually after developer exception page, but could be before
 		app.UseForwardedHeaders();
 
+		// Add support for response caching - must be called before static files as we want to cache those as well
 		if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
-			// Add support for response caching - must be called before static files as we want to cache those as well
+			// As previously in services, we skip it if memory usage is super important for us
 			app.UseResponseCaching();
 		}
 
@@ -157,42 +158,54 @@ internal static class ArchiKestrel {
 		// Add support for default root path redirection (GET / -> GET /index.html), must come before static files
 		app.UseDefaultFiles();
 
+		// Add support for additional default files provided by plugins
 		Dictionary<string, string> pluginPaths = new(StringComparer.Ordinal);
 
-		if (PluginsCore.ActivePlugins.Count > 0) {
-			foreach (IWebInterface plugin in PluginsCore.ActivePlugins.OfType<IWebInterface>()) {
-				if (string.IsNullOrEmpty(plugin.PhysicalPath) || string.IsNullOrEmpty(plugin.WebPath)) {
-					// Invalid path provided
-					continue;
+		foreach (IWebInterface plugin in PluginsCore.ActivePlugins.OfType<IWebInterface>()) {
+			string physicalPath = plugin.PhysicalPath;
+
+			if (string.IsNullOrEmpty(physicalPath)) {
+				// Invalid path provided
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(physicalPath)} ({plugin.Name})"));
+
+				continue;
+			}
+
+			string webPath = plugin.WebPath;
+
+			if (string.IsNullOrEmpty(webPath)) {
+				// Invalid path provided
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(webPath)} ({plugin.Name})"));
+
+				continue;
+			}
+
+			if (!Path.IsPathRooted(physicalPath)) {
+				// Relative path
+				string? assemblyDirectory = Path.GetDirectoryName(plugin.GetType().Assembly.Location);
+
+				if (string.IsNullOrEmpty(assemblyDirectory)) {
+					throw new InvalidOperationException(nameof(assemblyDirectory));
 				}
 
-				string physicalPath = plugin.PhysicalPath;
+				physicalPath = Path.Combine(assemblyDirectory, physicalPath);
+			}
 
-				if (!Path.IsPathRooted(physicalPath)) {
-					// Relative path
-					string? assemblyDirectory = Path.GetDirectoryName(plugin.GetType().Assembly.Location);
+			if (!Directory.Exists(physicalPath)) {
+				// Non-existing path provided
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, $"{nameof(physicalPath)} ({plugin.Name})"));
 
-					if (string.IsNullOrEmpty(assemblyDirectory)) {
-						throw new InvalidOperationException(nameof(assemblyDirectory));
-					}
+				continue;
+			}
 
-					physicalPath = Path.Combine(assemblyDirectory, plugin.PhysicalPath);
-				}
+			pluginPaths[physicalPath] = webPath;
 
-				if (!Directory.Exists(physicalPath)) {
-					// Non-existing path provided
-					continue;
-				}
-
-				pluginPaths[physicalPath] = plugin.WebPath;
-
-				if (plugin.WebPath != "/") {
-					app.UseDefaultFiles(plugin.WebPath);
-				}
+			if (webPath != "/") {
+				app.UseDefaultFiles(webPath);
 			}
 		}
 
-		// Add support for static files from custom plugins (e.g. HTML, CSS and JS)
+		// Add support for additional static files from custom plugins (e.g. HTML, CSS and JS)
 		foreach ((string physicalPath, string webPath) in pluginPaths) {
 			StaticFileOptions options = new() {
 				FileProvider = new PhysicalFileProvider(physicalPath),
@@ -219,10 +232,10 @@ internal static class ArchiKestrel {
 		// We want to protect our API with IPCPassword and additional security, this should be called after routing, so the middleware won't have to deal with API endpoints that do not exist
 		app.UseWhen(static context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), static appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
 
+		// Add support for CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API
 		string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
 		if (!string.IsNullOrEmpty(ipcPassword)) {
-			// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API, this should be called before response compression, but can't be due to how our flow works
 			// We apply CORS policy only with IPCPassword set as an extra authentication measure
 			app.UseCors();
 		}
@@ -230,18 +243,17 @@ internal static class ArchiKestrel {
 		// Add support for websockets that we use e.g. in /Api/NLog
 		app.UseWebSockets();
 
-		// Finally register proper API endpoints once we're done with routing
-		app.UseEndpoints(static endpoints => endpoints.MapControllers());
-
-		if (PluginsCore.ActivePlugins.Count > 0) {
-			foreach (IWebServiceProvider plugin in PluginsCore.ActivePlugins.OfType<IWebServiceProvider>()) {
-				try {
-					plugin.OnConfiguringEndpoints(app);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-				}
+		// Add additional endpoints provided by plugins
+		foreach (IWebServiceProvider plugin in PluginsCore.ActivePlugins.OfType<IWebServiceProvider>()) {
+			try {
+				plugin.OnConfiguringEndpoints(app);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
+
+		// Finally register proper API endpoints once we're done with routing
+		app.UseEndpoints(static endpoints => endpoints.MapControllers());
 
 		// Add support for swagger, responsible for automatic API documentation generation, this should be on the end, once we're done with API
 		app.UseSwagger();
@@ -262,8 +274,8 @@ internal static class ArchiKestrel {
 		ArgumentNullException.ThrowIfNull(configuration);
 		ArgumentNullException.ThrowIfNull(services);
 
-		// The order of dependency injection is super important, doing things in wrong order will break everything
-		// Order in Configure() method is a good start
+		// The order of dependency injection is super important, doing things in wrong order will most likely break everything
+		// https://docs.microsoft.com/aspnet/core/fundamentals/middleware
 
 		// Prepare knownNetworks that we'll use in a second
 		HashSet<string>? knownNetworksTexts = configuration.GetSection("Kestrel:KnownNetworks").Get<HashSet<string>>();
@@ -301,18 +313,19 @@ internal static class ArchiKestrel {
 			}
 		);
 
+		// Add support for response caching
 		if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
-			// Add support for response caching
+			// We can skip it if memory usage is super important for us
 			services.AddResponseCaching();
 		}
 
 		// Add support for response compression
 		services.AddResponseCompression(static options => options.EnableForHttps = true);
 
+		// Add support for CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API
 		string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
 		if (!string.IsNullOrEmpty(ipcPassword)) {
-			// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API
 			// We apply CORS policy only with IPCPassword set as an extra authentication measure
 			services.AddCors(static options => options.AddDefaultPolicy(static policyBuilder => policyBuilder.AllowAnyOrigin()));
 		}
@@ -383,30 +396,31 @@ internal static class ArchiKestrel {
 		// Add support for optional healtchecks
 		services.AddHealthChecks();
 
-		// We need MVC for /Api, but we're going to use only a small subset of all available features
-		IMvcBuilder mvc = services.AddControllers();
-
-		// Add support for controllers declared in custom plugins
-		if (PluginsCore.ActivePlugins.Count > 0) {
-			HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
-
-			if (assemblies != null) {
-				foreach (Assembly assembly in assemblies) {
-					mvc.AddApplicationPart(assembly);
-				}
-			}
-
-			foreach (IWebServiceProvider plugin in PluginsCore.ActivePlugins.OfType<IWebServiceProvider>()) {
-				try {
-					plugin.OnConfiguringServices(services);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-				}
+		// Add support for additional services provided by plugins
+		foreach (IWebServiceProvider plugin in PluginsCore.ActivePlugins.OfType<IWebServiceProvider>()) {
+			try {
+				plugin.OnConfiguringServices(services);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
 
+		// We need MVC for /Api, but we're going to use only a small subset of all available features
+		IMvcBuilder mvc = services.AddControllers();
+
+		// Add support for additional controllers provided by plugins
+		HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
+
+		if (assemblies != null) {
+			foreach (Assembly assembly in assemblies) {
+				mvc.AddApplicationPart(assembly);
+			}
+		}
+
+		// Register discovered controllers
 		mvc.AddControllersAsServices();
 
+		// Modify default JSON options
 		mvc.AddJsonOptions(
 			static options => {
 				JsonSerializerOptions jsonSerializerOptions = Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions;
