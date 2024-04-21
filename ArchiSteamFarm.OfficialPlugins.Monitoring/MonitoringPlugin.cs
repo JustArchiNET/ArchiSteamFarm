@@ -198,7 +198,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IGitHubPlu
 			$"{MetricNamePrefix}_bot_farming_time_remaining_{Units.Minutes}", static () => {
 				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
-				return bots.Select(static bot => new Measurement<double>(bot.CardsFarmer.TimeRemaining.TotalMinutes, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
+				return bots.Where(static bot => bot.IsConnectedAndLoggedOn).Select(static bot => new Measurement<double>(bot.CardsFarmer.TimeRemaining.TotalMinutes, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
 			Units.Minutes,
 			"Approximate number of minutes remaining until each bot has finished farming all cards"
