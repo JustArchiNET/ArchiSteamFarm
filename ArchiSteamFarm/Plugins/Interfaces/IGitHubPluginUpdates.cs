@@ -114,11 +114,22 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			throw new ArgumentNullException(nameof(releaseAssets));
 		}
 
+		return Task.FromResult(FindPossibleMatch(asfVersion, newPluginVersion, releaseAssets));
+	}
+
+	protected ReleaseAsset? FindPossibleMatch(Version asfVersion, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets) {
+		ArgumentNullException.ThrowIfNull(asfVersion);
+		ArgumentNullException.ThrowIfNull(newPluginVersion);
+
+		if ((releaseAssets == null) || (releaseAssets.Count == 0)) {
+			throw new ArgumentNullException(nameof(releaseAssets));
+		}
+
 		Dictionary<string, ReleaseAsset> assetsByName = releaseAssets.ToDictionary(static asset => asset.Name, StringComparer.OrdinalIgnoreCase);
 
 		foreach (string possibleMatch in GetPossibleMatches(asfVersion)) {
 			if (assetsByName.TryGetValue(possibleMatch, out ReleaseAsset? targetAsset)) {
-				return Task.FromResult<ReleaseAsset?>(targetAsset);
+				return targetAsset;
 			}
 		}
 
@@ -126,12 +137,12 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		HashSet<ReleaseAsset> zipAssets = releaseAssets.Where(static asset => asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).ToHashSet();
 
 		if (zipAssets.Count == 1) {
-			return Task.FromResult<ReleaseAsset?>(zipAssets.First());
+			return zipAssets.First();
 		}
 
 		ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateConflictingAssetsFound, Name, Version, newPluginVersion));
 
-		return Task.FromResult<ReleaseAsset?>(null);
+		return null;
 	}
 
 	protected async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, bool stable, bool forced) {
