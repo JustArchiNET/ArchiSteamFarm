@@ -151,7 +151,7 @@ public sealed class GlobalConfig {
 	[PublicAPI]
 	public static readonly ImmutableHashSet<string> DefaultPluginsUpdateList = [];
 
-	private static readonly FrozenSet<string> ForbiddenIPCPasswordPhrases = new HashSet<string>(5, StringComparer.InvariantCultureIgnoreCase) { "ipc", "api", "gui", "asf-ui", "asf-gui" }.ToFrozenSet(StringComparer.InvariantCultureIgnoreCase);
+	private static readonly FrozenSet<string> ForbiddenIPCPasswordPhrases = new HashSet<string>(5, StringComparer.OrdinalIgnoreCase) { "ipc", "api", "gui", "asf-ui", "asf-gui" }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
 	[JsonIgnore]
 	[PublicAPI]

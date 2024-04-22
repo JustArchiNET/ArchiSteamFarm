@@ -47,7 +47,7 @@ public static class ArchiCryptoHelper {
 
 	internal static bool HasDefaultCryptKey { get; private set; } = true;
 
-	private static readonly FrozenSet<string> ForbiddenCryptKeyPhrases = new HashSet<string>(3, StringComparer.InvariantCultureIgnoreCase) { "crypt", "key", "cryptkey" }.ToFrozenSet(StringComparer.InvariantCultureIgnoreCase);
+	private static readonly FrozenSet<string> ForbiddenCryptKeyPhrases = new HashSet<string>(3, StringComparer.OrdinalIgnoreCase) { "crypt", "key", "cryptkey" }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
 	private static IEnumerable<byte> SteamParentalCharacters => Enumerable.Range('0', 10).Select(static character => (byte) character);
 

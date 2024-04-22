@@ -565,7 +565,7 @@ public sealed class BotConfig {
 		string? decryptedSteamPassword = await botConfig.GetDecryptedSteamPassword().ConfigureAwait(false);
 
 		if (!string.IsNullOrEmpty(decryptedSteamPassword)) {
-			HashSet<string> disallowedValues = new(StringComparer.InvariantCultureIgnoreCase) { "account" };
+			HashSet<string> disallowedValues = new(StringComparer.OrdinalIgnoreCase) { "account" };
 
 			if (!string.IsNullOrEmpty(botConfig.SteamLogin)) {
 				disallowedValues.Add(botConfig.SteamLogin);
