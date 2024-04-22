@@ -28,6 +28,10 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to monitor Bot's connection with the Steam network, in particular when it goes online and offline.
+/// </summary>
 [PublicAPI]
 public interface IBotConnection : IPlugin {
 	/// <summary>

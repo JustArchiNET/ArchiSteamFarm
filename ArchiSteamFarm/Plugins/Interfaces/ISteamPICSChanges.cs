@@ -28,6 +28,10 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to be notified about PICS changes, which is Steam mechanism for broadcasting app and package updates.
+/// </summary>
 [PublicAPI]
 public interface ISteamPICSChanges : IPlugin {
 	/// <summary>

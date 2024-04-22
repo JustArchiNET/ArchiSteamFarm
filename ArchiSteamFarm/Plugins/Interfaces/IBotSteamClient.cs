@@ -29,6 +29,10 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to register your own SteamKit2 message handlers, which means controlling the traffic that comes from the Steam network.
+/// </summary>
 [PublicAPI]
 public interface IBotSteamClient : IPlugin {
 	/// <summary>

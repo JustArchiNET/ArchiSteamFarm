@@ -29,6 +29,10 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to receive Steam notifications transmitted over the network.
+/// </summary>
 [PublicAPI]
 public interface IBotUserNotifications : IPlugin {
 	/// <summary>

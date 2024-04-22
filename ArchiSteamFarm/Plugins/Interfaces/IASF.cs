@@ -29,6 +29,11 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to easily register your own data structures upon ASF initialization. This is especially useful if you want to register those based on the ASF's global config.
+/// </summary>
+/// <remarks>If your logic doesn't require ASF settings, you can consider using core <see cref="IPlugin.OnLoaded" /> method instead. Implementing this interface might still make sense, since it happens later during ASF initialization and provides more available data structures.</remarks>
 [PublicAPI]
 public interface IASF : IPlugin {
 	/// <summary>

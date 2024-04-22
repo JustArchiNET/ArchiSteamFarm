@@ -27,6 +27,11 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to register core settings-independent structures on per-bot basis.
+/// </summary>
+/// <remarks>If your logic requires bot's settings, consider implementing <see cref="IBotModules" /> instead. Implementing this interface might still make sense, e.g. for disposal of the structures upon <see cref="OnBotDestroy" />.</remarks>
 [PublicAPI]
 public interface IBot : IPlugin {
 	/// <summary>

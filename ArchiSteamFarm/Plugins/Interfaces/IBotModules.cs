@@ -30,6 +30,11 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to easily register your own custom modules on per-bot basis. This is especially useful if you want to register those based on the bot's config.
+/// </summary>
+/// <remarks>If your modules do not depend on bot's settings, you can consider implementing <see cref="IBot" /> interface instead. Even without that requirement, implementing that interface might still make sense, e.g. for disposal of the structures in <see cref="IBot.OnBotDestroy" />.</remarks>
 [PublicAPI]
 public interface IBotModules : IPlugin {
 	/// <summary>

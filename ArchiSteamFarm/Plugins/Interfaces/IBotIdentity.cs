@@ -28,6 +28,10 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to discover core properties of your bot's identity, upon logging in to the Steam network.
+/// </summary>
 [PublicAPI]
 public interface IBotIdentity : IPlugin {
 	/// <summary>

@@ -28,6 +28,10 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows your plugin to implement custom logic for accepting trades that ASF isn't willing to handle itself.
+/// </summary>
 [PublicAPI]
 public interface IBotTradeOffer : IPlugin {
 	/// <summary>

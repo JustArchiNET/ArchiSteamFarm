@@ -28,6 +28,11 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to react to each message received on the Steam platform.
+/// </summary>
+/// <remarks>This is used for Steam messages exclusively, that are not ASF commands. If you want to grab the commands, check <see cref="IBotCommand2" /> interface instead.</remarks>
 [PublicAPI]
 public interface IBotMessage : IPlugin {
 	/// <summary>

@@ -23,10 +23,15 @@
 
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Cards;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to receive updates in regards to ASF's <see cref="CardsFarmer" /> module, in particular events related to its state.
+/// </summary>
 [PublicAPI]
 public interface IBotCardsFarmerInfo : IPlugin {
 	/// <summary>

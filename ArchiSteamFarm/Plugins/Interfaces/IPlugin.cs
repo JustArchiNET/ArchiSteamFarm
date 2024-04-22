@@ -29,6 +29,9 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <summary>
+///     Implementing this interface allows you to register your plugin in ASF, in turn providing you a way to implement your own custom logic.
+/// </summary>
 [PublicAPI]
 public interface IPlugin {
 	/// <summary>

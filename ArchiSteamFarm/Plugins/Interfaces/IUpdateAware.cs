@@ -27,6 +27,10 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to be aware of ASF updates and execute appropriate logic that you need to happen before/after such update happens.
+/// </summary>
 [PublicAPI]
 public interface IUpdateAware : IPlugin {
 	/// <summary>

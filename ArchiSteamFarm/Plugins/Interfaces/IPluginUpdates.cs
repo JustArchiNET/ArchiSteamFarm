@@ -28,6 +28,7 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
 /// <summary>
 ///     Implementing this interface allows you to provide custom logic for updating your plugin to newer version.
 ///     Plugin updates are happening on usual basis per configuration of auto-updates from ASF, as well as other triggers such as update command.

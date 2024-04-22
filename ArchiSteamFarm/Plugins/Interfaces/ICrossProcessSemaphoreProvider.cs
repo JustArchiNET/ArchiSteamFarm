@@ -27,6 +27,11 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to provide custom cross-process semaphore, which is used for synchronizing multiple ASF instances with their limiters.
+///     Custom cross-process semaphore might be useful if you wanted to extend cross-process semaphore offered by ASF, e.g. by utilizing remote-oriented tools like redis and allowing ASF instances over several different machines to synchronize with each other.
+/// </summary>
 [PublicAPI]
 public interface ICrossProcessSemaphoreProvider : IPlugin {
 	/// <summary>

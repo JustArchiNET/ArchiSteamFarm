@@ -27,6 +27,10 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to handle friend requests on the Steam platform.
+/// </summary>
 [PublicAPI]
 public interface IBotFriendRequest : IPlugin {
 	/// <summary>

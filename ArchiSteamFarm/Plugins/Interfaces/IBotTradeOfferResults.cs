@@ -29,6 +29,10 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to receive information about all processed trades, in particular if you want to fire some logic based on trade offers being handled.
+/// </summary>
 [PublicAPI]
 public interface IBotTradeOfferResults : IPlugin {
 	/// <summary>

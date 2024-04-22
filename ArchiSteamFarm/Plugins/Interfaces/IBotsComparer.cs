@@ -26,6 +26,10 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
+/// <summary>
+///     Implementing this interface allows you to change the default string comparers used across ASF.
+/// </summary>
 [PublicAPI]
 public interface IBotsComparer : IPlugin {
 	/// <summary>

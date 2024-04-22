@@ -27,19 +27,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
+/// <inheritdoc />
 /// <summary>
 ///     Implementing this interface allows you to provide your own additional services and middlewares for IPC endpoints - Use with caution!
 /// </summary>
 [PublicAPI]
-public interface IWebServiceProvider {
+public interface IWebServiceProvider : IPlugin {
 	/// <summary>
-	///     ASF will call this method during configuration of the IPC endpoints
+	///     ASF will call this method during configuration of the IPC endpoints.
 	/// </summary>
 	/// <param name="app">Application builder related to this callback.</param>
 	void OnConfiguringEndpoints(IApplicationBuilder app);
 
 	/// <summary>
-	///     ASF will call this method during configuration of the IPC services
+	///     ASF will call this method during configuration of the IPC services.
 	/// </summary>
 	/// <param name="services">Service collection related to this callback.</param>
 	void OnConfiguringServices(IServiceCollection services);
