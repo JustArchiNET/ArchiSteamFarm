@@ -44,7 +44,7 @@
 
 ASF is a C# application with primary purpose of farming Steam cards from multiple accounts simultaneously. Unlike Idle Master which works only for one account at given time, while requiring Steam client running in the background and launching additional processes imitating "game playing" status, ASF doesn't require any Steam client running in the background, doesn't launch any additional processes and is made to handle unlimited Steam accounts at once. In addition to that, it's meant to be run on servers or other desktop-less machines, and features full cross-OS support, which makes it possible to launch on any operating system with .NET Core runtime, such as Windows, Linux and macOS. ASF is possible thanks to gigantic amount of work done in marvelous **[SteamKit2](https://github.com/SteamRE/SteamKit)** library.
 
-Today, ASF is one of the most versatile Steam power tools, allowing you to make use of many features that were implemented over time. Apart from farming Steam cards, which remains the primary focus, ASF includes bunch of features on its own, such as a possibility to use it as Steam authenticator or chat logger. In addition to that, ASF includes plugin system, thanks to which anybody can further extend it to his/her needs.
+Today, ASF is one of the most versatile Steam power tools, allowing you to make use of many features that were implemented over time. Apart from farming Steam cards, which remains the primary focus, ASF includes bunch of features on its own, such as a possibility to use it as Steam authenticator or chat logger. In addition to that, ASF includes plugin system, thanks to which anybody can further extend it to their needs.
 
 ---
 
