@@ -113,6 +113,7 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 		}
 	}
 
+	[MustDisposeResource]
 	public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, Lock.ReaderLock());
 
 	public int IndexOf(T item) {
@@ -158,6 +159,7 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 		OnModified?.Invoke(this, EventArgs.Empty);
 	}
 
+	[MustDisposeResource]
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	[PublicAPI]

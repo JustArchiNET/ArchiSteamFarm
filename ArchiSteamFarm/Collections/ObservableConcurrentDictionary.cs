@@ -163,6 +163,7 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 		return BackingDictionary.ContainsKey(key);
 	}
 
+	[MustDisposeResource]
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	bool IReadOnlyDictionary<TKey, TValue>.TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) {

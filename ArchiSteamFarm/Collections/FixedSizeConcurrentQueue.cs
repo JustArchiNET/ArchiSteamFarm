@@ -55,6 +55,7 @@ internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> where T : not
 	[MustDisposeResource]
 	public IEnumerator<T> GetEnumerator() => BackingQueue.GetEnumerator();
 
+	[MustDisposeResource]
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	internal void Enqueue(T obj) {
