@@ -421,25 +421,23 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			TradingScheduled = true;
 		}
 
-		await TradingSemaphore.WaitAsync().ConfigureAwait(false);
-
-		try {
+		using (await GetTradingLock().ConfigureAwait(false)) {
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (TradingSemaphore) {
 				TradingScheduled = false;
 			}
 
-			inventory = await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID, true).Where(item => filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
-		} catch (TimeoutException e) {
-			Bot.ArchiLogger.LogGenericWarningException(e);
+			try {
+				inventory = await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID, true).Where(item => filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
+			} catch (TimeoutException e) {
+				Bot.ArchiLogger.LogGenericWarningException(e);
 
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, e.Message));
-		} catch (Exception e) {
-			Bot.ArchiLogger.LogGenericException(e);
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, e.Message));
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericException(e);
 
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, e.Message));
-		} finally {
-			TradingSemaphore.Release();
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, e.Message));
+			}
 		}
 
 		if (inventory.Count == 0) {
