@@ -124,6 +124,7 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 		((ICollection<KeyValuePair<TKey, TValue>>) BackingDictionary).CopyTo(array, arrayIndex);
 	}
 
+	[MustDisposeResource]
 	public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => BackingDictionary.GetEnumerator();
 
 	public bool Remove(KeyValuePair<TKey, TValue> item) {

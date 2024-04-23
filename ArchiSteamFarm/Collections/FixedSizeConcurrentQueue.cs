@@ -25,6 +25,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Collections;
 
@@ -51,7 +52,9 @@ internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> where T : not
 		MaxCount = maxCount;
 	}
 
+	[MustDisposeResource]
 	public IEnumerator<T> GetEnumerator() => BackingQueue.GetEnumerator();
+
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	internal void Enqueue(T obj) {

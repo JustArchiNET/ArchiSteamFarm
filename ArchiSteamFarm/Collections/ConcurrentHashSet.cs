@@ -105,6 +105,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 		}
 	}
 
+	[MustDisposeResource]
 	public IEnumerator<T> GetEnumerator() => BackingCollection.Keys.GetEnumerator();
 
 	public void IntersectWith(IEnumerable<T> other) {
