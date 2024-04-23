@@ -172,6 +172,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		return (steamOwnerID > 0) && new SteamID(steamOwnerID).IsIndividualAccount ? steamOwnerID : 0;
 	}
 
+	[MustDisposeResource]
 	[PublicAPI]
 	public async Task<IDisposable> GetTradingLock() {
 		await TradingSemaphore.WaitAsync().ConfigureAwait(false);
