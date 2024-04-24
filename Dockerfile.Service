@@ -4,11 +4,16 @@ FROM --platform=$BUILDPLATFORM node:lts${IMAGESUFFIX} AS build-node
 WORKDIR /app/ASF-ui
 COPY ASF-ui .
 COPY .git/modules/ASF-ui /app/.git/modules/ASF-ui
-RUN set -eu; \
-    echo "node: $(node --version)"; \
-    echo "npm: $(npm --version)"; \
-    npm ci --no-progress; \
+
+RUN <<EOF
+    set -eu
+
+    echo "node: $(node --version)"
+    echo "npm: $(npm --version)"
+
+    npm ci --no-progress
     npm run deploy --no-progress
+EOF
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0${IMAGESUFFIX} AS build-dotnet
 ARG CONFIGURATION=Release
@@ -28,38 +33,42 @@ COPY .editorconfig .editorconfig
 COPY Directory.Build.props Directory.Build.props
 COPY Directory.Packages.props Directory.Packages.props
 COPY LICENSE.txt LICENSE.txt
-RUN --mount=type=secret,id=STEAM_TOKEN_DUMPER_TOKEN set -eu; \
-    dotnet --info; \
-    \
-    case "$TARGETOS" in \
-      "linux") ;; \
-      *) echo "ERROR: Unsupported OS: ${TARGETOS}"; exit 1 ;; \
-    esac; \
-    \
-    case "$TARGETARCH" in \
-      "amd64") asf_variant="${TARGETOS}-x64" ;; \
-      "arm") asf_variant="${TARGETOS}-${TARGETARCH}" ;; \
-      "arm64") asf_variant="${TARGETOS}-${TARGETARCH}" ;; \
-      *) echo "ERROR: Unsupported CPU architecture: ${TARGETARCH}"; exit 1 ;; \
-    esac; \
-    \
-    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out" "-p:ASFVariant=${asf_variant}" -p:ContinuousIntegrationBuild=true -p:PublishSingleFile=true -p:PublishTrimmed=true -r "$asf_variant" --nologo --self-contained; \
-    \
-    if [ -f "/run/secrets/STEAM_TOKEN_DUMPER_TOKEN" ]; then \
-      STEAM_TOKEN_DUMPER_TOKEN="$(cat "/run/secrets/STEAM_TOKEN_DUMPER_TOKEN")"; \
-      \
-      if [ -n "STEAM_TOKEN_DUMPER_TOKEN" ] && [ -f "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" ]; then \
-        sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs"; \
-      else \
-        echo "WARN: STEAM_TOKEN_DUMPER_TOKEN not applied!"; \
-      fi; \
-    else \
-      echo "WARN: No STEAM_TOKEN_DUMPER_TOKEN provided!"; \
-    fi; \
-    \
-    for plugin in $PLUGINS_BUNDLED; do \
-      dotnet publish "$plugin" -c "$CONFIGURATION" -o "out/plugins/$plugin" "-p:ASFVariant=${asf_variant}" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo; \
+
+RUN --mount=type=secret,id=STEAM_TOKEN_DUMPER_TOKEN <<EOF
+    set -eu
+
+    dotnet --info
+
+    case "$TARGETOS" in
+        "linux") ;;
+        *) echo "ERROR: Unsupported OS: ${TARGETOS}"; exit 1 ;;
+    esac
+
+    case "$TARGETARCH" in
+        "amd64") asf_variant="${TARGETOS}-x64" ;;
+        "arm") asf_variant="${TARGETOS}-${TARGETARCH}" ;;
+        "arm64") asf_variant="${TARGETOS}-${TARGETARCH}" ;;
+        *) echo "ERROR: Unsupported CPU architecture: ${TARGETARCH}"; exit 1 ;;
+    esac
+
+    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out" "-p:ASFVariant=${asf_variant}" -p:ContinuousIntegrationBuild=true -p:PublishSingleFile=true -p:PublishTrimmed=true -r "$asf_variant" --nologo --self-contained
+
+    if [ -f "/run/secrets/STEAM_TOKEN_DUMPER_TOKEN" ]; then
+        STEAM_TOKEN_DUMPER_TOKEN="$(cat "/run/secrets/STEAM_TOKEN_DUMPER_TOKEN")"
+
+        if [ -n "STEAM_TOKEN_DUMPER_TOKEN" ] && [ -f "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" ]; then
+            sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs"
+        else
+            echo "WARN: STEAM_TOKEN_DUMPER_TOKEN not applied!"
+        fi
+    else
+        echo "WARN: No STEAM_TOKEN_DUMPER_TOKEN provided!"
+    fi
+
+    for plugin in $PLUGINS_BUNDLED; do
+        dotnet publish "$plugin" -c "$CONFIGURATION" -o "out/plugins/$plugin" "-p:ASFVariant=${asf_variant}" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo
     done
+EOF
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime-deps:8.0${IMAGESUFFIX} AS runtime
 ENV ASF_PATH /app
@@ -79,16 +88,21 @@ LABEL maintainer="JustArchi <JustArchi@JustArchi.net>" \
     org.opencontainers.image.description="C# application with primary purpose of idling Steam cards from multiple accounts simultaneously"
 
 EXPOSE 1242
-WORKDIR /app
 COPY --from=build-dotnet /app/out /asf
 
-RUN set -eu; \
-    groupadd -r -g 1000 asf; \
-    useradd -r -d /app -g 1000 -u 1000 asf; \
-    mkdir -p /app /asf; \
-    chown -hR asf:asf /app /asf; \
-    ln -s /asf/ArchiSteamFarm-Service.sh /usr/bin/ArchiSteamFarm
+RUN <<EOF
+    set -eu
 
+    mkdir -p "$ASF_PATH"
+
+    groupadd -r -g 1000 "$ASF_USER"
+    useradd -r -d "$ASF_PATH" -g 1000 -u 1000 "$ASF_USER"
+    chown -hR "${ASF_USER}:${ASF_USER}" "$ASF_PATH" /asf
+
+    ln -s /asf/ArchiSteamFarm-Service.sh /usr/bin/ArchiSteamFarm
+EOF
+
+WORKDIR /app
 VOLUME ["/app/config", "/app/logs"]
 HEALTHCHECK CMD ["pidof", "-q", "ArchiSteamFarm"]
 ENTRYPOINT ["ArchiSteamFarm", "--no-restart", "--system-required"]
