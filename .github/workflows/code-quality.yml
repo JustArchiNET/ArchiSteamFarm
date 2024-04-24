@@ -1,6 +1,7 @@
 name: ASF-code-quality
 
-on: [push, pull_request]
+on:
+  - push
 
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
@@ -14,28 +15,20 @@ permissions:
 
 jobs:
   main:
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      if: github.event_name != 'pull_request'
       uses: actions/checkout@v4.1.3
       with:
-        show-progress: false
-
-    - name: Checkout code (for PR)
-      if: github.event_name == 'pull_request'
-      uses: actions/checkout@v4.1.3
-      with:
-        fetch-depth: 100 # History is required for pull request analysis
-        ref: ${{ github.event.pull_request.head.sha }}  # To check out the actual pull request commit, not the merge commit
         show-progress: false
 
     - name: Run Qodana scan
       uses: JetBrains/qodana-action@v2024.1.1
       with:
-        args: --property=idea.headless.enable.statistics=false
+        args: --config,.github/qodana.yaml,--property=idea.headless.enable.statistics=false
+        pr-mode: false
+        upload-result: true
       env:
         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
 
