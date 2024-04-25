@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Composition;
@@ -35,6 +36,7 @@ using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,7 +47,7 @@ namespace ArchiSteamFarm.OfficialPlugins.Monitoring;
 
 [Export(typeof(IPlugin))]
 [SuppressMessage("ReSharper", "MemberCanBeFileLocal")]
-internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialGitHubPluginUpdates, IWebInterface, IWebServiceProvider {
+internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialGitHubPluginUpdates, IWebInterface, IWebServiceProvider, IBotTradeOfferResults {
 	private const string MeterName = SharedInfo.AssemblyName;
 
 	private const string MetricNamePrefix = "asf";
@@ -77,9 +79,24 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialG
 	[Required]
 	public override Version Version => typeof(MonitoringPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
+	private readonly ConcurrentDictionary<Bot, TradeStatistics> TradeStatistics = new();
+
 	private Meter? Meter;
 
 	public void Dispose() => Meter?.Dispose();
+
+	public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults) {
+		ArgumentNullException.ThrowIfNull(bot);
+		ArgumentNullException.ThrowIfNull(tradeResults);
+
+		TradeStatistics statistics = TradeStatistics.GetOrAdd(bot, static _ => new TradeStatistics());
+
+		foreach (ParseTradeResult result in tradeResults) {
+			statistics.Include(result);
+		}
+
+		return Task.CompletedTask;
+	}
 
 	public void OnConfiguringEndpoints(IApplicationBuilder app) {
 		ArgumentNullException.ThrowIfNull(app);
@@ -229,6 +246,54 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialG
 				return bots.Select(static bot => new Measurement<int>((int) bot.GamesToRedeemInBackgroundCount, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
 			},
 			description: "Remaining games to redeem in background per bot"
+		);
+
+		Meter.CreateObservableCounter(
+			$"{MetricNamePrefix}_bot_trades", () => TradeStatistics.SelectMany<KeyValuePair<Bot, TradeStatistics>, Measurement<uint>>(
+				static kv => [
+					new Measurement<uint>(
+						kv.Value.AcceptedOffers,
+						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),
+						new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID),
+						new KeyValuePair<string, object?>(TagNames.TradeOfferResult, "accepted")
+					),
+					new Measurement<uint>(
+						kv.Value.RejectedOffers,
+						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),
+						new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID),
+						new KeyValuePair<string, object?>(TagNames.TradeOfferResult, "rejected")
+					),
+					new Measurement<uint>(
+						kv.Value.IgnoredOffers,
+						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),
+						new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID),
+						new KeyValuePair<string, object?>(TagNames.TradeOfferResult, "ignored")
+					),
+					new Measurement<uint>(
+						kv.Value.BlacklistedOffers,
+						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),
+						new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID),
+						new KeyValuePair<string, object?>(TagNames.TradeOfferResult, "blacklisted")
+					),
+					new Measurement<uint>(
+						kv.Value.ConfirmedOffers,
+						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),
+						new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID),
+						new KeyValuePair<string, object?>(TagNames.TradeOfferResult, "2fa_confirmed")
+					)
+				]
+			),
+			description: "Trade offers per bot and action taken by ASF"
+		);
+
+		Meter.CreateObservableCounter(
+			$"{MetricNamePrefix}_bot_items_given", () => TradeStatistics.Select(static kv => new Measurement<uint>(kv.Value.ItemsGiven, new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID))),
+			description: "Items given per bot"
+		);
+
+		Meter.CreateObservableCounter(
+			$"{MetricNamePrefix}_bot_items_received", () => TradeStatistics.Select(static kv => new Measurement<uint>(kv.Value.ItemsReceived, new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID))),
+			description: "Items received per bot"
 		);
 	}
 }
