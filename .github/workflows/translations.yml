@@ -22,10 +22,9 @@ jobs:
 
     - name: Reset wiki to follow origin
       shell: sh
+      working-directory: wiki
       run: |
         set -eu
-
-        cd wiki
 
         git fetch --depth=1 origin master
         git reset --hard origin/master
@@ -52,10 +51,9 @@ jobs:
 
     - name: Commit the changes to wiki
       shell: sh
+      working-directory: wiki
       run: |
         set -eu
-
-        cd wiki
 
         git add -A "locale"
 
