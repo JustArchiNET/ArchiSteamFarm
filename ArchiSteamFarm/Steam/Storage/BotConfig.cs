@@ -562,30 +562,6 @@ public sealed class BotConfig {
 			return (null, null);
 		}
 
-		string? decryptedSteamPassword = await botConfig.GetDecryptedSteamPassword().ConfigureAwait(false);
-
-		if (!string.IsNullOrEmpty(decryptedSteamPassword)) {
-			HashSet<string> disallowedValues = new(StringComparer.OrdinalIgnoreCase) { "account" };
-
-			if (!string.IsNullOrEmpty(botConfig.SteamLogin)) {
-				disallowedValues.Add(botConfig.SteamLogin);
-			}
-
-			Utilities.InBackground(
-				() => {
-					(bool isWeak, string? reason) = Utilities.TestPasswordStrength(decryptedSteamPassword, disallowedValues);
-
-					if (isWeak) {
-						if (string.IsNullOrEmpty(botName)) {
-							botName = Path.GetFileNameWithoutExtension(filePath);
-						}
-
-						ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakSteamPassword, botName, reason));
-					}
-				}
-			);
-		}
-
 		switch (botConfig.PasswordFormat) {
 			case ArchiCryptoHelper.ECryptoMethod.AES when ArchiCryptoHelper.HasDefaultCryptKey:
 				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningDefaultCryptKeyUsedForEncryption, botConfig.PasswordFormat, nameof(SteamPassword)));

@@ -45,7 +45,6 @@ using Humanizer.Localisation;
 using JetBrains.Annotations;
 using Microsoft.IdentityModel.JsonWebTokens;
 using SteamKit2;
-using Zxcvbn;
 
 namespace ArchiSteamFarm.Core;
 
@@ -56,9 +55,6 @@ public static class Utilities {
 	private const uint UnauthorizedAccessHResult = 0x80070005;
 
 	private static readonly FrozenSet<char> DirectorySeparators = new HashSet<char>(2) { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }.ToFrozenSet();
-
-	// normally we'd just use words like "steam" and "farm", but the library we're currently using is a bit iffy about banned words, so we need to also add combinations such as "steamfarm"
-	private static readonly FrozenSet<string> ForbiddenPasswordPhrases = new HashSet<string>(10, StringComparer.OrdinalIgnoreCase) { "archisteamfarm", "archi", "steam", "farm", "archisteam", "archifarm", "steamfarm", "asf", "asffarm", "password" }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
 	[PublicAPI]
 	public static string GenerateChecksumFor(byte[] source) {
@@ -291,40 +287,6 @@ public static class Utilities {
 		}
 
 		ASF.ArchiLogger.LogGenericDebug($"{fileName} {progressPercentage}%...");
-	}
-
-	internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, IEnumerable<string>? additionallyForbiddenPhrases = null) {
-		ArgumentException.ThrowIfNullOrEmpty(password);
-
-		HashSet<string> forbiddenPhrases = ForbiddenPasswordPhrases.ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-		if (additionallyForbiddenPhrases != null) {
-			forbiddenPhrases.UnionWith(additionallyForbiddenPhrases);
-		}
-
-		Result result = Zxcvbn.Core.EvaluatePassword(password, forbiddenPhrases);
-
-		IList<string>? suggestions = result.Feedback.Suggestions;
-
-		if (!string.IsNullOrEmpty(result.Feedback.Warning)) {
-			suggestions ??= new List<string>(1);
-
-			suggestions.Insert(0, result.Feedback.Warning);
-		}
-
-		if (suggestions != null) {
-			for (byte i = 0; i < suggestions.Count; i++) {
-				string suggestion = suggestions[i];
-
-				if ((suggestion.Length == 0) || (suggestion[^1] == '.')) {
-					continue;
-				}
-
-				suggestions[i] = $"{suggestion}.";
-			}
-		}
-
-		return (result.Score < 4, suggestions is { Count: > 0 } ? string.Join(' ', suggestions.Where(static suggestion => suggestion.Length > 0)) : null);
 	}
 
 	internal static async Task<bool> UpdateCleanup(string targetDirectory) {
