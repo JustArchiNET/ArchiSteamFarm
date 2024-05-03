@@ -520,7 +520,7 @@ public sealed class BotConfig {
 		return result;
 	}
 
-	internal static async Task<(BotConfig? BotConfig, string? LatestJson)> Load(string filePath, string? botName = null) {
+	internal static async Task<(BotConfig? BotConfig, string? LatestJson)> Load(string filePath) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
