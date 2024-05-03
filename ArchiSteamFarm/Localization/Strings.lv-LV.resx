@@ -687,18 +687,6 @@ Darbspējas laiks: {1}</value>
 		<value>{0} konfigurācijas fails tiks migrēts uz jaunāko sintaksi...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>IPC parole ir vāja. Apsver iespēju izvēlēties stiprāku paroli papildu drošībai. Detaļas: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Steam parole lietotājam '{0}' ir vāja. Apsver iespēju izvēlēties stiprāku paroli papildu drošībai. Detaļas: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Šifrēšanas atslēga ir vāja. Apsver iespēju izvēlēties stiprāku paroli papildu drošībai. Detaļas: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Šifrēšanas atslēga ir pārāk īsa. Mēs iesakām izmantot tādu, kas ir vismaz {0} baitus (simbolus) gara.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

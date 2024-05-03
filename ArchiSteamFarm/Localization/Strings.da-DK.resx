@@ -652,9 +652,6 @@ Processens oppetid: {1}</value>
 	
 	
 	
-	
-	
-	
 	<data name="WarningRunningAsRoot" xml:space="preserve">
 		<value>Du forsøger at køre ASF som administrator (root). Dette medfører en betydelig sikkerhedsrisiko for din maskine, og da ASF ikke kræver root-adgang for dens drift, vi anbefaler at køre det som ikke-administrator bruger hvis det er muligt.</value>
 	</data>

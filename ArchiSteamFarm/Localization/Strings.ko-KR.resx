@@ -690,18 +690,6 @@ StackTrace:
 		<value>{0} 설정 파일이 최신 버전으로 업데이트 됩니다</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>IPC 비밀번호가 쉬워 보입니다. 보안을 강화하기 위하여 더 복잡한 비밀번호를 사용하는 것을 고려해 보세요. 자세한 설명: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>'{0}'을(를) 위한 Steam 비밀번호가 쉬워 보입니다. 보안을 강화하기 위하여 더 복잡한 비밀번호를 사용하는 것을 고려해 보세요. 자세한 설명: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>암호키가 쉬워 보입니다. 보안을 강화하기 위하여 더 복잡한 암호키를 사용하는 것을 고려해 보세요. 자세한 설명: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>암호키가 너무 짧습니다. 최소한 {0} 바이트(글자수) 길이 이상의 암호키를 사용하는 것을 추천합니다.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

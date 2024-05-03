@@ -687,18 +687,6 @@ StackTrace:
 		<value>קובץ ה-config שמיקומו {0} יועבר לתחביר העדכני ביותר...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>נראה שסיסמת ה-IPC שלך חלשה. שקול לבחור חזק יותר להגברת האבטחה. פרטים: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>נראה שהסיסמה שלך ב-Steam עבור '{0}' חלשה. שקול לבחור חזק יותר להגברת האבטחה. פרטים: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>מפתח ההצפנה שלך נראה חלש. שקול לבחור חזק יותר להגברת האבטחה. פרטים: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>מפתח ההצפנה שלך קצר מדי. אנו ממליצים להשתמש באחד שאורכו לפחות {0} בייטים (תווים).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

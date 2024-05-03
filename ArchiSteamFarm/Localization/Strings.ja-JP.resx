@@ -684,18 +684,6 @@ Process uptime: {1}</value>
 		<value>{0} 設定ファイルは最新の構文に移行されます...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>IPCパスワードが弱いようです。セキュリティを強化するためにもっと強力なパスワードを選択してください。詳細: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>あなたのSteamパスワード '{0}' は脆弱なようです。セキュリティを強化するために、より強力なパスワードを選択することを検討してください。詳細: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>暗号化キーが弱いようです。セキュリティを強化するために強力なキーを選択することを検討してください。詳細: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>暗号化キーが短すぎます。少なくとも {0} バイト (文字) の長いものを使用することをお勧めします。</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

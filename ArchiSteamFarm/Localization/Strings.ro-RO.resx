@@ -684,18 +684,6 @@ Proces: {1}</value>
 		<value>Fișierul de configurare {0} va fi migrat la cea mai recentă sintaxă...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Parola dvs. IPC pare a fi slaba. Va rugam sa considerați sa alegeți o parola mai complexa. Detail: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Parola dvs. de Steam este slaba. Va rugam sa considerați sa alegeți o parola mai complexa. Detail</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Cheia dvs. de encripție este slaba. Va rugam sa considerați sa alegeți o cheie mai complexa. Detail: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Cheia dvs. de encripție este prea scurta. Va recomandam sa folosii o parola cu minim {0} caractere.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

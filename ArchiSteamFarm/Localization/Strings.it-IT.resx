@@ -688,18 +688,6 @@ Tempo di attività: {1}</value>
 		<value>Il file di configurazione {0} verrà migrato all'ultima sintassi...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>La tua password IPC sembra essere debole. Considera di sceglierne una più forte per una maggiore sicurezza. Dettagli: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>La tua password di Steam per '{0}' sembra essere debole. Considera di sceglierne una più forte per una maggiore sicurezza. Dettagli: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>La tua chiave di crittografia sembra essere debole. Considera di sceglierne una più forte per una maggiore sicurezza. Dettagli: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>La chiave di crittografia è troppo corta. Si consiglia di utilizzarne una lunga almeno {0} byte (caratteri).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

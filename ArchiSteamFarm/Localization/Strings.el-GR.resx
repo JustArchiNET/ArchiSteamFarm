@@ -687,18 +687,6 @@ StackTrace:
 		<value>{0} αρχείο ρυθμίσεων θα μεταφερθεί στην τελευταία σύνταξη...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Ο κωδικός πρόσβασης IPC φαίνεται να είναι αδύναμος. Εξετάστε το ενδεχόμενο να επιλέξετε έναν ισχυρότερο για αυξημένη ασφάλεια. Λεπτομέρειες: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Ο κωδικός πρόσβασης Steam για το '{0}' φαίνεται να είναι αδύναμος. Εξετάστε το ενδεχόμενο να επιλέξετε έναν ισχυρότερο για αυξημένη ασφάλεια. Λεπτομέρειες: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Το κλειδί κρυπτογράφησής σας φαίνεται να είναι αδύναμο. Εξετάστε το ενδεχόμενο να επιλέξετε ένα ισχυρότερο για αυξημένη ασφάλεια. Λεπτομέρειες: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Το κλειδί κρυπτογράφησης σας είναι πολύ μικρό. Σας συνιστούμε να χρησιμοποιήσετε ένα που είναι τουλάχιστον {0} bytes (χαρακτήρες).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

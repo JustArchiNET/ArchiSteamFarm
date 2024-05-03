@@ -690,18 +690,6 @@
 		<value>Файл конфігурації {0} буде оновлено до поточного синтаксису...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Ваш IPC-пароль здається слабким. Подумайте про вибір міцнішого для підвищення безпеки. Подробиці: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Здається, ваш пароль Steam для '{0}' ненадійний. Подумайте про вибір міцнішого для підвищення безпеки. Подробиці: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Здається, ваш ключ шифрування слабкий. Подумайте про вибір міцнішого для підвищення безпеки. Подробиці: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Ваш ключ шифрування закороткий. Ми рекомендуємо використовувати довжину принаймні {0} байтів (символів).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

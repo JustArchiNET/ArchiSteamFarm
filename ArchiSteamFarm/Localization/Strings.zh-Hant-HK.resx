@@ -681,18 +681,6 @@
 		<value>{0} config file will be migrated to the latest syntax...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>您的IPC密碼似乎很弱。 考慮選擇一個更强的以提高安全性。 詳細資訊：{0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>“{0} ”的Steam密碼似乎很弱。 考慮選擇一個更强的以提高安全性。 詳細資訊：{1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>您的加密金鑰似乎很弱。 考慮選擇一個更强的以提高安全性。 詳細資訊：{0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>您的加密金鑰太短。 我們建議使用長度至少為{0} 個位元組(字元) 的檔案。</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
