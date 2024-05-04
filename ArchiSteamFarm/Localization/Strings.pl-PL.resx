@@ -690,18 +690,6 @@ Czas procesu: {1}</value>
 		<value>{0} plik konfiguracyjny zostanie przeniesiony do najnowszej składni...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Twoje hasło IPC wydaje się słabe. Rozważ wybór silniejszego dla zwiększenia bezpieczeństwa. Szczegóły: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Twoje hasło Steam dla '{0}' wydaje się słabe. Rozważ wybór silniejszego dla zwiększenia bezpieczeństwa. Szczegóły: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Twój klucz szyfrowania wydaje się słaby. Rozważ wybór silniejszego dla zwiększenia bezpieczeństwa. Szczegóły: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Twój klucz szyfrowania jest zbyt krótki. Zalecamy użyć takiego, który ma co najmniej {0} bajtów (znaków).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

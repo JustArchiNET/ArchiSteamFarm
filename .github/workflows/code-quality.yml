@@ -24,7 +24,7 @@ jobs:
         show-progress: false
 
     - name: Run Qodana scan
-      uses: JetBrains/qodana-action@v2024.1.1
+      uses: JetBrains/qodana-action@v2024.1.3
       with:
         args: --config,.github/qodana.yaml,--property=idea.headless.enable.statistics=false
         pr-mode: false
@@ -33,6 +33,6 @@ jobs:
         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
 
     - name: Report Qodana results to GitHub
-      uses: github/codeql-action/upload-sarif@v3.25.2
+      uses: github/codeql-action/upload-sarif@v3.25.3
       with:
         sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json

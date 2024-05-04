@@ -690,18 +690,6 @@
 		<value>配置文件 {0} 将会迁移到最新格式……</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>您的 IPC 密码似乎很弱。请考虑选择更强的密码来增强安全性，详情 ：{0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>您 '{0}' 的 Steam 密码似乎很弱。请考虑选择更强的密码来增强安全性，详情 ：{1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>您的加密密钥似乎很弱。请考虑选择更强的密钥来增强安全性，详情 ：{0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>您的加密密钥太短。我们建议您使用至少 {0} 字节长度的密钥。</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

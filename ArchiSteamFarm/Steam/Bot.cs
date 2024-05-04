@@ -1536,7 +1536,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(configFile));
 		}
 
-		(BotConfig? botConfig, _) = await BotConfig.Load(configFile, BotName).ConfigureAwait(false);
+		(BotConfig? botConfig, _) = await BotConfig.Load(configFile).ConfigureAwait(false);
 
 		if (botConfig == null) {
 			// Invalid config file, we allow user to fix it without destroying the bot right away
@@ -1684,7 +1684,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		(BotConfig? botConfig, string? latestJson) = await BotConfig.Load(configFilePath, botName).ConfigureAwait(false);
+		(BotConfig? botConfig, string? latestJson) = await BotConfig.Load(configFilePath).ConfigureAwait(false);
 
 		if (botConfig == null) {
 			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorBotConfigInvalid, configFilePath));

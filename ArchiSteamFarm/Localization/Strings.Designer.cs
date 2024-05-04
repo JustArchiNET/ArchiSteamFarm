@@ -1119,24 +1119,6 @@ namespace ArchiSteamFarm.Localization {
             }
         }
         
-        public static string WarningWeakIPCPassword {
-            get {
-                return ResourceManager.GetString("WarningWeakIPCPassword", resourceCulture);
-            }
-        }
-        
-        public static string WarningWeakSteamPassword {
-            get {
-                return ResourceManager.GetString("WarningWeakSteamPassword", resourceCulture);
-            }
-        }
-        
-        public static string WarningWeakCryptKey {
-            get {
-                return ResourceManager.GetString("WarningWeakCryptKey", resourceCulture);
-            }
-        }
-        
         public static string WarningTooShortCryptKey {
             get {
                 return ResourceManager.GetString("WarningTooShortCryptKey", resourceCulture);

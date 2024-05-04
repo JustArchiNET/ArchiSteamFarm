@@ -9,7 +9,7 @@
 		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.5.1" />
 		<PackageVersion Include="MSTest" Version="3.3.1" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
-		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.8" />
+		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.10" />
 		<PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.7.0-rc.1" />
 		<PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.8.1" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.1" />
@@ -22,6 +22,5 @@
 		<PackageVersion Include="System.Composition.AttributedModel" Version="8.0.0" />
 		<PackageVersion Include="System.Linq.Async" Version="6.0.1" />
 		<PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
-		<PackageVersion Include="zxcvbn-core" Version="7.0.92" />
 	</ItemGroup>
 </Project>

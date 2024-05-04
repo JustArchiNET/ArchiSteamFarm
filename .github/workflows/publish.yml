@@ -479,15 +479,12 @@ jobs:
 
     - name: Generate SHA-512 checksums and signature
       shell: sh
+      working-directory: out
       run: |
         set -eu
 
-        (
-            cd "out"
-
-            sha512sum *.zip > SHA512SUMS
-            gpg -a -b -o SHA512SUMS.sign SHA512SUMS
-        )
+        sha512sum *.zip > SHA512SUMS
+        gpg -a -b -o SHA512SUMS.sign SHA512SUMS
 
     - name: Upload SHA512SUMS
       uses: actions/upload-artifact@v4.3.3

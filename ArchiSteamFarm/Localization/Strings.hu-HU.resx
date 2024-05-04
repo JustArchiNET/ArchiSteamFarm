@@ -682,18 +682,6 @@ Ennyi ideje fut: {1}</value>
 		<value>A(z) {0} konfigurációs fájl a legújabb szintaxisra kerül áttelepítésre...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Úgy tűnik, hogy az IPC jelszava gyenge. Fontolja meg, hogy erősebbet válasszon a nagyobb biztonság érdekében. Részletek: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Úgy tűnik, hogy a(z) '{0}' Steam jelszava gyenge. Fontolja meg, hogy erősebbet válasszon a nagyobb biztonság érdekében. Részletek: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Úgy tűnik, hogy a titkosítási kulcsa gyenge. Fontolja meg, hogy erősebbet válasszon a nagyobb biztonság érdekében. Részletek: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>A titkosítási kulcs túl rövid. Azt javasoljuk, hogy legalább {0} bájt (karakter) hosszúságú legyen.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

@@ -687,18 +687,6 @@ Prosessin käyttöaika: {1}</value>
 		<value>{0} asetustiedosto muutetaan uusimpaan syntaksiin...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>IPC-salasanasi näyttää olevan heikko. Harkitse vahvemman salasanan valitsemista turvallisuuden parantamiseksi. Yksityiskohdat: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Steam-salasanasi '{0}' näyttää olevan heikko. Harkitse vahvemman salasanan valitsemista turvallisuuden lisäämiseksi. Yksityiskohdat: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Salausavaimesi näyttää olevan heikko. Harkitse vahvemman valintaa turvallisuuden parantamiseksi. Yksityiskohdat: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Salausavaimesi on liian lyhyt. Suosittelemme käyttämään salausavainta, joka on vähintään {0} tavua (merkkiä) pitkä.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

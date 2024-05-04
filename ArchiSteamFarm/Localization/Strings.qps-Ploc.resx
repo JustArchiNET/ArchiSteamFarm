@@ -690,18 +690,6 @@ PROCES UPTIME: {1}</value>
 		<value>{0} CONFIG FILE WILL BE MIGRATD 2 TEH LATEST SYNTAX...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>UR IPC PASWORD SEEMS 2 BE WEAK. CONSIDR CHOOSIN STRONGR WAN 4 INCREASD SECURITY. DETAILS: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>UR STEAM PASWORD 4 '{0}' SEEMS 2 BE WEAK. CONSIDR CHOOSIN STRONGR WAN 4 INCREASD SECURITY. DETAILS: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>UR ENCRYPSHUN KEY SEEMS 2 BE WEAK. CONSIDR CHOOSIN STRONGR WAN 4 INCREASD SECURITY. DETAILS: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>UR ENCRYPSHUN KEY IZ 2 SHORT. WE RECOMMEND 2 USE WAN DAT IZ AT LEAST {0} BYTEZ (CHARACTERS) LONG.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

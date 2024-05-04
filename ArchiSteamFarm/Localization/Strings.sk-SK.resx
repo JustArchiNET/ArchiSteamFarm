@@ -691,18 +691,6 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
 		<value>{0} konfiguračný súbor bude prevedený na najnovšiu syntax...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Vaše IPC heslo sa zdá byť slabé. Zvážte výber silnejšieho hesla pre zvýšenie bezpečnosti. Detaily: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Vaše Steam heslo pre '{0}' se zdá byť slabé. Zvážte výber silnejšieho hesla pre zvýšenie bezpečnosti. Detaily: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Váš šifrovací kľuč se zdá byť slabý. Zvážte výber silnejšej varianty pre zvýšenie bezpečnosti. Detaily: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Váš šifrovací kľuč je príliš krátky. Doporučujeme použiť ten, ktorý je aspoň {0} bajtu (znakov) dlhý.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

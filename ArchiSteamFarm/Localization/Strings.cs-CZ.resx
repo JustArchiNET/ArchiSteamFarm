@@ -687,18 +687,6 @@ StackTrace:
 		<value>{0} konfigurační soubor bude převeden na nejnovější syntaxi...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Vaše IPC heslo se zdá být slabé. Zvažte výběr silnějšího hesla pro zvýšení bezpečnosti. Detaily: {0}</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Vaše Steam heslo pro '{0}' se zdá být slabé. Pro větší zabezpečení zvažte změnu hesla na silnější variantu. Detaily: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Váš šifrovací klíč se zdá být slabý. Zvažte výběr silnější varianty pro zvýšení bezpečnosti. Detaily: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Váš šifrovací klíč je příliš krátký. Doporučujeme použít ten, který je alespoň {0} bajtů (znaků) dlouhý.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>

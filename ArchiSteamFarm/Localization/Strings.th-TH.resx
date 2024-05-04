@@ -558,9 +558,6 @@ StackTrace:
 	
 	
 	
-	
-	
-	
 	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
 		<value>กำลังดึงข้อมูล checksum จากเซิร์ฟเวอร์ระยะไกล...</value>
 	</data>

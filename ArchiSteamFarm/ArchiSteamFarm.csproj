@@ -25,7 +25,6 @@
 		<PackageReference Include="System.Composition" />
 		<PackageReference Include="System.Linq.Async" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" />
-		<PackageReference Include="zxcvbn-core" />
 	</ItemGroup>
 
 	<ItemGroup>

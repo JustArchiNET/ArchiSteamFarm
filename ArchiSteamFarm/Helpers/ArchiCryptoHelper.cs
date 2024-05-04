@@ -22,7 +22,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -46,8 +45,6 @@ public static class ArchiCryptoHelper {
 	private const ushort SteamParentalSCryptIterations = 8192;
 
 	internal static bool HasDefaultCryptKey { get; private set; } = true;
-
-	private static readonly FrozenSet<string> ForbiddenCryptKeyPhrases = new HashSet<string>(3, StringComparer.OrdinalIgnoreCase) { "crypt", "key", "cryptkey" }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
 	private static IEnumerable<byte> SteamParentalCharacters => Enumerable.Range('0', 10).Select(static character => (byte) character);
 
@@ -178,16 +175,6 @@ public static class ArchiCryptoHelper {
 
 			return;
 		}
-
-		Utilities.InBackground(
-			() => {
-				(bool isWeak, string? reason) = Utilities.TestPasswordStrength(key, ForbiddenCryptKeyPhrases);
-
-				if (isWeak) {
-					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakCryptKey, reason));
-				}
-			}
-		);
 
 		byte[] encryptionKey = Encoding.UTF8.GetBytes(key);
 

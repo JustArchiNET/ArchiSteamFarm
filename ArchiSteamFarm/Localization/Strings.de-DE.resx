@@ -691,18 +691,6 @@ Prozesslaufzeit: {1}</value>
 		<value>Die Konfigurationsdatei {0} wird zur neuesten Version migriert...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Ihr IPC-Passwort scheint schwach zu sein. Für erhöhte Sicherheit sollten Sie überlegen, ein Stärkeres auszusuchen. Details: {0} Ihr</value>
-		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Ihr Steam-Passwort für '{0}' scheint schwach zu sein. Für erhöhte Sicherheit sollten Sie überlegen, ein Stärkeres auszusuchen. Details: {1}</value>
-		<comment>{0} will be replaced by the affected bot name, {1} will be replaced by additional details about the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Ihr kryptografischer Schlüssel scheint schwach zu sein. Für erhöhte Sicherheit sollten Sie überlegen, einen Stärkeren auszusuchen. Details: {0}</value>
-		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
-	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Ihr kryptografischer Schlüssel ist zu kurz. Wir empfehlen einen zu verwenden, der mindestens {0} Bytes (Zeichen) lang ist.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
