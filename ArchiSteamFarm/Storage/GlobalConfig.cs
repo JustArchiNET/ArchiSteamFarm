@@ -254,6 +254,7 @@ public sealed class GlobalConfig {
 	public bool IPC { get; private init; } = DefaultIPC;
 
 	[JsonInclude]
+	[SwaggerSecurityCritical]
 	public string? IPCPassword {
 		get => BackingIPCPassword;
 
@@ -268,6 +269,7 @@ public sealed class GlobalConfig {
 
 	[JsonConverter(typeof(GuidJsonConverter))]
 	[JsonInclude]
+	[SwaggerSecurityCritical]
 	public Guid? LicenseID { get; private init; } = DefaultLicenseID;
 
 	[JsonInclude]
@@ -422,7 +424,7 @@ public sealed class GlobalConfig {
 	public bool ShouldSerializeIPCPasswordFormat() => !Saving || (IPCPasswordFormat != DefaultIPCPasswordFormat);
 
 	[UsedImplicitly]
-	public bool ShouldSerializeLicenseID() => !Saving || ((LicenseID != DefaultLicenseID) && (LicenseID != Guid.Empty));
+	public bool ShouldSerializeLicenseID() => Saving && (LicenseID != DefaultLicenseID) && (LicenseID != Guid.Empty);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeLoginLimiterDelay() => !Saving || (LoginLimiterDelay != DefaultLoginLimiterDelay);
