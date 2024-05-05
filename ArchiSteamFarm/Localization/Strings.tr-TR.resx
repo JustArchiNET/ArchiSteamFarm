@@ -687,7 +687,7 @@ Süreç çalışma zamanı: {1}</value>
 		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
 	</data>
 	<data name="AutomaticFileMigration" xml:space="preserve">
-		<value>{0} yapılandırma dosyası en sondaki söz dizimine taşınacak...</value>
+		<value>{0} yapılandırma dosyası en son sürüm söz dizimine aktarılacak...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
@@ -717,7 +717,9 @@ Süreç çalışma zamanı: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Uzak sunucu, güncelleme yaptığımız sürüm hakkında hiçbir şey bilmiyor. Bu durum, sürüm yakın zamanda yayınlandıysa mümkündür - ek bir güvenlik önlemi olarak güncelleme prosedürüne hemen devam etmeyi reddeder.</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>İndirilen ikili dosyanın sağlama toplamı alınamadı; ek bir güvenlik önlemi olarak şu anda güncelleme prosedürüne devam etmeyi reddediyoruz.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Uzak sunucu farklı bir sağlama sayısı ile yanıt verdi, bu güncelleme dosyalarının bozuk indiğine veya MITM saldırısına işaret olabilir, güncelleme durduruluyor!</value>
 	</data>
@@ -762,14 +764,43 @@ Süreç çalışma zamanı: {1}</value>
 		<value>{0} eklentisi için güncellemesi denetleniyor...</value>
 		<comment>{0} will be replaced by plugin name (string).</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>{0} eklentisi için güncelleme mevcut değil: {1} ≥ {2}.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>{0} eklentisinin yeni sürümü mevcut! Güncellemeyi düşünün!</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>{1} sürümünden {2} sürümüne {0} eklentisinin güncellemesi bulundu...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>{1} sürümünden {2} sürümüne {0} eklentisinin güncellemesi için öğe mevcut değil; bu genellikle güncellemenin daha sonra mevcut olacağı anlamına gelir.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>{0} eklentisinin {1} sürümünden {2} sürümüne güncellemesi için hiçbir öğe belirlenemedi. Sürüm henüz tamamlanmadıysa bu durum meydana gelebilir; bu durum devam ederse eklentiyi oluşturan kişiye bu konuda bilgi vermelisiniz.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>{0} eklentisi güncelleniyor...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>{0} eklentisinin güncellenmesi başarılı oldu, değişiklikler bir sonraki ASF açılışında yüklenecek.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>{0}/{1} eklentisi kaydedildi ve otomatik güncellemeler için etkinleştirildi.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>{0} ({1}) eklentisi, bu özelliği desteklemesine rağmen otomatik güncellemelerden devre dışı bırakıldı.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Otomatik güncellemeler için özel eklentiler kaydedildi. ASF ekibi, kendi güvenliğiniz için yalnızca güvenilir taraflardan gelen otomatik güncellemeleri etkinleştirmeniz gerektiğini hatırlatmak ister. Bunu yapmayı planlamadıysanız ASF global yapılandırmasında eklenti güncellemelerini devre dışı bırakabilirsiniz.</value>
+	</data>
 </root>
