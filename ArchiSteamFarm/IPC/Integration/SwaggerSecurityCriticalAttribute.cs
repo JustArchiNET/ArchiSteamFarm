@@ -31,8 +31,7 @@ namespace ArchiSteamFarm.IPC.Integration;
 
 [PublicAPI]
 public sealed class SwaggerSecurityCriticalAttribute : CustomSwaggerAttribute {
-	[PublicAPI]
-	public const string ExtensionName = "x-security-critical";
+	private const string ExtensionName = "x-security-critical";
 
 	public override void Apply(OpenApiSchema schema) {
 		ArgumentNullException.ThrowIfNull(schema);
