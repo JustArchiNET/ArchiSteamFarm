@@ -270,7 +270,14 @@ public sealed class GlobalConfig {
 	[JsonConverter(typeof(GuidJsonConverter))]
 	[JsonInclude]
 	[SwaggerSecurityCritical]
-	public Guid? LicenseID { get; private init; } = DefaultLicenseID;
+	public Guid? LicenseID {
+		get => BackingLicenseID;
+
+		private set {
+			IsLicenseIdSet = true;
+			BackingLicenseID = value;
+		}
+	}
 
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
@@ -332,6 +339,8 @@ public sealed class GlobalConfig {
 	[JsonInclude]
 	public string? WebProxyUsername { get; private init; } = DefaultWebProxyUsername;
 
+	internal bool IsLicenseIdSet;
+
 	[JsonExtensionData]
 	[JsonInclude]
 	internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
@@ -342,6 +351,7 @@ public sealed class GlobalConfig {
 	internal bool Saving { get; set; }
 
 	[JsonInclude]
+	[SwaggerSecurityCritical]
 	internal string? WebProxyPassword {
 		get => BackingWebProxyPassword;
 
@@ -352,6 +362,8 @@ public sealed class GlobalConfig {
 	}
 
 	private string? BackingIPCPassword = DefaultIPCPassword;
+
+	private Guid? BackingLicenseID = DefaultLicenseID;
 	private WebProxy? BackingWebProxy;
 	private string? BackingWebProxyPassword = DefaultWebProxyPassword;
 
@@ -424,7 +436,7 @@ public sealed class GlobalConfig {
 	public bool ShouldSerializeIPCPasswordFormat() => !Saving || (IPCPasswordFormat != DefaultIPCPasswordFormat);
 
 	[UsedImplicitly]
-	public bool ShouldSerializeLicenseID() => Saving && (LicenseID != DefaultLicenseID) && (LicenseID != Guid.Empty);
+	public bool ShouldSerializeLicenseID() => Saving && IsLicenseIdSet && (LicenseID != DefaultLicenseID) && (LicenseID != Guid.Empty);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeLoginLimiterDelay() => !Saving || (LoginLimiterDelay != DefaultLoginLimiterDelay);
