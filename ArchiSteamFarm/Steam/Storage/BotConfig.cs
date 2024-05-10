@@ -232,6 +232,7 @@ public sealed class BotConfig {
 	}
 
 	[JsonInclude]
+	[SwaggerSecurityCritical]
 	public string? SteamPassword {
 		get => BackingSteamPassword;
 
