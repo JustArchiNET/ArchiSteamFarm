@@ -358,7 +358,6 @@ public sealed class GlobalConfig {
 	}
 
 	private string? BackingIPCPassword = DefaultIPCPassword;
-
 	private Guid? BackingLicenseID = DefaultLicenseID;
 	private WebProxy? BackingWebProxy;
 	private string? BackingWebProxyPassword = DefaultWebProxyPassword;
