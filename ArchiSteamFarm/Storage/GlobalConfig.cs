@@ -270,8 +270,8 @@ public sealed class GlobalConfig {
 	public Guid? LicenseID {
 		get => BackingLicenseID;
 
-		private set {
-			IsLicenseIdSet = true;
+		internal set {
+			IsLicenseIDSet = true;
 			BackingLicenseID = value;
 		}
 	}
@@ -336,7 +336,7 @@ public sealed class GlobalConfig {
 	[JsonInclude]
 	public string? WebProxyUsername { get; private init; } = DefaultWebProxyUsername;
 
-	internal bool IsLicenseIdSet;
+	internal bool IsLicenseIDSet;
 
 	[JsonExtensionData]
 	[JsonInclude]
@@ -433,7 +433,7 @@ public sealed class GlobalConfig {
 	public bool ShouldSerializeIPCPasswordFormat() => !Saving || (IPCPasswordFormat != DefaultIPCPasswordFormat);
 
 	[UsedImplicitly]
-	public bool ShouldSerializeLicenseID() => Saving && IsLicenseIdSet && (LicenseID != DefaultLicenseID) && (LicenseID != Guid.Empty);
+	public bool ShouldSerializeLicenseID() => Saving && IsLicenseIDSet && (LicenseID != DefaultLicenseID) && (LicenseID != Guid.Empty);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeLoginLimiterDelay() => !Saving || (LoginLimiterDelay != DefaultLoginLimiterDelay);

@@ -121,6 +121,10 @@ public sealed class ASFController : ArchiController {
 			request.GlobalConfig.IPCPassword = ASF.GlobalConfig.IPCPassword;
 		}
 
+		if (!request.GlobalConfig.IsLicenseIDSet && ASF.GlobalConfig.IsLicenseIDSet) {
+			request.GlobalConfig.LicenseID = ASF.GlobalConfig.LicenseID;
+		}
+
 		if (!request.GlobalConfig.IsWebProxyPasswordSet && ASF.GlobalConfig.IsWebProxyPasswordSet) {
 			request.GlobalConfig.WebProxyPassword = ASF.GlobalConfig.WebProxyPassword;
 		}
