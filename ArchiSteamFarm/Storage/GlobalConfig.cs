@@ -336,13 +336,12 @@ public sealed class GlobalConfig {
 	[JsonInclude]
 	public string? WebProxyUsername { get; private init; } = DefaultWebProxyUsername;
 
-	internal bool IsLicenseIDSet;
-
 	[JsonExtensionData]
 	[JsonInclude]
 	internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
 	internal bool IsIPCPasswordSet { get; private set; }
+	internal bool IsLicenseIDSet { get; private set; }
 	internal bool IsWebProxyPasswordSet { get; private set; }
 
 	internal bool Saving { get; set; }
