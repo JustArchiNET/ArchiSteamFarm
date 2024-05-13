@@ -130,9 +130,10 @@ public sealed class Trading : IDisposable {
 
 		// Once we have initial state, we remove items that we're supposed to give from our inventory
 		// This loop is a bit more complex due to the fact that we might have a mix of the same item splitted into different amounts
+		HashSet<Asset> itemsToRemove = [];
+
 		foreach (Asset itemToGive in itemsToGive) {
 			uint amountToGive = itemToGive.Amount;
-			HashSet<Asset> itemsToRemove = [];
 
 			foreach (Asset item in inventoryState.Where(item => (item.AppID == itemToGive.AppID) && (item.ClassID == itemToGive.ClassID) && (item.InstanceID == itemToGive.InstanceID))) {
 				if (amountToGive >= item.Amount) {
@@ -154,6 +155,8 @@ public sealed class Trading : IDisposable {
 
 			if (itemsToRemove.Count > 0) {
 				inventoryState.ExceptWith(itemsToRemove);
+
+				itemsToRemove.Clear();
 			}
 		}
 
