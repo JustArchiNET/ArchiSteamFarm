@@ -178,7 +178,9 @@ public sealed class Trading : IDisposable {
 			}
 
 			// Otherwise, fill the missing holes in our data if needed, since we actually had zeros there
-			for (byte i = 0; i < afterAmounts.Count - beforeAmounts.Count; i++) {
+			byte missingAmounts = (byte) (afterAmounts.Count - beforeAmounts.Count);
+
+			for (byte i = 0; i < missingAmounts; i++) {
 				beforeAmounts.Insert(0, 0);
 			}
 

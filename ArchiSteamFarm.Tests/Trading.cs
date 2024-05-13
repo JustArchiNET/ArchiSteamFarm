@@ -53,6 +53,30 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
+	public void Issue3203() {
+		HashSet<Asset> inventory = [
+			CreateItem(1, amount: 2),
+			CreateItem(2, amount: 6),
+			CreateItem(3),
+			CreateItem(4)
+		];
+
+		HashSet<Asset> itemsToGive = [
+			CreateItem(1),
+			CreateItem(2, amount: 2)
+		];
+
+		HashSet<Asset> itemsToReceive = [
+			CreateItem(5),
+			CreateItem(6),
+			CreateItem(7)
+		];
+
+		Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
+		Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
+	}
+
+	[TestMethod]
 	public void MismatchRarityIsNotFair() {
 		HashSet<Asset> itemsToGive = [
 			CreateItem(1, rarity: EAssetRarity.Rare)
