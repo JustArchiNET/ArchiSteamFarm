@@ -263,6 +263,8 @@ internal static class ArchiKestrel {
 			static options => {
 				options.DisplayRequestDuration();
 				options.EnableDeepLinking();
+				options.EnableTryItOutByDefault();
+				options.ShowCommonExtensions();
 				options.ShowExtensions();
 				options.SwaggerEndpoint($"{SharedInfo.ASF}/swagger.json", $"{SharedInfo.ASF} API");
 			}
