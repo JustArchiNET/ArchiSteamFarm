@@ -331,6 +331,8 @@ internal sealed class GlobalCache : SerializableFile {
 			return (false, null);
 		}
 
+		HashSet<uint> result;
+
 		await using (response.ConfigureAwait(false)) {
 			if (response.Content == null) {
 				return (false, null);
@@ -347,7 +349,7 @@ internal sealed class GlobalCache : SerializableFile {
 					return (false, null);
 				}
 
-				HashSet<uint> result = new(count);
+				result = new HashSet<uint>(count);
 
 				while (await reader.ReadLineAsync(cancellationToken).ConfigureAwait(false) is { Length: > 0 } line) {
 					if (!uint.TryParse(line, out uint depotID) || (depotID == 0)) {
@@ -358,13 +360,13 @@ internal sealed class GlobalCache : SerializableFile {
 
 					result.Add(depotID);
 				}
-
-				return (result.Count > 0, result.ToFrozenSet());
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericWarningException(e);
 
 				return (false, null);
 			}
 		}
+
+		return (result.Count > 0, result.ToFrozenSet());
 	}
 }
