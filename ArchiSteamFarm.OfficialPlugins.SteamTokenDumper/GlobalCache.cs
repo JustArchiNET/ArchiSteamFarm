@@ -327,11 +327,15 @@ internal sealed class GlobalCache : SerializableFile {
 
 		StreamResponse? response = await ASF.WebBrowser.UrlGetToStream(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		if (response?.Content == null) {
+		if (response == null) {
 			return (false, null);
 		}
 
 		await using (response.ConfigureAwait(false)) {
+			if (response.Content == null) {
+				return (false, null);
+			}
+
 			try {
 				using StreamReader reader = new(response.Content);
 
