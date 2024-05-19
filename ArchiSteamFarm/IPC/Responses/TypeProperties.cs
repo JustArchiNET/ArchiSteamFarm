@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC.Responses;
@@ -44,7 +45,7 @@ public sealed class TypeProperties {
 	///     This can be used for determining main enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 	/// </remarks>
 	[JsonInclude]
-	public HashSet<string>? CustomAttributes { get; private init; }
+	public ImmutableHashSet<string>? CustomAttributes { get; private init; }
 
 	/// <summary>
 	///     Underlying type of given type, if available.
@@ -55,9 +56,9 @@ public sealed class TypeProperties {
 	[JsonInclude]
 	public string? UnderlyingType { get; private init; }
 
-	internal TypeProperties(string? baseType = null, HashSet<string>? customAttributes = null, string? underlyingType = null) {
+	internal TypeProperties(string? baseType = null, IEnumerable<string>? customAttributes = null, string? underlyingType = null) {
 		BaseType = baseType;
-		CustomAttributes = customAttributes;
+		CustomAttributes = customAttributes?.ToImmutableHashSet();
 		UnderlyingType = underlyingType;
 	}
 }

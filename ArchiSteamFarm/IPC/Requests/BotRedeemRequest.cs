@@ -36,7 +36,7 @@ public sealed class BotRedeemRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public ImmutableHashSet<string> KeysToRedeem { get; private init; } = [];
+	public ImmutableList<string> KeysToRedeem { get; private init; } = [];
 
 	[JsonConstructor]
 	private BotRedeemRequest() { }

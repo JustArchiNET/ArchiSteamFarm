@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -40,7 +41,7 @@ public sealed class TypeResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public Dictionary<string, string> Body { get; private init; }
+	public ImmutableDictionary<string, string> Body { get; private init; }
 
 	/// <summary>
 	///     Metadata of given type.
@@ -50,11 +51,11 @@ public sealed class TypeResponse {
 	[Required]
 	public TypeProperties Properties { get; private init; }
 
-	internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
+	internal TypeResponse(IReadOnlyDictionary<string, string> body, TypeProperties properties) {
 		ArgumentNullException.ThrowIfNull(body);
 		ArgumentNullException.ThrowIfNull(properties);
 
-		Body = body;
+		Body = body.ToImmutableDictionary();
 		Properties = properties;
 	}
 }

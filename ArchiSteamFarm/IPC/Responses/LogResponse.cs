@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -35,7 +36,7 @@ public sealed class LogResponse {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public IReadOnlyList<string> Content { get; private init; }
+	public ImmutableList<string> Content { get; private init; }
 
 	/// <summary>
 	///     Total number of lines of the log file returned, can be used as an index for future requests.
@@ -50,6 +51,6 @@ public sealed class LogResponse {
 		ArgumentNullException.ThrowIfNull(content);
 
 		TotalLines = totalLines;
-		Content = content;
+		Content = content.ToImmutableList();
 	}
 }
