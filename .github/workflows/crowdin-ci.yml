@@ -1,0 +1,28 @@
+name: ASF-crowdin-ci
+
+on:
+  push:
+    branches:
+    - main
+
+permissions: {}
+
+jobs:
+  upload:
+    environment: main
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.6
+      with:
+        show-progress: false
+        submodules: recursive
+
+    - name: Upload latest strings for translation on Crowdin
+      uses: crowdin/github-action@v1.20.4
+      with:
+        crowdin_branch_name: main
+        config: '.github/crowdin.yml'
+        project_id: ${{ secrets.ASF_CROWDIN_PROJECT_ID }}
+        token: ${{ secrets.ASF_CROWDIN_API_TOKEN }}
