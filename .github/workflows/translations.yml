@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   update:
+    environment: main
     runs-on: ubuntu-latest
 
     steps:
