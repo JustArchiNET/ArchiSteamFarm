@@ -73,7 +73,7 @@ jobs:
         - os: windows-latest
           variant: win-x64
 
-    environment: main
+    environment: test
     runs-on: ${{ matrix.os }}
 
     steps:
