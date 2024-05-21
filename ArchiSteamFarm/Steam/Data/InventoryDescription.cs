@@ -184,14 +184,8 @@ public sealed class InventoryDescription {
 		}
 	}
 
-	[JsonInclude]
-	[JsonPropertyName("type")]
-	public string TypeText {
-		get => Body.type;
-		private init => Body.type = value;
-	}
-
-	internal EAssetRarity Rarity {
+	[JsonIgnore]
+	public EAssetRarity Rarity {
 		get {
 			if (CachedRarity.HasValue) {
 				return CachedRarity.Value;
@@ -256,7 +250,8 @@ public sealed class InventoryDescription {
 		}
 	}
 
-	internal uint RealAppID {
+	[JsonIgnore]
+	public uint RealAppID {
 		get {
 			if (CachedRealAppID.HasValue) {
 				return CachedRealAppID.Value;
@@ -312,7 +307,7 @@ public sealed class InventoryDescription {
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonPropertyName("tags")]
-	internal ImmutableHashSet<Tag> Tags {
+	public ImmutableHashSet<Tag> Tags {
 		get => Body.tags.Select(static tag => new Tag(tag.category, tag.internal_name, tag.localized_category_name, tag.localized_tag_name, tag.color)).ToImmutableHashSet();
 
 		private init {
@@ -337,12 +332,13 @@ public sealed class InventoryDescription {
 	[JsonInclude]
 	[JsonPropertyName("tradable")]
 	[JsonRequired]
-	internal bool Tradable {
+	public bool Tradable {
 		get => Body.tradable;
 		private init => Body.tradable = value;
 	}
 
-	internal EAssetType Type {
+	[JsonIgnore]
+	public EAssetType Type {
 		get {
 			if (CachedType.HasValue) {
 				return CachedType.Value;
@@ -507,6 +503,13 @@ public sealed class InventoryDescription {
 				_ => throw new InvalidOperationException(nameof(value))
 			};
 		}
+	}
+
+	[JsonInclude]
+	[JsonPropertyName("type")]
+	public string TypeText {
+		get => Body.type;
+		private init => Body.type = value;
 	}
 
 	private EAssetRarity? CachedRarity;
