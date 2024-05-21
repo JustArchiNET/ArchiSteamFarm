@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   main:
+    environment: main
     runs-on: ubuntu-latest
 
     steps:
