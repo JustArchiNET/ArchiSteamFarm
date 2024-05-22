@@ -47,12 +47,13 @@ internal sealed class TradeStatistics {
 		ArgumentNullException.ThrowIfNull(result);
 
 		lock (Lock) {
-			if (result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true }) {
-				ItemsGiven += (uint) (result.ItemsToGive?.Count ?? 0);
-				ItemsReceived += (uint) (result.ItemsToReceive?.Count ?? 0);
-			}
-
 			switch (result.Result) {
+				case ParseTradeResult.EResult.Accepted when result.Confirmed:
+					++ConfirmedOffers;
+					ItemsGiven += (uint) (result.ItemsToGive?.Count ?? 0);
+					ItemsReceived += (uint) (result.ItemsToReceive?.Count ?? 0);
+
+					goto case ParseTradeResult.EResult.Accepted;
 				case ParseTradeResult.EResult.Accepted:
 					++AcceptedOffers;
 
@@ -69,10 +70,6 @@ internal sealed class TradeStatistics {
 					++IgnoredOffers;
 
 					break;
-			}
-
-			if (result.Confirmed) {
-				++ConfirmedOffers;
 			}
 		}
 	}
