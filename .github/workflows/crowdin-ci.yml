@@ -9,7 +9,7 @@ permissions: {}
 
 jobs:
   upload:
-    environment: main
+    environment: dev-crowdin
     runs-on: ubuntu-latest
 
     steps:

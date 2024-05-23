@@ -73,7 +73,7 @@ jobs:
         - os: windows-latest
           variant: win-x64
 
-    environment: test
+    environment: build
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -408,7 +408,7 @@ jobs:
   release:
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') }}
     needs: publish-asf
-    environment: main
+    environment: release-github
     runs-on: ubuntu-latest
 
     permissions:

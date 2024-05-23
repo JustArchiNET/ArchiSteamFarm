@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   main:
-    environment: test
+    environment: qa-qodana
     runs-on: ubuntu-latest
 
     steps:

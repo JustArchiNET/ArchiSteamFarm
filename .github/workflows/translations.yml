@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   update:
-    environment: main
+    environment: dev-crowdin
     runs-on: ubuntu-latest
 
     steps:
