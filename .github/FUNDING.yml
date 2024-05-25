@@ -1,4 +1,2 @@
-# These are supported funding model platforms
-
 github: JustArchi
-custom: ["https://paypal.me/JustArchi", "https://pay.revolut.com/justarchi", "https://commerce.coinbase.com/checkout/0c23b844-c51b-45f4-9135-8db7c6fcf98e", "https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_"]
+custom: ["https://paypal.me/JustArchi", "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4", "https://pay.revolut.com/justarchi", "https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_"]
