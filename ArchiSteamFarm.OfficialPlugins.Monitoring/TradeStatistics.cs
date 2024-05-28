@@ -21,17 +21,56 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using ArchiSteamFarm.Steam.Exchange;
+
 namespace ArchiSteamFarm.OfficialPlugins.Monitoring;
 
-internal static class TagNames {
-	internal const string BotName = "bot";
-	internal const string BotState = "state";
-	internal const string CurrencyCode = "currency";
-	internal const string Framework = "framework";
-	internal const string OS = "operating_system";
-	internal const string Runtime = "runtime";
-	internal const string SteamID = "steamid";
-	internal const string TradeOfferResult = "result";
-	internal const string Variant = "variant";
-	internal const string Version = "version";
+internal sealed class TradeStatistics {
+	private readonly object Lock = new();
+
+	internal uint AcceptedOffers { get; private set; }
+
+	internal uint BlacklistedOffers { get; private set; }
+
+	internal uint ConfirmedOffers { get; private set; }
+
+	internal uint IgnoredOffers { get; private set; }
+
+	internal uint ItemsGiven { get; private set; }
+
+	internal uint ItemsReceived { get; private set; }
+
+	internal uint RejectedOffers { get; private set; }
+
+	internal void Include(ParseTradeResult result) {
+		ArgumentNullException.ThrowIfNull(result);
+
+		lock (Lock) {
+			switch (result.Result) {
+				case ParseTradeResult.EResult.Accepted when result.Confirmed:
+					++ConfirmedOffers;
+					ItemsGiven += (uint) (result.ItemsToGive?.Count ?? 0);
+					ItemsReceived += (uint) (result.ItemsToReceive?.Count ?? 0);
+
+					goto case ParseTradeResult.EResult.Accepted;
+				case ParseTradeResult.EResult.Accepted:
+					++AcceptedOffers;
+
+					break;
+				case ParseTradeResult.EResult.Rejected:
+					++RejectedOffers;
+
+					break;
+				case ParseTradeResult.EResult.Blacklisted:
+					++BlacklistedOffers;
+
+					break;
+				case ParseTradeResult.EResult.Ignored:
+					++IgnoredOffers;
+
+					break;
+			}
+		}
+	}
 }
