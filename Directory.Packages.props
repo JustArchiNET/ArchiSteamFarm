@@ -10,7 +10,7 @@
 		<PackageVersion Include="MSTest" Version="3.4.1" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
 		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.11" />
-		<PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.9.0-alpha.1" />
+		<PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.7.0-rc.1" />
 		<PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.8.1" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.1" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.8.1" />
