@@ -29,13 +29,13 @@ namespace ArchiSteamFarm.OfficialPlugins.Monitoring;
 internal sealed class TradeStatistics {
 	private readonly object Lock = new();
 
-	internal uint AcceptedOffers { get; private set; }
-	internal uint BlacklistedOffers { get; private set; }
-	internal uint ConfirmedOffers { get; private set; }
-	internal uint IgnoredOffers { get; private set; }
-	internal uint ItemsGiven { get; private set; }
-	internal uint ItemsReceived { get; private set; }
-	internal uint RejectedOffers { get; private set; }
+	internal int AcceptedOffers { get; private set; }
+	internal int BlacklistedOffers { get; private set; }
+	internal int ConfirmedOffers { get; private set; }
+	internal int IgnoredOffers { get; private set; }
+	internal int ItemsGiven { get; private set; }
+	internal int ItemsReceived { get; private set; }
+	internal int RejectedOffers { get; private set; }
 
 	internal void Include(ParseTradeResult result) {
 		ArgumentNullException.ThrowIfNull(result);
@@ -45,8 +45,8 @@ internal sealed class TradeStatistics {
 				case ParseTradeResult.EResult.Accepted when result.Confirmed:
 					ConfirmedOffers++;
 
-					ItemsGiven += (uint) (result.ItemsToGive?.Count ?? 0);
-					ItemsReceived += (uint) (result.ItemsToReceive?.Count ?? 0);
+					ItemsGiven += result.ItemsToGive?.Count ?? 0;
+					ItemsReceived += result.ItemsToReceive?.Count ?? 0;
 
 					goto case ParseTradeResult.EResult.Accepted;
 				case ParseTradeResult.EResult.Accepted:

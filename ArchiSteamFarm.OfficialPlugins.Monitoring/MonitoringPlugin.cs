@@ -249,33 +249,33 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialG
 		);
 
 		Meter.CreateObservableCounter(
-			$"{MetricNamePrefix}_bot_trades", () => TradeStatistics.SelectMany<KeyValuePair<Bot, TradeStatistics>, Measurement<uint>>(
+			$"{MetricNamePrefix}_bot_trades", () => TradeStatistics.SelectMany<KeyValuePair<Bot, TradeStatistics>, Measurement<int>>(
 				static kv => [
-					new Measurement<uint>(
+					new Measurement<int>(
 						kv.Value.AcceptedOffers,
 						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),
 						new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID),
 						new KeyValuePair<string, object?>(TagNames.TradeOfferResult, "accepted")
 					),
-					new Measurement<uint>(
+					new Measurement<int>(
 						kv.Value.RejectedOffers,
 						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),
 						new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID),
 						new KeyValuePair<string, object?>(TagNames.TradeOfferResult, "rejected")
 					),
-					new Measurement<uint>(
+					new Measurement<int>(
 						kv.Value.IgnoredOffers,
 						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),
 						new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID),
 						new KeyValuePair<string, object?>(TagNames.TradeOfferResult, "ignored")
 					),
-					new Measurement<uint>(
+					new Measurement<int>(
 						kv.Value.BlacklistedOffers,
 						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),
 						new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID),
 						new KeyValuePair<string, object?>(TagNames.TradeOfferResult, "blacklisted")
 					),
-					new Measurement<uint>(
+					new Measurement<int>(
 						kv.Value.ConfirmedOffers,
 						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),
 						new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID),
@@ -287,12 +287,12 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialG
 		);
 
 		Meter.CreateObservableCounter(
-			$"{MetricNamePrefix}_bot_items_given", () => TradeStatistics.Select(static kv => new Measurement<uint>(kv.Value.ItemsGiven, new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID))),
+			$"{MetricNamePrefix}_bot_items_given", () => TradeStatistics.Select(static kv => new Measurement<int>(kv.Value.ItemsGiven, new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID))),
 			description: "Items given per bot"
 		);
 
 		Meter.CreateObservableCounter(
-			$"{MetricNamePrefix}_bot_items_received", () => TradeStatistics.Select(static kv => new Measurement<uint>(kv.Value.ItemsReceived, new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID))),
+			$"{MetricNamePrefix}_bot_items_received", () => TradeStatistics.Select(static kv => new Measurement<int>(kv.Value.ItemsReceived, new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID))),
 			description: "Items received per bot"
 		);
 	}
