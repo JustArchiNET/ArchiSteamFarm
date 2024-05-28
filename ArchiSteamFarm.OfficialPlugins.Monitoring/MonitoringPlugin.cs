@@ -279,7 +279,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialG
 						kv.Value.ConfirmedOffers,
 						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),
 						new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID),
-						new KeyValuePair<string, object?>(TagNames.TradeOfferResult, "2fa_confirmed")
+						new KeyValuePair<string, object?>(TagNames.TradeOfferResult, "confirmed")
 					)
 				]
 			),
