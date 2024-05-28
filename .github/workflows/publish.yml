@@ -76,6 +76,10 @@ jobs:
     environment: build
     runs-on: ${{ matrix.os }}
 
+    permissions:
+      attestations: write
+      id-token: write
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.6
@@ -356,6 +360,11 @@ jobs:
             }
         }
 
+    - name: Generate artifact attestation for ASF-${{ matrix.variant }}.zip
+      uses: actions/attest-build-provenance@v1.1.2
+      with:
+        subject-path: out/ASF-${{ matrix.variant }}.zip
+
     - name: Upload ASF-${{ matrix.variant }}
       uses: actions/upload-artifact@v4.3.3
       with:
@@ -397,6 +406,12 @@ jobs:
             fi
         done
 
+    - name: Generate artifact attestation for ArchiSteamFarm.OfficialPlugins.Monitoring
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
+      uses: actions/attest-build-provenance@v1.1.2
+      with:
+        subject-path: out/ArchiSteamFarm.OfficialPlugins.Monitoring.zip
+
     - name: Upload ArchiSteamFarm.OfficialPlugins.Monitoring
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
       uses: actions/upload-artifact@v4.3.3
@@ -412,7 +427,9 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
+      attestations: write
       contents: write
+      id-token: write
 
     steps:
     - name: Checkout code
@@ -488,12 +505,22 @@ jobs:
         sha512sum *.zip > SHA512SUMS
         gpg -a -b -o SHA512SUMS.sign SHA512SUMS
 
+    - name: Generate artifact attestation for SHA512SUMS
+      uses: actions/attest-build-provenance@v1.1.2
+      with:
+        subject-path: out/SHA512SUMS
+
     - name: Upload SHA512SUMS
       uses: actions/upload-artifact@v4.3.3
       with:
         if-no-files-found: error
         name: SHA512SUMS
         path: out/SHA512SUMS
+
+    - name: Generate artifact attestation for SHA512SUMS.sign
+      uses: actions/attest-build-provenance@v1.1.2
+      with:
+        subject-path: out/SHA512SUMS.sign
 
     - name: Upload SHA512SUMS.sign
       uses: actions/upload-artifact@v4.3.3
