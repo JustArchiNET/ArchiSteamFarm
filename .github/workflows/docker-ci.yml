@@ -36,4 +36,3 @@ jobs:
         platforms: ${{ env.PLATFORMS }}
         provenance: true
         sbom: true
-        secrets: STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
