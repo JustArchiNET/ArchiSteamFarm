@@ -34,7 +34,7 @@ COPY Directory.Build.props Directory.Build.props
 COPY Directory.Packages.props Directory.Packages.props
 COPY LICENSE.txt LICENSE.txt
 
-RUN --mount=type=secret,id=STEAM_TOKEN_DUMPER_TOKEN <<EOF
+RUN --mount=type=secret,id=ASF_PRIVATE_SNK --mount=type=secret,id=STEAM_TOKEN_DUMPER_TOKEN <<EOF
     set -eu
 
     dotnet --info
@@ -50,6 +50,12 @@ RUN --mount=type=secret,id=STEAM_TOKEN_DUMPER_TOKEN <<EOF
         "arm64") asf_variant="${TARGETOS}-${TARGETARCH}" ;;
         *) echo "ERROR: Unsupported CPU architecture: ${TARGETARCH}"; exit 1 ;;
     esac
+
+    if [ -f "/run/secrets/ASF_PRIVATE_SNK" ]; then
+        base64 -d "/run/secrets/ASF_PRIVATE_SNK" > "resources/ArchiSteamFarm.snk"
+    else
+        echo "WARN: No ASF_PRIVATE_SNK provided!"
+    fi
 
     dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r "$asf_variant" --nologo --no-self-contained
 

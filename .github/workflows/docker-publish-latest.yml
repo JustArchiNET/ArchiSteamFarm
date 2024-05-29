@@ -5,7 +5,6 @@ on:
     types: [released]
 
 env:
-  ASF_PRIVATE_SNK: ${{ secrets.ASF_PRIVATE_SNK }}
   PLATFORMS: linux/amd64,linux/arm,linux/arm64
   TAG: latest
 
@@ -40,15 +39,6 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Prepare private key for signing
-      shell: sh
-      run: |
-        set -eu
-
-        if [ -n "${ASF_PRIVATE_SNK-}" ]; then
-            echo "$ASF_PRIVATE_SNK" | base64 -d > "resources/ArchiSteamFarm.snk"
-        fi
-
     - name: Prepare environment outputs
       shell: sh
       run: |
@@ -67,7 +57,9 @@ jobs:
         platforms: ${{ env.PLATFORMS }}
         provenance: true
         sbom: true
-        secrets: STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
+        secrets: |
+          ASF_PRIVATE_SNK=${{ secrets.ASF_PRIVATE_SNK }}
+          STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
         labels: |
           org.opencontainers.image.created=${{ env.DATE_ISO8601 }}
           org.opencontainers.image.version=${{ env.FIXED_TAG }}
