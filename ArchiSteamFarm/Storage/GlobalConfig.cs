@@ -112,7 +112,7 @@ public sealed class GlobalConfig {
 	public const EPluginsUpdateMode DefaultPluginsUpdateMode = EPluginsUpdateMode.Whitelist;
 
 	[PublicAPI]
-	public const bool DefaultShutdownIfPossible = true;
+	public const bool DefaultShutdownIfPossible = false;
 
 	[PublicAPI]
 	public const string? DefaultSteamMessagePrefix = "/me ";
