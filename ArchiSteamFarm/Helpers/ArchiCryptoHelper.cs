@@ -124,18 +124,12 @@ public static class ArchiCryptoHelper {
 			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
 		}
 
-		switch (hashingMethod) {
-			case EHashingMethod.PlainText:
-				return password;
-			case EHashingMethod.SCrypt:
-				return SCrypt.ComputeDerivedKey(password, salt, SteamParentalSCryptIterations, SteamParentalSCryptBlocksCount, 1, null, hashLength);
-			case EHashingMethod.Pbkdf2:
-				using (HMACSHA256 hashAlgorithm = new(password)) {
-					return Pbkdf2.ComputeDerivedKey(hashAlgorithm, salt, SteamParentalPbkdf2Iterations, hashLength);
-				}
-			default:
-				throw new InvalidOperationException(nameof(hashingMethod));
-		}
+		return hashingMethod switch {
+			EHashingMethod.PlainText => password,
+			EHashingMethod.SCrypt => SCrypt.ComputeDerivedKey(password, salt, SteamParentalSCryptIterations, SteamParentalSCryptBlocksCount, 1, null, hashLength),
+			EHashingMethod.Pbkdf2 => Rfc2898DeriveBytes.Pbkdf2(password, salt, SteamParentalPbkdf2Iterations, HashAlgorithmName.SHA256, hashLength),
+			_ => throw new InvalidOperationException(nameof(hashingMethod))
+		};
 	}
 
 	internal static bool HasTransformation(this ECryptoMethod cryptoMethod) =>
