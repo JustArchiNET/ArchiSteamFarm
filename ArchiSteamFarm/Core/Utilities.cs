@@ -41,7 +41,6 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Storage;
 using Humanizer;
-using Humanizer.Localisation;
 using JetBrains.Annotations;
 using Microsoft.IdentityModel.JsonWebTokens;
 using SteamKit2;
