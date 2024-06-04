@@ -87,37 +87,79 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	
-	
-	
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Avslutter med {0} feilkode!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
+	</data>
+	<data name="ErrorFailingRequest" xml:space="preserve">
+		<value>Forespørsel feiler: {0}</value>
+		<comment>{0} will be replaced by URL of the request</comment>
+	</data>
+	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+		<value>Global konfigurasjon kunne ikke lastes. Kontroller at {0} eksisterer og er gyldig! Følg "setting up" guide på wiki hvis du er forvirret.</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
 	<data name="ErrorIsInvalid" xml:space="preserve">
 		<value>{0} er ugyldig!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Ingen bots er definert. Har du glemt å konfigurere din ASF? Følg "setting up"-guide på wikien dersom du er forvirret.</value>
+	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} er null!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	
-	
-	
-	
-	
-	
+	<data name="ErrorParsingObject" xml:space="preserve">
+		<value>Parsing {0} feilet!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+		<value>Forespørsel mislyktes etter {0} forsøk!</value>
+		<comment>{0} will be replaced by maximum number of tries</comment>
+	</data>
+	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
+		<value>Kunne ikke sjekke den nyeste versjonen!</value>
+	</data>
+	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+		<value>Kunne ikke fortsette med oppdateringen fordi det ikke er noen ressurs tilknyttet den kjørende versjonen! Automatisk oppdatering til den versjonen er ikke mulig.</value>
+	</data>
+	<data name="ErrorUpdateNoAssets" xml:space="preserve">
+		<value>Kunne ikke fortsette med en oppdatering fordi den versjonen inkluderer ingen ressurser!</value>
+	</data>
+	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+		<value>Mottok en forespørsel for brukerinnputt, men prosessen kjører i hodeløs-modus!</value>
+	</data>
 	<data name="Exiting" xml:space="preserve">
 		<value>Avslutter...</value>
 	</data>
 	<data name="WarningFailed" xml:space="preserve">
 		<value>Mislykket!</value>
 	</data>
-	
-	
-	
-	
-	
-	
-	
+	<data name="GlobalConfigChanged" xml:space="preserve">
+		<value>Global konfigurasjonsfil er endret!</value>
+	</data>
+	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+		<value>Global konfigurasjonsfil er fjernet!</value>
+	</data>
+	<data name="IgnoringTrade" xml:space="preserve">
+		<value>Ignorerer handel: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="LoggingIn" xml:space="preserve">
+		<value>Logger inn på {0}...</value>
+		<comment>{0} will be replaced by service's name</comment>
+	</data>
+	<data name="NoBotsAreRunning" xml:space="preserve">
+		<value>Ingen bots kjører, avslutter...</value>
+	</data>
+	<data name="RefreshingOurSession" xml:space="preserve">
+		<value>Oppdaterer økten!</value>
+	</data>
+	<data name="RejectingTrade" xml:space="preserve">
+		<value>Avviser handel: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
 	<data name="Restarting" xml:space="preserve">
 		<value>Restarter...</value>
 	</data>
@@ -127,15 +169,22 @@ StackTrace:
 	<data name="Success" xml:space="preserve">
 		<value>Suksess!</value>
 	</data>
-	
+	<data name="UnlockingParentalAccount" xml:space="preserve">
+		<value>Låse opp foreldrekonto...</value>
+	</data>
 	<data name="UpdateCheckingNewVersion" xml:space="preserve">
 		<value>Ser etter ny versjon...</value>
 	</data>
-	
+	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
+		<value>Laster ned ny versjon: {0} ({1} MB)... Mens du venter kan du kanskje vurdere å donere om du setter pris på arbeidet vårt! :)</value>
+		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+	</data>
 	<data name="UpdateFinished" xml:space="preserve">
 		<value>Oppdateringsprosessen er ferdig!</value>
 	</data>
-	
+	<data name="UpdateNewVersionAvailable" xml:space="preserve">
+		<value>Ny ASF-versjon er tilgjengelig! Vurder å oppdatere!</value>
+	</data>
 	
 	
 	
