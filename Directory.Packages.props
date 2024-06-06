@@ -3,7 +3,7 @@
 		<PackageVersion Include="AngleSharp.XPath" Version="2.0.4" />
 		<PackageVersion Include="ConfigureAwaitChecker.Analyzer" Version="5.0.0.1" />
 		<PackageVersion Include="CryptSharpStandard" Version="1.0.0" />
-		<PackageVersion Include="Humanizer" Version="3.0.0-beta.13" />
+		<PackageVersion Include="Humanizer" Version="3.0.0-beta.54" />
 		<PackageVersion Include="JetBrains.Annotations" Version="2023.3.0" />
 		<PackageVersion Include="Markdig.Signed" Version="0.37.0" />
 		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.6.0" />
