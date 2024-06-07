@@ -352,7 +352,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			// This is the last moment for final check if we can farm
-			if (!Bot.IsPlayingPossible) {
+			if (Paused || !Bot.IsPlayingPossible) {
 				Bot.ArchiLogger.LogGenericInfo(Strings.PlayingNotAvailable);
 
 				return;
@@ -372,7 +372,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 						return;
 					}
 
-					if (!Bot.IsPlayingPossible) {
+					if (Paused || !Bot.IsPlayingPossible) {
 						Bot.ArchiLogger.LogGenericInfo(Strings.PlayingNotAvailable);
 
 						return;
