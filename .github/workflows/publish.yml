@@ -361,6 +361,7 @@ jobs:
         }
 
     - name: Generate artifact attestation for ASF-${{ matrix.variant }}.zip
+      if: ${{ github.event_name == 'push' }}
       uses: actions/attest-build-provenance@v1.2.0
       with:
         subject-path: out/ASF-${{ matrix.variant }}.zip
@@ -407,7 +408,7 @@ jobs:
         done
 
     - name: Generate artifact attestation for ArchiSteamFarm.OfficialPlugins.Monitoring
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
+      if: ${{ github.event_name == 'push' && matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
       uses: actions/attest-build-provenance@v1.2.0
       with:
         subject-path: out/ArchiSteamFarm.OfficialPlugins.Monitoring.zip
