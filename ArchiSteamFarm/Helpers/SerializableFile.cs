@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
 using JetBrains.Annotations;
+using Mono.Unix.Native;
 
 namespace ArchiSteamFarm.Helpers;
 
@@ -119,6 +120,12 @@ public abstract class SerializableFile : IDisposable {
 
 				File.Move(newFilePath, serializableFile.FilePath);
 			}
+
+			// Ensure file permissions on gnu/linux
+            if (!OperatingSystem.IsWindows()) {
+            	Syscall.chmod(serializableFile.FilePath, FilePermissions.S_IRUSR | FilePermissions.S_IWUSR);
+            }
+
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		} finally {
@@ -169,6 +176,11 @@ public abstract class SerializableFile : IDisposable {
 
 				File.Move(newFilePath, filePath);
 			}
+
+			// Ensure file permissions on gnu/linux
+            if (!OperatingSystem.IsWindows()) {
+            	Syscall.chmod(filePath, FilePermissions.S_IRUSR | FilePermissions.S_IWUSR);
+            }
 
 			return true;
 		} catch (Exception e) {
