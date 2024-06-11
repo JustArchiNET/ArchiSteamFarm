@@ -33,7 +33,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.Steam.Integration;
 
 internal static class SteamPICSChanges {
-	private const byte RefreshTimerInMinutes = 15;
+	private const byte RefreshTimerInMinutes = 5;
 
 	internal static bool LiveUpdate { get; private set; }
 
