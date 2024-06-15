@@ -16,7 +16,7 @@
 	"packageRules": [
 		{
 			// TODO: <= 1.7.0-rc.1 for invalid response on monitoring endpoint, last failed version 1.8.0-rc.1 - https://github.com/open-telemetry/opentelemetry-dotnet/issues/5506
-			// TODO: 1.9.0-alpha.1 generates empty responses, pending research why by @Abrynos
+			// TODO: 1.9.0-alpha.1 generates empty responses - https://github.com/open-telemetry/opentelemetry-dotnet/issues/5661
 			"allowedVersions": "<= 1.7.0-rc.1",
 			"matchManagers": [ "nuget" ],
 			"matchPackageNames": [ "OpenTelemetry.Exporter.Prometheus.AspNetCore" ]
