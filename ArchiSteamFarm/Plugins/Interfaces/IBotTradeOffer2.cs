@@ -36,7 +36,7 @@ namespace ArchiSteamFarm.Plugins.Interfaces;
 [PublicAPI]
 public interface IBotTradeOffer2 : IPlugin {
 	/// <summary>
-	///     ASF will call this method for unhandled (ignored and rejected) trade offers received by the bot.
+	///     ASF will call this method for unhandled (e.g. blacklisted, ignored and rejected) trade offers received by the bot.
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="tradeOffer">Trade offer related to this callback.</param>
