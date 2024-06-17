@@ -584,7 +584,7 @@ public static class PluginsCore {
 		return responses.Where(static response => response != null).SelectMany(static handlers => handlers ?? []).ToHashSet();
 	}
 
-	internal static async Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer) {
+	internal static async Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ParseTradeResult.EResult asfResult) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(tradeOffer);
 
@@ -595,14 +595,26 @@ public static class PluginsCore {
 		IList<bool> responses;
 
 		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOffer>().Select(plugin => plugin.OnBotTradeOffer(bot, tradeOffer))).ConfigureAwait(false);
+			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOffer2>().Select(plugin => plugin.OnBotTradeOffer(bot, tradeOffer, asfResult))).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return false;
 		}
 
-		return responses.Any(static response => response);
+#pragma warning disable CS0618 // TODO: Pending removal
+		IList<bool> oldResponses;
+
+		try {
+			oldResponses = await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOffer>().Select(plugin => plugin.OnBotTradeOffer(bot, tradeOffer))).ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return false;
+		}
+#pragma warning restore CS0618 // TODO: Pending removal
+
+		return responses.Any(static response => response) || oldResponses.Any(static response => response);
 	}
 
 	internal static async Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults) {

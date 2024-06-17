@@ -307,10 +307,10 @@ public sealed class Trading : IDisposable {
 		bool tradeRequiresMobileConfirmation = false;
 
 		switch (result) {
+			case ParseTradeResult.EResult.Blacklisted:
 			case ParseTradeResult.EResult.Ignored:
 			case ParseTradeResult.EResult.Rejected:
-			case ParseTradeResult.EResult.Blacklisted:
-				bool accept = await PluginsCore.OnBotTradeOffer(Bot, tradeOffer).ConfigureAwait(false);
+				bool accept = await PluginsCore.OnBotTradeOffer(Bot, tradeOffer, result).ConfigureAwait(false);
 
 				if (accept) {
 					result = ParseTradeResult.EResult.Accepted;

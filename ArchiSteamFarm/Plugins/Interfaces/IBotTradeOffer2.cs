@@ -21,10 +21,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
+using ArchiSteamFarm.Steam.Exchange;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
@@ -34,13 +34,13 @@ namespace ArchiSteamFarm.Plugins.Interfaces;
 ///     Implementing this interface allows your plugin to implement custom logic for accepting trades that ASF isn't willing to handle itself.
 /// </summary>
 [PublicAPI]
-[Obsolete($"Use {nameof(IBotTradeOffer2)} interface instead, this one will be removed in the next version")]
-public interface IBotTradeOffer : IPlugin {
+public interface IBotTradeOffer2 : IPlugin {
 	/// <summary>
 	///     ASF will call this method for unhandled (ignored and rejected) trade offers received by the bot.
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="tradeOffer">Trade offer related to this callback.</param>
+	/// <param name="asfResult">ASF result in regards to parsing this trade offer, can be useful for determining why it wasn't accepted as part of the core logic.</param>
 	/// <returns>True if the trade offer should be accepted as part of this plugin, false otherwise.</returns>
-	Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer);
+	Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ParseTradeResult.EResult asfResult);
 }
