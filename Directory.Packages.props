@@ -6,7 +6,7 @@
 		<PackageVersion Include="Humanizer" Version="3.0.0-beta.54" />
 		<PackageVersion Include="JetBrains.Annotations" Version="2023.3.0" />
 		<PackageVersion Include="Markdig.Signed" Version="0.37.0" />
-		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.6.0" />
+		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.6.1" />
 		<PackageVersion Include="MSTest" Version="3.4.3" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
 		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.11" />
