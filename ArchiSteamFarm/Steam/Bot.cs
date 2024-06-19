@@ -563,11 +563,31 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		HashSet<Bot> result = [];
 
 		foreach (string botName in botNames) {
-			if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
-				IEnumerable<Bot> allBots = Bots.OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value);
-				result.UnionWith(allBots);
+			switch (botName.ToUpperInvariant()) {
+				case "@ALL":
+				case SharedInfo.ASF:
+					// We can return the result right away, as all bots have been matched already
+					return Bots.OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).ToHashSet();
+				case "@FARMING":
+					IEnumerable<Bot> farmingBots = Bots.Where(static bot => bot.Value.CardsFarmer.NowFarming).OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value);
+					result.UnionWith(farmingBots);
 
-				return result;
+					continue;
+				case "@IDLE":
+					IEnumerable<Bot> idleBots = Bots.Where(static bot => !bot.Value.CardsFarmer.NowFarming).OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value);
+					result.UnionWith(idleBots);
+
+					continue;
+				case "@OFFLINE":
+					IEnumerable<Bot> offlineBots = Bots.Where(static bot => !bot.Value.IsConnectedAndLoggedOn).OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value);
+					result.UnionWith(offlineBots);
+
+					continue;
+				case "@ONLINE":
+					IEnumerable<Bot> onlineBots = Bots.Where(static bot => bot.Value.IsConnectedAndLoggedOn).OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value);
+					result.UnionWith(onlineBots);
+
+					continue;
 			}
 
 			if ((botName.Length > 2) && SharedInfo.RangeIndicators.Any(rangeIndicator => botName.Contains(rangeIndicator, StringComparison.Ordinal))) {
