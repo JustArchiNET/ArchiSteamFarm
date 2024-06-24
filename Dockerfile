@@ -19,9 +19,9 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-preview${IMAGESU
 ARG CONFIGURATION=Release
 ARG TARGETARCH
 ARG TARGETOS
-ENV DOTNET_CLI_TELEMETRY_OPTOUT true
-ENV DOTNET_NOLOGO true
-ENV PLUGINS_BUNDLED ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
+ENV DOTNET_NOLOGO=true
+ENV PLUGINS_BUNDLED="ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper"
 WORKDIR /app
 COPY --from=build-node /app/ASF-ui/dist ASF-ui/dist
 COPY ArchiSteamFarm ArchiSteamFarm
@@ -77,11 +77,11 @@ RUN --mount=type=secret,id=ASF_PRIVATE_SNK --mount=type=secret,id=STEAM_TOKEN_DU
 EOF
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:9.0-preview${IMAGESUFFIX} AS runtime
-ENV ASF_PATH /app
-ENV ASF_USER asf
+ENV ASF_PATH=/app
+ENV ASF_USER=asf
 ENV ASPNETCORE_URLS=
-ENV DOTNET_CLI_TELEMETRY_OPTOUT true
-ENV DOTNET_NOLOGO true
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
+ENV DOTNET_NOLOGO=true
 
 LABEL maintainer="JustArchi <JustArchi@JustArchi.net>" \
     org.opencontainers.image.authors="JustArchi <JustArchi@JustArchi.net>" \
