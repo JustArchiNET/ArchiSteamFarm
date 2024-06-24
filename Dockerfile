@@ -21,7 +21,7 @@ ARG TARGETARCH
 ARG TARGETOS
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
 ENV DOTNET_NOLOGO=true
-ENV PLUGINS_BUNDLED=ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+ENV PLUGINS_BUNDLED="ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper"
 WORKDIR /app
 COPY --from=build-node /app/ASF-ui/dist ASF-ui/dist
 COPY ArchiSteamFarm ArchiSteamFarm
