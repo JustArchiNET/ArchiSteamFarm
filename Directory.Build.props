@@ -29,7 +29,7 @@
 		<RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
 		<RollForward>LatestMajor</RollForward>
 		<RuntimeIdentifiers>linux-arm;linux-arm64;linux-x64;osx-arm64;osx-x64;win-arm64;win-x64</RuntimeIdentifiers>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 	</PropertyGroup>
 
@@ -50,7 +50,10 @@
 		<DebugType>none</DebugType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
-		<WarningsNotAsErrors>CA1863,CS8002,IL2026,IL2104,NU1901,NU1902,NU1903,NU1904</WarningsNotAsErrors>
+		<WarningsNotAsErrors>CS8002,IL2026,IL2104,NU1901,NU1902,NU1903,NU1904</WarningsNotAsErrors>
+
+		<!-- TODO: .NET 9 -->
+		<WarningsNotAsErrors>$(WarningsNotAsErrors),CA1515,CA1859,CA2263,CA2264</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<!-- Enable public signing if not part of Visual Studio, which is too stupid to understand what public signing is -->

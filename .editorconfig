@@ -122,6 +122,7 @@ dotnet_code_quality.ca3012.excluded_symbol_names = BotController|CommandControll
 
 dotnet_code_quality_unused_parameters = all:warning
 
+# Ignored code inspections that we do not agree with
 dotnet_diagnostic.ca1028.severity = silent
 dotnet_diagnostic.ca1031.severity = silent
 dotnet_diagnostic.ca1863.severity = silent
