@@ -51,9 +51,6 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
 		<WarningsNotAsErrors>CS8002,IL2026,IL2104,NU1901,NU1902,NU1903,NU1904</WarningsNotAsErrors>
-
-		<!-- TODO: .NET 9 -->
-		<WarningsNotAsErrors>$(WarningsNotAsErrors),CA1515,CA1859,CA2263,CA2264</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<!-- Enable public signing if not part of Visual Studio, which is too stupid to understand what public signing is -->
