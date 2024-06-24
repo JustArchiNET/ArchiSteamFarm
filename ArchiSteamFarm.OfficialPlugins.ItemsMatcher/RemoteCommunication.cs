@@ -1164,7 +1164,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task<bool> MatchActively(IReadOnlyCollection<ListedUser> listedUsers, IReadOnlyCollection<Asset> ourAssets, IReadOnlyCollection<EAssetType> acceptedMatchableTypes) {
+	private async Task<bool> MatchActively(ImmutableHashSet<ListedUser> listedUsers, HashSet<Asset> ourAssets, HashSet<EAssetType> acceptedMatchableTypes) {
 		if ((listedUsers == null) || (listedUsers.Count == 0)) {
 			throw new ArgumentNullException(nameof(listedUsers));
 		}

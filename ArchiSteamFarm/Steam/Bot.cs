@@ -187,7 +187,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private IEnumerable<(string FilePath, EFileType FileType)> RelatedFiles {
 		get {
-			foreach (EFileType fileType in Enum.GetValues(typeof(EFileType))) {
+			foreach (EFileType fileType in Enum.GetValues<EFileType>()) {
 				string filePath = GetFilePath(fileType);
 
 				if (string.IsNullOrEmpty(filePath)) {

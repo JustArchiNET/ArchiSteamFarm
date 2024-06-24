@@ -31,10 +31,11 @@ using static ArchiSteamFarm.Steam.Integration.SteamChatMessage;
 
 namespace ArchiSteamFarm.Tests;
 
+#pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-public sealed class SteamChatMessage {
+internal sealed class SteamChatMessage {
 	[TestMethod]
-	public async Task CanSplitEvenWithStupidlyLongPrefix() {
+	internal async Task CanSplitEvenWithStupidlyLongPrefix() {
 		string prefix = new('x', MaxMessagePrefixBytes);
 
 		const string emoji = "😎";
@@ -51,10 +52,10 @@ public sealed class SteamChatMessage {
 	}
 
 	[TestMethod]
-	public void ContinuationCharacterSizeIsProperlyCalculated() => Assert.AreEqual(ContinuationCharacterBytes, Encoding.UTF8.GetByteCount(ContinuationCharacter.ToString()));
+	internal void ContinuationCharacterSizeIsProperlyCalculated() => Assert.AreEqual(ContinuationCharacterBytes, Encoding.UTF8.GetByteCount(ContinuationCharacter.ToString()));
 
 	[TestMethod]
-	public async Task DoesntSkipEmptyNewlines() {
+	internal async Task DoesntSkipEmptyNewlines() {
 		string message = $"asdf{Environment.NewLine}{Environment.NewLine}asdf";
 
 		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
@@ -66,7 +67,7 @@ public sealed class SteamChatMessage {
 	[DataRow(false)]
 	[DataRow(true)]
 	[DataTestMethod]
-	public async Task DoesntSplitInTheMiddleOfMultiByteChar(bool isAccountLimited) {
+	internal async Task DoesntSplitInTheMiddleOfMultiByteChar(bool isAccountLimited) {
 		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
@@ -84,7 +85,7 @@ public sealed class SteamChatMessage {
 	}
 
 	[TestMethod]
-	public async Task DoesntSplitJustBecauseOfLastEscapableCharacter() {
+	internal async Task DoesntSplitJustBecauseOfLastEscapableCharacter() {
 		const string message = "abcdef[";
 		const string escapedMessage = @"abcdef\[";
 
@@ -97,7 +98,7 @@ public sealed class SteamChatMessage {
 	[DataRow(false)]
 	[DataRow(true)]
 	[DataTestMethod]
-	public async Task DoesntSplitOnBackslashNotUsedForEscaping(bool isAccountLimited) {
+	internal async Task DoesntSplitOnBackslashNotUsedForEscaping(bool isAccountLimited) {
 		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
@@ -113,7 +114,7 @@ public sealed class SteamChatMessage {
 	[DataRow(false)]
 	[DataRow(true)]
 	[DataTestMethod]
-	public async Task DoesntSplitOnEscapeCharacter(bool isAccountLimited) {
+	internal async Task DoesntSplitOnEscapeCharacter(bool isAccountLimited) {
 		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
@@ -129,7 +130,7 @@ public sealed class SteamChatMessage {
 	}
 
 	[TestMethod]
-	public async Task NoNeedForAnySplittingWithNewlines() {
+	internal async Task NoNeedForAnySplittingWithNewlines() {
 		string message = $"abcdef{Environment.NewLine}ghijkl{Environment.NewLine}mnopqr";
 
 		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
@@ -139,7 +140,7 @@ public sealed class SteamChatMessage {
 	}
 
 	[TestMethod]
-	public async Task NoNeedForAnySplittingWithoutNewlines() {
+	internal async Task NoNeedForAnySplittingWithoutNewlines() {
 		const string message = "abcdef";
 
 		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
@@ -149,10 +150,10 @@ public sealed class SteamChatMessage {
 	}
 
 	[TestMethod]
-	public void ParagraphCharacterSizeIsLessOrEqualToContinuationCharacterSize() => Assert.IsTrue(ContinuationCharacterBytes >= Encoding.UTF8.GetByteCount(ParagraphCharacter.ToString()));
+	internal void ParagraphCharacterSizeIsLessOrEqualToContinuationCharacterSize() => Assert.IsTrue(ContinuationCharacterBytes >= Encoding.UTF8.GetByteCount(ParagraphCharacter.ToString()));
 
 	[TestMethod]
-	public async Task ProperlyEscapesCharacters() {
+	internal async Task ProperlyEscapesCharacters() {
 		const string message = @"[b]bold[/b] \n";
 		const string escapedMessage = @"\[b]bold\[/b] \\n";
 
@@ -163,7 +164,7 @@ public sealed class SteamChatMessage {
 	}
 
 	[TestMethod]
-	public async Task ProperlyEscapesSteamMessagePrefix() {
+	internal async Task ProperlyEscapesSteamMessagePrefix() {
 		const string prefix = "/pre []";
 		const string escapedPrefix = @"/pre \[]";
 
@@ -178,7 +179,7 @@ public sealed class SteamChatMessage {
 	[DataRow(false)]
 	[DataRow(true)]
 	[DataTestMethod]
-	public async Task ProperlySplitsLongSingleLine(bool isAccountLimited) {
+	internal async Task ProperlySplitsLongSingleLine(bool isAccountLimited) {
 		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
@@ -196,10 +197,10 @@ public sealed class SteamChatMessage {
 	}
 
 	[TestMethod]
-	public void ReservedSizeForEscapingIsProperlyCalculated() => Assert.AreEqual(ReservedEscapeMessageBytes, Encoding.UTF8.GetByteCount(@"\") + 4); // Maximum amount of bytes per single UTF-8 character is 4, not 6 as from Encoding.UTF8.GetMaxByteCount(1)
+	internal void ReservedSizeForEscapingIsProperlyCalculated() => Assert.AreEqual(ReservedEscapeMessageBytes, Encoding.UTF8.GetByteCount(@"\") + 4); // Maximum amount of bytes per single UTF-8 character is 4, not 6 as from Encoding.UTF8.GetMaxByteCount(1)
 
 	[TestMethod]
-	public async Task RyzhehvostInitialTestForSplitting() {
+	internal async Task RyzhehvostInitialTestForSplitting() {
 		const string prefix = "/me ";
 
 		const string message = """
@@ -285,7 +286,7 @@ public sealed class SteamChatMessage {
 	[DataRow(false)]
 	[DataRow(true)]
 	[DataTestMethod]
-	public async Task SplitsOnNewlinesWithParagraphCharacter(bool isAccountLimited) {
+	internal async Task SplitsOnNewlinesWithParagraphCharacter(bool isAccountLimited) {
 		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 
 		StringBuilder newlinePartBuilder = new();
@@ -314,7 +315,7 @@ public sealed class SteamChatMessage {
 	}
 
 	[TestMethod]
-	public async Task ThrowsOnTooLongNewlinesPrefix() {
+	internal async Task ThrowsOnTooLongNewlinesPrefix() {
 		string prefix = new('\n', (MaxMessagePrefixBytes / NewlineWeight) + 1);
 
 		const string message = "asdf";
@@ -323,7 +324,7 @@ public sealed class SteamChatMessage {
 	}
 
 	[TestMethod]
-	public async Task ThrowsOnTooLongPrefix() {
+	internal async Task ThrowsOnTooLongPrefix() {
 		string prefix = new('x', MaxMessagePrefixBytes + 1);
 
 		const string message = "asdf";
@@ -331,3 +332,4 @@ public sealed class SteamChatMessage {
 		await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false)).ConfigureAwait(false);
 	}
 }
+#pragma warning restore CA1812 // False positive, the class is used during MSTest

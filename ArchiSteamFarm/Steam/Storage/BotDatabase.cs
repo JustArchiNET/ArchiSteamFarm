@@ -318,8 +318,6 @@ public sealed class BotDatabase : GenericDatabase {
 	}
 
 	internal static bool IsValidGameToRedeemInBackground(DictionaryEntry game) {
-		ArgumentNullException.ThrowIfNull(game);
-
 		string? key = game.Key as string;
 
 		if (string.IsNullOrEmpty(key) || !Utilities.IsValidCdKey(key)) {

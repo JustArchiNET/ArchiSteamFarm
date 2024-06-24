@@ -920,7 +920,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		return keepFarming;
 	}
 
-	private async Task<bool> FarmHours(IReadOnlyCollection<Game> games) {
+	private async Task<bool> FarmHours(HashSet<Game> games) {
 		if ((games == null) || (games.Count == 0)) {
 			throw new ArgumentNullException(nameof(games));
 		}
@@ -979,7 +979,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		return keepFarming;
 	}
 
-	private async Task<bool> FarmMultiple(IReadOnlyCollection<Game> games) {
+	private async Task<bool> FarmMultiple(HashSet<Game> games) {
 		if ((games == null) || (games.Count == 0)) {
 			throw new ArgumentNullException(nameof(games));
 		}
