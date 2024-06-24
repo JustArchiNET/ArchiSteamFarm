@@ -28,10 +28,11 @@ using static ArchiSteamFarm.Steam.Exchange.Trading;
 
 namespace ArchiSteamFarm.Tests;
 
+#pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-public sealed class Trading {
+internal sealed class Trading {
 	[TestMethod]
-	public void ExploitingNewSetsIsFairButNotNeutral() {
+	internal void ExploitingNewSetsIsFairButNotNeutral() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 40),
 			CreateItem(2, amount: 10),
@@ -53,7 +54,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void Issue3203() {
+	internal void Issue3203() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 2),
 			CreateItem(2, amount: 6),
@@ -77,7 +78,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void MismatchRarityIsNotFair() {
+	internal void MismatchRarityIsNotFair() {
 		HashSet<Asset> itemsToGive = [
 			CreateItem(1, rarity: EAssetRarity.Rare)
 		];
@@ -90,7 +91,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void MismatchRealAppIDsIsNotFair() {
+	internal void MismatchRealAppIDsIsNotFair() {
 		HashSet<Asset> itemsToGive = [
 			CreateItem(1, realAppID: 570)
 		];
@@ -103,7 +104,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void MismatchTypesIsNotFair() {
+	internal void MismatchTypesIsNotFair() {
 		HashSet<Asset> itemsToGive = [
 			CreateItem(1, type: EAssetType.Emoticon)
 		];
@@ -116,7 +117,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void MultiGameMultiTypeBadReject() {
+	internal void MultiGameMultiTypeBadReject() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 9),
 			CreateItem(3, amount: 9, realAppID: 730, type: EAssetType.Emoticon),
@@ -138,7 +139,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void MultiGameMultiTypeNeutralAccept() {
+	internal void MultiGameMultiTypeNeutralAccept() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 9),
 			CreateItem(3, realAppID: 730, type: EAssetType.Emoticon)
@@ -159,7 +160,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void MultiGameSingleTypeBadReject() {
+	internal void MultiGameSingleTypeBadReject() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 9),
 			CreateItem(3, realAppID: 730),
@@ -181,7 +182,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void MultiGameSingleTypeNeutralAccept() {
+	internal void MultiGameSingleTypeNeutralAccept() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 2),
 			CreateItem(3, realAppID: 730)
@@ -202,7 +203,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameAbrynosWasWrongNeutralAccept() {
+	internal void SingleGameAbrynosWasWrongNeutralAccept() {
 		HashSet<Asset> inventory = [
 			CreateItem(1),
 			CreateItem(2, amount: 2),
@@ -224,7 +225,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameDonationAccept() {
+	internal void SingleGameDonationAccept() {
 		HashSet<Asset> inventory = [
 			CreateItem(1)
 		];
@@ -243,7 +244,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameMultiTypeBadReject() {
+	internal void SingleGameMultiTypeBadReject() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 9),
 			CreateItem(3, amount: 9, type: EAssetType.Emoticon),
@@ -265,7 +266,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameMultiTypeNeutralAccept() {
+	internal void SingleGameMultiTypeNeutralAccept() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 9),
 			CreateItem(3, type: EAssetType.Emoticon)
@@ -286,7 +287,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameQuantityBadReject() {
+	internal void SingleGameQuantityBadReject() {
 		HashSet<Asset> inventory = [
 			CreateItem(1),
 			CreateItem(2),
@@ -308,7 +309,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameQuantityBadReject2() {
+	internal void SingleGameQuantityBadReject2() {
 		HashSet<Asset> inventory = [
 			CreateItem(1),
 			CreateItem(2, amount: 2)
@@ -328,7 +329,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameQuantityNeutralAccept() {
+	internal void SingleGameQuantityNeutralAccept() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 2),
 			CreateItem(2)
@@ -348,7 +349,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameSingleTypeBadReject() {
+	internal void SingleGameSingleTypeBadReject() {
 		HashSet<Asset> inventory = [
 			CreateItem(1),
 			CreateItem(2)
@@ -367,7 +368,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameSingleTypeBadWithOverpayingReject() {
+	internal void SingleGameSingleTypeBadWithOverpayingReject() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 2),
 			CreateItem(2, amount: 2),
@@ -388,7 +389,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameSingleTypeBigDifferenceAccept() {
+	internal void SingleGameSingleTypeBigDifferenceAccept() {
 		HashSet<Asset> inventory = [
 			CreateItem(1),
 			CreateItem(2, amount: 5),
@@ -408,7 +409,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameSingleTypeBigDifferenceReject() {
+	internal void SingleGameSingleTypeBigDifferenceReject() {
 		HashSet<Asset> inventory = [
 			CreateItem(1),
 			CreateItem(2, amount: 2),
@@ -432,7 +433,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameSingleTypeGoodAccept() {
+	internal void SingleGameSingleTypeGoodAccept() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 2)
 		];
@@ -450,7 +451,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameSingleTypeNeutralAccept() {
+	internal void SingleGameSingleTypeNeutralAccept() {
 		HashSet<Asset> inventory = [
 			CreateItem(1)
 		];
@@ -468,7 +469,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void SingleGameSingleTypeNeutralWithOverpayingAccept() {
+	internal void SingleGameSingleTypeNeutralWithOverpayingAccept() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 2),
 			CreateItem(2, amount: 2)
@@ -488,7 +489,7 @@ public sealed class Trading {
 	}
 
 	[TestMethod]
-	public void TakingExcessiveAmountOfSingleCardCanStillBeFairAndNeutral() {
+	internal void TakingExcessiveAmountOfSingleCardCanStillBeFairAndNeutral() {
 		HashSet<Asset> inventory = [
 			CreateItem(1, amount: 52),
 			CreateItem(2, amount: 73),
@@ -515,3 +516,4 @@ public sealed class Trading {
 
 	private static Asset CreateItem(ulong classID, ulong instanceID = 0, uint amount = 1, bool marketable = false, bool tradable = false, uint realAppID = Asset.SteamAppID, EAssetType type = EAssetType.TradingCard, EAssetRarity rarity = EAssetRarity.Common) => new(Asset.SteamAppID, Asset.SteamCommunityContextID, classID, amount, new InventoryDescription(Asset.SteamAppID, classID, instanceID, marketable, tradable, realAppID, type, rarity));
 }
+#pragma warning restore CA1812 // False positive, the class is used during MSTest

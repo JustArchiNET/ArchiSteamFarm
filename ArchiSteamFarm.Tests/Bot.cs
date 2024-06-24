@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ArchiSteamFarm.Steam.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,10 +31,11 @@ using static ArchiSteamFarm.Steam.Bot;
 
 namespace ArchiSteamFarm.Tests;
 
+#pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-public sealed class Bot {
+internal sealed class Bot {
 	[TestMethod]
-	public void MaxItemsBarelyEnoughForOneSet() {
+	internal void MaxItemsBarelyEnoughForOneSet() {
 		const uint relevantAppID = 42;
 
 		Dictionary<uint, byte> itemsPerSet = new() {
@@ -57,7 +59,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void MaxItemsTooSmall() {
+	internal void MaxItemsTooSmall() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -69,7 +71,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void MoreCardsThanNeeded() {
+	internal void MoreCardsThanNeeded() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -91,7 +93,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void MultipleSets() {
+	internal void MultipleSets() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -112,7 +114,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void MultipleSetsDifferentAmount() {
+	internal void MultipleSetsDifferentAmount() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -132,7 +134,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void MutliRarityAndType() {
+	internal void MutliRarityAndType() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -173,7 +175,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void NotAllCardsPresent() {
+	internal void NotAllCardsPresent() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -188,7 +190,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void OneSet() {
+	internal void OneSet() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -207,7 +209,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void OtherAppIDFullSets() {
+	internal void OtherAppIDFullSets() {
 		const uint appID0 = 42;
 		const uint appID1 = 43;
 
@@ -232,7 +234,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void OtherAppIDNoSets() {
+	internal void OtherAppIDNoSets() {
 		const uint appID0 = 42;
 		const uint appID1 = 43;
 
@@ -254,7 +256,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void OtherAppIDOneSet() {
+	internal void OtherAppIDOneSet() {
 		const uint appID0 = 42;
 		const uint appID1 = 43;
 		const uint appID2 = 44;
@@ -286,7 +288,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void OtherRarityFullSets() {
+	internal void OtherRarityFullSets() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -304,7 +306,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void OtherRarityNoSets() {
+	internal void OtherRarityNoSets() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -320,7 +322,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void OtherRarityOneSet() {
+	internal void OtherRarityOneSet() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -343,7 +345,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void OtherTypeFullSets() {
+	internal void OtherTypeFullSets() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -361,7 +363,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void OtherTypeNoSets() {
+	internal void OtherTypeNoSets() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -377,7 +379,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void OtherTypeOneSet() {
+	internal void OtherTypeOneSet() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [
@@ -400,7 +402,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void TooHighAmount() {
+	internal void TooHighAmount() {
 		const uint appID0 = 42;
 
 		HashSet<Asset> items = [
@@ -419,7 +421,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void TooManyCardsForSingleTrade() {
+	internal void TooManyCardsForSingleTrade() {
 		const uint appID = 42;
 
 		HashSet<Asset> items = [];
@@ -435,7 +437,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void TooManyCardsForSingleTradeMultipleAppIDs() {
+	internal void TooManyCardsForSingleTradeMultipleAppIDs() {
 		const uint appID0 = 42;
 		const uint appID1 = 43;
 
@@ -459,7 +461,7 @@ public sealed class Bot {
 	}
 
 	[TestMethod]
-	public void TooManyCardsPerSet() {
+	internal void TooManyCardsPerSet() {
 		const uint appID0 = 42;
 		const uint appID1 = 43;
 		const uint appID2 = 44;
@@ -482,7 +484,7 @@ public sealed class Bot {
 		);
 	}
 
-	private static void AssertResultMatchesExpectation(IReadOnlyDictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult, IReadOnlyCollection<Asset> itemsToSend) {
+	private static void AssertResultMatchesExpectation(Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult, IReadOnlyCollection<Asset> itemsToSend) {
 		ArgumentNullException.ThrowIfNull(expectedResult);
 		ArgumentNullException.ThrowIfNull(itemsToSend);
 
@@ -495,9 +497,10 @@ public sealed class Bot {
 
 	private static HashSet<Asset> GetItemsForFullBadge(IReadOnlyCollection<Asset> inventory, byte cardsPerSet, uint appID, ushort maxItems = Steam.Exchange.Trading.MaxItemsPerTrade) => GetItemsForFullBadge(inventory, new Dictionary<uint, byte> { { appID, cardsPerSet } }, maxItems);
 
-	private static HashSet<Asset> GetItemsForFullBadge(IReadOnlyCollection<Asset> inventory, IDictionary<uint, byte> cardsPerSet, ushort maxItems = Steam.Exchange.Trading.MaxItemsPerTrade) {
+	private static HashSet<Asset> GetItemsForFullBadge(IReadOnlyCollection<Asset> inventory, [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<uint, byte> cardsPerSet, ushort maxItems = Steam.Exchange.Trading.MaxItemsPerTrade) {
 		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> inventorySets = Steam.Exchange.Trading.GetInventorySets(inventory);
 
 		return GetItemsForFullSets(inventory, inventorySets.ToDictionary(static kv => kv.Key, kv => (SetsToExtract: inventorySets[kv.Key][0], cardsPerSet[kv.Key.RealAppID])), maxItems).ToHashSet();
 	}
 }
+#pragma warning restore CA1812 // False positive, the class is used during MSTest
