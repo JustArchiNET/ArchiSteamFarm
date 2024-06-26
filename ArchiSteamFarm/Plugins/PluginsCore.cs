@@ -249,6 +249,12 @@ public static class PluginsCore {
 				await plugin.OnLoaded().ConfigureAwait(false);
 
 				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginLoaded, plugin.Name));
+
+#pragma warning disable CS0618 // TODO: Pending removal
+				if (plugin is IBotTradeOffer) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, $"{nameof(IBotTradeOffer)} ({plugin.Name})", nameof(IBotTradeOffer2)));
+				}
+#pragma warning restore CS0618 // TODO: Pending removal
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				invalidPlugins.Add(plugin);
