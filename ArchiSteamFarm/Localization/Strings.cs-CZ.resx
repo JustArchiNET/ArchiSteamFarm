@@ -87,7 +87,10 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Aplikace byla ukončena s chybovým kódem {0}!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
+	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Požadavek selhal: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -691,7 +694,10 @@ StackTrace:
 		<value>Váš šifrovací klíč je příliš krátký. Doporučujeme použít ten, který je alespoň {0} bajtů (znaků) dlouhý.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Používáte {0} nastavení {1} vlastnosti, ale neposkytli jste vlastní --cryptkey. Pro zvýšení bezpečnosti byste měli poskytnout vlastní --cryptkey.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Používáte {0} nastavení vlastnosti {1}, ale neposkytuješ vlastní --cryptkey. To zcela ruší ochranu, protože ASF je nucen použít svůj vlastní (známý) klíč. Pro využití bezpečnostního přínosu nabízeného tímto nastavením, byste měli poskytnout vlastní --cryptkey.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -737,17 +743,48 @@ StackTrace:
 	
 	
 	
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>Přeskakování: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>Kontrola aktualizací zásuvných modulů...</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>Kontrola aktualizace zásuvného modulu {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>Není dostupná žádná aktualizace pro zásuvný modul {0}: {1} ≥ {2}.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>Nová verze zásuvného modulu {0} je k dispozici. Zvažte aktualizaci!</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>Nalezena aktualizace pro zásuvný modul {0} z verze {1} na {2}...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>Aktualizuji zásuvný modul {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>Aktualizace zásuvného modulu {0} byla provedena úspěšně, změny se projeví až při opětovném spuštění ASF.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>Zásuvný modul {0}/{1} byl zaregistrován a je mu umožněno provádět automatické aktualizace.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>Zásuvnému modulu {0} ({1}) byly zakázány automatické aktualizace, přestože tuto funkci podporuje.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Vlastní zásuvné moduly byly zaregistrovány pro automatické aktualizace. Tým ASF by vám rád připomněl, že pro vaši vlastní bezpečnost byste měli povolit automatické aktualizace pouze od důvěryhodných stran. Pokud jste to nechtěli udělat, můžete aktualizace zásuvných modulů zakázat v globální konfiguraci ASF.</value>
+	</data>
 </root>
