@@ -2,11 +2,7 @@
 	<PropertyGroup>
 		<DefaultItemExcludes>$(DefaultItemExcludes);config/**;debug/**;logs/**;overlay/**</DefaultItemExcludes>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
 		<OutputType>Exe</OutputType>
-
-		<!-- TODO: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/2550 -->
-		<JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
 	</PropertyGroup>
 
 	<ItemGroup>
