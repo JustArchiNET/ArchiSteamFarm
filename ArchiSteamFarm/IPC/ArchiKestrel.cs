@@ -435,12 +435,15 @@ internal static class ArchiKestrel {
 	}
 
 	private static async Task<WebApplication> CreateWebApplication() {
+		// Try to initialize to custom www folder first
 		string? webRootPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);
 
 		if (!Directory.Exists(webRootPath)) {
+			// Try to initialize to standard www folder next
 			webRootPath = Path.Combine(AppContext.BaseDirectory, SharedInfo.WebsiteDirectory);
 
 			if (!Directory.Exists(webRootPath)) {
+				// Do not attempt to create a new directory, user has explicitly removed it
 				webRootPath = null;
 			}
 		}
