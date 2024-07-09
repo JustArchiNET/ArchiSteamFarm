@@ -286,7 +286,7 @@ internal static class ArchiKestrel {
 
 		if (knownNetworksTexts?.Count > 0) {
 			// Use specified known networks
-			knownNetworks = new HashSet<IPNetwork>();
+			knownNetworks = [];
 
 			foreach (string knownNetworkText in knownNetworksTexts) {
 				string[] addressParts = knownNetworkText.Split('/', 3, StringSplitOptions.RemoveEmptyEntries);
