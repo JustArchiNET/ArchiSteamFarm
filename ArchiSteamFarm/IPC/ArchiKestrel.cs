@@ -435,15 +435,22 @@ internal static class ArchiKestrel {
 	}
 
 	private static async Task<WebApplication> CreateWebApplication() {
-		string customDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);
-		string websiteDirectory = Directory.Exists(customDirectory) ? customDirectory : Path.Combine(AppContext.BaseDirectory, SharedInfo.WebsiteDirectory);
+		string? webRootPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);
+
+		if (!Directory.Exists(webRootPath)) {
+			webRootPath = Path.Combine(AppContext.BaseDirectory, SharedInfo.WebsiteDirectory);
+
+			if (!Directory.Exists(webRootPath)) {
+				webRootPath = null;
+			}
+		}
 
 		// The order of dependency injection matters, pay attention to it
 		WebApplicationBuilder builder = WebApplication.CreateEmptyBuilder(
 			new WebApplicationOptions {
 				ApplicationName = SharedInfo.AssemblyName,
 				ContentRootPath = SharedInfo.HomeDirectory,
-				WebRootPath = websiteDirectory
+				WebRootPath = webRootPath
 			}
 		);
 
