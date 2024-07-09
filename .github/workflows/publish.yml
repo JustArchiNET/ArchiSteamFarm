@@ -87,7 +87,7 @@ jobs:
         show-progress: false
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v4.0.0
+      uses: actions/setup-dotnet@v4.0.1
       with:
         dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
 
