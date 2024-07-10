@@ -60,28 +60,80 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
 		</value>
 	</resheader>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginDisabledMissingBuildToken" xml:space="preserve">
+		<value>{0} a fost dezactivat din cauza unui build token lipsă</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginDisabledInConfig" xml:space="preserve">
+		<value>{0} este momentan dezactivat în funcție de configurația ta. Dacă doriți să ajutați SteamDB în transmiterea de date, vă rugăm să consultați wiki-ul.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} a fost inițializat cu succes, mulțumim anticipat pentru ajutor. Prima depunere se va întâmpla în aproximativ {1} de acum.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+		<value>{0} nu a putut fi încărcat, o nouă instanță va fi inițializată...</value>
+		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+	</data>
+	<data name="BotNoAppsToRefresh" xml:space="preserve">
+		<value>Nu există aplicații care să necesite o reîmprospătare la acest bot.</value>
+	</data>
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Preluarea unui total de {0} tokeni de acces...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Preluarea unui total de {0} tokeni de acces...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>S-a terminat preluarea a {0} tokene de acces ale aplicației.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>S-a terminat preluarea a {0} tokene de acces ale aplicației.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotRetrievingTotalDepots" xml:space="preserve">
+		<value>Se obțin toate depozitele pentru un total de {0} aplicații</value>
+		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppInfos" xml:space="preserve">
+		<value>Se preiau {0} informații despre aplicații...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
+		<value>S-a terminat preluarea a {0} informații despre aplicații.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
+	</data>
 	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
 		<value>{0} din {1} chei de depozit au fost recuperate cu succes.</value>
 		<comment>{0} will be replaced by the number (count this batch) of depot keys that were successfully retrieved, {1} will be replaced by the number (count this batch) of depot keys that were supposed to be retrieved</comment>
 	</data>
-	
-	
-	
-	
-	
-	
+	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
+		<value>S-a terminat preluarea tuturor depot keys pentru un total de {0} aplicații.</value>
+		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
+	</data>
+	<data name="SubmissionNoNewData" xml:space="preserve">
+		<value>Nu există date noi de trimis, totul este actualizat.</value>
+	</data>
+	<data name="SubmissionNoContributorSet" xml:space="preserve">
+		<value>Nu s-au putut trimite datele deoarece nu există un set SteamID valid pe care să îl putem clasifica ca contributor. Luați în considerare configurarea proprietății {0}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
+	</data>
+	<data name="SubmissionInProgress" xml:space="preserve">
+		<value>Trimiterea unui total de aplicații/pachete/depot-uri înregistrate: {0}/{1}/{2}...</value>
+		<comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
+	</data>
+	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+		<value>Trimiterea a eșuat din cauza numărului prea mare de cereri trimise, vom încerca din nou în aproximativ {0} de acum.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="SubmissionSuccessful" xml:space="preserve">
+		<value>Datele au fost trimise cu succes. Serverul a înregistrat un total de aplicații/pachete/depot-uri noi: {0} ({1} verificat)/{2} ({3} verificat)/{4} ({5} verificat).</value>
+		<comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
+	</data>
 	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
 		<value>Aplicații noi: {0}</value>
 		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
@@ -102,9 +154,21 @@
 		<value>Depozite noi: {0}</value>
 		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
-	
-	
-	
+	<data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+		<value>Depot-uri verificate: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="PluginSecretListInitialized" xml:space="preserve">
+		<value>{0} inițializat, plugin-ul nu va rezolva niciuna dintre acestea: {1}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>Se încarcă cache-ul global STD...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>Se validează integritatea globală STD...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>Nu s-a putut verifica integritatea globală STD a cache-ului. Acest lucru sugerează o potențială corupție de fișiere/memorie, o nouă instanță va fi inițializată în schimb.</value>
+	</data>
 </root>
