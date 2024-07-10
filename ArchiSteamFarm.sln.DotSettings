@@ -524,6 +524,22 @@
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/XmlFormatter/WRAP_LINES/@EntryValue">False</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/CSharpFileLayoutPatterns/Pattern/@EntryValue">&lt;?xml version="1.0" encoding="utf-16"?&gt;&#xD;
 &lt;Patterns xmlns="urn:schemas-jetbrains-com:member-reordering-patterns"&gt;&#xD;
+  &lt;TypePattern DisplayName=&quot;Non-reorderable types&quot; Priority=&quot;99999999&quot;&gt;
+    &lt;TypePattern.Match&gt;
+      &lt;Or&gt;
+        &lt;And&gt;
+          &lt;Kind Is=&quot;Interface&quot; /&gt;
+          &lt;Or&gt;
+            &lt;HasAttribute Name=&quot;System.Runtime.InteropServices.InterfaceTypeAttribute&quot; /&gt;
+            &lt;HasAttribute Name=&quot;System.Runtime.InteropServices.ComImport&quot; /&gt;
+          &lt;/Or&gt;
+        &lt;/And&gt;
+        &lt;Kind Is=&quot;Struct&quot; /&gt;
+        &lt;HasAttribute Name=&quot;System.Runtime.InteropServices.StructLayoutAttribute&quot; /&gt;
+        &lt;HasAttribute Name=&quot;JetBrains.Annotations.NoReorderAttribute&quot; /&gt;
+      &lt;/Or&gt;
+    &lt;/TypePattern.Match&gt;
+  &lt;/TypePattern&gt;
   &lt;TypePattern DisplayName="ArchiPattern" Priority="150"&gt;&#xD;
     &lt;Entry DisplayName="Public (Events and Delegates)"&gt;&#xD;
       &lt;Entry.Match&gt;&#xD;

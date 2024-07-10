@@ -108,12 +108,10 @@ internal static partial class NativeMethods {
 	[StructLayout(LayoutKind.Sequential)]
 	[SupportedOSPlatform("Windows")]
 	internal struct FlashWindowInfo {
-#pragma warning disable Reordering // TODO: This silly pragma doesn't do anything, but it stops Rider from reordering, we may be able to get rid of it later
 		public uint StructSize;
 		public nint WindowHandle;
 		public EFlashFlags Flags;
 		public uint Count;
 		public uint TimeoutBetweenFlashes;
-#pragma warning restore Reordering // TODO: This silly pragma doesn't do anything, but it stops Rider from reordering, we may be able to get rid of it later
 	}
 }
