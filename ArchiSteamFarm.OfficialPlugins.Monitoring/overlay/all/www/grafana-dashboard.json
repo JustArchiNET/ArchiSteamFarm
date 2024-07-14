@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.4.1"
+      "version": "11.1.0"
     },
     {
       "type": "datasource",
@@ -68,7 +68,56 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "info",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "GitHub",
+      "tooltip": "",
+      "type": "link",
+      "url": "https://github.com/JustArchiNET/ArchiSteamFarm"
+    },
+    {
+      "asDropdown": false,
+      "icon": "doc",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Wiki",
+      "tooltip": "",
+      "type": "link",
+      "url": "https://github.com/JustArchiNET/ArchiSteamFarm/wiki/MonitoringPlugin"
+    },
+    {
+      "asDropdown": false,
+      "icon": "question",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Support",
+      "tooltip": "",
+      "type": "link",
+      "url": "https://github.com/JustArchiNET/ArchiSteamFarm/discussions"
+    },
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Grafana",
+      "tooltip": "",
+      "type": "link",
+      "url": "https://grafana.com/grafana/dashboards/20888-archisteamfarm/"
+    }
+  ],
   "panels": [
     {
       "datasource": {
@@ -109,6 +158,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -120,7 +170,7 @@
         "textMode": "name",
         "wideLayout": true
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -178,6 +228,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -189,7 +240,7 @@
         "textMode": "name",
         "wideLayout": true
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -247,6 +298,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -258,7 +310,7 @@
         "textMode": "name",
         "wideLayout": true
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -316,6 +368,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -327,7 +380,7 @@
         "textMode": "name",
         "wideLayout": true
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -385,6 +438,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -396,7 +450,7 @@
         "textMode": "name",
         "wideLayout": true
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -416,7 +470,7 @@
       "type": "stat"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -424,343 +478,435 @@
         "y": 3
       },
       "id": 13,
-      "panels": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 3,
-            "x": 0,
-            "y": 4
-          },
-          "id": 11,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "center",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showPercentChange": false,
-            "textMode": "auto",
-            "wideLayout": true
-          },
-          "pluginVersion": "10.4.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "expr": "asf_bots{job=\"$job\", instance=\"$instance\", state=\"configured\"}",
-              "instant": false,
-              "legendFormat": "configured",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "type": "stat"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 6,
-            "x": 3,
-            "y": 4
-          },
-          "id": 51,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "center",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showPercentChange": false,
-            "textMode": "auto",
-            "wideLayout": true
-          },
-          "pluginVersion": "10.4.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "expr": "asf_bots{job=\"$job\", instance=\"$instance\", state!=\"configured\", state!=\"farming\"}",
-              "instant": false,
-              "legendFormat": "{{state}}",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "type": "stat"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 3,
-            "x": 9,
-            "y": 4
-          },
-          "id": 62,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "center",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showPercentChange": false,
-            "textMode": "auto",
-            "wideLayout": true
-          },
-          "pluginVersion": "10.4.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "expr": "asf_bots{job=\"$job\", instance=\"$instance\", state=\"farming\"}",
-              "instant": false,
-              "legendFormat": "farming",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "type": "stat"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 10
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 3,
-            "x": 12,
-            "y": 4
-          },
-          "id": 2,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "center",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showPercentChange": false,
-            "textMode": "auto",
-            "wideLayout": true
-          },
-          "pluginVersion": "10.4.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "expr": "asf_active_plugins{job=\"$job\", instance=\"$instance\"}",
-              "instant": false,
-              "legendFormat": "Plugins",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "type": "stat"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "fixedColor": "dark-red",
-                "mode": "fixed"
-              },
-              "mappings": [],
-              "noValue": "0",
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 9,
-            "x": 15,
-            "y": 4
-          },
-          "id": 52,
-          "options": {
-            "colorMode": "background",
-            "graphMode": "area",
-            "justifyMode": "center",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showPercentChange": false,
-            "text": {},
-            "textMode": "value",
-            "wideLayout": true
-          },
-          "pluginVersion": "10.4.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "asf_ipc_banned_ips{job=\"$job\", instance=\"$instance\"}",
-              "instant": false,
-              "legendFormat": "__auto",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "IPC banned IPs",
-          "type": "stat"
-        }
-      ],
+      "panels": [],
       "title": "Global statistics",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 0,
+        "y": 4
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "avg(asf_bots{job=\"$job\", instance=\"$instance\", state=\"configured\"}) by (job, instance)",
+          "instant": false,
+          "legendFormat": "configured",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 3,
+        "y": 4
+      },
+      "id": 51,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "avg(asf_bots{job=\"$job\", instance=\"$instance\", state!=\"configured\", state!=\"farming\"}) by (job, instance, state)",
+          "instant": false,
+          "legendFormat": "{{state}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 9,
+        "y": 4
+      },
+      "id": 62,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "avg(asf_bots{job=\"$job\", instance=\"$instance\", state=\"farming\"}) by (job, instance)",
+          "instant": false,
+          "legendFormat": "farming",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 12,
+        "y": 4
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "avg(asf_active_plugins{job=\"$job\", instance=\"$instance\", type=\"\"}) by (job, instance)",
+          "instant": false,
+          "legendFormat": "Plugins",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 15,
+        "y": 4
+      },
+      "id": 63,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "avg(asf_active_plugins{job=\"$job\", instance=\"$instance\", type=\"official\"}) by (job, instance)",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Official Plugins",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "avg(asf_active_plugins{job=\"$job\", instance=\"$instance\", type=\"custom\"}) by (job, instance)",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Custom Plugins",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-red",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 21,
+        "y": 4
+      },
+      "id": 52,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {},
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "avg(asf_ipc_banned_ips{job=\"$job\", instance=\"$instance\"}) by (job, instance)",
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "IPC banned IPs",
+      "type": "stat"
     },
     {
       "collapsed": true,
@@ -768,7 +914,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 10
       },
       "id": 8,
       "panels": [
@@ -821,7 +967,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -837,7 +984,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 5
+            "y": 11
           },
           "id": 7,
           "options": {
@@ -860,7 +1007,7 @@
               },
               "disableTextWrap": false,
               "editorMode": "code",
-              "expr": "asf_bot_farming_time_remaining_minutes{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\"}",
+              "expr": "avg(asf_bot_farming_time_remaining_minutes{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\"}) by (job, instance, bot, steamid)",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": false,
@@ -922,7 +1069,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -937,7 +1085,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 5
+            "y": 11
           },
           "id": 4,
           "options": {
@@ -960,7 +1108,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "asf_bot_wallet_balance{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\", currency!~\"CNY|KWD|VND\"} / 100",
+              "expr": "avg(asf_bot_wallet_balance{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\", currency!~\"CNY|KWD|VND\"} / 100) by (job, instance, bot, steamid, currency)",
               "hide": false,
               "instant": false,
               "legendFormat": "{{bot}} ({{currency}})",
@@ -973,7 +1121,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "asf_bot_wallet_balance{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\", currency=~\"CNY|VND\"} / 10",
+              "expr": "avg(asf_bot_wallet_balance{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\", currency=~\"CNY|VND\"} / 10) by (job, instance, bot, steamid, currency)",
               "hide": false,
               "instant": false,
               "interval": "",
@@ -987,7 +1135,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "asf_bot_wallet_balance{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\", currency=~\"KWD\"} / 1000",
+              "expr": "avg(asf_bot_wallet_balance{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\", currency=~\"KWD\"} / 1000) by (job, instance, bot, steamid, currency)",
               "hide": false,
               "instant": false,
               "interval": "",
@@ -1016,7 +1164,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1031,7 +1180,7 @@
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 12
+            "y": 18
           },
           "id": 9,
           "options": {
@@ -1050,7 +1199,7 @@
             "sizing": "auto",
             "text": {}
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -1058,7 +1207,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "asf_bot_bgr_keys_remaining{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\"}",
+              "expr": "avg(asf_bot_bgr_keys_remaining{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\"}) by (job, instance, bot, steamid)",
               "instant": false,
               "legendFormat": "{{bot}}",
               "range": true,
@@ -1085,7 +1234,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1100,7 +1250,7 @@
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 12
+            "y": 18
           },
           "id": 10,
           "options": {
@@ -1119,7 +1269,7 @@
             "sizing": "auto",
             "text": {}
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -1127,7 +1277,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "asf_bot_heartbeat_failures{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\"}",
+              "expr": "avg(asf_bot_heartbeat_failures{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\"}) by (job, instance, bot, steamid)",
               "instant": false,
               "legendFormat": "{{bot}}",
               "range": true,
@@ -1165,7 +1315,7 @@
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 18
+            "y": 24
           },
           "id": 6,
           "options": {
@@ -1173,6 +1323,7 @@
             "graphMode": "none",
             "justifyMode": "center",
             "orientation": "auto",
+            "percentChangeColorMode": "standard",
             "reduceOptions": {
               "calcs": [
                 "lastNotNull"
@@ -1184,7 +1335,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -1192,7 +1343,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "asf_bot_friends{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\"}",
+              "expr": "avg(asf_bot_friends{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\"}) by (job, instance, bot, steamid)",
               "instant": false,
               "legendFormat": "{{bot}}",
               "range": true,
@@ -1234,7 +1385,7 @@
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 18
+            "y": 24
           },
           "id": 5,
           "options": {
@@ -1242,6 +1393,7 @@
             "graphMode": "none",
             "justifyMode": "center",
             "orientation": "auto",
+            "percentChangeColorMode": "standard",
             "reduceOptions": {
               "calcs": [
                 "lastNotNull"
@@ -1253,7 +1405,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -1261,7 +1413,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "asf_bot_clans{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\"}",
+              "expr": "avg(asf_bot_clans{job=\"$job\", instance=\"$instance\", bot=~\"$bots\", steamid=~\"$steamids\", steamid!=\"0\"}) by (job, instance, bot, steamid)",
               "instant": false,
               "legendFormat": "{{bot}}",
               "range": true,
@@ -1281,7 +1433,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 11
       },
       "id": 36,
       "panels": [
@@ -1373,7 +1525,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "max_over_time(process_runtime_dotnet_gc_committed_memory_size_bytes{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+              "expr": "avg(max_over_time(process_runtime_dotnet_gc_committed_memory_size_bytes{job=\"$job\", instance=\"$instance\"}[$__rate_interval])) by (job, instance)",
               "hide": false,
               "instant": false,
               "legendFormat": "GC Commited Memory Size",
@@ -1386,7 +1538,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "max_over_time(process_runtime_dotnet_gc_objects_size_bytes{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+              "expr": "avg(max_over_time(process_runtime_dotnet_gc_objects_size_bytes{job=\"$job\", instance=\"$instance\"}[$__rate_interval])) by (job, instance)",
               "hide": false,
               "instant": false,
               "legendFormat": "GC Objects size",
@@ -1399,7 +1551,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "rate(process_runtime_dotnet_gc_allocations_size_bytes{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+              "expr": "avg(rate(process_runtime_dotnet_gc_allocations_size_bytes{job=\"$job\", instance=\"$instance\"}[$__rate_interval])) by (job, instance)",
               "hide": false,
               "instant": false,
               "legendFormat": "GC Allocation Size",
@@ -1497,7 +1649,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "max_over_time(process_runtime_dotnet_gc_heap_size_bytes{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+              "expr": "avg(max_over_time(process_runtime_dotnet_gc_heap_size_bytes{job=\"$job\", instance=\"$instance\"}[$__rate_interval])) by (job, instance, generation)",
               "instant": false,
               "legendFormat": "{{generation}}",
               "range": true,
@@ -1594,7 +1746,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "max_over_time(process_runtime_dotnet_gc_heap_fragmentation_size_bytes{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+              "expr": "avg(max_over_time(process_runtime_dotnet_gc_heap_fragmentation_size_bytes{job=\"$job\", instance=\"$instance\"}[$__rate_interval])) by (job, instance, generation)",
               "instant": false,
               "legendFormat": "{{generation}}",
               "range": true,
@@ -1696,7 +1848,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "rate(process_runtime_dotnet_gc_collections_count_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+              "expr": "avg(rate(process_runtime_dotnet_gc_collections_count_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])) by (job, instance, generation)",
               "instant": false,
               "legendFormat": "{{generation}}",
               "range": true,
@@ -1795,7 +1947,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "rate(process_runtime_dotnet_exceptions_count_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+              "expr": "avg(rate(process_runtime_dotnet_exceptions_count_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])) by (job, instance)",
               "hide": false,
               "instant": false,
               "legendFormat": " Exceptions",
@@ -1842,6 +1994,7 @@
             "graphMode": "area",
             "justifyMode": "auto",
             "orientation": "auto",
+            "percentChangeColorMode": "standard",
             "reduceOptions": {
               "calcs": [
                 "lastNotNull"
@@ -1853,7 +2006,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -1861,7 +2014,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "max_over_time(process_runtime_dotnet_thread_pool_threads_count{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+              "expr": "avg(max_over_time(process_runtime_dotnet_thread_pool_threads_count{job=\"$job\", instance=\"$instance\"}[$__rate_interval])) by (job, instance)",
               "instant": false,
               "legendFormat": "Thead Pool Threads",
               "range": true,
@@ -1907,6 +2060,7 @@
             "graphMode": "area",
             "justifyMode": "auto",
             "orientation": "auto",
+            "percentChangeColorMode": "standard",
             "reduceOptions": {
               "calcs": [
                 "lastNotNull"
@@ -1918,7 +2072,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -1926,7 +2080,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "max_over_time(process_runtime_dotnet_thread_pool_queue_length{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+              "expr": "avg(max_over_time(process_runtime_dotnet_thread_pool_queue_length{job=\"$job\", instance=\"$instance\"}[$__rate_interval])) by (job, instance)",
               "instant": false,
               "legendFormat": "Thread Pool Queue Length",
               "range": true,
@@ -1946,7 +2100,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 12
       },
       "id": 23,
       "panels": [
@@ -2567,6 +2721,7 @@
             "graphMode": "area",
             "justifyMode": "center",
             "orientation": "auto",
+            "percentChangeColorMode": "standard",
             "reduceOptions": {
               "calcs": [
                 "lastNotNull"
@@ -2579,7 +2734,7 @@
             "textMode": "value",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -2639,6 +2794,7 @@
             "graphMode": "area",
             "justifyMode": "center",
             "orientation": "auto",
+            "percentChangeColorMode": "standard",
             "reduceOptions": {
               "calcs": [
                 "lastNotNull"
@@ -2651,7 +2807,7 @@
             "textMode": "value",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -2711,6 +2867,7 @@
             "graphMode": "area",
             "justifyMode": "auto",
             "orientation": "auto",
+            "percentChangeColorMode": "standard",
             "reduceOptions": {
               "calcs": [
                 "max"
@@ -2722,7 +2879,7 @@
             "textMode": "value_and_name",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -2780,6 +2937,7 @@
             "graphMode": "area",
             "justifyMode": "auto",
             "orientation": "auto",
+            "percentChangeColorMode": "standard",
             "reduceOptions": {
               "calcs": [
                 "max"
@@ -2791,7 +2949,7 @@
             "textMode": "value_and_name",
             "wideLayout": true
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -2936,7 +3094,7 @@
               }
             ]
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -3110,7 +3268,7 @@
               }
             ]
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -3284,7 +3442,7 @@
               }
             ]
           },
-          "pluginVersion": "10.4.1",
+          "pluginVersion": "11.1.0",
           "targets": [
             {
               "datasource": {
@@ -3414,7 +3572,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "kestrel_active_connections{job=\"$job\", instance=\"$instance\"}",
+              "expr": "avg(kestrel_active_connections{job=\"$job\", instance=\"$instance\"}) by (job, instance, server_address, server_port)",
               "hide": false,
               "instant": false,
               "legendFormat": "{{server_address}}:{{server_port}}",
@@ -3435,7 +3593,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 13
       },
       "id": 44,
       "panels": [
@@ -3724,7 +3882,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "rate(http_client_request_duration_seconds_sum{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+              "expr": "avg(rate(http_client_request_duration_seconds_sum{job=\"$job\", instance=\"$instance\"}[$__rate_interval])) by (job, instance, http_request_method, url_scheme, server_address, http_response_status_code)",
               "hide": false,
               "instant": false,
               "legendFormat": "{{http_request_method}} {{url_scheme}}://{{server_address}}/ {{http_response_status_code}}",
@@ -3927,7 +4085,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "sum(rate(http_client_request_duration_seconds_sum{job=\"$job\", instance=\"$instance\", server_address=~\"$http_client_server_addresses\"}[$__rate_interval])) by (http_request_method, http_response_status_code) > 0",
+              "expr": "sum(rate(http_client_request_duration_seconds_sum{job=\"$job\", instance=\"$instance\", server_address=~\"$http_client_server_addresses\", http_response_status_code!=\"\"}[$__rate_interval])) by (http_request_method, http_response_status_code) > 0",
               "hide": false,
               "instant": false,
               "legendFormat": "{{http_request_method}} -> {{http_response_status_code}}",
@@ -3949,11 +4107,7 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "Prometheus",
-          "value": "TrYkaVXnk"
-        },
+        "current": {},
         "hide": 0,
         "includeAll": false,
         "label": "datasource",
@@ -4150,14 +4304,13 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "ArchiSteamFarm",
   "uid": "archisteamfarm",
-  "version": 1,
-  "weekStart": "",
-  "description": "Grafana Dashboard for ArchiSteamFarm instances."
+  "version": 94,
+  "weekStart": ""
 }
