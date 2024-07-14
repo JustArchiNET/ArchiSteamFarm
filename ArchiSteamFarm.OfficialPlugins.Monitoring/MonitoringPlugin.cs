@@ -158,7 +158,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_active_plugins",
-			static () => PluginsCore.ActivePluginsCount,
+			static () => PluginsCore.ActivePlugins.Count,
 			description: "Number of plugins currently loaded in ASF"
 		);
 
