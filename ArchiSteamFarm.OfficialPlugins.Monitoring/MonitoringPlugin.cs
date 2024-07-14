@@ -139,10 +139,10 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialG
 			return;
 		}
 
-		PluginMeasurements = new[] {
-			new Measurement<int>(PluginsCore.ActivePlugins.Count),
-			new Measurement<int>(PluginsCore.ActivePlugins.Count(static plugin => plugin is OfficialPlugin), new KeyValuePair<string, object?>(TagNames.PluginType, "official")),
-			new Measurement<int>(PluginsCore.ActivePlugins.Count(static plugin => plugin is not OfficialPlugin), new KeyValuePair<string, object?>(TagNames.PluginType, "custom"))
+		PluginMeasurements = new HashSet<Measurement<int>>(3) {
+			new(PluginsCore.ActivePlugins.Count),
+			new(PluginsCore.ActivePlugins.Count(static plugin => plugin is OfficialPlugin), new KeyValuePair<string, object?>(TagNames.PluginType, "official")),
+			new(PluginsCore.ActivePlugins.Count(static plugin => plugin is not OfficialPlugin), new KeyValuePair<string, object?>(TagNames.PluginType, "custom"))
 		}.ToFrozenSet();
 
 		Meter = new Meter(MeterName, Version.ToString());
