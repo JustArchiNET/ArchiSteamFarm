@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Composition;
@@ -68,6 +69,8 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialG
 	);
 
 	private static bool Enabled => ASF.GlobalConfig?.IPC ?? GlobalConfig.DefaultIPC;
+
+	private static FrozenSet<Measurement<int>>? PluginMeasurements;
 
 	[JsonInclude]
 	[Required]
@@ -136,6 +139,12 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialG
 			return;
 		}
 
+		PluginMeasurements = new[] {
+			new Measurement<int>(PluginsCore.ActivePlugins.Count),
+			new Measurement<int>(PluginsCore.ActivePlugins.Count(static plugin => plugin is OfficialPlugin), new KeyValuePair<string, object?>(TagNames.PluginType, "official")),
+			new Measurement<int>(PluginsCore.ActivePlugins.Count(static plugin => plugin is not OfficialPlugin), new KeyValuePair<string, object?>(TagNames.PluginType, "custom"))
+		}.ToFrozenSet();
+
 		Meter = new Meter(MeterName, Version.ToString());
 
 		Meter.CreateObservableGauge(
@@ -158,7 +167,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialG
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_active_plugins",
-			static () => PluginsCore.ActivePlugins.Count,
+			static () => PluginMeasurements,
 			description: "Number of plugins currently loaded in ASF"
 		);
 
