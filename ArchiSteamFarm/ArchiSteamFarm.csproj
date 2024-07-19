@@ -7,7 +7,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="AngleSharp.XPath" />
-		<PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" />
 		<PackageReference Include="CryptSharpStandard" />
 		<PackageReference Include="Humanizer" />
 		<PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
