@@ -1048,12 +1048,14 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		return response.Result;
 	}
 
-	internal void SetCurrentMode(EUserInterfaceMode userInterfaceMode, byte chatMode = 2) {
+	internal void SetCurrentMode(EUserInterfaceMode userInterfaceMode, SteamUser.ChatMode chatMode = SteamUser.ChatMode.NewSteamChat) {
 		if (!Enum.IsDefined(userInterfaceMode)) {
 			throw new InvalidEnumArgumentException(nameof(userInterfaceMode), (int) userInterfaceMode, typeof(EUserInterfaceMode));
 		}
 
-		ArgumentOutOfRangeException.ThrowIfZero(chatMode);
+		if (!Enum.IsDefined(chatMode)) {
+			throw new InvalidEnumArgumentException(nameof(chatMode), (int) chatMode, typeof(SteamUser.ChatMode));
+		}
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -1066,7 +1068,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		ClientMsgProtobuf<CMsgClientUIMode> request = new(EMsg.ClientCurrentUIMode) {
 			Body = {
 				uimode = (uint) userInterfaceMode,
-				chat_mode = chatMode
+				chat_mode = (uint) chatMode
 			}
 		};
 
