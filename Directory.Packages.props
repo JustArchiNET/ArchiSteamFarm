@@ -14,7 +14,7 @@
 		<PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
-		<PackageVersion Include="SteamKit2" Version="3.0.0-Alpha.1" />
+		<PackageVersion Include="SteamKit2" Version="3.0.0-Alpha.2" />
 		<PackageVersion Include="Swashbuckle.AspNetCore" Version="6.6.2" />
 		<PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="6.6.2" />
 		<PackageVersion Include="System.Composition" Version="8.0.0" />
