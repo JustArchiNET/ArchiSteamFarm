@@ -28,7 +28,7 @@ jobs:
       uses: docker/setup-buildx-action@v3.4.0
 
     - name: Build ${{ matrix.configuration }} Docker image from ${{ matrix.file }}
-      uses: docker/build-push-action@v6.4.1
+      uses: docker/build-push-action@v6.5.0
       with:
         build-args: CONFIGURATION=${{ matrix.configuration }}
         context: .
