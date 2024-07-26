@@ -251,7 +251,11 @@ internal static class Commands {
 		if (!string.IsNullOrEmpty(activationCode)) {
 			string? generatedCode = await mobileAuthenticator.GenerateToken().ConfigureAwait(false);
 
-			if (generatedCode != activationCode) {
+			if (string.IsNullOrEmpty(generatedCode)) {
+				return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(generatedCode)));
+			}
+
+			if (!generatedCode.Equals(activationCode, StringComparison.OrdinalIgnoreCase)) {
 				return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{generatedCode} != {activationCode}"));
 			}
 		}
