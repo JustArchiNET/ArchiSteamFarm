@@ -56,6 +56,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	private const string EconService = "IEconService";
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
+	private const byte MaxTradeOfferMessageLength = 128;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const byte SessionIDLength = 24; // For maximum compatibility, should be divisible by 2 and match the length of "sessionid" property that Steam uses across their websites
 	private const string SteamAppsService = "ISteamApps";
@@ -576,7 +577,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, HashSet<ulong>? TradeOfferIDs, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Asset>? itemsToGive = null, IReadOnlyCollection<Asset>? itemsToReceive = null, string? token = null, bool forcedSingleOffer = false, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+	public async Task<(bool Success, HashSet<ulong>? TradeOfferIDs, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Asset>? itemsToGive = null, IReadOnlyCollection<Asset>? itemsToReceive = null, string? token = null, string? customMessage = null, bool forcedSingleOffer = false, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -620,6 +621,14 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		}
 
+		string tradeOfferMessage = $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}";
+
+		if (!string.IsNullOrEmpty(customMessage)) {
+			byte allowedExtraMessageLength = (byte) (MaxTradeOfferMessageLength - tradeOfferMessage.Length - 3); // We're going to add a space, opening and closing bracket
+
+			tradeOfferMessage += $" ({(customMessage.Length <= allowedExtraMessageLength ? customMessage : $"{customMessage[..(allowedExtraMessageLength - 1)]}{SteamChatMessage.ContinuationCharacter}")})";
+		}
+
 		Uri request = new(SteamCommunityURL, "/tradeoffer/new/send");
 		Uri referer = new(SteamCommunityURL, "/tradeoffer/new");
 
@@ -628,7 +637,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "partner", steamID.ToString(CultureInfo.InvariantCulture) },
 			{ "serverid", "1" },
 			{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JsonObject { { "trade_offer_access_token", token } }.ToJsonText() : "" },
-			{ "tradeoffermessage", $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}" }
+			{ "tradeoffermessage", tradeOfferMessage }
 		};
 
 		HashSet<ulong> tradeOfferIDs = new(trades.Count);
