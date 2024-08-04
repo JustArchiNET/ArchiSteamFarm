@@ -17,6 +17,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Update="Localization\Strings.resx" Public="true" />
+		<EmbeddedResource Update="Localization\Strings.resx" />
 	</ItemGroup>
 </Project>
