@@ -23,7 +23,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -79,7 +78,7 @@ internal sealed class BotCredentialsProvider : IAuthenticator {
 		if (previousCodeWasIncorrect && (++LoginFailures >= MaxLoginFailures)) {
 			EResult reason = inputType == ASF.EUserInputType.TwoFactorAuthentication ? EResult.TwoFactorCodeMismatch : EResult.InvalidLoginAuthCode;
 
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, reason, reason));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatBotUnableToLogin(reason, reason));
 
 			await CancellationTokenSource.CancelAsync().ConfigureAwait(false);
 

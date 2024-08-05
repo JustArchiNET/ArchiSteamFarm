@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -180,7 +179,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		ArgumentOutOfRangeException.ThrowIfZero(itemsCountPerRequest);
 
 		if (!Client.IsConnected || (Client.SteamID == null)) {
-			throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Client.IsConnected)));
+			throw new TimeoutException(Strings.FormatWarningFailedWithError(nameof(Client.IsConnected)));
 		}
 
 		ulong steamID = Client.SteamID;
@@ -240,21 +239,21 @@ public sealed class ArchiHandler : ClientMsgHandler {
 						continue;
 					case EResult.NoMatch:
 						// Expected failures that we're not going to retry
-						throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
+						throw new TimeoutException(Strings.FormatWarningFailedWithError(serviceMethodResponse.Result));
 					default:
 						// Unknown failures, report them and do not retry since we're unsure if we should
-						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(serviceMethodResponse.Result), serviceMethodResponse.Result));
+						ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(serviceMethodResponse.Result), serviceMethodResponse.Result));
 
-						throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
+						throw new TimeoutException(Strings.FormatWarningFailedWithError(serviceMethodResponse.Result));
 				}
 			}
 
 			if (serviceMethodResponse == null) {
-				throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(serviceMethodResponse)));
+				throw new TimeoutException(Strings.FormatErrorObjectIsNull(nameof(serviceMethodResponse)));
 			}
 
 			if (serviceMethodResponse.Result != EResult.OK) {
-				throw new TimeoutException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, serviceMethodResponse.Result));
+				throw new TimeoutException(Strings.FormatWarningFailedWithError(serviceMethodResponse.Result));
 			}
 
 			CEcon_GetInventoryItemsWithDescriptions_Response response = serviceMethodResponse.GetDeserializedResponse<CEcon_GetInventoryItemsWithDescriptions_Response>();
@@ -283,7 +282,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 			foreach (CEconItem_Description? description in response.descriptions) {
 				if (description.classid == 0) {
-					throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(description.classid)));
+					throw new NotSupportedException(Strings.FormatErrorObjectIsNull(nameof(description.classid)));
 				}
 
 				(ulong ClassID, ulong InstanceID) key = (description.classid, description.instanceid);
@@ -311,7 +310,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			}
 
 			if (response.last_assetid == 0) {
-				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.last_assetid)));
+				throw new NotSupportedException(Strings.FormatErrorObjectIsNull(nameof(response.last_assetid)));
 			}
 
 			request.start_assetid = response.last_assetid;

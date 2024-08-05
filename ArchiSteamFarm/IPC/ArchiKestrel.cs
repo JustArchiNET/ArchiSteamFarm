@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -166,7 +165,7 @@ internal static class ArchiKestrel {
 
 			if (string.IsNullOrEmpty(physicalPath)) {
 				// Invalid path provided
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(physicalPath)} ({plugin.Name})"));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorObjectIsNull($"{nameof(physicalPath)} ({plugin.Name})"));
 
 				continue;
 			}
@@ -175,7 +174,7 @@ internal static class ArchiKestrel {
 
 			if (string.IsNullOrEmpty(webPath)) {
 				// Invalid path provided
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(webPath)} ({plugin.Name})"));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorObjectIsNull($"{nameof(webPath)} ({plugin.Name})"));
 
 				continue;
 			}
@@ -193,7 +192,7 @@ internal static class ArchiKestrel {
 
 			if (!Directory.Exists(physicalPath)) {
 				// Non-existing path provided
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, $"{nameof(physicalPath)} ({plugin.Name})"));
+				ASF.ArchiLogger.LogGenericWarning(Strings.FormatErrorIsInvalid($"{nameof(physicalPath)} ({plugin.Name})"));
 
 				continue;
 			}
@@ -292,7 +291,7 @@ internal static class ArchiKestrel {
 				string[] addressParts = knownNetworkText.Split('/', 3, StringSplitOptions.RemoveEmptyEntries);
 
 				if ((addressParts.Length != 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress) || !byte.TryParse(addressParts[1], out byte prefixLength)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(knownNetworkText)));
+					ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(knownNetworkText)));
 					ASF.ArchiLogger.LogGenericDebug($"{nameof(knownNetworkText)}: {knownNetworkText}");
 
 					continue;

@@ -493,7 +493,7 @@ public static class ASF {
 			await Bot.RegisterBot(botName).ConfigureAwait(false);
 
 			if (Bot.Bots.Count > MaximumRecommendedBotsCount) {
-				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
+				ArchiLogger.LogGenericWarning(Strings.FormatWarningExcessiveBotsCount(MaximumRecommendedBotsCount));
 			}
 		}
 	}
@@ -679,7 +679,7 @@ public static class ASF {
 		IEnumerable<ServerRecord> servers = await GlobalDatabase.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
 
 		if (!servers.Any()) {
-			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, nameof(SteamDirectory)));
+			ArchiLogger.LogGenericInfo(Strings.FormatInitializing(nameof(SteamDirectory)));
 
 			SteamConfiguration steamConfiguration = SteamConfiguration.Create(static builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(GlobalDatabase.CellID).WithServerListProvider(GlobalDatabase.ServerListProvider).WithHttpClientFactory(static () => WebBrowser.GenerateDisposableHttpClient()));
 
@@ -708,7 +708,7 @@ public static class ASF {
 
 				return;
 			case > MaximumRecommendedBotsCount:
-				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
+				ArchiLogger.LogGenericWarning(Strings.FormatWarningExcessiveBotsCount(MaximumRecommendedBotsCount));
 				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 				break;
@@ -736,7 +736,7 @@ public static class ASF {
 				autoUpdatePeriod // Period
 			);
 
-			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.AutoUpdateCheckInfo, autoUpdatePeriod.ToHumanReadable()));
+			ArchiLogger.LogGenericInfo(Strings.FormatAutoUpdateCheckInfo(autoUpdatePeriod.ToHumanReadable()));
 		}
 
 		(bool updated, Version? newVersion) = await Update().ConfigureAwait(false);
@@ -804,7 +804,7 @@ public static class ASF {
 
 			Version newVersion = new(releaseResponse.Tag);
 
-			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
+			ArchiLogger.LogGenericInfo(Strings.FormatUpdateVersionInfo(SharedInfo.Version, newVersion));
 
 			if (!forced && (SharedInfo.Version >= newVersion)) {
 				return (false, newVersion);
@@ -857,7 +857,7 @@ public static class ASF {
 				ArchiLogger.LogGenericInfo(releaseResponse.ChangelogPlainText);
 			}
 
-			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
+			ArchiLogger.LogGenericInfo(Strings.FormatUpdateDownloadingNewVersion(newVersion, binaryAsset.Size / 1024 / 1024));
 
 			Progress<byte> progressReporter = new();
 

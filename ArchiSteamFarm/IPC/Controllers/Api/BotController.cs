@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
@@ -55,13 +54,13 @@ public sealed class BotController : ArchiController {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if ((request.Apps?.IsEmpty != false) && (request.Packages?.IsEmpty != false)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, $"{nameof(request.Apps)} && {nameof(request.Packages)}")));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty($"{nameof(request.Apps)} && {nameof(request.Packages)}")));
 		}
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
 		IList<BotAddLicenseResponse> results = await Utilities.InParallel(bots.Select(bot => AddLicense(bot, request))).ConfigureAwait(false);
@@ -87,7 +86,7 @@ public sealed class BotController : ArchiController {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
 		IList<bool> results = await Utilities.InParallel(bots.Select(static bot => bot.DeleteAllRelatedFiles())).ConfigureAwait(false);
@@ -107,7 +106,7 @@ public sealed class BotController : ArchiController {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if (bots == null) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(bots))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(bots))));
 		}
 
 		return Ok(new GenericResponse<IReadOnlyDictionary<string, Bot>>(bots.Where(static bot => !string.IsNullOrEmpty(bot.BotName)).ToDictionary(static bot => bot.BotName, static bot => bot, Bot.BotsComparer)));
@@ -139,7 +138,7 @@ public sealed class BotController : ArchiController {
 		HashSet<string> bots = botNames.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries).ToHashSet(Bot.BotsComparer);
 
 		if (bots.Any(static botName => !ASF.IsValidBotName(botName))) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(botNames))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(botNames))));
 		}
 
 		Dictionary<string, bool> result = new(bots.Count, Bot.BotsComparer);
@@ -177,7 +176,7 @@ public sealed class BotController : ArchiController {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(filePath);
 
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(filePath))));
+				return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(filePath))));
 			}
 
 			result[botName] = await BotConfig.Write(filePath, request.BotConfig).ConfigureAwait(false);
@@ -198,7 +197,7 @@ public sealed class BotController : ArchiController {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
 		IList<bool> results = await Utilities.InParallel(bots.Select(static bot => Task.Run(bot.DeleteRedeemedKeysFiles))).ConfigureAwait(false);
@@ -218,7 +217,7 @@ public sealed class BotController : ArchiController {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
 		IList<(Dictionary<string, string>? UnusedKeys, Dictionary<string, string>? UsedKeys)> results = await Utilities.InParallel(bots.Select(static bot => bot.GetUsedAndUnusedKeys())).ConfigureAwait(false);
@@ -245,19 +244,19 @@ public sealed class BotController : ArchiController {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (request.GamesToRedeemInBackground.Count == 0) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.GamesToRedeemInBackground))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(request.GamesToRedeemInBackground))));
 		}
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
 		IOrderedDictionary validGamesToRedeemInBackground = Bot.ValidateGamesToRedeemInBackground(request.GamesToRedeemInBackground);
 
 		if (validGamesToRedeemInBackground.Count == 0) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(validGamesToRedeemInBackground))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(validGamesToRedeemInBackground))));
 		}
 
 		await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.AddGamesToRedeemInBackground(validGamesToRedeemInBackground)))).ConfigureAwait(false);
@@ -283,13 +282,13 @@ public sealed class BotController : ArchiController {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if ((request.Type == ASF.EUserInputType.None) || !Enum.IsDefined(request.Type) || string.IsNullOrEmpty(request.Value)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, $"{nameof(request.Type)} || {nameof(request.Value)}")));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid($"{nameof(request.Type)} || {nameof(request.Value)}")));
 		}
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
 		IList<bool> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.SetUserInput(request.Type, request.Value)))).ConfigureAwait(false);
@@ -311,7 +310,7 @@ public sealed class BotController : ArchiController {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
 		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.Pause(request.Permanent, request.ResumeInSeconds))).ConfigureAwait(false);
@@ -335,13 +334,13 @@ public sealed class BotController : ArchiController {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (request.KeysToRedeem.Count == 0) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.KeysToRedeem))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(request.KeysToRedeem))));
 		}
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
 		IList<CStore_RegisterCDKey_Response?> results = await Utilities.InParallel(bots.Select(bot => request.KeysToRedeem.Select(key => bot.Actions.RedeemKey(key))).SelectMany(static task => task)).ConfigureAwait(false);
@@ -378,11 +377,11 @@ public sealed class BotController : ArchiController {
 		}
 
 		if (string.IsNullOrEmpty(request.NewName) || !ASF.IsValidBotName(request.NewName) || Bot.Bots.ContainsKey(request.NewName)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.NewName))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(request.NewName))));
 		}
 
 		if (!Bot.Bots.TryGetValue(botName, out Bot? bot)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botName)));
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botName)));
 		}
 
 		bool result = await bot.Rename(request.NewName).ConfigureAwait(false);
@@ -402,7 +401,7 @@ public sealed class BotController : ArchiController {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
 		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(static bot => Task.Run(bot.Actions.Resume))).ConfigureAwait(false);
@@ -422,7 +421,7 @@ public sealed class BotController : ArchiController {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
 		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(static bot => Task.Run(bot.Actions.Start))).ConfigureAwait(false);
@@ -442,7 +441,7 @@ public sealed class BotController : ArchiController {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
 		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(static bot => Task.Run(bot.Actions.Stop))).ConfigureAwait(false);

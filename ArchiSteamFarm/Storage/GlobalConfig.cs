@@ -489,46 +489,46 @@ public sealed class GlobalConfig {
 
 	internal (bool Valid, string? ErrorMessage) CheckValidation() {
 		if (Blacklist.Contains(0)) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(Blacklist), 0));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(Blacklist), 0));
 		}
 
 		if (ConnectionTimeout == 0) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(ConnectionTimeout), ConnectionTimeout));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(ConnectionTimeout), ConnectionTimeout));
 		}
 
 		if (FarmingDelay == 0) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(FarmingDelay), FarmingDelay));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(FarmingDelay), FarmingDelay));
 		}
 
 		if (!Enum.IsDefined(IPCPasswordFormat)) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(IPCPasswordFormat), IPCPasswordFormat));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(IPCPasswordFormat), IPCPasswordFormat));
 		}
 
 		if (MaxFarmingTime == 0) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(MaxFarmingTime), MaxFarmingTime));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(MaxFarmingTime), MaxFarmingTime));
 		}
 
 		if (!Enum.IsDefined(OptimizationMode)) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OptimizationMode), OptimizationMode));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(OptimizationMode), OptimizationMode));
 		}
 
 		if (!Enum.IsDefined(PluginsUpdateMode)) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(PluginsUpdateMode), PluginsUpdateMode));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(PluginsUpdateMode), PluginsUpdateMode));
 		}
 
 		if (!string.IsNullOrEmpty(SteamMessagePrefix) && !SteamChatMessage.IsValidPrefix(SteamMessagePrefix)) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(SteamMessagePrefix), SteamMessagePrefix));
 		}
 
 		if ((SteamOwnerID != 0) && !new SteamID(SteamOwnerID).IsIndividualAccount) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamOwnerID), SteamOwnerID));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(SteamOwnerID), SteamOwnerID));
 		}
 
 		if (SteamProtocols is <= 0 or > ProtocolTypes.All) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamProtocols), SteamProtocols));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(SteamProtocols), SteamProtocols));
 		}
 
-		return Enum.IsDefined(UpdateChannel) ? (true, null) : (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
+		return Enum.IsDefined(UpdateChannel) ? (true, null) : (false, Strings.FormatErrorConfigPropertyInvalid(nameof(UpdateChannel), UpdateChannel));
 	}
 
 	internal static async Task<(GlobalConfig? GlobalConfig, string? LatestJson)> Load(string filePath) {
@@ -545,7 +545,7 @@ public sealed class GlobalConfig {
 			json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(nameof(json)));
 
 				return (null, null);
 			}
@@ -577,7 +577,7 @@ public sealed class GlobalConfig {
 			switch (globalConfig.IPCPasswordFormat) {
 				case ArchiCryptoHelper.EHashingMethod.Pbkdf2 when ArchiCryptoHelper.HasDefaultCryptKey:
 				case ArchiCryptoHelper.EHashingMethod.SCrypt when ArchiCryptoHelper.HasDefaultCryptKey:
-					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDefaultCryptKeyUsedForHashing, globalConfig.IPCPasswordFormat, nameof(IPCPassword)));
+					ASF.ArchiLogger.LogGenericWarning(Strings.FormatWarningDefaultCryptKeyUsedForHashing(globalConfig.IPCPasswordFormat, nameof(IPCPassword)));
 
 					break;
 			}

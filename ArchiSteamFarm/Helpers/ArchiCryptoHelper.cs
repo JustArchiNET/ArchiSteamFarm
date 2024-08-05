@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -173,7 +172,7 @@ public static class ArchiCryptoHelper {
 		byte[] encryptionKey = Encoding.UTF8.GetBytes(key);
 
 		if (encryptionKey.Length < MinimumRecommendedCryptKeyBytes) {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningTooShortCryptKey, MinimumRecommendedCryptKeyBytes));
+			ASF.ArchiLogger.LogGenericWarning(Strings.FormatWarningTooShortCryptKey(MinimumRecommendedCryptKeyBytes));
 		}
 
 		HasDefaultCryptKey = encryptionKey.SequenceEqual(EncryptionKey);

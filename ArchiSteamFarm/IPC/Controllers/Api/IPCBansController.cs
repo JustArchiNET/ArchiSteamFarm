@@ -23,7 +23,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using ArchiSteamFarm.IPC.Integration;
@@ -56,13 +55,13 @@ public sealed class IPCBansController : ArchiController {
 		ArgumentException.ThrowIfNullOrEmpty(ipAddress);
 
 		if (!IPAddress.TryParse(ipAddress, out IPAddress? remoteAddress)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(ipAddress))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(ipAddress))));
 		}
 
 		bool result = ApiAuthenticationMiddleware.UnbanIP(remoteAddress);
 
 		if (!result) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIPNotBanned, ipAddress)));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIPNotBanned(ipAddress)));
 		}
 
 		return Ok(new GenericResponse(true));

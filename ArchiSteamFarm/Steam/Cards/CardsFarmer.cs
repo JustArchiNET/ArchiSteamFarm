@@ -362,7 +362,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				byte minFarmingDelayAfterBlock = ASF.GlobalConfig?.MinFarmingDelayAfterBlock ?? GlobalConfig.DefaultMinFarmingDelayAfterBlock;
 
 				if (minFarmingDelayAfterBlock > 0) {
-					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotExtraIdlingCooldown, TimeSpan.FromSeconds(minFarmingDelayAfterBlock).ToHumanReadable()));
+					Bot.ArchiLogger.LogGenericInfo(Strings.FormatBotExtraIdlingCooldown(TimeSpan.FromSeconds(minFarmingDelayAfterBlock).ToHumanReadable()));
 
 					for (byte i = 0; (i < minFarmingDelayAfterBlock) && Bot is { IsConnectedAndLoggedOn: true, IsPlayingPossible: true, PlayingWasBlocked: true }; i++) {
 						await Task.Delay(1000).ConfigureAwait(false);
@@ -430,7 +430,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		Game? game = await GetGameCardsInfo(appID).ConfigureAwait(false);
 
 		if (game == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningCouldNotCheckCardsStatus, appID, name));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningCouldNotCheckCardsStatus(appID, name));
 
 			return;
 		}
@@ -671,7 +671,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 			if (privateAppIDs?.Contains(appID) == true) {
 				// This game is private, it won't drop any cards until removal
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingGameNotPossiblePrivate, appID, name));
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatIdlingGameNotPossiblePrivate(appID, name));
 
 				continue;
 			}
@@ -772,12 +772,12 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 	private async Task Farm() {
 		do {
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.GamesToIdle, GamesToFarm.Count, GamesToFarm.Sum(static game => game.CardsRemaining), TimeRemaining.ToHumanReadable()));
+			Bot.ArchiLogger.LogGenericInfo(Strings.FormatGamesToIdle(GamesToFarm.Count, GamesToFarm.Sum(static game => game.CardsRemaining), TimeRemaining.ToHumanReadable()));
 
 			// Now the algorithm used for farming depends on whether account is restricted or not
 			if (Bot.BotConfig.HoursUntilCardDrops > 0) {
 				// If we have restricted card drops, we use complex algorithm
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ChosenFarmingAlgorithm, "Complex"));
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatChosenFarmingAlgorithm("Complex"));
 
 				while (GamesToFarm.Count > 0) {
 					// Initially we're going to farm games that passed our HoursUntilCardDrops
@@ -833,7 +833,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 					// Otherwise, we farm our innerGamesToFarm batch until any game hits HoursUntilCardDrops
 					if (await FarmMultiple(innerGamesToFarm).ConfigureAwait(false)) {
-						Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingFinishedForGames, string.Join(", ", innerGamesToFarm.Select(static game => game.AppID))));
+						Bot.ArchiLogger.LogGenericInfo(Strings.FormatIdlingFinishedForGames(string.Join(", ", innerGamesToFarm.Select(static game => game.AppID))));
 					} else {
 						NowFarming = false;
 
@@ -844,7 +844,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				}
 			} else {
 				// If we have unrestricted card drops, we use simple algorithm
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ChosenFarmingAlgorithm, "Simple"));
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatChosenFarmingAlgorithm("Simple"));
 
 				while (GamesToFarm.Count > 0) {
 					// In simple algorithm we're going to farm anything that is playable, regardless of hours
@@ -877,7 +877,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		ArgumentNullException.ThrowIfNull(game);
 
 		if (game.AppID != game.PlayableAppID) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningIdlingGameMismatch, game.AppID, game.GameName, game.PlayableAppID));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningIdlingGameMismatch(game.AppID, game.GameName, game.PlayableAppID));
 		}
 
 		await Bot.IdleGame(game).ConfigureAwait(false);
@@ -886,7 +886,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		DateTime endFarmingDate = DateTime.UtcNow.AddHours(ASF.GlobalConfig?.MaxFarmingTime ?? GlobalConfig.DefaultMaxFarmingTime);
 
 		while ((DateTime.UtcNow < endFarmingDate) && (await ShouldFarm(game).ConfigureAwait(false)).GetValueOrDefault(true)) {
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.StillIdling, game.AppID, game.GameName));
+			Bot.ArchiLogger.LogGenericInfo(Strings.FormatStillIdling(game.AppID, game.GameName));
 
 			DateTime startFarmingPeriod = DateTime.UtcNow;
 
@@ -915,7 +915,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.StoppedIdling, game.AppID, game.GameName));
+		Bot.ArchiLogger.LogGenericInfo(Strings.FormatStoppedIdling(game.AppID, game.GameName));
 
 		return keepFarming;
 	}
@@ -934,7 +934,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		}
 
 		if (maxHour >= Bot.BotConfig.HoursUntilCardDrops) {
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(maxHour)));
+			Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(maxHour)));
 
 			return true;
 		}
@@ -944,7 +944,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		bool keepFarming = true;
 
 		while (maxHour < Bot.BotConfig.HoursUntilCardDrops) {
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.StillIdlingList, string.Join(", ", games.Select(static game => game.AppID))));
+			Bot.ArchiLogger.LogGenericInfo(Strings.FormatStillIdlingList(string.Join(", ", games.Select(static game => game.AppID))));
 
 			DateTime startFarmingPeriod = DateTime.UtcNow;
 
@@ -974,7 +974,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			maxHour += timePlayed;
 		}
 
-		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.StoppedIdlingList, string.Join(", ", games.Select(static game => game.AppID))));
+		Bot.ArchiLogger.LogGenericInfo(Strings.FormatStoppedIdlingList(string.Join(", ", games.Select(static game => game.AppID))));
 
 		return keepFarming;
 	}
@@ -988,9 +988,9 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		if (games.Count == 1) {
 			Game game = games.First();
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.NowIdling, game.AppID, game.GameName));
+			Bot.ArchiLogger.LogGenericInfo(Strings.FormatNowIdling(game.AppID, game.GameName));
 		} else {
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.NowIdlingList, string.Join(", ", games.Select(static game => game.AppID))));
+			Bot.ArchiLogger.LogGenericInfo(Strings.FormatNowIdlingList(string.Join(", ", games.Select(static game => game.AppID))));
 		}
 
 		bool result = await FarmHours(games).ConfigureAwait(false);
@@ -1004,7 +1004,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		CurrentGamesFarming.Add(game);
 
-		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.NowIdling, game.AppID, game.GameName));
+		Bot.ArchiLogger.LogGenericInfo(Strings.FormatNowIdling(game.AppID, game.GameName));
 
 		bool result = await FarmCards(game).ConfigureAwait(false);
 		CurrentGamesFarming.Clear();
@@ -1015,7 +1015,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		GamesToFarm.Remove(game);
 
-		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingFinishedForGame, game.AppID, game.GameName, TimeSpan.FromHours(game.HoursPlayed).ToHumanReadable()));
+		Bot.ArchiLogger.LogGenericInfo(Strings.FormatIdlingFinishedForGame(game.AppID, game.GameName, TimeSpan.FromHours(game.HoursPlayed).ToHumanReadable()));
 
 		return true;
 	}
@@ -1291,7 +1291,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				}
 
 				// This game is private, it won't drop any cards until removal
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingGameNotPossiblePrivate, appID, name));
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatIdlingGameNotPossiblePrivate(appID, name));
 
 				gamesToFarm.Remove(appID);
 			}
@@ -1361,7 +1361,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			ConcurrentDictionary<uint, DateTime> ignoredAppIDs = ignoredGlobally ? GloballyIgnoredAppIDs : LocallyIgnoredAppIDs;
 
 			ignoredAppIDs[game.AppID] = (ignoredUntil > DateTime.MinValue) && (ignoredUntil < DateTime.MaxValue) ? ignoredUntil : DateTime.UtcNow.AddHours(HoursToIgnore);
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingGameNotPossible, game.AppID, game.GameName));
+			Bot.ArchiLogger.LogGenericInfo(Strings.FormatIdlingGameNotPossible(game.AppID, game.GameName));
 
 			return false;
 		}
@@ -1377,14 +1377,14 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		Game? latestGameData = await GetGameCardsInfo(game.AppID).ConfigureAwait(false);
 
 		if (latestGameData == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningCouldNotCheckCardsStatus, game.AppID, game.GameName));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningCouldNotCheckCardsStatus(game.AppID, game.GameName));
 
 			return null;
 		}
 
 		game.CardsRemaining = latestGameData.CardsRemaining;
 
-		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingStatusForGame, game.AppID, game.GameName, game.CardsRemaining));
+		Bot.ArchiLogger.LogGenericInfo(Strings.FormatIdlingStatusForGame(game.AppID, game.GameName, game.CardsRemaining));
 
 		if (game.CardsRemaining == 0) {
 			Bot.BotDatabase.FarmingRiskyIgnoredAppIDs[game.AppID] = DateTime.UtcNow.AddDays(DaysToIgnoreRiskyAppIDs);
@@ -1527,7 +1527,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 					break;
 				default:
-					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(farmingOrder), farmingOrder));
+					Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(farmingOrder), farmingOrder));
 
 					return;
 			}

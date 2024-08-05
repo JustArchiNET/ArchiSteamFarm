@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Globalization;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,7 +52,7 @@ public sealed class GitHubController : ArchiController {
 
 		ReleaseResponse? releaseResponse = await GitHubService.GetLatestRelease(SharedInfo.GithubRepo, false, cancellationToken).ConfigureAwait(false);
 
-		return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
+		return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries)));
 	}
 
 	/// <summary>
@@ -80,7 +79,7 @@ public sealed class GitHubController : ArchiController {
 				break;
 			default:
 				if (!Version.TryParse(version, out Version? parsedVersion)) {
-					return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(version))));
+					return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(version))));
 				}
 
 				releaseResponse = await GitHubService.GetRelease(SharedInfo.GithubRepo, parsedVersion.ToString(4), cancellationToken).ConfigureAwait(false);
@@ -88,7 +87,7 @@ public sealed class GitHubController : ArchiController {
 				break;
 		}
 
-		return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
+		return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries)));
 	}
 
 	/// <summary>
@@ -108,7 +107,7 @@ public sealed class GitHubController : ArchiController {
 
 		Dictionary<string, DateTime>? revisions = await GitHubService.GetWikiHistory(page, cancellationToken).ConfigureAwait(false);
 
-		return revisions != null ? revisions.Count > 0 ? Ok(new GenericResponse<ImmutableDictionary<string, DateTime>>(revisions.ToImmutableDictionary())) : BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(page)))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
+		return revisions != null ? revisions.Count > 0 ? Ok(new GenericResponse<ImmutableDictionary<string, DateTime>>(revisions.ToImmutableDictionary())) : BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(page)))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries)));
 	}
 
 	/// <summary>
@@ -130,8 +129,8 @@ public sealed class GitHubController : ArchiController {
 		string? html = await GitHubService.GetWikiPage(page, revision, cancellationToken).ConfigureAwait(false);
 
 		return html switch {
-			null => StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries))),
-			"" => BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(page)))),
+			null => StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries))),
+			"" => BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(page)))),
 			_ => Ok(new GenericResponse<string>(html))
 		};
 	}

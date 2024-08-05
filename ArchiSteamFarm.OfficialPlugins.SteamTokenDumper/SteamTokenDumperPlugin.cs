@@ -77,7 +77,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 	public async Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
 		if (!SharedInfo.HasValidToken) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledMissingBuildToken, nameof(SteamTokenDumperPlugin)));
+			ASF.ArchiLogger.LogGenericError(Strings.FormatPluginDisabledMissingBuildToken(nameof(SteamTokenDumperPlugin)));
 
 			return;
 		}
@@ -104,7 +104,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 					}
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericException(e);
-					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(SteamTokenDumperPlugin)));
+					ASF.ArchiLogger.LogGenericWarning(Strings.FormatPluginDisabledInConfig(nameof(SteamTokenDumperPlugin)));
 
 					return;
 				}
@@ -115,7 +115,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			GlobalCache? globalCache = await GlobalCache.Load().ConfigureAwait(false);
 
 			if (globalCache == null) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.FileCouldNotBeLoadedFreshInit, nameof(GlobalCache)));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatFileCouldNotBeLoadedFreshInit(nameof(GlobalCache)));
 
 				GlobalCache = new GlobalCache();
 			} else {
@@ -124,7 +124,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		}
 
 		if (!isEnabled && (config == null)) {
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(SteamTokenDumperPlugin)));
+			ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginDisabledInConfig(nameof(SteamTokenDumperPlugin)));
 
 			return;
 		}
@@ -136,19 +136,19 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		}
 
 		if (!config.Enabled) {
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(SteamTokenDumperPlugin)));
+			ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginDisabledInConfig(nameof(SteamTokenDumperPlugin)));
 		}
 
 		if (!config.SecretAppIDs.IsEmpty) {
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginSecretListInitialized, nameof(config.SecretAppIDs), string.Join(", ", config.SecretAppIDs)));
+			ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginSecretListInitialized(nameof(config.SecretAppIDs), string.Join(", ", config.SecretAppIDs)));
 		}
 
 		if (!config.SecretPackageIDs.IsEmpty) {
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginSecretListInitialized, nameof(config.SecretPackageIDs), string.Join(", ", config.SecretPackageIDs)));
+			ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginSecretListInitialized(nameof(config.SecretPackageIDs), string.Join(", ", config.SecretPackageIDs)));
 		}
 
 		if (!config.SecretDepotIDs.IsEmpty) {
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginSecretListInitialized, nameof(config.SecretDepotIDs), string.Join(", ", config.SecretDepotIDs)));
+			ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginSecretListInitialized(nameof(config.SecretDepotIDs), string.Join(", ", config.SecretDepotIDs)));
 		}
 
 		Config = config;
@@ -166,7 +166,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.HoursBetweenUploads));
 		}
 
-		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginInitializedAndEnabled, nameof(SteamTokenDumperPlugin), startIn.ToHumanReadable()));
+		ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginInitializedAndEnabled(nameof(SteamTokenDumperPlugin), startIn.ToHumanReadable()));
 	}
 
 	public Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
@@ -362,7 +362,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				return;
 			}
 
-			bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingTotalAppAccessTokens, appIDsToRefresh.Count));
+			bot.ArchiLogger.LogGenericInfo(Strings.FormatBotRetrievingTotalAppAccessTokens(appIDsToRefresh.Count));
 
 			HashSet<uint> appIDsThisRound = new(Math.Min(appIDsToRefresh.Count, SharedInfo.AppInfosPerSingleRequest));
 
@@ -380,7 +380,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						break;
 					}
 
-					bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingAppAccessTokens, appIDsThisRound.Count));
+					bot.ArchiLogger.LogGenericInfo(Strings.FormatBotRetrievingAppAccessTokens(appIDsThisRound.Count));
 
 					SteamApps.PICSTokensCallback response;
 
@@ -394,7 +394,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						continue;
 					}
 
-					bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingAppAccessTokens, appIDsThisRound.Count));
+					bot.ArchiLogger.LogGenericInfo(Strings.FormatBotFinishedRetrievingAppAccessTokens(appIDsThisRound.Count));
 
 					appIDsThisRound.Clear();
 
@@ -402,8 +402,8 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				}
 			}
 
-			bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingTotalAppAccessTokens, appIDsToRefresh.Count));
-			bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingTotalDepots, appIDsToRefresh.Count));
+			bot.ArchiLogger.LogGenericInfo(Strings.FormatBotFinishedRetrievingTotalAppAccessTokens(appIDsToRefresh.Count));
+			bot.ArchiLogger.LogGenericInfo(Strings.FormatBotRetrievingTotalDepots(appIDsToRefresh.Count));
 
 			(_, FrozenSet<uint>? knownDepotIDs) = await GlobalCache.KnownDepotIDs.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
@@ -421,7 +421,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						break;
 					}
 
-					bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingAppInfos, appIDsThisRound.Count));
+					bot.ArchiLogger.LogGenericInfo(Strings.FormatBotRetrievingAppInfos(appIDsThisRound.Count));
 
 					AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet response;
 
@@ -443,7 +443,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						continue;
 					}
 
-					bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingAppInfos, appIDsThisRound.Count));
+					bot.ArchiLogger.LogGenericInfo(Strings.FormatBotFinishedRetrievingAppInfos(appIDsThisRound.Count));
 
 					appIDsThisRound.Clear();
 
@@ -522,7 +522,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 					}
 
 					if (depotKeysTotal > 0) {
-						bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingDepotKeys, depotKeysSuccessful, depotKeysTotal));
+						bot.ArchiLogger.LogGenericInfo(Strings.FormatBotFinishedRetrievingDepotKeys(depotKeysSuccessful, depotKeysTotal));
 					}
 
 					if (depotKeysSuccessful < depotKeysTotal) {
@@ -534,7 +534,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				}
 			}
 
-			bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingTotalDepots, appIDsToRefresh.Count));
+			bot.ArchiLogger.LogGenericInfo(Strings.FormatBotFinishedRetrievingTotalDepots(appIDsToRefresh.Count));
 		} finally {
 			if (Config?.Enabled == true) {
 				TimeSpan timeSpan = TimeSpan.FromHours(SharedInfo.MaximumHoursBetweenRefresh);
@@ -648,7 +648,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			ulong contributorSteamID = ASF.GlobalConfig is { SteamOwnerID: > 0 } && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : Bot.Bots.Values.Where(static bot => bot.SteamID > 0).MaxBy(static bot => bot.OwnedPackageIDs.Count)?.SteamID ?? 0;
 
 			if (contributorSteamID == 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionNoContributorSet, nameof(ASF.GlobalConfig.SteamOwnerID)));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatSubmissionNoContributorSet(nameof(ASF.GlobalConfig.SteamOwnerID)));
 
 				return;
 			}
@@ -656,7 +656,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			Uri request = new($"{SharedInfo.ServerURL}/submit");
 			SubmitRequest data = new(contributorSteamID, appTokens, packageTokens, depotKeys);
 
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionInProgress, appTokens.Count, packageTokens.Count, depotKeys.Count));
+			ASF.ArchiLogger.LogGenericInfo(Strings.FormatSubmissionInProgress(appTokens.Count, packageTokens.Count, depotKeys.Count));
 
 			ObjectResponse<SubmitResponse>? response = await ASF.WebBrowser.UrlPostToJsonObject<SubmitResponse, SubmitRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -697,7 +697,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 							SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.HoursBetweenUploads));
 						}
 
-						ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionFailedTooManyRequests, startIn.ToHumanReadable()));
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatSubmissionFailedTooManyRequests(startIn.ToHumanReadable()));
 
 						break;
 				}
@@ -717,32 +717,32 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				return;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionSuccessful, response.Content.Data.NewApps.Count, response.Content.Data.VerifiedApps.Count, response.Content.Data.NewPackages.Count, response.Content.Data.VerifiedPackages.Count, response.Content.Data.NewDepots.Count, response.Content.Data.VerifiedDepots.Count));
+			ASF.ArchiLogger.LogGenericInfo(Strings.FormatSubmissionSuccessful(response.Content.Data.NewApps.Count, response.Content.Data.VerifiedApps.Count, response.Content.Data.NewPackages.Count, response.Content.Data.VerifiedPackages.Count, response.Content.Data.NewDepots.Count, response.Content.Data.VerifiedDepots.Count));
 
 			GlobalCache.UpdateSubmittedData(appTokens, packageTokens, depotKeys);
 
 			if (!response.Content.Data.NewApps.IsEmpty) {
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionSuccessfulNewApps, string.Join(", ", response.Content.Data.NewApps)));
+				ASF.ArchiLogger.LogGenericInfo(Strings.FormatSubmissionSuccessfulNewApps(string.Join(", ", response.Content.Data.NewApps)));
 			}
 
 			if (!response.Content.Data.VerifiedApps.IsEmpty) {
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionSuccessfulVerifiedApps, string.Join(", ", response.Content.Data.VerifiedApps)));
+				ASF.ArchiLogger.LogGenericInfo(Strings.FormatSubmissionSuccessfulVerifiedApps(string.Join(", ", response.Content.Data.VerifiedApps)));
 			}
 
 			if (!response.Content.Data.NewPackages.IsEmpty) {
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionSuccessfulNewPackages, string.Join(", ", response.Content.Data.NewPackages)));
+				ASF.ArchiLogger.LogGenericInfo(Strings.FormatSubmissionSuccessfulNewPackages(string.Join(", ", response.Content.Data.NewPackages)));
 			}
 
 			if (!response.Content.Data.VerifiedPackages.IsEmpty) {
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionSuccessfulVerifiedPackages, string.Join(", ", response.Content.Data.VerifiedPackages)));
+				ASF.ArchiLogger.LogGenericInfo(Strings.FormatSubmissionSuccessfulVerifiedPackages(string.Join(", ", response.Content.Data.VerifiedPackages)));
 			}
 
 			if (!response.Content.Data.NewDepots.IsEmpty) {
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionSuccessfulNewDepots, string.Join(", ", response.Content.Data.NewDepots)));
+				ASF.ArchiLogger.LogGenericInfo(Strings.FormatSubmissionSuccessfulNewDepots(string.Join(", ", response.Content.Data.NewDepots)));
 			}
 
 			if (!response.Content.Data.VerifiedDepots.IsEmpty) {
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionSuccessfulVerifiedDepots, string.Join(", ", response.Content.Data.VerifiedDepots)));
+				ASF.ArchiLogger.LogGenericInfo(Strings.FormatSubmissionSuccessfulVerifiedDepots(string.Join(", ", response.Content.Data.VerifiedDepots)));
 			}
 		} finally {
 			SubmissionSemaphore.Release();

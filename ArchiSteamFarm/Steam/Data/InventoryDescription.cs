@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Immutable;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
@@ -208,7 +207,7 @@ public sealed class InventoryDescription {
 
 								return CachedRarity.Value;
 							default:
-								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.internal_name), tag.internal_name));
+								ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
 
 								CachedRarity = EAssetRarity.Unknown;
 
@@ -261,7 +260,7 @@ public sealed class InventoryDescription {
 				switch (tag.category) {
 					case "Game":
 						if (string.IsNullOrEmpty(tag.internal_name) || (tag.internal_name.Length <= 4) || !tag.internal_name.StartsWith("app_", StringComparison.Ordinal)) {
-							ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.internal_name), tag.internal_name));
+							ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
 
 							break;
 						}
@@ -359,7 +358,7 @@ public sealed class InventoryDescription {
 
 								return CachedType.Value;
 							default:
-								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.internal_name), tag.internal_name));
+								ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
 
 								CachedType = EAssetType.Unknown;
 
@@ -431,7 +430,7 @@ public sealed class InventoryDescription {
 
 								return CachedType.Value;
 							default:
-								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.internal_name), tag.internal_name));
+								ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
 
 								CachedType = EAssetType.Unknown;
 

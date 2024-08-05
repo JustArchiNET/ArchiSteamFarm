@@ -23,7 +23,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
@@ -51,7 +50,7 @@ public sealed class ASFController : ArchiController {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (string.IsNullOrEmpty(request.StringToEncrypt)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.StringToEncrypt))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(request.StringToEncrypt))));
 		}
 
 		string? encryptedString = Actions.Encrypt(request.CryptoMethod, request.StringToEncrypt);
@@ -87,7 +86,7 @@ public sealed class ASFController : ArchiController {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (string.IsNullOrEmpty(request.StringToHash)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.StringToHash))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(request.StringToHash))));
 		}
 
 		string hash = Actions.Hash(request.HashingMethod, request.StringToHash);
@@ -144,7 +143,7 @@ public sealed class ASFController : ArchiController {
 		if (string.IsNullOrEmpty(filePath)) {
 			ASF.ArchiLogger.LogNullError(filePath);
 
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(filePath))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(filePath))));
 		}
 
 		bool result = await GlobalConfig.Write(filePath, request.GlobalConfig).ConfigureAwait(false);
@@ -183,7 +182,7 @@ public sealed class ASFController : ArchiController {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (request.Channel.HasValue && !Enum.IsDefined(request.Channel.Value)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.Channel))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(request.Channel))));
 		}
 
 		(bool success, string? message, Version? version) = await Actions.Update(request.Channel, request.Forced).ConfigureAwait(false);

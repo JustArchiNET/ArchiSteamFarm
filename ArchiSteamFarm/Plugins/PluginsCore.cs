@@ -30,7 +30,6 @@ using System.Composition;
 using System.Composition.Convention;
 using System.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -186,18 +185,18 @@ public static class PluginsCore {
 			return true;
 		}
 
-		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, nameof(Plugins)));
+		ASF.ArchiLogger.LogGenericInfo(Strings.FormatInitializing(nameof(Plugins)));
 
 		foreach (Assembly assembly in assemblies) {
 			if (Debugging.IsUserDebugging) {
-				ASF.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, assembly.FullName));
+				ASF.ArchiLogger.LogGenericDebug(Strings.FormatInitializing(assembly.FullName));
 			}
 
 			try {
 				// This call is bare minimum to verify if the assembly can load itself
 				assembly.GetTypes();
 			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, assembly.FullName));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(assembly.FullName));
 				ASF.ArchiLogger.LogGenericException(e);
 
 				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
@@ -233,10 +232,10 @@ public static class PluginsCore {
 
 		foreach (IPlugin plugin in activePlugins) {
 			try {
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginLoading, plugin.Name, plugin.Version));
+				ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginLoading(plugin.Name, plugin.Version));
 
 				if (!Program.IgnoreUnsupportedEnvironment && plugin is OfficialPlugin officialPlugin && !officialPlugin.HasSameVersion()) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedOfficialPlugins, plugin.Name, plugin.Version, SharedInfo.Version));
+					ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnsupportedOfficialPlugins(plugin.Name, plugin.Version, SharedInfo.Version));
 
 					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
@@ -245,7 +244,7 @@ public static class PluginsCore {
 
 				await plugin.OnLoaded().ConfigureAwait(false);
 
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginLoaded, plugin.Name));
+				ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginLoaded(plugin.Name));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				invalidPlugins.Add(plugin);
@@ -290,12 +289,12 @@ public static class PluginsCore {
 				case GlobalConfig.EPluginsUpdateMode.Whitelist when pluginsUpdateList.Contains(pluginAssemblyName):
 					activePluginUpdates.Add(plugin);
 
-					ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateEnabled, plugin.Name, pluginAssemblyName));
+					ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateEnabled(plugin.Name, pluginAssemblyName));
 
 					break;
 				case GlobalConfig.EPluginsUpdateMode.Blacklist when pluginsUpdateList.Contains(pluginAssemblyName):
 				case GlobalConfig.EPluginsUpdateMode.Whitelist when !pluginsUpdateList.Contains(pluginAssemblyName):
-					ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateDisabled, plugin.Name, pluginAssemblyName));
+					ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateDisabled(plugin.Name, pluginAssemblyName));
 
 					break;
 			}
@@ -790,7 +789,7 @@ public static class PluginsCore {
 				}
 
 				if (skip) {
-					ASF.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningSkipping, assemblyPath));
+					ASF.ArchiLogger.LogGenericTrace(Strings.FormatWarningSkipping(assemblyPath));
 
 					continue;
 				}
@@ -800,7 +799,7 @@ public static class PluginsCore {
 				try {
 					assembly = Assembly.LoadFrom(assemblyPath);
 				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, assemblyPath));
+					ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(assemblyPath));
 					ASF.ArchiLogger.LogGenericWarningException(e);
 
 					continue;
@@ -835,7 +834,7 @@ public static class PluginsCore {
 		try {
 			pluginName = plugin.Name;
 
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateChecking, pluginName));
+			ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateChecking(pluginName));
 
 			string? assemblyDirectory = Path.GetDirectoryName(plugin.GetType().Assembly.Location);
 
@@ -855,12 +854,12 @@ public static class PluginsCore {
 			}
 
 			if (!updateOverride && ((ASF.GlobalConfig?.UpdatePeriod ?? GlobalConfig.DefaultUpdatePeriod) == 0)) {
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateNewVersionAvailable, pluginName));
+				ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateNewVersionAvailable(pluginName));
 
 				return false;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateInProgress, pluginName));
+			ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateInProgress(pluginName));
 
 			Progress<byte> progressReporter = new();
 
@@ -901,7 +900,7 @@ public static class PluginsCore {
 			return false;
 		}
 
-		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateFinished, pluginName));
+		ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateFinished(pluginName));
 
 		try {
 			await plugin.OnPluginUpdateFinished().ConfigureAwait(false);

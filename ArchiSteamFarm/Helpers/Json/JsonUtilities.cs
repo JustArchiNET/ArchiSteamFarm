@@ -23,7 +23,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -90,7 +89,7 @@ public static class JsonUtilities {
 			if (property.AttributeProvider?.IsDefined(typeof(JsonDisallowNullAttribute), false) == true) {
 				if (property.PropertyType.IsValueType && (Nullable.GetUnderlyingType(property.PropertyType) == null)) {
 					// We should have no [JsonDisallowNull] declared on non-nullable types, this requires developer correction
-					throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(JsonDisallowNullAttribute), $"{property.Name} ({jsonTypeInfo.Type})"));
+					throw new InvalidOperationException(Strings.FormatWarningUnknownValuePleaseReport(nameof(JsonDisallowNullAttribute), $"{property.Name} ({jsonTypeInfo.Type})"));
 				}
 
 				potentialDisallowedNullsPossible = true;

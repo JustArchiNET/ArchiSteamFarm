@@ -23,7 +23,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -112,7 +111,7 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 		}
 
 		if (!await bot.SendMessage(ChatGroupID, SteamID, message).ConfigureAwait(false)) {
-			bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+			bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
 		}
 	}
 
@@ -128,7 +127,7 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 		}
 
 		if (!await bot.SendMessage(SteamID, message).ConfigureAwait(false)) {
-			bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+			bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
 		}
 	}
 }

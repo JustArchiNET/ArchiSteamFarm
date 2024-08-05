@@ -357,8 +357,8 @@ public sealed class Commands {
 
 				if (!string.IsNullOrEmpty(pluginsResponse)) {
 					if (!await Bot.SendMessage(steamID, pluginsResponse).ConfigureAwait(false)) {
-						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
-						Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, pluginsResponse));
+						Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
+						Bot.ArchiLogger.LogGenericDebug(Strings.FormatContent(pluginsResponse));
 					}
 				}
 
@@ -381,12 +381,12 @@ public sealed class Commands {
 
 		if (feedback && !responseTask.IsCompleted) {
 			if (!await Bot.SendTypingMessage(steamID).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendTypingMessage)));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendTypingMessage)));
 			}
 
 			while (!responseTask.IsCompleted && (await Task.WhenAny(responseTask, Task.Delay(SteamTypingStatusDelay)).ConfigureAwait(false) != responseTask)) {
 				if (!await Bot.SendTypingMessage(steamID).ConfigureAwait(false)) {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendTypingMessage)));
+					Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendTypingMessage)));
 				}
 			}
 		}
@@ -402,8 +402,8 @@ public sealed class Commands {
 		}
 
 		if (!await Bot.SendMessage(steamID, response).ConfigureAwait(false)) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, response));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatContent(response));
 		}
 	}
 
@@ -425,8 +425,8 @@ public sealed class Commands {
 
 				if (!string.IsNullOrEmpty(pluginsResponse)) {
 					if (!await Bot.SendMessage(chatGroupID, chatID, pluginsResponse).ConfigureAwait(false)) {
-						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
-						Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, pluginsResponse));
+						Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
+						Bot.ArchiLogger.LogGenericDebug(Strings.FormatContent(pluginsResponse));
 					}
 				}
 
@@ -451,12 +451,12 @@ public sealed class Commands {
 			string pleaseWaitMessage = FormatBotResponse(Strings.PleaseWait);
 
 			if (!await Bot.SendMessage(chatGroupID, chatID, pleaseWaitMessage).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
 			}
 
 			while (!responseTask.IsCompleted && (await Task.WhenAny(responseTask, Task.Delay(SteamTypingStatusDelay)).ConfigureAwait(false) != responseTask)) {
 				if (!await Bot.SendMessage(chatGroupID, chatID, pleaseWaitMessage).ConfigureAwait(false)) {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+					Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
 				}
 			}
 		}
@@ -472,8 +472,8 @@ public sealed class Commands {
 		}
 
 		if (!await Bot.SendMessage(chatGroupID, chatID, response).ConfigureAwait(false)) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, response));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatContent(response));
 		}
 	}
 
@@ -523,7 +523,7 @@ public sealed class Commands {
 
 		(bool success, string? token, string message) = await Bot.Actions.GenerateTwoFactorAuthenticationToken().ConfigureAwait(false);
 
-		return FormatBotResponse(success && !string.IsNullOrEmpty(token) ? string.Format(CultureInfo.CurrentCulture, Strings.BotAuthenticatorToken, token) : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success && !string.IsNullOrEmpty(token) ? Strings.FormatBotAuthenticatorToken(token) : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private static async Task<string?> Response2FA(EAccess access, string botNames, ulong steamID = 0) {
@@ -536,7 +536,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.Response2FA(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
@@ -565,7 +565,7 @@ public sealed class Commands {
 
 		(bool success, _, string message) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(confirm).ConfigureAwait(false);
 
-		return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private static async Task<string?> Response2FAConfirm(EAccess access, string botNames, bool confirm, ulong steamID = 0) {
@@ -578,7 +578,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.Response2FAConfirm(GetProxyAccess(bot, access, steamID), confirm))).ConfigureAwait(false);
@@ -615,7 +615,7 @@ public sealed class Commands {
 
 			if ((index > 0) && (entry.Length > index + 1)) {
 				if (!uint.TryParse(entry[(index + 1)..], out gameID) || (gameID == 0)) {
-					response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(gameID))));
+					response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
 
 					continue;
 				}
@@ -624,7 +624,7 @@ public sealed class Commands {
 			} else if (uint.TryParse(entry, out gameID) && (gameID > 0)) {
 				type = "SUB";
 			} else {
-				response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(gameID))));
+				response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
 
 				continue;
 			}
@@ -634,7 +634,7 @@ public sealed class Commands {
 					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(gameID, Bot.OwnedPackageIDs.Keys, 1);
 
 					if (packageIDs is { Count: > 0 }) {
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"app/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
+						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"app/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
 
 						break;
 					}
@@ -642,7 +642,7 @@ public sealed class Commands {
 					(EResult result, IReadOnlyCollection<uint>? grantedApps, IReadOnlyCollection<uint>? grantedPackages) = await Bot.Actions.AddFreeLicenseApp(gameID).ConfigureAwait(false);
 
 					if (((grantedApps == null) || (grantedApps.Count == 0)) && ((grantedPackages == null) || (grantedPackages.Count == 0))) {
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"app/{gameID}", result)));
+						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"app/{gameID}", result)));
 
 						break;
 					}
@@ -650,20 +650,20 @@ public sealed class Commands {
 					grantedApps ??= [];
 					grantedPackages ??= [];
 
-					response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicenseWithItems, $"app/{gameID}", result, string.Join(", ", grantedApps.Select(static appID => $"app/{appID}").Union(grantedPackages.Select(static subID => $"sub/{subID}"))))));
+					response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicenseWithItems($"app/{gameID}", result, string.Join(", ", grantedApps.Select(static appID => $"app/{appID}").Union(grantedPackages.Select(static subID => $"sub/{subID}"))))));
 
 					break;
 				}
 				default: {
 					if (Bot.OwnedPackageIDs.ContainsKey(gameID)) {
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"sub/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
+						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
 
 						break;
 					}
 
 					(EResult result, EPurchaseResultDetail purchaseResult) = await Bot.Actions.AddFreeLicensePackage(gameID).ConfigureAwait(false);
 
-					response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"sub/{gameID}", $"{result}/{purchaseResult}")));
+					response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", $"{result}/{purchaseResult}")));
 
 					break;
 				}
@@ -684,7 +684,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAddLicense(GetProxyAccess(bot, access, steamID), query))).ConfigureAwait(false);
@@ -711,16 +711,16 @@ public sealed class Commands {
 		}
 
 		if (!uint.TryParse(targetAppID, out uint appID) || (appID == 0)) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(appID)));
+			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 		}
 
 		if (!ulong.TryParse(targetContextID, out ulong contextID) || (contextID == 0)) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(contextID)));
+			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(contextID)));
 		}
 
 		(bool success, string message) = await Bot.Actions.SendInventory(appID, contextID).ConfigureAwait(false);
 
-		return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private static async Task<string?> ResponseAdvancedLoot(EAccess access, string botNames, string appID, string contextID, ulong steamID = 0) {
@@ -735,7 +735,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedLoot(GetProxyAccess(bot, access, steamID), appID, contextID))).ConfigureAwait(false);
@@ -760,7 +760,7 @@ public sealed class Commands {
 		string[] flags = options.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (flags.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(flags)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(flags)));
 		}
 
 		ERedeemFlags redeemFlags = ERedeemFlags.None;
@@ -808,7 +808,7 @@ public sealed class Commands {
 
 					break;
 				default:
-					return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, flag));
+					return FormatBotResponse(Strings.FormatErrorIsInvalid(flag));
 			}
 		}
 
@@ -827,7 +827,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedRedeem(GetProxyAccess(bot, access, steamID), options, keys, steamID))).ConfigureAwait(false);
@@ -860,7 +860,7 @@ public sealed class Commands {
 
 		(bool success, string message) = await Bot.Actions.SendInventory(appID, contextID, targetBot.SteamID).ConfigureAwait(false);
 
-		return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private async Task<string?> ResponseAdvancedTransfer(EAccess access, string targetAppID, string targetContextID, string botNameTo) {
@@ -875,15 +875,15 @@ public sealed class Commands {
 		Bot? targetBot = Bot.GetBot(botNameTo);
 
 		if (targetBot == null) {
-			return access >= EAccess.Owner ? FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNameTo)) : null;
+			return access >= EAccess.Owner ? FormatBotResponse(Strings.FormatBotNotFound(botNameTo)) : null;
 		}
 
 		if (!uint.TryParse(targetAppID, out uint appID) || (appID == 0)) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(appID)));
+			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 		}
 
 		if (!ulong.TryParse(targetContextID, out ulong contextID) || (contextID == 0)) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(contextID)));
+			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(contextID)));
 		}
 
 		return await ResponseAdvancedTransfer(access, appID, contextID, targetBot).ConfigureAwait(false);
@@ -902,21 +902,21 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		if (!uint.TryParse(targetAppID, out uint appID) || (appID == 0)) {
-			return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(appID)));
+			return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 		}
 
 		if (!ulong.TryParse(targetContextID, out ulong contextID) || (contextID == 0)) {
-			return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(contextID)));
+			return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(contextID)));
 		}
 
 		Bot? targetBot = Bot.GetBot(botNameTo);
 
 		if (targetBot == null) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNameTo)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNameTo)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransfer(GetProxyAccess(bot, access, steamID), appID, contextID, targetBot))).ConfigureAwait(false);
@@ -937,7 +937,7 @@ public sealed class Commands {
 
 		uint count = Bot.GamesToRedeemInBackgroundCount;
 
-		return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotGamesToRedeemInBackgroundCount, count));
+		return FormatBotResponse(Strings.FormatBotGamesToRedeemInBackgroundCount(count));
 	}
 
 	private static async Task<string?> ResponseBackgroundGamesRedeemer(EAccess access, string botNames, ulong steamID = 0) {
@@ -950,7 +950,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBackgroundGamesRedeemer(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
@@ -973,12 +973,12 @@ public sealed class Commands {
 		}
 
 		if (!Enum.TryParse(cryptoMethodText, true, out ArchiCryptoHelper.ECryptoMethod cryptoMethod)) {
-			return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(cryptoMethod)));
+			return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(cryptoMethod)));
 		}
 
 		string? encryptedString = Actions.Encrypt(cryptoMethod, stringToEncrypt);
 
-		return FormatStaticResponse(!string.IsNullOrEmpty(encryptedString) ? string.Format(CultureInfo.CurrentCulture, Strings.Result, encryptedString) : Strings.WarningFailed);
+		return FormatStaticResponse(!string.IsNullOrEmpty(encryptedString) ? Strings.FormatResult(encryptedString) : Strings.WarningFailed);
 	}
 
 	private static string? ResponseExit(EAccess access) {
@@ -992,7 +992,7 @@ public sealed class Commands {
 
 		(bool success, string message) = Actions.Exit();
 
-		return FormatStaticResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatStaticResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private async Task<string?> ResponseFarm(EAccess access) {
@@ -1027,7 +1027,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseFarm(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
@@ -1042,7 +1042,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		return access < EAccess.Master ? null : FormatBotResponse(Bot.BotDatabase.FarmingBlacklistAppIDs.Count == 0 ? string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotDatabase.FarmingBlacklistAppIDs)) : string.Join(", ", Bot.BotDatabase.FarmingBlacklistAppIDs));
+		return access < EAccess.Master ? null : FormatBotResponse(Bot.BotDatabase.FarmingBlacklistAppIDs.Count == 0 ? Strings.FormatErrorIsEmpty(nameof(Bot.BotDatabase.FarmingBlacklistAppIDs)) : string.Join(", ", Bot.BotDatabase.FarmingBlacklistAppIDs));
 	}
 
 	private static async Task<string?> ResponseFarmingBlacklist(EAccess access, string botNames, ulong steamID = 0) {
@@ -1055,7 +1055,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklist(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
@@ -1079,14 +1079,14 @@ public sealed class Commands {
 		string[] targets = targetAppIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(targets)));
 		}
 
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(appID)));
+				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
 			appIDs.Add(appID);
@@ -1119,7 +1119,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklistAdd(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
@@ -1143,14 +1143,14 @@ public sealed class Commands {
 		string[] targets = targetAppIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(targets)));
 		}
 
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(appID)));
+				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
 			appIDs.Add(appID);
@@ -1178,7 +1178,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklistRemove(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
@@ -1193,7 +1193,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		return access < EAccess.Master ? null : FormatBotResponse(Bot.BotDatabase.FarmingPriorityQueueAppIDs.Count == 0 ? string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotDatabase.FarmingPriorityQueueAppIDs)) : string.Join(", ", Bot.BotDatabase.FarmingPriorityQueueAppIDs));
+		return access < EAccess.Master ? null : FormatBotResponse(Bot.BotDatabase.FarmingPriorityQueueAppIDs.Count == 0 ? Strings.FormatErrorIsEmpty(nameof(Bot.BotDatabase.FarmingPriorityQueueAppIDs)) : string.Join(", ", Bot.BotDatabase.FarmingPriorityQueueAppIDs));
 	}
 
 	private static async Task<string?> ResponseFarmingQueue(EAccess access, string botNames, ulong steamID = 0) {
@@ -1206,7 +1206,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueue(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
@@ -1230,14 +1230,14 @@ public sealed class Commands {
 		string[] targets = targetAppIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(targets)));
 		}
 
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(appID)));
+				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
 			appIDs.Add(appID);
@@ -1277,7 +1277,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueueAdd(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
@@ -1301,14 +1301,14 @@ public sealed class Commands {
 		string[] targets = targetAppIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(targets)));
 		}
 
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(appID)));
+				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
 			appIDs.Add(appID);
@@ -1341,7 +1341,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueueRemove(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
@@ -1364,12 +1364,12 @@ public sealed class Commands {
 		}
 
 		if (!Enum.TryParse(hashingMethodText, true, out ArchiCryptoHelper.EHashingMethod hashingMethod)) {
-			return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(hashingMethod)));
+			return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(hashingMethod)));
 		}
 
 		string hash = Actions.Hash(hashingMethod, stringToHash);
 
-		return FormatStaticResponse(!string.IsNullOrEmpty(hash) ? string.Format(CultureInfo.CurrentCulture, Strings.Result, hash) : Strings.WarningFailed);
+		return FormatStaticResponse(!string.IsNullOrEmpty(hash) ? Strings.FormatResult(hash) : Strings.WarningFailed);
 	}
 
 	private string? ResponseHelp(EAccess access) {
@@ -1399,7 +1399,7 @@ public sealed class Commands {
 		}
 
 		if (!Enum.TryParse(propertyName, true, out ASF.EUserInputType inputType) || (inputType == ASF.EUserInputType.None) || !Enum.IsDefined(inputType)) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(inputType)));
+			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(inputType)));
 		}
 
 		bool result = Bot.SetUserInput(inputType, inputValue);
@@ -1419,7 +1419,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseInput(GetProxyAccess(bot, access, steamID), propertyName, inputValue)))).ConfigureAwait(false);
@@ -1444,7 +1444,7 @@ public sealed class Commands {
 
 		uint? level = await Bot.ArchiHandler.GetLevel().ConfigureAwait(false);
 
-		return FormatBotResponse(level.HasValue ? string.Format(CultureInfo.CurrentCulture, Strings.BotLevel, level.Value) : Strings.WarningFailed);
+		return FormatBotResponse(level.HasValue ? Strings.FormatBotLevel(level.Value) : Strings.WarningFailed);
 	}
 
 	private static async Task<string?> ResponseLevel(EAccess access, string botNames, ulong steamID = 0) {
@@ -1457,7 +1457,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLevel(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
@@ -1481,12 +1481,12 @@ public sealed class Commands {
 		}
 
 		if (Bot.BotConfig.LootableTypes.Count == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotConfig.LootableTypes)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(Bot.BotConfig.LootableTypes)));
 		}
 
 		(bool success, string message) = await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 
-		return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private static async Task<string?> ResponseLoot(EAccess access, string botNames, ulong steamID = 0) {
@@ -1499,7 +1499,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLoot(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
@@ -1525,20 +1525,20 @@ public sealed class Commands {
 		}
 
 		if (Bot.BotConfig.LootableTypes.Count == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotConfig.LootableTypes)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(Bot.BotConfig.LootableTypes)));
 		}
 
 		string[] appIDTexts = realAppIDsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (appIDTexts.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(appIDTexts)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(appIDTexts)));
 		}
 
 		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
 			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(appID)));
+				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 			}
 
 			realAppIDs.Add(appID);
@@ -1546,7 +1546,7 @@ public sealed class Commands {
 
 		(bool success, string message) = await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type) && (exclude ^ realAppIDs.Contains(item.RealAppID))).ConfigureAwait(false);
 
-		return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private static async Task<string?> ResponseLootByRealAppIDs(EAccess access, string botNames, string realAppIDsText, bool exclude, ulong steamID = 0) {
@@ -1560,7 +1560,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLootByRealAppIDs(GetProxyAccess(bot, access, steamID), realAppIDsText, exclude))).ConfigureAwait(false);
@@ -1575,7 +1575,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		return access < EAccess.Master ? null : FormatBotResponse(Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Count == 0 ? string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotDatabase.MatchActivelyBlacklistAppIDs)) : string.Join(", ", Bot.BotDatabase.MatchActivelyBlacklistAppIDs));
+		return access < EAccess.Master ? null : FormatBotResponse(Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Count == 0 ? Strings.FormatErrorIsEmpty(nameof(Bot.BotDatabase.MatchActivelyBlacklistAppIDs)) : string.Join(", ", Bot.BotDatabase.MatchActivelyBlacklistAppIDs));
 	}
 
 	private static async Task<string?> ResponseMatchActivelyBlacklist(EAccess access, string botNames, ulong steamID = 0) {
@@ -1588,7 +1588,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklist(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
@@ -1612,14 +1612,14 @@ public sealed class Commands {
 		string[] targets = targetAppIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(targets)));
 		}
 
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(appID)));
+				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
 			appIDs.Add(appID);
@@ -1639,7 +1639,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklistAdd(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
@@ -1663,14 +1663,14 @@ public sealed class Commands {
 		string[] targets = targetAppIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(targets)));
 		}
 
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(appID)));
+				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
 			appIDs.Add(appID);
@@ -1690,7 +1690,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklistRemove(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
@@ -1734,7 +1734,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseNickname(GetProxyAccess(bot, access, steamID), nickname)))).ConfigureAwait(false);
@@ -1790,17 +1790,17 @@ public sealed class Commands {
 					if (packageIDs?.Count > 0) {
 						if ((gamesOwned != null) && gamesOwned.TryGetValue(appID, out string? cachedGameName)) {
 							result[$"app/{appID}"] = cachedGameName;
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, $"app/{appID}", cachedGameName)));
+							response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlreadyWithName($"app/{appID}", cachedGameName)));
 						} else {
 							result[$"app/{appID}"] = appID.ToString(CultureInfo.InvariantCulture);
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlready, $"app/{appID}")));
+							response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlready($"app/{appID}")));
 						}
 					} else {
 						if (gamesOwned == null) {
 							gamesOwned = await FetchGamesOwned().ConfigureAwait(false);
 
 							if (gamesOwned == null) {
-								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(gamesOwned))));
+								response.AppendLine(FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(gamesOwned))));
 
 								break;
 							}
@@ -1808,9 +1808,9 @@ public sealed class Commands {
 
 						if (gamesOwned.TryGetValue(appID, out string? gameName)) {
 							result[$"app/{appID}"] = gameName;
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, $"app/{appID}", gameName)));
+							response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlreadyWithName($"app/{appID}", gameName)));
 						} else {
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, $"app/{appID}")));
+							response.AppendLine(FormatBotResponse(Strings.FormatBotNotOwnedYet($"app/{appID}")));
 						}
 					}
 
@@ -1822,7 +1822,7 @@ public sealed class Commands {
 						regex = new Regex(game, RegexOptions.CultureInvariant);
 					} catch (ArgumentException e) {
 						Bot.ArchiLogger.LogGenericWarningException(e);
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(regex))));
+						response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(regex))));
 
 						break;
 					}
@@ -1831,7 +1831,7 @@ public sealed class Commands {
 						gamesOwned = await FetchGamesOwned().ConfigureAwait(false);
 
 						if (gamesOwned == null) {
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(gamesOwned))));
+							response.AppendLine(FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(gamesOwned))));
 
 							break;
 						}
@@ -1843,20 +1843,20 @@ public sealed class Commands {
 						foundWithRegex = true;
 
 						result[$"app/{appID}"] = gameName;
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, $"app/{appID}", gameName)));
+						response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlreadyWithName($"app/{appID}", gameName)));
 					}
 
 					if (!foundWithRegex) {
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, entry)));
+						response.AppendLine(FormatBotResponse(Strings.FormatBotNotOwnedYet(entry)));
 					}
 
 					continue;
 				case "S" or "SUB" when uint.TryParse(game, out uint packageID) && (packageID > 0):
 					if (Bot.OwnedPackageIDs.ContainsKey(packageID)) {
 						result[$"sub/{packageID}"] = packageID.ToString(CultureInfo.InvariantCulture);
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlready, $"sub/{packageID}")));
+						response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlready($"sub/{packageID}")));
 					} else {
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, $"sub/{packageID}")));
+						response.AppendLine(FormatBotResponse(Strings.FormatBotNotOwnedYet($"sub/{packageID}")));
 					}
 
 					break;
@@ -1865,7 +1865,7 @@ public sealed class Commands {
 						gamesOwned = await FetchGamesOwned().ConfigureAwait(false);
 
 						if (gamesOwned == null) {
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(gamesOwned))));
+							response.AppendLine(FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(gamesOwned))));
 
 							break;
 						}
@@ -1877,18 +1877,18 @@ public sealed class Commands {
 						foundWithName = true;
 
 						result[$"app/{appID}"] = gameName;
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, $"app/{appID}", gameName)));
+						response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlreadyWithName($"app/{appID}", gameName)));
 					}
 
 					if (!foundWithName) {
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, entry)));
+						response.AppendLine(FormatBotResponse(Strings.FormatBotNotOwnedYet(entry)));
 					}
 
 					break;
 			}
 		}
 
-		return (response.Length > 0 ? response.ToString() : FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, query)), result);
+		return (response.Length > 0 ? response.ToString() : FormatBotResponse(Strings.FormatBotNotOwnedYet(query)), result);
 	}
 
 	private static async Task<string?> ResponseOwns(EAccess access, string botNames, string query, ulong steamID = 0) {
@@ -1902,7 +1902,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<(string? Response, Dictionary<string, string>? OwnedGames)> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseOwns(GetProxyAccess(bot, access, steamID), query))).ConfigureAwait(false);
@@ -1927,7 +1927,7 @@ public sealed class Commands {
 			ownedGamesStats[gameID] = ownedGameStats;
 		}
 
-		IEnumerable<string> extraResponses = ownedGamesStats.Select(kv => FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnsOverviewPerGame, kv.Value.Count, validResults.Count, $"{kv.Key}{(!string.IsNullOrEmpty(kv.Value.GameName) ? $" | {kv.Value.GameName}" : "")}")));
+		IEnumerable<string> extraResponses = ownedGamesStats.Select(kv => FormatStaticResponse(Strings.FormatBotOwnsOverviewPerGame(kv.Value.Count, validResults.Count, $"{kv.Key}{(!string.IsNullOrEmpty(kv.Value.GameName) ? $" | {kv.Value.GameName}" : "")}")));
 
 		return string.Join(Environment.NewLine, validResults.Select(static result => result.Response).Concat(extraResponses));
 	}
@@ -1948,12 +1948,12 @@ public sealed class Commands {
 		ushort resumeInSeconds = 0;
 
 		if (!string.IsNullOrEmpty(resumeInSecondsText) && (!ushort.TryParse(resumeInSecondsText, out resumeInSeconds) || (resumeInSeconds == 0))) {
-			return string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(resumeInSecondsText));
+			return Strings.FormatErrorIsInvalid(nameof(resumeInSecondsText));
 		}
 
 		(bool success, string message) = await Bot.Actions.Pause(permanent, resumeInSeconds).ConfigureAwait(false);
 
-		return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private static async Task<string?> ResponsePause(EAccess access, string botNames, bool permanent, string? resumeInSecondsText = null, ulong steamID = 0) {
@@ -1966,7 +1966,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePause(GetProxyAccess(bot, access, steamID), permanent, resumeInSecondsText))).ConfigureAwait(false);
@@ -1997,7 +1997,7 @@ public sealed class Commands {
 
 		(bool success, string message) = await Bot.Actions.Play(gameIDs, gameName).ConfigureAwait(false);
 
-		return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private async Task<string?> ResponsePlay(EAccess access, string targetGameIDs) {
@@ -2018,7 +2018,7 @@ public sealed class Commands {
 		string[] games = targetGameIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (games.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(games)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(games)));
 		}
 
 		HashSet<uint> gamesToPlay = new(Math.Min(games.Length, ArchiHandler.MaxGamesPlayedConcurrently));
@@ -2036,7 +2036,7 @@ public sealed class Commands {
 			}
 
 			if (gamesToPlay.Count >= ArchiHandler.MaxGamesPlayedConcurrently) {
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(gamesToPlay)} > {ArchiHandler.MaxGamesPlayedConcurrently}"));
+				return FormatBotResponse(Strings.FormatWarningFailedWithError($"{nameof(gamesToPlay)} > {ArchiHandler.MaxGamesPlayedConcurrently}"));
 			}
 
 			gamesToPlay.Add(gameID);
@@ -2056,7 +2056,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePlay(GetProxyAccess(bot, access, steamID), targetGameIDs))).ConfigureAwait(false);
@@ -2081,7 +2081,7 @@ public sealed class Commands {
 
 		uint? points = await Bot.ArchiWebHandler.GetPointsBalance().ConfigureAwait(false);
 
-		return FormatBotResponse(points.HasValue ? string.Format(CultureInfo.CurrentCulture, Strings.BotPointsBalance, points) : Strings.WarningFailed);
+		return FormatBotResponse(points.HasValue ? Strings.FormatBotPointsBalance(points) : Strings.WarningFailed);
 	}
 
 	private static async Task<string?> ResponsePointsBalance(EAccess access, string botNames, ulong steamID = 0) {
@@ -2094,7 +2094,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePointsBalance(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
@@ -2126,9 +2126,9 @@ public sealed class Commands {
 
 		switch (privacySettingsArgs.Length) {
 			case 0:
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(privacySettingsArgs)));
+				return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(privacySettingsArgs)));
 			case > privacySettings:
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(privacySettingsArgs)));
+				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(privacySettingsArgs)));
 		}
 
 		ArchiHandler.EPrivacySetting profile = ArchiHandler.EPrivacySetting.Private;
@@ -2142,7 +2142,7 @@ public sealed class Commands {
 		// Converting digits to enum
 		for (byte index = 0; index < privacySettingsArgs.Length; index++) {
 			if (!Enum.TryParse(privacySettingsArgs[index], true, out ArchiHandler.EPrivacySetting privacySetting) || (privacySetting == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(privacySetting)) {
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(privacySettingsArgs)));
+				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(privacySettingsArgs)));
 			}
 
 			// Child setting can't be less restrictive than its parent
@@ -2155,7 +2155,7 @@ public sealed class Commands {
 				case 1:
 					// OwnedGames, child of Profile
 					if (profile < privacySetting) {
-						return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(ownedGames)));
+						return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(ownedGames)));
 					}
 
 					ownedGames = privacySetting;
@@ -2164,7 +2164,7 @@ public sealed class Commands {
 				case 2:
 					// Playtime, child of OwnedGames
 					if (ownedGames < privacySetting) {
-						return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(playtime)));
+						return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(playtime)));
 					}
 
 					playtime = privacySetting;
@@ -2173,7 +2173,7 @@ public sealed class Commands {
 				case 3:
 					// FriendsList, child of Profile
 					if (profile < privacySetting) {
-						return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(ownedGames)));
+						return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(ownedGames)));
 					}
 
 					friendsList = privacySetting;
@@ -2182,7 +2182,7 @@ public sealed class Commands {
 				case 4:
 					// Inventory, child of Profile
 					if (profile < privacySetting) {
-						return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(inventory)));
+						return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(inventory)));
 					}
 
 					inventory = privacySetting;
@@ -2191,7 +2191,7 @@ public sealed class Commands {
 				case 5:
 					// InventoryGifts, child of Inventory
 					if (inventory < privacySetting) {
-						return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(inventoryGifts)));
+						return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(inventoryGifts)));
 					}
 
 					inventoryGifts = privacySetting;
@@ -2200,7 +2200,7 @@ public sealed class Commands {
 				case 6:
 					// Comments, child of Profile
 					if (profile < privacySetting) {
-						return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(comments)));
+						return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(comments)));
 					}
 
 					// Comments use different numbers than everything else, but we want to have this command consistent for end-user, so we'll map them
@@ -2218,16 +2218,16 @@ public sealed class Commands {
 
 							break;
 						default:
-							Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(privacySetting), privacySetting));
+							Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(privacySetting), privacySetting));
 
-							return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(privacySetting)));
+							return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(privacySetting)));
 					}
 
 					break;
 				default:
-					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(index), index));
+					Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(index), index));
 
-					return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(index)));
+					return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(index)));
 			}
 		}
 
@@ -2247,7 +2247,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePrivacy(GetProxyAccess(bot, access, steamID), privacySettingsText))).ConfigureAwait(false);
@@ -2283,7 +2283,7 @@ public sealed class Commands {
 		string[] keys = keysText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (keys.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(keys)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(keys)));
 		}
 
 		bool forward = !redeemFlags.HasFlag(ERedeemFlags.SkipForwarding) && (redeemFlags.HasFlag(ERedeemFlags.ForceForwarding) || Bot.BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Forwarding));
@@ -2351,7 +2351,7 @@ public sealed class Commands {
 							}
 
 							if ((result == EResult.Timeout) || (purchaseResultDetail == EPurchaseResultDetail.Timeout)) {
-								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result}/{purchaseResultDetail}"), currentBot.BotName));
+								response.AppendLine(FormatBotResponse(Strings.FormatBotRedeem(key, $"{result}/{purchaseResultDetail}"), currentBot.BotName));
 
 								// Either bot will be changed, or loop aborted
 								currentBot = null;
@@ -2375,9 +2375,9 @@ public sealed class Commands {
 								}
 
 								if (items?.Count > 0) {
-									response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result}/{purchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}", string.Join(", ", items)), currentBot.BotName));
+									response.AppendLine(FormatBotResponse(Strings.FormatBotRedeemWithItems(key, $"{result}/{purchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}", string.Join(", ", items)), currentBot.BotName));
 								} else if (!skipRequest) {
-									response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result}/{purchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}"), currentBot.BotName));
+									response.AppendLine(FormatBotResponse(Strings.FormatBotRedeem(key, $"{result}/{purchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}"), currentBot.BotName));
 								}
 
 								switch (purchaseResultDetail) {
@@ -2427,7 +2427,7 @@ public sealed class Commands {
 											CStore_RegisterCDKey_Response? redeemResponse = await innerBot.Actions.RedeemKey(key).ConfigureAwait(false);
 
 											if (redeemResponse == null) {
-												response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{EResult.Timeout}/{EPurchaseResultDetail.Timeout}"), innerBot.BotName));
+												response.AppendLine(FormatBotResponse(Strings.FormatBotRedeem(key, $"{EResult.Timeout}/{EPurchaseResultDetail.Timeout}"), innerBot.BotName));
 
 												continue;
 											}
@@ -2455,7 +2455,7 @@ public sealed class Commands {
 
 											Dictionary<uint, string>? redeemItems = redeemResponse.purchase_receipt_info.line_items.Count > 0 ? redeemResponse.purchase_receipt_info.line_items.ToDictionary(static lineItem => lineItem.packageid, static lineItem => lineItem.line_item_description) : null;
 
-											response.AppendLine(FormatBotResponse(redeemItems?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{redeemResult}/{redeemPurchaseResult}", string.Join(", ", redeemItems)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{redeemResult}/{redeemPurchaseResult}"), innerBot.BotName));
+											response.AppendLine(FormatBotResponse(redeemItems?.Count > 0 ? Strings.FormatBotRedeemWithItems(key, $"{redeemResult}/{redeemPurchaseResult}", string.Join(", ", redeemItems)) : Strings.FormatBotRedeem(key, $"{redeemResult}/{redeemPurchaseResult}"), innerBot.BotName));
 
 											if (alreadyHandled) {
 												break;
@@ -2480,7 +2480,7 @@ public sealed class Commands {
 
 										goto case EPurchaseResultDetail.CancelledByUser;
 									default:
-										ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(purchaseResultDetail), purchaseResultDetail));
+										ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(purchaseResultDetail), purchaseResultDetail));
 
 										unusedKeys.Remove(key);
 
@@ -2510,7 +2510,7 @@ public sealed class Commands {
 		}
 
 		if (unusedKeys.Count > 0) {
-			response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.UnusedKeys, string.Join(", ", unusedKeys))));
+			response.AppendLine(FormatBotResponse(Strings.FormatUnusedKeys(string.Join(", ", unusedKeys))));
 		}
 
 		return response.Length > 0 ? response.ToString() : null;
@@ -2527,7 +2527,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseRedeem(GetProxyAccess(bot, access, steamID), keysText, steamID, redeemFlags))).ConfigureAwait(false);
@@ -2565,7 +2565,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseReset(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
@@ -2586,7 +2586,7 @@ public sealed class Commands {
 
 		(bool success, string message) = Actions.Restart();
 
-		return FormatStaticResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatStaticResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private string? ResponseResume(EAccess access) {
@@ -2600,7 +2600,7 @@ public sealed class Commands {
 
 		(bool success, string message) = Bot.Actions.Resume();
 
-		return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private static async Task<string?> ResponseResume(EAccess access, string botNames, ulong steamID = 0) {
@@ -2613,7 +2613,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseResume(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
@@ -2634,7 +2634,7 @@ public sealed class Commands {
 
 		(bool success, string message) = Bot.Actions.Start();
 
-		return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private static async Task<string?> ResponseStart(EAccess access, string botNames, ulong steamID = 0) {
@@ -2647,7 +2647,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStart(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
@@ -2669,7 +2669,7 @@ public sealed class Commands {
 		ushort memoryInMegabytes = (ushort) (GC.GetTotalMemory(false) / 1024 / 1024);
 		TimeSpan uptime = DateTime.UtcNow.Subtract(OS.ProcessStartTime);
 
-		return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStats, memoryInMegabytes, uptime.ToHumanReadable()));
+		return FormatBotResponse(Strings.FormatBotStats(memoryInMegabytes, uptime.ToHumanReadable()));
 	}
 
 	private (string? Response, Bot Bot) ResponseStatus(EAccess access) {
@@ -2706,12 +2706,12 @@ public sealed class Commands {
 		}
 
 		if (Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Count > 1) {
-			return (FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStatusIdlingList, string.Join(", ", Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Select(static game => $"{game.AppID} ({game.GameName})")), Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(static game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
+			return (FormatBotResponse(Strings.FormatBotStatusIdlingList(string.Join(", ", Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Select(static game => $"{game.AppID} ({game.GameName})")), Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(static game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
 		}
 
 		Game soloGame = Bot.CardsFarmer.CurrentGamesFarmingReadOnly.First();
 
-		return (FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStatusIdling, soloGame.AppID, soloGame.GameName, soloGame.CardsRemaining, Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(static game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
+		return (FormatBotResponse(Strings.FormatBotStatusIdling(soloGame.AppID, soloGame.GameName, soloGame.CardsRemaining, Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(static game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
 	}
 
 	private static async Task<string?> ResponseStatus(EAccess access, string botNames, ulong steamID = 0) {
@@ -2724,7 +2724,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<(string? Response, Bot Bot)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStatus(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
@@ -2737,7 +2737,7 @@ public sealed class Commands {
 
 		HashSet<Bot> botsRunning = validResults.Where(static result => result.Bot.KeepRunning).Select(static result => result.Bot).ToHashSet();
 
-		string extraResponse = string.Format(CultureInfo.CurrentCulture, Strings.BotStatusOverview, botsRunning.Count, validResults.Count, botsRunning.Sum(static bot => bot.CardsFarmer.GamesToFarmReadOnly.Count), botsRunning.Sum(static bot => bot.CardsFarmer.GamesToFarmReadOnly.Sum(static game => game.CardsRemaining)));
+		string extraResponse = Strings.FormatBotStatusOverview(botsRunning.Count, validResults.Count, botsRunning.Sum(static bot => bot.CardsFarmer.GamesToFarmReadOnly.Count), botsRunning.Sum(static bot => bot.CardsFarmer.GamesToFarmReadOnly.Sum(static game => game.CardsRemaining)));
 
 		return string.Join(Environment.NewLine, validResults.Select(static result => result.Response).Union(extraResponse.ToEnumerable()));
 	}
@@ -2753,7 +2753,7 @@ public sealed class Commands {
 
 		(bool success, string message) = Bot.Actions.Stop();
 
-		return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private static async Task<string?> ResponseStop(EAccess access, string botNames, ulong steamID = 0) {
@@ -2766,7 +2766,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStop(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
@@ -2781,7 +2781,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		return access < EAccess.Master ? null : FormatBotResponse(Bot.BotDatabase.TradingBlacklistSteamIDs.Count == 0 ? string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotDatabase.TradingBlacklistSteamIDs)) : string.Join(", ", Bot.BotDatabase.TradingBlacklistSteamIDs));
+		return access < EAccess.Master ? null : FormatBotResponse(Bot.BotDatabase.TradingBlacklistSteamIDs.Count == 0 ? Strings.FormatErrorIsEmpty(nameof(Bot.BotDatabase.TradingBlacklistSteamIDs)) : string.Join(", ", Bot.BotDatabase.TradingBlacklistSteamIDs));
 	}
 
 	private static async Task<string?> ResponseTradingBlacklist(EAccess access, string botNames, ulong steamID = 0) {
@@ -2794,7 +2794,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklist(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
@@ -2818,14 +2818,14 @@ public sealed class Commands {
 		string[] targets = targetSteamIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(targets)));
 		}
 
 		HashSet<ulong> targetIDs = [];
 
 		foreach (string target in targets) {
 			if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0) || !new SteamID(targetID).IsIndividualAccount) {
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(targetID)));
+				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(targetID)));
 			}
 
 			targetIDs.Add(targetID);
@@ -2845,7 +2845,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklistAdd(GetProxyAccess(bot, access, steamID), targetSteamIDs)))).ConfigureAwait(false);
@@ -2869,14 +2869,14 @@ public sealed class Commands {
 		string[] targets = targetSteamIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(targets)));
 		}
 
 		HashSet<ulong> targetIDs = [];
 
 		foreach (string target in targets) {
 			if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0) || !new SteamID(targetID).IsIndividualAccount) {
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(targetID)));
+				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(targetID)));
 			}
 
 			targetIDs.Add(targetID);
@@ -2896,7 +2896,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklistRemove(GetProxyAccess(bot, access, steamID), targetSteamIDs)))).ConfigureAwait(false);
@@ -2922,13 +2922,13 @@ public sealed class Commands {
 		}
 
 		if (Bot.BotConfig.TransferableTypes.Count == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotConfig.TransferableTypes)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(Bot.BotConfig.TransferableTypes)));
 		}
 
 		Bot? targetBot = Bot.GetBot(botNameTo);
 
 		if (targetBot == null) {
-			return access >= EAccess.Owner ? FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNameTo)) : null;
+			return access >= EAccess.Owner ? FormatBotResponse(Strings.FormatBotNotFound(botNameTo)) : null;
 		}
 
 		if (!targetBot.IsConnectedAndLoggedOn) {
@@ -2941,7 +2941,7 @@ public sealed class Commands {
 
 		(bool success, string message) = await Bot.Actions.SendInventory(targetSteamID: targetBot.SteamID, filterFunction: item => Bot.BotConfig.TransferableTypes.Contains(item.Type)).ConfigureAwait(false);
 
-		return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private static async Task<string?> ResponseTransfer(EAccess access, string botNames, string botNameTo, ulong steamID = 0) {
@@ -2955,7 +2955,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransfer(GetProxyAccess(bot, access, steamID), botNameTo))).ConfigureAwait(false);
@@ -2985,7 +2985,7 @@ public sealed class Commands {
 		}
 
 		if (Bot.BotConfig.TransferableTypes.Count == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotConfig.TransferableTypes)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(Bot.BotConfig.TransferableTypes)));
 		}
 
 		if (!targetBot.IsConnectedAndLoggedOn) {
@@ -2998,7 +2998,7 @@ public sealed class Commands {
 
 		(bool success, string message) = await Bot.Actions.SendInventory(targetSteamID: targetBot.SteamID, filterFunction: item => Bot.BotConfig.TransferableTypes.Contains(item.Type) && (exclude ^ realAppIDs.Contains(item.RealAppID))).ConfigureAwait(false);
 
-		return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
 
 	private async Task<string?> ResponseTransferByRealAppIDs(EAccess access, string realAppIDsText, string botNameTo, bool exclude) {
@@ -3016,20 +3016,20 @@ public sealed class Commands {
 		Bot? targetBot = Bot.GetBot(botNameTo);
 
 		if (targetBot == null) {
-			return access >= EAccess.Owner ? FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNameTo)) : null;
+			return access >= EAccess.Owner ? FormatBotResponse(Strings.FormatBotNotFound(botNameTo)) : null;
 		}
 
 		string[] appIDTexts = realAppIDsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (appIDTexts.Length == 0) {
-			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(appIDTexts)));
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(appIDTexts)));
 		}
 
 		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
 			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
-				return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(appID)));
+				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 			}
 
 			realAppIDs.Add(appID);
@@ -3050,20 +3050,20 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		string[] appIDTexts = realAppIDsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (appIDTexts.Length == 0) {
-			return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(appIDTexts)));
+			return FormatStaticResponse(Strings.FormatErrorIsEmpty(nameof(appIDTexts)));
 		}
 
 		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
 			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
-				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(appID)));
+				return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 			}
 
 			realAppIDs.Add(appID);
@@ -3072,7 +3072,7 @@ public sealed class Commands {
 		Bot? targetBot = Bot.GetBot(botNameTo);
 
 		if (targetBot == null) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNameTo)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNameTo)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransferByRealAppIDs(GetProxyAccess(bot, access, steamID), realAppIDs, targetBot, exclude))).ConfigureAwait(false);
@@ -3136,7 +3136,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseUnpackBoosters(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
@@ -3165,7 +3165,7 @@ public sealed class Commands {
 			}
 
 			if (!Enum.TryParse(channelText, true, out channel) || (channel == GlobalConfig.EUpdateChannel.None)) {
-				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(channelText)));
+				return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(channelText)));
 			}
 		}
 
@@ -3193,7 +3193,7 @@ public sealed class Commands {
 			}
 
 			if (!Enum.TryParse(channelText, true, out GlobalConfig.EUpdateChannel parsedChannel) || (parsedChannel == GlobalConfig.EUpdateChannel.None)) {
-				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(channelText)));
+				return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(channelText)));
 			}
 
 			channel = parsedChannel;
@@ -3206,7 +3206,7 @@ public sealed class Commands {
 			string[] plugins = pluginsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 			if (plugins.Length == 0) {
-				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(plugins)));
+				return FormatStaticResponse(Strings.FormatErrorIsEmpty(nameof(plugins)));
 			}
 
 			(success, message) = await Actions.UpdatePlugins(channel, plugins, forced).ConfigureAwait(false);
@@ -3222,7 +3222,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		return access >= EAccess.FamilySharing ? FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotVersion, SharedInfo.ASF, SharedInfo.Version)) : null;
+		return access >= EAccess.FamilySharing ? FormatBotResponse(Strings.FormatBotVersion(SharedInfo.ASF, SharedInfo.Version)) : null;
 	}
 
 	private string? ResponseWalletBalance(EAccess access) {
@@ -3234,7 +3234,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		return !Bot.IsConnectedAndLoggedOn ? FormatBotResponse(Strings.BotNotConnected) : FormatBotResponse(Bot.WalletCurrency != ECurrencyCode.Invalid ? string.Format(CultureInfo.CurrentCulture, Strings.BotWalletBalance, $"{Bot.WalletBalance / 100.0}{(Bot.WalletBalanceDelayed > 0 ? $" ({(Bot.WalletBalance + Bot.WalletBalanceDelayed) / 100.0})" : "")}", Bot.WalletCurrency.ToString()) : Strings.BotHasNoWallet);
+		return !Bot.IsConnectedAndLoggedOn ? FormatBotResponse(Strings.BotNotConnected) : FormatBotResponse(Bot.WalletCurrency != ECurrencyCode.Invalid ? Strings.FormatBotWalletBalance($"{Bot.WalletBalance / 100.0}{(Bot.WalletBalanceDelayed > 0 ? $" ({(Bot.WalletBalance + Bot.WalletBalanceDelayed) / 100.0})" : "")}", Bot.WalletCurrency.ToString()) : Strings.BotHasNoWallet);
 	}
 
 	private static async Task<string?> ResponseWalletBalance(EAccess access, string botNames, ulong steamID = 0) {
@@ -3247,7 +3247,7 @@ public sealed class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseWalletBalance(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);

@@ -23,7 +23,6 @@
 
 using System;
 using System.Collections.Immutable;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
@@ -66,12 +65,12 @@ internal sealed class SteamSaleEvent : IAsyncDisposable, IDisposable {
 			ImmutableHashSet<uint>? queue = await Bot.ArchiWebHandler.GenerateNewDiscoveryQueue().ConfigureAwait(false);
 
 			if ((queue == null) || (queue.Count == 0)) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(queue)));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorIsEmpty(nameof(queue)));
 
 				break;
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ClearingDiscoveryQueue, i));
+			Bot.ArchiLogger.LogGenericInfo(Strings.FormatClearingDiscoveryQueue(i));
 
 			// We could in theory do this in parallel, but who knows what would happen...
 			foreach (uint queuedAppID in queue) {
@@ -84,7 +83,7 @@ internal sealed class SteamSaleEvent : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.DoneClearingDiscoveryQueue, i));
+			Bot.ArchiLogger.LogGenericInfo(Strings.FormatDoneClearingDiscoveryQueue(i));
 		}
 
 		Bot.ArchiLogger.LogGenericTrace(Strings.Done);
@@ -113,7 +112,7 @@ internal sealed class SteamSaleEvent : IAsyncDisposable, IDisposable {
 		}
 
 		if (Debugging.IsUserDebugging) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, text));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatContent(text));
 		}
 
 		// It'd make more sense to check against "Come back tomorrow", but it might not cover out-of-the-event queue

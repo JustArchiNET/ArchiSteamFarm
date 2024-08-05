@@ -25,7 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -107,7 +106,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			sharedSecret = Convert.FromBase64String(SharedSecret);
 		} catch (FormatException e) {
 			Bot.ArchiLogger.LogGenericException(e);
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SharedSecret)));
+			Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(SharedSecret)));
 
 			return null;
 		}
@@ -155,7 +154,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		(_, string? deviceID) = await CachedDeviceID.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(deviceID)) {
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(deviceID)));
+			Bot.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(deviceID)));
 
 			return null;
 		}
@@ -183,7 +182,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		}
 
 		foreach (Confirmation? confirmation in response.Confirmations.Where(static confirmation => (confirmation.ConfirmationType == Confirmation.EConfirmationType.Unknown) || !Enum.IsDefined(confirmation.ConfirmationType))) {
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(confirmation.ConfirmationType), $"{confirmation.ConfirmationType} ({confirmation.ConfirmationTypeName ?? "null"})"));
+			Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(confirmation.ConfirmationType), $"{confirmation.ConfirmationType} ({confirmation.ConfirmationTypeName ?? "null"})"));
 		}
 
 		return response.Confirmations;
@@ -239,7 +238,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		(_, string? deviceID) = await CachedDeviceID.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(deviceID)) {
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(deviceID)));
+			Bot.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(deviceID)));
 
 			return false;
 		}
@@ -331,7 +330,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			identitySecret = Convert.FromBase64String(IdentitySecret);
 		} catch (FormatException e) {
 			Bot.ArchiLogger.LogGenericException(e);
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(IdentitySecret)));
+			Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(IdentitySecret)));
 
 			return null;
 		}

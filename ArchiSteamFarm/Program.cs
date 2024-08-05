@@ -69,7 +69,7 @@ internal static class Program {
 
 	internal static async Task Exit(byte exitCode = 0) {
 		if (exitCode != 0) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorExitingWithNonZeroErrorCode, exitCode));
+			ASF.ArchiLogger.LogGenericError(Strings.FormatErrorExitingWithNonZeroErrorCode(exitCode));
 		}
 
 		await Shutdown(exitCode).ConfigureAwait(false);
@@ -110,7 +110,7 @@ internal static class Program {
 		ArgumentException.ThrowIfNullOrEmpty(cryptKeyFile);
 
 		if (!File.Exists(cryptKeyFile)) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(cryptKeyFile)));
+			ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(cryptKeyFile)));
 
 			return false;
 		}
@@ -126,7 +126,7 @@ internal static class Program {
 		}
 
 		if (string.IsNullOrEmpty(cryptKey)) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(cryptKeyFile)));
+			ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(nameof(cryptKeyFile)));
 
 			return false;
 		}
@@ -295,7 +295,7 @@ internal static class Program {
 			ASF.ArchiLogger.LogGenericWarning(Strings.WarningRunningInUnsupportedEnvironment);
 		} else {
 			if (!OS.VerifyEnvironment()) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedEnvironment, SharedInfo.BuildInfo.Variant, OS.Version));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnsupportedEnvironment(SharedInfo.BuildInfo.Variant, OS.Version));
 				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 				return false;
@@ -311,7 +311,7 @@ internal static class Program {
 			string? cryptkey = await Logging.GetUserInput(ASF.EUserInputType.Cryptkey).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(cryptkey)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(cryptkey)));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(cryptkey)));
 
 				return false;
 			}
@@ -344,7 +344,7 @@ internal static class Program {
 			(globalConfig, latestJson) = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
 
 			if (globalConfig == null) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorGlobalConfigNotLoaded(globalConfigFile));
 				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 
 				return false;
@@ -373,7 +373,7 @@ internal static class Program {
 		}
 
 		if (!string.IsNullOrEmpty(latestJson)) {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.AutomaticFileMigration, globalConfigFile));
+			ASF.ArchiLogger.LogGenericWarning(Strings.FormatAutomaticFileMigration(globalConfigFile));
 
 			await SerializableFile.Write(globalConfigFile, latestJson).ConfigureAwait(false);
 
@@ -404,7 +404,7 @@ internal static class Program {
 		GlobalDatabase? globalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
 
 		if (globalDatabase == null) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorDatabaseInvalid, globalDatabaseFile));
+			ASF.ArchiLogger.LogGenericError(Strings.FormatErrorDatabaseInvalid(globalDatabaseFile));
 			await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 
 			return false;
@@ -647,7 +647,7 @@ internal static class Program {
 
 								break;
 							default:
-								ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownCommandLineArgument, arg));
+								ASF.ArchiLogger.LogGenericWarning(Strings.FormatWarningUnknownCommandLineArgument(arg));
 
 								break;
 						}

@@ -75,7 +75,7 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 
 			foreach (string creatorIDText in value) {
 				if (!ulong.TryParse(creatorIDText, out ulong creatorID) || (creatorID == 0)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SAcceptedCreatorIDs)));
+					ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(SAcceptedCreatorIDs)));
 
 					return;
 				}

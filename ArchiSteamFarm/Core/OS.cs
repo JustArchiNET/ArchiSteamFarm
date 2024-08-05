@@ -24,7 +24,6 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -211,7 +210,7 @@ internal static class OS {
 		}
 
 		// Unknown combination, we intend to cover all of the available ones above, so this results in an error
-		ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(SharedInfo.BuildInfo.Variant), SharedInfo.BuildInfo.Variant));
+		ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(SharedInfo.BuildInfo.Variant), SharedInfo.BuildInfo.Variant));
 
 		return false;
 	}
@@ -325,7 +324,7 @@ internal static class OS {
 
 		// SetThreadExecutionState() returns NULL on failure, which is mapped to 0 (EExecutionState.None) in our case
 		if (result == NativeMethods.EExecutionState.None) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, result));
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(result));
 		}
 	}
 }
