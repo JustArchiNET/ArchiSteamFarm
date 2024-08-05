@@ -562,7 +562,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				HashSet<AssetForListing> inventoryAddedChanged = assetsForListing.Where(asset => !previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset) || (asset.BackendHashCode != previousAsset.BackendHashCode)).ToHashSet();
 
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
+				Bot.ArchiLogger.LogGenericInfo(Localization.Strings.FormatListingAnnouncing(Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
 				ObjectResponse<GenericResponse<BackgroundTaskResponse>>? diffResponse = null;
 				Guid diffRequestID = Guid.Empty;
@@ -667,7 +667,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
+			Bot.ArchiLogger.LogGenericInfo(Localization.Strings.FormatListingAnnouncing(Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
 			ObjectResponse<GenericResponse<BackgroundTaskResponse>>? announceResponse = null;
 			Guid announceRequestID = Guid.Empty;
@@ -1435,7 +1435,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					throw new InvalidOperationException($"{nameof(itemsToGive)} && {nameof(itemsToReceive)}");
 				}
 
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.MatchingFound, itemsToReceive.Count, listedUser.SteamID, listedUser.Nickname));
+				Bot.ArchiLogger.LogGenericInfo(Localization.Strings.FormatMatchingFound(itemsToReceive.Count, listedUser.SteamID, listedUser.Nickname));
 
 				Bot.ArchiLogger.LogGenericTrace($"{Bot.SteamID} <- {string.Join(", ", itemsToReceive.Select(static item => $"{item.RealAppID}/{item.Type}/{item.Rarity}/{item.ClassID} #{item.Amount}"))} | {string.Join(", ", itemsToGive.Select(static item => $"{item.RealAppID}/{item.Type}/{item.Rarity}/{item.ClassID} #{item.Amount}"))} -> {listedUser.SteamID}");
 
@@ -1454,7 +1454,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 						(bool twoFactorSuccess, IReadOnlyCollection<Confirmation>? handledConfirmations, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false);
 
 						if (!twoFactorSuccess) {
-							Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingSomeConfirmationsFailed, handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
+							Bot.ArchiLogger.LogGenericWarning(Localization.Strings.FormatActivelyMatchingSomeConfirmationsFailed(handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
 						}
 
 						pendingMobileTradeOfferIDs.Clear();
@@ -1465,7 +1465,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					// The user likely no longer has the items we need, this is fine, we can continue the matching with other ones
 					failuresInRow++;
 
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.TradeOfferFailed, listedUser.SteamID, listedUser.Nickname));
+					Bot.ArchiLogger.LogGenericWarning(Localization.Strings.FormatTradeOfferFailed(listedUser.SteamID, listedUser.Nickname));
 
 					break;
 				}
@@ -1550,11 +1550,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			(bool twoFactorSuccess, IReadOnlyCollection<Confirmation>? handledConfirmations, _) = Bot.IsConnectedAndLoggedOn ? await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false) : (false, null, null);
 
 			if (!twoFactorSuccess) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingSomeConfirmationsFailed, handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
+				Bot.ArchiLogger.LogGenericWarning(Localization.Strings.FormatActivelyMatchingSomeConfirmationsFailed(handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
 			}
 		}
 
-		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingItemsRound, matchedSets));
+		Bot.ArchiLogger.LogGenericInfo(Localization.Strings.FormatActivelyMatchingItemsRound(matchedSets));
 
 		return matchedSets > 0;
 	}
