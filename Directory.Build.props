@@ -33,11 +33,6 @@
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 	</PropertyGroup>
 
-	<!-- TODO: https://github.com/dotnet/roslyn-analyzers/issues/7032 -->
-	<PropertyGroup>
-		<NoWarn>$(NoWarn),CA1863</NoWarn>
-	</PropertyGroup>
-
 	<PropertyGroup Condition="'$(ASFVariant)' != ''">
 		<DefineConstants>$(DefineConstants);ASF_VARIANT_$(ASFVariant.Replace('-', '_').ToUpperInvariant())</DefineConstants>
 	</PropertyGroup>

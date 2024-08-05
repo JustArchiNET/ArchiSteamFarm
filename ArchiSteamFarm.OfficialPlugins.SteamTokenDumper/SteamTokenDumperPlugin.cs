@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Composition;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
@@ -436,7 +435,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 					}
 
 					if (response.Results == null) {
-						bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(response.Results)));
+						bot.ArchiLogger.LogGenericWarning(ArchiSteamFarm.Localization.Strings.FormatWarningFailedWithError(nameof(response.Results)));
 
 						appIDsThisRound.Clear();
 
@@ -562,7 +561,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		}
 
 		if (GlobalCache == null) {
-			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(GlobalCache)));
+			return bot.Commands.FormatBotResponse(ArchiSteamFarm.Localization.Strings.FormatWarningFailedWithError(nameof(GlobalCache)));
 		}
 
 		Utilities.InBackground(
@@ -589,17 +588,17 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? Commands.FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? Commands.FormatStaticResponse(ArchiSteamFarm.Localization.Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		if (bots.RemoveWhere(bot => Commands.GetProxyAccess(bot, access, steamID) < EAccess.Master) > 0) {
 			if (bots.Count == 0) {
-				return access >= EAccess.Owner ? Commands.FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.BotNotFound, botNames)) : null;
+				return access >= EAccess.Owner ? Commands.FormatStaticResponse(ArchiSteamFarm.Localization.Strings.FormatBotNotFound(botNames)) : null;
 			}
 		}
 
 		if (GlobalCache == null) {
-			return Commands.FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(GlobalCache)));
+			return Commands.FormatStaticResponse(ArchiSteamFarm.Localization.Strings.FormatWarningFailedWithError(nameof(GlobalCache)));
 		}
 
 		Utilities.InBackground(
@@ -670,7 +669,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			LastUploadAt = DateTimeOffset.UtcNow;
 
 			if (response.StatusCode.IsClientErrorCode()) {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, response.StatusCode));
+				ASF.ArchiLogger.LogGenericWarning(ArchiSteamFarm.Localization.Strings.FormatWarningFailedWithError(response.StatusCode));
 
 				switch (response.StatusCode) {
 					case HttpStatusCode.Forbidden when Config?.Enabled == true:
@@ -712,7 +711,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			}
 
 			if (response.Content.Data == null) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsInvalid, nameof(response.Content.Data)));
+				ASF.ArchiLogger.LogGenericError(ArchiSteamFarm.Localization.Strings.FormatErrorIsInvalid(nameof(response.Content.Data)));
 
 				return;
 			}
