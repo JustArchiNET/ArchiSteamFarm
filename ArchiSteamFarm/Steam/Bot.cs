@@ -2056,7 +2056,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		if (callbacksAborted is { IsCancellationRequested: false }) {
 			Utilities.InBackground(
 				async () => {
-					await Task.Delay(5000, CancellationToken.None).ConfigureAwait(false);
+					await Task.Delay(CallbackSleep * WebBrowser.MaxTries, CancellationToken.None).ConfigureAwait(false);
 
 					try {
 						await callbacksAborted.CancelAsync().ConfigureAwait(false);
