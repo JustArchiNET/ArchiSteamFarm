@@ -510,7 +510,7 @@ public sealed class BotConfig {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(TradingPreferences), TradingPreferences));
 		}
 
-		return !Enum.IsDefined(UserInterfaceMode) ? (false, Strings.FormatErrorConfigPropertyInvalid(nameof(UserInterfaceMode), UserInterfaceMode)) : (true, null);
+		return (UserInterfaceMode < EUIMode.VGUI) || !Enum.IsDefined(UserInterfaceMode) ? (false, Strings.FormatErrorConfigPropertyInvalid(nameof(UserInterfaceMode), UserInterfaceMode)) : (true, null);
 	}
 
 	internal async Task<string?> GetDecryptedSteamPassword() {
