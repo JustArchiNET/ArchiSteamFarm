@@ -72,6 +72,9 @@ public sealed class BotConfig {
 	public const EPersonaStateFlag DefaultOnlineFlags = 0;
 
 	[PublicAPI]
+	public const EOnlinePreferences DefaultOnlinePreferences = EOnlinePreferences.None;
+
+	[PublicAPI]
 	public const EPersonaState DefaultOnlineStatus = EPersonaState.Online;
 
 	[PublicAPI]
@@ -185,6 +188,9 @@ public sealed class BotConfig {
 
 	[JsonInclude]
 	public EPersonaStateFlag OnlineFlags { get; private init; } = DefaultOnlineFlags;
+
+	[JsonInclude]
+	public EOnlinePreferences OnlinePreferences { get; private init; } = DefaultOnlinePreferences;
 
 	[JsonInclude]
 	public EPersonaState OnlineStatus { get; private init; } = DefaultOnlineStatus;
@@ -339,6 +345,9 @@ public sealed class BotConfig {
 	public bool ShouldSerializeOnlineFlags() => !Saving || (OnlineFlags != DefaultOnlineFlags);
 
 	[UsedImplicitly]
+	public bool ShouldSerializeOnlinePreferences() => !Saving || (OnlinePreferences != DefaultOnlinePreferences);
+
+	[UsedImplicitly]
 	public bool ShouldSerializeOnlineStatus() => !Saving || (OnlineStatus != DefaultOnlineStatus);
 
 	[UsedImplicitly]
@@ -457,6 +466,10 @@ public sealed class BotConfig {
 
 		if (OnlineFlags < 0) {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(OnlineFlags), OnlineFlags));
+		}
+
+		if (OnlinePreferences > EOnlinePreferences.All) {
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(OnlinePreferences), OnlinePreferences));
 		}
 
 		if (!Enum.IsDefined(OnlineStatus)) {
@@ -639,6 +652,14 @@ public sealed class BotConfig {
 		EnableRiskyCardsDiscovery = 64,
 		AutoSteamSaleEvent = 128,
 		All = FarmingPausedByDefault | ShutdownOnFarmingFinished | SendOnFarmingFinished | FarmPriorityQueueOnly | SkipRefundableGames | SkipUnplayedGames | EnableRiskyCardsDiscovery | AutoSteamSaleEvent
+	}
+
+	[Flags]
+	[PublicAPI]
+	public enum EOnlinePreferences : byte {
+		None = 0,
+		IsSteamDeck = 1,
+		All = IsSteamDeck
 	}
 
 	[Flags]

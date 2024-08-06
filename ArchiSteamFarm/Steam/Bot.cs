@@ -2774,6 +2774,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			CellID = ASF.GlobalDatabase?.CellID,
 			ChatMode = SteamUser.ChatMode.NewSteamChat,
 			ClientLanguage = CultureInfo.CurrentCulture.ToSteamClientLanguage(),
+			IsSteamDeck = BotConfig.OnlinePreferences.HasFlag(BotConfig.EOnlinePreferences.IsSteamDeck),
 			LoginID = LoginID,
 			ShouldRememberPassword = BotConfig.UseLoginKeys,
 			UIMode = BotConfig.UserInterfaceMode,
