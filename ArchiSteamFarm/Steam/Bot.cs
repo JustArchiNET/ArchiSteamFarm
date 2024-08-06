@@ -172,7 +172,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal bool HasLoginCodeReady => !string.IsNullOrEmpty(TwoFactorCode) || !string.IsNullOrEmpty(AuthCode);
 
 	private readonly CallbackManager CallbackManager;
-	private readonly SemaphoreSlim CallbackSemaphore = new(1, 1);
 	private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new(1, 1);
 	private readonly Timer HeartBeatTimer;
 	private readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
@@ -295,8 +294,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private DateTime? AccessTokenValidUntil;
 	private string? AuthCode;
-
 	private string? BackingAccessToken;
+	private CancellationTokenSource? CallbacksAborted;
 	private Timer? ConnectionFailureTimer;
 	private bool FirstTradeSent;
 	private Timer? GamesRedeemerInBackgroundTimer;
@@ -410,7 +409,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		// Those are objects that are always being created if constructor doesn't throw exception
 		ArchiWebHandler.Dispose();
 		BotDatabase.Dispose();
-		CallbackSemaphore.Dispose();
 		GamesRedeemerInBackgroundSemaphore.Dispose();
 		InitializationSemaphore.Dispose();
 		MessagingSemaphore.Dispose();
@@ -423,6 +421,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		HeartBeatTimer.Dispose();
 
 		// Those are objects that might be null and the check should be in-place
+		CallbacksAborted?.Cancel();
+		CallbacksAborted?.Dispose();
 		ConnectionFailureTimer?.Dispose();
 		GamesRedeemerInBackgroundTimer?.Dispose();
 		PlayingWasBlockedTimer?.Dispose();
@@ -436,7 +436,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		// Those are objects that are always being created if constructor doesn't throw exception
 		ArchiWebHandler.Dispose();
 		BotDatabase.Dispose();
-		CallbackSemaphore.Dispose();
 		GamesRedeemerInBackgroundSemaphore.Dispose();
 		InitializationSemaphore.Dispose();
 		MessagingSemaphore.Dispose();
@@ -449,6 +448,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await HeartBeatTimer.DisposeAsync().ConfigureAwait(false);
 
 		// Those are objects that might be null and the check should be in-place
+		if (CallbacksAborted != null) {
+			await CallbacksAborted.CancelAsync().ConfigureAwait(false);
+
+			CallbacksAborted.Dispose();
+		}
+
 		if (ConnectionFailureTimer != null) {
 			await ConnectionFailureTimer.DisposeAsync().ConfigureAwait(false);
 		}
@@ -1925,7 +1930,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		KeepRunning = true;
-		Utilities.InBackground(HandleCallbacks, true);
+
 		ArchiLogger.LogGenericInfo(Strings.Starting);
 
 		// Support and convert 2FA files
@@ -1955,6 +1960,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			await ImportKeysToRedeem(keysToRedeemFilePath).ConfigureAwait(false);
 		}
 
+		// If any previous callbacks handling loop is still going, we're going to abort it
+		await StopHandlingCallbacks().ConfigureAwait(false);
+
+		CallbacksAborted = new CancellationTokenSource();
+
+		Utilities.InBackground(() => HandleCallbacks(CallbacksAborted.Token), true);
+
 		await Connect().ConfigureAwait(false);
 	}
 
@@ -1964,6 +1976,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		KeepRunning = false;
+
 		ArchiLogger.LogGenericInfo(Strings.BotStopping);
 
 		if (SteamClient.IsConnected) {
@@ -2035,6 +2048,23 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				// Stop() will most likely block due to connection freeze, don't wait for it
 				Utilities.InBackground(() => Stop());
 			}
+		}
+
+		// Ensure the handling loop is stopped, but allow a few extra seconds for any lost callbacks to trigger
+		CancellationTokenSource? callbacksAborted = CallbacksAborted;
+
+		if (callbacksAborted is { IsCancellationRequested: false }) {
+			Utilities.InBackground(
+				async () => {
+					await Task.Delay(5000, CancellationToken.None).ConfigureAwait(false);
+
+					try {
+						await callbacksAborted.CancelAsync().ConfigureAwait(false);
+					} catch {
+						// Ignored, object already disposed or similar
+					}
+				}
+			);
 		}
 
 		Bots.TryRemove(BotName, out _);
@@ -2140,25 +2170,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return result;
 	}
 
-	private async Task HandleCallbacks() {
-		if (!await CallbackSemaphore.WaitAsync(CallbackSleep).ConfigureAwait(false)) {
-			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(Strings.FormatWarningFailedWithError(nameof(CallbackSemaphore)));
-			}
-
-			return;
-		}
-
+	private async Task HandleCallbacks(CancellationToken cancellationToken = default) {
 		try {
-			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
-
-			while (KeepRunning || SteamClient.IsConnected) {
-				CallbackManager.RunWaitAllCallbacks(timeSpan);
+			// Our objective here is to process the callbacks for as long as it's relevant
+			while (!cancellationToken.IsCancellationRequested) {
+				await CallbackManager.RunWaitCallbackAsync(cancellationToken).ConfigureAwait(false);
 			}
-		} catch (Exception e) {
-			ArchiLogger.LogGenericException(e);
-		} finally {
-			CallbackSemaphore.Release();
+		} catch (OperationCanceledException) {
+			// Ignored, we were asked to stop processing
 		}
 	}
 
@@ -2826,12 +2845,16 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		// If we initiated disconnect, do not attempt to reconnect
 		if (callback.UserInitiated && !ReconnectOnUserInitiated) {
+			await StopHandlingCallbacks().ConfigureAwait(false);
+
 			return;
 		}
 
 		switch (lastLogOnResult) {
 			case EResult.AccountDisabled:
 				// Do not attempt to reconnect, those failures are permanent
+				await StopHandlingCallbacks().ConfigureAwait(false);
+
 				return;
 			case EResult.AccessDenied when !string.IsNullOrEmpty(RefreshToken):
 			case EResult.Expired when !string.IsNullOrEmpty(RefreshToken):
@@ -2864,7 +2887,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				break;
 		}
 
-		if (!KeepRunning || SteamClient.IsConnected) {
+		if (!KeepRunning) {
+			await StopHandlingCallbacks().ConfigureAwait(false);
+
+			return;
+		}
+
+		if (SteamClient.IsConnected) {
 			return;
 		}
 
@@ -2872,7 +2901,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		while (RequiredInput != ASF.EUserInputType.None) {
 			await Task.Delay(1000).ConfigureAwait(false);
 
-			if (!KeepRunning || SteamClient.IsConnected) {
+			if (!KeepRunning) {
+				await StopHandlingCallbacks().ConfigureAwait(false);
+
+				return;
+			}
+
+			if (SteamClient.IsConnected) {
 				return;
 			}
 		}
@@ -3845,6 +3880,17 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		ConnectionFailureTimer.Dispose();
 		ConnectionFailureTimer = null;
+	}
+
+	private async Task StopHandlingCallbacks() {
+		if (CallbacksAborted == null) {
+			return;
+		}
+
+		await CallbacksAborted.CancelAsync().ConfigureAwait(false);
+
+		CallbacksAborted.Dispose();
+		CallbacksAborted = null;
 	}
 
 	private void StopPlayingWasBlockedTimer() {

@@ -269,6 +269,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			// We add extra delay because OnFarmingStopped() also executes PlayGames()
 			// Despite of proper order on our end, Steam network might not respect it
 			await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
+
 			await Bot.ArchiHandler.PlayGames([], Bot.BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
 		}
 
