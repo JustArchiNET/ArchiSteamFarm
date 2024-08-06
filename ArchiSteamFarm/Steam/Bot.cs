@@ -2776,6 +2776,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			ClientLanguage = CultureInfo.CurrentCulture.ToSteamClientLanguage(),
 			LoginID = LoginID,
 			ShouldRememberPassword = BotConfig.UseLoginKeys,
+			UIMode = BotConfig.UserInterfaceMode,
 			Username = username
 		};
 
@@ -3294,7 +3295,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			Utilities.InBackground(() => RedeemGamesInBackground());
 		}
 
-		ArchiHandler.SetCurrentMode(BotConfig.UserInterfaceMode);
 		ArchiHandler.RequestItemAnnouncements();
 
 		// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly

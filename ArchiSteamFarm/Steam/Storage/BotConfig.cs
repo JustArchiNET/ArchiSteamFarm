@@ -111,7 +111,7 @@ public sealed class BotConfig {
 	public const bool DefaultUseLoginKeys = true;
 
 	[PublicAPI]
-	public const ArchiHandler.EUserInterfaceMode DefaultUserInterfaceMode = ArchiHandler.EUserInterfaceMode.Default;
+	public const EUIMode DefaultUserInterfaceMode = EUIMode.VGUI;
 
 	internal const byte SteamParentalCodeLength = 4;
 	internal const byte SteamTradeTokenLength = 8;
@@ -267,7 +267,7 @@ public sealed class BotConfig {
 	public bool UseLoginKeys { get; private init; } = DefaultUseLoginKeys;
 
 	[JsonInclude]
-	public ArchiHandler.EUserInterfaceMode UserInterfaceMode { get; private init; } = DefaultUserInterfaceMode;
+	public EUIMode UserInterfaceMode { get; private init; } = DefaultUserInterfaceMode;
 
 	[JsonExtensionData]
 	[JsonInclude]

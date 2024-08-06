@@ -44,7 +44,6 @@ using CMsgClientItemAnnouncements = SteamKit2.Internal.CMsgClientItemAnnouncemen
 using CMsgClientRedeemGuestPass = SteamKit2.Internal.CMsgClientRedeemGuestPass;
 using CMsgClientRequestItemAnnouncements = SteamKit2.Internal.CMsgClientRequestItemAnnouncements;
 using CMsgClientSharedLibraryLockStatus = SteamKit2.Internal.CMsgClientSharedLibraryLockStatus;
-using CMsgClientUIMode = SteamKit2.Internal.CMsgClientUIMode;
 using CMsgClientUserNotifications = SteamKit2.Internal.CMsgClientUserNotifications;
 using EPersonaStateFlag = SteamKit2.EPersonaStateFlag;
 
@@ -1047,33 +1046,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		return response.Result;
 	}
 
-	internal void SetCurrentMode(EUserInterfaceMode userInterfaceMode, SteamUser.ChatMode chatMode = SteamUser.ChatMode.NewSteamChat) {
-		if (!Enum.IsDefined(userInterfaceMode)) {
-			throw new InvalidEnumArgumentException(nameof(userInterfaceMode), (int) userInterfaceMode, typeof(EUserInterfaceMode));
-		}
-
-		if (!Enum.IsDefined(chatMode)) {
-			throw new InvalidEnumArgumentException(nameof(chatMode), (int) chatMode, typeof(SteamUser.ChatMode));
-		}
-
-		if (Client == null) {
-			throw new InvalidOperationException(nameof(Client));
-		}
-
-		if (!Client.IsConnected) {
-			return;
-		}
-
-		ClientMsgProtobuf<CMsgClientUIMode> request = new(EMsg.ClientCurrentUIMode) {
-			Body = {
-				uimode = (uint) userInterfaceMode,
-				chat_mode = (uint) chatMode
-			}
-		};
-
-		Client.Send(request);
-	}
-
 	internal void SetPersonaState(EPersonaState state, EPersonaStateFlag flags) {
 		if (!Enum.IsDefined(state)) {
 			throw new InvalidEnumArgumentException(nameof(state), (int) state, typeof(EPersonaState));
@@ -1099,13 +1071,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		};
 
 		Client.Send(request);
-	}
-
-	[PublicAPI]
-	public enum EUserInterfaceMode : byte {
-		Default = 0,
-		BigPicture = 1,
-		Mobile = 2
 	}
 
 	internal enum EPrivacySetting : byte {
