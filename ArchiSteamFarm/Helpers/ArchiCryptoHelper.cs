@@ -241,11 +241,24 @@ public static class ArchiCryptoHelper {
 
 		try {
 			byte[] key = SHA256.HashData(EncryptionKey);
-
 			byte[] encryptedData = Encoding.UTF8.GetBytes(text);
-			encryptedData = CryptoHelper.SymmetricEncrypt(encryptedData, key);
+			byte[] iv = RandomNumberGenerator.GetBytes(16);
 
-			return Convert.ToBase64String(encryptedData);
+			using Aes aes = Aes.Create();
+
+			aes.BlockSize = 128;
+			aes.KeySize = 256;
+			aes.Key = key;
+
+			byte[] cryptedIv = aes.EncryptEcb(iv, PaddingMode.None);
+			byte[] cipherText = aes.EncryptCbc(encryptedData, iv);
+
+			byte[] output = new byte[cryptedIv.Length + cipherText.Length];
+
+			Array.Copy(cryptedIv, 0, output, 0, cryptedIv.Length);
+			Array.Copy(cipherText, 0, output, cryptedIv.Length, cipherText.Length);
+
+			return Convert.ToBase64String(output);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
