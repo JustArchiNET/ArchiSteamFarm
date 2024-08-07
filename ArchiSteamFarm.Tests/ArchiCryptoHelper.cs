@@ -51,5 +51,15 @@ internal sealed class ArchiCryptoHelper {
 		Assert.IsNotNull(decrypted);
 		Assert.AreEqual(TestPassword, decrypted);
 	}
+
+	[TestMethod]
+	internal async Task CanEncryptDecryptProtectedDataForCurrentUser() {
+		if (!OperatingSystem.IsWindows()) {
+			// Not supported on other platforms than Windows
+			return;
+		}
+
+		await CanEncryptDecrypt(ECryptoMethod.ProtectedDataForCurrentUser).ConfigureAwait(false);
+	}
 }
 #pragma warning restore CA1812 // False positive, the class is used during MSTest
