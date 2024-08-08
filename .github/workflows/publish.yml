@@ -6,7 +6,7 @@ env:
   CONFIGURATION: Release
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_NOLOGO: true
-  DOTNET_SDK_VERSION: 8.0
+  DOTNET_SDK_VERSION: 9.0
   NODE_JS_VERSION: 'lts/*'
   PLUGINS_BUNDLED: ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
   PLUGINS_INCLUDED: ArchiSteamFarm.OfficialPlugins.Monitoring # Apart from declaring them here, there is certain amount of hardcoding needed below for uploading
@@ -170,7 +170,7 @@ jobs:
         if [ "$VARIANT" = 'generic' ]; then
             variantArgs="-p:TargetLatestRuntimePatch=false -p:UseAppHost=false"
         else
-            variantArgs="-p:PublishSingleFile=true -p:PublishTrimmed=true -r $VARIANT --self-contained"
+            variantArgs="-p:PublishSingleFile=true -r $VARIANT --self-contained"
         fi
 
         dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${VARIANT}" "-p:ASFVariant=${VARIANT}" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
@@ -204,7 +204,7 @@ jobs:
         if ($env:VARIANT -like 'generic*') {
             $variantArgs = '-p:TargetLatestRuntimePatch=false', '-p:UseAppHost=false'
         } else {
-            $variantArgs = '-p:PublishSingleFile=true', '-p:PublishTrimmed=true', '-r', "$env:VARIANT", '--self-contained'
+            $variantArgs = '-p:PublishSingleFile=true', '-r', "$env:VARIANT", '--self-contained'
         }
 
         dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$env:VARIANT" "-p:ASFVariant=$env:VARIANT" -p:ContinuousIntegrationBuild=true --nologo $variantArgs
