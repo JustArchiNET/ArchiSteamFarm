@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -241,7 +242,7 @@ public static class ArchiCryptoHelper {
 
 		try {
 			byte[] key = SHA256.HashData(EncryptionKey);
-			byte[] encryptedData = Encoding.UTF8.GetBytes(text);
+			byte[] textData = Encoding.UTF8.GetBytes(text);
 			byte[] iv = RandomNumberGenerator.GetBytes(16);
 
 			using Aes aes = Aes.Create();
@@ -250,15 +251,20 @@ public static class ArchiCryptoHelper {
 			aes.KeySize = 256;
 			aes.Key = key;
 
-			byte[] cryptedIv = aes.EncryptEcb(iv, PaddingMode.None);
-			byte[] cipherText = aes.EncryptCbc(encryptedData, iv);
+			byte[] encryptedIv = aes.EncryptEcb(iv, PaddingMode.None);
+			byte[] encryptedText = aes.EncryptCbc(textData, iv);
+			int encryptedCount = encryptedIv.Length + encryptedText.Length;
 
-			byte[] output = new byte[cryptedIv.Length + cipherText.Length];
+			byte[] result = ArrayPool<byte>.Shared.Rent(encryptedCount);
 
-			Array.Copy(cryptedIv, 0, output, 0, cryptedIv.Length);
-			Array.Copy(cipherText, 0, output, cryptedIv.Length, cipherText.Length);
+			try {
+				Array.Copy(encryptedIv, result, encryptedIv.Length);
+				Array.Copy(encryptedText, 0, result, encryptedIv.Length, encryptedText.Length);
 
-			return Convert.ToBase64String(output);
+				return Convert.ToBase64String(result, 0, encryptedCount);
+			} finally {
+				ArrayPool<byte>.Shared.Return(result);
+			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
