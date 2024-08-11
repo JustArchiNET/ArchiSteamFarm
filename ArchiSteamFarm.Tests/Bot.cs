@@ -25,7 +25,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Steam.Data;
+using ArchiSteamFarm.Steam.Storage;
+using ArchiSteamFarm.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ArchiSteamFarm.Steam.Bot;
 
@@ -34,6 +41,36 @@ namespace ArchiSteamFarm.Tests;
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
 internal sealed class Bot {
+	internal static Steam.Bot GenerateBot() {
+		ConstructorInfo? constructor = typeof(Steam.Bot).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, [typeof(string), typeof(BotConfig), typeof(BotDatabase)]);
+
+		if (constructor == null) {
+			throw new InvalidOperationException(nameof(constructor));
+		}
+
+		JsonElement emptyObject = new JsonObject().ToJsonElement();
+
+		BotConfig? botConfig = emptyObject.ToJsonObject<BotConfig>();
+
+		if (botConfig == null) {
+			throw new InvalidOperationException(nameof(botConfig));
+		}
+
+		BotDatabase? botDatabase = emptyObject.ToJsonObject<BotDatabase>();
+
+		if (botDatabase == null) {
+			throw new InvalidOperationException(nameof(botDatabase));
+		}
+
+		ASF.GlobalDatabase ??= emptyObject.ToJsonObject<GlobalDatabase>();
+
+		if (constructor.Invoke(["Test", botConfig, botDatabase]) is not Steam.Bot result) {
+			throw new InvalidOperationException(nameof(result));
+		}
+
+		return result;
+	}
+
 	[TestMethod]
 	internal void MaxItemsBarelyEnoughForOneSet() {
 		const uint relevantAppID = 42;
