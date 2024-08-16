@@ -56,11 +56,11 @@ public static class Utilities {
 	private static readonly FrozenSet<char> DirectorySeparators = new HashSet<char>(2) { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }.ToFrozenSet();
 
 	[PublicAPI]
-	public static IEnumerable<T> AsLinqThreadSafeEnumerable<T>(this IEnumerable<T> enumerable) {
-		ArgumentNullException.ThrowIfNull(enumerable);
+	public static IEnumerable<T> AsLinqThreadSafeEnumerable<T>(this ICollection<T> collection) {
+		ArgumentNullException.ThrowIfNull(collection);
 
 		// See: https://github.com/dotnet/runtime/discussions/50687
-		return enumerable.Select(static entry => entry);
+		return collection.Select(static entry => entry);
 	}
 
 	[PublicAPI]
