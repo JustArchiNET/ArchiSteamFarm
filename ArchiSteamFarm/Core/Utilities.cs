@@ -56,6 +56,14 @@ public static class Utilities {
 	private static readonly FrozenSet<char> DirectorySeparators = new HashSet<char>(2) { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }.ToFrozenSet();
 
 	[PublicAPI]
+	public static IEnumerable<T> AsLinqThreadSafeEnumerable<T>(this IEnumerable<T> enumerable) {
+		ArgumentNullException.ThrowIfNull(enumerable);
+
+		// See: https://github.com/dotnet/runtime/discussions/50687
+		return enumerable.Select(static entry => entry);
+	}
+
+	[PublicAPI]
 	public static string GenerateChecksumFor(byte[] source) {
 		ArgumentNullException.ThrowIfNull(source);
 

@@ -572,7 +572,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				case "@ALL":
 				case SharedInfo.ASF:
 					// We can return the result right away, as all bots have been matched already
-					return Bots.OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).ToHashSet();
+					return Bots.AsLinqThreadSafeEnumerable().OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).ToHashSet();
 				case "@FARMING":
 					IEnumerable<Bot> farmingBots = Bots.Where(static bot => bot.Value.CardsFarmer.NowFarming).OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value);
 					result.UnionWith(farmingBots);
@@ -604,7 +604,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					switch (botRange.Length) {
 						case 1:
 							// Either bot.. or ..bot
-							IEnumerable<Bot> query = Bots.OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value);
+							IEnumerable<Bot> query = Bots.AsLinqThreadSafeEnumerable().OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value);
 
 							query = botName.StartsWith("..", StringComparison.Ordinal) ? query.TakeWhile(bot => bot != firstBot) : query.SkipWhile(bot => bot != firstBot);
 
@@ -620,7 +620,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 							Bot? lastBot = GetBot(botRange[1]);
 
 							if ((lastBot != null) && (BotsComparer.Compare(firstBot.BotName, lastBot.BotName) <= 0)) {
-								foreach (Bot bot in Bots.OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).SkipWhile(bot => bot != firstBot).TakeWhile(bot => bot != lastBot)) {
+								foreach (Bot bot in Bots.AsLinqThreadSafeEnumerable().OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).SkipWhile(bot => bot != firstBot).TakeWhile(bot => bot != lastBot)) {
 									result.Add(bot);
 								}
 
@@ -1331,7 +1331,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return targetBot;
 		}
 
-		return Bots.OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).FirstOrDefault();
+		return Bots.AsLinqThreadSafeEnumerable().OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).FirstOrDefault();
 	}
 
 	internal Task<HashSet<uint>?> GetMarketableAppIDs() => ArchiWebHandler.GetAppList();

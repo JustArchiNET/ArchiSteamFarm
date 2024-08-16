@@ -811,7 +811,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					// In order to maximize efficiency, we'll take games that are closest to our HoursPlayed first
 
 					// We must call ToList() here as we can't remove items while enumerating
-					foreach (Game game in GamesToFarm.OrderByDescending(static game => game.HoursPlayed).ToList()) {
+					foreach (Game game in GamesToFarm.AsLinqThreadSafeEnumerable().OrderByDescending(static game => game.HoursPlayed).ToList()) {
 						if (!await IsPlayableGame(game).ConfigureAwait(false)) {
 							GamesToFarm.Remove(game);
 
@@ -1423,7 +1423,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 	private async Task SortGamesToFarm() {
 		// Put priority idling appIDs on top
-		IOrderedEnumerable<Game> orderedGamesToFarm = GamesToFarm.OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
+		IOrderedEnumerable<Game> orderedGamesToFarm = GamesToFarm.AsLinqThreadSafeEnumerable().OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
 
 		foreach (BotConfig.EFarmingOrder farmingOrder in Bot.BotConfig.FarmingOrders) {
 			switch (farmingOrder) {
