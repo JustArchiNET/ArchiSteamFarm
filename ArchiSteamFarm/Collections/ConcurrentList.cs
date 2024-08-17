@@ -34,7 +34,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 	[PublicAPI]
 	public event EventHandler? OnModified;
 
-	[PublicAPI]
 	public int Count {
 		get {
 			using (Lock.ReaderLock()) {
@@ -47,9 +46,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 
 	private readonly List<T> BackingCollection;
 	private readonly AsyncReaderWriterLock Lock = new();
-
-	int ICollection<T>.Count => Count;
-	int IReadOnlyCollection<T>.Count => Count;
 
 	public T this[int index] {
 		get {
