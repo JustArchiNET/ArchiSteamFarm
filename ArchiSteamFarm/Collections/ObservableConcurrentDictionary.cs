@@ -47,8 +47,8 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 
 	private readonly ConcurrentDictionary<TKey, TValue> BackingDictionary;
 
-	IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => BackingDictionary.Keys;
-	IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => BackingDictionary.Values;
+	IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
+	IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
 
 	public TValue this[TKey key] {
 		get => BackingDictionary[key];
