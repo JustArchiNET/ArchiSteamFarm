@@ -196,7 +196,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				break;
 		}
 
-		return Task.FromResult((string?) null);
+		return Task.FromResult<string?>(null);
 	}
 
 	public async Task OnBotDestroy(Bot bot) {
@@ -255,7 +255,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		return Task.CompletedTask;
 	}
 
-	public Task<IReadOnlyCollection<ClientMsgHandler>?> OnBotSteamHandlersInit(Bot bot) => Task.FromResult((IReadOnlyCollection<ClientMsgHandler>?) null);
+	public Task<IReadOnlyCollection<ClientMsgHandler>?> OnBotSteamHandlersInit(Bot bot) => Task.FromResult<IReadOnlyCollection<ClientMsgHandler>?>(null);
 
 	public override Task OnLoaded() {
 		Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
