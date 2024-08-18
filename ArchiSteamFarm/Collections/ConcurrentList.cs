@@ -30,7 +30,7 @@ using Nito.AsyncEx;
 
 namespace ArchiSteamFarm.Collections;
 
-public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : notnull {
+public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 	[PublicAPI]
 	public event EventHandler? OnModified;
 
@@ -58,7 +58,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 
 		set {
 			ArgumentOutOfRangeException.ThrowIfNegative(index);
-			ArgumentNullException.ThrowIfNull(value);
 
 			using (Lock.WriterLock()) {
 				BackingCollection[index] = value;
@@ -78,8 +77,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 	}
 
 	public void Add(T item) {
-		ArgumentNullException.ThrowIfNull(item);
-
 		using (Lock.WriterLock()) {
 			BackingCollection.Add(item);
 		}
@@ -96,8 +93,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 	}
 
 	public bool Contains(T item) {
-		ArgumentNullException.ThrowIfNull(item);
-
 		using (Lock.ReaderLock()) {
 			return BackingCollection.Contains(item);
 		}
@@ -116,8 +111,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 	public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, Lock.ReaderLock());
 
 	public int IndexOf(T item) {
-		ArgumentNullException.ThrowIfNull(item);
-
 		using (Lock.ReaderLock()) {
 			return BackingCollection.IndexOf(item);
 		}
@@ -125,7 +118,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 
 	public void Insert(int index, T item) {
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentNullException.ThrowIfNull(item);
 
 		using (Lock.WriterLock()) {
 			BackingCollection.Insert(index, item);
@@ -135,8 +127,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 	}
 
 	public bool Remove(T item) {
-		ArgumentNullException.ThrowIfNull(item);
-
 		using (Lock.WriterLock()) {
 			if (!BackingCollection.Remove(item)) {
 				return false;
