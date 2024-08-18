@@ -49,12 +49,15 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 
 	public T this[int index] {
 		get {
+			ArgumentOutOfRangeException.ThrowIfNegative(index);
+
 			using (Lock.ReaderLock()) {
 				return BackingCollection[index];
 			}
 		}
 
 		set {
+			ArgumentOutOfRangeException.ThrowIfNegative(index);
 			ArgumentNullException.ThrowIfNull(value);
 
 			using (Lock.WriterLock()) {
