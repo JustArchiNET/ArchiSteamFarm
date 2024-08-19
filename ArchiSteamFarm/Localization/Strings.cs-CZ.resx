@@ -717,7 +717,9 @@ StackTrace:
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Vzdálený server nezná verzi na kterou se snažíte aktualizovat. Tato situace nastává, pokud verze byla vydána nedávno - aktualizace nebude z bezpečnostních důvodu pokračovat.</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>Nepodařilo se načíst kontrolní součet stažených binárních souborů – odmítám pokračovat v procesu aktualizace jakožto další bezpečnostní opatření.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Vzdálený server odpověděl s jiným kontrolním součtem, což může naznačovat chybu při stahování nebo útok MITM, proces aktualizace proto nebude pokračovat!</value>
 	</data>
