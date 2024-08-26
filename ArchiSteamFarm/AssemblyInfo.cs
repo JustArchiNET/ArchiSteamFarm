@@ -23,6 +23,9 @@
 
 using System;
 using System.Runtime.CompilerServices;
+#if ASF_SIGNED_BUILD
+using ArchiSteamFarm;
+#endif
 
 [assembly: CLSCompliant(false)]
 
