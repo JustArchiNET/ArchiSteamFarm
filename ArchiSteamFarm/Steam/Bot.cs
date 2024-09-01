@@ -1180,14 +1180,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					return (0, DateTime.MaxValue, true);
 				}
 
-				if ((packageData.ProhibitRunInCountries == null) || packageData.ProhibitRunInCountries.IsEmpty) {
+				if (((packageData.ProhibitRunInCountries == null) || packageData.ProhibitRunInCountries.IsEmpty) && ((packageData.OnlyAllowRunInCountries == null) || packageData.OnlyAllowRunInCountries.IsEmpty)) {
 					// No restrictions, we're good to go
 					regionRestrictedUntil = null;
 
 					break;
 				}
 
-				if (packageData.ProhibitRunInCountries.Contains(IPCountryCode)) {
+				if ((packageData.ProhibitRunInCountries?.Contains(IPCountryCode) == true) || ((packageData.OnlyAllowRunInCountries?.Count > 0) && !packageData.OnlyAllowRunInCountries.Contains(IPCountryCode))) {
 					// We are restricted by this package, we can only be saved by another package that is not restricted
 					DateTime regionRestrictedUntilPackage = ownedPackageData.TimeCreated.AddMonths(RegionRestrictionPlayableBlockMonths);
 
@@ -1404,6 +1404,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 			}
 
+			string[]? onlyAllowRunInCountries = null;
+
+			string? onlyAllowRunInCountriesText = productInfo.KeyValues["extended"]["onlyallowrunincountries"].AsString();
+
+			if (!string.IsNullOrEmpty(onlyAllowRunInCountriesText)) {
+				onlyAllowRunInCountries = onlyAllowRunInCountriesText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			}
+
 			string[]? prohibitRunInCountries = null;
 
 			string? prohibitRunInCountriesText = productInfo.KeyValues["extended"]["prohibitrunincountries"].AsString();
@@ -1412,7 +1420,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				prohibitRunInCountries = prohibitRunInCountriesText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 			}
 
-			result[productInfo.ID] = new PackageData(changeNumber, validUntil, appIDs?.ToImmutableHashSet(), prohibitRunInCountries?.ToImmutableHashSet(StringComparer.Ordinal));
+			result[productInfo.ID] = new PackageData(changeNumber, validUntil, appIDs?.ToImmutableHashSet(), onlyAllowRunInCountries?.ToImmutableHashSet(StringComparer.Ordinal), prohibitRunInCountries?.ToImmutableHashSet(StringComparer.Ordinal));
 		}
 
 		return result;
