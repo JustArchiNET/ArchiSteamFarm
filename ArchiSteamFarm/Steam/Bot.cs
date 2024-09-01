@@ -1187,7 +1187,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					break;
 				}
 
-				if ((packageData.ProhibitRunInCountries?.Contains(IPCountryCode) == true) || ((packageData.OnlyAllowRunInCountries?.Count > 0) && !packageData.OnlyAllowRunInCountries.Contains(IPCountryCode))) {
+				if ((packageData.ProhibitRunInCountries?.Contains(IPCountryCode) == true) || (packageData.OnlyAllowRunInCountries is { IsEmpty: false } && !packageData.OnlyAllowRunInCountries.Contains(IPCountryCode))) {
 					// We are restricted by this package, we can only be saved by another package that is not restricted
 					DateTime regionRestrictedUntilPackage = ownedPackageData.TimeCreated.AddMonths(RegionRestrictionPlayableBlockMonths);
 
