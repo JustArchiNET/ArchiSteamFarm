@@ -243,7 +243,9 @@ public static class ArchiCryptoHelper {
 		try {
 			byte[] key = SHA256.HashData(EncryptionKey);
 			byte[] textData = Encoding.UTF8.GetBytes(text);
-			byte[] iv = RandomNumberGenerator.GetBytes(16);
+
+			Span<byte> iv = stackalloc byte[16];
+			RandomNumberGenerator.Fill(iv);
 
 			using Aes aes = Aes.Create();
 
