@@ -20,12 +20,25 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
 namespace ArchiSteamFarm.Steam.Data;
 
+#pragma warning disable CA1027 // Aliases are intentional, we don't plan to combine fields
 public enum EAssetRarity : byte {
 	Unknown,
 	Common,
 	Uncommon,
-	Rare
+	Rare,
+	Mythical,
+	Epic = Mythical,
+	Legendary,
+	Exotic = Legendary,
+	Ancient,
+	Extraordinary = Ancient,
+	Immortal,
+	Contraband = Immortal,
+	Arcana,
+	Unusual
 }
+#pragma warning restore CA1027 // Aliases are intentional, we don't plan to combine fields

@@ -236,6 +236,10 @@ public sealed class Commands {
 						return await ResponseAdvancedLoot(access, args[1], args[2], Utilities.GetArgsAsText(message, 3), steamID).ConfigureAwait(false);
 					case "LOOT^" when args.Length > 2:
 						return await ResponseAdvancedLoot(access, args[1], args[2]).ConfigureAwait(false);
+					case "LOOT&" when args.Length > 4:
+						return await ResponseAdvancedLootByAssetRarity(access, args[1], args[2], args[3], Utilities.GetArgsAsText(args, 4, ",")).ConfigureAwait(false);
+					case "LOOT&" when args.Length > 3:
+						return await ResponseAdvancedLootByAssetRarity(access, args[1], args[2], args[3]).ConfigureAwait(false);
 					case "LOOT@" when args.Length > 2:
 						return await ResponseLootByRealAppIDs(access, args[1], Utilities.GetArgsAsText(args, 2, ","), false, steamID).ConfigureAwait(false);
 					case "LOOT@":
@@ -318,6 +322,10 @@ public sealed class Commands {
 						return await ResponseAdvancedTransfer(access, args[1], args[2], args[3], Utilities.GetArgsAsText(message, 4), steamID).ConfigureAwait(false);
 					case "TRANSFER^" when args.Length > 3:
 						return await ResponseAdvancedTransfer(access, args[1], args[2], args[3]).ConfigureAwait(false);
+					case "TRANSFER&" when args.Length > 5:
+						return await ResponseAdvancedTransferByAssetRarity(access, args[1], args[2], args[3], args[4], Utilities.GetArgsAsText(args, 5, ","), steamID).ConfigureAwait(false);
+					case "TRANSFER&" when args.Length > 4:
+						return await ResponseAdvancedTransferByAssetRarity(access, args[1], args[2], args[3], args[4]).ConfigureAwait(false);
 					case "TRANSFER@" when args.Length > 3:
 						return await ResponseTransferByRealAppIDs(access, args[1], args[2], Utilities.GetArgsAsText(message, 3), false, steamID).ConfigureAwait(false);
 					case "TRANSFER@" when args.Length > 2:
@@ -745,6 +753,65 @@ public sealed class Commands {
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
+	private async Task<string?> ResponseAdvancedLootByAssetRarity(EAccess access, string targetAppID, string targetContextID, string assetRaritiesText) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(targetAppID);
+		ArgumentException.ThrowIfNullOrEmpty(targetContextID);
+		ArgumentException.ThrowIfNullOrEmpty(assetRaritiesText);
+
+		if (access < EAccess.Master) {
+			return null;
+		}
+
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return FormatBotResponse(Strings.BotNotConnected);
+		}
+
+		if (!uint.TryParse(targetAppID, out uint appID) || (appID == 0)) {
+			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
+		}
+
+		if (!ulong.TryParse(targetContextID, out ulong contextID) || (contextID == 0)) {
+			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(contextID)));
+		}
+
+		HashSet<EAssetRarity>? assetRarities = ParseAssetRarities(assetRaritiesText);
+
+		if (assetRarities == null) {
+			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(assetRarities)));
+		}
+
+		(bool success, string message) = await Bot.Actions.SendInventory(appID, contextID, filterFunction: item => assetRarities.Contains(item.Rarity)).ConfigureAwait(false);
+
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
+	}
+
+	private static async Task<string?> ResponseAdvancedLootByAssetRarity(EAccess access, string botNames, string appID, string contextID, string assetRaritiesText, ulong steamID = 0) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(appID);
+		ArgumentException.ThrowIfNullOrEmpty(contextID);
+		ArgumentException.ThrowIfNullOrEmpty(assetRaritiesText);
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
+		}
+
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedLootByAssetRarity(GetProxyAccess(bot, access, steamID), appID, contextID, assetRaritiesText))).ConfigureAwait(false);
+
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
+
+		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+	}
+
 	private async Task<string?> ResponseAdvancedRedeem(EAccess access, string options, string keys, ulong steamID = 0) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
@@ -920,6 +987,109 @@ public sealed class Commands {
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransfer(GetProxyAccess(bot, access, steamID), appID, contextID, targetBot))).ConfigureAwait(false);
+
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
+
+		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+	}
+
+	private async Task<string?> ResponseAdvancedTransferByAssetRarity(EAccess access, uint appID, ulong contextID, Bot targetBot, HashSet<EAssetRarity> assetRarities) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(contextID);
+		ArgumentNullException.ThrowIfNull(targetBot);
+
+		if (access < EAccess.Master) {
+			return null;
+		}
+
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return FormatBotResponse(Strings.BotNotConnected);
+		}
+
+		if (!targetBot.IsConnectedAndLoggedOn) {
+			return FormatBotResponse(Strings.TargetBotNotConnected);
+		}
+
+		(bool success, string message) = await Bot.Actions.SendInventory(appID, contextID, targetBot.SteamID, filterFunction: item => assetRarities.Contains(item.Rarity)).ConfigureAwait(false);
+
+		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
+	}
+
+	private async Task<string?> ResponseAdvancedTransferByAssetRarity(EAccess access, string targetAppID, string targetContextID, string botNameTo, string assetRaritiesText) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(targetAppID);
+		ArgumentException.ThrowIfNullOrEmpty(targetContextID);
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
+		ArgumentException.ThrowIfNullOrEmpty(assetRaritiesText);
+
+		Bot? targetBot = Bot.GetBot(botNameTo);
+
+		if (targetBot == null) {
+			return access >= EAccess.Owner ? FormatBotResponse(Strings.FormatBotNotFound(botNameTo)) : null;
+		}
+
+		if (!uint.TryParse(targetAppID, out uint appID) || (appID == 0)) {
+			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
+		}
+
+		if (!ulong.TryParse(targetContextID, out ulong contextID) || (contextID == 0)) {
+			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(contextID)));
+		}
+
+		HashSet<EAssetRarity>? assetRarities = ParseAssetRarities(assetRaritiesText);
+
+		if (assetRarities == null) {
+			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(assetRarities)));
+		}
+
+		return await ResponseAdvancedTransferByAssetRarity(access, appID, contextID, targetBot, assetRarities).ConfigureAwait(false);
+	}
+
+	private static async Task<string?> ResponseAdvancedTransferByAssetRarity(EAccess access, string botNames, string targetAppID, string targetContextID, string botNameTo, string assetRaritiesText, ulong steamID = 0) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppID);
+		ArgumentException.ThrowIfNullOrEmpty(targetContextID);
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
+		ArgumentException.ThrowIfNullOrEmpty(assetRaritiesText);
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
+		}
+
+		if (!uint.TryParse(targetAppID, out uint appID) || (appID == 0)) {
+			return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
+		}
+
+		if (!ulong.TryParse(targetContextID, out ulong contextID) || (contextID == 0)) {
+			return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(contextID)));
+		}
+
+		Bot? targetBot = Bot.GetBot(botNameTo);
+
+		if (targetBot == null) {
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNameTo)) : null;
+		}
+
+		HashSet<EAssetRarity>? assetRarities = ParseAssetRarities(assetRaritiesText);
+
+		if (assetRarities == null) {
+			return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(assetRarities)));
+		}
+
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransferByAssetRarity(GetProxyAccess(bot, access, steamID), appID, contextID, targetBot, assetRarities))).ConfigureAwait(false);
 
 		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
 
@@ -3255,6 +3425,22 @@ public sealed class Commands {
 		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+	}
+
+	private static HashSet<EAssetRarity>? ParseAssetRarities(string assetRaritiesText) {
+		string[] assetRaritiesArgs = assetRaritiesText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+		HashSet<EAssetRarity> assetRarities = [];
+
+		foreach (string assetRarityArg in assetRaritiesArgs) {
+			if (!Enum.TryParse(assetRarityArg, true, out EAssetRarity assetRarity) || !Enum.IsDefined(assetRarity)) {
+				return null;
+			}
+
+			assetRarities.Add(assetRarity);
+		}
+
+		return assetRarities;
 	}
 
 	[Flags]
