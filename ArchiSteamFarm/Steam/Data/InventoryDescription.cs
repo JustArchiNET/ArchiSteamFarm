@@ -214,17 +214,15 @@ public sealed class InventoryDescription {
 								return CachedRarity.Value;
 						}
 					case "RARITY":
-						string internalName = tag.internal_name.Split('_', StringSplitOptions.RemoveEmptyEntries).Skip(1).FirstOrDefault() ?? tag.internal_name;
+						string[] internalNameArgs = tag.internal_name.Split('_', 2, StringSplitOptions.RemoveEmptyEntries);
 
-						if (Enum.TryParse<EAssetRarity>(internalName, true, out EAssetRarity assetRarity)) {
+						if ((internalNameArgs.Length >= 2) && Enum.TryParse(internalNameArgs[1], true, out EAssetRarity assetRarity) && Enum.IsDefined(assetRarity)) {
 							CachedRarity = assetRarity;
+						} else {
+							ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
 
-							return CachedRarity.Value;
+							CachedRarity = EAssetRarity.Unknown;
 						}
-
-						ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
-
-						CachedRarity = EAssetRarity.Unknown;
 
 						return CachedRarity.Value;
 				}

@@ -520,6 +520,24 @@ public sealed class Commands {
 		return gamesOwned;
 	}
 
+	private static HashSet<EAssetRarity>? ParseAssetRarities(string assetRaritiesText) {
+		ArgumentException.ThrowIfNullOrEmpty(assetRaritiesText);
+
+		string[] assetRaritiesArgs = assetRaritiesText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+		HashSet<EAssetRarity> assetRarities = [];
+
+		foreach (string assetRarityArg in assetRaritiesArgs) {
+			if (!Enum.TryParse(assetRarityArg, true, out EAssetRarity assetRarity) || !Enum.IsDefined(assetRarity)) {
+				return null;
+			}
+
+			assetRarities.Add(assetRarity);
+		}
+
+		return assetRarities;
+	}
+
 	private async Task<string?> Response2FA(EAccess access) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
@@ -780,7 +798,7 @@ public sealed class Commands {
 
 		HashSet<EAssetRarity>? assetRarities = ParseAssetRarities(assetRaritiesText);
 
-		if (assetRarities == null) {
+		if ((assetRarities == null) || (assetRarities.Count == 0)) {
 			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(assetRarities)));
 		}
 
@@ -993,7 +1011,7 @@ public sealed class Commands {
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
-	private async Task<string?> ResponseAdvancedTransferByAssetRarity(EAccess access, uint appID, ulong contextID, Bot targetBot, HashSet<EAssetRarity> assetRarities) {
+	private async Task<string?> ResponseAdvancedTransferByAssetRarity(EAccess access, uint appID, ulong contextID, Bot targetBot, IReadOnlyCollection<EAssetRarity> assetRarities) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -1045,7 +1063,7 @@ public sealed class Commands {
 
 		HashSet<EAssetRarity>? assetRarities = ParseAssetRarities(assetRaritiesText);
 
-		if (assetRarities == null) {
+		if ((assetRarities == null) || (assetRarities.Count == 0)) {
 			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(assetRarities)));
 		}
 
@@ -1085,7 +1103,7 @@ public sealed class Commands {
 
 		HashSet<EAssetRarity>? assetRarities = ParseAssetRarities(assetRaritiesText);
 
-		if (assetRarities == null) {
+		if ((assetRarities == null) || (assetRarities.Count == 0)) {
 			return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(assetRarities)));
 		}
 
@@ -3425,22 +3443,6 @@ public sealed class Commands {
 		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-	}
-
-	private static HashSet<EAssetRarity>? ParseAssetRarities(string assetRaritiesText) {
-		string[] assetRaritiesArgs = assetRaritiesText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-		HashSet<EAssetRarity> assetRarities = [];
-
-		foreach (string assetRarityArg in assetRaritiesArgs) {
-			if (!Enum.TryParse(assetRarityArg, true, out EAssetRarity assetRarity) || !Enum.IsDefined(assetRarity)) {
-				return null;
-			}
-
-			assetRarities.Add(assetRarity);
-		}
-
-		return assetRarities;
 	}
 
 	[Flags]
