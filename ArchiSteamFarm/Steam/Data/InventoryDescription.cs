@@ -215,9 +215,10 @@ public sealed class InventoryDescription {
 						}
 					case "RARITY":
 						string[] internalNameArgs = tag.internal_name.Split('_', 2, StringSplitOptions.RemoveEmptyEntries);
+						string rarityText = internalNameArgs.Length > 1 ? internalNameArgs[1] : internalNameArgs[0];
 
-						if ((internalNameArgs.Length >= 2) && Enum.TryParse(internalNameArgs[1], true, out EAssetRarity assetRarity) && Enum.IsDefined(assetRarity)) {
-							CachedRarity = assetRarity;
+						if (Enum.TryParse(rarityText, true, out EAssetRarity rarity) && Enum.IsDefined(rarity)) {
+							CachedRarity = rarity;
 						} else {
 							ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
 
