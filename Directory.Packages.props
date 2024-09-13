@@ -5,11 +5,11 @@
 		<PackageVersion Include="Humanizer" Version="3.0.0-beta.54" />
 		<PackageVersion Include="JetBrains.Annotations" Version="2024.2.0" />
 		<PackageVersion Include="Markdig.Signed" Version="0.37.0" />
-		<PackageVersion Include="Microsoft.CodeAnalysis.ResxSourceGenerator" Version="3.11.0-beta1.24324.1" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.ResxSourceGenerator" Version="3.11.0-beta1.24415.1" />
 		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.2" />
-		<PackageVersion Include="MSTest" Version="3.5.2" />
+		<PackageVersion Include="MSTest" Version="3.6.0" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
-		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.12" />
+		<PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.13" />
 		<PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.9.0-beta.2" />
 		<PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
