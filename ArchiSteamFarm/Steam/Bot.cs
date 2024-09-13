@@ -1648,7 +1648,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			if (string.IsNullOrEmpty(RefreshToken)) {
 				// Without refresh token we can't get fresh access tokens, relog needed
-				await Connect(true).ConfigureAwait(false);
+				await Reconnect().ConfigureAwait(false);
 
 				return false;
 			}
@@ -1663,7 +1663,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				BotDatabase.RefreshToken = RefreshToken = null;
 
-				await Connect(true).ConfigureAwait(false);
+				await Reconnect().ConfigureAwait(false);
 
 				return false;
 			}
@@ -1674,7 +1674,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(SteamClient.Authentication.GenerateAccessTokenForAppAsync)));
 
-				await Connect(true).ConfigureAwait(false);
+				await Reconnect().ConfigureAwait(false);
 
 				return false;
 			}
@@ -1690,7 +1690,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			// We got the tokens, but failed to authorize? Purge them just to be sure and reconnect
 			BotDatabase.AccessToken = AccessToken = null;
 
-			await Connect(true).ConfigureAwait(false);
+			await Reconnect().ConfigureAwait(false);
 
 			return false;
 		} finally {
@@ -2025,14 +2025,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return gamesToRedeemInBackground;
 	}
 
-	private async Task Connect(bool force = false) {
-		if (!force && (!KeepRunning || SteamClient.IsConnected)) {
+	private async Task Connect() {
+		if (!KeepRunning || SteamClient.IsConnected) {
 			return;
 		}
 
 		await LimitLoginRequestsAsync().ConfigureAwait(false);
 
-		if (!force && (!KeepRunning || SteamClient.IsConnected)) {
+		if (!KeepRunning || SteamClient.IsConnected) {
 			return;
 		}
 
@@ -2079,11 +2079,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await PluginsCore.OnBotDestroy(this).ConfigureAwait(false);
 	}
 
-	private void Disconnect() {
+	private void Disconnect(bool reconnect = false) {
 		StopConnectionFailureTimer();
 
 		LastLogOnResult = EResult.OK;
-		ReconnectOnUserInitiated = false;
+		ReconnectOnUserInitiated = reconnect;
 
 		SteamClient.Disconnect();
 	}
@@ -2324,7 +2324,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			if (++HeartBeatFailures >= (byte) Math.Ceiling(connectionTimeout / 10.0)) {
 				HeartBeatFailures = byte.MaxValue;
 				ArchiLogger.LogGenericWarning(Strings.BotConnectionLost);
-				Utilities.InBackground(() => Connect(true));
+
+				Utilities.InBackground(Reconnect);
 			}
 		}
 	}
@@ -3533,6 +3534,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		WalletBalance = callback.LongBalance;
 		WalletBalanceDelayed = callback.LongBalanceDelayed;
 		WalletCurrency = callback.Currency;
+	}
+
+	private async Task Reconnect() {
+		if (SteamClient.IsConnected) {
+			Disconnect(true);
+		} else {
+			await Connect().ConfigureAwait(false);
+		}
 	}
 
 	private async void RedeemGamesInBackground(object? state = null) {
