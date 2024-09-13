@@ -191,8 +191,8 @@ public sealed class InventoryDescription {
 			}
 
 			foreach (CEconItem_Tag? tag in Body.tags) {
-				switch (tag.category) {
-					case "droprate":
+				switch (tag.category.ToUpperInvariant()) {
+					case "DROPRATE":
 						switch (tag.internal_name) {
 							case "droprate_0":
 								CachedRarity = EAssetRarity.Common;
@@ -213,6 +213,20 @@ public sealed class InventoryDescription {
 
 								return CachedRarity.Value;
 						}
+					case "RARITY":
+						string internalName = tag.internal_name.Split('_', StringSplitOptions.RemoveEmptyEntries).Skip(1).FirstOrDefault() ?? tag.internal_name;
+
+						if (Enum.TryParse<EAssetRarity>(internalName, true, out EAssetRarity assetRarity)) {
+							CachedRarity = assetRarity;
+
+							return CachedRarity.Value;
+						}
+
+						ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
+
+						CachedRarity = EAssetRarity.Unknown;
+
+						return CachedRarity.Value;
 				}
 			}
 

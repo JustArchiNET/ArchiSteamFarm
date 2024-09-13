@@ -23,9 +23,21 @@
 
 namespace ArchiSteamFarm.Steam.Data;
 
+#pragma warning disable CA1027 // Aliases are intentional, we don't plan to combine fields
 public enum EAssetRarity : byte {
 	Unknown,
 	Common,
 	Uncommon,
-	Rare
+	Rare,
+	Mythical,
+	Epic = Mythical,
+	Legendary,
+	Exotic = Legendary,
+	Ancient,
+	Extraordinary = Ancient,
+	Immortal,
+	Contraband = Immortal,
+	Arcana,
+	Unusual
 }
+#pragma warning restore CA1027 // Aliases are intentional, we don't plan to combine fields
