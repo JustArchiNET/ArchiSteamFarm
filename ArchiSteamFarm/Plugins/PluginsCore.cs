@@ -216,6 +216,13 @@ public static class PluginsCore {
 			using CompositionHost container = configuration.CreateContainer();
 
 			activePlugins = container.GetExports<IPlugin>().ToHashSet();
+		} catch (TypeLoadException e) {
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(e.TypeName));
+			ASF.ArchiLogger.LogGenericException(e);
+
+			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+
+			return false;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
