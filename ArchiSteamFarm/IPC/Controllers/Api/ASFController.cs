@@ -70,7 +70,7 @@ public sealed class ASFController : ArchiController {
 
 		uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
 
-		ASFResponse result = new(SharedInfo.BuildInfo.Variant, SharedInfo.BuildInfo.CanUpdate, ASF.GlobalConfig, memoryUsage, OS.ProcessStartTime, SharedInfo.Version);
+		ASFResponse result = new(BuildInfo.Variant, BuildInfo.CanUpdate, ASF.GlobalConfig, memoryUsage, OS.ProcessStartTime, SharedInfo.Version);
 
 		return Ok(new GenericResponse<ASFResponse>(result));
 	}

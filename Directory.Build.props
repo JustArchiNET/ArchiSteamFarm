@@ -37,6 +37,10 @@
 		<DefineConstants>$(DefineConstants);ASF_VARIANT_$(ASFVariant.Replace('-', '_').ToUpperInvariant())</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(PublishTrimmed)' == 'true'">
+		<DefineConstants>$(DefineConstants);ASF_RUNTIME_TRIMMED</DefineConstants>
+	</PropertyGroup>
+
 	<!-- Default configuration for fast-debugging builds -->
 	<PropertyGroup Condition="'$(Configuration)' == 'DebugFast'">
 		<AnalysisMode>AllDisabledByDefault</AnalysisMode>

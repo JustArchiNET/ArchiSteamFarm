@@ -295,7 +295,7 @@ internal static class Program {
 			ASF.ArchiLogger.LogGenericWarning(Strings.WarningRunningInUnsupportedEnvironment);
 		} else {
 			if (!OS.VerifyEnvironment()) {
-				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnsupportedEnvironment(SharedInfo.BuildInfo.Variant, OS.Version));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnsupportedEnvironment(BuildInfo.Variant, OS.Version));
 				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 				return false;

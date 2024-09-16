@@ -185,32 +185,32 @@ internal static class OS {
 
 	internal static bool VerifyEnvironment() {
 		// We're not going to analyze source builds, as we don't know what changes the author has made, assume they have a point
-		if (SharedInfo.BuildInfo.IsCustomBuild) {
+		if (BuildInfo.IsCustomBuild) {
 			return true;
 		}
 
-		if (SharedInfo.BuildInfo.Variant == "generic") {
+		if (BuildInfo.Variant == "generic") {
 			// Generic is supported everywhere
 			return true;
 		}
 
-		if ((SharedInfo.BuildInfo.Variant == "docker") || SharedInfo.BuildInfo.Variant.StartsWith("linux-", StringComparison.Ordinal)) {
+		if ((BuildInfo.Variant == "docker") || BuildInfo.Variant.StartsWith("linux-", StringComparison.Ordinal)) {
 			// OS-specific Linux and Docker builds are supported only on Linux
 			return OperatingSystem.IsLinux();
 		}
 
-		if (SharedInfo.BuildInfo.Variant.StartsWith("osx-", StringComparison.Ordinal)) {
+		if (BuildInfo.Variant.StartsWith("osx-", StringComparison.Ordinal)) {
 			// OS-specific macOS build is supported only on macOS
 			return OperatingSystem.IsMacOS();
 		}
 
-		if (SharedInfo.BuildInfo.Variant.StartsWith("win-", StringComparison.Ordinal)) {
+		if (BuildInfo.Variant.StartsWith("win-", StringComparison.Ordinal)) {
 			// OS-specific Windows build is supported only on Windows
 			return OperatingSystem.IsWindows();
 		}
 
 		// Unknown combination, we intend to cover all of the available ones above, so this results in an error
-		ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(SharedInfo.BuildInfo.Variant), SharedInfo.BuildInfo.Variant));
+		ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(BuildInfo.Variant), BuildInfo.Variant));
 
 		return false;
 	}

@@ -58,7 +58,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialG
 	private static readonly Measurement<byte> BuildInfo = new(
 		1,
 		new KeyValuePair<string, object?>(TagNames.Version, SharedInfo.Version.ToString()),
-		new KeyValuePair<string, object?>(TagNames.Variant, SharedInfo.BuildInfo.Variant)
+		new KeyValuePair<string, object?>(TagNames.Variant, Core.BuildInfo.Variant)
 	);
 
 	private static readonly Measurement<byte> RuntimeInfo = new(

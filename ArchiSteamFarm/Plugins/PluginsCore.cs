@@ -854,7 +854,7 @@ public static class PluginsCore {
 				return false;
 			}
 
-			Uri? releaseURL = await plugin.GetTargetReleaseURL(asfVersion, SharedInfo.BuildInfo.Variant, asfUpdate, updateChannel, forced).ConfigureAwait(false);
+			Uri? releaseURL = await plugin.GetTargetReleaseURL(asfVersion, BuildInfo.Variant, asfUpdate, updateChannel, forced).ConfigureAwait(false);
 
 			if (releaseURL == null) {
 				return false;

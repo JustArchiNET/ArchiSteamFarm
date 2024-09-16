@@ -772,7 +772,7 @@ public static class ASF {
 
 		channel ??= GlobalConfig.UpdateChannel;
 
-		if (!SharedInfo.BuildInfo.CanUpdate || (channel == GlobalConfig.EUpdateChannel.None)) {
+		if (!BuildInfo.CanUpdate || (channel == GlobalConfig.EUpdateChannel.None)) {
 			return (false, null);
 		}
 
@@ -824,7 +824,7 @@ public static class ASF {
 				return (false, newVersion);
 			}
 
-			targetFile = $"{SharedInfo.ASF}-{SharedInfo.BuildInfo.Variant}.zip";
+			targetFile = $"{SharedInfo.ASF}-{BuildInfo.Variant}.zip";
 			ReleaseAsset? binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
@@ -838,7 +838,7 @@ public static class ASF {
 			// Keep short timeout allowed for this call, as we don't want to hold the flow for too long
 			using CancellationTokenSource archiNetCancellation = new(TimeSpan.FromSeconds(15));
 
-			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, SharedInfo.BuildInfo.Variant, archiNetCancellation.Token).ConfigureAwait(false);
+			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, BuildInfo.Variant, archiNetCancellation.Token).ConfigureAwait(false);
 
 			switch (remoteChecksum) {
 				case null:

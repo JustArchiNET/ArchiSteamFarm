@@ -85,6 +85,9 @@ public static class SharedInfo {
 	[PublicAPI]
 	public static readonly string[] RangeIndicators = [".."];
 
+	[PublicAPI]
+	public static bool IsRuntimeTrimmed => BuildInfo.IsRuntimeTrimmed;
+
 	internal static string HomeDirectory {
 		get {
 			if (!string.IsNullOrEmpty(CachedHomeDirectory)) {
@@ -109,42 +112,4 @@ public static class SharedInfo {
 	private static Guid ModuleVersion => Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
 
 	private static string? CachedHomeDirectory;
-
-	internal static class BuildInfo {
-#if ASF_VARIANT_DOCKER
-		internal static bool CanUpdate => false;
-		internal static string Variant => "docker";
-#elif ASF_VARIANT_GENERIC
-		internal static bool CanUpdate => true;
-		internal static string Variant => "generic";
-#elif ASF_VARIANT_LINUX_ARM
-		internal static bool CanUpdate => true;
-		internal static string Variant => "linux-arm";
-#elif ASF_VARIANT_LINUX_ARM64
-		internal static bool CanUpdate => true;
-		internal static string Variant => "linux-arm64";
-#elif ASF_VARIANT_LINUX_X64
-		internal static bool CanUpdate => true;
-		internal static string Variant => "linux-x64";
-#elif ASF_VARIANT_OSX_ARM64
-		internal static bool CanUpdate => true;
-		internal static string Variant => "osx-arm64";
-#elif ASF_VARIANT_OSX_X64
-		internal static bool CanUpdate => true;
-		internal static string Variant => "osx-x64";
-#elif ASF_VARIANT_WIN_ARM64
-		internal static bool CanUpdate => true;
-		internal static string Variant => "win-arm64";
-#elif ASF_VARIANT_WIN_X64
-		internal static bool CanUpdate => true;
-		internal static string Variant => "win-x64";
-#else
-		internal static bool CanUpdate => false;
-		internal static string Variant => SourceVariant;
-#endif
-
-		private const string SourceVariant = "source";
-
-		internal static bool IsCustomBuild => Variant == SourceVariant;
-	}
 }
