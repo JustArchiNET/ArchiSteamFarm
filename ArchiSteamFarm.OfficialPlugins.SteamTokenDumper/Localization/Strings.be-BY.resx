@@ -68,10 +68,7 @@
 		<value>{0} зараз адключаны ў адпаведнасці з вашай канфігурацыяй. Калі вы хочаце дапамагчы SteamDB у адпраўцы даных, калі ласка, зазірніце ў нашу вікі.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} быў паспяхова ініцыялізаваны, загадзя дзякуй за дапамогу. Першая адпраўка адбудзецца прыкладна праз {1}.</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
-	</data>
+	
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>Не атрымалася загрузіць {0}, будзе ініцыялізаваны новы асобнік...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>

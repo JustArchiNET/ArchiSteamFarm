@@ -68,10 +68,7 @@
 		<value>{0} is momenteel uitgeschakeld volgens uw configuratie. Als je SteamDB wilt helpen bij het indienen van gegevens, bekijk dan onze wiki.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} is succesvol geïnitialiseerd. Alvast bedankt voor uw hulp. De eerste inzending vindt vanaf nu plaats in ongeveer {1}.</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
-	</data>
+	
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} kon niet worden geladen, een nieuwe instantie zal worden geïnitialiseerd...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>

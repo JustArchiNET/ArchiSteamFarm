@@ -68,10 +68,7 @@
 		<value>按照您的配置，{0} 当前被禁用。如果您愿意帮助 SteamDB 提交数据，请查看我们的 Wiki。</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} 加载成功，感谢您的帮助。首次提交将会在大约 {1}后开始。</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
-	</data>
+	
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} 无法加载，将初始化新实例……</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>

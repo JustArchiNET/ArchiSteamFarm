@@ -68,10 +68,7 @@
 		<value>{0} đang bị vô hiệu hóa theo như cấu hình của bạn. Nếu bạn muốn giúp SteamDB trong việc củng cố dữ liệu, hãy xem qua wiki của chúng tôi.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} đã được khởi tạo thành công, cảm ơn bạn rất nhiều vì sự giúp đỡ. Lần gửi đầu tiên sẽ xảy ra trong khoảng {1} kể từ bây giờ.</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
-	</data>
+	
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>Không thể tải {0}, một trạng thái mới sẽ được khởi tạo...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>

@@ -68,10 +68,7 @@
 		<value>A {0} jelenleg ki van kapcsolva a konfigurációid alapján. Ha szeretnéd segíteni a SteamDB-t adatok beküldésével, kérlek nézd meg a wikit.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>A(z) {0} inicializálása sikeresen megtörtént, segítségét előre is köszönjük. Az első beküldés körülbelül {1} múlva fog megtörténni.</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
-	</data>
+	
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>A(z) {0} nem tölthető be, új példány lesz inicializálva...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
