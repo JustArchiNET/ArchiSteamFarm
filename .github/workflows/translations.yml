@@ -61,7 +61,7 @@ jobs:
         if ! git diff --cached --quiet; then
             git commit -m "Automatic translations update"
 
-            git push
+            git push origin HEAD:master
         fi
 
     - name: Commit and push the changes to ASF
