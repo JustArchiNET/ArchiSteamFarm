@@ -68,7 +68,10 @@
 		<value>目前 {0} 已根據您的設定被停用。如果您想幫助 SteamDB 提交資料，請查看我們的 Wiki。</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>已成功初始化 {0}，先感謝您的幫助。第一次提交將大約在 {1} 後進行。</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>無法載入 {0}，將初始化一個新實例…</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
