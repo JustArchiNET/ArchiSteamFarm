@@ -550,6 +550,9 @@ public sealed class Trading : IDisposable {
 
 		bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 
+		// We're now sure whether the trade is neutral+ for us or not
+		ParseTradeResult.EResult acceptResult;
+
 		if (accept) {
 			// Ensure that accepting this trade offer does not create conflicts with other
 			lock (handledSets) {
@@ -561,10 +564,11 @@ public sealed class Trading : IDisposable {
 
 				handledSets.UnionWith(wantedSets);
 			}
-		}
 
-		// We're now sure whether the trade is neutral+ for us or not
-		ParseTradeResult.EResult acceptResult = accept ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected;
+			acceptResult = ParseTradeResult.EResult.Accepted;
+		} else {
+			acceptResult = ParseTradeResult.EResult.Rejected;
+		}
 
 		Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, acceptResult, nameof(IsTradeNeutralOrBetter)));
 
