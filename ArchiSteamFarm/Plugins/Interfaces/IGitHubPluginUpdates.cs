@@ -174,9 +174,12 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		Version newVersion = new(releaseResponse.Tag);
 
 		if (!forced && (Version >= newVersion)) {
-			ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateNotFound(Name, Version, newVersion));
+			// Allow same version to be re-updated when we're updating ASF release and more than one asset is found - potential compatibility difference
+			if ((Version > newVersion) || !asfUpdate || (releaseResponse.Assets.Count(static asset => asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)) < 2)) {
+				ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateNotFound(Name, Version, newVersion));
 
-			return null;
+				return null;
+			}
 		}
 
 		if (releaseResponse.Assets.Count == 0) {
