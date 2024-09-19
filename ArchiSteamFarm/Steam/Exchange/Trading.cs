@@ -34,6 +34,7 @@ using ArchiSteamFarm.Steam.Cards;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
+using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using SteamKit2;
 
@@ -261,48 +262,68 @@ public sealed class Trading : IDisposable {
 	}
 
 	private async Task<bool> ParseActiveTrades() {
-		HashSet<TradeOffer>? tradeOffers = await Bot.ArchiWebHandler.GetTradeOffers(true, true, false, true).ConfigureAwait(false);
+		bool lootableTypesReceived = false;
 
-		if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
-			return false;
-		}
+		for (byte i = 0; i < WebBrowser.MaxTries; i++) {
+			HashSet<TradeOffer>? tradeOffers = await Bot.ArchiWebHandler.GetTradeOffers(true, true, false, true).ConfigureAwait(false);
 
-		if (HandledTradeOfferIDs.Count > 0) {
-			HandledTradeOfferIDs.IntersectWith(tradeOffers.Select(static tradeOffer => tradeOffer.TradeOfferID));
-		}
+			if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
+				return false;
+			}
 
-		IEnumerable<Task<ParseTradeResult>> tasks = tradeOffers.Where(tradeOffer => (tradeOffer.State == ETradeOfferState.Active) && HandledTradeOfferIDs.Add(tradeOffer.TradeOfferID)).Select(ParseTrade);
-		IList<ParseTradeResult> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
+			if (HandledTradeOfferIDs.Count > 0) {
+				HandledTradeOfferIDs.IntersectWith(tradeOffers.Select(static tradeOffer => tradeOffer.TradeOfferID));
+			}
 
-		if (Bot.HasMobileAuthenticator) {
-			HashSet<ParseTradeResult> mobileTradeResults = results.Where(static result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: false }).ToHashSet();
+			HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets = [];
 
-			if (mobileTradeResults.Count > 0) {
-				HashSet<ulong> mobileTradeOfferIDs = mobileTradeResults.Select(static tradeOffer => tradeOffer.TradeOfferID).ToHashSet();
+			IEnumerable<Task<ParseTradeResult>> tasks = tradeOffers.Where(tradeOffer => (tradeOffer.State == ETradeOfferState.Active) && HandledTradeOfferIDs.Add(tradeOffer.TradeOfferID)).Select(tradeOffer => ParseTrade(tradeOffer, handledSets));
 
-				(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+			IList<ParseTradeResult> tradeResults = await Utilities.InParallel(tasks).ConfigureAwait(false);
 
-				if (twoFactorSuccess) {
-					foreach (ParseTradeResult mobileTradeResult in mobileTradeResults) {
-						mobileTradeResult.Confirmed = true;
+			if (Bot.HasMobileAuthenticator) {
+				HashSet<ParseTradeResult> mobileTradeResults = tradeResults.Where(static result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: false }).ToHashSet();
+
+				if (mobileTradeResults.Count > 0) {
+					HashSet<ulong> mobileTradeOfferIDs = mobileTradeResults.Select(static tradeOffer => tradeOffer.TradeOfferID).ToHashSet();
+
+					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+
+					if (twoFactorSuccess) {
+						foreach (ParseTradeResult mobileTradeResult in mobileTradeResults) {
+							mobileTradeResult.Confirmed = true;
+						}
+					} else {
+						HandledTradeOfferIDs.ExceptWith(mobileTradeOfferIDs);
 					}
-				} else {
-					HandledTradeOfferIDs.ExceptWith(mobileTradeOfferIDs);
 				}
 			}
+
+			if (tradeResults.Count > 0) {
+				await PluginsCore.OnBotTradeOfferResults(Bot, tradeResults as IReadOnlyCollection<ParseTradeResult> ?? tradeResults.ToHashSet()).ConfigureAwait(false);
+			}
+
+			if (!lootableTypesReceived && tradeResults.Any(tradeResult => tradeResult is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && (tradeResult.ItemsToReceive?.Any(receivedItem => Bot.BotConfig.LootableTypes.Contains(receivedItem.Type)) == true))) {
+				lootableTypesReceived = true;
+			}
+
+			// If any trade asked to be retried, we do have ASF 2FA and actually managed to confirm something (else), then now is the time for retry
+			if (Bot.HasMobileAuthenticator && tradeResults.Any(static tradeResult => tradeResult.Result == ParseTradeResult.EResult.RetryAfterOthers) && tradeResults.Any(static tradeResult => tradeResult is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true })) {
+				continue;
+			}
+
+			return lootableTypesReceived;
 		}
 
-		if (results.Count > 0) {
-			await PluginsCore.OnBotTradeOfferResults(Bot, results as IReadOnlyCollection<ParseTradeResult> ?? results.ToHashSet()).ConfigureAwait(false);
-		}
-
-		return results.Any(result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && (result.ItemsToReceive?.Any(receivedItem => Bot.BotConfig.LootableTypes.Contains(receivedItem.Type)) == true));
+		// The remaining trade offers we'll handle at later time
+		return lootableTypesReceived;
 	}
 
-	private async Task<ParseTradeResult> ParseTrade(TradeOffer tradeOffer) {
+	private async Task<ParseTradeResult> ParseTrade(TradeOffer tradeOffer, ISet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets) {
 		ArgumentNullException.ThrowIfNull(tradeOffer);
+		ArgumentNullException.ThrowIfNull(handledSets);
 
-		ParseTradeResult.EResult result = await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false);
+		ParseTradeResult.EResult result = await ShouldAcceptTrade(tradeOffer, handledSets).ConfigureAwait(false);
 		bool tradeRequiresMobileConfirmation = false;
 
 		switch (result) {
@@ -360,6 +381,7 @@ public sealed class Trading : IDisposable {
 				Bot.ArchiLogger.LogGenericInfo(Strings.FormatIgnoringTrade(tradeOffer.TradeOfferID));
 
 				break;
+			case ParseTradeResult.EResult.RetryAfterOthers:
 			case ParseTradeResult.EResult.TryAgain:
 				// We expect to see this trade offer again and we intend to retry it
 				HandledTradeOfferIDs.Remove(tradeOffer.TradeOfferID);
@@ -374,8 +396,9 @@ public sealed class Trading : IDisposable {
 		return new ParseTradeResult(tradeOffer.TradeOfferID, result, tradeRequiresMobileConfirmation, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 	}
 
-	private async Task<ParseTradeResult.EResult> ShouldAcceptTrade(TradeOffer tradeOffer) {
+	private async Task<ParseTradeResult.EResult> ShouldAcceptTrade(TradeOffer tradeOffer, ISet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets) {
 		ArgumentNullException.ThrowIfNull(tradeOffer);
+		ArgumentNullException.ThrowIfNull(handledSets);
 
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));
@@ -526,6 +549,19 @@ public sealed class Trading : IDisposable {
 		}
 
 		bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
+
+		if (accept) {
+			// Ensure that accepting this trade offer does not create conflicts with other
+			lock (handledSets) {
+				if (wantedSets.Any(handledSets.Contains)) {
+					Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RetryAfterOthers, nameof(handledSets)));
+
+					return ParseTradeResult.EResult.RetryAfterOthers;
+				}
+
+				handledSets.UnionWith(wantedSets);
+			}
+		}
 
 		// We're now sure whether the trade is neutral+ for us or not
 		ParseTradeResult.EResult acceptResult = accept ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected;

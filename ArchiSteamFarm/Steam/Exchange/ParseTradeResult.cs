@@ -65,6 +65,7 @@ public sealed class ParseTradeResult {
 		Blacklisted,
 		Ignored,
 		Rejected,
-		TryAgain
+		TryAgain,
+		RetryAfterOthers
 	}
 }
