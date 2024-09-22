@@ -90,7 +90,7 @@ public static class SteamUtilities {
 			int startIndex = errorText.LastIndexOf('(');
 
 			if (startIndex < 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorText), errorText));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(errorText), errorText));
 
 				return null;
 			}
@@ -100,7 +100,7 @@ public static class SteamUtilities {
 			int endIndex = errorText.IndexOf(')', startIndex + 1);
 
 			if (endIndex < 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorText), errorText));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(errorText), errorText));
 
 				return null;
 			}
@@ -109,7 +109,7 @@ public static class SteamUtilities {
 		}
 
 		if (!byte.TryParse(errorCodeText, out byte errorCode)) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorText), errorText));
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(errorText), errorText));
 
 			return null;
 		}
@@ -117,7 +117,7 @@ public static class SteamUtilities {
 		EResult result = (EResult) errorCode;
 
 		if (!Enum.IsDefined(result)) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorText), errorText));
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(errorText), errorText));
 
 			return null;
 		}

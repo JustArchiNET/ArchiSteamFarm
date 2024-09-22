@@ -22,50 +22,44 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using ArchiSteamFarm.Steam.Data;
-using JetBrains.Annotations;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static ArchiSteamFarm.Helpers.ArchiCryptoHelper;
 
-namespace ArchiSteamFarm.Steam.Exchange;
+namespace ArchiSteamFarm.Tests;
 
-public sealed class ParseTradeResult {
-	[PublicAPI]
-	public IReadOnlyCollection<Asset>? ItemsToGive { get; }
+#pragma warning disable CA1812 // False positive, the class is used during MSTest
+[TestClass]
+internal sealed class ArchiCryptoHelper {
+	private const string TestPassword = "a2o41PuPdZNDLw9AT6dZt5pLVC23MN9O7NfKI4a0MWJgWWIAVGt3naYiIA0BhPel";
 
-	[PublicAPI]
-	public IReadOnlyCollection<Asset>? ItemsToReceive { get; }
-
-	[PublicAPI]
-	public EResult Result { get; }
-
-	[PublicAPI]
-	public ulong TradeOfferID { get; }
-
-	[PublicAPI]
-	public bool Confirmed { get; internal set; }
-
-	internal ParseTradeResult(ulong tradeOfferID, EResult result, bool requiresMobileConfirmation, IReadOnlyCollection<Asset>? itemsToGive = null, IReadOnlyCollection<Asset>? itemsToReceive = null) {
-		ArgumentOutOfRangeException.ThrowIfZero(tradeOfferID);
-
-		if ((result == EResult.Unknown) || !Enum.IsDefined(result)) {
-			throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(EResult));
+	[DataRow(ECryptoMethod.PlainText)]
+	[DataRow(ECryptoMethod.AES)]
+	[DataTestMethod]
+	internal async Task CanEncryptDecrypt(ECryptoMethod cryptoMethod) {
+		if (!Enum.IsDefined(cryptoMethod)) {
+			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ECryptoMethod));
 		}
 
-		TradeOfferID = tradeOfferID;
-		Result = result;
-		Confirmed = !requiresMobileConfirmation;
-		ItemsToGive = itemsToGive;
-		ItemsToReceive = itemsToReceive;
+		string? encrypted = Encrypt(cryptoMethod, TestPassword);
+
+		Assert.IsNotNull(encrypted);
+
+		string? decrypted = await Decrypt(cryptoMethod, encrypted).ConfigureAwait(false);
+
+		Assert.IsNotNull(decrypted);
+		Assert.AreEqual(TestPassword, decrypted);
 	}
 
-	public enum EResult : byte {
-		Unknown,
-		Accepted,
-		Blacklisted,
-		Ignored,
-		Rejected,
-		TryAgain,
-		RetryAfterOthers
+	[TestMethod]
+	internal async Task CanEncryptDecryptProtectedDataForCurrentUser() {
+		if (!OperatingSystem.IsWindows()) {
+			// Not supported on other platforms than Windows
+			return;
+		}
+
+		await CanEncryptDecrypt(ECryptoMethod.ProtectedDataForCurrentUser).ConfigureAwait(false);
 	}
 }
+#pragma warning restore CA1812 // False positive, the class is used during MSTest

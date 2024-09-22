@@ -37,19 +37,23 @@ public sealed class PackageData {
 	public uint ChangeNumber { get; private init; }
 
 	[JsonInclude]
+	public ImmutableHashSet<string>? OnlyAllowRunInCountries { get; private init; }
+
+	[JsonInclude]
 	public ImmutableHashSet<string>? ProhibitRunInCountries { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
 	public DateTime ValidUntil { get; private init; }
 
-	internal PackageData(uint changeNumber, DateTime validUntil, ImmutableHashSet<uint>? appIDs = null, ImmutableHashSet<string>? prohibitRunInCountries = null) {
+	internal PackageData(uint changeNumber, DateTime validUntil, ImmutableHashSet<uint>? appIDs = null, ImmutableHashSet<string>? onlyAllowRunInCountries = null, ImmutableHashSet<string>? prohibitRunInCountries = null) {
 		ArgumentOutOfRangeException.ThrowIfZero(changeNumber);
 		ArgumentOutOfRangeException.ThrowIfEqual(validUntil, DateTime.MinValue);
 
 		ChangeNumber = changeNumber;
 		ValidUntil = validUntil;
 		AppIDs = appIDs;
+		OnlyAllowRunInCountries = onlyAllowRunInCountries;
 		ProhibitRunInCountries = prohibitRunInCountries;
 	}
 
@@ -58,6 +62,9 @@ public sealed class PackageData {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeAppIDs() => AppIDs is { IsEmpty: false };
+
+	[UsedImplicitly]
+	public bool ShouldSerializeOnlyAllowRunInCountries() => OnlyAllowRunInCountries is { IsEmpty: false };
 
 	[UsedImplicitly]
 	public bool ShouldSerializeProhibitRunInCountries() => ProhibitRunInCountries is { IsEmpty: false };

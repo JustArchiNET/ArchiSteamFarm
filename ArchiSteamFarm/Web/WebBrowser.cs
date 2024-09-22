@@ -26,7 +26,6 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -106,7 +105,7 @@ public sealed class WebBrowser : IDisposable {
 		// Most web services expect that UserAgent is set, so we declare it globally
 		// If you by any chance came here with a very "clever" idea of hiding your ass by changing default ASF user-agent then here is a very good advice from me: don't, for your own safety - you've been warned
 		result.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(SharedInfo.PublicIdentifier, SharedInfo.Version.ToString()));
-		result.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue($"({SharedInfo.BuildInfo.Variant}; {OS.Version.Replace("(", "", StringComparison.Ordinal).Replace(")", "", StringComparison.Ordinal)}; +{SharedInfo.ProjectURL})"));
+		result.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue($"({BuildInfo.Variant}; {OS.Version.Replace("(", "", StringComparison.Ordinal).Replace(")", "", StringComparison.Ordinal)}; +{SharedInfo.ProjectURL})"));
 
 		// Inform websites that we visit about our preference in language, if possible
 		result.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en-US", 0.9));
@@ -201,7 +200,7 @@ public sealed class WebBrowser : IDisposable {
 						throw;
 					} catch (Exception e) {
 						ArchiLogger.LogGenericWarningException(e);
-						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+						ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 						return null;
 					} finally {
@@ -215,8 +214,8 @@ public sealed class WebBrowser : IDisposable {
 			}
 		}
 
-		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 		return null;
 	}
@@ -272,13 +271,13 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					ArchiLogger.LogGenericWarningException(e);
-					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+					ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 				}
 			}
 		}
 
-		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 		return null;
 	}
@@ -336,7 +335,7 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					ArchiLogger.LogGenericWarningException(e);
-					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+					ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 					continue;
 				}
@@ -346,7 +345,7 @@ public sealed class WebBrowser : IDisposable {
 						return new ObjectResponse<T>(response);
 					}
 
-					ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
+					ArchiLogger.LogGenericWarning(Strings.FormatErrorIsEmpty(nameof(obj)));
 
 					continue;
 				}
@@ -355,8 +354,8 @@ public sealed class WebBrowser : IDisposable {
 			}
 		}
 
-		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 		return null;
 	}
@@ -400,8 +399,8 @@ public sealed class WebBrowser : IDisposable {
 			return new StreamResponse(response, await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false));
 		}
 
-		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 		return null;
 	}
@@ -444,8 +443,8 @@ public sealed class WebBrowser : IDisposable {
 			return new BasicResponse(response);
 		}
 
-		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 		return null;
 	}
@@ -488,8 +487,8 @@ public sealed class WebBrowser : IDisposable {
 			return new BasicResponse(response);
 		}
 
-		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 		return null;
 	}
@@ -545,13 +544,13 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					ArchiLogger.LogGenericWarningException(e);
-					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+					ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 				}
 			}
 		}
 
-		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 		return null;
 	}
@@ -609,7 +608,7 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					ArchiLogger.LogGenericWarningException(e);
-					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+					ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 					continue;
 				}
@@ -619,7 +618,7 @@ public sealed class WebBrowser : IDisposable {
 						return new ObjectResponse<TResult>(response);
 					}
 
-					ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
+					ArchiLogger.LogGenericWarning(Strings.FormatErrorIsEmpty(nameof(obj)));
 
 					continue;
 				}
@@ -628,8 +627,8 @@ public sealed class WebBrowser : IDisposable {
 			}
 		}
 
-		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 		return null;
 	}
@@ -673,8 +672,8 @@ public sealed class WebBrowser : IDisposable {
 			return new StreamResponse(response, await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false));
 		}
 
-		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-		ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 		return null;
 	}
@@ -837,7 +836,7 @@ public sealed class WebBrowser : IDisposable {
 							return response;
 						default:
 							// We have no clue about those, but maybe HttpClient can handle them for us
-							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(redirectUri.Scheme), redirectUri.Scheme));
+							ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(redirectUri.Scheme), redirectUri.Scheme));
 
 							break;
 					}
@@ -881,7 +880,7 @@ public sealed class WebBrowser : IDisposable {
 
 		if (response.StatusCode.IsClientErrorCode()) {
 			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)));
+				ArchiLogger.LogGenericDebug(Strings.FormatContent(await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)));
 			}
 
 			// Do not retry on client errors
@@ -890,7 +889,7 @@ public sealed class WebBrowser : IDisposable {
 
 		if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors) && response.StatusCode.IsServerErrorCode()) {
 			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)));
+				ArchiLogger.LogGenericDebug(Strings.FormatContent(await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)));
 			}
 
 			// Do not retry on server errors in this case
@@ -899,7 +898,7 @@ public sealed class WebBrowser : IDisposable {
 
 		using (response) {
 			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)));
+				ArchiLogger.LogGenericDebug(Strings.FormatContent(await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)));
 			}
 
 			return null;

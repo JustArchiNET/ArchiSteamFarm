@@ -203,7 +203,7 @@ internal static class Backend {
 
 		ArgumentOutOfRangeException.ThrowIfEqual(requestID, Guid.Empty);
 
-		if (SharedInfo.BuildInfo.IsCustomBuild) {
+		if (BuildInfo.IsCustomBuild) {
 			return null;
 		}
 

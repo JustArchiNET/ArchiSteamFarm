@@ -23,7 +23,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Net;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
@@ -49,7 +48,7 @@ public sealed class StructureController : ArchiController {
 		Type? targetType = WebUtilities.ParseType(structure);
 
 		if (targetType == null) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, structure)));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(structure)));
 		}
 
 		object? obj;
@@ -57,7 +56,7 @@ public sealed class StructureController : ArchiController {
 		try {
 			obj = Activator.CreateInstance(targetType, true);
 		} catch (Exception e) {
-			return BadRequest(new GenericResponse(false, $"{string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(targetType))}{Environment.NewLine}{e}"));
+			return BadRequest(new GenericResponse(false, $"{Strings.FormatErrorParsingObject(nameof(targetType))}{Environment.NewLine}{e}"));
 		}
 
 		return Ok(new GenericResponse<object>(obj));

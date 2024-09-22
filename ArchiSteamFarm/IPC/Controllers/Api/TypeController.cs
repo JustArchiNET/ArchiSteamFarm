@@ -54,7 +54,7 @@ public sealed class TypeController : ArchiController {
 		Type? targetType = WebUtilities.ParseType(type);
 
 		if (targetType == null) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, type)));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(type)));
 		}
 
 		string? baseType = targetType.BaseType?.GetUnifiedName();
@@ -105,7 +105,7 @@ public sealed class TypeController : ArchiController {
 				if (string.IsNullOrEmpty(valueText)) {
 					ASF.ArchiLogger.LogNullError(valueText);
 
-					return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(valueText))));
+					return BadRequest(new GenericResponse(false, Strings.FormatErrorObjectIsNull(nameof(valueText))));
 				}
 
 				string? valueObjText = Convert.ChangeType(value, enumType, CultureInfo.InvariantCulture)?.ToString();

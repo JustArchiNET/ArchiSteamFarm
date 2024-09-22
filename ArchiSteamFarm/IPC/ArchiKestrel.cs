@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -166,7 +165,7 @@ internal static class ArchiKestrel {
 
 			if (string.IsNullOrEmpty(physicalPath)) {
 				// Invalid path provided
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(physicalPath)} ({plugin.Name})"));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorObjectIsNull($"{nameof(physicalPath)} ({plugin.Name})"));
 
 				continue;
 			}
@@ -175,7 +174,7 @@ internal static class ArchiKestrel {
 
 			if (string.IsNullOrEmpty(webPath)) {
 				// Invalid path provided
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(webPath)} ({plugin.Name})"));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorObjectIsNull($"{nameof(webPath)} ({plugin.Name})"));
 
 				continue;
 			}
@@ -193,7 +192,7 @@ internal static class ArchiKestrel {
 
 			if (!Directory.Exists(physicalPath)) {
 				// Non-existing path provided
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, $"{nameof(physicalPath)} ({plugin.Name})"));
+				ASF.ArchiLogger.LogGenericWarning(Strings.FormatErrorIsInvalid($"{nameof(physicalPath)} ({plugin.Name})"));
 
 				continue;
 			}
@@ -286,13 +285,13 @@ internal static class ArchiKestrel {
 
 		if (knownNetworksTexts?.Count > 0) {
 			// Use specified known networks
-			knownNetworks = new HashSet<IPNetwork>();
+			knownNetworks = [];
 
 			foreach (string knownNetworkText in knownNetworksTexts) {
 				string[] addressParts = knownNetworkText.Split('/', 3, StringSplitOptions.RemoveEmptyEntries);
 
 				if ((addressParts.Length != 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress) || !byte.TryParse(addressParts[1], out byte prefixLength)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(knownNetworkText)));
+					ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(knownNetworkText)));
 					ASF.ArchiLogger.LogGenericDebug($"{nameof(knownNetworkText)}: {knownNetworkText}");
 
 					continue;
@@ -435,15 +434,25 @@ internal static class ArchiKestrel {
 	}
 
 	private static async Task<WebApplication> CreateWebApplication() {
-		string customDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);
-		string websiteDirectory = Directory.Exists(customDirectory) ? customDirectory : Path.Combine(AppContext.BaseDirectory, SharedInfo.WebsiteDirectory);
+		// Try to initialize to custom www folder first
+		string? webRootPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);
+
+		if (!Directory.Exists(webRootPath)) {
+			// Try to initialize to standard www folder next
+			webRootPath = Path.Combine(AppContext.BaseDirectory, SharedInfo.WebsiteDirectory);
+
+			if (!Directory.Exists(webRootPath)) {
+				// Do not attempt to create a new directory, user has explicitly removed it
+				webRootPath = null;
+			}
+		}
 
 		// The order of dependency injection matters, pay attention to it
 		WebApplicationBuilder builder = WebApplication.CreateEmptyBuilder(
 			new WebApplicationOptions {
 				ApplicationName = SharedInfo.AssemblyName,
 				ContentRootPath = SharedInfo.HomeDirectory,
-				WebRootPath = websiteDirectory
+				WebRootPath = webRootPath
 			}
 		);
 

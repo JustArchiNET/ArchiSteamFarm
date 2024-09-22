@@ -72,6 +72,9 @@ public sealed class BotConfig {
 	public const EPersonaStateFlag DefaultOnlineFlags = 0;
 
 	[PublicAPI]
+	public const EOnlinePreferences DefaultOnlinePreferences = EOnlinePreferences.None;
+
+	[PublicAPI]
 	public const EPersonaState DefaultOnlineStatus = EPersonaState.Online;
 
 	[PublicAPI]
@@ -111,7 +114,7 @@ public sealed class BotConfig {
 	public const bool DefaultUseLoginKeys = true;
 
 	[PublicAPI]
-	public const ArchiHandler.EUserInterfaceMode DefaultUserInterfaceMode = ArchiHandler.EUserInterfaceMode.Default;
+	public const EUIMode DefaultUserInterfaceMode = EUIMode.VGUI;
 
 	internal const byte SteamParentalCodeLength = 4;
 	internal const byte SteamTradeTokenLength = 8;
@@ -185,6 +188,9 @@ public sealed class BotConfig {
 
 	[JsonInclude]
 	public EPersonaStateFlag OnlineFlags { get; private init; } = DefaultOnlineFlags;
+
+	[JsonInclude]
+	public EOnlinePreferences OnlinePreferences { get; private init; } = DefaultOnlinePreferences;
 
 	[JsonInclude]
 	public EPersonaState OnlineStatus { get; private init; } = DefaultOnlineStatus;
@@ -267,7 +273,7 @@ public sealed class BotConfig {
 	public bool UseLoginKeys { get; private init; } = DefaultUseLoginKeys;
 
 	[JsonInclude]
-	public ArchiHandler.EUserInterfaceMode UserInterfaceMode { get; private init; } = DefaultUserInterfaceMode;
+	public EUIMode UserInterfaceMode { get; private init; } = DefaultUserInterfaceMode;
 
 	[JsonExtensionData]
 	[JsonInclude]
@@ -339,6 +345,9 @@ public sealed class BotConfig {
 	public bool ShouldSerializeOnlineFlags() => !Saving || (OnlineFlags != DefaultOnlineFlags);
 
 	[UsedImplicitly]
+	public bool ShouldSerializeOnlinePreferences() => !Saving || (OnlinePreferences != DefaultOnlinePreferences);
+
+	[UsedImplicitly]
 	public bool ShouldSerializeOnlineStatus() => !Saving || (OnlineStatus != DefaultOnlineStatus);
 
 	[UsedImplicitly]
@@ -401,7 +410,7 @@ public sealed class BotConfig {
 
 	internal (bool Valid, string? ErrorMessage) CheckValidation() {
 		if (BotBehaviour > EBotBehaviour.All) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(BotBehaviour), BotBehaviour));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(BotBehaviour), BotBehaviour));
 		}
 
 		if (!string.IsNullOrEmpty(CustomGamePlayedWhileFarming)) {
@@ -409,31 +418,31 @@ public sealed class BotConfig {
 				// Test CustomGamePlayedWhileFarming against supported format, otherwise we'll throw later when used
 				string _ = string.Format(CultureInfo.CurrentCulture, CustomGamePlayedWhileFarming, null, null);
 			} catch (FormatException e) {
-				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(CustomGamePlayedWhileFarming), e.Message));
+				return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(CustomGamePlayedWhileFarming), e.Message));
 			}
 		}
 
 		foreach (EFarmingOrder farmingOrder in FarmingOrders.Where(static farmingOrder => !Enum.IsDefined(farmingOrder))) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrders), farmingOrder));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(FarmingOrders), farmingOrder));
 		}
 
 		if (GamesPlayedWhileIdle.Contains(0)) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(GamesPlayedWhileIdle), 0));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(GamesPlayedWhileIdle), 0));
 		}
 
 		if (GamesPlayedWhileIdle.Count > ArchiHandler.MaxGamesPlayedConcurrently) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(GamesPlayedWhileIdle), $"{nameof(GamesPlayedWhileIdle.Count)} {GamesPlayedWhileIdle.Count} > {ArchiHandler.MaxGamesPlayedConcurrently}"));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(GamesPlayedWhileIdle), $"{nameof(GamesPlayedWhileIdle.Count)} {GamesPlayedWhileIdle.Count} > {ArchiHandler.MaxGamesPlayedConcurrently}"));
 		}
 
 		foreach (EAssetType lootableType in LootableTypes.Where(static lootableType => !Enum.IsDefined(lootableType))) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(LootableTypes), lootableType));
 		}
 
 		HashSet<EAssetType>? completeTypesToSendValidTypes = null;
 
 		foreach (EAssetType completableType in CompleteTypesToSend) {
 			if (!Enum.IsDefined(completableType)) {
-				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(CompleteTypesToSend), completableType));
+				return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(CompleteTypesToSend), completableType));
 			}
 
 			if (completeTypesToSendValidTypes == null) {
@@ -447,57 +456,61 @@ public sealed class BotConfig {
 			}
 
 			if (!completeTypesToSendValidTypes.Contains(completableType)) {
-				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(CompleteTypesToSend), completableType));
+				return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(CompleteTypesToSend), completableType));
 			}
 		}
 
 		foreach (EAssetType matchableType in MatchableTypes.Where(static matchableType => !Enum.IsDefined(matchableType))) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(MatchableTypes), matchableType));
 		}
 
 		if (OnlineFlags < 0) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OnlineFlags), OnlineFlags));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(OnlineFlags), OnlineFlags));
+		}
+
+		if (OnlinePreferences > EOnlinePreferences.All) {
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(OnlinePreferences), OnlinePreferences));
 		}
 
 		if (!Enum.IsDefined(OnlineStatus)) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OnlineStatus), OnlineStatus));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(OnlineStatus), OnlineStatus));
 		}
 
 		if (!Enum.IsDefined(PasswordFormat)) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(PasswordFormat), PasswordFormat));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(PasswordFormat), PasswordFormat));
 		}
 
 		if (RedeemingPreferences > ERedeemingPreferences.All) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(RedeemingPreferences), RedeemingPreferences));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(RedeemingPreferences), RedeemingPreferences));
 		}
 
 		if ((SteamMasterClanID != 0) && !new SteamID(SteamMasterClanID).IsClanAccount) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMasterClanID), SteamMasterClanID));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(SteamMasterClanID), SteamMasterClanID));
 		}
 
 		if (!string.IsNullOrEmpty(SteamParentalCode) && ((SteamParentalCode.Length != SteamParentalCodeLength) || SteamParentalCode.Any(static character => character is < '0' or > '9'))) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamParentalCode), SteamParentalCode));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(SteamParentalCode), SteamParentalCode));
 		}
 
 		if (!string.IsNullOrEmpty(SteamTradeToken) && (SteamTradeToken.Length != SteamTradeTokenLength)) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamTradeToken), SteamTradeToken));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(SteamTradeToken), SteamTradeToken));
 		}
 
 		foreach ((ulong steamID, EAccess permission) in SteamUserPermissions) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamUserPermissions), steamID));
+				return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(SteamUserPermissions), steamID));
 			}
 
 			if (!Enum.IsDefined(permission)) {
-				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamUserPermissions), permission));
+				return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(SteamUserPermissions), permission));
 			}
 		}
 
 		if (TradingPreferences > ETradingPreferences.All) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(TradingPreferences), TradingPreferences));
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(TradingPreferences), TradingPreferences));
 		}
 
-		return !Enum.IsDefined(UserInterfaceMode) ? (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UserInterfaceMode), UserInterfaceMode)) : (true, null);
+		return (UserInterfaceMode < EUIMode.VGUI) || !Enum.IsDefined(UserInterfaceMode) ? (false, Strings.FormatErrorConfigPropertyInvalid(nameof(UserInterfaceMode), UserInterfaceMode)) : (true, null);
 	}
 
 	internal async Task<string?> GetDecryptedSteamPassword() {
@@ -513,7 +526,7 @@ public sealed class BotConfig {
 		string? result = await ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(result)) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SteamPassword)));
+			ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(SteamPassword)));
 
 			return null;
 		}
@@ -535,7 +548,7 @@ public sealed class BotConfig {
 			json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(nameof(json)));
 
 				return (null, null);
 			}
@@ -565,11 +578,11 @@ public sealed class BotConfig {
 
 		switch (botConfig.PasswordFormat) {
 			case ArchiCryptoHelper.ECryptoMethod.AES when ArchiCryptoHelper.HasDefaultCryptKey:
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningDefaultCryptKeyUsedForEncryption, botConfig.PasswordFormat, nameof(SteamPassword)));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningDefaultCryptKeyUsedForEncryption(botConfig.PasswordFormat, nameof(SteamPassword)));
 
 				break;
 			case ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser when ArchiCryptoHelper.HasDefaultCryptKey:
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.WarningDefaultCryptKeyUsedForHashing, botConfig.PasswordFormat, nameof(SteamPassword)));
+				ASF.ArchiLogger.LogGenericInfo(Strings.FormatWarningDefaultCryptKeyUsedForHashing(botConfig.PasswordFormat, nameof(SteamPassword)));
 
 				break;
 		}
@@ -639,6 +652,14 @@ public sealed class BotConfig {
 		EnableRiskyCardsDiscovery = 64,
 		AutoSteamSaleEvent = 128,
 		All = FarmingPausedByDefault | ShutdownOnFarmingFinished | SendOnFarmingFinished | FarmPriorityQueueOnly | SkipRefundableGames | SkipUnplayedGames | EnableRiskyCardsDiscovery | AutoSteamSaleEvent
+	}
+
+	[Flags]
+	[PublicAPI]
+	public enum EOnlinePreferences : byte {
+		None = 0,
+		IsSteamDeck = 1,
+		All = IsSteamDeck
 	}
 
 	[Flags]

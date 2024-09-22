@@ -166,6 +166,10 @@
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CA5384/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CA5385/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CA5397/@EntryIndexedValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CanReplaceCastWithLambdaReturnType/@EntryIndexedValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CanReplaceCastWithTypeArgument/@EntryIndexedValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CanReplaceCastWithVariableType/@EntryIndexedValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CanSimplifyStringEscapeSequence/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ClassCanBeSealed_002EGlobal/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ClassCanBeSealed_002ELocal/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CommentTypo/@EntryIndexedValue">HINT</s:String>
@@ -184,7 +188,7 @@
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ConvertToExpressionBodyWhenPossible/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ConvertToLambdaExpressionWhenPossible/@EntryIndexedValue">SUGGESTION</s:String>
 
-	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=DuplicateResource/@EntryIndexedValue">WARNING</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=DuplicateResource/@EntryIndexedValue">DO_NOT_SHOW</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=EnforceDoWhileStatementBraces/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=EnforceFixedStatementBraces/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=EnforceForeachStatementBraces/@EntryIndexedValue">WARNING</s:String>
@@ -194,6 +198,7 @@
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=EnforceUsingStatementBraces/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=EnforceWhileStatementBraces/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=EntityFramework_002EModelValidation_002ECircularDependency/@EntryIndexedValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ExtractCommonBranchingCode/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ExtractCommonPropertyPattern/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator/@EntryIndexedValue">SUGGESTION</s:String>
@@ -250,9 +255,11 @@
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=PatternAlwaysMatches/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=PatternAlwaysOfType/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=PlaceAssignmentExpressionIntoBlock/@EntryIndexedValue">DO_NOT_SHOW</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=PrimaryConstructorParameterCaptureDisallowed/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=PropertyNotResolved/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=RawStringCanBeSimplified/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=RedundantArrayCreationExpression/@EntryIndexedValue">SUGGESTION</s:String>
+	
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=RedundantAttributeParentheses/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=RedundantBlankLines/@EntryIndexedValue">SUGGESTION</s:String>
 
@@ -336,6 +343,9 @@
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=WrongMetadataUse/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=Xaml_002EIgnoredPathHighlighting/@EntryIndexedValue">WARNING</s:String>
 	<s:Boolean x:Key="/Default/CodeInspection/Highlighting/RunLongAnalysisInSwa/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/Highlighting/UsageOfDefaultStructEquality/CheckNonUserTypes/@EntryValue">False</s:Boolean>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/UseCollectionExpression/ConvertEmptyCollection/@EntryValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/UseStringInterpolation/ConvertToStringInterpolationWhenPossible/@EntryValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/ActualSeverity/@EntryValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/FiltersState/=CodeStyle/@EntryIndexedValue">Default</s:String>
 	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/FiltersState/=NamingFilter/@EntryIndexedValue">Default</s:String>
@@ -518,6 +528,22 @@
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/XmlFormatter/WRAP_LINES/@EntryValue">False</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/CSharpFileLayoutPatterns/Pattern/@EntryValue">&lt;?xml version="1.0" encoding="utf-16"?&gt;&#xD;
 &lt;Patterns xmlns="urn:schemas-jetbrains-com:member-reordering-patterns"&gt;&#xD;
+  &lt;TypePattern DisplayName="Non-reorderable types" Priority="99999999"&gt;
+    &lt;TypePattern.Match&gt;
+      &lt;Or&gt;
+        &lt;And&gt;
+          &lt;Kind Is="Interface" /&gt;
+          &lt;Or&gt;
+            &lt;HasAttribute Name="System.Runtime.InteropServices.InterfaceTypeAttribute" /&gt;
+            &lt;HasAttribute Name="System.Runtime.InteropServices.ComImport" /&gt;
+          &lt;/Or&gt;
+        &lt;/And&gt;
+        &lt;Kind Is="Struct" /&gt;
+        &lt;HasAttribute Name="System.Runtime.InteropServices.StructLayoutAttribute" /&gt;
+        &lt;HasAttribute Name="JetBrains.Annotations.NoReorderAttribute" /&gt;
+      &lt;/Or&gt;
+    &lt;/TypePattern.Match&gt;
+  &lt;/TypePattern&gt;
   &lt;TypePattern DisplayName="ArchiPattern" Priority="150"&gt;&#xD;
     &lt;Entry DisplayName="Public (Events and Delegates)"&gt;&#xD;
       &lt;Entry.Match&gt;&#xD;
@@ -825,6 +851,7 @@ limitations under the License.</s:String>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ECSharpPlaceEmbeddedOnSameLineMigration/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ECSharpRenamePlacementToArrangementMigration/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ECSharpUseContinuousIndentInsideBracesMigration/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002EMemberReordering_002EMigrations_002ECSharpFileLayoutPatternRemoveIsAttributeUpgrade/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ESettingsUpgrade_002EAddAccessorOwnerDeclarationBracesMigration/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ESettingsUpgrade_002EAlwaysTreatStructAsNotReorderableMigration/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ESettingsUpgrade_002ECSharpPlaceAttributeOnSameLineMigration/@EntryIndexedValue">True</s:Boolean>

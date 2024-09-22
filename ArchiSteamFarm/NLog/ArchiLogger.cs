@@ -117,7 +117,7 @@ public sealed class ArchiLogger {
 		ArgumentException.ThrowIfNullOrEmpty(nullObjectName);
 		ArgumentException.ThrowIfNullOrEmpty(previousMethodName);
 
-		LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nullObjectName), previousMethodName);
+		LogGenericError(Strings.FormatErrorObjectIsNull(nullObjectName), previousMethodName);
 	}
 
 	internal void LogChatMessage(bool echo, string message, ulong chatGroupID = 0, ulong chatID = 0, ulong steamID = 0, [CallerMemberName] string? previousMethodName = null) {
@@ -172,7 +172,7 @@ public sealed class ArchiLogger {
 		}
 
 		// Otherwise, we ran into fatal exception before logging module could even get initialized, so activate fallback logging that involves file and console
-		string message = $"{DateTime.Now} {string.Format(CultureInfo.CurrentCulture, Strings.ErrorEarlyFatalExceptionInfo, SharedInfo.Version)}{Environment.NewLine}";
+		string message = $"{DateTime.Now} {Strings.FormatErrorEarlyFatalExceptionInfo(SharedInfo.Version)}{Environment.NewLine}";
 
 		try {
 			await File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
@@ -187,7 +187,7 @@ public sealed class ArchiLogger {
 		}
 
 		while (true) {
-			message = $"{string.Format(CultureInfo.CurrentCulture, Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace)}{Environment.NewLine}";
+			message = $"{Strings.FormatErrorEarlyFatalExceptionPrint(previousMethodName, exception.Message, exception.StackTrace)}{Environment.NewLine}";
 
 			try {
 				await File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);

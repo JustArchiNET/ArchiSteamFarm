@@ -22,9 +22,9 @@
 // limitations under the License.
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -173,7 +173,7 @@ public static class ArchiCryptoHelper {
 		byte[] encryptionKey = Encoding.UTF8.GetBytes(key);
 
 		if (encryptionKey.Length < MinimumRecommendedCryptKeyBytes) {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningTooShortCryptKey, MinimumRecommendedCryptKeyBytes));
+			ASF.ArchiLogger.LogGenericWarning(Strings.FormatWarningTooShortCryptKey(MinimumRecommendedCryptKeyBytes));
 		}
 
 		HasDefaultCryptKey = encryptionKey.SequenceEqual(EncryptionKey);
@@ -242,11 +242,31 @@ public static class ArchiCryptoHelper {
 
 		try {
 			byte[] key = SHA256.HashData(EncryptionKey);
+			byte[] textData = Encoding.UTF8.GetBytes(text);
 
-			byte[] encryptedData = Encoding.UTF8.GetBytes(text);
-			encryptedData = CryptoHelper.SymmetricEncrypt(encryptedData, key);
+			Span<byte> iv = stackalloc byte[16];
+			RandomNumberGenerator.Fill(iv);
 
-			return Convert.ToBase64String(encryptedData);
+			using Aes aes = Aes.Create();
+
+			aes.BlockSize = 128;
+			aes.KeySize = 256;
+			aes.Key = key;
+
+			byte[] encryptedIv = aes.EncryptEcb(iv, PaddingMode.None);
+			byte[] encryptedText = aes.EncryptCbc(textData, iv);
+			int encryptedCount = encryptedIv.Length + encryptedText.Length;
+
+			byte[] result = ArrayPool<byte>.Shared.Rent(encryptedCount);
+
+			try {
+				Array.Copy(encryptedIv, result, encryptedIv.Length);
+				Array.Copy(encryptedText, 0, result, encryptedIv.Length, encryptedText.Length);
+
+				return Convert.ToBase64String(result, 0, encryptedCount);
+			} finally {
+				ArrayPool<byte>.Shared.Return(result);
+			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

@@ -23,7 +23,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
@@ -65,7 +64,7 @@ public sealed class UserNotificationsCallback : CallbackMsg {
 				case EUserNotification.Trading:
 					break;
 				default:
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(type), type));
+					ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(type), type));
 
 					break;
 			}

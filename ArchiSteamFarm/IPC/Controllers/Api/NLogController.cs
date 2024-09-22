@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
@@ -57,21 +56,21 @@ public sealed class NLogController : ArchiController {
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> FileGet(int count = 100, int lastAt = 0) {
 		if (count <= 0) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(count))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(count))));
 		}
 
 		if (lastAt < 0) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(lastAt))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(lastAt))));
 		}
 
 		if (!Logging.LogFileExists) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(SharedInfo.LogFile))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(SharedInfo.LogFile))));
 		}
 
 		string[]? lines = await Logging.ReadLogFileLines().ConfigureAwait(false);
 
 		if ((lines == null) || (lines.Length == 0)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(SharedInfo.LogFile))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(SharedInfo.LogFile))));
 		}
 
 		if ((lastAt == 0) || (lastAt > lines.Length)) {
@@ -98,7 +97,7 @@ public sealed class NLogController : ArchiController {
 		}
 
 		if (!HttpContext.WebSockets.IsWebSocketRequest) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(HttpContext.WebSockets.IsWebSocketRequest)}: {HttpContext.WebSockets.IsWebSocketRequest}")));
+			return BadRequest(new GenericResponse(false, Strings.FormatWarningFailedWithError($"{nameof(HttpContext.WebSockets.IsWebSocketRequest)}: {HttpContext.WebSockets.IsWebSocketRequest}")));
 		}
 
 		// From now on we can return only EmptyResult as the response stream is already being used by existing websocket connection

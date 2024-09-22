@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<Version>6.0.5.1</Version>
+		<Version>6.0.7.5</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -17,7 +17,7 @@
 		<LangVersion>latest</LangVersion>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<NeutralLanguage>en</NeutralLanguage>
-		<NoWarn>1591,NU1507</NoWarn>
+		<NoWarn>CS1591</NoWarn>
 		<Nullable>enable</Nullable>
 		<PackageIcon>../resources/ASF.ico</PackageIcon>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -37,6 +37,10 @@
 		<DefineConstants>$(DefineConstants);ASF_VARIANT_$(ASFVariant.Replace('-', '_').ToUpperInvariant())</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(PublishTrimmed)' == 'true'">
+		<DefineConstants>$(DefineConstants);ASF_RUNTIME_TRIMMED</DefineConstants>
+	</PropertyGroup>
+
 	<!-- Default configuration for fast-debugging builds -->
 	<PropertyGroup Condition="'$(Configuration)' == 'DebugFast'">
 		<AnalysisMode>AllDisabledByDefault</AnalysisMode>
@@ -53,15 +57,15 @@
 		<WarningsNotAsErrors>CS8002,IL2026,IL2104,NU1901,NU1902,NU1903,NU1904</WarningsNotAsErrors>
 	</PropertyGroup>
 
-	<!-- Enable public signing if not part of Visual Studio, which is too stupid to understand what public signing is -->
-	<PropertyGroup Condition="'$(Configuration)' == 'Release' AND '$(BuildingInsideVisualStudio)' != 'true'">
+	<!-- Enable public signing -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<AssemblyOriginatorKeyFile>../resources/ArchiSteamFarm.snk.pub</AssemblyOriginatorKeyFile>
 		<DefineConstants>$(DefineConstants);ASF_SIGNED_BUILD</DefineConstants>
 		<PublicSign>true</PublicSign>
 		<SignAssembly>true</SignAssembly>
 	</PropertyGroup>
 
-	<!-- Private SNK signing -->
+	<!-- Private SNK signing, if provided with secret -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Release' AND EXISTS('resources/ArchiSteamFarm.snk')">
 		<AssemblyOriginatorKeyFile>../resources/ArchiSteamFarm.snk</AssemblyOriginatorKeyFile>
 		<DefineConstants>$(DefineConstants);ASF_SIGNED_BUILD</DefineConstants>

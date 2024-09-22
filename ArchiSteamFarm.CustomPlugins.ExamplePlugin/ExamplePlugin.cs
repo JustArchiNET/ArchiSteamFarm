@@ -174,7 +174,7 @@ internal sealed class ExamplePlugin : IASF, IBot, IBotCommand2, IBotConnection, 
 		// If this message doesn't come from one of our bots, we can reply to the user in some pre-defined way
 		bot.ArchiLogger.LogGenericTrace("Hey boss, we got some unknown message here!");
 
-		return Task.FromResult((string?) "I didn't get that, did you mean to use a command?");
+		return Task.FromResult<string?>("I didn't get that, did you mean to use a command?");
 	}
 
 	// This method is called when bot receives a trade offer that ASF isn't willing to accept (ignored and rejected trades)

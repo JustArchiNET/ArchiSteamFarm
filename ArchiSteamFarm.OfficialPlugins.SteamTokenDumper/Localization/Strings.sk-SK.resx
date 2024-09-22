@@ -68,10 +68,7 @@
 		<value>{0} bol na základe vašej konfigurácie vypnutý. Ak máte záujem pomôcť so zberom údajov pre SteamDB, navštívte našu wiki.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} bol úspešne spustený. Týmto vám ďakujeme za vašu pomoc. Prvý zápis sa udej od teraz za {1}.</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
-	</data>
+	
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} sa nedokázal načítať, bude načítaný nanovo...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>

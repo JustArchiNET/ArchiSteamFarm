@@ -4,7 +4,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" />
 		<PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
 		<PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" />
 	</ItemGroup>

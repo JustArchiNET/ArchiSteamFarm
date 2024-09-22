@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -125,24 +124,31 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			throw new ArgumentNullException(nameof(releaseAssets));
 		}
 
-		Dictionary<string, ReleaseAsset> assetsByName = releaseAssets.ToDictionary(static asset => asset.Name, StringComparer.OrdinalIgnoreCase);
+		// Since we only find assets from available .zip files, we can filter out other assets right away
+		Dictionary<string, ReleaseAsset> assetsByName = releaseAssets.Where(static asset => asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).ToDictionary(static asset => asset.Name, StringComparer.OrdinalIgnoreCase);
 
-		foreach (string possibleMatch in GetPossibleMatches(asfVersion)) {
-			if (assetsByName.TryGetValue(possibleMatch, out ReleaseAsset? targetAsset)) {
-				return targetAsset;
-			}
+		switch (assetsByName.Count) {
+			case 0:
+				// Release does not have a single zip file, so the matching has failed
+				ASF.ArchiLogger.LogGenericWarning(Strings.FormatPluginUpdateNoAssetFound(Name, Version, newPluginVersion));
+
+				return null;
+			case 1:
+				// If exactly one match is found, we can return it right away, as it'd be used as a fallback regardless of our matching
+				return assetsByName.Values.First();
+			default:
+				// Otherwise, we have 2+ zip files, so either we match one of those, or fail
+				foreach (string possibleMatch in GetPossibleMatches(asfVersion)) {
+					if (assetsByName.TryGetValue(possibleMatch, out ReleaseAsset? targetAsset)) {
+						return targetAsset;
+					}
+				}
+
+				// We can't possibly determine which zip file to use, the plugin author should either fix the release, or provide custom GetTargetReleaseAsset() implementation
+				ASF.ArchiLogger.LogGenericWarning(Strings.FormatPluginUpdateConflictingAssetsFound(Name, Version, newPluginVersion));
+
+				return null;
 		}
-
-		// The very last fallback in case user uses different naming scheme
-		HashSet<ReleaseAsset> zipAssets = releaseAssets.Where(static asset => asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).ToHashSet();
-
-		if (zipAssets.Count == 1) {
-			return zipAssets.First();
-		}
-
-		ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateConflictingAssetsFound, Name, Version, newPluginVersion));
-
-		return null;
 	}
 
 	protected async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, bool stable, bool forced) {
@@ -154,7 +160,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		}
 
 		if (string.IsNullOrEmpty(RepositoryName) || (RepositoryName == SharedInfo.DefaultPluginTemplateGithubRepo)) {
-			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(RepositoryName)));
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(RepositoryName)));
 
 			return null;
 		}
@@ -168,13 +174,16 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		Version newVersion = new(releaseResponse.Tag);
 
 		if (!forced && (Version >= newVersion)) {
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateNotFound, Name, Version, newVersion));
+			// Allow same version to be re-updated when we're updating ASF release and more than one asset is found - potential compatibility difference
+			if ((Version > newVersion) || !asfUpdate || (releaseResponse.Assets.Count(static asset => asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)) < 2)) {
+				ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateNotFound(Name, Version, newVersion));
 
-			return null;
+				return null;
+			}
 		}
 
 		if (releaseResponse.Assets.Count == 0) {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateNoAssetFound, Name, Version, newVersion));
+			ASF.ArchiLogger.LogGenericWarning(Strings.FormatPluginUpdateNoAssetFound(Name, Version, newVersion));
 
 			return null;
 		}
@@ -182,12 +191,12 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		ReleaseAsset? asset = await GetTargetReleaseAsset(asfVersion, asfVariant, newVersion, releaseResponse.Assets).ConfigureAwait(false);
 
 		if ((asset == null) || !releaseResponse.Assets.Contains(asset)) {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateNoAssetFound, Name, Version, newVersion));
+			ASF.ArchiLogger.LogGenericWarning(Strings.FormatPluginUpdateNoAssetFound(Name, Version, newVersion));
 
 			return null;
 		}
 
-		ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginUpdateFound, Name, Version, newVersion));
+		ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateFound(Name, Version, newVersion));
 
 		return asset.DownloadURL;
 	}

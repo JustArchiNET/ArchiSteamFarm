@@ -68,10 +68,7 @@
 		<value>{0} yapılandırmanıza göre şu anda devre dışı. SteamDB'ye veri gönderimi için yardımcı olmak isterseniz viki sayfamızı ziyaret edin.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} başarılı bir şekilde kuruldu, yardımınız için şimdiden teşekkürler. İlk gönderim {1} içinde gerçekleşecektir.</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
-	</data>
+	
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} yüklenemedi, yeni bir örnek başlatılacak...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>

@@ -22,7 +22,6 @@
 // limitations under the License.
 
 using System;
-using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -52,7 +51,7 @@ public sealed class CommandController : ArchiController {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (string.IsNullOrEmpty(request.Command)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.Command))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(request.Command))));
 		}
 
 		Bot? targetBot = Bot.GetDefaultBot();
@@ -67,7 +66,7 @@ public sealed class CommandController : ArchiController {
 		if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix, StringComparison.Ordinal)) {
 			if (command.Length == commandPrefix.Length) {
 				// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(command))));
+				return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(command))));
 			}
 
 			command = command[commandPrefix.Length..];

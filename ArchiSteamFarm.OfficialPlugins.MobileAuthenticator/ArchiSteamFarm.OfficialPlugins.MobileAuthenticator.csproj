@@ -4,8 +4,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" />
 		<PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.ResxSourceGenerator" PrivateAssets="all" />
 		<PackageReference Include="SteamKit2" IncludeAssets="compile" />
 		<PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" />
 	</ItemGroup>
@@ -15,17 +15,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Update="Localization\Strings.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Update="Localization\Strings.Designer.cs">
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Strings.resx</DependentUpon>
-			<DesignTime>True</DesignTime>
-		</Compile>
+		<EmbeddedResource Update="Localization\Strings.resx" />
 	</ItemGroup>
 </Project>

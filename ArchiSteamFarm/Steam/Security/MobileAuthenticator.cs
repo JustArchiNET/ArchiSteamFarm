@@ -22,10 +22,10 @@
 // limitations under the License.
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -107,7 +107,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			sharedSecret = Convert.FromBase64String(SharedSecret);
 		} catch (FormatException e) {
 			Bot.ArchiLogger.LogGenericException(e);
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SharedSecret)));
+			Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(SharedSecret)));
 
 			return null;
 		}
@@ -125,17 +125,29 @@ public sealed class MobileAuthenticator : IDisposable {
 		// The last 4 bits of the mac say where the code starts
 		int start = hash[^1] & 0x0f;
 
+		uint fullCode;
+
 		// Extract those 4 bytes
-		byte[] bytes = new byte[4];
+		byte[] bytes = ArrayPool<byte>.Shared.Rent(4);
 
-		Array.Copy(hash, start, bytes, 0, 4);
+		try {
+			Array.Copy(hash, start, bytes, 0, 4);
 
-		if (BitConverter.IsLittleEndian) {
-			Array.Reverse(bytes);
+			Span<byte> span;
+
+			if (BitConverter.IsLittleEndian) {
+				Array.Reverse(bytes);
+
+				span = bytes.AsSpan()[^4..];
+			} else {
+				span = bytes.AsSpan()[..4];
+			}
+
+			// Build the alphanumeric code
+			fullCode = BitConverter.ToUInt32(span) & 0x7fffffff;
+		} finally {
+			ArrayPool<byte>.Shared.Return(bytes);
 		}
-
-		// Build the alphanumeric code
-		uint fullCode = BitConverter.ToUInt32(bytes, 0) & 0x7fffffff;
 
 		return string.Create(
 			CodeDigits, fullCode, static (buffer, state) => {
@@ -155,7 +167,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		(_, string? deviceID) = await CachedDeviceID.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(deviceID)) {
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(deviceID)));
+			Bot.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(deviceID)));
 
 			return null;
 		}
@@ -183,7 +195,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		}
 
 		foreach (Confirmation? confirmation in response.Confirmations.Where(static confirmation => (confirmation.ConfirmationType == Confirmation.EConfirmationType.Unknown) || !Enum.IsDefined(confirmation.ConfirmationType))) {
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(confirmation.ConfirmationType), $"{confirmation.ConfirmationType} ({confirmation.ConfirmationTypeName ?? "null"})"));
+			Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(confirmation.ConfirmationType), $"{confirmation.ConfirmationType} ({confirmation.ConfirmationTypeName ?? "null"})"));
 		}
 
 		return response.Confirmations;
@@ -239,7 +251,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		(_, string? deviceID) = await CachedDeviceID.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(deviceID)) {
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(deviceID)));
+			Bot.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(deviceID)));
 
 			return false;
 		}
@@ -331,7 +343,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			identitySecret = Convert.FromBase64String(IdentitySecret);
 		} catch (FormatException e) {
 			Bot.ArchiLogger.LogGenericException(e);
-			Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(IdentitySecret)));
+			Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(IdentitySecret)));
 
 			return null;
 		}
@@ -348,17 +360,23 @@ public sealed class MobileAuthenticator : IDisposable {
 			Array.Reverse(timeArray);
 		}
 
-		byte[] buffer = new byte[bufferSize];
+		byte[] hash;
 
-		Array.Copy(timeArray, buffer, 8);
+		byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
 
-		if (!string.IsNullOrEmpty(tag)) {
-			Array.Copy(Encoding.UTF8.GetBytes(tag), 0, buffer, 8, bufferSize - 8);
-		}
+		try {
+			Array.Copy(timeArray, buffer, timeArray.Length);
+
+			if (!string.IsNullOrEmpty(tag)) {
+				Array.Copy(Encoding.UTF8.GetBytes(tag), 0, buffer, timeArray.Length, bufferSize - timeArray.Length);
+			}
 
 #pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-		byte[] hash = HMACSHA1.HashData(identitySecret, buffer);
+			hash = HMACSHA1.HashData(identitySecret, buffer.AsSpan()[..bufferSize]);
 #pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
+		} finally {
+			ArrayPool<byte>.Shared.Return(buffer);
+		}
 
 		return Convert.ToBase64String(hash);
 	}

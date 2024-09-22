@@ -68,10 +68,7 @@
 		<value>{0} je v současné době v souladu s vaší konfigurací zakázán. Pokud byste chtěli pomoci SteamDB při odesílání dat, podívejte se na naši wiki.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} byl úspěšně inicializován, předem vám děkujeme za vaši pomoc. První příspěvek se od teď stane přibližně za {1}.</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
-	</data>
+	
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} nelze načíst, nová instance bude inicializována...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>

@@ -25,7 +25,7 @@ jobs:
         submodules: recursive
 
     - name: Setup Node.js with npm
-      uses: actions/setup-node@v4.0.2
+      uses: actions/setup-node@v4.0.4
       with:
         check-latest: true
         node-version: ${{ env.NODE_JS_VERSION }}
@@ -43,7 +43,7 @@ jobs:
       run: npm run-script deploy --no-progress --prefix ASF-ui
 
     - name: Upload ASF-ui
-      uses: actions/upload-artifact@v4.3.4
+      uses: actions/upload-artifact@v4.4.0
       with:
         if-no-files-found: error
         name: ASF-ui
@@ -87,7 +87,7 @@ jobs:
         show-progress: false
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v4.0.0
+      uses: actions/setup-dotnet@v4.0.1
       with:
         dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
 
@@ -362,12 +362,12 @@ jobs:
 
     - name: Generate artifact attestation for ASF-${{ matrix.variant }}.zip
       if: ${{ github.event_name == 'push' }}
-      uses: actions/attest-build-provenance@v1.3.2
+      uses: actions/attest-build-provenance@v1.4.3
       with:
         subject-path: out/ASF-${{ matrix.variant }}.zip
 
     - name: Upload ASF-${{ matrix.variant }}
-      uses: actions/upload-artifact@v4.3.4
+      uses: actions/upload-artifact@v4.4.0
       with:
         if-no-files-found: error
         name: ${{ matrix.os }}_ASF-${{ matrix.variant }}
@@ -409,13 +409,13 @@ jobs:
 
     - name: Generate artifact attestation for ArchiSteamFarm.OfficialPlugins.Monitoring
       if: ${{ github.event_name == 'push' && matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
-      uses: actions/attest-build-provenance@v1.3.2
+      uses: actions/attest-build-provenance@v1.4.3
       with:
         subject-path: out/ArchiSteamFarm.OfficialPlugins.Monitoring.zip
 
     - name: Upload ArchiSteamFarm.OfficialPlugins.Monitoring
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
-      uses: actions/upload-artifact@v4.3.4
+      uses: actions/upload-artifact@v4.4.0
       with:
         if-no-files-found: error
         name: ArchiSteamFarm.OfficialPlugins.Monitoring
@@ -507,24 +507,24 @@ jobs:
         gpg -a -b -o SHA512SUMS.sign SHA512SUMS
 
     - name: Generate artifact attestation for SHA512SUMS
-      uses: actions/attest-build-provenance@v1.3.2
+      uses: actions/attest-build-provenance@v1.4.3
       with:
         subject-path: out/SHA512SUMS
 
     - name: Upload SHA512SUMS
-      uses: actions/upload-artifact@v4.3.4
+      uses: actions/upload-artifact@v4.4.0
       with:
         if-no-files-found: error
         name: SHA512SUMS
         path: out/SHA512SUMS
 
     - name: Generate artifact attestation for SHA512SUMS.sign
-      uses: actions/attest-build-provenance@v1.3.2
+      uses: actions/attest-build-provenance@v1.4.3
       with:
         subject-path: out/SHA512SUMS.sign
 
     - name: Upload SHA512SUMS.sign
-      uses: actions/upload-artifact@v4.3.4
+      uses: actions/upload-artifact@v4.4.0
       with:
         if-no-files-found: error
         name: SHA512SUMS.sign

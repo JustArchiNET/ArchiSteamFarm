@@ -23,7 +23,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,6 +34,7 @@ using ArchiSteamFarm.Steam.Cards;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
+using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using SteamKit2;
 
@@ -262,48 +262,68 @@ public sealed class Trading : IDisposable {
 	}
 
 	private async Task<bool> ParseActiveTrades() {
-		HashSet<TradeOffer>? tradeOffers = await Bot.ArchiWebHandler.GetTradeOffers(true, true, false, true).ConfigureAwait(false);
+		bool lootableTypesReceived = false;
 
-		if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
-			return false;
-		}
+		for (byte i = 0; i < WebBrowser.MaxTries; i++) {
+			HashSet<TradeOffer>? tradeOffers = await Bot.ArchiWebHandler.GetTradeOffers(true, true, false, true).ConfigureAwait(false);
 
-		if (HandledTradeOfferIDs.Count > 0) {
-			HandledTradeOfferIDs.IntersectWith(tradeOffers.Select(static tradeOffer => tradeOffer.TradeOfferID));
-		}
+			if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
+				return false;
+			}
 
-		IEnumerable<Task<ParseTradeResult>> tasks = tradeOffers.Where(tradeOffer => (tradeOffer.State == ETradeOfferState.Active) && HandledTradeOfferIDs.Add(tradeOffer.TradeOfferID)).Select(ParseTrade);
-		IList<ParseTradeResult> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
+			if (HandledTradeOfferIDs.Count > 0) {
+				HandledTradeOfferIDs.IntersectWith(tradeOffers.Select(static tradeOffer => tradeOffer.TradeOfferID));
+			}
 
-		if (Bot.HasMobileAuthenticator) {
-			HashSet<ParseTradeResult> mobileTradeResults = results.Where(static result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: false }).ToHashSet();
+			HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets = [];
 
-			if (mobileTradeResults.Count > 0) {
-				HashSet<ulong> mobileTradeOfferIDs = mobileTradeResults.Select(static tradeOffer => tradeOffer.TradeOfferID).ToHashSet();
+			IEnumerable<Task<ParseTradeResult>> tasks = tradeOffers.Where(tradeOffer => (tradeOffer.State == ETradeOfferState.Active) && HandledTradeOfferIDs.Add(tradeOffer.TradeOfferID)).Select(tradeOffer => ParseTrade(tradeOffer, handledSets));
 
-				(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+			IList<ParseTradeResult> tradeResults = await Utilities.InParallel(tasks).ConfigureAwait(false);
 
-				if (twoFactorSuccess) {
-					foreach (ParseTradeResult mobileTradeResult in mobileTradeResults) {
-						mobileTradeResult.Confirmed = true;
+			if (Bot.HasMobileAuthenticator) {
+				HashSet<ParseTradeResult> mobileTradeResults = tradeResults.Where(static result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: false }).ToHashSet();
+
+				if (mobileTradeResults.Count > 0) {
+					HashSet<ulong> mobileTradeOfferIDs = mobileTradeResults.Select(static tradeOffer => tradeOffer.TradeOfferID).ToHashSet();
+
+					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+
+					if (twoFactorSuccess) {
+						foreach (ParseTradeResult mobileTradeResult in mobileTradeResults) {
+							mobileTradeResult.Confirmed = true;
+						}
+					} else {
+						HandledTradeOfferIDs.ExceptWith(mobileTradeOfferIDs);
 					}
-				} else {
-					HandledTradeOfferIDs.ExceptWith(mobileTradeOfferIDs);
 				}
 			}
+
+			if (tradeResults.Count > 0) {
+				await PluginsCore.OnBotTradeOfferResults(Bot, tradeResults as IReadOnlyCollection<ParseTradeResult> ?? tradeResults.ToHashSet()).ConfigureAwait(false);
+			}
+
+			if (!lootableTypesReceived && tradeResults.Any(tradeResult => tradeResult is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && (tradeResult.ItemsToReceive?.Any(receivedItem => Bot.BotConfig.LootableTypes.Contains(receivedItem.Type)) == true))) {
+				lootableTypesReceived = true;
+			}
+
+			// If any trade asked to be retried, we do have ASF 2FA and actually managed to confirm something (else), then now is the time for retry
+			if (Bot.HasMobileAuthenticator && tradeResults.Any(static tradeResult => tradeResult.Result == ParseTradeResult.EResult.RetryAfterOthers) && tradeResults.Any(static tradeResult => tradeResult is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true })) {
+				continue;
+			}
+
+			return lootableTypesReceived;
 		}
 
-		if (results.Count > 0) {
-			await PluginsCore.OnBotTradeOfferResults(Bot, results as IReadOnlyCollection<ParseTradeResult> ?? results.ToHashSet()).ConfigureAwait(false);
-		}
-
-		return results.Any(result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && (result.ItemsToReceive?.Any(receivedItem => Bot.BotConfig.LootableTypes.Contains(receivedItem.Type)) == true));
+		// The remaining trade offers we'll handle at later time
+		return lootableTypesReceived;
 	}
 
-	private async Task<ParseTradeResult> ParseTrade(TradeOffer tradeOffer) {
+	private async Task<ParseTradeResult> ParseTrade(TradeOffer tradeOffer, ISet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets) {
 		ArgumentNullException.ThrowIfNull(tradeOffer);
+		ArgumentNullException.ThrowIfNull(handledSets);
 
-		ParseTradeResult.EResult result = await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false);
+		ParseTradeResult.EResult result = await ShouldAcceptTrade(tradeOffer, handledSets).ConfigureAwait(false);
 		bool tradeRequiresMobileConfirmation = false;
 
 		switch (result) {
@@ -321,7 +341,7 @@ public sealed class Trading : IDisposable {
 
 		switch (result) {
 			case ParseTradeResult.EResult.Accepted:
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.AcceptingTrade, tradeOffer.TradeOfferID));
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatAcceptingTrade(tradeOffer.TradeOfferID));
 
 				(bool success, bool requiresMobileConfirmation) = await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
 
@@ -335,7 +355,7 @@ public sealed class Trading : IDisposable {
 				HandledTradeOfferIDs.Remove(tradeOffer.TradeOfferID);
 
 				if (tradeOffer.ItemsToReceive.Sum(static item => item.Amount) > tradeOffer.ItemsToGive.Sum(static item => item.Amount)) {
-					Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.BotAcceptedDonationTrade, tradeOffer.TradeOfferID));
+					Bot.ArchiLogger.LogGenericTrace(Strings.FormatBotAcceptedDonationTrade(tradeOffer.TradeOfferID));
 				}
 
 				tradeRequiresMobileConfirmation = requiresMobileConfirmation;
@@ -343,7 +363,7 @@ public sealed class Trading : IDisposable {
 				break;
 			case ParseTradeResult.EResult.Blacklisted:
 			case ParseTradeResult.EResult.Rejected when Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades):
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.RejectingTrade, tradeOffer.TradeOfferID));
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatRejectingTrade(tradeOffer.TradeOfferID));
 
 				if (!await Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false)) {
 					result = ParseTradeResult.EResult.TryAgain;
@@ -358,16 +378,17 @@ public sealed class Trading : IDisposable {
 			case ParseTradeResult.EResult.Ignored:
 			case ParseTradeResult.EResult.Rejected:
 				// We expect to see this trade offer in the future, so we keep it in HandledTradeOfferIDs if it wasn't removed as part of other result
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IgnoringTrade, tradeOffer.TradeOfferID));
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatIgnoringTrade(tradeOffer.TradeOfferID));
 
 				break;
+			case ParseTradeResult.EResult.RetryAfterOthers:
 			case ParseTradeResult.EResult.TryAgain:
 				// We expect to see this trade offer again and we intend to retry it
 				HandledTradeOfferIDs.Remove(tradeOffer.TradeOfferID);
 
 				goto case ParseTradeResult.EResult.Ignored;
 			default:
-				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
+				Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(result), result));
 
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Ignored, false, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 		}
@@ -375,8 +396,9 @@ public sealed class Trading : IDisposable {
 		return new ParseTradeResult(tradeOffer.TradeOfferID, result, tradeRequiresMobileConfirmation, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 	}
 
-	private async Task<ParseTradeResult.EResult> ShouldAcceptTrade(TradeOffer tradeOffer) {
+	private async Task<ParseTradeResult.EResult> ShouldAcceptTrade(TradeOffer tradeOffer, ISet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets) {
 		ArgumentNullException.ThrowIfNull(tradeOffer);
+		ArgumentNullException.ThrowIfNull(handledSets);
 
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));
@@ -385,14 +407,14 @@ public sealed class Trading : IDisposable {
 		if (tradeOffer.OtherSteamID64 != 0) {
 			// Always deny trades from blacklisted steamIDs
 			if (Bot.IsBlacklistedFromTrades(tradeOffer.OtherSteamID64)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Blacklisted, $"{nameof(tradeOffer.OtherSteamID64)} {tradeOffer.OtherSteamID64}"));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Blacklisted, $"{nameof(tradeOffer.OtherSteamID64)} {tradeOffer.OtherSteamID64}"));
 
 				return ParseTradeResult.EResult.Blacklisted;
 			}
 
 			// Always accept trades from SteamMasterID
 			if (Bot.GetAccess(tradeOffer.OtherSteamID64) >= EAccess.Master) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, $"{nameof(tradeOffer.OtherSteamID64)} {tradeOffer.OtherSteamID64}: {BotConfig.EAccess.Master}"));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, $"{nameof(tradeOffer.OtherSteamID64)} {tradeOffer.OtherSteamID64}: {BotConfig.EAccess.Master}"));
 
 				return ParseTradeResult.EResult.Accepted;
 			}
@@ -405,7 +427,7 @@ public sealed class Trading : IDisposable {
 				bool? isBadBot = await ArchiNet.IsBadBot(tradeOffer.OtherSteamID64, archiNetCancellation.Token).ConfigureAwait(false);
 
 				if (isBadBot == true) {
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Blacklisted, $"{nameof(tradeOffer.OtherSteamID64)} {tradeOffer.OtherSteamID64}"));
+					Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Blacklisted, $"{nameof(tradeOffer.OtherSteamID64)} {tradeOffer.OtherSteamID64}"));
 
 					return ParseTradeResult.EResult.Blacklisted;
 				}
@@ -416,7 +438,7 @@ public sealed class Trading : IDisposable {
 		switch (tradeOffer.ItemsToGive.Count) {
 			case 0 when tradeOffer.ItemsToReceive.Count == 0:
 				// If it's steam issue, try again later
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, $"{nameof(tradeOffer.ItemsToReceive.Count)} = 0"));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, $"{nameof(tradeOffer.ItemsToReceive.Count)} = 0"));
 
 				return ParseTradeResult.EResult.TryAgain;
 			case 0:
@@ -427,13 +449,13 @@ public sealed class Trading : IDisposable {
 				switch (acceptDonations) {
 					case true when acceptBotTrades:
 						// If we accept donations and bot trades, accept it right away
-						Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, $"{nameof(acceptDonations)} = {true} && {nameof(acceptBotTrades)} = {true}"));
+						Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, $"{nameof(acceptDonations)} = {true} && {nameof(acceptBotTrades)} = {true}"));
 
 						return ParseTradeResult.EResult.Accepted;
 
 					case false when !acceptBotTrades:
 						// If we don't accept donations, neither bot trades, deny it right away
-						Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(acceptDonations)} = {false} && {nameof(acceptBotTrades)} = {false}"));
+						Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(acceptDonations)} = {false} && {nameof(acceptBotTrades)} = {false}"));
 
 						return ParseTradeResult.EResult.Rejected;
 				}
@@ -443,28 +465,28 @@ public sealed class Trading : IDisposable {
 
 				ParseTradeResult.EResult result = (acceptDonations && !isBotTrade) || (acceptBotTrades && isBotTrade) ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected;
 
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, result, $"{nameof(acceptDonations)} = {acceptDonations} && {nameof(acceptBotTrades)} = {acceptBotTrades} && {nameof(isBotTrade)} = {isBotTrade}"));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, result, $"{nameof(acceptDonations)} = {acceptDonations} && {nameof(acceptBotTrades)} = {acceptBotTrades} && {nameof(isBotTrade)} = {isBotTrade}"));
 
 				return result;
 		}
 
 		// If we don't have SteamTradeMatcher enabled, this is the end for us
 		if (!Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(BotConfig.ETradingPreferences.SteamTradeMatcher)} = {false}"));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(BotConfig.ETradingPreferences.SteamTradeMatcher)} = {false}"));
 
 			return ParseTradeResult.EResult.Rejected;
 		}
 
 		// Decline trade if we're giving more count-wise, this is a very naive pre-check, it'll be strengthened in more detailed fair types exchange next
 		if (tradeOffer.ItemsToGive.Count > tradeOffer.ItemsToReceive.Count) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(tradeOffer.ItemsToGive.Count)}: {tradeOffer.ItemsToGive.Count} > {tradeOffer.ItemsToReceive.Count}"));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(tradeOffer.ItemsToGive.Count)}: {tradeOffer.ItemsToGive.Count} > {tradeOffer.ItemsToReceive.Count}"));
 
 			return ParseTradeResult.EResult.Rejected;
 		}
 
 		// Decline trade if we're requested to handle any not-accepted item type or if it's not fair games/types exchange
 		if (!tradeOffer.IsValidSteamItemsRequest(Bot.BotConfig.MatchableTypes) || !IsFairExchange(tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive)) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(tradeOffer.IsValidSteamItemsRequest)} || {nameof(IsFairExchange)}"));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(tradeOffer.IsValidSteamItemsRequest)} || {nameof(IsFairExchange)}"));
 
 			return ParseTradeResult.EResult.Rejected;
 		}
@@ -477,21 +499,21 @@ public sealed class Trading : IDisposable {
 		switch (holdDuration) {
 			case null:
 				// If we can't get trade hold duration, try again later
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(holdDuration)));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(holdDuration)));
 
 				return ParseTradeResult.EResult.TryAgain;
 
 			// If user has a trade hold, we add extra logic
 			// If trade hold duration exceeds our max, or user asks for cards with short lifespan, reject the trade
 			case > 0 when (holdDuration.Value > (ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration)) || tradeOffer.ItemsToGive.Any(static item => item.Type is EAssetType.FoilTradingCard or EAssetType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)):
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(holdDuration)} > 0: {holdDuration.Value}"));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(holdDuration)} > 0: {holdDuration.Value}"));
 
 				return ParseTradeResult.EResult.Rejected;
 		}
 
 		// If we're matching everything, this is enough for us
 		if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything)) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, BotConfig.ETradingPreferences.MatchEverything));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, BotConfig.ETradingPreferences.MatchEverything));
 
 			return ParseTradeResult.EResult.Accepted;
 		}
@@ -507,21 +529,21 @@ public sealed class Trading : IDisposable {
 		} catch (TimeoutException e) {
 			// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
 			Bot.ArchiLogger.LogGenericWarningException(e);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
 
 			return ParseTradeResult.EResult.TryAgain;
 		} catch (Exception e) {
 			// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
 			Bot.ArchiLogger.LogGenericException(e);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
 
 			return ParseTradeResult.EResult.TryAgain;
 		}
 
 		if (inventory.Count == 0) {
 			// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(inventory)));
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorIsEmpty(nameof(inventory)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
 
 			return ParseTradeResult.EResult.TryAgain;
 		}
@@ -529,9 +551,26 @@ public sealed class Trading : IDisposable {
 		bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 
 		// We're now sure whether the trade is neutral+ for us or not
-		ParseTradeResult.EResult acceptResult = accept ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected;
+		ParseTradeResult.EResult acceptResult;
 
-		Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, acceptResult, nameof(IsTradeNeutralOrBetter)));
+		if (accept) {
+			// Ensure that accepting this trade offer does not create conflicts with other
+			lock (handledSets) {
+				if (wantedSets.Any(handledSets.Contains)) {
+					Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RetryAfterOthers, nameof(handledSets)));
+
+					return ParseTradeResult.EResult.RetryAfterOthers;
+				}
+
+				handledSets.UnionWith(wantedSets);
+			}
+
+			acceptResult = ParseTradeResult.EResult.Accepted;
+		} else {
+			acceptResult = ParseTradeResult.EResult.Rejected;
+		}
+
+		Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, acceptResult, nameof(IsTradeNeutralOrBetter)));
 
 		return acceptResult;
 	}

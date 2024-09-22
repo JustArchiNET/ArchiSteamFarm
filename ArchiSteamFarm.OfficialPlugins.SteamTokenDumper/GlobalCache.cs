@@ -25,7 +25,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -125,7 +124,7 @@ internal sealed class GlobalCache : SerializableFile {
 			string json = await File.ReadAllTextAsync(SharedFilePath).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsEmpty, nameof(json)));
+				ASF.ArchiLogger.LogGenericError(ArchiSteamFarm.Localization.Strings.FormatErrorIsEmpty(nameof(json)));
 
 				return null;
 			}
@@ -259,7 +258,7 @@ internal sealed class GlobalCache : SerializableFile {
 		string depotKey = Convert.ToHexString(depotKeyResult.DepotKey);
 
 		if (!IsValidDepotKey(depotKey)) {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsInvalid, nameof(depotKey)));
+			ASF.ArchiLogger.LogGenericWarning(ArchiSteamFarm.Localization.Strings.FormatErrorIsInvalid(nameof(depotKey)));
 
 			return;
 		}

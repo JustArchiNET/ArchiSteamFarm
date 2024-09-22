@@ -56,6 +56,14 @@ public static class Utilities {
 	private static readonly FrozenSet<char> DirectorySeparators = new HashSet<char>(2) { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }.ToFrozenSet();
 
 	[PublicAPI]
+	public static IEnumerable<T> AsLinqThreadSafeEnumerable<T>(this ICollection<T> collection) {
+		ArgumentNullException.ThrowIfNull(collection);
+
+		// See: https://github.com/dotnet/runtime/discussions/50687
+		return collection.Select(static entry => entry);
+	}
+
+	[PublicAPI]
 	public static string GenerateChecksumFor(byte[] source) {
 		ArgumentNullException.ThrowIfNull(source);
 
@@ -412,7 +420,7 @@ public static class Utilities {
 
 		if (currentStringObjects.Count < defaultStringObjects.Count) {
 			float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
-			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.TranslationIncomplete, $"{CultureInfo.CurrentUICulture.Name} ({CultureInfo.CurrentUICulture.EnglishName})", translationCompleteness.ToString("P1", CultureInfo.CurrentCulture)));
+			ASF.ArchiLogger.LogGenericInfo(Strings.FormatTranslationIncomplete($"{CultureInfo.CurrentUICulture.Name} ({CultureInfo.CurrentUICulture.EnglishName})", translationCompleteness.ToString("P1", CultureInfo.CurrentCulture)));
 		}
 	}
 

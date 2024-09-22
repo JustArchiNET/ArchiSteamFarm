@@ -69,7 +69,7 @@
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
 	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} został pomyślnie zainicjowany, dziękujemy z góry za pomoc. Pierwsze zgłoszenie nastąpi za około {1} od teraz.</value>
+		<value>{0} został pomyślnie zainicjowany, dziękujemy z góry za pomoc. Pierwsze zgłoszenie nastąpi za około {1}.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
 	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">

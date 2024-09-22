@@ -68,10 +68,7 @@
 		<value>{0} è attualmente disabilitato in base alla tua configurazione. Se desideri aiutare SteamDB nell'invio dei dati, controlla la nostra wiki.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} è stato inizializzato con successo, grazie in anticipo per il tuo aiuto. Il primo invio avverrà in circa {1} da ora.</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
-	</data>
+	
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} non può essere caricato, una nuova richiesta verrà iniziata...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>

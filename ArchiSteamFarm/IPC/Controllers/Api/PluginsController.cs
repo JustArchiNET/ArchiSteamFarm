@@ -23,7 +23,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Requests;
@@ -51,7 +50,7 @@ public sealed class PluginsController : ArchiController {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (request.Channel.HasValue && !Enum.IsDefined(request.Channel.Value)) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.Channel))));
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(request.Channel))));
 		}
 
 		(bool success, string? message) = await Actions.UpdatePlugins(request.Channel, request.Plugins, request.Forced).ConfigureAwait(false);

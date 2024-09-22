@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Immutable;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
@@ -192,8 +191,8 @@ public sealed class InventoryDescription {
 			}
 
 			foreach (CEconItem_Tag? tag in Body.tags) {
-				switch (tag.category) {
-					case "droprate":
+				switch (tag.category.ToUpperInvariant()) {
+					case "DROPRATE":
 						switch (tag.internal_name) {
 							case "droprate_0":
 								CachedRarity = EAssetRarity.Common;
@@ -208,12 +207,25 @@ public sealed class InventoryDescription {
 
 								return CachedRarity.Value;
 							default:
-								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.internal_name), tag.internal_name));
+								ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
 
 								CachedRarity = EAssetRarity.Unknown;
 
 								return CachedRarity.Value;
 						}
+					case "RARITY":
+						string[] internalNameArgs = tag.internal_name.Split('_', 2, StringSplitOptions.RemoveEmptyEntries);
+						string rarityText = internalNameArgs.Length > 1 ? internalNameArgs[1] : internalNameArgs[0];
+
+						if (Enum.TryParse(rarityText, true, out EAssetRarity rarity) && Enum.IsDefined(rarity)) {
+							CachedRarity = rarity;
+						} else {
+							ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
+
+							CachedRarity = EAssetRarity.Unknown;
+						}
+
+						return CachedRarity.Value;
 				}
 			}
 
@@ -261,7 +273,7 @@ public sealed class InventoryDescription {
 				switch (tag.category) {
 					case "Game":
 						if (string.IsNullOrEmpty(tag.internal_name) || (tag.internal_name.Length <= 4) || !tag.internal_name.StartsWith("app_", StringComparison.Ordinal)) {
-							ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.internal_name), tag.internal_name));
+							ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
 
 							break;
 						}
@@ -359,7 +371,7 @@ public sealed class InventoryDescription {
 
 								return CachedType.Value;
 							default:
-								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.internal_name), tag.internal_name));
+								ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
 
 								CachedType = EAssetType.Unknown;
 
@@ -431,7 +443,7 @@ public sealed class InventoryDescription {
 
 								return CachedType.Value;
 							default:
-								ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.internal_name), tag.internal_name));
+								ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(tag.internal_name), tag.internal_name));
 
 								CachedType = EAssetType.Unknown;
 

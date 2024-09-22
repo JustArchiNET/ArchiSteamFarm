@@ -30,11 +30,10 @@ using Nito.AsyncEx;
 
 namespace ArchiSteamFarm.Collections;
 
-public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : notnull {
+public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 	[PublicAPI]
 	public event EventHandler? OnModified;
 
-	[PublicAPI]
 	public int Count {
 		get {
 			using (Lock.ReaderLock()) {
@@ -48,18 +47,17 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 	private readonly List<T> BackingCollection;
 	private readonly AsyncReaderWriterLock Lock = new();
 
-	int ICollection<T>.Count => Count;
-	int IReadOnlyCollection<T>.Count => Count;
-
 	public T this[int index] {
 		get {
+			ArgumentOutOfRangeException.ThrowIfNegative(index);
+
 			using (Lock.ReaderLock()) {
 				return BackingCollection[index];
 			}
 		}
 
 		set {
-			ArgumentNullException.ThrowIfNull(value);
+			ArgumentOutOfRangeException.ThrowIfNegative(index);
 
 			using (Lock.WriterLock()) {
 				BackingCollection[index] = value;
@@ -79,8 +77,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 	}
 
 	public void Add(T item) {
-		ArgumentNullException.ThrowIfNull(item);
-
 		using (Lock.WriterLock()) {
 			BackingCollection.Add(item);
 		}
@@ -97,8 +93,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 	}
 
 	public bool Contains(T item) {
-		ArgumentNullException.ThrowIfNull(item);
-
 		using (Lock.ReaderLock()) {
 			return BackingCollection.Contains(item);
 		}
@@ -117,8 +111,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 	public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, Lock.ReaderLock());
 
 	public int IndexOf(T item) {
-		ArgumentNullException.ThrowIfNull(item);
-
 		using (Lock.ReaderLock()) {
 			return BackingCollection.IndexOf(item);
 		}
@@ -126,7 +118,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 
 	public void Insert(int index, T item) {
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentNullException.ThrowIfNull(item);
 
 		using (Lock.WriterLock()) {
 			BackingCollection.Insert(index, item);
@@ -136,8 +127,6 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : not
 	}
 
 	public bool Remove(T item) {
-		ArgumentNullException.ThrowIfNull(item);
-
 		using (Lock.WriterLock()) {
 			if (!BackingCollection.Remove(item)) {
 				return false;

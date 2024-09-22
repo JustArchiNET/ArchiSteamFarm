@@ -56,6 +56,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	private const string EconService = "IEconService";
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
+	private const byte MaxTradeOfferMessageLength = 128;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const byte SessionIDLength = 24; // For maximum compatibility, should be divisible by 2 and match the length of "sessionid" property that Steam uses across their websites
 	private const string SteamAppsService = "ISteamApps";
@@ -252,7 +253,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			steamID = Bot.SteamID;
 		} else if (!new SteamID(steamID).IsIndividualAccount) {
-			throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(steamID)));
+			throw new NotSupportedException(Strings.FormatErrorObjectIsNull(nameof(steamID)));
 		}
 
 		if (ASF.InventorySemaphore == null) {
@@ -284,11 +285,11 @@ public sealed class ArchiWebHandler : IDisposable {
 					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
 
 					if (response == null) {
-						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
+						throw new HttpRequestException(Strings.FormatErrorObjectIsNull(nameof(response)));
 					}
 
 					if (response.StatusCode.IsClientErrorCode()) {
-						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode), null, response.StatusCode);
+						throw new HttpRequestException(Strings.FormatWarningFailedWithError(response.StatusCode), null, response.StatusCode);
 					}
 
 					if (response.StatusCode.IsServerErrorCode()) {
@@ -297,7 +298,7 @@ public sealed class ArchiWebHandler : IDisposable {
 							continue;
 						}
 
-						Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText));
+						Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningFailedWithError(response.Content.ErrorText));
 
 						// Try to interpret the failure reason and see if we should try again
 						switch (response.Content.ErrorCode) {
@@ -311,12 +312,12 @@ public sealed class ArchiWebHandler : IDisposable {
 								continue;
 							case EResult.NoMatch:
 								// Expected failures that we're not going to retry
-								throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText), null, response.StatusCode);
+								throw new HttpRequestException(Strings.FormatWarningFailedWithError(response.Content.ErrorText), null, response.StatusCode);
 							default:
 								// Unknown failures, report them and do not retry since we're unsure if we should
-								Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.Content.ErrorText), response.Content.ErrorText));
+								Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(response.Content.ErrorText), response.Content.ErrorText));
 
-								throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText), null, response.StatusCode);
+								throw new HttpRequestException(Strings.FormatWarningFailedWithError(response.Content.ErrorText), null, response.StatusCode);
 						}
 					}
 				}
@@ -334,11 +335,11 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			if (response == null) {
-				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
+				throw new HttpRequestException(Strings.FormatErrorObjectIsNull(nameof(response)));
 			}
 
 			if (response.Content is not { Result: EResult.OK } || !response.StatusCode.IsSuccessCode()) {
-				throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content?.ErrorText ?? response.Content?.Result?.ToString() ?? response.StatusCode.ToString()));
+				throw new HttpRequestException(Strings.FormatWarningFailedWithError(response.Content?.ErrorText ?? response.Content?.Result?.ToString() ?? response.StatusCode.ToString()));
 			}
 
 			if ((response.Content.TotalInventoryCount == 0) || (response.Content.Assets.Count == 0)) {
@@ -365,7 +366,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			foreach (InventoryDescription description in response.Content.Descriptions) {
 				if (description.ClassID == 0) {
-					throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(description.ClassID)));
+					throw new NotSupportedException(Strings.FormatErrorObjectIsNull(nameof(description.ClassID)));
 				}
 
 				(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
@@ -386,7 +387,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			if (response.Content.LastAssetID == 0) {
-				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.Content.LastAssetID)));
+				throw new NotSupportedException(Strings.FormatErrorObjectIsNull(nameof(response.Content.LastAssetID)));
 			}
 
 			startAssetID = response.Content.LastAssetID;
@@ -432,7 +433,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
 
 			return null;
 		}
@@ -502,7 +503,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		TradeOffersResponse? response = (await WebLimitRequest(WebAPI.DefaultBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(request).ConfigureAwait(false)).ConfigureAwait(false))?.Content?.Response;
 
 		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
 
 			return null;
 		}
@@ -576,7 +577,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, HashSet<ulong>? TradeOfferIDs, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Asset>? itemsToGive = null, IReadOnlyCollection<Asset>? itemsToReceive = null, string? token = null, bool forcedSingleOffer = false, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+	public async Task<(bool Success, HashSet<ulong>? TradeOfferIDs, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Asset>? itemsToGive = null, IReadOnlyCollection<Asset>? itemsToReceive = null, string? token = null, string? customMessage = null, bool forcedSingleOffer = false, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -620,6 +621,14 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		}
 
+		string tradeOfferMessage = $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}";
+
+		if (!string.IsNullOrEmpty(customMessage)) {
+			byte allowedExtraMessageLength = (byte) (MaxTradeOfferMessageLength - tradeOfferMessage.Length - 3); // We're going to add a space, opening and closing bracket
+
+			tradeOfferMessage += $" ({(customMessage.Length <= allowedExtraMessageLength ? customMessage : $"{customMessage[..(allowedExtraMessageLength - 1)]}{SteamChatMessage.ContinuationCharacter}")})";
+		}
+
 		Uri request = new(SteamCommunityURL, "/tradeoffer/new/send");
 		Uri referer = new(SteamCommunityURL, "/tradeoffer/new");
 
@@ -628,7 +637,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "partner", steamID.ToString(CultureInfo.InvariantCulture) },
 			{ "serverid", "1" },
 			{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JsonObject { { "trade_offer_access_token", token } }.ToJsonText() : "" },
-			{ "tradeoffermessage", $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}" }
+			{ "tradeoffermessage", tradeOfferMessage }
 		};
 
 		HashSet<ulong> tradeOfferIDs = new(trades.Count);
@@ -655,7 +664,7 @@ public sealed class ArchiWebHandler : IDisposable {
 					}
 
 					// This is actually client error with a reason, so it doesn't make sense to retry
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText));
+					Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(response.Content.ErrorText));
 
 					return (false, tradeOfferIDs, mobileTradeOfferIDs);
 				}
@@ -701,7 +710,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -720,7 +729,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -741,18 +750,18 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 			return null;
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -783,7 +792,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -802,7 +811,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return default(ObjectResponse<T>?);
 			}
@@ -823,18 +832,18 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 			return null;
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -865,7 +874,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return false;
 			}
@@ -884,7 +893,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return false;
 			}
@@ -905,18 +914,18 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 			return false;
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return false;
 			}
@@ -952,7 +961,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -971,7 +980,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -1015,18 +1024,18 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 			return null;
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -1062,7 +1071,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -1081,7 +1090,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -1125,18 +1134,18 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 			return null;
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -1172,7 +1181,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -1191,7 +1200,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -1238,18 +1247,18 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 			return null;
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return null;
 			}
@@ -1285,7 +1294,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return false;
 			}
@@ -1304,7 +1313,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return false;
 			}
@@ -1348,18 +1357,18 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 			return false;
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 				return false;
 			}
@@ -1388,7 +1397,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		if (!ASF.WebLimitingSemaphores.TryGetValue(service, out (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore) limiters)) {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(service), service));
+			ASF.ArchiLogger.LogGenericWarning(Strings.FormatWarningUnknownValuePleaseReport(nameof(service), service));
 
 			limiters.RateLimitingSemaphore = ASF.RateLimitingSemaphore;
 			limiters.OpenConnectionsSemaphore = ASF.OpenConnectionsSemaphore;
@@ -1473,7 +1482,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				// This is actually client error with a reason, so it doesn't make sense to retry
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(response.Content.ErrorText));
 
 				return (false, false);
 			}
@@ -1531,7 +1540,7 @@ public sealed class ArchiWebHandler : IDisposable {
 						case "You got rate limited, try again in an hour.":
 							return (result, EPurchaseResultDetail.RateLimited);
 						default:
-							Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(errorMessage), errorMessage));
+							Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(errorMessage), errorMessage));
 
 							return (result, EPurchaseResultDetail.ContactSupport);
 					}
@@ -1545,7 +1554,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				return (EResult.AccessDenied, EPurchaseResultDetail.NoDetail);
 			default:
 				// We should handle all expected status codes above, this is a generic fallback for those that we don't
-				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.StatusCode), response.StatusCode));
+				Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(response.StatusCode), response.StatusCode));
 
 				return (response.StatusCode.IsSuccessCode() ? EResult.OK : EResult.Fail, EPurchaseResultDetail.ContactSupport);
 		}
@@ -1644,7 +1653,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
 
 			return null;
 		}
@@ -1652,7 +1661,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		List<KeyValue> apps = response["apps"].Children;
 
 		if (apps.Count == 0) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(apps)));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorIsEmpty(nameof(apps)));
 
 			return null;
 		}
@@ -1759,7 +1768,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
 
 			return null;
 		}
@@ -1831,13 +1840,13 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			if (giftCardIDText.Length <= 13) {
-				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(giftCardIDText)));
+				Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(giftCardIDText)));
 
 				return null;
 			}
 
 			if (!ulong.TryParse(giftCardIDText[13..], out ulong giftCardID) || (giftCardID == 0)) {
-				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(giftCardID)));
+				Bot.ArchiLogger.LogGenericError(Strings.FormatErrorParsingObject(nameof(giftCardID)));
 
 				return null;
 			}
@@ -2344,8 +2353,8 @@ public sealed class ArchiWebHandler : IDisposable {
 		Uri request = new(service, "/parental/ajaxunlock");
 
 		if (maxTries == 0) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
 			return false;
 		}
@@ -2373,7 +2382,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 		if (await IsProfileUri(response.FinalUri, false).ConfigureAwait(false)) {
-			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			return await UnlockParentalAccountForService(service, parentalCode, --maxTries).ConfigureAwait(false);
 		}

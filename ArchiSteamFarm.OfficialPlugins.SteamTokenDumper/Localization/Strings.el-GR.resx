@@ -68,10 +68,7 @@
 		<value>{0} είναι απενεργοποιημένο σύμφωνα με τις ρυθμίσεις σας. Αν θέλετε να βοηθήσετε το SteamDB στην υποβολή δεδομένων, παρακαλώ ελέγξτε το wiki μας.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} έχει αρχικοποιηθεί με επιτυχία, σας ευχαριστώ εκ των προτέρων για τη βοήθειά σας. Η πρώτη υποβολή θα γίνει σε περίπου {1} από τώρα.</value>
-		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
-	</data>
+	
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} δεν μπόρεσε να φορτωθεί, μια νέα παρουσία θα αρχικοποιηθεί...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>

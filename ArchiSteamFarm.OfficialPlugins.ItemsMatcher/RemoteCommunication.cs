@@ -111,7 +111,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					TimeSpan.FromHours(6)
 				);
 			} else {
-				bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningNoLicense, nameof(BotConfig.ETradingPreferences.MatchActively)));
+				bot.ArchiLogger.LogGenericError(Strings.FormatWarningNoLicense(nameof(BotConfig.ETradingPreferences.MatchActively)));
 			}
 		}
 	}
@@ -215,7 +215,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// This is actually network failure, so we'll stop sending heartbeats but not record it as valid check
 				ShouldSendHeartBeats = false;
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(IsEligibleForListing)}: {eligible?.ToString() ?? "null"}"));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError($"{nameof(IsEligibleForListing)}: {eligible?.ToString() ?? "null"}"));
 
 				return;
 			}
@@ -225,7 +225,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				LastAnnouncement = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(IsEligibleForListing)}: {eligible.Value}"));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError($"{nameof(IsEligibleForListing)}: {eligible.Value}"));
 
 				return;
 			}
@@ -242,7 +242,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
 				ShouldSendHeartBeats = false;
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(tradeToken)));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(tradeToken)));
 
 				return;
 			}
@@ -395,17 +395,17 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				if (setPartsResponse == null) {
 					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
 					ShouldSendHeartBeats = false;
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(setPartsResponse)));
+					Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorObjectIsNull(nameof(setPartsResponse)));
 
 					return;
 				}
 
 				if (setPartsResponse.StatusCode.IsRedirectionCode()) {
 					ShouldSendHeartBeats = false;
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, setPartsResponse.StatusCode));
+					Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(setPartsResponse.StatusCode));
 
 					if (setPartsResponse.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
-						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(setPartsResponse.FinalUri), setPartsResponse.FinalUri));
+						ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(setPartsResponse.FinalUri), setPartsResponse.FinalUri));
 
 						return;
 					}
@@ -419,7 +419,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				if (!setPartsResponse.StatusCode.IsSuccessCode()) {
 					// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
 					ShouldSendHeartBeats = false;
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, setPartsResponse.StatusCode));
+					Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(setPartsResponse.StatusCode));
 
 					switch (setPartsResponse.StatusCode) {
 						case HttpStatusCode.Forbidden:
@@ -442,7 +442,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				if (setPartsResponse.Content?.Result == null) {
 					// This should never happen if we got the correct response
-					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(setPartsResponse), setPartsResponse.Content?.Result));
+					Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(setPartsResponse), setPartsResponse.Content?.Result));
 
 					return;
 				}
@@ -531,7 +531,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// There is a possibility that our inventory has changed even if our announced assets did not, record that
 				BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(assetsForListing)} > {MaxItemsCount}"));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError($"{nameof(assetsForListing)} > {MaxItemsCount}"));
 
 				return;
 			}
@@ -562,7 +562,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				HashSet<AssetForListing> inventoryAddedChanged = assetsForListing.Where(asset => !previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset) || (asset.BackendHashCode != previousAsset.BackendHashCode)).ToHashSet();
 
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
+				Bot.ArchiLogger.LogGenericInfo(Localization.Strings.FormatListingAnnouncing(Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
 				ObjectResponse<GenericResponse<BackgroundTaskResponse>>? diffResponse = null;
 				Guid diffRequestID = Guid.Empty;
@@ -577,17 +577,17 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					if (diffResponse == null) {
 						// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
 						ShouldSendHeartBeats = false;
-						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(diffResponse)));
+						Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorObjectIsNull(nameof(diffResponse)));
 
 						return;
 					}
 
 					if (diffResponse.StatusCode.IsRedirectionCode()) {
 						ShouldSendHeartBeats = false;
-						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, diffResponse.StatusCode));
+						Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(diffResponse.StatusCode));
 
 						if (diffResponse.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
-							ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(diffResponse.FinalUri), diffResponse.FinalUri));
+							ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(diffResponse.FinalUri), diffResponse.FinalUri));
 
 							return;
 						}
@@ -601,7 +601,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					if (!diffResponse.StatusCode.IsSuccessCode()) {
 						// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
 						ShouldSendHeartBeats = false;
-						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, diffResponse.StatusCode));
+						Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(diffResponse.StatusCode));
 
 						switch (diffResponse.StatusCode) {
 							case HttpStatusCode.Conflict:
@@ -630,7 +630,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					// Great, do we need to wait?
 					if (diffResponse.Content?.Result == null) {
 						// This should never happen if we got the correct response
-						Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(diffResponse), diffResponse.Content?.Result));
+						Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(diffResponse), diffResponse.Content?.Result));
 
 						return;
 					}
@@ -645,7 +645,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				if (diffResponse == null) {
 					// We've waited long enough, something is definitely wrong with us or the backend
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(diffResponse)));
+					Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(diffResponse)));
 
 					return;
 				}
@@ -667,7 +667,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
+			Bot.ArchiLogger.LogGenericInfo(Localization.Strings.FormatListingAnnouncing(Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
 			ObjectResponse<GenericResponse<BackgroundTaskResponse>>? announceResponse = null;
 			Guid announceRequestID = Guid.Empty;
@@ -682,17 +682,17 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				if (announceResponse == null) {
 					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
 					ShouldSendHeartBeats = false;
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(announceResponse)));
+					Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorObjectIsNull(nameof(announceResponse)));
 
 					return;
 				}
 
 				if (announceResponse.StatusCode.IsRedirectionCode()) {
 					ShouldSendHeartBeats = false;
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, announceResponse.StatusCode));
+					Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(announceResponse.StatusCode));
 
 					if (announceResponse.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
-						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(announceResponse.FinalUri), announceResponse.FinalUri));
+						ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(announceResponse.FinalUri), announceResponse.FinalUri));
 
 						return;
 					}
@@ -706,7 +706,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				if (!announceResponse.StatusCode.IsSuccessCode()) {
 					// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
 					ShouldSendHeartBeats = false;
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, announceResponse.StatusCode));
+					Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(announceResponse.StatusCode));
 
 					switch (announceResponse.StatusCode) {
 						case HttpStatusCode.Conflict:
@@ -735,7 +735,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// Great, do we need to wait?
 				if (announceResponse.Content?.Result == null) {
 					// This should never happen if we got the correct response
-					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(announceResponse), announceResponse.Content?.Result));
+					Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(announceResponse), announceResponse.Content?.Result));
 
 					return;
 				}
@@ -750,7 +750,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			if (announceResponse == null) {
 				// We've waited long enough, something is definitely wrong with us or the backend
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(announceResponse)));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(announceResponse)));
 
 				return;
 			}
@@ -801,7 +801,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		bool? hasPublicInventory = await Bot.HasPublicInventory().ConfigureAwait(false);
 
 		if (hasPublicInventory != true) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.HasPublicInventory)}: {hasPublicInventory?.ToString() ?? "null"}"));
+			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(Bot.HasPublicInventory)}: {hasPublicInventory?.ToString() ?? "null"}"));
 
 			return hasPublicInventory;
 		}
@@ -812,28 +812,28 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private async Task<bool?> IsEligibleForMatching() {
 		// Bot can't be limited
 		if (Bot.IsAccountLimited) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.IsAccountLimited)}: {Bot.IsAccountLimited}"));
+			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(Bot.IsAccountLimited)}: {Bot.IsAccountLimited}"));
 
 			return false;
 		}
 
 		// Bot can't be on lockdown
 		if (Bot.IsAccountLocked) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.IsAccountLocked)}: {Bot.IsAccountLocked}"));
+			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(Bot.IsAccountLocked)}: {Bot.IsAccountLocked}"));
 
 			return false;
 		}
 
 		// Bot must have ASF 2FA
 		if (!Bot.HasMobileAuthenticator) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.HasMobileAuthenticator)}: {Bot.HasMobileAuthenticator}"));
+			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(Bot.HasMobileAuthenticator)}: {Bot.HasMobileAuthenticator}"));
 
 			return false;
 		}
 
 		// Bot must have at least one accepted matchable type set
 		if ((Bot.BotConfig.MatchableTypes.Count == 0) || Bot.BotConfig.MatchableTypes.All(static type => !AcceptedMatchableTypes.Contains(type))) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.BotConfig.MatchableTypes)}: {string.Join(", ", Bot.BotConfig.MatchableTypes)}"));
+			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(Bot.BotConfig.MatchableTypes)}: {string.Join(", ", Bot.BotConfig.MatchableTypes)}"));
 
 			return false;
 		}
@@ -842,21 +842,21 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		CCredentials_GetSteamGuardDetails_Response? steamGuardStatus = await Bot.ArchiHandler.GetSteamGuardStatus().ConfigureAwait(false);
 
 		if (steamGuardStatus == null) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(steamGuardStatus)}: null"));
+			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(steamGuardStatus)}: null"));
 
 			return null;
 		}
 
 		// Bot must have SteamGuard active for at least 15 days
 		if (!steamGuardStatus.is_steamguard_enabled || ((steamGuardStatus.timestamp_steamguard_enabled > 0) && ((DateTimeOffset.UtcNow - DateTimeOffset.FromUnixTimeSeconds(steamGuardStatus.timestamp_steamguard_enabled)).TotalDays < MinimumSteamGuardEnabledDays))) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(steamGuardStatus.is_steamguard_enabled)}/{nameof(steamGuardStatus.timestamp_steamguard_enabled)}: {steamGuardStatus.is_steamguard_enabled}/{steamGuardStatus.timestamp_steamguard_enabled}"));
+			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(steamGuardStatus.is_steamguard_enabled)}/{nameof(steamGuardStatus.timestamp_steamguard_enabled)}: {steamGuardStatus.is_steamguard_enabled}/{steamGuardStatus.timestamp_steamguard_enabled}"));
 
 			return false;
 		}
 
 		// Bot must have 2FA enabled for matching to work
 		if (!steamGuardStatus.is_twofactor_enabled) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(steamGuardStatus.is_twofactor_enabled)}: false"));
+			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(steamGuardStatus.is_twofactor_enabled)}: false"));
 
 			return false;
 		}
@@ -864,14 +864,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		CCredentials_LastCredentialChangeTime_Response? credentialChangeTimeDetails = await Bot.ArchiHandler.GetCredentialChangeTimeDetails().ConfigureAwait(false);
 
 		if (credentialChangeTimeDetails == null) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(credentialChangeTimeDetails)}: null"));
+			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(credentialChangeTimeDetails)}: null"));
 
 			return null;
 		}
 
 		// Bot didn't change password in last 5 days
 		if ((credentialChangeTimeDetails.timestamp_last_password_reset > 0) && ((DateTimeOffset.UtcNow - DateTimeOffset.FromUnixTimeSeconds(credentialChangeTimeDetails.timestamp_last_password_reset)).TotalDays < MinimumPasswordResetCooldownDays)) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(credentialChangeTimeDetails.timestamp_last_password_reset)}: {credentialChangeTimeDetails.timestamp_last_password_reset}"));
+			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(credentialChangeTimeDetails.timestamp_last_password_reset)}: {credentialChangeTimeDetails.timestamp_last_password_reset}"));
 
 			return false;
 		}
@@ -897,7 +897,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		bool? eligible = await IsEligibleForMatching().ConfigureAwait(false);
 
 		if (eligible != true) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(IsEligibleForMatching)}: {eligible?.ToString() ?? "null"}"));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError($"{nameof(IsEligibleForMatching)}: {eligible?.ToString() ?? "null"}"));
 
 			return;
 		}
@@ -924,13 +924,13 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			HttpStatusCode? licenseStatus = await Backend.GetLicenseStatus(ASF.GlobalConfig.LicenseID.Value, WebBrowser).ConfigureAwait(false);
 
 			if (licenseStatus == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(licenseStatus)));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(licenseStatus)));
 
 				return;
 			}
 
 			if (!licenseStatus.Value.IsSuccessCode()) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, licenseStatus.Value));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(licenseStatus.Value));
 
 				return;
 			}
@@ -941,18 +941,18 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				assetsForMatching = await Bot.ArchiHandler.GetMyInventoryAsync().Where(item => item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > EAssetType.Unknown, Rarity: > EAssetRarity.Unknown, IsSteamPointsShopItem: false } && acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToHashSetAsync().ConfigureAwait(false);
 			} catch (TimeoutException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(assetsForMatching)));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(assetsForMatching)));
 
 				return;
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericException(e);
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(assetsForMatching)));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(assetsForMatching)));
 
 				return;
 			}
 
 			if (assetsForMatching.Count == 0) {
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(assetsForMatching)));
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatErrorIsEmpty(nameof(assetsForMatching)));
 
 				return;
 			}
@@ -962,7 +962,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			if (assetsForMatching.RemoveWhere(item => !setsToKeep.Contains((item.RealAppID, item.Type, item.Rarity))) > 0) {
 				if (assetsForMatching.Count == 0) {
-					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(assetsForMatching)));
+					Bot.ArchiLogger.LogGenericInfo(Strings.FormatErrorIsEmpty(nameof(assetsForMatching)));
 
 					return;
 				}
@@ -999,16 +999,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			if (setPartsResponse == null) {
 				// This is actually a network failure
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(setPartsResponse)));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorObjectIsNull(nameof(setPartsResponse)));
 
 				return;
 			}
 
 			if (setPartsResponse.StatusCode.IsRedirectionCode()) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, setPartsResponse.StatusCode));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(setPartsResponse.StatusCode));
 
 				if (setPartsResponse.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(setPartsResponse.FinalUri), setPartsResponse.FinalUri));
+					ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(setPartsResponse.FinalUri), setPartsResponse.FinalUri));
 
 					return;
 				}
@@ -1020,14 +1020,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			if (!setPartsResponse.StatusCode.IsSuccessCode()) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, setPartsResponse.StatusCode));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(setPartsResponse.StatusCode));
 
 				return;
 			}
 
 			if (setPartsResponse.Content?.Result == null) {
 				// This should never happen if we got the correct response
-				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(setPartsResponse), setPartsResponse.Content?.Result));
+				Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(setPartsResponse), setPartsResponse.Content?.Result));
 
 				return;
 			}
@@ -1118,13 +1118,13 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			assetsForMatching = assetsForMatchingFiltered;
 
 			if (assetsForMatching.Count == 0) {
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(assetsForMatching)));
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatErrorIsEmpty(nameof(assetsForMatching)));
 
 				return;
 			}
 
 			if (assetsForMatching.Count > MaxItemsCount) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(assetsForMatching)} > {MaxItemsCount}"));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError($"{nameof(assetsForMatching)} > {MaxItemsCount}"));
 
 				return;
 			}
@@ -1132,19 +1132,19 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, WebBrowser, assetsForMatching, acceptedMatchableTypes).ConfigureAwait(false);
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response)));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(response)));
 
 				return;
 			}
 
 			if (!response.Value.StatusCode.IsSuccessCode()) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Value.StatusCode));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(response.Value.StatusCode));
 
 				return;
 			}
 
 			if (response.Value.Users.IsEmpty) {
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(response.Value.Users)));
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatErrorIsEmpty(nameof(response.Value.Users)));
 
 				return;
 			}
@@ -1181,7 +1181,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		if (MatchingUtilities.IsEmptyForMatching(ourFullState, ourTradableState)) {
 			// User doesn't have any more dupes in the inventory
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, $"{nameof(ourFullState)} || {nameof(ourTradableState)}"));
+			Bot.ArchiLogger.LogGenericTrace(Strings.FormatErrorIsEmpty($"{nameof(ourFullState)} || {nameof(ourTradableState)}"));
 
 			return false;
 		}
@@ -1257,7 +1257,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => !deprioritizedSteamIDs.Contains(listedUser.SteamID)).ThenByDescending(static listedUser => listedUser.TotalGamesCount > 1).ThenByDescending(static listedUser => listedUser.MatchEverything).ThenBy(static listedUser => listedUser.TotalInventoryCount)) {
 			if (failuresInRow >= WebBrowser.MaxTries) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(failuresInRow)} >= {WebBrowser.MaxTries}"));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError($"{nameof(failuresInRow)} >= {WebBrowser.MaxTries}"));
 
 				break;
 			}
@@ -1280,7 +1280,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			switch (tradeHoldDuration) {
 				case null:
-					Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(tradeHoldDuration)));
+					Bot.ArchiLogger.LogGenericTrace(Strings.FormatErrorIsEmpty(nameof(tradeHoldDuration)));
 
 					continue;
 				case > 0 when (tradeHoldDuration.Value > maxTradeHoldDuration) || (tradeHoldDuration.Value > listedUser.MaxTradeHoldDuration):
@@ -1421,7 +1421,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 
 				if (skippedSetsThisTrade.Count == 0) {
-					Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(skippedSetsThisTrade)));
+					Bot.ArchiLogger.LogGenericTrace(Strings.FormatErrorIsEmpty(nameof(skippedSetsThisTrade)));
 
 					break;
 				}
@@ -1435,11 +1435,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					throw new InvalidOperationException($"{nameof(itemsToGive)} && {nameof(itemsToReceive)}");
 				}
 
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.MatchingFound, itemsToReceive.Count, listedUser.SteamID, listedUser.Nickname));
+				Bot.ArchiLogger.LogGenericInfo(Localization.Strings.FormatMatchingFound(itemsToReceive.Count, listedUser.SteamID, listedUser.Nickname));
 
 				Bot.ArchiLogger.LogGenericTrace($"{Bot.SteamID} <- {string.Join(", ", itemsToReceive.Select(static item => $"{item.RealAppID}/{item.Type}/{item.Rarity}/{item.ClassID} #{item.Amount}"))} | {string.Join(", ", itemsToGive.Select(static item => $"{item.RealAppID}/{item.Type}/{item.Rarity}/{item.ClassID} #{item.Amount}"))} -> {listedUser.SteamID}");
 
-				(bool success, HashSet<ulong>? tradeOfferIDs, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, true).ConfigureAwait(false);
+				(bool success, HashSet<ulong>? tradeOfferIDs, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, nameof(MatchActively), true).ConfigureAwait(false);
 
 				if (tradeOfferIDs?.Count > 0) {
 					matchActivelyTradeOfferIDs.UnionWith(tradeOfferIDs);
@@ -1454,7 +1454,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 						(bool twoFactorSuccess, IReadOnlyCollection<Confirmation>? handledConfirmations, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false);
 
 						if (!twoFactorSuccess) {
-							Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingSomeConfirmationsFailed, handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
+							Bot.ArchiLogger.LogGenericWarning(Localization.Strings.FormatActivelyMatchingSomeConfirmationsFailed(handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
 						}
 
 						pendingMobileTradeOfferIDs.Clear();
@@ -1465,7 +1465,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					// The user likely no longer has the items we need, this is fine, we can continue the matching with other ones
 					failuresInRow++;
 
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.TradeOfferFailed, listedUser.SteamID, listedUser.Nickname));
+					Bot.ArchiLogger.LogGenericWarning(Localization.Strings.FormatTradeOfferFailed(listedUser.SteamID, listedUser.Nickname));
 
 					break;
 				}
@@ -1550,11 +1550,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			(bool twoFactorSuccess, IReadOnlyCollection<Confirmation>? handledConfirmations, _) = Bot.IsConnectedAndLoggedOn ? await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false) : (false, null, null);
 
 			if (!twoFactorSuccess) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingSomeConfirmationsFailed, handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
+				Bot.ArchiLogger.LogGenericWarning(Localization.Strings.FormatActivelyMatchingSomeConfirmationsFailed(handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
 			}
 		}
 
-		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingItemsRound, matchedSets));
+		Bot.ArchiLogger.LogGenericInfo(Localization.Strings.FormatActivelyMatchingItemsRound(matchedSets));
 
 		return matchedSets > 0;
 	}
@@ -1610,10 +1610,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			if (response.StatusCode.IsRedirectionCode()) {
 				ShouldSendHeartBeats = false;
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(response.StatusCode));
 
 				if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
+					ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(response.FinalUri), response.FinalUri));
 
 					return;
 				}
@@ -1629,7 +1629,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			if (!response.StatusCode.IsSuccessCode()) {
 				ShouldSendHeartBeats = false;
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(response.StatusCode));
 
 				switch (response.StatusCode) {
 					case HttpStatusCode.Conflict:

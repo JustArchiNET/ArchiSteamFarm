@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -87,15 +86,15 @@ internal static class Commands {
 		}
 
 		if (bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything)) {
-			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(BotConfig.ETradingPreferences.MatchEverything)));
+			return bot.Commands.FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(BotConfig.ETradingPreferences.MatchEverything)));
 		}
 
 		if ((ASF.GlobalConfig?.LicenseID == null) || (ASF.GlobalConfig.LicenseID == Guid.Empty)) {
-			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ASF.GlobalConfig.LicenseID)));
+			return bot.Commands.FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(ASF.GlobalConfig.LicenseID)));
 		}
 
 		if (!ItemsMatcherPlugin.RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication)) {
-			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(remoteCommunication)));
+			return bot.Commands.FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(remoteCommunication)));
 		}
 
 		remoteCommunication.TriggerMatchActivelyEarlier();
@@ -117,7 +116,7 @@ internal static class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? Steam.Interaction.Commands.FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			return access >= EAccess.Owner ? Steam.Interaction.Commands.FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => ResponseMatch(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot)))).ConfigureAwait(false);

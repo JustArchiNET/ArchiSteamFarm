@@ -22,7 +22,6 @@
 // limitations under the License.
 
 using System;
-using System.Globalization;
 using System.IO;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -97,7 +96,7 @@ internal sealed class CrashFile : SerializableFile {
 			string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(nameof(json)));
 
 				return new CrashFile(filePath);
 			}

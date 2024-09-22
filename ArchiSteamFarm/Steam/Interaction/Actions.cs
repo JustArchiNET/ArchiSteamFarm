@@ -25,7 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -233,17 +232,17 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 			// We've accepted *something*, if caller didn't specify the IDs, that's enough for us
 			if ((acceptedCreatorIDs == null) || (acceptedCreatorIDs.Count == 0)) {
-				return (true, handledConfirmations.Values, string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations.Count));
+				return (true, handledConfirmations.Values, Strings.FormatBotHandledConfirmations(handledConfirmations.Count));
 			}
 
 			// If they did, check if we've already found everything we were supposed to
 			if ((handledConfirmations.Count >= acceptedCreatorIDs.Count) && acceptedCreatorIDs.All(handledConfirmations.ContainsKey)) {
-				return (true, handledConfirmations.Values, string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations.Count));
+				return (true, handledConfirmations.Values, Strings.FormatBotHandledConfirmations(handledConfirmations.Count));
 			}
 		}
 
 		// If we've reached this point, then it's a failure for waitIfNeeded, and success otherwise
-		return (!waitIfNeeded, handledConfirmations?.Values, !waitIfNeeded ? string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations?.Count ?? 0) : string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+		return (!waitIfNeeded, handledConfirmations?.Values, !waitIfNeeded ? Strings.FormatBotHandledConfirmations(handledConfirmations?.Count ?? 0) : Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
 	}
 
 	[PublicAPI]
@@ -270,6 +269,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			// We add extra delay because OnFarmingStopped() also executes PlayGames()
 			// Despite of proper order on our end, Steam network might not respect it
 			await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
+
 			await Bot.ArchiHandler.PlayGames([], Bot.BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
 		}
 
@@ -303,7 +303,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 		await Bot.ArchiHandler.PlayGames(gameIDs, gameName).ConfigureAwait(false);
 
-		return (true, gameIDs.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotIdlingSelectedGames, nameof(gameIDs), string.Join(", ", gameIDs)) : Strings.Done);
+		return (true, gameIDs.Count > 0 ? Strings.FormatBotIdlingSelectedGames(nameof(gameIDs), string.Join(", ", gameIDs)) : Strings.Done);
 	}
 
 	[PublicAPI]
@@ -342,7 +342,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, string Message)> SendInventory(IReadOnlyCollection<Asset> items, ulong targetSteamID = 0, string? tradeToken = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+	public async Task<(bool Success, string Message)> SendInventory(IReadOnlyCollection<Asset> items, ulong targetSteamID = 0, string? tradeToken = null, string? customMessage = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
 		if ((items == null) || (items.Count == 0)) {
 			throw new ArgumentNullException(nameof(items));
 		}
@@ -386,7 +386,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return (false, Strings.BotLootingFailed);
 		}
 
-		(bool success, _, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, itemsPerTrade: itemsPerTrade).ConfigureAwait(false);
+		(bool success, _, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, customMessage: customMessage, itemsPerTrade: itemsPerTrade).ConfigureAwait(false);
 
 		if ((mobileTradeOfferIDs?.Count > 0) && Bot.HasMobileAuthenticator) {
 			(bool twoFactorSuccess, _, _) = await HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
@@ -400,7 +400,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, string Message)> SendInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Asset, bool>? filterFunction = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+	public async Task<(bool Success, string Message)> SendInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, string? customMessage = null, Func<Asset, bool>? filterFunction = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 
@@ -432,19 +432,19 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			} catch (TimeoutException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 
-				return (false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, e.Message));
+				return (false, Strings.FormatWarningFailedWithError(e.Message));
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericException(e);
 
-				return (false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, e.Message));
+				return (false, Strings.FormatWarningFailedWithError(e.Message));
 			}
 		}
 
 		if (inventory.Count == 0) {
-			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(inventory)));
+			return (false, Strings.FormatErrorIsEmpty(nameof(inventory)));
 		}
 
-		return await SendInventory(inventory, targetSteamID, tradeToken, itemsPerTrade).ConfigureAwait(false);
+		return await SendInventory(inventory, targetSteamID, tradeToken, customMessage, itemsPerTrade).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
@@ -550,7 +550,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			foreach (ulong giftCardID in giftCardIDs.Where(gid => !HandledGifts.Contains(gid))) {
 				HandledGifts.Add(giftCardID);
 
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotAcceptingGift, giftCardID));
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatBotAcceptingGift(giftCardID));
 				await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 				bool result = await Bot.ArchiWebHandler.AcceptDigitalGiftCard(giftCardID).ConfigureAwait(false);
@@ -578,7 +578,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		foreach (ulong guestPassID in guestPassIDs.Where(guestPassID => !HandledGifts.Contains(guestPassID))) {
 			HandledGifts.Add(guestPassID);
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotAcceptingGift, guestPassID));
+			Bot.ArchiLogger.LogGenericInfo(Strings.FormatBotAcceptingGift(guestPassID));
 			await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 			SteamApps.RedeemGuestPassResponseCallback? response = await Bot.ArchiHandler.RedeemGuestPass(guestPassID).ConfigureAwait(false);
@@ -587,7 +587,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				if (response.Result == EResult.OK) {
 					Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 				} else {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Result));
+					Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(response.Result));
 				}
 			} else {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);

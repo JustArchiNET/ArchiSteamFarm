@@ -24,7 +24,6 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -270,7 +269,7 @@ public sealed class BotDatabase : GenericDatabase {
 			string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
+				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(nameof(json)));
 
 				return null;
 			}
@@ -355,7 +354,7 @@ public sealed class BotDatabase : GenericDatabase {
 		Utilities.InBackground(Save);
 	}
 
-	private (bool Valid, string? ErrorMessage) CheckValidation() => GamesToRedeemInBackground.Cast<DictionaryEntry>().Any(static game => !IsValidGameToRedeemInBackground(game)) ? (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(GamesToRedeemInBackground), string.Join("", GamesToRedeemInBackground))) : (true, null);
+	private (bool Valid, string? ErrorMessage) CheckValidation() => GamesToRedeemInBackground.Cast<DictionaryEntry>().Any(static game => !IsValidGameToRedeemInBackground(game)) ? (false, Strings.FormatErrorConfigPropertyInvalid(nameof(GamesToRedeemInBackground), string.Join("", GamesToRedeemInBackground))) : (true, null);
 
 	private async void OnObjectModified(object? sender, EventArgs e) {
 		if (string.IsNullOrEmpty(FilePath)) {
