@@ -227,7 +227,7 @@ dotnet_style_require_accessibility_modifiers = always:warning
 
 [ArchiSteamFarm/**.cs]
 # ASF project includes plugin system, therefore CA1515 typically doesn't make sense there
-dotnet_diagnostic.ca1515.severity = silent
+dotnet_diagnostic.CA1515.severity = silent
 
 ###############################
 # JetBrains, IntelliJ/Rider   #
