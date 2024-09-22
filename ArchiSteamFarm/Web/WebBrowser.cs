@@ -48,7 +48,7 @@ public sealed class WebBrowser : IDisposable {
 	[PublicAPI]
 	public const byte MaxTries = 5; // Defines maximum number of recommended tries for a single request
 
-	internal const byte MaxConnections = 5; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
+	internal const byte MaxConnections = 10; // Defines maximum number of connections per server. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 
 	private const ushort ExtendedTimeout = 600; // Defines timeout for WebBrowsers dealing with huge data (ASF update)
 	private const byte MaxIdleTime = 15; // Defines in seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
@@ -61,43 +61,47 @@ public sealed class WebBrowser : IDisposable {
 
 	private readonly ArchiLogger ArchiLogger;
 	private readonly HttpClient HttpClient;
-	private readonly HttpClientHandler HttpClientHandler;
+	private readonly HttpMessageHandler HttpMessageHandler;
 
 	internal WebBrowser(ArchiLogger archiLogger, IWebProxy? webProxy = null, bool extendedTimeout = false) {
 		ArgumentNullException.ThrowIfNull(archiLogger);
 
 		ArchiLogger = archiLogger;
 
-		HttpClientHandler = new HttpClientHandler {
+		SocketsHttpHandler httpHandler = new() {
 			AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile://"
 			AutomaticDecompression = DecompressionMethods.All,
 			CookieContainer = CookieContainer,
-			MaxConnectionsPerServer = MaxConnections
+			EnableMultipleHttp2Connections = true,
+			MaxConnectionsPerServer = MaxConnections,
+			PooledConnectionIdleTimeout = TimeSpan.FromSeconds(MaxIdleTime)
 		};
 
 		if (webProxy != null) {
-			HttpClientHandler.Proxy = webProxy;
-			HttpClientHandler.UseProxy = true;
+			httpHandler.Proxy = webProxy;
+			httpHandler.UseProxy = true;
 
 			if (webProxy.Credentials != null) {
 				// We can be pretty sure that user knows what he's doing and that proxy indeed requires authentication, save roundtrip
-				HttpClientHandler.PreAuthenticate = true;
+				httpHandler.PreAuthenticate = true;
 			}
 		}
+
+		HttpMessageHandler = httpHandler;
 
 		HttpClient = GenerateDisposableHttpClient(extendedTimeout);
 	}
 
 	public void Dispose() {
 		HttpClient.Dispose();
-		HttpClientHandler.Dispose();
+		HttpMessageHandler.Dispose();
 	}
 
 	[PublicAPI]
 	public HttpClient GenerateDisposableHttpClient(bool extendedTimeout = false) {
 		byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
-		HttpClient result = new(HttpClientHandler, false) {
+		HttpClient result = new(HttpMessageHandler, false) {
 			DefaultRequestVersion = HttpVersion.Version30,
 			Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeout : connectionTimeout)
 		};

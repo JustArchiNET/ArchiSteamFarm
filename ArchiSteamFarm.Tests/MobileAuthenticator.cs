@@ -31,7 +31,7 @@ namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-public sealed class MobileAuthenticator {
+internal sealed class MobileAuthenticator {
 	[DataRow("qrg+wW8/u/TDt2i/+FQuPhuVrmY=", (ulong) 1337, "QFo72j9TnG+uRXe9EIJs4zyBPo0=")]
 	[DataRow("qrg+wW8/u/TDt2i/+FQuPhuVrmY=", (ulong) 1337, "mYbCKs8ZvsVN2odCMxpvidrIu1c=", "conf")]
 	[DataRow("qrg+wW8/u/TDt2i/+FQuPhuVrmY=", (ulong) 1723332288, "hiEx+JBqJqFJnSSL+dEthPHOmsc=")]
