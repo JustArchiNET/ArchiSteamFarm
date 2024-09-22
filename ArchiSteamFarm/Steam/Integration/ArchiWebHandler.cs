@@ -2059,9 +2059,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Initialized = false;
 
-#pragma warning disable CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
-		string sessionID = Convert.ToHexString(RandomNumberGenerator.GetBytes(SessionIDLength / 2)).ToLowerInvariant();
-#pragma warning restore CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
+		string sessionID = Convert.ToHexStringLower(RandomNumberGenerator.GetBytes(SessionIDLength / 2));
 
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamCheckoutURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamCommunityURL.Host}"));
