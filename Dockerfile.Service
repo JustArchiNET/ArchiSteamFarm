@@ -57,7 +57,7 @@ RUN --mount=type=secret,id=ASF_PRIVATE_SNK --mount=type=secret,id=STEAM_TOKEN_DU
         echo "WARN: No ASF_PRIVATE_SNK provided!"
     fi
 
-    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out" "-p:ASFVariant=${asf_variant}" -p:ContinuousIntegrationBuild=true -p:PublishSingleFile=true -r "$asf_variant" --nologo --self-contained
+    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out" "-p:ASFVariant=${asf_variant}" -p:ContinuousIntegrationBuild=true -p:PublishSingleFile=true -p:PublishTrimmed=true -r "$asf_variant" --nologo --self-contained
 
     if [ -f "/run/secrets/STEAM_TOKEN_DUMPER_TOKEN" ]; then
         STEAM_TOKEN_DUMPER_TOKEN="$(cat "/run/secrets/STEAM_TOKEN_DUMPER_TOKEN")"
