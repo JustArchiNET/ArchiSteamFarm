@@ -543,3 +543,12 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+#     _     ____   _____
+#    / \   / ___| |  ___|
+#   / _ \  \___ \ | |_
+#  / ___ \  ___) ||  _|
+# /_/   \_\|____/ |_|
+
+# Files that could be ignored by above rules, that we want to ship
+!ArchiSteamFarm/overlay/**
