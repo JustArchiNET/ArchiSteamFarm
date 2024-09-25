@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4.1.7
+      uses: actions/checkout@v4.2.0
       with:
         show-progress: false
         submodules: recursive
@@ -82,7 +82,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4.1.7
+      uses: actions/checkout@v4.2.0
       with:
         show-progress: false
 
@@ -434,7 +434,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4.1.7
+      uses: actions/checkout@v4.2.0
       with:
         show-progress: false
 
