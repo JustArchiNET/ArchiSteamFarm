@@ -61,11 +61,11 @@
 		</value>
 	</resheader>
 	<data name="AcceptingTrade" xml:space="preserve">
-		<value>Pieņemt darījumu: {0}</value>
+		<value>Pieņem darījumu: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="AutoUpdateCheckInfo" xml:space="preserve">
-		<value>ASF automātiski pārbaudīs jaunas versijas pieejamību katras(u) {0}.</value>
+		<value>ASF automātiski pārbaudīs jaunas versijas pieejamību katras/u {0}.</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
 	</data>
 	<data name="Content" xml:space="preserve">
@@ -78,7 +78,7 @@
 		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-		<value>ASF V{0} saņēma fatālu izņēmumu pirms kodola logšanas modelis bija spējīgs incializēties!</value>
+		<value>ASF V{0} saņēma fatālu izņēmumu pirms galvenais reģistrēšanās modulis bija spējīgs incializēties!</value>
 		<comment>{0} will be replaced by version number</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -87,7 +87,10 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Iziešana ar {0} kļūdas kodu!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
+	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Pieprasījums neizdevās: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -116,7 +119,7 @@ StackTrace:
 		<comment>{0} will be replaced by maximum number of tries</comment>
 	</data>
 	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
-		<value>Nevar pārbaudīt jaunāko vesiju!</value>
+		<value>Nevar pārbaudīt jaunāko versiju!</value>
 	</data>
 	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
 		<value>Nevar veikt atjaunināšanu, jo nav failu kas atsaucās uz šobrīd strādājošo versiju! Automātiskā atjaunināšana uz šo versiju nav iespējama.</value>
@@ -253,7 +256,7 @@ StackTrace:
 		<value>Darīts!</value>
 	</data>
 	<data name="GamesToIdle" xml:space="preserve">
-		<value>Kopumā vākšanai ir pieejamas {0} spēles ({1} kārtis). Atlikušais laiks ~{2}...</value>
+		<value>Kopumā vākšanai ir pieejamas {0} spēles ({1} kārtis). Atlikušais laiks (~{2})...</value>
 		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
 	<data name="IdlingFinished" xml:space="preserve">
@@ -691,7 +694,10 @@ Darbspējas laiks: {1}</value>
 		<value>Šifrēšanas atslēga ir pārāk īsa. Mēs iesakām izmantot tādu, kas ir vismaz {0} baitus (simbolus) gara.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Tu izmanto {0} iestatījumus no {1} vērtības, bet Tu neesi norādījis pielāgotu --šifratslēgu. Ja vēlies, Tu vari norādīt individuāli pielāgotu --šifratslēgu, lai palielinātu drošību.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Tu lieto {0} iestatījumu {1} vērtībai, bet neesi nodrošinājis speciālu -cryptkey. Šī dēļ šim iestatījumam nav jēga, jo ASF ir spiests lietots pats savu (zināmu) atslēgu. Tev vajag nodrošinās speciālo -cryptkey lai šis iestatījums varētu nodrošināt papildu drošību.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -711,7 +717,9 @@ Darbspējas laiks: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Attālinātais serveris neko nezin par versiju uz kuru tiek veikta atjaunināšana. Šāda situācija ir iespējama, ja versija ir svaigi publicēta. Drošības apsvērumu dēļ atjaunināšanas procedūra tiek pārtraukta.</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>Neizdevās iegūt lejupielādētā bināra kontrolsummu - atjauninājuma process tiek atteikts šajā brīdi, drošības apsvērumu dēļ.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Attālinātais serveris atbildēja ar citādāku kontrolsummu, tas nozīmē, ka lejupielāde ir bojāta vai ir noticis MITM uzbrukums. Atjaunināšanas procedūra tiek pārtraukta!</value>
 	</data>
@@ -734,20 +742,65 @@ Darbspējas laiks: {1}</value>
 		<value>ASF nevar palaist aplikāciju {0}, jo tai ir ar reģionu saistīts ierobežojums {1}  valstī, kas ir spēkā līdz {2}.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>Tu mēģini palaist oficiālo spraudni {0}, kas nesakrīt ar ASF versiju: {1} (paredzēts {2}). Tas norāda, ka Tu dari kaut ko nepareizi, vai nu labo iestatījumus, vai piedāvā --ignorēt-neatbalstītu-vidi argumentu, ja patiešām zini, ko dari.</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>Tavs ASF ir avarējis pārāk daudz reižu īsā laika posmā, līdz ar to procesa inicializācija ir apturēta. Izpēti, izlabo savus iestatījumus, tad izdzēs ASF.crash failu no savas konfigurācijas direktorijas, vai piedāvā --ignorēt-neatbalstītu-vidi argumentu, ja patiešām zini, ko dari.</value>
+	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>Vākšana {0} ({1}) ir atspējota, jo šī spēle pašlaik ir atzīmēta kā privāta. Ja vēlies vākt no spēles caur ASF, tad nomaini spēles privātuma iestatījumus.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>Izlaiž: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>Pārbauda spraudņu atjauninājumus...</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>Pārbauda {0} spraudņa atjauninājumu...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>Nav pieejami atjauninājumi {0} spraudnim: {1} ≥ {2}.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>Ir pieejama jauna {0} spraudņa versija! Apsver iespēju atjaunināt sevi!</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>Atrasta {0} spraudņa versijas atjaunināšana no {1} uz {2}...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>Nav pieejami faili {0} spraudņa atjaunināšanai no versijas {1} uz {2}, tas parasti norāda uz atjauninājumu, kas būs pieejams vēlāk.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>Nevar iegūt failus {0} spraudņa atjaunināšanai no versijas {1} uz {2}. Tas var notikt, ja spraudņa versija nav pabeigta, ja tas tomēr atkārtojās, sazinies ar spraudņa izstrādātāju.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>Atjauno {0} spraudni...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>Atjaunošana {0} spraudnim izdevās, izmaiņas tiks iespējotas pie nākamās ASF palaišanas.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>{0}/{1} spraudnis ir reģistrēts un iespējots ar automātiskajiem atjauninājumiem.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>{0} ({1}) spraudņa automātiskie atjauninājumi ir atspējoti, neskatoties uz to, ka šī funkcija tiek atbalstīta.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Pielāgotie spraudņi ir reģistrēti automātiskajiem atjauninājumiem. ASF komanda vēlās atgādināt, ka Tavai drošībai, automātiskos atjauninājumus vajag iespējot tikai no uzticamiem izstrādātājiem. Ja to neplānoji darīt, Tu vari atspējot spraudņu atjauninājumus ASF globālajā konfigurācijā.</value>
+	</data>
 </root>

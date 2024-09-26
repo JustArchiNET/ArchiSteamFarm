@@ -41,7 +41,9 @@ namespace ArchiSteamFarm.Tests;
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
 internal sealed class Bot {
-	internal static Steam.Bot GenerateBot() {
+	internal static Steam.Bot GenerateBot(string botName = "Test") {
+		ArgumentException.ThrowIfNullOrEmpty(botName);
+
 		ConstructorInfo? constructor = typeof(Steam.Bot).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, [typeof(string), typeof(BotConfig), typeof(BotDatabase)]);
 
 		if (constructor == null) {
@@ -64,7 +66,7 @@ internal sealed class Bot {
 
 		ASF.GlobalDatabase ??= emptyObject.ToJsonObject<GlobalDatabase>();
 
-		if (constructor.Invoke(["Test", botConfig, botDatabase]) is not Steam.Bot result) {
+		if (constructor.Invoke([botName, botConfig, botDatabase]) is not Steam.Bot result) {
 			throw new InvalidOperationException(nameof(result));
 		}
 

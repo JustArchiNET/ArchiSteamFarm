@@ -14,13 +14,13 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4.1.7
+      uses: actions/checkout@v4.2.0
       with:
         show-progress: false
         submodules: recursive
 
     - name: Upload latest strings for translation on Crowdin
-      uses: crowdin/github-action@v2.1.3
+      uses: crowdin/github-action@v2.2.0
       with:
         crowdin_branch_name: main
         config: '.github/crowdin.yml'
