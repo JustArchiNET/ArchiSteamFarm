@@ -85,4 +85,9 @@
 		<UseNativeHttpHandler>true</UseNativeHttpHandler>
 		<TrimMode>partial</TrimMode>
 	</PropertyGroup>
+
+	<!-- TODO: Perhaps can be removed with stable release of .NET 9 -->
+	<ItemGroup Condition="'$(Configuration)' == 'Release'">
+		<RuntimeHostConfigurationOption Include="System.ComponentModel.DefaultValueAttribute.IsSupported" Value="true" Trim="true" />
+	</ItemGroup>
 </Project>
