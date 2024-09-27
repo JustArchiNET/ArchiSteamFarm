@@ -3564,14 +3564,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				(string? key, string? name) = BotDatabase.GetGameToRedeemInBackground();
 
 				if (string.IsNullOrEmpty(key)) {
-					ArchiLogger.LogNullError(key);
-
-					break;
-				}
-
-				if (string.IsNullOrEmpty(name)) {
-					ArchiLogger.LogNullError(name);
-
+					// No more games to redeem left, possible due to e.g. queue purge
 					break;
 				}
 
@@ -3639,6 +3632,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				BotDatabase.RemoveGameToRedeemInBackground(key);
 
 				// If user omitted the name or intentionally provided the same name as key, replace it with the Steam result
+				name ??= key;
+
 				if (name.Equals(key, StringComparison.OrdinalIgnoreCase) && (items?.Count > 0)) {
 					name = string.Join(", ", items.Values);
 				}

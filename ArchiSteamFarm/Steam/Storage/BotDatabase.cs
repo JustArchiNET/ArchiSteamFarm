@@ -256,6 +256,18 @@ public sealed class BotDatabase : GenericDatabase {
 		Utilities.InBackground(Save);
 	}
 
+	internal void ClearGamesToRedeemInBackground() {
+		lock (GamesToRedeemInBackground) {
+			if (GamesToRedeemInBackground.Count == 0) {
+				return;
+			}
+
+			GamesToRedeemInBackground.Clear();
+		}
+
+		Utilities.InBackground(Save);
+	}
+
 	internal static async Task<BotDatabase?> CreateOrLoad(string filePath) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 

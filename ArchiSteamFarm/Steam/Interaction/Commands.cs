@@ -127,6 +127,8 @@ public sealed class Commands {
 						return ResponseWalletBalance(access);
 					case "BGR":
 						return ResponseBackgroundGamesRedeemer(access);
+					case "BGRCLEAR":
+						return ResponseBackgroundGamesRedeemerClear(access);
 					case "EXIT":
 						return ResponseExit(access);
 					case "FARM":
@@ -198,6 +200,8 @@ public sealed class Commands {
 						return await ResponseWalletBalance(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
 					case "BGR":
 						return await ResponseBackgroundGamesRedeemer(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
+					case "BGRCLEAR":
+						return await ResponseBackgroundGamesRedeemerClear(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
 					case "ENCRYPT" when args.Length > 2:
 						return ResponseEncrypt(access, args[1], Utilities.GetArgsAsText(message, 2));
 					case "FARM":
@@ -1142,6 +1146,40 @@ public sealed class Commands {
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBackgroundGamesRedeemer(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
+
+		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+	}
+
+	private string? ResponseBackgroundGamesRedeemerClear(EAccess access) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		if (access < EAccess.Master) {
+			return null;
+		}
+
+		Bot.BotDatabase.ClearGamesToRedeemInBackground();
+
+		return FormatBotResponse(Strings.Done);
+	}
+
+	private static async Task<string?> ResponseBackgroundGamesRedeemerClear(EAccess access, string botNames, ulong steamID = 0) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
+		}
+
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBackgroundGamesRedeemerClear(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
 		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
 
