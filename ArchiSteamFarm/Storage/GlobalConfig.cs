@@ -615,6 +615,7 @@ public sealed class GlobalConfig {
 		Blacklist
 	}
 
+#pragma warning disable CA1027 // TODO: Remove me after Experimental alias disappears
 	[PublicAPI]
 	public enum EUpdateChannel : byte {
 		None,
@@ -624,4 +625,5 @@ public sealed class GlobalConfig {
 		[Obsolete($"Use {nameof(PreRelease)} instead, this alias will be removed in the future version")]
 		Experimental = PreRelease
 	}
+#pragma warning restore CA1027 // TODO: Remove me after Experimental alias disappears
 }
