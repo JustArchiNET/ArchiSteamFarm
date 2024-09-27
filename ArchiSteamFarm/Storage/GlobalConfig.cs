@@ -619,6 +619,9 @@ public sealed class GlobalConfig {
 	public enum EUpdateChannel : byte {
 		None,
 		Stable,
-		Experimental
+		PreRelease,
+
+		[Obsolete($"Use {nameof(PreRelease)} instead, this alias will be removed in the future version")]
+		Experimental = PreRelease
 	}
 }

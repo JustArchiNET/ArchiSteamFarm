@@ -3355,6 +3355,12 @@ public sealed class Commands {
 			if (!Enum.TryParse(channelText, true, out channel) || (channel == GlobalConfig.EUpdateChannel.None)) {
 				return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(channelText)));
 			}
+
+#pragma warning disable CS0618 // TODO: Remove me in the future
+			if (channelText.Contains(nameof(GlobalConfig.EUpdateChannel.Experimental), StringComparison.OrdinalIgnoreCase)) {
+				return FormatStaticResponse(Strings.FormatWarningFailedWithError(Strings.FormatWarningDeprecated(nameof(GlobalConfig.EUpdateChannel.Experimental), nameof(GlobalConfig.EUpdateChannel.PreRelease))));
+			}
+#pragma warning restore CS0618 // TODO: Remove me in the future
 		}
 
 		(bool success, string? message, Version? version) = await Actions.Update(channel, forced).ConfigureAwait(false);
