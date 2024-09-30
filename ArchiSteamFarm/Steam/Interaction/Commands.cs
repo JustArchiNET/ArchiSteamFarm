@@ -2784,12 +2784,14 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
+		IList<EResult> results = await Utilities.InParallel(definitionIDs.Select(Bot.Actions.RedeemPoints)).ConfigureAwait(false);
+
+		int i = 0;
+
 		StringBuilder response = new();
 
 		foreach (uint definitionID in definitionIDs) {
-			EResult result = await Bot.Actions.RedeemPoints(definitionID).ConfigureAwait(false);
-
-			response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense(definitionID, result)));
+			response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense(definitionID, results[i++])));
 		}
 
 		return response.Length > 0 ? response.ToString() : null;
