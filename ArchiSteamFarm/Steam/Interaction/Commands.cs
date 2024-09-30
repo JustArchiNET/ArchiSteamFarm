@@ -2309,7 +2309,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		uint? points = await Bot.ArchiWebHandler.GetPointsBalance().ConfigureAwait(false);
+		long? points = await Bot.ArchiHandler.GetPointsBalance().ConfigureAwait(false);
 
 		return FormatBotResponse(points.HasValue ? Strings.FormatBotPointsBalance(points) : Strings.WarningFailed);
 	}

@@ -394,6 +394,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
+	[Obsolete($"Use {nameof(ArchiHandler)}.{nameof(ArchiHandler.GetPointsBalance)} instead, this endpoint will be removed in the future version")]
 	[PublicAPI]
 	public async Task<uint?> GetPointsBalance() {
 		string? accessToken = Bot.AccessToken;

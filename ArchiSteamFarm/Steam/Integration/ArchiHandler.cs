@@ -360,6 +360,47 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	[PublicAPI]
+	public async Task<long?> GetPointsBalance() {
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return null;
+		}
+
+		if (Client.SteamID == null) {
+			throw new InvalidOperationException(nameof(Client.SteamID));
+		}
+
+		ulong steamID = Client.SteamID;
+
+		if (steamID == 0) {
+			throw new InvalidOperationException(nameof(Client.SteamID));
+		}
+
+		CLoyaltyRewards_GetSummary_Request request = new() { steamid = steamID };
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedLoyaltyRewards.SendMessage(x => x.GetSummary(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return null;
+		}
+
+		if (response.Result != EResult.OK) {
+			return null;
+		}
+
+		CLoyaltyRewards_GetSummary_Response body = response.GetDeserializedResponse<CLoyaltyRewards_GetSummary_Response>();
+
+		return body.summary?.points;
+	}
+
+	[PublicAPI]
 	public async Task<CCredentials_GetSteamGuardDetails_Response?> GetSteamGuardStatus() {
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
