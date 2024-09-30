@@ -556,7 +556,7 @@ public sealed class Trading : IDisposable {
 		if (accept) {
 			// Ensure that accepting this trade offer does not create conflicts with other
 			lock (handledSets) {
-				if (wantedSets.Any(handledSets.Contains)) {
+				if (handledSets.Overlaps(wantedSets)) {
 					Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RetryAfterOthers, nameof(handledSets)));
 
 					return ParseTradeResult.EResult.RetryAfterOthers;

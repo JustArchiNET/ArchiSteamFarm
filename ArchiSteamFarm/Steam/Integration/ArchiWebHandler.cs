@@ -55,7 +55,10 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal const ushort MaxItemsInSingleInventoryRequest = 5000;
 
 	private const string EconService = "IEconService";
+
+	[Obsolete]
 	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
+
 	private const byte MaxTradeOfferMessageLength = 128;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const byte SessionIDLength = 24; // For maximum compatibility, should be divisible by 2 and match the length of "sessionid" property that Steam uses across their websites
@@ -394,6 +397,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
+	[Obsolete($"Use {nameof(ArchiHandler)}.{nameof(ArchiHandler.GetPointsBalance)} instead, this endpoint will be removed in the future version")]
 	[PublicAPI]
 	public async Task<uint?> GetPointsBalance() {
 		string? accessToken = Bot.AccessToken;

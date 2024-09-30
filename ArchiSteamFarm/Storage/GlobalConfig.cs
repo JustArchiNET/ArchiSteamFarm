@@ -619,6 +619,6 @@ public sealed class GlobalConfig {
 	public enum EUpdateChannel : byte {
 		None,
 		Stable,
-		Experimental
+		PreRelease
 	}
 }

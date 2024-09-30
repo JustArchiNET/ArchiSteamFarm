@@ -61,6 +61,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	private readonly SteamUnifiedMessages.UnifiedService<IEcon> UnifiedEconService;
 	private readonly SteamUnifiedMessages.UnifiedService<IFamilyGroups> UnifiedFamilyGroups;
 	private readonly SteamUnifiedMessages.UnifiedService<IFriendMessages> UnifiedFriendMessagesService;
+	private readonly SteamUnifiedMessages.UnifiedService<ILoyaltyRewards> UnifiedLoyaltyRewards;
 	private readonly SteamUnifiedMessages.UnifiedService<IPlayer> UnifiedPlayerService;
 	private readonly SteamUnifiedMessages.UnifiedService<IStore> UnifiedStoreService;
 	private readonly SteamUnifiedMessages.UnifiedService<ITwoFactor> UnifiedTwoFactorService;
@@ -80,6 +81,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		UnifiedEconService = steamUnifiedMessages.CreateService<IEcon>();
 		UnifiedFamilyGroups = steamUnifiedMessages.CreateService<IFamilyGroups>();
 		UnifiedFriendMessagesService = steamUnifiedMessages.CreateService<IFriendMessages>();
+		UnifiedLoyaltyRewards = steamUnifiedMessages.CreateService<ILoyaltyRewards>();
 		UnifiedPlayerService = steamUnifiedMessages.CreateService<IPlayer>();
 		UnifiedStoreService = steamUnifiedMessages.CreateService<IStore>();
 		UnifiedTwoFactorService = steamUnifiedMessages.CreateService<ITwoFactor>();
@@ -358,6 +360,47 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	[PublicAPI]
+	public async Task<long?> GetPointsBalance() {
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return null;
+		}
+
+		if (Client.SteamID == null) {
+			throw new InvalidOperationException(nameof(Client.SteamID));
+		}
+
+		ulong steamID = Client.SteamID;
+
+		if (steamID == 0) {
+			throw new InvalidOperationException(nameof(Client.SteamID));
+		}
+
+		CLoyaltyRewards_GetSummary_Request request = new() { steamid = steamID };
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedLoyaltyRewards.SendMessage(x => x.GetSummary(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return null;
+		}
+
+		if (response.Result != EResult.OK) {
+			return null;
+		}
+
+		CLoyaltyRewards_GetSummary_Response body = response.GetDeserializedResponse<CLoyaltyRewards_GetSummary_Response>();
+
+		return body.summary?.points;
+	}
+
+	[PublicAPI]
 	public async Task<CCredentials_GetSteamGuardDetails_Response?> GetSteamGuardStatus() {
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
@@ -498,6 +541,35 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		}
 
 		return response.Result == EResult.OK;
+	}
+
+	[PublicAPI]
+	public async Task<EResult> RedeemPoints(uint definitionID) {
+		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
+
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return EResult.NoConnection;
+		}
+
+		CLoyaltyRewards_RedeemPoints_Request request = new() {
+			defid = definitionID
+		};
+
+		SteamUnifiedMessages.ServiceMethodResponse response;
+
+		try {
+			response = await UnifiedLoyaltyRewards.SendMessage(x => x.RedeemPoints(request)).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return EResult.Timeout;
+		}
+
+		return response.Result;
 	}
 
 	[PublicAPI]

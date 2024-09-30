@@ -88,6 +88,10 @@ public sealed class ArchiCacheable<T> : IDisposable {
 			ASF.ArchiLogger.LogGenericDebuggingException(e);
 
 			return GetFailedValueFor(cacheFallback);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return GetFailedValueFor(cacheFallback);
 		} finally {
 			InitSemaphore.Release();
 		}
