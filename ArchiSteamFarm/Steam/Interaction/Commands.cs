@@ -298,6 +298,10 @@ public sealed class Commands {
 						return await ResponseAdvancedRedeem(access, args[1], args[2], Utilities.GetArgsAsText(args, 3, ","), steamID).ConfigureAwait(false);
 					case "R^" or "REDEEM^" when args.Length > 2:
 						return await ResponseAdvancedRedeem(access, args[1], args[2], steamID).ConfigureAwait(false);
+					case "RP" or "REDEEMPOINTS" when args.Length > 2:
+						return await ResponseRedeemPoints(access, args[1], Utilities.GetArgsAsText(args, 2, ","), steamID).ConfigureAwait(false);
+					case "RP" or "REDEEMPOINTS":
+						return await ResponseRedeemPoints(access, args[1]).ConfigureAwait(false);
 					case "RESET":
 						return await ResponseReset(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
 					case "RESUME":
@@ -2757,6 +2761,89 @@ public sealed class Commands {
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseRedeem(GetProxyAccess(bot, access, steamID), keysText, steamID, redeemFlags))).ConfigureAwait(false);
+
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
+
+		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+	}
+
+	private async Task<string?> ResponseRedeemPoints(EAccess access, HashSet<uint> definitionIDs) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		if ((definitionIDs == null) || (definitionIDs.Count == 0)) {
+			throw new ArgumentNullException(nameof(definitionIDs));
+		}
+
+		if (access < EAccess.Operator) {
+			return null;
+		}
+
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return FormatBotResponse(Strings.BotNotConnected);
+		}
+
+		StringBuilder response = new();
+
+		foreach (uint definitionID in definitionIDs) {
+			EResult result = await Bot.Actions.RedeemPoints(definitionID).ConfigureAwait(false);
+
+			response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense(definitionID, result)));
+		}
+
+		return response.Length > 0 ? response.ToString() : null;
+	}
+
+	private async Task<string?> ResponseRedeemPoints(EAccess access, string targetDefinitionIDs) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(targetDefinitionIDs);
+
+		if (access < EAccess.Operator) {
+			return null;
+		}
+
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return FormatBotResponse(Strings.BotNotConnected);
+		}
+
+		string[] definitions = targetDefinitionIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+		if (definitions.Length == 0) {
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(definitions)));
+		}
+
+		HashSet<uint> definitionIDs = new(definitions.Length);
+
+		foreach (string definition in definitions) {
+			if (!uint.TryParse(definition, out uint definitionID) || (definitionID == 0)) {
+				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(definition)));
+			}
+
+			definitionIDs.Add(definitionID);
+		}
+
+		return await ResponseRedeemPoints(access, definitionIDs).ConfigureAwait(false);
+	}
+
+	private static async Task<string?> ResponseRedeemPoints(EAccess access, string botNames, string targetDefinitionIDs, ulong steamID = 0) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetDefinitionIDs);
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
+		}
+
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseRedeemPoints(GetProxyAccess(bot, access, steamID), targetDefinitionIDs))).ConfigureAwait(false);
 
 		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
 

@@ -314,6 +314,13 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<EResult> RedeemPoints(uint definitionID) {
+		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
+
+		return await Bot.ArchiHandler.RedeemPoints(definitionID).ConfigureAwait(false);
+	}
+
+	[PublicAPI]
 	public static (bool Success, string Message) Restart() {
 		if (!Program.RestartAllowed) {
 			return (false, $"!{nameof(Program.RestartAllowed)}");

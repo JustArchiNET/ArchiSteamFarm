@@ -75,6 +75,34 @@ public sealed class BotController : ArchiController {
 	}
 
 	/// <summary>
+	///     Redeems points on given bots.
+	/// </summary>
+	[Consumes("application/json")]
+	[HttpPost("{botNames:required}/RedeemPoints/{definitionID:required}")]
+	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, EResult>>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
+	public async Task<ActionResult<GenericResponse>> AddLicensePost(string botNames, uint definitionID) {
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
+		}
+
+		IList<EResult> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.RedeemPoints(definitionID))).ConfigureAwait(false);
+
+		Dictionary<string, EResult> result = new(bots.Count, Bot.BotsComparer);
+
+		foreach (Bot bot in bots) {
+			result[bot.BotName] = results[result.Count];
+		}
+
+		return Ok(new GenericResponse<IReadOnlyDictionary<string, EResult>>(result));
+	}
+
+	/// <summary>
 	///     Deletes all files related to given bots.
 	/// </summary>
 	[HttpDelete("{botNames:required}")]
