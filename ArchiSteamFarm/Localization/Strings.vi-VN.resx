@@ -403,7 +403,7 @@ StackTrace:
 		<value>Bạn không thể gửi lời mời giao dịch cho chính mình!</value>
 	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
-		<value>Bot này không có ASF 2FA đang hoạt động! Bạn quên nhập xác thực của bạn như là ASF 2FA?</value>
+		<value>Bot này không có ASF 2FA đang hoạt động! Liệu bạn có quên nhập xác thực của bạn như là ASF 2FA không?</value>
 	</data>
 	<data name="BotNotConnected" xml:space="preserve">
 		<value>Bot này không được kết nối!</value>
@@ -747,7 +747,7 @@ Thời gian hoạt động: {1}</value>
 		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
 	</data>
 	<data name="ErrorTooManyCrashes" xml:space="preserve">
-		<value>ASF của bạn đã bị văng rất nhiều lần gần đây, vì vậy quá trình khởi tạo đã bị vô hiệu hoá. Hoặc kiểm tra lại, sửa thiết lập của bạn, sau đó xoá tệp ASF.crash khỏi thư mục cấu hình, hoặc thêm --ignore-unsupported-environment nếu bạn thực sự biết mình đang làm gì.</value>
+		<value>ASF của bạn đã bị văng rất nhiều lần gần đây, vì vậy quá trình khởi tạo đã bị vô hiệu hoá. Bạn hãy kiểm tra lại, sửa thiết lập của bạn, sau đó xoá tệp ASF.crash khỏi thư mục cấu hình, hoặc thêm --ignore-unsupported-environment nếu bạn thực sự biết mình đang làm gì.</value>
 	</data>
 	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
 		<value>Việc cày {0} ({1}) đã bị vô hiệu hoá, vì trò chơi đó được đánh dấu là riêng tư. Nếu bạn muốn ASF cày trò chơi này, vui lòng thay đổi cài đặt quyền riêng tư của nó.</value>
