@@ -526,7 +526,10 @@ internal static class Program {
 		ArgumentNullException.ThrowIfNull(e.ExceptionObject);
 
 		await ASF.ArchiLogger.LogFatalException((Exception) e.ExceptionObject).ConfigureAwait(false);
-		await Exit(1).ConfigureAwait(false);
+
+		if (e.IsTerminating) {
+			await Exit(1).ConfigureAwait(false);
+		}
 	}
 
 	private static async void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e) {
