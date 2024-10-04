@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Quic;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -532,8 +533,12 @@ internal static class Program {
 		ArgumentNullException.ThrowIfNull(e);
 		ArgumentNullException.ThrowIfNull(e.Exception);
 
-		// TODO: Remove conditionally ignoring QuicException once https://github.com/dotnet/runtime/issues/80111 is resolved
-		if ((e.Exception.InnerExceptions.Count == 0) || e.Exception.InnerExceptions.All(static exception => exception is not QuicException)) {
+		// TODO: Remove conditionally ignoring exceptions once reports are resolved
+		// https://github.com/dotnet/runtime/issues/80111
+		// https://github.com/dotnet/runtime/issues/102772
+		bool ignored = e.Exception.InnerExceptions.Any(static exception => exception is HttpIOException or QuicException);
+
+		if (!ignored) {
 			await ASF.ArchiLogger.LogFatalException(e.Exception).ConfigureAwait(false);
 		}
 
