@@ -641,7 +641,7 @@ public sealed class BotConfig {
 
 	[Flags]
 	[PublicAPI]
-	public enum EFarmingPreferences : byte {
+	public enum EFarmingPreferences : ushort {
 		None = 0,
 		FarmingPausedByDefault = 1,
 		ShutdownOnFarmingFinished = 2,
@@ -651,7 +651,8 @@ public sealed class BotConfig {
 		SkipUnplayedGames = 32,
 		EnableRiskyCardsDiscovery = 64,
 		AutoSteamSaleEvent = 128,
-		All = FarmingPausedByDefault | ShutdownOnFarmingFinished | SendOnFarmingFinished | FarmPriorityQueueOnly | SkipRefundableGames | SkipUnplayedGames | EnableRiskyCardsDiscovery | AutoSteamSaleEvent
+		AutoUnpackBoosterPacks = 256,
+		All = FarmingPausedByDefault | ShutdownOnFarmingFinished | SendOnFarmingFinished | FarmPriorityQueueOnly | SkipRefundableGames | SkipUnplayedGames | EnableRiskyCardsDiscovery | AutoSteamSaleEvent | AutoUnpackBoosterPacks
 	}
 
 	[Flags]

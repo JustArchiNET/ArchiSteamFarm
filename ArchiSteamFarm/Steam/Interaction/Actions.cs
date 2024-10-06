@@ -477,6 +477,35 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<bool> UnpackBoosterPacks() {
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return false;
+		}
+
+		// It'd make sense here to actually check return code of ArchiWebHandler.UnpackBooster(), but it lies most of the time | https://github.com/JustArchi/ArchiSteamFarm/issues/704
+		bool result = true;
+
+		// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/archiasf/discussions/1/3559414588264550284/
+		try {
+			await foreach (Asset item in Bot.ArchiHandler.GetMyInventoryAsync().Where(static item => item.Type == EAssetType.BoosterPack).ConfigureAwait(false)) {
+				if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
+					result = false;
+				}
+			}
+		} catch (TimeoutException e) {
+			Bot.ArchiLogger.LogGenericWarningException(e);
+
+			return false;
+		} catch (Exception e) {
+			Bot.ArchiLogger.LogGenericException(e);
+
+			return false;
+		}
+
+		return result;
+	}
+
+	[PublicAPI]
 	public static async Task<(bool Success, string? Message, Version? Version)> Update(GlobalConfig.EUpdateChannel? channel = null, bool forced = false) {
 		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
 			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));

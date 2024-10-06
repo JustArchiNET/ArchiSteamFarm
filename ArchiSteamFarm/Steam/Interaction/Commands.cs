@@ -3418,27 +3418,9 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		// It'd make sense here to actually check return code of ArchiWebHandler.UnpackBooster(), but it lies most of the time | https://github.com/JustArchi/ArchiSteamFarm/issues/704
-		bool completeSuccess = true;
+		bool result = await Bot.Actions.UnpackBoosterPacks().ConfigureAwait(false);
 
-		// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/archiasf/discussions/1/3559414588264550284/
-		try {
-			await foreach (Asset item in Bot.ArchiHandler.GetMyInventoryAsync().Where(static item => item.Type == EAssetType.BoosterPack).ConfigureAwait(false)) {
-				if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
-					completeSuccess = false;
-				}
-			}
-		} catch (TimeoutException e) {
-			Bot.ArchiLogger.LogGenericWarningException(e);
-
-			completeSuccess = false;
-		} catch (Exception e) {
-			Bot.ArchiLogger.LogGenericException(e);
-
-			completeSuccess = false;
-		}
-
-		return FormatBotResponse(completeSuccess ? Strings.Success : Strings.Done);
+		return FormatBotResponse(result ? Strings.Success : Strings.Done);
 	}
 
 	private static async Task<string?> ResponseUnpackBoosters(EAccess access, string botNames, ulong steamID = 0) {

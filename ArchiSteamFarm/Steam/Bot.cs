@@ -183,6 +183,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = [];
 	private readonly SteamUser SteamUser;
 	private readonly Trading Trading;
+	private readonly SemaphoreSlim UnpackBoosterPacksSemaphore = new(1, 1);
 
 	private IEnumerable<(string FilePath, EFileType FileType)> RelatedFiles {
 		get {
@@ -315,6 +316,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private SteamSaleEvent? SteamSaleEvent;
 	private Timer? TradeCheckTimer;
 	private string? TwoFactorCode;
+	private bool UnpackBoosterPacksScheduled;
 
 	private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
 		ArgumentException.ThrowIfNullOrEmpty(botName);
@@ -415,6 +417,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		RefreshWebSessionSemaphore.Dispose();
 		SendCompleteTypesSemaphore.Dispose();
 		Trading.Dispose();
+		UnpackBoosterPacksSemaphore.Dispose();
 
 		Actions.Dispose();
 		CardsFarmer.Dispose();
@@ -442,6 +445,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		RefreshWebSessionSemaphore.Dispose();
 		SendCompleteTypesSemaphore.Dispose();
 		Trading.Dispose();
+		UnpackBoosterPacksSemaphore.Dispose();
 
 		await Actions.DisposeAsync().ConfigureAwait(false);
 		await CardsFarmer.DisposeAsync().ConfigureAwait(false);
@@ -3121,7 +3125,21 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			Utilities.InBackground(ArchiWebHandler.MarkInventory);
 		}
 
-		if (BotConfig.CompleteTypesToSend.Count > 0) {
+		// The following actions should be synchronized, as they modify the state of the inventory
+		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.AutoUnpackBoosterPacks)) {
+			Utilities.InBackground(
+				async () => {
+					if (!await UnpackBoosterPacks().ConfigureAwait(false)) {
+						// Another task is already in progress, so it'll handle the actions below as well
+						return;
+					}
+
+					if (BotConfig.CompleteTypesToSend.Count > 0) {
+						await SendCompletedSets().ConfigureAwait(false);
+					}
+				}
+			);
+		} else if (BotConfig.CompleteTypesToSend.Count > 0) {
 			Utilities.InBackground(SendCompletedSets);
 		}
 	}
@@ -3921,6 +3939,32 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		RefreshTokensTimer.Dispose();
 		RefreshTokensTimer = null;
+	}
+
+	private async Task<bool> UnpackBoosterPacks() {
+		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+		lock (UnpackBoosterPacksSemaphore) {
+			if (UnpackBoosterPacksScheduled) {
+				return false;
+			}
+
+			UnpackBoosterPacksScheduled = true;
+		}
+
+		await UnpackBoosterPacksSemaphore.WaitAsync().ConfigureAwait(false);
+
+		try {
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+			lock (UnpackBoosterPacksSemaphore) {
+				UnpackBoosterPacksScheduled = false;
+			}
+
+			await Actions.UnpackBoosterPacks().ConfigureAwait(false);
+		} finally {
+			UnpackBoosterPacksSemaphore.Release();
+		}
+
+		return true;
 	}
 
 	private void UpdateTokens(string accessToken, string? refreshToken = null) {
