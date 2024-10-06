@@ -408,16 +408,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	public void Dispose() {
-		// Those are objects that are always being created if constructor doesn't throw exception
-		ArchiWebHandler.Dispose();
-		BotDatabase.Dispose();
-		GamesRedeemerInBackgroundSemaphore.Dispose();
-		InitializationSemaphore.Dispose();
-		MessagingSemaphore.Dispose();
-		RefreshWebSessionSemaphore.Dispose();
-		SendCompleteTypesSemaphore.Dispose();
-		Trading.Dispose();
-		UnpackBoosterPacksSemaphore.Dispose();
+		DisposeShared();
 
 		Actions.Dispose();
 		CardsFarmer.Dispose();
@@ -436,16 +427,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	public async ValueTask DisposeAsync() {
-		// Those are objects that are always being created if constructor doesn't throw exception
-		ArchiWebHandler.Dispose();
-		BotDatabase.Dispose();
-		GamesRedeemerInBackgroundSemaphore.Dispose();
-		InitializationSemaphore.Dispose();
-		MessagingSemaphore.Dispose();
-		RefreshWebSessionSemaphore.Dispose();
-		SendCompleteTypesSemaphore.Dispose();
-		Trading.Dispose();
-		UnpackBoosterPacksSemaphore.Dispose();
+		DisposeShared();
 
 		await Actions.DisposeAsync().ConfigureAwait(false);
 		await CardsFarmer.DisposeAsync().ConfigureAwait(false);
@@ -2090,6 +2072,18 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ReconnectOnUserInitiated = reconnect;
 
 		SteamClient.Disconnect();
+	}
+
+	private void DisposeShared() {
+		ArchiWebHandler.Dispose();
+		BotDatabase.Dispose();
+		GamesRedeemerInBackgroundSemaphore.Dispose();
+		InitializationSemaphore.Dispose();
+		MessagingSemaphore.Dispose();
+		RefreshWebSessionSemaphore.Dispose();
+		SendCompleteTypesSemaphore.Dispose();
+		Trading.Dispose();
+		UnpackBoosterPacksSemaphore.Dispose();
 	}
 
 	private async Task<Dictionary<string, string>?> GetKeysFromFile(string filePath) {
