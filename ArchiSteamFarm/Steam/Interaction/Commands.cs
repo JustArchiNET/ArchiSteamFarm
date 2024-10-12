@@ -166,7 +166,7 @@ public sealed class Commands {
 					case "STATUS":
 						return ResponseStatus(access).Response;
 					case "STOP":
-						return ResponseStop(access);
+						return await ResponseStop(access).ConfigureAwait(false);
 					case "TB":
 						return ResponseTradingBlacklist(access);
 					case "UNPACK":
@@ -3057,7 +3057,7 @@ public sealed class Commands {
 		return string.Join(Environment.NewLine, validResults.Select(static result => result.Response).Union(extraResponse.ToEnumerable()));
 	}
 
-	private string? ResponseStop(EAccess access) {
+	private async Task<string?> ResponseStop(EAccess access) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -3066,7 +3066,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		(bool success, string message) = Bot.Actions.Stop();
+		(bool success, string message) = await Bot.Actions.Stop().ConfigureAwait(false);
 
 		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
@@ -3084,7 +3084,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStop(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseStop(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
 		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
 

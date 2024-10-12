@@ -172,6 +172,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal bool HasLoginCodeReady => !string.IsNullOrEmpty(TwoFactorCode) || !string.IsNullOrEmpty(AuthCode);
 
 	private readonly CallbackManager CallbackManager;
+	private readonly SemaphoreSlim ConnectionSemaphore = new(1, 1);
 	private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new(1, 1);
 	private readonly Timer HeartBeatTimer;
 	private readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
@@ -1574,7 +1575,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			// Skip shutdown event as we're actually reinitializing the bot, not fully stopping it
-			Stop(true);
+			await Stop(true).ConfigureAwait(false);
 
 			BotConfig = botConfig;
 
@@ -1595,7 +1596,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.ShutdownOnFarmingFinished)) {
-			Stop();
+			await Stop().ConfigureAwait(false);
 		}
 
 		await PluginsCore.OnBotFarmingFinished(this, farmedSomething).ConfigureAwait(false);
@@ -1809,7 +1810,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (KeepRunning) {
-			Stop(true);
+			await Stop(true).ConfigureAwait(false);
 		}
 
 		await BotDatabase.MakeReadOnly().ConfigureAwait(false);
@@ -1877,7 +1878,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		if (string.IsNullOrEmpty(input) || !SetUserInput(inputType, input)) {
 			ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(input)));
 
-			Stop();
+			await Stop().ConfigureAwait(false);
 
 			return null;
 		}
@@ -1923,62 +1924,83 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		KeepRunning = true;
+		await ConnectionSemaphore.WaitAsync().ConfigureAwait(false);
 
-		ArchiLogger.LogGenericInfo(Strings.Starting);
+		try {
+			if (KeepRunning) {
+				return;
+			}
 
-		// Support and convert 2FA files
-		if (!HasMobileAuthenticator) {
-			string mobileAuthenticatorFilePath = GetFilePath(EFileType.MobileAuthenticator);
+			KeepRunning = true;
 
-			if (string.IsNullOrEmpty(mobileAuthenticatorFilePath)) {
-				ArchiLogger.LogNullError(mobileAuthenticatorFilePath);
+			ArchiLogger.LogGenericInfo(Strings.Starting);
+
+			// Support and convert 2FA files
+			if (!HasMobileAuthenticator) {
+				string mobileAuthenticatorFilePath = GetFilePath(EFileType.MobileAuthenticator);
+
+				if (string.IsNullOrEmpty(mobileAuthenticatorFilePath)) {
+					ArchiLogger.LogNullError(mobileAuthenticatorFilePath);
+
+					return;
+				}
+
+				if (File.Exists(mobileAuthenticatorFilePath)) {
+					await ImportAuthenticatorFromFile(mobileAuthenticatorFilePath).ConfigureAwait(false);
+				}
+			}
+
+			string keysToRedeemFilePath = GetFilePath(EFileType.KeysToRedeem);
+
+			if (string.IsNullOrEmpty(keysToRedeemFilePath)) {
+				ArchiLogger.LogNullError(keysToRedeemFilePath);
 
 				return;
 			}
 
-			if (File.Exists(mobileAuthenticatorFilePath)) {
-				await ImportAuthenticatorFromFile(mobileAuthenticatorFilePath).ConfigureAwait(false);
+			if (File.Exists(keysToRedeemFilePath)) {
+				await ImportKeysToRedeem(keysToRedeemFilePath).ConfigureAwait(false);
 			}
+
+			// If any previous callbacks handling loop is still going, we're going to abort it
+			await StopHandlingCallbacks().ConfigureAwait(false);
+
+			CallbacksAborted = new CancellationTokenSource();
+
+			CancellationToken token = CallbacksAborted.Token;
+
+			Utilities.InBackground(() => HandleCallbacks(token), true);
+			Utilities.InBackground(Reconnect);
+		} finally {
+			ConnectionSemaphore.Release();
 		}
-
-		string keysToRedeemFilePath = GetFilePath(EFileType.KeysToRedeem);
-
-		if (string.IsNullOrEmpty(keysToRedeemFilePath)) {
-			ArchiLogger.LogNullError(keysToRedeemFilePath);
-
-			return;
-		}
-
-		if (File.Exists(keysToRedeemFilePath)) {
-			await ImportKeysToRedeem(keysToRedeemFilePath).ConfigureAwait(false);
-		}
-
-		// If any previous callbacks handling loop is still going, we're going to abort it
-		await StopHandlingCallbacks().ConfigureAwait(false);
-
-		CallbacksAborted = new CancellationTokenSource();
-
-		Utilities.InBackground(() => HandleCallbacks(CallbacksAborted.Token), true);
-
-		await Connect().ConfigureAwait(false);
 	}
 
-	internal void Stop(bool skipShutdownEvent = false) {
+	internal async Task Stop(bool skipShutdownEvent = false) {
 		if (!KeepRunning) {
 			return;
 		}
 
-		KeepRunning = false;
+		await ConnectionSemaphore.WaitAsync().ConfigureAwait(false);
 
-		ArchiLogger.LogGenericInfo(Strings.BotStopping);
+		try {
+			if (!KeepRunning) {
+				return;
+			}
 
-		if (SteamClient.IsConnected) {
-			Disconnect();
-		}
+			KeepRunning = false;
 
-		if (!skipShutdownEvent) {
-			Utilities.InBackground(Events.OnBotShutdown);
+			ArchiLogger.LogGenericInfo(Strings.BotStopping);
+
+			if (SteamClient.IsConnected) {
+				Disconnect();
+			}
+
+			if (!skipShutdownEvent) {
+				Utilities.InBackground(Events.OnBotShutdown);
+			}
+		} finally {
+			ConnectionSemaphore.Release();
 		}
 	}
 
@@ -2037,7 +2059,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (KeepRunning) {
 			if (!force) {
-				Stop();
+				await Stop().ConfigureAwait(false);
 			} else {
 				// Stop() will most likely block due to connection freeze, don't wait for it
 				Utilities.InBackground(() => Stop());
@@ -2077,6 +2099,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private void DisposeShared() {
 		ArchiWebHandler.Dispose();
 		BotDatabase.Dispose();
+		ConnectionSemaphore.Dispose();
 		GamesRedeemerInBackgroundSemaphore.Dispose();
 		InitializationSemaphore.Dispose();
 		MessagingSemaphore.Dispose();
@@ -2207,7 +2230,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				// Those failures are permanent, we should Stop() the bot if any of those happen
 				ArchiLogger.LogGenericError(Strings.FormatBotUnableToLogin(result, extendedResult));
 
-				Stop();
+				await Stop().ConfigureAwait(false);
 
 				break;
 			case EResult.AccessDenied when string.IsNullOrEmpty(RefreshToken) && (++LoginFailures >= MaxLoginFailures):
@@ -2217,7 +2240,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				ArchiLogger.LogGenericError(Strings.FormatBotInvalidPasswordDuringLogin(MaxLoginFailures));
 
-				Stop();
+				await Stop().ConfigureAwait(false);
 
 				break;
 			case EResult.AccountLoginDeniedNeedTwoFactor when HasMobileAuthenticator && (++LoginFailures >= MaxLoginFailures):
@@ -2227,7 +2250,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				ArchiLogger.LogGenericError(Strings.FormatBotInvalidAuthenticatorDuringLogin(MaxLoginFailures));
 
-				Stop();
+				await Stop().ConfigureAwait(false);
 
 				break;
 			case EResult.AccountLoginDeniedNeedTwoFactor when HasMobileAuthenticator:
@@ -2250,7 +2273,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				if (string.IsNullOrEmpty(authCode) || !SetUserInput(ASF.EUserInputType.SteamGuard, authCode)) {
 					ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(authCode)));
 
-					Stop();
+					await Stop().ConfigureAwait(false);
 				}
 
 				break;
@@ -2264,7 +2287,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode)) {
 					ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(twoFactorCode)));
 
-					Stop();
+					await Stop().ConfigureAwait(false);
 				}
 
 				break;
@@ -2293,7 +2316,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				// Unexpected result, shutdown immediately
 				ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(result), result));
 				ArchiLogger.LogGenericError(Strings.FormatBotUnableToLogin(result, extendedResult));
-				Stop();
+
+				await Stop().ConfigureAwait(false);
 
 				break;
 		}
@@ -2688,7 +2712,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (!await InitLoginAndPassword(string.IsNullOrEmpty(RefreshToken)).ConfigureAwait(false)) {
-			Stop();
+			await Stop().ConfigureAwait(false);
 
 			return;
 		}
@@ -2703,7 +2727,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		if (string.IsNullOrEmpty(username)) {
 			ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(BotConfig.SteamLogin)));
 
-			Stop();
+			await Stop().ConfigureAwait(false);
 
 			return;
 		}
@@ -2716,7 +2740,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			if (string.IsNullOrEmpty(password)) {
 				ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(BotConfig.SteamPassword)));
 
-				Stop();
+				await Stop().ConfigureAwait(false);
 
 				return;
 			}
@@ -2852,7 +2876,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		// If we initiated disconnect, do not attempt to reconnect
 		if (callback.UserInitiated && !ReconnectOnUserInitiated) {
-			await StopHandlingCallbacks().ConfigureAwait(false);
+			await StopHandlingCallbacksIfPossible().ConfigureAwait(false);
 
 			return;
 		}
@@ -2860,7 +2884,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		switch (lastLogOnResult) {
 			case EResult.AccountDisabled:
 				// Do not attempt to reconnect, those failures are permanent
-				await StopHandlingCallbacks().ConfigureAwait(false);
+				await StopHandlingCallbacksIfPossible().ConfigureAwait(false);
 
 				return;
 			case EResult.AccessDenied when !string.IsNullOrEmpty(RefreshToken):
@@ -2895,7 +2919,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (!KeepRunning) {
-			await StopHandlingCallbacks().ConfigureAwait(false);
+			await StopHandlingCallbacksIfPossible().ConfigureAwait(false);
 
 			return;
 		}
@@ -2909,7 +2933,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			await Task.Delay(1000).ConfigureAwait(false);
 
 			if (!KeepRunning) {
-				await StopHandlingCallbacks().ConfigureAwait(false);
+				await StopHandlingCallbacksIfPossible().ConfigureAwait(false);
 
 				return;
 			}
@@ -2920,7 +2944,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		ArchiLogger.LogGenericInfo(Strings.BotReconnecting);
-		await Connect().ConfigureAwait(false);
+
+		await Reconnect().ConfigureAwait(false);
 	}
 
 	private async void OnFriendsList(SteamFriends.FriendsListCallback callback) {
@@ -3225,7 +3250,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private void OnLoggedOff(SteamUser.LoggedOffCallback callback) {
+	private async void OnLoggedOff(SteamUser.LoggedOffCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		// Keep LastLogOnResult for OnDisconnected()
@@ -3244,7 +3269,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				if (now.Subtract(LastLogonSessionReplaced).TotalHours < 1) {
 					ArchiLogger.LogGenericError(Strings.BotLogonSessionReplaced);
-					Stop();
+
+					await Stop().ConfigureAwait(false);
 
 					return;
 				}
@@ -3316,7 +3342,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						if (!SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
 							ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(steamParentalCode)));
 
-							Stop();
+							await Stop().ConfigureAwait(false);
 
 							return;
 						}
@@ -3330,7 +3356,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
 						ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(steamParentalCode)));
 
-						Stop();
+						await Stop().ConfigureAwait(false);
 
 						return;
 					}
@@ -3915,6 +3941,26 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		CallbacksAborted.Dispose();
 		CallbacksAborted = null;
+	}
+
+	private async Task StopHandlingCallbacksIfPossible() {
+		if ((CallbacksAborted == null) || KeepRunning) {
+			return;
+		}
+
+		await ConnectionSemaphore.WaitAsync().ConfigureAwait(false);
+
+		try {
+#pragma warning disable CA1508 // False positive, the state could change between our previous check and this one due to semaphore wait
+			if ((CallbacksAborted == null) || KeepRunning) {
+				return;
+			}
+#pragma warning restore CA1508 // False positive, the state could change between our previous check and this one due to semaphore wait
+
+			await StopHandlingCallbacks().ConfigureAwait(false);
+		} finally {
+			ConnectionSemaphore.Release();
+		}
 	}
 
 	private void StopPlayingWasBlockedTimer() {

@@ -466,12 +466,12 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public (bool Success, string Message) Stop() {
+	public async Task<(bool Success, string Message)> Stop() {
 		if (!Bot.KeepRunning) {
 			return (false, Strings.BotAlreadyStopped);
 		}
 
-		Bot.Stop();
+		await Bot.Stop().ConfigureAwait(false);
 
 		return (true, Strings.Done);
 	}
