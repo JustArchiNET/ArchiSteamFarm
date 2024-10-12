@@ -34,11 +34,22 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Interaction;
 using ArchiSteamFarm.Storage;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
 [Route("Api/ASF")]
 public sealed class ASFController : ArchiController {
+	internal static Version? PendingVersionUpdate { get; set; }
+
+	private readonly IHostApplicationLifetime ApplicationLifetime;
+
+	public ASFController(IHostApplicationLifetime applicationLifetime) {
+		ArgumentNullException.ThrowIfNull(applicationLifetime);
+
+		ApplicationLifetime = applicationLifetime;
+	}
+
 	/// <summary>
 	///     Encrypts data with ASF encryption mechanisms using provided details.
 	/// </summary>
@@ -185,7 +196,22 @@ public sealed class ASFController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(request.Channel))));
 		}
 
-		(bool success, string? message, Version? version) = await Actions.Update(request.Channel, request.Forced).ConfigureAwait(false);
+		// Update process can result in kestrel shutdown request, just before patching the files
+		// In this case, we have very little opportunity to do anything, especially we will not have access to the return value of the action
+		// That's because update action will synchronously stop the kestrel, and wait for it before proceeding with an update, and that'll wait for us finishing the request, never happening
+		// Therefore, we'll allow this action to proceed while listening for application shutdown request, if it happens, we'll do our best by getting alternative signal that update is proceeding
+		bool success;
+		string? message = null;
+		Version? version;
+
+		try {
+			(success, message, version) = await Task.Run(() => Actions.Update(request.Channel, request.Forced), ApplicationLifetime.ApplicationStopping).ConfigureAwait(false);
+		} catch (TaskCanceledException e) {
+			// It's almost guaranteed that this is the result of update process requesting kestrel shutdown
+			// However, we're still going to check PendingVersionUpdate, which should be set by the update process as alternative way to inform us about pending update
+			version = PendingVersionUpdate;
+			success = version != null;
+		}
 
 		if (string.IsNullOrEmpty(message)) {
 			message = success ? Strings.Success : Strings.WarningFailed;

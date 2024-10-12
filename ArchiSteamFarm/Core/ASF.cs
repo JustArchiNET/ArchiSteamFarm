@@ -36,6 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.IPC;
+using ArchiSteamFarm.IPC.Controllers.Api;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Plugins;
@@ -894,11 +895,14 @@ public static class ASF {
 
 			if (kestrelWasRunning) {
 				// We disable ArchiKestrel here as the update process moves the core files and might result in IPC crash
-				// TODO: It might fail if the update was triggered from the API, this should be something to improve in the future, by changing the structure into request -> return response -> finish update
+				ASFController.PendingVersionUpdate = newVersion;
+
 				try {
 					await ArchiKestrel.Stop().ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
+				} finally {
+					ASFController.PendingVersionUpdate = null;
 				}
 			}
 
