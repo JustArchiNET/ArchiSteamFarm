@@ -1970,7 +1970,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			CancellationToken token = CallbacksAborted.Token;
 
 			Utilities.InBackground(() => HandleCallbacks(token), true);
-			Utilities.InBackground(Reconnect);
+			Utilities.InBackground(Connect);
 		} finally {
 			ConnectionSemaphore.Release();
 		}
