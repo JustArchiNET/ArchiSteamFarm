@@ -206,7 +206,7 @@ public sealed class ASFController : ArchiController {
 
 		try {
 			(success, message, version) = await Task.Run(() => Actions.Update(request.Channel, request.Forced), ApplicationLifetime.ApplicationStopping).ConfigureAwait(false);
-		} catch (TaskCanceledException e) {
+		} catch (TaskCanceledException) {
 			// It's almost guaranteed that this is the result of update process requesting kestrel shutdown
 			// However, we're still going to check PendingVersionUpdate, which should be set by the update process as alternative way to inform us about pending update
 			version = PendingVersionUpdate;
