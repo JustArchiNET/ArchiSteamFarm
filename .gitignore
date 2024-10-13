@@ -554,4 +554,4 @@ $RECYCLE.BIN/
 !ArchiSteamFarm/overlay/**
 
 # Don't ignore custom packages
-!libs/*.nupkg
+!resources/*.nupkg
