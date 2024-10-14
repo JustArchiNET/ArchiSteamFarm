@@ -487,9 +487,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Odpojenie klienta zlyhalo. Inštancia bota sa ruší!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Inicializácia SteamDirectory nie je možná: pripojenie k sieti Steam môže trvať dlhšie ako zvyčajne!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Zastavovanie...</value>
 	</data>

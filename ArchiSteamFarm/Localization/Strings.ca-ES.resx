@@ -293,7 +293,6 @@
 		<value>S'està connectant...</value>
 	</data>
 	
-	
 	<data name="BotStopping" xml:space="preserve">
 		<value>Aturant...</value>
 	</data>

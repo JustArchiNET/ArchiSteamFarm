@@ -484,9 +484,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Yhteyden katkaisu clienttiin epäonnistui. Hylätään tämä botti instanssi!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Yhteys SteamDirectoryyn epäonnistui: Steam-verkkoon yhdistäminen saattaa kestää paljon kauemmin!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Pysäytetään...</value>
 	</data>

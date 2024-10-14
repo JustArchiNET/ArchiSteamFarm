@@ -484,9 +484,6 @@
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Gagal untuk memutuskan klien, meninggalkan instansi bot ini!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Tidak dapat menginisialisasi SteamDirectory, menyambung ke Steam Network mungkin memakan waktu lebih lama dari biasanya!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Menghentikan...</value>
 	</data>

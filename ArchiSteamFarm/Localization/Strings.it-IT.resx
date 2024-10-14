@@ -485,9 +485,6 @@
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Disconnessione del client non riuscita. Abbandonando questa istanza di bot!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Impossibile inizializzare SteamDirectory: il collegamento con la rete di Steam potrebbe richiedere più tempo del solito!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Interruzione in corso...</value>
 	</data>
