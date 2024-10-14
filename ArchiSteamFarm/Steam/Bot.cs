@@ -2098,6 +2098,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private void DisposeShared() {
+		ArchiHandler.Dispose();
 		ArchiWebHandler.Dispose();
 		BotDatabase.Dispose();
 		ConnectionSemaphore.Dispose();
