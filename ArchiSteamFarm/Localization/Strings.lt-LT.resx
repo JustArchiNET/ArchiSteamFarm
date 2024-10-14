@@ -484,9 +484,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Nepavyko atjungti kliento. Apleidžiamas šis boto egzempliorius!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Nepavyko inicijuoti „SteamDirectory“: jungiantis su Steam tinklu gali užtrukti daug ilgiau nei įprastai!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Stabdoma...</value>
 	</data>

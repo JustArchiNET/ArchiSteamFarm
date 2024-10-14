@@ -469,9 +469,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Nije uspelo diskonektovanje klijenta. Napuštanje ove instance bota-a!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Nije moguće inicijalizovati SteamDirectory: povezivanje sa Steam mrežom može potrajati duže nego uobičajeno!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Zaustavljanje...</value>
 	</data>

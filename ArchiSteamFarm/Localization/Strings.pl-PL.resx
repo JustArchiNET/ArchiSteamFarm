@@ -487,9 +487,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Rozłączenie klienta nie powiodło się. Porzucam instancję tego bota!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Nie można zainicjować SteamDirectory: połączenie z siecią Steam może potrwać znacznie dłużej niż zwykle!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Zatrzymywanie...</value>
 	</data>

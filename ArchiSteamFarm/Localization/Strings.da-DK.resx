@@ -487,9 +487,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Afbrydelsen af klienten fejlede, afbryder denne bot instans!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Kunne ikke initialisere SteamDirectory: forbinder med Steam-netværket kan tage meget længere tid end normalt!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Stopper...</value>
 	</data>

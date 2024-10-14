@@ -484,9 +484,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Αποτυχία αποσύνδεσης προγράμματος-πελάτη. Γίνεται εγκατάλειψη αυτού του bot!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Αδυναμία αρχικοποίησης SteamDirectory: η σύνδεση με το δίκτυο του Steam μπορεί να διαρκέσει πολύ περισσότερο από το συνηθισμένο!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Διακοπή...</value>
 	</data>

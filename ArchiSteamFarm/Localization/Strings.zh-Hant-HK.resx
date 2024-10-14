@@ -481,9 +481,6 @@
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>無法斷開與用戶端的連接。正在中止這個機械人實例！</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>無法初始化 SteamDirectory：與 Steam 網絡的連接可能需要比平時更長的時間！</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>停止中……</value>
 	</data>

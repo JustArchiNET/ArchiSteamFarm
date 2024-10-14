@@ -87,7 +87,10 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>A sair com o código de erro {0}!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
+	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Falha na solicitação: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -484,9 +487,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Erro ao desconectar o cliente. A abandonar este bot!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Não foi possível inicializar o SteamDirectory: conectar-se com a rede Steam pode levar muito mais tempo do que o normal!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>A parar...</value>
 	</data>
@@ -691,7 +691,10 @@ Tempo de execução: {1}</value>
 		<value>A tua chave de encriptação é demasiado curta. Recomendamos uma que seja pelo menos {0} bytes (carateres) de comprimento.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Estás a utilizar a definição {0} da propriedade {1}, mas não forneceste uma --cryptkey personalizada. Podes opcionalmente fornecer uma --cryptkey personalizada para aumentar a segurança, se assim o desejares.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Estás a usar a definição {0} da propriedade {1}, mas não forneceste uma --cryptkey personalizada. Isto futiliza a proteção, pois o ASF é forçado a usar a sua chave (que é conhecida). Deves fornecer uma --cryptkey personalizada para usufruires da segurança oferecida por esta definição.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>

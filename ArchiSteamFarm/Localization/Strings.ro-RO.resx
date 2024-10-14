@@ -487,9 +487,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Deconectarea clientului a eșuat. Se abandonează acestă instanță de bot!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Nu a fost posibilă inițializarea SteamDirectory: conectarea cu rețeaua Steam ar putea dura mult mai mult ca de obicei!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Se oprește...</value>
 	</data>

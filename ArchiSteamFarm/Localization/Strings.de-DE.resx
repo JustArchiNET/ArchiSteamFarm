@@ -488,9 +488,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Die Verbindung zum Client konnte nicht getrennt werden. Auf diese Bot-Instanz wird verzichtet!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>SteamDirectory konnte nicht initialisiert werden: Die Verbindung mit dem Steam-Netzwerk könnte viel länger dauern als sonst!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Anhalten...</value>
 	</data>

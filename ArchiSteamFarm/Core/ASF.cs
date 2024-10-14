@@ -49,7 +49,6 @@ using ArchiSteamFarm.Web.GitHub.Data;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
 using SteamKit2;
-using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm.Core;
 
@@ -676,22 +675,9 @@ public static class ASF {
 			throw new InvalidOperationException(nameof(WebBrowser));
 		}
 
-		// Ensure that we ask for a list of servers if we don't have any saved servers available
-		IEnumerable<ServerRecord> servers = await GlobalDatabase.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
-
-		if (!servers.Any()) {
-			ArchiLogger.LogGenericInfo(Strings.FormatInitializing(nameof(SteamDirectory)));
-
-			SteamConfiguration steamConfiguration = SteamConfiguration.Create(static builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(GlobalDatabase.CellID).WithServerListProvider(GlobalDatabase.ServerListProvider).WithHttpClientFactory(static () => WebBrowser.GenerateDisposableHttpClient()));
-
-			try {
-				await SteamDirectory.LoadAsync(steamConfiguration).ConfigureAwait(false);
-				ArchiLogger.LogGenericInfo(Strings.Success);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericWarningException(e);
-				ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
-			}
-		}
+		// Kill SK2 servers cache in order to force refresh during initial connection
+		// TODO: This should be removed when SK2 learns to purge its stale cache itself
+		await GlobalDatabase.ServerListProvider.UpdateServerListAsync([]).ConfigureAwait(false);
 
 		HashSet<string> botNames;
 

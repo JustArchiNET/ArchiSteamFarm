@@ -487,9 +487,6 @@ STACKTRACE:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>FAILD 2 DISCONNECT TEH CLIENT. ABANDONIN DIS BOT INSTANCE!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>CUD NOT INITIALIZE STEAMDIRECTORY: CONNECTIN WIF STEAM NETWORK MITE TAEK MUTCH LONGR THAN USUAL!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>STOPPIN...</value>
 	</data>

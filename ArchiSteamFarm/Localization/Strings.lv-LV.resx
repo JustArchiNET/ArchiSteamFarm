@@ -487,9 +487,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Nav iespējams atvienoties no klienta. Šis bots tiek pamests!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Nevarēja inicializēt SteamDirectory: notiek savienošanās ar Steam Network ilgāk kā parasti!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Tiek apturēts...</value>
 	</data>

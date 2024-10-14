@@ -487,9 +487,6 @@
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Не вдалося відключити клієнт. Відмовляемось від цього бота!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Не вдалося ініціалізувати SteamDirectory: підключення до мережі Steam може тривати довше, ніж зазвичай!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Зупинення...</value>
 	</data>

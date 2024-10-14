@@ -431,9 +431,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Det gick inte att koppla från klienten, överger denna bot instans!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Kunde inte initiera SteamDirectory, anslutning till Steam-nätverket kan ta mycket längre tid än vanligt!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Stoppar...</value>
 	</data>

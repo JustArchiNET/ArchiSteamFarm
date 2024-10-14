@@ -487,9 +487,6 @@ Yığın Kaydı:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>İstemcinin bağlantısı kesilemedi. Bu bot örneği terk ediliyor!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>SteamDirectory başlatılamadı, Steam Ağı ile bağlantı kurmak her zamankinden daha uzun sürebilir!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Durduruluyor...</value>
 	</data>

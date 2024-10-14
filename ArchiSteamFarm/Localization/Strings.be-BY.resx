@@ -457,7 +457,6 @@ StackTrace:
 		<value>Падключэнне...</value>
 	</data>
 	
-	
 	<data name="BotStopping" xml:space="preserve">
 		<value>Спыненне...</value>
 	</data>

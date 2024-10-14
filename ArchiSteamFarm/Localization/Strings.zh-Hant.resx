@@ -487,9 +487,6 @@
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>無法與用戶端中斷連線，正在中止此 Bot！</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>無法初始化 SteamDirectory，與 Steam 網路的連線可能需要更長的時間！</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>正在停止…</value>
 	</data>

@@ -440,7 +440,6 @@ StackTrace:
 		<value>กำลังเชื่อมต่อ...</value>
 	</data>
 	
-	
 	<data name="BotStopping" xml:space="preserve">
 		<value>กำลังหยุด...</value>
 	</data>

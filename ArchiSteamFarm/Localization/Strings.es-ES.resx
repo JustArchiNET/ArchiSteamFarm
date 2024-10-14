@@ -486,9 +486,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Fallo al desconectar el cliente. ¡Abandonando esta instancia de bot!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>No se pudo iniciar SteamDirectory: ¡la conexión con la red de Steam podría tardar más de lo habitual!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Deteniendo...</value>
 	</data>

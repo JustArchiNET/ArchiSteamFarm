@@ -487,9 +487,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Thất bại trong việc ngắt kết nối với client. Đang bỏ con bot này!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Không thể khởi tạo SteamDirectory: kết nối với mạng Steam có thể lâu hơn so với bình thường!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Đang dừng...</value>
 	</data>
