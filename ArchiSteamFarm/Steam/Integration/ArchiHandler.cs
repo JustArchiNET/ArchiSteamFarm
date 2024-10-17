@@ -49,13 +49,10 @@ using EPersonaStateFlag = SteamKit2.EPersonaStateFlag;
 
 namespace ArchiSteamFarm.Steam.Integration;
 
-public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
+public sealed class ArchiHandler : ClientMsgHandler {
 	internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
 
 	private readonly ArchiLogger ArchiLogger;
-
-	private readonly ChatRoomClient ChatRoomClient;
-	private readonly FriendMessagesClient FriendMessagesClient;
 
 	private readonly AccountPrivateApps UnifiedAccountPrivateApps;
 	private readonly ChatRoom UnifiedChatRoomService;
@@ -88,25 +85,6 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 		UnifiedPlayerService = steamUnifiedMessages.CreateService<Player>();
 		UnifiedStoreService = steamUnifiedMessages.CreateService<Store>();
 		UnifiedTwoFactorService = steamUnifiedMessages.CreateService<TwoFactor>();
-
-		ChatRoomClient = steamUnifiedMessages.CreateService<ChatRoomClient>();
-		FriendMessagesClient = steamUnifiedMessages.CreateService<FriendMessagesClient>();
-	}
-
-	public void Dispose() {
-		ChatRoomClient.Dispose();
-		FriendMessagesClient.Dispose();
-		UnifiedAccountPrivateApps.Dispose();
-		UnifiedChatRoomService.Dispose();
-		UnifiedClanChatRoomsService.Dispose();
-		UnifiedCredentialsService.Dispose();
-		UnifiedEconService.Dispose();
-		UnifiedFamilyGroups.Dispose();
-		UnifiedFriendMessagesService.Dispose();
-		UnifiedLoyaltyRewards.Dispose();
-		UnifiedPlayerService.Dispose();
-		UnifiedStoreService.Dispose();
-		UnifiedTwoFactorService.Dispose();
 	}
 
 	[PublicAPI]

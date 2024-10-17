@@ -241,7 +241,7 @@ public static class Utilities {
 	public static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year, minUnit: TimeUnit.Second);
 
 	[PublicAPI]
-	public static Task<T> ToLongRunningTask<T>(this AsyncJob<T> job) where T : CallbackMsg {
+	public static Task<T> ToLongRunningTask<T>(this AsyncJob<T> job) where T : ICallbackMsg {
 		ArgumentNullException.ThrowIfNull(job);
 
 		job.Timeout = TimeSpan.FromSeconds(TimeoutForLongRunningTasksInSeconds);
@@ -250,7 +250,7 @@ public static class Utilities {
 	}
 
 	[PublicAPI]
-	public static Task<AsyncJobMultiple<T>.ResultSet> ToLongRunningTask<T>(this AsyncJobMultiple<T> job) where T : CallbackMsg {
+	public static Task<AsyncJobMultiple<T>.ResultSet> ToLongRunningTask<T>(this AsyncJobMultiple<T> job) where T : ICallbackMsg {
 		ArgumentNullException.ThrowIfNull(job);
 
 		job.Timeout = TimeSpan.FromSeconds(TimeoutForLongRunningTasksInSeconds);

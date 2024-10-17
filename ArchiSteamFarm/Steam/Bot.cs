@@ -383,9 +383,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 		CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
-		CallbackManager.Subscribe<SteamUnifiedMessages.ServiceMethodNotification<CChatRoom_IncomingChatMessage_Notification>>(OnIncomingChatMessage);
-		CallbackManager.Subscribe<SteamUnifiedMessages.ServiceMethodNotification<CFriendMessages_IncomingMessage_Notification>>(OnIncomingMessage);
-
 		SteamUser = SteamClient.GetHandler<SteamUser>() ?? throw new InvalidOperationException(nameof(SteamUser));
 		CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 		CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
@@ -395,6 +392,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		CallbackManager.Subscribe<SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 		CallbackManager.Subscribe<UserNotificationsCallback>(OnUserNotifications);
+
+		CallbackManager.SubscribeNotifications<ChatRoomClient, CChatRoom_IncomingChatMessage_Notification>(OnIncomingChatMessage);
+		CallbackManager.SubscribeNotifications<FriendMessagesClient, CFriendMessages_IncomingMessage_Notification>(OnIncomingMessage);
 
 		Actions = new Actions(this);
 		CardsFarmer = new CardsFarmer(this);
@@ -2098,7 +2098,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private void DisposeShared() {
-		ArchiHandler.Dispose();
 		ArchiWebHandler.Dispose();
 		BotDatabase.Dispose();
 		ConnectionSemaphore.Dispose();
