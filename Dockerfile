@@ -76,7 +76,7 @@ RUN --mount=type=secret,id=ASF_PRIVATE_SNK --mount=type=secret,id=STEAM_TOKEN_DU
     done
 EOF
 
-FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0${IMAGESUFFIX} AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0${IMAGESUFFIX} AS runtime
 ENV ASF_PATH=/app
 ENV ASF_USER=asf
 ENV ASPNETCORE_URLS=
