@@ -225,6 +225,10 @@ dotnet_style_qualification_for_property = false:warning
 dotnet_style_readonly_field = true:warning
 dotnet_style_require_accessibility_modifiers = always:warning
 
+[ArchiSteamFarm/**.cs]
+# ASF project includes plugin system, therefore CA1515 typically doesn't make sense there
+dotnet_diagnostic.CA1515.severity = silent
+
 ###############################
 # JetBrains, IntelliJ/Rider   #
 ###############################
