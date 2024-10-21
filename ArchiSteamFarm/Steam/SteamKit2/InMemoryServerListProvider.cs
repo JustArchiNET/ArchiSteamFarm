@@ -34,23 +34,25 @@ using SteamKit2.Discovery;
 namespace ArchiSteamFarm.Steam.SteamKit2;
 
 internal sealed class InMemoryServerListProvider : IServerListProvider {
-	// TODO
-	public DateTime LastServerListRefresh => DateTime.MinValue;
+	[JsonInclude]
+	public DateTime LastServerListRefresh { get; private set; }
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private ConcurrentHashSet<ServerRecordEndPoint> ServerRecords { get; init; } = [];
+	private ConcurrentList<ServerRecordEndPoint> ServerRecords { get; init; } = [];
 
 	public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult(ServerRecords.Where(static server => !string.IsNullOrEmpty(server.Host) && server is { Port: > 0, ProtocolTypes: > 0 }).Select(static server => ServerRecord.CreateServer(server.Host, server.Port, server.ProtocolTypes)));
 
 	public Task UpdateServerListAsync(IEnumerable<ServerRecord> endpoints) {
 		ArgumentNullException.ThrowIfNull(endpoints);
 
-		HashSet<ServerRecordEndPoint> newServerRecords = endpoints.Select(static endpoint => new ServerRecordEndPoint(endpoint.GetHost(), (ushort) endpoint.GetPort(), endpoint.ProtocolTypes)).ToHashSet();
+		LastServerListRefresh = DateTime.UtcNow;
 
-		if (ServerRecords.ReplaceIfNeededWith(newServerRecords)) {
-			ServerListUpdated?.Invoke(this, EventArgs.Empty);
-		}
+		IEnumerable<ServerRecordEndPoint> serverRecords = endpoints.Select(static endpoint => new ServerRecordEndPoint(endpoint.GetHost(), (ushort) endpoint.GetPort(), endpoint.ProtocolTypes));
+
+		ServerRecords.ReplaceWith(serverRecords);
+
+		ServerListUpdated?.Invoke(this, EventArgs.Empty);
 
 		return Task.CompletedTask;
 	}

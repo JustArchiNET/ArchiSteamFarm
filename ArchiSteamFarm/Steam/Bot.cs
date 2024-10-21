@@ -353,6 +353,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		);
 
+		// Decrease the ServerList cache in order to fight with Steam gibberish data
+		SteamConfiguration.ServerList.ServerListBeforeRefreshTimeSpan = TimeSpan.FromHours(1);
+
 		// Initialize
 		SteamClient = new SteamClient(SteamConfiguration, botName);
 

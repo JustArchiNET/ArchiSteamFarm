@@ -675,10 +675,6 @@ public static class ASF {
 			throw new InvalidOperationException(nameof(WebBrowser));
 		}
 
-		// Kill SK2 servers cache in order to force refresh during initial connection
-		// TODO: This should be removed when SK2 learns to purge its stale cache itself
-		await GlobalDatabase.ServerListProvider.UpdateServerListAsync([]).ConfigureAwait(false);
-
 		HashSet<string> botNames;
 
 		try {
