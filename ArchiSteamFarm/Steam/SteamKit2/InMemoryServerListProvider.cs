@@ -34,6 +34,9 @@ using SteamKit2.Discovery;
 namespace ArchiSteamFarm.Steam.SteamKit2;
 
 internal sealed class InMemoryServerListProvider : IServerListProvider {
+	// TODO
+	public DateTime LastServerListRefresh => DateTime.MinValue;
+
 	[JsonDisallowNull]
 	[JsonInclude]
 	private ConcurrentHashSet<ServerRecordEndPoint> ServerRecords { get; init; } = [];

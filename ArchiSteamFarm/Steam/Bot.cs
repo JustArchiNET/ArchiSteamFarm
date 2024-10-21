@@ -383,8 +383,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 		CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
-		CallbackManager.Subscribe<SteamUnifiedMessages.ServiceMethodNotification>(OnServiceMethod);
-
 		SteamUser = SteamClient.GetHandler<SteamUser>() ?? throw new InvalidOperationException(nameof(SteamUser));
 		CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 		CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
@@ -394,6 +392,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		CallbackManager.Subscribe<SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 		CallbackManager.Subscribe<UserNotificationsCallback>(OnUserNotifications);
+
+		CallbackManager.SubscribeServiceNotification<ChatRoomClient, CChatRoom_IncomingChatMessage_Notification>(OnIncomingChatMessage);
+		CallbackManager.SubscribeServiceNotification<FriendMessagesClient, CFriendMessages_IncomingMessage_Notification>(OnIncomingMessage);
 
 		Actions = new Actions(this);
 		CardsFarmer = new CardsFarmer(this);
@@ -3041,100 +3042,100 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await Actions.AcceptGuestPasses(guestPassIDs).ConfigureAwait(false);
 	}
 
-	private async Task OnIncomingChatMessage(CChatRoom_IncomingChatMessage_Notification notification) {
+	private async void OnIncomingChatMessage(SteamUnifiedMessages.ServiceMethodNotification<CChatRoom_IncomingChatMessage_Notification> notification) {
 		ArgumentNullException.ThrowIfNull(notification);
 
-		if (notification.chat_group_id == 0) {
-			ArchiLogger.LogNullError(notification.chat_group_id);
+		if (notification.Body.chat_group_id == 0) {
+			ArchiLogger.LogNullError(notification.Body.chat_group_id);
 
 			return;
 		}
 
-		if (notification.chat_id == 0) {
-			ArchiLogger.LogNullError(notification.chat_id);
+		if (notification.Body.chat_id == 0) {
+			ArchiLogger.LogNullError(notification.Body.chat_id);
 
 			return;
 		}
 
-		if (notification.steamid_sender == 0) {
-			ArchiLogger.LogNullError(notification.steamid_sender);
+		if (notification.Body.steamid_sender == 0) {
+			ArchiLogger.LogNullError(notification.Body.steamid_sender);
 
 			return;
 		}
 
 		// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
-		if ((notification.steamid_sender != SteamID) && (notification.timestamp > 0)) {
-			if (ShouldAckChatMessage(notification.steamid_sender)) {
-				Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.chat_group_id, notification.chat_id, notification.timestamp));
+		if ((notification.Body.steamid_sender != SteamID) && (notification.Body.timestamp > 0)) {
+			if (ShouldAckChatMessage(notification.Body.steamid_sender)) {
+				Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.Body.chat_group_id, notification.Body.chat_id, notification.Body.timestamp));
 			}
 		}
 
 		string message;
 
 		// Prefer to use message without bbcode, but only if it's available
-		if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
-			message = notification.message_no_bbcode;
-		} else if (!string.IsNullOrEmpty(notification.message)) {
-			message = SteamChatMessage.Unescape(notification.message);
+		if (!string.IsNullOrEmpty(notification.Body.message_no_bbcode)) {
+			message = notification.Body.message_no_bbcode;
+		} else if (!string.IsNullOrEmpty(notification.Body.message)) {
+			message = SteamChatMessage.Unescape(notification.Body.message);
 		} else {
 			return;
 		}
 
-		ArchiLogger.LogChatMessage(false, message, notification.chat_group_id, notification.chat_id, notification.steamid_sender);
+		ArchiLogger.LogChatMessage(false, message, notification.Body.chat_group_id, notification.Body.chat_id, notification.Body.steamid_sender);
 
 		// Steam network broadcasts chat events also when we don't explicitly sign into Steam community
 		// We'll explicitly ignore those messages when using offline mode, as it was done in the first version of Steam chat when no messages were broadcasted at all before signing in
 		// Handling messages will still work correctly in invisible mode, which is how it should work in the first place
 		// This goes in addition to usual logic that ignores irrelevant messages from being parsed further
-		if ((notification.chat_group_id != MasterChatGroupID) || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
+		if ((notification.Body.chat_group_id != MasterChatGroupID) || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
 			return;
 		}
 
-		await Commands.HandleMessage(notification.chat_group_id, notification.chat_id, notification.steamid_sender, message).ConfigureAwait(false);
+		await Commands.HandleMessage(notification.Body.chat_group_id, notification.Body.chat_id, notification.Body.steamid_sender, message).ConfigureAwait(false);
 	}
 
-	private async Task OnIncomingMessage(CFriendMessages_IncomingMessage_Notification notification) {
+	private async void OnIncomingMessage(SteamUnifiedMessages.ServiceMethodNotification<CFriendMessages_IncomingMessage_Notification> notification) {
 		ArgumentNullException.ThrowIfNull(notification);
 
-		if (notification.steamid_friend == 0) {
-			ArchiLogger.LogNullError(notification.steamid_friend);
+		if (notification.Body.steamid_friend == 0) {
+			ArchiLogger.LogNullError(notification.Body.steamid_friend);
 
 			return;
 		}
 
-		if ((EChatEntryType) notification.chat_entry_type != EChatEntryType.ChatMsg) {
+		if ((EChatEntryType) notification.Body.chat_entry_type != EChatEntryType.ChatMsg) {
 			return;
 		}
 
 		// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
-		if (notification is { local_echo: false, rtime32_server_timestamp: > 0 }) {
-			if (ShouldAckChatMessage(notification.steamid_friend)) {
-				Utilities.InBackground(() => ArchiHandler.AckMessage(notification.steamid_friend, notification.rtime32_server_timestamp));
+		if (notification.Body is { local_echo: false, rtime32_server_timestamp: > 0 }) {
+			if (ShouldAckChatMessage(notification.Body.steamid_friend)) {
+				Utilities.InBackground(() => ArchiHandler.AckMessage(notification.Body.steamid_friend, notification.Body.rtime32_server_timestamp));
 			}
 		}
 
 		string message;
 
 		// Prefer to use message without bbcode, but only if it's available
-		if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
-			message = notification.message_no_bbcode;
-		} else if (!string.IsNullOrEmpty(notification.message)) {
-			message = SteamChatMessage.Unescape(notification.message);
+		if (!string.IsNullOrEmpty(notification.Body.message_no_bbcode)) {
+			message = notification.Body.message_no_bbcode;
+		} else if (!string.IsNullOrEmpty(notification.Body.message)) {
+			message = SteamChatMessage.Unescape(notification.Body.message);
 		} else {
 			return;
 		}
 
-		ArchiLogger.LogChatMessage(notification.local_echo, message, steamID: notification.steamid_friend);
+		ArchiLogger.LogChatMessage(notification.Body.local_echo, message, steamID: notification.Body.steamid_friend);
 
 		// Steam network broadcasts chat events also when we don't explicitly sign into Steam community
 		// We'll explicitly ignore those messages when using offline mode, as it was done in the first version of Steam chat when no messages were broadcasted at all before signing in
 		// Handling messages will still work correctly in invisible mode, which is how it should work in the first place
 		// This goes in addition to usual logic that ignores irrelevant messages from being parsed further
-		if (notification.local_echo || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
+		if (notification.Body.local_echo || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
 			return;
 		}
 
-		await Commands.HandleMessage(notification.steamid_friend, message).ConfigureAwait(false);
+		await Commands.HandleMessage(notification.Body.steamid_friend, message).ConfigureAwait(false);
 	}
 
 	private void OnInventoryChanged() {
@@ -3465,21 +3466,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private async void OnSendItemsTimer(object? state = null) => await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
-
-	private async void OnServiceMethod(SteamUnifiedMessages.ServiceMethodNotification notification) {
-		ArgumentNullException.ThrowIfNull(notification);
-
-		switch (notification.MethodName) {
-			case "ChatRoomClient.NotifyIncomingChatMessage#1":
-				await OnIncomingChatMessage((CChatRoom_IncomingChatMessage_Notification) notification.Body).ConfigureAwait(false);
-
-				break;
-			case "FriendMessagesClient.IncomingMessage#1":
-				await OnIncomingMessage((CFriendMessages_IncomingMessage_Notification) notification.Body).ConfigureAwait(false);
-
-				break;
-		}
-	}
 
 	private async void OnSharedLibraryLockStatus(SharedLibraryLockStatusCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
