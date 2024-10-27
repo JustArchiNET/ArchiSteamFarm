@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Requests;
@@ -200,23 +201,31 @@ public sealed class ASFController : ArchiController {
 		// In this case, we have very little opportunity to do anything, especially we will not have access to the return value of the action
 		// That's because update action will synchronously stop the kestrel, and wait for it before proceeding with an update, and that'll wait for us finishing the request, never happening
 		// Therefore, we'll allow this action to proceed while listening for application shutdown request, if it happens, we'll do our best by getting alternative signal that update is proceeding
-		bool success;
-		string? message = null;
-		Version? version;
+		TaskCompletionSource<bool> applicationStopping = new();
 
-		try {
-			(success, message, version) = await Task.Run(() => Actions.Update(request.Channel, request.Forced), ApplicationLifetime.ApplicationStopping).ConfigureAwait(false);
-		} catch (TaskCanceledException) {
-			// It's almost guaranteed that this is the result of update process requesting kestrel shutdown
-			// However, we're still going to check PendingVersionUpdate, which should be set by the update process as alternative way to inform us about pending update
-			version = PendingVersionUpdate;
-			success = version != null;
+		CancellationTokenRegistration applicationStoppingRegistration = ApplicationLifetime.ApplicationStopping.Register(() => applicationStopping.SetResult(true));
+
+		await using (applicationStoppingRegistration.ConfigureAwait(false)) {
+			Task<(bool Success, string? Message, Version? Version)> updateTask = Actions.Update(request.Channel, request.Forced);
+
+			bool success;
+			string? message = null;
+			Version? version;
+
+			if (await Task.WhenAny(updateTask, applicationStopping.Task).ConfigureAwait(false) == updateTask) {
+				(success, message, version) = await updateTask.ConfigureAwait(false);
+			} else {
+				// It's almost guaranteed that this is the result of update process requesting kestrel shutdown
+				// However, we're still going to check PendingVersionUpdate, which should be set by the update process as alternative way to inform us about pending update
+				version = PendingVersionUpdate;
+				success = version != null;
+			}
+
+			if (string.IsNullOrEmpty(message)) {
+				message = success ? Strings.Success : Strings.WarningFailed;
+			}
+
+			return Ok(new GenericResponse<string>(success, message, version?.ToString()));
 		}
-
-		if (string.IsNullOrEmpty(message)) {
-			message = success ? Strings.Success : Strings.WarningFailed;
-		}
-
-		return Ok(new GenericResponse<string>(success, message, version?.ToString()));
 	}
 }
