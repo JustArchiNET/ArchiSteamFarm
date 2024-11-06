@@ -1020,7 +1020,7 @@ public sealed class Commands {
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
-	private async Task<string?> ResponseAdvancedTransferByAssetRarity(EAccess access, uint appID, ulong contextID, Bot targetBot, IReadOnlyCollection<EAssetRarity> assetRarities) {
+	private async Task<string?> ResponseAdvancedTransferByAssetRarity(EAccess access, uint appID, ulong contextID, Bot targetBot, HashSet<EAssetRarity> assetRarities) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
