@@ -41,6 +41,7 @@ using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
+using SteamKit2.WebUI.Internal;
 
 namespace ArchiSteamFarm.Steam.Interaction;
 
@@ -1027,6 +1028,10 @@ public sealed class Commands {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentNullException.ThrowIfNull(targetBot);
+
+		if ((assetRarities == null) || (assetRarities.Count == 0)) {
+			throw new ArgumentNullException(nameof(assetRarities));
+		}
 
 		if (access < EAccess.Master) {
 			return null;
@@ -2767,7 +2772,7 @@ public sealed class Commands {
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
-	private async Task<string?> ResponseRedeemPoints(EAccess access, HashSet<uint> definitionIDs) {
+	private async Task<string?> ResponseRedeemPoints(EAccess access, Dictionary<uint, bool> definitionIDs) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -2784,13 +2789,34 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		IList<EResult> results = await Utilities.InParallel(definitionIDs.Select(Bot.Actions.RedeemPoints)).ConfigureAwait(false);
+		HashSet<uint> definitionIDsToCheck = definitionIDs.Where(static entry => !entry.Value).Select(static entry => entry.Key).ToHashSet();
+
+		if (definitionIDsToCheck.Count > 0) {
+			Dictionary<uint, LoyaltyRewardDefinition>? definitions = await Bot.Actions.GetRewardItems(definitionIDsToCheck).ConfigureAwait(false);
+
+			if (definitions == null) {
+				return FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(Bot.Actions.GetRewardItems)));
+			}
+
+			foreach (uint definitionID in definitionIDsToCheck) {
+				if (!definitions.TryGetValue(definitionID, out LoyaltyRewardDefinition? definition)) {
+					return FormatBotResponse(Strings.FormatWarningFailedWithError(definitionID));
+				}
+
+				if (definition.point_cost > 0) {
+					return FormatBotResponse(Strings.FormatWarningFailedWithError($"{definitionID} {nameof(definition.point_cost)} ({definition.point_cost}) > 0"));
+				}
+			}
+		}
+
+		// We already did more optimized check, therefore we can skip the one in actions
+		IList<EResult> results = await Utilities.InParallel(definitionIDs.Keys.Select(definitionID => Bot.Actions.RedeemPoints(definitionID, true))).ConfigureAwait(false);
 
 		int i = 0;
 
 		StringBuilder response = new();
 
-		foreach (uint definitionID in definitionIDs) {
+		foreach (uint definitionID in definitionIDs.Keys) {
 			response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense(definitionID, results[i++])));
 		}
 
@@ -2818,14 +2844,22 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(definitions)));
 		}
 
-		HashSet<uint> definitionIDs = new(definitions.Length);
+		Dictionary<uint, bool> definitionIDs = new(definitions.Length);
 
 		foreach (string definition in definitions) {
-			if (!uint.TryParse(definition, out uint definitionID) || (definitionID == 0)) {
+			bool forced = false;
+			string definitionToParse = definition;
+
+			if (definitionToParse.EndsWith('!')) {
+				forced = true;
+				definitionToParse = definitionToParse[..^1];
+			}
+
+			if (!uint.TryParse(definitionToParse, out uint definitionID) || (definitionID == 0)) {
 				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(definition)));
 			}
 
-			definitionIDs.Add(definitionID);
+			definitionIDs[definitionID] = forced;
 		}
 
 		return await ResponseRedeemPoints(access, definitionIDs).ConfigureAwait(false);

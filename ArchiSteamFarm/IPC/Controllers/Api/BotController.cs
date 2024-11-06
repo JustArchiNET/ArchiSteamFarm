@@ -325,7 +325,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/RedeemPoints/{definitionID:required}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, EResult>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> RedeemPointsPost(string botNames, uint definitionID) {
+	public async Task<ActionResult<GenericResponse>> RedeemPointsPost(string botNames, uint definitionID, [FromQuery] bool forced = false) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
 
@@ -335,7 +335,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<EResult> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.RedeemPoints(definitionID))).ConfigureAwait(false);
+		IList<EResult> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.RedeemPoints(definitionID, forced))).ConfigureAwait(false);
 
 		Dictionary<string, EResult> result = new(bots.Count, Bot.BotsComparer);
 

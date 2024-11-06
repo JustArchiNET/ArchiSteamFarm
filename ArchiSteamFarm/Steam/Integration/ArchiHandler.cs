@@ -387,6 +387,58 @@ public sealed class ArchiHandler : ClientMsgHandler {
 	}
 
 	[PublicAPI]
+	public async Task<Dictionary<uint, LoyaltyRewardDefinition>?> GetRewardItems(IReadOnlyCollection<uint> definitionIDs) {
+		if ((definitionIDs == null) || (definitionIDs.Count == 0)) {
+			throw new ArgumentNullException(nameof(definitionIDs));
+		}
+
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return null;
+		}
+
+		CLoyaltyRewards_QueryRewardItems_Request request = new();
+
+		request.definitionids.AddRange(definitionIDs is IReadOnlySet<uint> or ISet<uint> ? definitionIDs : definitionIDs.Distinct());
+
+		Dictionary<uint, LoyaltyRewardDefinition>? result = null;
+
+		while (true) {
+			SteamUnifiedMessages.ServiceMethodResponse<CLoyaltyRewards_QueryRewardItems_Response> response;
+
+			try {
+				response = await UnifiedLoyaltyRewards.QueryRewardItems(request).ToLongRunningTask().ConfigureAwait(false);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+
+				return null;
+			}
+
+			if (response.Result != EResult.OK) {
+				return null;
+			}
+
+			result ??= new Dictionary<uint, LoyaltyRewardDefinition>(response.Body.total_count);
+
+			bool added = false;
+
+			foreach (LoyaltyRewardDefinition _ in response.Body.definitions.Where(entry => result.TryAdd(entry.defid, entry))) {
+				added = true;
+			}
+
+			// Normally it should be enough to compare counts exclusively, but we're going to use additional bulletproofing against infinite loops just in case
+			if (!added || (result.Count >= response.Body.total_count) || string.IsNullOrEmpty(response.Body.next_cursor) || (request.cursor == response.Body.next_cursor)) {
+				return result;
+			}
+
+			request.cursor = response.Body.next_cursor;
+		}
+	}
+
+	[PublicAPI]
 	public async Task<CCredentials_GetSteamGuardDetails_Response?> GetSteamGuardStatus() {
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));

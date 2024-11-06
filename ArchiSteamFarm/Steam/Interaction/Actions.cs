@@ -42,6 +42,7 @@ using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
+using SteamKit2.WebUI.Internal;
 
 namespace ArchiSteamFarm.Steam.Interaction;
 
@@ -169,6 +170,15 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
 
 		return (steamOwnerID > 0) && new SteamID(steamOwnerID).IsIndividualAccount ? steamOwnerID : 0;
+	}
+
+	[PublicAPI]
+	public async Task<Dictionary<uint, LoyaltyRewardDefinition>?> GetRewardItems(IReadOnlyCollection<uint> definitionIDs) {
+		if ((definitionIDs == null) || (definitionIDs.Count == 0)) {
+			throw new ArgumentNullException(nameof(definitionIDs));
+		}
+
+		return await Bot.ArchiHandler.GetRewardItems(definitionIDs).ConfigureAwait(false);
 	}
 
 	[MustDisposeResource]
@@ -314,8 +324,24 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<EResult> RedeemPoints(uint definitionID) {
+	public async Task<EResult> RedeemPoints(uint definitionID, bool forced = false) {
 		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
+
+		if (!forced) {
+			Dictionary<uint, LoyaltyRewardDefinition>? definitions = await Bot.Actions.GetRewardItems(new HashSet<uint>(1) { definitionID }).ConfigureAwait(false);
+
+			if (definitions == null) {
+				return EResult.Timeout;
+			}
+
+			if (!definitions.TryGetValue(definitionID, out LoyaltyRewardDefinition? definition)) {
+				return EResult.InvalidParam;
+			}
+
+			if (definition.point_cost > 0) {
+				return EResult.InvalidState;
+			}
+		}
 
 		return await Bot.ArchiHandler.RedeemPoints(definitionID).ConfigureAwait(false);
 	}
