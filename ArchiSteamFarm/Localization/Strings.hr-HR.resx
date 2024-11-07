@@ -60,39 +60,127 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
 		</value>
 	</resheader>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="AcceptingTrade" xml:space="preserve">
+		<value>Prihvaćanje trgovine: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="AutoUpdateCheckInfo" xml:space="preserve">
+		<value>ASF će automatski provjeriti novu verziju svakih {0}.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+	</data>
+	<data name="Content" xml:space="preserve">
+		<value>Sadržaj:
+{0}</value>
+		<comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+	</data>
+	<data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+		<value>Postavljena {0} vrijednost nije važeća: {1}</value>
+		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+	</data>
+	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+		<value>ASF V{0} je naišla na fatalnu iznimku prije što je jezgreni dnevnik modula uspio izvršiti inicijalizaciju!</value>
+		<comment>{0} will be replaced by version number</comment>
+	</data>
+	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+		<value>Iznimka: {0}() {1}
+StackTrace:
+{2}</value>
+		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+	</data>
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Opoziv sa kodom greške broj {0}!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
+	</data>
+	<data name="ErrorFailingRequest" xml:space="preserve">
+		<value>Zahtjev neuspješan: {0}</value>
+		<comment>{0} will be replaced by URL of the request</comment>
+	</data>
+	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+		<value>Globalnu konfiguraciju nije moguće učitati. Provjerite postoji li {0} i da li je valjana!
+Zapratite 'postavljanje' uputstva na wiki ukoliko imate nejasnoće.</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="ErrorIsInvalid" xml:space="preserve">
+		<value>{0} nije valjana!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Niti jedan bot je definiran. Jeste li zaboravili konfigurirati vaš ASF? Zapratite 'postavljanje' uputstva na wiki ukoliko imate nejasnoće.</value>
+	</data>
+	<data name="ErrorObjectIsNull" xml:space="preserve">
+		<value>{0} je null!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorParsingObject" xml:space="preserve">
+		<value>Rasčlanjivanje {0} neuspješno!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+		<value>Zahtjevi neuspješni nakon {0} pokušaja!</value>
+		<comment>{0} will be replaced by maximum number of tries</comment>
+	</data>
+	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
+		<value>Provjera zadnje verzije nauspješna!</value>
+	</data>
+	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+		<value>Ažuriranje ne može započeti jer postoji objekt povezan u trenutno pokrenutoj verzija!
+Automatsko ažuriranje na tu verziju nije moguće.</value>
+	</data>
+	<data name="ErrorUpdateNoAssets" xml:space="preserve">
+		<value>Ažuriranje ne može započeti jer ta verzija ne sadrži ni jedan objekt!</value>
+	</data>
+	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+		<value>Zahtjev prihvačen za korisnikov ulaz, ali proces se trenutno izvodi u bezglavnom načinu rada!</value>
+	</data>
+	<data name="Exiting" xml:space="preserve">
+		<value>Izlaz u tijeku...</value>
+	</data>
+	<data name="WarningFailed" xml:space="preserve">
+		<value>Neuspješno!</value>
+	</data>
+	<data name="GlobalConfigChanged" xml:space="preserve">
+		<value>Globalna konfiguracijska datoteka je izmjenjena!</value>
+	</data>
+	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+		<value>Globalna konfiguracijska datoteka je uklonjena!</value>
+	</data>
+	<data name="IgnoringTrade" xml:space="preserve">
+		<value>Ignoriranje trgovine: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="LoggingIn" xml:space="preserve">
+		<value>Prijava u {0}...</value>
+		<comment>{0} will be replaced by service's name</comment>
+	</data>
+	<data name="NoBotsAreRunning" xml:space="preserve">
+		<value>Niti jedan bot nije pokrenut, izlazak u tijeku...</value>
+	</data>
+	<data name="RefreshingOurSession" xml:space="preserve">
+		<value>Osvješavanje sesije!</value>
+	</data>
+	<data name="RejectingTrade" xml:space="preserve">
+		<value>Odbijanje trgovine: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="Restarting" xml:space="preserve">
+		<value>Ponovno pokretanje u tijeku...</value>
+	</data>
+	<data name="Starting" xml:space="preserve">
+		<value>Pokretanje u tijeku...</value>
+	</data>
+	<data name="Success" xml:space="preserve">
+		<value>Uspijeh!</value>
+	</data>
+	<data name="UnlockingParentalAccount" xml:space="preserve">
+		<value>Otključavanje roditeljskog računa u tijeku...</value>
+	</data>
+	<data name="UpdateCheckingNewVersion" xml:space="preserve">
+		<value>Provjera nove verzije u tijeku...</value>
+	</data>
+	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
+		<value/>
+		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+	</data>
 	
 	
 	
