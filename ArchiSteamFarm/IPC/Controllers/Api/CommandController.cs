@@ -23,6 +23,7 @@
 
 using System;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Requests;
@@ -31,11 +32,20 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
 [Route("Api/Command")]
 public sealed class CommandController : ArchiController {
+	private readonly IHostApplicationLifetime ApplicationLifetime;
+
+	public CommandController(IHostApplicationLifetime applicationLifetime) {
+		ArgumentNullException.ThrowIfNull(applicationLifetime);
+
+		ApplicationLifetime = applicationLifetime;
+	}
+
 	/// <summary>
 	///     Executes a command.
 	/// </summary>
@@ -72,8 +82,28 @@ public sealed class CommandController : ArchiController {
 			command = command[commandPrefix.Length..];
 		}
 
-		string? response = await targetBot.Commands.Response(EAccess.Owner, command).ConfigureAwait(false);
+		// Update process can result in kestrel shutdown request, just before patching the files
+		// In this case, we have very little opportunity to do anything, especially we will not have access to the return value of the command
+		// That's because update command will synchronously stop the kestrel, and wait for it before proceeding with an update, and that'll wait for us finishing the request, never happening
+		// Therefore, we'll allow this command to proceed while listening for application shutdown request, if it happens, we'll do our best by getting alternative signal that update is proceeding
+		TaskCompletionSource<bool> applicationStopping = new();
 
-		return Ok(new GenericResponse<string>(response));
+		CancellationTokenRegistration applicationStoppingRegistration = ApplicationLifetime.ApplicationStopping.Register(() => applicationStopping.SetResult(true));
+
+		await using (applicationStoppingRegistration.ConfigureAwait(false)) {
+			Task<string?> commandTask = targetBot.Commands.Response(EAccess.Owner, command);
+
+			string? response;
+
+			if (await Task.WhenAny(commandTask, applicationStopping.Task).ConfigureAwait(false) == commandTask) {
+				response = await commandTask.ConfigureAwait(false);
+			} else {
+				// It's almost guaranteed that this is the result of update process requesting kestrel shutdown
+				// However, we're still going to check PendingVersionUpdate, which should be set by the update process as alternative way to inform us about pending update
+				response = ASFController.PendingVersionUpdate != null ? Strings.PatchingFiles : Strings.Exiting;
+			}
+
+			return Ok(new GenericResponse<string>(response));
+		}
 	}
 }
