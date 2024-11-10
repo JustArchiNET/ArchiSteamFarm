@@ -484,9 +484,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>לא ניתן לנתק את התוכנה. נוטש את בוט זה!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>לא ניתן לאתחל את SteamDirectory: התחברות לרשת הסטים עשויה להימשך זמן רב מהרגיל!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>עוצר...</value>
 	</data>

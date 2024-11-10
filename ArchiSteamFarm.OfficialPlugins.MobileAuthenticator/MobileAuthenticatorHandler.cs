@@ -32,14 +32,14 @@ namespace ArchiSteamFarm.OfficialPlugins.MobileAuthenticator;
 
 internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 	private readonly ArchiLogger ArchiLogger;
-	private readonly SteamUnifiedMessages.UnifiedService<ITwoFactor> UnifiedTwoFactorService;
+	private readonly TwoFactor UnifiedTwoFactorService;
 
 	internal MobileAuthenticatorHandler(ArchiLogger archiLogger, SteamUnifiedMessages steamUnifiedMessages) {
 		ArgumentNullException.ThrowIfNull(archiLogger);
 		ArgumentNullException.ThrowIfNull(steamUnifiedMessages);
 
 		ArchiLogger = archiLogger;
-		UnifiedTwoFactorService = steamUnifiedMessages.CreateService<ITwoFactor>();
+		UnifiedTwoFactorService = steamUnifiedMessages.CreateService<TwoFactor>();
 	}
 
 	public override void HandleMsg(IPacketMsg packetMsg) => ArgumentNullException.ThrowIfNull(packetMsg);
@@ -66,23 +66,17 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 			steamid = steamID
 		};
 
-		SteamUnifiedMessages.ServiceMethodResponse response;
+		SteamUnifiedMessages.ServiceMethodResponse<CTwoFactor_AddAuthenticator_Response> response;
 
 		try {
-			response = await UnifiedTwoFactorService.SendMessage(x => x.AddAuthenticator(request)).ToLongRunningTask().ConfigureAwait(false);
+			response = await UnifiedTwoFactorService.AddAuthenticator(request).ToLongRunningTask().ConfigureAwait(false);
 		} catch (Exception e) {
 			ArchiLogger.LogGenericWarningException(e);
 
 			return null;
 		}
 
-		if (response.Result != EResult.OK) {
-			return null;
-		}
-
-		CTwoFactor_AddAuthenticator_Response body = response.GetDeserializedResponse<CTwoFactor_AddAuthenticator_Response>();
-
-		return body;
+		return response.Result == EResult.OK ? response.Body : null;
 	}
 
 	internal async Task<CTwoFactor_FinalizeAddAuthenticator_Response?> FinalizeAuthenticator(ulong steamID, string activationCode, string authenticatorCode, ulong authenticatorTime) {
@@ -109,22 +103,16 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 			steamid = steamID
 		};
 
-		SteamUnifiedMessages.ServiceMethodResponse response;
+		SteamUnifiedMessages.ServiceMethodResponse<CTwoFactor_FinalizeAddAuthenticator_Response> response;
 
 		try {
-			response = await UnifiedTwoFactorService.SendMessage(x => x.FinalizeAddAuthenticator(request)).ToLongRunningTask().ConfigureAwait(false);
+			response = await UnifiedTwoFactorService.FinalizeAddAuthenticator(request).ToLongRunningTask().ConfigureAwait(false);
 		} catch (Exception e) {
 			ArchiLogger.LogGenericWarningException(e);
 
 			return null;
 		}
 
-		if (response.Result != EResult.OK) {
-			return null;
-		}
-
-		CTwoFactor_FinalizeAddAuthenticator_Response body = response.GetDeserializedResponse<CTwoFactor_FinalizeAddAuthenticator_Response>();
-
-		return body;
+		return response.Result == EResult.OK ? response.Body : null;
 	}
 }

@@ -479,9 +479,6 @@ StackTrace: {2}</value>
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Sikertelen volt a kliensről való lecsatlakozás. Elhagyjuk ezt a bot példányt!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>A Steam Könyvtárat nem sikerült inicializálni: a Steam hálózathoz való csatlakozás a szokásosnál tovább is eltarthat!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Leállás...</value>
 	</data>

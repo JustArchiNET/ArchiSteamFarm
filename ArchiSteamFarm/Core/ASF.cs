@@ -36,6 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.IPC;
+using ArchiSteamFarm.IPC.Controllers.Api;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Plugins;
@@ -48,7 +49,6 @@ using ArchiSteamFarm.Web.GitHub.Data;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
 using SteamKit2;
-using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm.Core;
 
@@ -675,23 +675,6 @@ public static class ASF {
 			throw new InvalidOperationException(nameof(WebBrowser));
 		}
 
-		// Ensure that we ask for a list of servers if we don't have any saved servers available
-		IEnumerable<ServerRecord> servers = await GlobalDatabase.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
-
-		if (!servers.Any()) {
-			ArchiLogger.LogGenericInfo(Strings.FormatInitializing(nameof(SteamDirectory)));
-
-			SteamConfiguration steamConfiguration = SteamConfiguration.Create(static builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(GlobalDatabase.CellID).WithServerListProvider(GlobalDatabase.ServerListProvider).WithHttpClientFactory(static () => WebBrowser.GenerateDisposableHttpClient()));
-
-			try {
-				await SteamDirectory.LoadAsync(steamConfiguration).ConfigureAwait(false);
-				ArchiLogger.LogGenericInfo(Strings.Success);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericWarningException(e);
-				ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
-			}
-		}
-
 		HashSet<string> botNames;
 
 		try {
@@ -894,11 +877,14 @@ public static class ASF {
 
 			if (kestrelWasRunning) {
 				// We disable ArchiKestrel here as the update process moves the core files and might result in IPC crash
-				// TODO: It might fail if the update was triggered from the API, this should be something to improve in the future, by changing the structure into request -> return response -> finish update
+				ASFController.PendingVersionUpdate = newVersion;
+
 				try {
 					await ArchiKestrel.Stop().ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
+				} finally {
+					ASFController.PendingVersionUpdate = null;
 				}
 			}
 

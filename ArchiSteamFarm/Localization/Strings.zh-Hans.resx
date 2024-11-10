@@ -487,9 +487,6 @@
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>断开客户端连接失败，将跳过此机器人实例！</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>无法初始化 SteamDirectory：可能需要比平时更长的时间连接 Steam 网络！</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>正在停止……</value>
 	</data>

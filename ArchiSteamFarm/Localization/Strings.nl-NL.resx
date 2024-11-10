@@ -480,9 +480,6 @@ StackTrace:
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Verbinding verbreken met de client is mislukt. Bot instantie wordt afgesloten!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Kon SteamDirectory niet initialiseren: verbinden met Steam netwerk gaat mogelijk veel langer duren dan gebruikelijk!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Stoppen...</value>
 	</data>

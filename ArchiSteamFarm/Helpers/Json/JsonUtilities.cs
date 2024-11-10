@@ -26,6 +26,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading;
@@ -112,6 +113,7 @@ public static class JsonUtilities {
 	private static JsonSerializerOptions CreateDefaultJsonSerializerOptions(bool writeIndented = false) =>
 		new() {
 			AllowTrailingCommas = true,
+			Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
 			PropertyNamingPolicy = null,
 			ReadCommentHandling = JsonCommentHandling.Skip,
 			TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { ApplyCustomModifiers } },

@@ -21,13 +21,13 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4.2.0
+      uses: actions/checkout@v4.2.2
       with:
         show-progress: false
         submodules: recursive
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v4.0.1
+      uses: actions/setup-dotnet@v4.1.0
       with:
         dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
 

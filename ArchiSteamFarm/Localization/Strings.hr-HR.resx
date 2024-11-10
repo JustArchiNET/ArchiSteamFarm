@@ -61,130 +61,126 @@
 		</value>
 	</resheader>
 	<data name="AcceptingTrade" xml:space="preserve">
-		<value>Godtar handel: {0}</value>
+		<value>Prihvaćanje trgovine: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="AutoUpdateCheckInfo" xml:space="preserve">
-		<value>ASF vil automatisk se etter nye versjoner hver {0}.</value>
+		<value>ASF će automatski provjeriti novu verziju svakih {0}.</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
 	</data>
 	<data name="Content" xml:space="preserve">
-		<value>Innhold:
+		<value>Sadržaj:
 {0}</value>
 		<comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
 	</data>
 	<data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-		<value>Konfigurert {0} egenskap er ugyldig: {1}</value>
+		<value>Postavljena {0} vrijednost nije važeća: {1}</value>
 		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-		<value>ASF V{0} har støtt på et kritisk unntak før hovedmodulen for loggføring fikk initiert!</value>
+		<value>ASF V{0} je naišla na fatalnu iznimku prije što je jezgreni dnevnik modula uspio izvršiti inicijalizaciju!</value>
 		<comment>{0} will be replaced by version number</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-		<value>Unntak: {0}() {1}
+		<value>Iznimka: {0}() {1}
 StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
 	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Avslutter med {0} feilkode!</value>
+		<value>Opoziv sa kodom greške broj {0}!</value>
 		<comment>{0} will be replaced by error code (number)</comment>
 	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
-		<value>Forespørsel feiler: {0}</value>
+		<value>Zahtjev neuspješan: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
 	</data>
 	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-		<value>Global konfigurasjon kunne ikke lastes. Kontroller at {0} eksisterer og er gyldig! Følg "setting up" guide på wiki hvis du er forvirret.</value>
+		<value>Globalnu konfiguraciju nije moguće učitati. Provjerite postoji li {0} i da li je valjana!
+Zapratite 'postavljanje' uputstva na wiki ukoliko imate nejasnoće.</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="ErrorIsInvalid" xml:space="preserve">
-		<value>{0} er ugyldig!</value>
+		<value>{0} nije valjana!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Ingen bots er definert. Har du glemt å konfigurere din ASF? Følg "setting up"-guide på wikien dersom du er forvirret.</value>
+		<value>Niti jedan bot je definiran. Jeste li zaboravili konfigurirati vaš ASF? Zapratite 'postavljanje' uputstva na wiki ukoliko imate nejasnoće.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
-		<value>{0} er null!</value>
+		<value>{0} je null!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorParsingObject" xml:space="preserve">
-		<value>Parsing {0} feilet!</value>
+		<value>Rasčlanjivanje {0} neuspješno!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-		<value>Forespørsel mislyktes etter {0} forsøk!</value>
+		<value>Zahtjevi neuspješni nakon {0} pokušaja!</value>
 		<comment>{0} will be replaced by maximum number of tries</comment>
 	</data>
 	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
-		<value>Kunne ikke sjekke den nyeste versjonen!</value>
+		<value>Provjera zadnje verzije nauspješna!</value>
 	</data>
 	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-		<value>Kunne ikke fortsette med oppdateringen fordi det ikke er noen ressurs tilknyttet den kjørende versjonen! Automatisk oppdatering til den versjonen er ikke mulig.</value>
+		<value>Ažuriranje ne može započeti jer postoji objekt povezan u trenutno pokrenutoj verzija!
+Automatsko ažuriranje na tu verziju nije moguće.</value>
 	</data>
 	<data name="ErrorUpdateNoAssets" xml:space="preserve">
-		<value>Kunne ikke fortsette med en oppdatering fordi den versjonen inkluderer ingen ressurser!</value>
+		<value>Ažuriranje ne može započeti jer ta verzija ne sadrži ni jedan objekt!</value>
 	</data>
 	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-		<value>Mottok en forespørsel for brukerinnputt, men prosessen kjører i hodeløs-modus!</value>
+		<value>Zahtjev prihvačen za korisnikov ulaz, ali proces se trenutno izvodi u bezglavnom načinu rada!</value>
 	</data>
 	<data name="Exiting" xml:space="preserve">
-		<value>Avslutter...</value>
+		<value>Izlaz u tijeku...</value>
 	</data>
 	<data name="WarningFailed" xml:space="preserve">
-		<value>Mislykket!</value>
+		<value>Neuspješno!</value>
 	</data>
 	<data name="GlobalConfigChanged" xml:space="preserve">
-		<value>Global konfigurasjonsfil er endret!</value>
+		<value>Globalna konfiguracijska datoteka je izmjenjena!</value>
 	</data>
 	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-		<value>Global konfigurasjonsfil er fjernet!</value>
+		<value>Globalna konfiguracijska datoteka je uklonjena!</value>
 	</data>
 	<data name="IgnoringTrade" xml:space="preserve">
-		<value>Ignorerer handel: {0}</value>
+		<value>Ignoriranje trgovine: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="LoggingIn" xml:space="preserve">
-		<value>Logger inn på {0}...</value>
+		<value>Prijava u {0}...</value>
 		<comment>{0} will be replaced by service's name</comment>
 	</data>
 	<data name="NoBotsAreRunning" xml:space="preserve">
-		<value>Ingen bots kjører, avslutter...</value>
+		<value>Niti jedan bot nije pokrenut, izlazak u tijeku...</value>
 	</data>
 	<data name="RefreshingOurSession" xml:space="preserve">
-		<value>Oppdaterer økten!</value>
+		<value>Osvješavanje sesije!</value>
 	</data>
 	<data name="RejectingTrade" xml:space="preserve">
-		<value>Avviser handel: {0}</value>
+		<value>Odbijanje trgovine: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="Restarting" xml:space="preserve">
-		<value>Restarter...</value>
+		<value>Ponovno pokretanje u tijeku...</value>
 	</data>
 	<data name="Starting" xml:space="preserve">
-		<value>Starter...</value>
+		<value>Pokretanje u tijeku...</value>
 	</data>
 	<data name="Success" xml:space="preserve">
-		<value>Suksess!</value>
+		<value>Uspijeh!</value>
 	</data>
 	<data name="UnlockingParentalAccount" xml:space="preserve">
-		<value>Låse opp foreldrekonto...</value>
+		<value>Otključavanje roditeljskog računa u tijeku...</value>
 	</data>
 	<data name="UpdateCheckingNewVersion" xml:space="preserve">
-		<value>Ser etter ny versjon...</value>
+		<value>Provjera nove verzije u tijeku...</value>
 	</data>
 	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
-		<value>Laster ned ny versjon: {0} ({1} MB)... Mens du venter kan du kanskje vurdere å donere om du setter pris på arbeidet vårt! :)</value>
+		<value/>
 		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
 	</data>
-	<data name="UpdateFinished" xml:space="preserve">
-		<value>Oppdateringsprosessen er ferdig!</value>
-	</data>
-	<data name="UpdateNewVersionAvailable" xml:space="preserve">
-		<value>Ny ASF-versjon er tilgjengelig! Vurder å oppdatere!</value>
-	</data>
 	
 	
 	
@@ -203,9 +199,6 @@ StackTrace:
 	
 	
 	
-	<data name="Done" xml:space="preserve">
-		<value>Utført!</value>
-	</data>
 	
 	
 	
@@ -221,15 +214,8 @@ StackTrace:
 	
 	
 	
-	<data name="UnknownCommand" xml:space="preserve">
-		<value>Ukjent kommando!</value>
-	</data>
 	
 	
-	<data name="BotAcceptingGift" xml:space="preserve">
-		<value>Godta gave: {0}...</value>
-		<comment>{0} will be replaced by giftID (number)</comment>
-	</data>
 	
 	
 	
@@ -241,21 +227,8 @@ StackTrace:
 	
 	
 	
-	<data name="BotConnected" xml:space="preserve">
-		<value>Koblet til Steam!</value>
-	</data>
-	<data name="BotDisconnected" xml:space="preserve">
-		<value>Koblet fra Steam!</value>
-	</data>
-	<data name="BotDisconnecting" xml:space="preserve">
-		<value>Kobler fra...</value>
-	</data>
 	
 	
-	<data name="BotLoggedOff" xml:space="preserve">
-		<value>Logget av Steam: {0}</value>
-		<comment>{0} will be replaced by logging off reason (string)</comment>
-	</data>
 	
 	
 	
@@ -269,9 +242,6 @@ StackTrace:
 	
 	
 	
-	<data name="BotReconnecting" xml:space="preserve">
-		<value>Kobler til på nytt...</value>
-	</data>
 	
 	
 	
@@ -281,38 +251,29 @@ StackTrace:
 	
 	
 	
-	<data name="BotUnableToLogin" xml:space="preserve">
-		<value>Kan ikke logge inn på Steam: {0}/{1}</value>
-		<comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
-	</data>
-	<data name="ErrorIsEmpty" xml:space="preserve">
-		<value>{0} er tom!</value>
-		<comment>{0} will be replaced by object's name</comment>
-	</data>
-	<data name="UnusedKeys" xml:space="preserve">
-		<value>Ubrukte nøkler: {0}</value>
-		<comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
-	</data>
-	<data name="WarningFailedWithError" xml:space="preserve">
-		<value>Mislyktes på grunn av feil: {0}</value>
-		<comment>{0} will be replaced by failure reason (string)</comment>
-	</data>
-	
-	
-	
-	<data name="BotConnecting" xml:space="preserve">
-		<value>Kobler til...</value>
-	</data>
-	
-	<data name="BotStopping" xml:space="preserve">
-		<value>Stopper...</value>
-	</data>
-	
-	
-	<data name="Initializing" xml:space="preserve">
-		<value>Initialiserer {0}...</value>
-		<comment>{0} will be replaced by service name that is being initialized</comment>
-	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

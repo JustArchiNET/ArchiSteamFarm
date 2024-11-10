@@ -172,6 +172,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal bool HasLoginCodeReady => !string.IsNullOrEmpty(TwoFactorCode) || !string.IsNullOrEmpty(AuthCode);
 
 	private readonly CallbackManager CallbackManager;
+	private readonly SemaphoreSlim ConnectionSemaphore = new(1, 1);
 	private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new(1, 1);
 	private readonly Timer HeartBeatTimer;
 	private readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
@@ -183,6 +184,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = [];
 	private readonly SteamUser SteamUser;
 	private readonly Trading Trading;
+	private readonly SemaphoreSlim UnpackBoosterPacksSemaphore = new(1, 1);
 
 	private IEnumerable<(string FilePath, EFileType FileType)> RelatedFiles {
 		get {
@@ -315,6 +317,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private SteamSaleEvent? SteamSaleEvent;
 	private Timer? TradeCheckTimer;
 	private string? TwoFactorCode;
+	private bool UnpackBoosterPacksScheduled;
 
 	private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
 		ArgumentException.ThrowIfNullOrEmpty(botName);
@@ -350,6 +353,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		);
 
+		// Decrease the ServerList cache in order to fight with Steam gibberish data
+		SteamConfiguration.ServerList.ServerListBeforeRefreshTimeSpan = TimeSpan.FromHours(1);
+
 		// Initialize
 		SteamClient = new SteamClient(SteamConfiguration, botName);
 
@@ -380,8 +386,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 		CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
-		CallbackManager.Subscribe<SteamUnifiedMessages.ServiceMethodNotification>(OnServiceMethod);
-
 		SteamUser = SteamClient.GetHandler<SteamUser>() ?? throw new InvalidOperationException(nameof(SteamUser));
 		CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 		CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
@@ -391,6 +395,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		CallbackManager.Subscribe<SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 		CallbackManager.Subscribe<UserNotificationsCallback>(OnUserNotifications);
+
+		CallbackManager.SubscribeServiceNotification<ChatRoomClient, CChatRoom_IncomingChatMessage_Notification>(OnIncomingChatMessage);
+		CallbackManager.SubscribeServiceNotification<FriendMessagesClient, CFriendMessages_IncomingMessage_Notification>(OnIncomingMessage);
 
 		Actions = new Actions(this);
 		CardsFarmer = new CardsFarmer(this);
@@ -406,15 +413,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	public void Dispose() {
-		// Those are objects that are always being created if constructor doesn't throw exception
-		ArchiWebHandler.Dispose();
-		BotDatabase.Dispose();
-		GamesRedeemerInBackgroundSemaphore.Dispose();
-		InitializationSemaphore.Dispose();
-		MessagingSemaphore.Dispose();
-		RefreshWebSessionSemaphore.Dispose();
-		SendCompleteTypesSemaphore.Dispose();
-		Trading.Dispose();
+		DisposeShared();
 
 		Actions.Dispose();
 		CardsFarmer.Dispose();
@@ -433,15 +432,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	public async ValueTask DisposeAsync() {
-		// Those are objects that are always being created if constructor doesn't throw exception
-		ArchiWebHandler.Dispose();
-		BotDatabase.Dispose();
-		GamesRedeemerInBackgroundSemaphore.Dispose();
-		InitializationSemaphore.Dispose();
-		MessagingSemaphore.Dispose();
-		RefreshWebSessionSemaphore.Dispose();
-		SendCompleteTypesSemaphore.Dispose();
-		Trading.Dispose();
+		DisposeShared();
 
 		await Actions.DisposeAsync().ConfigureAwait(false);
 		await CardsFarmer.DisposeAsync().ConfigureAwait(false);
@@ -1588,7 +1579,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			// Skip shutdown event as we're actually reinitializing the bot, not fully stopping it
-			Stop(true);
+			await Stop(true).ConfigureAwait(false);
 
 			BotConfig = botConfig;
 
@@ -1609,7 +1600,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.ShutdownOnFarmingFinished)) {
-			Stop();
+			await Stop().ConfigureAwait(false);
 		}
 
 		await PluginsCore.OnBotFarmingFinished(this, farmedSomething).ConfigureAwait(false);
@@ -1823,7 +1814,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (KeepRunning) {
-			Stop(true);
+			await Stop(true).ConfigureAwait(false);
 		}
 
 		await BotDatabase.MakeReadOnly().ConfigureAwait(false);
@@ -1891,7 +1882,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		if (string.IsNullOrEmpty(input) || !SetUserInput(inputType, input)) {
 			ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(input)));
 
-			Stop();
+			await Stop().ConfigureAwait(false);
 
 			return null;
 		}
@@ -1937,62 +1928,83 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		KeepRunning = true;
+		await ConnectionSemaphore.WaitAsync().ConfigureAwait(false);
 
-		ArchiLogger.LogGenericInfo(Strings.Starting);
+		try {
+			if (KeepRunning) {
+				return;
+			}
 
-		// Support and convert 2FA files
-		if (!HasMobileAuthenticator) {
-			string mobileAuthenticatorFilePath = GetFilePath(EFileType.MobileAuthenticator);
+			KeepRunning = true;
 
-			if (string.IsNullOrEmpty(mobileAuthenticatorFilePath)) {
-				ArchiLogger.LogNullError(mobileAuthenticatorFilePath);
+			ArchiLogger.LogGenericInfo(Strings.Starting);
+
+			// Support and convert 2FA files
+			if (!HasMobileAuthenticator) {
+				string mobileAuthenticatorFilePath = GetFilePath(EFileType.MobileAuthenticator);
+
+				if (string.IsNullOrEmpty(mobileAuthenticatorFilePath)) {
+					ArchiLogger.LogNullError(mobileAuthenticatorFilePath);
+
+					return;
+				}
+
+				if (File.Exists(mobileAuthenticatorFilePath)) {
+					await ImportAuthenticatorFromFile(mobileAuthenticatorFilePath).ConfigureAwait(false);
+				}
+			}
+
+			string keysToRedeemFilePath = GetFilePath(EFileType.KeysToRedeem);
+
+			if (string.IsNullOrEmpty(keysToRedeemFilePath)) {
+				ArchiLogger.LogNullError(keysToRedeemFilePath);
 
 				return;
 			}
 
-			if (File.Exists(mobileAuthenticatorFilePath)) {
-				await ImportAuthenticatorFromFile(mobileAuthenticatorFilePath).ConfigureAwait(false);
+			if (File.Exists(keysToRedeemFilePath)) {
+				await ImportKeysToRedeem(keysToRedeemFilePath).ConfigureAwait(false);
 			}
+
+			// If any previous callbacks handling loop is still going, we're going to abort it
+			await StopHandlingCallbacks().ConfigureAwait(false);
+
+			CallbacksAborted = new CancellationTokenSource();
+
+			CancellationToken token = CallbacksAborted.Token;
+
+			Utilities.InBackground(() => HandleCallbacks(token), true);
+			Utilities.InBackground(Connect);
+		} finally {
+			ConnectionSemaphore.Release();
 		}
-
-		string keysToRedeemFilePath = GetFilePath(EFileType.KeysToRedeem);
-
-		if (string.IsNullOrEmpty(keysToRedeemFilePath)) {
-			ArchiLogger.LogNullError(keysToRedeemFilePath);
-
-			return;
-		}
-
-		if (File.Exists(keysToRedeemFilePath)) {
-			await ImportKeysToRedeem(keysToRedeemFilePath).ConfigureAwait(false);
-		}
-
-		// If any previous callbacks handling loop is still going, we're going to abort it
-		await StopHandlingCallbacks().ConfigureAwait(false);
-
-		CallbacksAborted = new CancellationTokenSource();
-
-		Utilities.InBackground(() => HandleCallbacks(CallbacksAborted.Token), true);
-
-		await Connect().ConfigureAwait(false);
 	}
 
-	internal void Stop(bool skipShutdownEvent = false) {
+	internal async Task Stop(bool skipShutdownEvent = false) {
 		if (!KeepRunning) {
 			return;
 		}
 
-		KeepRunning = false;
+		await ConnectionSemaphore.WaitAsync().ConfigureAwait(false);
 
-		ArchiLogger.LogGenericInfo(Strings.BotStopping);
+		try {
+			if (!KeepRunning) {
+				return;
+			}
 
-		if (SteamClient.IsConnected) {
-			Disconnect();
-		}
+			KeepRunning = false;
 
-		if (!skipShutdownEvent) {
-			Utilities.InBackground(Events.OnBotShutdown);
+			ArchiLogger.LogGenericInfo(Strings.BotStopping);
+
+			if (SteamClient.IsConnected) {
+				Disconnect();
+			}
+
+			if (!skipShutdownEvent) {
+				Utilities.InBackground(Events.OnBotShutdown);
+			}
+		} finally {
+			ConnectionSemaphore.Release();
 		}
 	}
 
@@ -2051,7 +2063,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (KeepRunning) {
 			if (!force) {
-				Stop();
+				await Stop().ConfigureAwait(false);
 			} else {
 				// Stop() will most likely block due to connection freeze, don't wait for it
 				Utilities.InBackground(() => Stop());
@@ -2086,6 +2098,19 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ReconnectOnUserInitiated = reconnect;
 
 		SteamClient.Disconnect();
+	}
+
+	private void DisposeShared() {
+		ArchiWebHandler.Dispose();
+		BotDatabase.Dispose();
+		ConnectionSemaphore.Dispose();
+		GamesRedeemerInBackgroundSemaphore.Dispose();
+		InitializationSemaphore.Dispose();
+		MessagingSemaphore.Dispose();
+		RefreshWebSessionSemaphore.Dispose();
+		SendCompleteTypesSemaphore.Dispose();
+		Trading.Dispose();
+		UnpackBoosterPacksSemaphore.Dispose();
 	}
 
 	private async Task<Dictionary<string, string>?> GetKeysFromFile(string filePath) {
@@ -2209,7 +2234,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				// Those failures are permanent, we should Stop() the bot if any of those happen
 				ArchiLogger.LogGenericError(Strings.FormatBotUnableToLogin(result, extendedResult));
 
-				Stop();
+				await Stop().ConfigureAwait(false);
 
 				break;
 			case EResult.AccessDenied when string.IsNullOrEmpty(RefreshToken) && (++LoginFailures >= MaxLoginFailures):
@@ -2219,7 +2244,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				ArchiLogger.LogGenericError(Strings.FormatBotInvalidPasswordDuringLogin(MaxLoginFailures));
 
-				Stop();
+				await Stop().ConfigureAwait(false);
 
 				break;
 			case EResult.AccountLoginDeniedNeedTwoFactor when HasMobileAuthenticator && (++LoginFailures >= MaxLoginFailures):
@@ -2229,7 +2254,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				ArchiLogger.LogGenericError(Strings.FormatBotInvalidAuthenticatorDuringLogin(MaxLoginFailures));
 
-				Stop();
+				await Stop().ConfigureAwait(false);
 
 				break;
 			case EResult.AccountLoginDeniedNeedTwoFactor when HasMobileAuthenticator:
@@ -2252,7 +2277,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				if (string.IsNullOrEmpty(authCode) || !SetUserInput(ASF.EUserInputType.SteamGuard, authCode)) {
 					ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(authCode)));
 
-					Stop();
+					await Stop().ConfigureAwait(false);
 				}
 
 				break;
@@ -2266,7 +2291,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode)) {
 					ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(twoFactorCode)));
 
-					Stop();
+					await Stop().ConfigureAwait(false);
 				}
 
 				break;
@@ -2295,7 +2320,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				// Unexpected result, shutdown immediately
 				ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(result), result));
 				ArchiLogger.LogGenericError(Strings.FormatBotUnableToLogin(result, extendedResult));
-				Stop();
+
+				await Stop().ConfigureAwait(false);
 
 				break;
 		}
@@ -2690,7 +2716,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (!await InitLoginAndPassword(string.IsNullOrEmpty(RefreshToken)).ConfigureAwait(false)) {
-			Stop();
+			await Stop().ConfigureAwait(false);
 
 			return;
 		}
@@ -2705,7 +2731,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		if (string.IsNullOrEmpty(username)) {
 			ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(BotConfig.SteamLogin)));
 
-			Stop();
+			await Stop().ConfigureAwait(false);
 
 			return;
 		}
@@ -2718,7 +2744,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			if (string.IsNullOrEmpty(password)) {
 				ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(BotConfig.SteamPassword)));
 
-				Stop();
+				await Stop().ConfigureAwait(false);
 
 				return;
 			}
@@ -2854,7 +2880,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		// If we initiated disconnect, do not attempt to reconnect
 		if (callback.UserInitiated && !ReconnectOnUserInitiated) {
-			await StopHandlingCallbacks().ConfigureAwait(false);
+			await StopHandlingCallbacksIfPossible().ConfigureAwait(false);
 
 			return;
 		}
@@ -2862,7 +2888,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		switch (lastLogOnResult) {
 			case EResult.AccountDisabled:
 				// Do not attempt to reconnect, those failures are permanent
-				await StopHandlingCallbacks().ConfigureAwait(false);
+				await StopHandlingCallbacksIfPossible().ConfigureAwait(false);
 
 				return;
 			case EResult.AccessDenied when !string.IsNullOrEmpty(RefreshToken):
@@ -2897,7 +2923,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (!KeepRunning) {
-			await StopHandlingCallbacks().ConfigureAwait(false);
+			await StopHandlingCallbacksIfPossible().ConfigureAwait(false);
 
 			return;
 		}
@@ -2911,7 +2937,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			await Task.Delay(1000).ConfigureAwait(false);
 
 			if (!KeepRunning) {
-				await StopHandlingCallbacks().ConfigureAwait(false);
+				await StopHandlingCallbacksIfPossible().ConfigureAwait(false);
 
 				return;
 			}
@@ -2922,7 +2948,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		ArchiLogger.LogGenericInfo(Strings.BotReconnecting);
-		await Connect().ConfigureAwait(false);
+
+		await Reconnect().ConfigureAwait(false);
 	}
 
 	private async void OnFriendsList(SteamFriends.FriendsListCallback callback) {
@@ -3018,100 +3045,100 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await Actions.AcceptGuestPasses(guestPassIDs).ConfigureAwait(false);
 	}
 
-	private async Task OnIncomingChatMessage(CChatRoom_IncomingChatMessage_Notification notification) {
+	private async void OnIncomingChatMessage(SteamUnifiedMessages.ServiceMethodNotification<CChatRoom_IncomingChatMessage_Notification> notification) {
 		ArgumentNullException.ThrowIfNull(notification);
 
-		if (notification.chat_group_id == 0) {
-			ArchiLogger.LogNullError(notification.chat_group_id);
+		if (notification.Body.chat_group_id == 0) {
+			ArchiLogger.LogNullError(notification.Body.chat_group_id);
 
 			return;
 		}
 
-		if (notification.chat_id == 0) {
-			ArchiLogger.LogNullError(notification.chat_id);
+		if (notification.Body.chat_id == 0) {
+			ArchiLogger.LogNullError(notification.Body.chat_id);
 
 			return;
 		}
 
-		if (notification.steamid_sender == 0) {
-			ArchiLogger.LogNullError(notification.steamid_sender);
+		if (notification.Body.steamid_sender == 0) {
+			ArchiLogger.LogNullError(notification.Body.steamid_sender);
 
 			return;
 		}
 
 		// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
-		if ((notification.steamid_sender != SteamID) && (notification.timestamp > 0)) {
-			if (ShouldAckChatMessage(notification.steamid_sender)) {
-				Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.chat_group_id, notification.chat_id, notification.timestamp));
+		if ((notification.Body.steamid_sender != SteamID) && (notification.Body.timestamp > 0)) {
+			if (ShouldAckChatMessage(notification.Body.steamid_sender)) {
+				Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.Body.chat_group_id, notification.Body.chat_id, notification.Body.timestamp));
 			}
 		}
 
 		string message;
 
 		// Prefer to use message without bbcode, but only if it's available
-		if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
-			message = notification.message_no_bbcode;
-		} else if (!string.IsNullOrEmpty(notification.message)) {
-			message = SteamChatMessage.Unescape(notification.message);
+		if (!string.IsNullOrEmpty(notification.Body.message_no_bbcode)) {
+			message = notification.Body.message_no_bbcode;
+		} else if (!string.IsNullOrEmpty(notification.Body.message)) {
+			message = SteamChatMessage.Unescape(notification.Body.message);
 		} else {
 			return;
 		}
 
-		ArchiLogger.LogChatMessage(false, message, notification.chat_group_id, notification.chat_id, notification.steamid_sender);
+		ArchiLogger.LogChatMessage(false, message, notification.Body.chat_group_id, notification.Body.chat_id, notification.Body.steamid_sender);
 
 		// Steam network broadcasts chat events also when we don't explicitly sign into Steam community
 		// We'll explicitly ignore those messages when using offline mode, as it was done in the first version of Steam chat when no messages were broadcasted at all before signing in
 		// Handling messages will still work correctly in invisible mode, which is how it should work in the first place
 		// This goes in addition to usual logic that ignores irrelevant messages from being parsed further
-		if ((notification.chat_group_id != MasterChatGroupID) || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
+		if ((notification.Body.chat_group_id != MasterChatGroupID) || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
 			return;
 		}
 
-		await Commands.HandleMessage(notification.chat_group_id, notification.chat_id, notification.steamid_sender, message).ConfigureAwait(false);
+		await Commands.HandleMessage(notification.Body.chat_group_id, notification.Body.chat_id, notification.Body.steamid_sender, message).ConfigureAwait(false);
 	}
 
-	private async Task OnIncomingMessage(CFriendMessages_IncomingMessage_Notification notification) {
+	private async void OnIncomingMessage(SteamUnifiedMessages.ServiceMethodNotification<CFriendMessages_IncomingMessage_Notification> notification) {
 		ArgumentNullException.ThrowIfNull(notification);
 
-		if (notification.steamid_friend == 0) {
-			ArchiLogger.LogNullError(notification.steamid_friend);
+		if (notification.Body.steamid_friend == 0) {
+			ArchiLogger.LogNullError(notification.Body.steamid_friend);
 
 			return;
 		}
 
-		if ((EChatEntryType) notification.chat_entry_type != EChatEntryType.ChatMsg) {
+		if ((EChatEntryType) notification.Body.chat_entry_type != EChatEntryType.ChatMsg) {
 			return;
 		}
 
 		// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
-		if (notification is { local_echo: false, rtime32_server_timestamp: > 0 }) {
-			if (ShouldAckChatMessage(notification.steamid_friend)) {
-				Utilities.InBackground(() => ArchiHandler.AckMessage(notification.steamid_friend, notification.rtime32_server_timestamp));
+		if (notification.Body is { local_echo: false, rtime32_server_timestamp: > 0 }) {
+			if (ShouldAckChatMessage(notification.Body.steamid_friend)) {
+				Utilities.InBackground(() => ArchiHandler.AckMessage(notification.Body.steamid_friend, notification.Body.rtime32_server_timestamp));
 			}
 		}
 
 		string message;
 
 		// Prefer to use message without bbcode, but only if it's available
-		if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
-			message = notification.message_no_bbcode;
-		} else if (!string.IsNullOrEmpty(notification.message)) {
-			message = SteamChatMessage.Unescape(notification.message);
+		if (!string.IsNullOrEmpty(notification.Body.message_no_bbcode)) {
+			message = notification.Body.message_no_bbcode;
+		} else if (!string.IsNullOrEmpty(notification.Body.message)) {
+			message = SteamChatMessage.Unescape(notification.Body.message);
 		} else {
 			return;
 		}
 
-		ArchiLogger.LogChatMessage(notification.local_echo, message, steamID: notification.steamid_friend);
+		ArchiLogger.LogChatMessage(notification.Body.local_echo, message, steamID: notification.Body.steamid_friend);
 
 		// Steam network broadcasts chat events also when we don't explicitly sign into Steam community
 		// We'll explicitly ignore those messages when using offline mode, as it was done in the first version of Steam chat when no messages were broadcasted at all before signing in
 		// Handling messages will still work correctly in invisible mode, which is how it should work in the first place
 		// This goes in addition to usual logic that ignores irrelevant messages from being parsed further
-		if (notification.local_echo || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
+		if (notification.Body.local_echo || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
 			return;
 		}
 
-		await Commands.HandleMessage(notification.steamid_friend, message).ConfigureAwait(false);
+		await Commands.HandleMessage(notification.Body.steamid_friend, message).ConfigureAwait(false);
 	}
 
 	private void OnInventoryChanged() {
@@ -3121,7 +3148,21 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			Utilities.InBackground(ArchiWebHandler.MarkInventory);
 		}
 
-		if (BotConfig.CompleteTypesToSend.Count > 0) {
+		// The following actions should be synchronized, as they modify the state of the inventory
+		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.AutoUnpackBoosterPacks)) {
+			Utilities.InBackground(
+				async () => {
+					if (!await UnpackBoosterPacks().ConfigureAwait(false)) {
+						// Another task is already in progress, so it'll handle the actions below as well
+						return;
+					}
+
+					if (BotConfig.CompleteTypesToSend.Count > 0) {
+						await SendCompletedSets().ConfigureAwait(false);
+					}
+				}
+			);
+		} else if (BotConfig.CompleteTypesToSend.Count > 0) {
 			Utilities.InBackground(SendCompletedSets);
 		}
 	}
@@ -3213,7 +3254,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private void OnLoggedOff(SteamUser.LoggedOffCallback callback) {
+	private async void OnLoggedOff(SteamUser.LoggedOffCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		// Keep LastLogOnResult for OnDisconnected()
@@ -3232,7 +3273,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				if (now.Subtract(LastLogonSessionReplaced).TotalHours < 1) {
 					ArchiLogger.LogGenericError(Strings.BotLogonSessionReplaced);
-					Stop();
+
+					await Stop().ConfigureAwait(false);
 
 					return;
 				}
@@ -3304,7 +3346,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						if (!SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
 							ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(steamParentalCode)));
 
-							Stop();
+							await Stop().ConfigureAwait(false);
 
 							return;
 						}
@@ -3318,7 +3360,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
 						ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(steamParentalCode)));
 
-						Stop();
+						await Stop().ConfigureAwait(false);
 
 						return;
 					}
@@ -3425,21 +3467,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private async void OnSendItemsTimer(object? state = null) => await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
-
-	private async void OnServiceMethod(SteamUnifiedMessages.ServiceMethodNotification notification) {
-		ArgumentNullException.ThrowIfNull(notification);
-
-		switch (notification.MethodName) {
-			case "ChatRoomClient.NotifyIncomingChatMessage#1":
-				await OnIncomingChatMessage((CChatRoom_IncomingChatMessage_Notification) notification.Body).ConfigureAwait(false);
-
-				break;
-			case "FriendMessagesClient.IncomingMessage#1":
-				await OnIncomingMessage((CFriendMessages_IncomingMessage_Notification) notification.Body).ConfigureAwait(false);
-
-				break;
-		}
-	}
 
 	private async void OnSharedLibraryLockStatus(SharedLibraryLockStatusCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
@@ -3632,7 +3659,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				// If user omitted the name or intentionally provided the same name as key, replace it with the Steam result
 				name ??= key;
 
-				if (name.Equals(key, StringComparison.OrdinalIgnoreCase) && (items?.Count > 0)) {
+				if (((name.Length == 0) || name.Equals(key, StringComparison.OrdinalIgnoreCase)) && (items?.Count > 0)) {
 					name = string.Join(", ", items.Values);
 				}
 
@@ -3903,6 +3930,26 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		CallbacksAborted = null;
 	}
 
+	private async Task StopHandlingCallbacksIfPossible() {
+		if ((CallbacksAborted == null) || KeepRunning) {
+			return;
+		}
+
+		await ConnectionSemaphore.WaitAsync().ConfigureAwait(false);
+
+		try {
+#pragma warning disable CA1508 // False positive, the state could change between our previous check and this one due to semaphore wait
+			if ((CallbacksAborted == null) || KeepRunning) {
+				return;
+			}
+#pragma warning restore CA1508 // False positive, the state could change between our previous check and this one due to semaphore wait
+
+			await StopHandlingCallbacks().ConfigureAwait(false);
+		} finally {
+			ConnectionSemaphore.Release();
+		}
+	}
+
 	private void StopPlayingWasBlockedTimer() {
 		if (PlayingWasBlockedTimer == null) {
 			return;
@@ -3919,6 +3966,32 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		RefreshTokensTimer.Dispose();
 		RefreshTokensTimer = null;
+	}
+
+	private async Task<bool> UnpackBoosterPacks() {
+		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+		lock (UnpackBoosterPacksSemaphore) {
+			if (UnpackBoosterPacksScheduled) {
+				return false;
+			}
+
+			UnpackBoosterPacksScheduled = true;
+		}
+
+		await UnpackBoosterPacksSemaphore.WaitAsync().ConfigureAwait(false);
+
+		try {
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+			lock (UnpackBoosterPacksSemaphore) {
+				UnpackBoosterPacksScheduled = false;
+			}
+
+			await Actions.UnpackBoosterPacks().ConfigureAwait(false);
+		} finally {
+			UnpackBoosterPacksSemaphore.Release();
+		}
+
+		return true;
 	}
 
 	private void UpdateTokens(string accessToken, string? refreshToken = null) {

@@ -55,10 +55,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal const ushort MaxItemsInSingleInventoryRequest = 5000;
 
 	private const string EconService = "IEconService";
-
-	[Obsolete]
-	private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
-
 	private const byte MaxTradeOfferMessageLength = 128;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const byte SessionIDLength = 24; // For maximum compatibility, should be divisible by 2 and match the length of "sessionid" property that Steam uses across their websites
@@ -395,70 +391,6 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			startAssetID = response.Content.LastAssetID;
 		}
-	}
-
-	[Obsolete($"Use {nameof(ArchiHandler)}.{nameof(ArchiHandler.GetPointsBalance)} instead, this endpoint will be removed in the future version")]
-	[PublicAPI]
-	public async Task<uint?> GetPointsBalance() {
-		string? accessToken = Bot.AccessToken;
-
-		if (string.IsNullOrEmpty(accessToken)) {
-			return null;
-		}
-
-		Dictionary<string, object?> arguments = new(2, StringComparer.Ordinal) {
-			{ "access_token", accessToken },
-			{ "steamid", Bot.SteamID }
-		};
-
-		KeyValue? response = null;
-
-		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			if ((i > 0) && (WebLimiterDelay > 0)) {
-				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
-			}
-
-			using WebAPI.AsyncInterface loyaltyRewardsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(LoyaltyRewardsService);
-
-			loyaltyRewardsService.Timeout = WebBrowser.Timeout;
-
-			try {
-				response = await WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
-
-					// ReSharper disable once AccessToDisposedClosure
-					async () => await loyaltyRewardsService.CallAsync(HttpMethod.Get, "GetSummary", args: arguments).ConfigureAwait(false)
-				).ConfigureAwait(false);
-			} catch (TaskCanceledException e) {
-				Bot.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-			}
-		}
-
-		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
-
-			return null;
-		}
-
-		KeyValue pointsInfo = response["summary"]["points"];
-
-		if (pointsInfo == KeyValue.Invalid) {
-			Bot.ArchiLogger.LogNullError(pointsInfo);
-
-			return null;
-		}
-
-		uint result = pointsInfo.AsUnsignedInteger(uint.MaxValue);
-
-		if (result == uint.MaxValue) {
-			Bot.ArchiLogger.LogNullError(result);
-
-			return null;
-		}
-
-		return result;
 	}
 
 	[PublicAPI]

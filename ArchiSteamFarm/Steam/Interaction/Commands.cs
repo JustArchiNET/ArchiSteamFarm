@@ -41,6 +41,7 @@ using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
+using SteamKit2.WebUI.Internal;
 
 namespace ArchiSteamFarm.Steam.Interaction;
 
@@ -166,7 +167,7 @@ public sealed class Commands {
 					case "STATUS":
 						return ResponseStatus(access).Response;
 					case "STOP":
-						return ResponseStop(access);
+						return await ResponseStop(access).ConfigureAwait(false);
 					case "TB":
 						return ResponseTradingBlacklist(access);
 					case "UNPACK":
@@ -1019,7 +1020,7 @@ public sealed class Commands {
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
-	private async Task<string?> ResponseAdvancedTransferByAssetRarity(EAccess access, uint appID, ulong contextID, Bot targetBot, IReadOnlyCollection<EAssetRarity> assetRarities) {
+	private async Task<string?> ResponseAdvancedTransferByAssetRarity(EAccess access, uint appID, ulong contextID, Bot targetBot, HashSet<EAssetRarity> assetRarities) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -1027,6 +1028,10 @@ public sealed class Commands {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentNullException.ThrowIfNull(targetBot);
+
+		if ((assetRarities == null) || (assetRarities.Count == 0)) {
+			throw new ArgumentNullException(nameof(assetRarities));
+		}
 
 		if (access < EAccess.Master) {
 			return null;
@@ -2767,7 +2772,7 @@ public sealed class Commands {
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
-	private async Task<string?> ResponseRedeemPoints(EAccess access, HashSet<uint> definitionIDs) {
+	private async Task<string?> ResponseRedeemPoints(EAccess access, Dictionary<uint, bool> definitionIDs) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -2784,13 +2789,34 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		IList<EResult> results = await Utilities.InParallel(definitionIDs.Select(Bot.Actions.RedeemPoints)).ConfigureAwait(false);
+		HashSet<uint> definitionIDsToCheck = definitionIDs.Where(static entry => !entry.Value).Select(static entry => entry.Key).ToHashSet();
+
+		if (definitionIDsToCheck.Count > 0) {
+			Dictionary<uint, LoyaltyRewardDefinition>? definitions = await Bot.Actions.GetRewardItems(definitionIDsToCheck).ConfigureAwait(false);
+
+			if (definitions == null) {
+				return FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(Bot.Actions.GetRewardItems)));
+			}
+
+			foreach (uint definitionID in definitionIDsToCheck) {
+				if (!definitions.TryGetValue(definitionID, out LoyaltyRewardDefinition? definition)) {
+					return FormatBotResponse(Strings.FormatWarningFailedWithError(definitionID));
+				}
+
+				if (definition.point_cost > 0) {
+					return FormatBotResponse(Strings.FormatWarningFailedWithError($"{definitionID} {nameof(definition.point_cost)} ({definition.point_cost}) > 0"));
+				}
+			}
+		}
+
+		// We already did more optimized check, therefore we can skip the one in actions
+		IList<EResult> results = await Utilities.InParallel(definitionIDs.Keys.Select(definitionID => Bot.Actions.RedeemPoints(definitionID, true))).ConfigureAwait(false);
 
 		int i = 0;
 
 		StringBuilder response = new();
 
-		foreach (uint definitionID in definitionIDs) {
+		foreach (uint definitionID in definitionIDs.Keys) {
 			response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense(definitionID, results[i++])));
 		}
 
@@ -2818,14 +2844,22 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(definitions)));
 		}
 
-		HashSet<uint> definitionIDs = new(definitions.Length);
+		Dictionary<uint, bool> definitionIDs = new(definitions.Length);
 
 		foreach (string definition in definitions) {
-			if (!uint.TryParse(definition, out uint definitionID) || (definitionID == 0)) {
+			bool forced = false;
+			string definitionToParse = definition;
+
+			if (definitionToParse.EndsWith('!')) {
+				forced = true;
+				definitionToParse = definitionToParse[..^1];
+			}
+
+			if (!uint.TryParse(definitionToParse, out uint definitionID) || (definitionID == 0)) {
 				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(definition)));
 			}
 
-			definitionIDs.Add(definitionID);
+			definitionIDs[definitionID] = forced;
 		}
 
 		return await ResponseRedeemPoints(access, definitionIDs).ConfigureAwait(false);
@@ -3057,7 +3091,7 @@ public sealed class Commands {
 		return string.Join(Environment.NewLine, validResults.Select(static result => result.Response).Union(extraResponse.ToEnumerable()));
 	}
 
-	private string? ResponseStop(EAccess access) {
+	private async Task<string?> ResponseStop(EAccess access) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -3066,7 +3100,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		(bool success, string message) = Bot.Actions.Stop();
+		(bool success, string message) = await Bot.Actions.Stop().ConfigureAwait(false);
 
 		return FormatBotResponse(success ? message : Strings.FormatWarningFailedWithError(message));
 	}
@@ -3084,7 +3118,7 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStop(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseStop(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
 		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
 
@@ -3418,27 +3452,9 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		// It'd make sense here to actually check return code of ArchiWebHandler.UnpackBooster(), but it lies most of the time | https://github.com/JustArchi/ArchiSteamFarm/issues/704
-		bool completeSuccess = true;
+		bool result = await Bot.Actions.UnpackBoosterPacks().ConfigureAwait(false);
 
-		// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/archiasf/discussions/1/3559414588264550284/
-		try {
-			await foreach (Asset item in Bot.ArchiHandler.GetMyInventoryAsync().Where(static item => item.Type == EAssetType.BoosterPack).ConfigureAwait(false)) {
-				if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
-					completeSuccess = false;
-				}
-			}
-		} catch (TimeoutException e) {
-			Bot.ArchiLogger.LogGenericWarningException(e);
-
-			completeSuccess = false;
-		} catch (Exception e) {
-			Bot.ArchiLogger.LogGenericException(e);
-
-			completeSuccess = false;
-		}
-
-		return FormatBotResponse(completeSuccess ? Strings.Success : Strings.Done);
+		return FormatBotResponse(result ? Strings.Success : Strings.Done);
 	}
 
 	private static async Task<string?> ResponseUnpackBoosters(EAccess access, string botNames, ulong steamID = 0) {

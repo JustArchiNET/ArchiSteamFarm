@@ -42,6 +42,7 @@ using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
+using SteamKit2.WebUI.Internal;
 
 namespace ArchiSteamFarm.Steam.Interaction;
 
@@ -169,6 +170,15 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
 
 		return (steamOwnerID > 0) && new SteamID(steamOwnerID).IsIndividualAccount ? steamOwnerID : 0;
+	}
+
+	[PublicAPI]
+	public async Task<Dictionary<uint, LoyaltyRewardDefinition>?> GetRewardItems(IReadOnlyCollection<uint> definitionIDs) {
+		if ((definitionIDs == null) || (definitionIDs.Count == 0)) {
+			throw new ArgumentNullException(nameof(definitionIDs));
+		}
+
+		return await Bot.ArchiHandler.GetRewardItems(definitionIDs).ConfigureAwait(false);
 	}
 
 	[MustDisposeResource]
@@ -314,8 +324,24 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<EResult> RedeemPoints(uint definitionID) {
+	public async Task<EResult> RedeemPoints(uint definitionID, bool forced = false) {
 		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
+
+		if (!forced) {
+			Dictionary<uint, LoyaltyRewardDefinition>? definitions = await Bot.Actions.GetRewardItems(new HashSet<uint>(1) { definitionID }).ConfigureAwait(false);
+
+			if (definitions == null) {
+				return EResult.Timeout;
+			}
+
+			if (!definitions.TryGetValue(definitionID, out LoyaltyRewardDefinition? definition)) {
+				return EResult.InvalidParam;
+			}
+
+			if (definition.point_cost > 0) {
+				return EResult.InvalidState;
+			}
+		}
 
 		return await Bot.ArchiHandler.RedeemPoints(definitionID).ConfigureAwait(false);
 	}
@@ -466,14 +492,43 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public (bool Success, string Message) Stop() {
+	public async Task<(bool Success, string Message)> Stop() {
 		if (!Bot.KeepRunning) {
 			return (false, Strings.BotAlreadyStopped);
 		}
 
-		Bot.Stop();
+		await Bot.Stop().ConfigureAwait(false);
 
 		return (true, Strings.Done);
+	}
+
+	[PublicAPI]
+	public async Task<bool> UnpackBoosterPacks() {
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return false;
+		}
+
+		// It'd make sense here to actually check return code of ArchiWebHandler.UnpackBooster(), but it lies most of the time | https://github.com/JustArchi/ArchiSteamFarm/issues/704
+		bool result = true;
+
+		// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/archiasf/discussions/1/3559414588264550284/
+		try {
+			await foreach (Asset item in Bot.ArchiHandler.GetMyInventoryAsync().Where(static item => item.Type == EAssetType.BoosterPack).ConfigureAwait(false)) {
+				if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
+					result = false;
+				}
+			}
+		} catch (TimeoutException e) {
+			Bot.ArchiLogger.LogGenericWarningException(e);
+
+			return false;
+		} catch (Exception e) {
+			Bot.ArchiLogger.LogGenericException(e);
+
+			return false;
+		}
+
+		return result;
 	}
 
 	[PublicAPI]

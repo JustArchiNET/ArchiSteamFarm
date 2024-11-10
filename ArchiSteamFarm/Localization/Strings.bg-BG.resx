@@ -481,9 +481,6 @@
 	<data name="BotHeartBeatFailed" xml:space="preserve">
 		<value>Неуспешно прекъсване на връзката на клиента. Премахва се този бот!</value>
 	</data>
-	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-		<value>Неуспешно стартиране на SteamDirectory: свързването с мрежата на Steam може да отнеме много повече време от обичайното!</value>
-	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Спиране…</value>
 	</data>

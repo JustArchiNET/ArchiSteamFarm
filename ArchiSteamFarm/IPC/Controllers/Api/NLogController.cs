@@ -38,12 +38,21 @@ using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.NLog.Targets;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
 [Route("Api/NLog")]
 public sealed class NLogController : ArchiController {
 	private static readonly ConcurrentDictionary<WebSocket, (SemaphoreSlim Semaphore, CancellationToken CancellationToken)> ActiveLogWebSockets = new();
+
+	private readonly IHostApplicationLifetime ApplicationLifetime;
+
+	public NLogController(IHostApplicationLifetime applicationLifetime) {
+		ArgumentNullException.ThrowIfNull(applicationLifetime);
+
+		ApplicationLifetime = applicationLifetime;
+	}
 
 	/// <summary>
 	///     Fetches ASF log file, this works on assumption that the log file is in fact generated, as user could disable it through custom configuration.
@@ -91,7 +100,7 @@ public sealed class NLogController : ArchiController {
 	[HttpGet]
 	[ProducesResponseType<IEnumerable<GenericResponse<string>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult> Get(CancellationToken cancellationToken) {
+	public async Task<ActionResult> Get() {
 		if (HttpContext == null) {
 			throw new InvalidOperationException(nameof(HttpContext));
 		}
@@ -107,7 +116,9 @@ public sealed class NLogController : ArchiController {
 
 			SemaphoreSlim sendSemaphore = new(1, 1);
 
-			if (!ActiveLogWebSockets.TryAdd(webSocket, (sendSemaphore, cancellationToken))) {
+			using CancellationTokenSource cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(HttpContext.RequestAborted, ApplicationLifetime.ApplicationStopping);
+
+			if (!ActiveLogWebSockets.TryAdd(webSocket, (sendSemaphore, cancellationTokenSource.Token))) {
 				sendSemaphore.Dispose();
 
 				return new EmptyResult();
@@ -116,20 +127,22 @@ public sealed class NLogController : ArchiController {
 			try {
 				// Push initial history if available
 				if (ArchiKestrel.HistoryTarget != null) {
-					// ReSharper disable once AccessToDisposedClosure - we're waiting for completion with Task.WhenAll(), we're not going to exit using block
-					await Task.WhenAll(ArchiKestrel.HistoryTarget.ArchivedMessages.Select(archivedMessage => PostLoggedMessageUpdate(webSocket, archivedMessage, sendSemaphore, cancellationToken))).ConfigureAwait(false);
+					// ReSharper disable AccessToDisposedClosure - we're waiting for completion with Task.WhenAll(), we're not going to exit using block
+					await Task.WhenAll(ArchiKestrel.HistoryTarget.ArchivedMessages.Select(archivedMessage => PostLoggedMessageUpdate(webSocket, archivedMessage, sendSemaphore, cancellationTokenSource.Token))).ConfigureAwait(false);
+
+					// ReSharper restore AccessToDisposedClosure - we're waiting for completion with Task.WhenAll(), we're not going to exit using block
 				}
 
-				while (webSocket.State == WebSocketState.Open) {
-					WebSocketReceiveResult result = await webSocket.ReceiveAsync(Array.Empty<byte>(), cancellationToken).ConfigureAwait(false);
+				while ((webSocket.State == WebSocketState.Open) && !cancellationTokenSource.IsCancellationRequested) {
+					WebSocketReceiveResult result = await webSocket.ReceiveAsync(Array.Empty<byte>(), cancellationTokenSource.Token).ConfigureAwait(false);
 
 					if (result.MessageType != WebSocketMessageType.Close) {
-						await webSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", cancellationToken).ConfigureAwait(false);
+						await webSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", cancellationTokenSource.Token).ConfigureAwait(false);
 
 						break;
 					}
 
-					await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "", cancellationToken).ConfigureAwait(false);
+					await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "", cancellationTokenSource.Token).ConfigureAwait(false);
 
 					break;
 				}
