@@ -68,7 +68,10 @@
 		<value>{0} IZ CURRENTLY DISABLD ACCORDIN 2 UR CONFIGURASHUN. IF UD LIEK 2 HALP STEAMDB IN DATA SUBMISHUN, PLZ CHECK OUT R WIKI.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} HAS BEEN INITIALIZD SUCCESFULLY, THANK U IN ADVANCE 4 UR HALP. TEH FURST SUBMISHUN WILL HAPPEN IN APPROXIMATELY {1}.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} CUD NOT BE LOADD, FRESH INSTANCE WILL BE INITIALIZD...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>

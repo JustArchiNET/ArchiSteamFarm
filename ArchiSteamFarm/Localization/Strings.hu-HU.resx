@@ -85,7 +85,10 @@
 StackTrace: {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Kilépés {0} hibakóddal!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
+	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Kérés sikertelen: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -184,7 +187,10 @@ StackTrace: {2}</value>
 		<value>Lokális verzió: {0} | Távoli verzió: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Nézze meg a Steam alkalmazást, mert kapott egy bejelentkezési jóváhagyási értesítést. Írjon be Y-t ha engedélyezte és megkapta az értesítést, N-t hogyha inkább egy kódot akar hozzáadni: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Add meg a 2FA kódot a Steam hitelesítő alkalmazásból: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -683,7 +689,10 @@ Ennyi ideje fut: {1}</value>
 		<value>A titkosítási kulcs túl rövid. Azt javasoljuk, hogy legalább {0} bájt (karakter) hosszúságú legyen.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>A {0} beállítást használja a {1} tulajdonsághoz, de nem adott saját --cryptkey-t. hozzá tud adni saját --cryptkey-t fokozott biztonságért ha akar.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>A(z) {1} tulajdonság {0} beállítását használja, de nem adott meg egyéni --cryptkey-t. Ez teljesen megsemmisíti a védelmet, mivel az ASF kénytelen a saját (ismert) kulcsát használni. A beállítás által kínált biztonsági előnyök kihasználásához egyéni --cryptkey-t kell megadnia.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -710,15 +719,29 @@ Ennyi ideje fut: {1}</value>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>ASF-fájlok patchelése...</value>
 	</data>
-	
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Kérem írja be a cryptkey-t: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="ErrorIPNotBanned" xml:space="preserve">
 		<value>Az {0} IP cím nincs bannolva!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
-	
-	
-	
-	
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Megpróbáltad használni a {0} fizetős funkciót, de nincsen érvényes LicenseID-d beállítva az ASF global config-ban. Kérem, nézd át a konfigurációt, mert a funkció nem fog működni több részlet megadása nélkül.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>ASF nem tudta lejátszani az app {0}-t, mert van helyiséghez kötött korlátozása {1} országra ami {2}-ig tart.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>Megpróbáltad futtatni a hivatalos {0} plugint egy rosszul párosított ASF verzióban: {1} (várt: {2}). Ez azt jelenti hogy valami nagyon rosszat próbálsz, próbáld meg megjavítani a felszerelésed -- ignoráld a nem támogatott felszerelést ha tudod mit csinálsz.</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>Az ASF-ed túl sokszor crashelt a közelmúltban, és emiatt a folyamat inicializálás ki lett kapcsolva. Vagy nyomozd ki, vagy javítsd meg a felszerelésedet, aztán töröld az ASF.crash fájlod a beállítás könyvtáradból, vagy lásd el --ignorál a nem támogatott felszerelést ha tudod mit csinálsz.</value>
+	</data>
 	
 	
 	
