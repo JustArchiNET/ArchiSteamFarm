@@ -682,20 +682,6 @@ public sealed class WebBrowser : IDisposable {
 		return null;
 	}
 
-	internal static void Init() {
-		// Set max connection limit from default of 2 to desired value
-		ServicePointManager.DefaultConnectionLimit = MaxConnections;
-
-		// Set max idle time from default of 100 seconds (100 * 1000) to desired value
-		ServicePointManager.MaxServicePointIdleTime = MaxIdleTime * 1000;
-
-		// Don't use Expect100Continue, we're sure about our POSTs, save some TCP packets
-		ServicePointManager.Expect100Continue = false;
-
-		// Reuse ports if possible
-		ServicePointManager.ReusePort = true;
-	}
-
 	private async Task<HttpResponseMessage?> InternalGet(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 

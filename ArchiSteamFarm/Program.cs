@@ -432,8 +432,6 @@ internal static class Program {
 			}
 		}
 
-		WebBrowser.Init();
-
 		return true;
 	}
 
