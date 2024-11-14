@@ -39,6 +39,9 @@
 
 	<PropertyGroup Condition="'$(PublishTrimmed)' == 'true'">
 		<DefineConstants>$(DefineConstants);ASF_RUNTIME_TRIMMED</DefineConstants>
+
+		<!-- Required for protobuf-net -->
+		<_DefaultValueAttributeSupport>true</_DefaultValueAttributeSupport>
 	</PropertyGroup>
 
 	<!-- Default configuration for fast-debugging builds -->
@@ -84,8 +87,5 @@
 		<StackTraceSupport>false</StackTraceSupport>
 		<UseNativeHttpHandler>true</UseNativeHttpHandler>
 		<TrimMode>partial</TrimMode>
-
-		<!-- TODO: Perhaps can be removed with stable release of .NET 9 -->
-		<_DefaultValueAttributeSupport>true</_DefaultValueAttributeSupport>
 	</PropertyGroup>
 </Project>
