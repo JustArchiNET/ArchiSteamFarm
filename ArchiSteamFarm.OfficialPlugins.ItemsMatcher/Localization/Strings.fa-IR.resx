@@ -64,6 +64,10 @@
 		<value>در این دور جمعاً {0} ست مطابقت داده شد.</value>
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
+  <data name="ListingAnnouncing" xml:space="preserve">
+		<value>اینونتوری {0}({1}) دارای {2} آیتم است...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname, {2} will be replaced with number of items in the inventory</comment>
+	</data>
   <data name="MatchingFound" xml:space="preserve">
 		<value>در مجموع {0} مورد با ربات {1} ({2}) مطابقت داده شد، درحال ارسال ترید...</value>
 		<comment>{0} will be replaced by number of items matched, {1} will be replaced by steam ID (number), {2} will be replaced by user's nickname</comment>
