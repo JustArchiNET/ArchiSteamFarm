@@ -404,6 +404,112 @@ StackTrace:
 	<data name="BotSendingTradeToYourself" xml:space="preserve">
 		<value>شما نمی توانید به خودتان پیشنهاد تبادل ارسال کنید!</value>
 	</data>
+	<data name="BotNoASFAuthenticator" xml:space="preserve">
+		<value>این ربات دارای تاییدیه ی دو مرحله ای نیست! آیا فراموش کرده اید که تاییدیه دو مرحله ای خود را به صورتASF 2FA ایمپورت کنید؟</value>
+	</data>
+	<data name="BotNotConnected" xml:space="preserve">
+		<value>این ربات متصل نیست!</value>
+	</data>
+	<data name="BotNotOwnedYet" xml:space="preserve">
+		<value>هنوز خریداری نشده است: {0}</value>
+		<comment>{0} will be replaced by query (string)</comment>
+	</data>
+	<data name="BotOwnedAlreadyWithName" xml:space="preserve">
+		<value>قبلاً خریداری شده است: {0} | {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>موجودی پوینت ها: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
+	<data name="BotRateLimitExceeded" xml:space="preserve">
+		<value>حد اتصال به بیش از حد مجاز رسید، تا {0} ی دیگر دوباره امتحان خواهیم کرد...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+	</data>
+	<data name="BotReconnecting" xml:space="preserve">
+		<value>در حال اتصال دوباره...</value>
+	</data>
+	<data name="BotRedeem" xml:space="preserve">
+		<value>کلید: {0} | وضعیت: {1}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotRedeemWithItems" xml:space="preserve">
+		<value>کلید: {0} | وضعیت: {1} | آیتم ها: {2}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
+	</data>
+	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+		<value>کلید لاگین تاریخ گذشته حذف شد!</value>
+	</data>
+	<data name="BotStatusNotIdling" xml:space="preserve">
+		<value>بات در حال فارم چیزی نیست.</value>
+	</data>
+	<data name="BotStatusLimited" xml:space="preserve">
+		<value>بات محدود شده است و نمی تواند کارتی از طریق فارم کردن دراپ کند.</value>
+	</data>
+	<data name="BotStatusConnecting" xml:space="preserve">
+		<value>بات در حال وصل شدن به شبکه ی استیم است.</value>
+	</data>
+	<data name="BotStatusNotRunning" xml:space="preserve">
+		<value>بات در حال اجرا نیست.</value>
+	</data>
+	<data name="BotStatusPaused" xml:space="preserve">
+		<value>بات در حالت مکث یا دستی در حال اجرا است.</value>
+	</data>
+	<data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+		<value>بات در حال استفاده است.</value>
+	</data>
+	<data name="BotUnableToLogin" xml:space="preserve">
+		<value>لاگین کردن به استیم با شکست مواجه شد: {0}/{1}</value>
+		<comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+	</data>
+	<data name="ErrorIsEmpty" xml:space="preserve">
+		<value>خطا: {0} خالی است!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="UnusedKeys" xml:space="preserve">
+		<value>کلید های استفاده نشده: {0}</value>
+		<comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+	</data>
+	<data name="WarningFailedWithError" xml:space="preserve">
+		<value>به این دلیل شکست خورد: {0}</value>
+		<comment>{0} will be replaced by failure reason (string)</comment>
+	</data>
+	<data name="BotConnectionLost" xml:space="preserve">
+		<value>اتصال به شبکه ی استیم قطع شد. در حال اتصال مجدد...</value>
+	</data>
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>اکانت دیگر در دست استفاده نیست: رویه ی فارم کردن در حال ادامه یافتن است!</value>
+	</data>
+	<data name="BotAccountOccupied" xml:space="preserve">
+		<value>اکانت در دست استفاده است: ASF زمانی که اکانت آزاد باشد فارم کردن را شروع می کند...</value>
+	</data>
+	<data name="BotConnecting" xml:space="preserve">
+		<value>در حال اتصال...</value>
+	</data>
+	<data name="BotHeartBeatFailed" xml:space="preserve">
+		<value>قطع شدن این بات با مشکل مواجه شد. بات را ول می کنیم!</value>
+	</data>
+	<data name="BotStopping" xml:space="preserve">
+		<value>در حال توقف...</value>
+	</data>
+	<data name="ErrorBotConfigInvalid" xml:space="preserve">
+		<value>کانفیگ بات شما صحیح نیست. لطفاً محتوای {0} را بررسی کنید و دوباره تلاش کنید!</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="ErrorDatabaseInvalid" xml:space="preserve">
+		<value>لود کردن دیتابیس با مشکل مواجه شد، اگر این مشکل ادامه داشت، لطفاً {0} را حذف کنید تا دوباره دیتابیس ایجاد شود!</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="Initializing" xml:space="preserve">
+		<value>در حال لود کردن {0}...</value>
+		<comment>{0} will be replaced by service name that is being initialized</comment>
+	</data>
+	<data name="WarningPrivacyPolicy" xml:space="preserve">
+		<value>لطفاً در صورت نگرانی اینکه برنامه ASF در حال انجام چه کاری است خط مشی ما را در ویکی مطالعه کنید!</value>
+	</data>
+	<data name="Welcome" xml:space="preserve">
+		<value>بنظر می رسد اولین استفاده ی شما از این برنامه باشد، خوش آمدید! 3:</value>
+	</data>
 	
 	
 	
@@ -424,21 +530,54 @@ StackTrace:
 	
 	
 	
+	<data name="BotWalletBalance" xml:space="preserve">
+		<value>موجودی والت: {0} {1}</value>
+		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+	</data>
+	<data name="BotHasNoWallet" xml:space="preserve">
+		<value>بات والتی ندارد.</value>
+	</data>
+	<data name="BotLevel" xml:space="preserve">
+		<value>بات لول {0} است.</value>
+		<comment>{0} will be replaced by bot's level</comment>
+	</data>
 	
 	
+	<data name="ErrorAborted" xml:space="preserve">
+		<value>کنسل شد!</value>
+	</data>
 	
 	
 	
+	<data name="NothingFound" xml:space="preserve">
+		<value>چیزی پیدا نشد!</value>
+	</data>
 	
+	<data name="PleaseWait" xml:space="preserve">
+		<value>لطفا صبر کنید...</value>
+	</data>
+	<data name="EnterCommand" xml:space="preserve">
+		<value>دستور را وارد کنید: </value>
+	</data>
+	<data name="Executing" xml:space="preserve">
+		<value>در حال اجرا...</value>
+	</data>
 	
 	
 	
 	
 	
+	<data name="UpdateCleanup" xml:space="preserve">
+		<value>درحال پاک سازی فایل های قدیمی بعد از به روزرسانی...</value>
+	</data>
 	
 	
 	
 	
+	<data name="Result" xml:space="preserve">
+		<value>نتایج: {0}</value>
+		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
+	</data>
 	
 	
 	
@@ -454,56 +593,23 @@ StackTrace:
 	
 	
 	
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>در حال پچ کردن فایل های ASF...</value>
+	</data>
 	
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>آدرس آیپی {0} بن نشده است!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
 	
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>در حال رد کردن: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
 	
 	
 	
