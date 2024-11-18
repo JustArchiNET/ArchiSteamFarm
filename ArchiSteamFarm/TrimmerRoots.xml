@@ -1,4 +1,11 @@
 <linker>
+	<!-- This is needed for ASF API controllers that use HttpContext -->
+	<assembly fullname="Microsoft.AspNetCore.Mvc.Core">
+		<type fullname="Microsoft.AspNetCore.Mvc.ControllerBase">
+			<property name="ControllerContext" />
+		</type>
+	</assembly>
+
 	<!-- This is needed for ASF (JSON deserialization) -->
 	<assembly fullname="System.Collections.Immutable">
 		<type fullname="System.Collections.Immutable.ImmutableDictionary" />
