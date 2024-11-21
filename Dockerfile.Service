@@ -2,8 +2,8 @@ ARG IMAGESUFFIX
 
 FROM --platform=$BUILDPLATFORM node:lts${IMAGESUFFIX} AS build-node
 WORKDIR /app/ASF-ui
-COPY ASF-ui .
-COPY .git/modules/ASF-ui /app/.git/modules/ASF-ui
+COPY --link ASF-ui .
+COPY --link .git/modules/ASF-ui /app/.git/modules/ASF-ui
 
 RUN <<EOF
     set -eu
@@ -23,16 +23,16 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
 ENV DOTNET_NOLOGO=true
 ENV PLUGINS_BUNDLED="ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.SteamTokenDumper"
 WORKDIR /app
-COPY --from=build-node /app/ASF-ui/dist ASF-ui/dist
-COPY ArchiSteamFarm ArchiSteamFarm
-COPY ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.ItemsMatcher
-COPY ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.MobileAuthenticator
-COPY ArchiSteamFarm.OfficialPlugins.SteamTokenDumper ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
-COPY resources resources
-COPY .editorconfig .editorconfig
-COPY Directory.Build.props Directory.Build.props
-COPY Directory.Packages.props Directory.Packages.props
-COPY LICENSE.txt LICENSE.txt
+COPY --from=build-node --link /app/ASF-ui/dist ASF-ui/dist
+COPY --link ArchiSteamFarm ArchiSteamFarm
+COPY --link ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.ItemsMatcher
+COPY --link ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.MobileAuthenticator
+COPY --link ArchiSteamFarm.OfficialPlugins.SteamTokenDumper ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+COPY --link resources resources
+COPY --link .editorconfig .editorconfig
+COPY --link Directory.Build.props Directory.Build.props
+COPY --link Directory.Packages.props Directory.Packages.props
+COPY --link LICENSE.txt LICENSE.txt
 
 RUN --mount=type=secret,id=ASF_PRIVATE_SNK --mount=type=secret,id=STEAM_TOKEN_DUMPER_TOKEN <<EOF
     set -eu
@@ -94,7 +94,7 @@ LABEL maintainer="JustArchi <JustArchi@JustArchi.net>" \
     org.opencontainers.image.description="C# application with primary purpose of idling Steam cards from multiple accounts simultaneously"
 
 EXPOSE 1242
-COPY --from=build-dotnet /app/out /asf
+COPY --from=build-dotnet --link /app/out /asf
 
 RUN <<EOF
     set -eu
