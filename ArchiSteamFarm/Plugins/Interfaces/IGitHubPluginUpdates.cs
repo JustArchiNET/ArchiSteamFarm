@@ -91,14 +91,14 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	///     - {Revision} is target revision ASF version (D from A.B.C.D)
 	///     - * is a wildcard matching any string value
 	///     For example, when updating MyAwesomePlugin declared in JustArchiNET.MyAwesomePlugin assembly with ASF version V6.0.1.3, it will select the first zip file available from those below:
-	///     - MyAwesomePlugin-V6.0.1.3.zip
-	///     - MyAwesomePlugin-V6.0.1.zip
-	///     - MyAwesomePlugin-V6.0.zip
+	///     - MyAwesomePlugin-V6-0-1-3.zip
+	///     - MyAwesomePlugin-V6-0-1.zip
+	///     - MyAwesomePlugin-V6-0.zip
 	///     - MyAwesomePlugin-V6.zip
 	///     - MyAwesomePlugin.zip
-	///     - JustArchiNET.MyAwesomePlugin-V6.0.1.3.zip
-	///     - JustArchiNET.MyAwesomePlugin-V6.0.1.zip
-	///     - JustArchiNET.MyAwesomePlugin-V6.0.zip
+	///     - JustArchiNET.MyAwesomePlugin-V6-0-1-3.zip
+	///     - JustArchiNET.MyAwesomePlugin-V6-0-1.zip
+	///     - JustArchiNET.MyAwesomePlugin-V6-0.zip
 	///     - JustArchiNET.MyAwesomePlugin-V6.zip
 	///     - JustArchiNET.MyAwesomePlugin.zip
 	///     - *.zip, if exactly one match is found
