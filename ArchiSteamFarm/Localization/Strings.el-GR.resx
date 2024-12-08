@@ -87,7 +87,10 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Πραγματοποιείται έξοδος με κωδικό σφάλματος {0}!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
+	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Αποτυχία αιτήματος: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -688,7 +691,10 @@ StackTrace:
 		<value>Το κλειδί κρυπτογράφησης σας είναι πολύ μικρό. Σας συνιστούμε να χρησιμοποιήσετε ένα που είναι τουλάχιστον {0} bytes (χαρακτήρες).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Χρησιμοποιείτε τη ρύθμιση {0} της ιδιότητας {1}, αλλά δεν παρείχατε προσαρμοσμένο κλειδί κρυπτογράφησης. Προαιρετικά μπορείτε να παρέχετε ένα προσαρμοσμένο κλειδί κρυπτογράφησης για αυξημένη ασφάλεια.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Χρησιμοποιείτε {0} ρύθμιση της ιδιότητας {1}, αλλά δεν παρείχατε ένα προσαρμοσμένο --cryptkey. Αυτό καταπολεμά πλήρως την προστασία, καθώς η ASF αναγκάζεται να χρησιμοποιήσει το δικό της (γνωστό) κλειδί. Θα πρέπει να παρέχετε ένα προσαρμοσμένο --cryptkey για τη χρήση του οφέλους ασφάλειας που προσφέρει αυτή η ρύθμιση.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -706,7 +712,7 @@ StackTrace:
 		<value>Επαλήθευση αθροίσματος ελέγχου του ληφθέντος δυαδικού έναντι αυτού από τον απομακρυσμένο διακομιστή...</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>Ο απομακρυσμένος διακομιστής δεν γνωρίζει τίποτα σχετικά με την έκδοση στην οποία ενημερώνουμε. Αυτή η κατάσταση είναι δυνατή εάν η αποδέσμευση δημοσιεύτηκε πρόσφατα - αρνούμενη να προχωρήσει αμέσως στη διαδικασία επικαιροποίησης ως πρόσθετο μέτρο ασφαλείας.</value>
+		<value>Ο απομακρυσμένος διακομιστής δε γνωρίζει τίποτα σχετικά με την έκδοση στην οποία ενημερώνουμε. Αυτή η κατάσταση είναι πιθανή εάν η νέα έκδοση δημοσιεύτηκε πρόσφατα - Ως πρόσθετο μέτρο ασφαλείας το πρόγραμμα δε θα προβεί στην άμεση διαδικασία ενημέρωσης.</value>
 	</data>
 	
 	<data name="ChecksumWrong" xml:space="preserve">
@@ -723,8 +729,14 @@ StackTrace:
 		<value>Η διεύθυνση IP {0} δεν έχει αποκλειστεί!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
-	
-	
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value/>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>Το ASF δεν είναι σε θέση να εκτελέσει την εφαρμογή {0} λόγω γεωγραφικού περιορισμού ως προς τη χώρα {1} που διαρκεί έως {2}.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
 	
 	
 	
