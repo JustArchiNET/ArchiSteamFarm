@@ -314,7 +314,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private bool SendCompleteTypesScheduled;
 	private Timer? SendItemsTimer;
 	private bool SteamParentalActive;
-	private SteamSaleEvent? SteamSaleEvent;
 	private Timer? TradeCheckTimer;
 	private string? TwoFactorCode;
 	private bool UnpackBoosterPacksScheduled;
@@ -427,7 +426,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		PlayingWasBlockedTimer?.Dispose();
 		RefreshTokensTimer?.Dispose();
 		SendItemsTimer?.Dispose();
-		SteamSaleEvent?.Dispose();
 		TradeCheckTimer?.Dispose();
 	}
 
@@ -463,10 +461,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (SendItemsTimer != null) {
 			await SendItemsTimer.DisposeAsync().ConfigureAwait(false);
-		}
-
-		if (SteamSaleEvent != null) {
-			await SteamSaleEvent.DisposeAsync().ConfigureAwait(false);
 		}
 
 		if (TradeCheckTimer != null) {
@@ -2504,12 +2498,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			SendItemsTimer = null;
 		}
 
-		if (SteamSaleEvent != null) {
-			await SteamSaleEvent.DisposeAsync().ConfigureAwait(false);
-
-			SteamSaleEvent = null;
-		}
-
 		if (TradeCheckTimer != null) {
 			await TradeCheckTimer.DisposeAsync().ConfigureAwait(false);
 
@@ -2523,10 +2511,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bots.Count), // Delay
 				TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
 			);
-		}
-
-		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.AutoSteamSaleEvent)) {
-			SteamSaleEvent = new SteamSaleEvent(this);
 		}
 
 		if (BotConfig.TradeCheckPeriod > 0) {
