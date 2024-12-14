@@ -68,9 +68,12 @@
 		<value>{0} è attualmente disabilitato in base alla tua configurazione. Se desideri aiutare SteamDB nell'invio dei dati, controlla la nostra wiki.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} è stato inizializzato con successo, grazie in anticipo per il tuo aiuto. Il primo invio avverrà tra circa {1}.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
-		<value>{0} non può essere caricato, una nuova richiesta verrà iniziata...</value>
+		<value>{0} non può essere caricato, verrà inizializzata una nuova istanza...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
 	</data>
 	<data name="BotNoAppsToRefresh" xml:space="preserve">
@@ -116,7 +119,7 @@
 		<value>Non ci sono nuovi dati da inviare, tutto è aggiornato.</value>
 	</data>
 	<data name="SubmissionNoContributorSet" xml:space="preserve">
-		<value>Impossibile inviare i dati perché non c'è uno SteamID impostato valido che potremmo classificare come contributore. Considera di impostare delle proprietà {0}.</value>
+		<value>Impossibile inviare i dati perché non è impostato un SteamID valido che possa essere classificato come contributore. Considera di configurare la proprietà {0}.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
 	</data>
 	<data name="SubmissionInProgress" xml:space="preserve">
