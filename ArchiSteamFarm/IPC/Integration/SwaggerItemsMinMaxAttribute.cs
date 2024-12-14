@@ -30,12 +30,12 @@ namespace ArchiSteamFarm.IPC.Integration;
 [PublicAPI]
 public sealed class SwaggerItemsMinMaxAttribute : CustomSwaggerAttribute {
 	public uint MaximumUint {
-		get => BackingMaximum.HasValue ? decimal.ToUInt32(BackingMaximum.Value) : default(uint);
+		get => BackingMaximum.HasValue ? decimal.ToUInt32(BackingMaximum.Value) : 0;
 		set => BackingMaximum = value;
 	}
 
 	public uint MinimumUint {
-		get => BackingMinimum.HasValue ? decimal.ToUInt32(BackingMinimum.Value) : default(uint);
+		get => BackingMinimum.HasValue ? decimal.ToUInt32(BackingMinimum.Value) : 0;
 		set => BackingMinimum = value;
 	}
 

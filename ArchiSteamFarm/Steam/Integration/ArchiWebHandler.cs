@@ -749,7 +749,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
 
-				return default(ObjectResponse<T>?);
+				return null;
 			}
 		}
 
@@ -759,7 +759,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToJsonObject<T>(request, headers, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
-			return default(ObjectResponse<T>?);
+			return null;
 		}
 
 		if (IsSessionExpiredUri(response.FinalUri)) {

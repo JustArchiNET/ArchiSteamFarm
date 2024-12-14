@@ -28,7 +28,7 @@ using System.Threading;
 namespace ArchiSteamFarm.Core;
 
 internal static class AprilFools {
-	private static readonly object LockObject = new();
+	private static readonly Lock Lock = new();
 
 	// We don't care about CurrentCulture global config property, because April Fools are never initialized in this case
 	private static readonly CultureInfo OriginalCulture = CultureInfo.CurrentCulture;
@@ -49,7 +49,7 @@ internal static class AprilFools {
 
 			TimeSpan aprilFoolsEnd = TimeSpan.FromDays(1) - now.TimeOfDay;
 
-			lock (LockObject) {
+			lock (Lock) {
 				Timer.Change(aprilFoolsEnd + TimeSpan.FromMilliseconds(100), Timeout.InfiniteTimeSpan);
 			}
 
@@ -72,7 +72,7 @@ internal static class AprilFools {
 		// Timer can accept only dueTimes up to 2^32 - 2
 		uint dueTime = (uint) Math.Min(uint.MaxValue - 1, (ulong) aprilFoolsStart.TotalMilliseconds + 100);
 
-		lock (LockObject) {
+		lock (Lock) {
 			Timer.Change(dueTime, Timeout.Infinite);
 		}
 	}

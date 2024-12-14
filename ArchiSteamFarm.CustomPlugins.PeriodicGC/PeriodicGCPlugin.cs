@@ -39,7 +39,7 @@ namespace ArchiSteamFarm.CustomPlugins.PeriodicGC;
 internal sealed class PeriodicGCPlugin : IPlugin {
 	private const byte GCPeriod = 60; // In seconds
 
-	private static readonly object LockObject = new();
+	private static readonly Lock Lock = new();
 	private static readonly Timer PeriodicGCTimer = new(PerformGC);
 
 	[JsonInclude]
@@ -55,7 +55,7 @@ internal sealed class PeriodicGCPlugin : IPlugin {
 
 		ASF.ArchiLogger.LogGenericWarning($"Periodic GC will occur every {timeSpan.ToHumanReadable()}. Please keep in mind that this plugin should be used for debugging tests only.");
 
-		lock (LockObject) {
+		lock (Lock) {
 			PeriodicGCTimer.Change(timeSpan, timeSpan);
 		}
 
@@ -65,7 +65,7 @@ internal sealed class PeriodicGCPlugin : IPlugin {
 	private static void PerformGC(object? state = null) {
 		ASF.ArchiLogger.LogGenericWarning($"Performing GC, current memory: {GC.GetTotalMemory(false) / 1024} KB.");
 
-		lock (LockObject) {
+		lock (Lock) {
 			GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
 			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
 		}

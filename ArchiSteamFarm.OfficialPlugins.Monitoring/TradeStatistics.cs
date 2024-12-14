@@ -22,12 +22,13 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using ArchiSteamFarm.Steam.Exchange;
 
 namespace ArchiSteamFarm.OfficialPlugins.Monitoring;
 
 internal sealed class TradeStatistics {
-	private readonly object Lock = new();
+	private readonly Lock Lock = new();
 
 	internal int AcceptedOffers { get; private set; }
 	internal int BlacklistedOffers { get; private set; }
