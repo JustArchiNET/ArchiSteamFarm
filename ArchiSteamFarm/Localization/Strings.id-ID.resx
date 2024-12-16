@@ -85,7 +85,7 @@
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
 	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Keluar dengan kode kesalahan {0} !</value>
+		<value>Keluar dengan kode kesalahan {0}!</value>
 		<comment>{0} will be replaced by error code (number)</comment>
 	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
@@ -93,7 +93,7 @@
 		<comment>{0} will be replaced by URL of the request</comment>
 	</data>
 	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-		<value>Global config tidak dapat dimuat, pastikan bahwa {0} ada dan berlaku! Ikuti Panduan penyetelan pada wiki jika Anda bingung.</value>
+		<value>Konfigurasi global tidak dapat dimuat, pastikan bahwa {0} ada dan berlaku! Ikuti panduan penyetelan pada wiki jika Anda bingung.</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="ErrorIsInvalid" xml:space="preserve">
@@ -101,7 +101,7 @@
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Tidak ada bot yang ditentukan. Apakah kamu lupa mengkonfigurasi ASF? Ikuti panduan 'setting up' di wiki jika kamu bingung.</value>
+		<value>Tidak ada bot yang ditentukan. Apakah Anda lupa mengkonfigurasi ASF? Ikuti panduan 'penyetelan' di wiki jika Anda bingung.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} masih kosong!</value>
@@ -119,13 +119,13 @@
 		<value>Tidak dapat memeriksa versi terbaru!</value>
 	</data>
 	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-		<value>Tidak bisa melanjutkan dengan pembaruan karena tidak ada asset yang berkaitan dengan versi yang berjalan sekarang! Pembaruan otomatis ke versi tersebut tidak mungkin.</value>
+		<value>Tidak bisa melanjutkan pembaruan karena tidak ada aset yang berkaitan dengan versi yang berjalan sekarang! Pembaruan otomatis ke versi tersebut tidak memungkinkan.</value>
 	</data>
 	<data name="ErrorUpdateNoAssets" xml:space="preserve">
-		<value>Tidak bisa melanjutkan update karena tak ada aset yang termasuk dalam versi tersebut!</value>
+		<value>Tidak bisa melanjutkan pembaruan karena tidak ada aset yang termasuk dalam versi tersebut!</value>
 	</data>
 	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-		<value>Menerima permintaan untuk input pengguna, tetapi proses berjalan dalam mode Headless!</value>
+		<value>Menerima permintaan input pengguna, tetapi proses berjalan dalam mode headless!</value>
 	</data>
 	<data name="Exiting" xml:space="preserve">
 		<value>Menutup...</value>
@@ -134,13 +134,13 @@
 		<value>Gagal!</value>
 	</data>
 	<data name="GlobalConfigChanged" xml:space="preserve">
-		<value>file Konfigurasi Global telah berubah!</value>
+		<value>File konfigurasi global telah berubah!</value>
 	</data>
 	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-		<value>file Konfigurasi Global telah dihapus!</value>
+		<value>File konfigurasi global telah dihapus!</value>
 	</data>
 	<data name="IgnoringTrade" xml:space="preserve">
-		<value>Mengabaikan trade: {0}</value>
+		<value>Mengabaikan pertukaran: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="LoggingIn" xml:space="preserve">
@@ -154,7 +154,7 @@
 		<value>Menyegarkan sesi kami!</value>
 	</data>
 	<data name="RejectingTrade" xml:space="preserve">
-		<value>Menolak Trade: {0}</value>
+		<value>Menolak pertukaran: {0}</value>
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="Restarting" xml:space="preserve">
@@ -170,24 +170,24 @@
 		<value>Membuka akun utama...</value>
 	</data>
 	<data name="UpdateCheckingNewVersion" xml:space="preserve">
-		<value>Sedang mengecek versi terbaru...</value>
+		<value>Sedang memeriksa versi terbaru...</value>
 	</data>
 	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
-		<value>Mengunduh versi baru: {0} ({1} MB)... Sambil menunggu, pertimbangkan untuk mengapresiasi seluruh kerja keras dengan mendonasi! :)</value>
+		<value>Mengunduh versi baru: {0} ({1} MB)... Sambil menunggu, pertimbangkan untuk mengapresiasi seluruh kerja keras dengan berdonasi! :)</value>
 		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
 	</data>
 	<data name="UpdateFinished" xml:space="preserve">
 		<value>Proses pembaruan selesai!</value>
 	</data>
 	<data name="UpdateNewVersionAvailable" xml:space="preserve">
-		<value>Versi terbaru ASF tersedia! Pertimbangkan untuk di-update!</value>
+		<value>Versi terbaru ASF tersedia! Pertimbangkan untuk diperbarui!</value>
 	</data>
 	<data name="UpdateVersionInfo" xml:space="preserve">
 		<value>Versi lokal: {0} | Versi remote: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
 	<data name="UserInputDeviceConfirmation" xml:space="preserve">
-		<value>Silakan cek aplikasi Steam di HP mu, kamu seharusnya sudah mendapat pemberitahuan login. Ketik Y jika kamu menerima dan menyetujui notifikasi, N jika kamu ingin menulis kode saja: </value>
+		<value>Silakan cek aplikasi Steam di ponsel Anda, Anda seharusnya sudah mendapat pemberitahuan login. Ketik Y jika Anda menerima dan menyetujui notifikasi, N jika Anda ingin memasukkan kode saja: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
@@ -195,7 +195,7 @@
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Silakan masukkan kode otentikasi SteamGuard yang dikirim ke e-mail Anda: </value>
+		<value>Silakan masukkan kode autentikasi SteamGuard yang dikirim ke e-mail Anda: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
@@ -203,11 +203,11 @@
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamParentalCode" xml:space="preserve">
-		<value>Harap masukan Steam parental code: </value>
+		<value>Harap masukkan kode parental Steam Anda: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamPassword" xml:space="preserve">
-		<value>Silakan masukkan sandi Steam anda: </value>
+		<value>Silakan masukkan kata sandi Steam Anda: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="WarningUnknownValuePleaseReport" xml:space="preserve">
@@ -228,11 +228,11 @@
 		<comment>{0} will be replaced by bot's name query (string)</comment>
 	</data>
 	<data name="BotStatusOverview" xml:space="preserve">
-		<value>Ada {0}/{1} bot berjalan, dengan total {2} game ({3} kartu) untuk dikumpulkan.</value>
+		<value>Ada {0}/{1} bot berjalan, dengan total {2} game ({3} kartu) yang dikumpulkan.</value>
 		<comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
 	</data>
 	<data name="BotStatusIdling" xml:space="preserve">
-		<value>Bot sedang mem-farming game: {0} ({1}, {2} kartu tersisa) dari total {3} game ({4} kartu) tersisa untuk dikumpulkan (~{5} yang tersisa).</value>
+		<value>Bot sedang mem-farming game: {0} ({1}, {2} kartu tersisa) dari total {3} game ({4} kartu) yang tersisa untuk dikumpulkan (~{5} tersisa).</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
 	<data name="BotStatusIdlingList" xml:space="preserve">
@@ -253,7 +253,7 @@
 		<value>Selesai!</value>
 	</data>
 	<data name="GamesToIdle" xml:space="preserve">
-		<value>Kita memiliki total {0} game ({1} kartu) yang tersisa untuk dikumpulkan (~{2} tersisa)...</value>
+		<value>Kami memiliki total {0} game ({1} kartu) yang tersisa untuk dikumpulkan (~{2} tersisa)...</value>
 		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
 	<data name="IdlingFinished" xml:space="preserve">
@@ -289,29 +289,29 @@
 		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="PlayingNotAvailable" xml:space="preserve">
-		<value>Bermain sedang tidak tersedia, kita akan coba lagi nanti!</value>
+		<value>Permainan tidak tersedia saat ini, kami akan mencoba lagi nanti!</value>
 	</data>
 	<data name="StillIdling" xml:space="preserve">
-		<value>Masih farming: {0} ({1})</value>
+		<value>Masih mengumpulkan: {0} ({1})</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="StillIdlingList" xml:space="preserve">
-		<value>Masih farming: {0}</value>
+		<value>Masih mengumpulkan: {0}</value>
 		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="StoppedIdling" xml:space="preserve">
-		<value>Menghentikan farming: {0} ({1})</value>
+		<value>Farming dihentikan: {0} ({1})</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="StoppedIdlingList" xml:space="preserve">
-		<value>Menghentikan farming: {0}</value>
+		<value>Farming dihentikan: {0}</value>
 		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="UnknownCommand" xml:space="preserve">
 		<value>Perintah tidak dikenal!</value>
 	</data>
 	<data name="WarningCouldNotCheckBadges" xml:space="preserve">
-		<value>Tidak bisa mendapatkan informasi badge, kami akan mencoba lagi nanti!</value>
+		<value>Gagal mendapatkan informasi badge, kami akan mencoba lagi nanti!</value>
 	</data>
 	<data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
 		<value>Tidak dapat memeriksa status kartu untuk: {0} ({1}), kami akan mencoba lagi nanti!</value>
@@ -322,7 +322,7 @@
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
 	<data name="BotAccountLimited" xml:space="preserve">
-		<value>Akun ini terbatas, proses farming tidak tersedia sampai pembatasan hilang!</value>
+		<value>Akun ini terbatas, proses farming tidak tersedia hingga pembatasan hilang!</value>
 	</data>
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID: {0} | Status: {1}</value>
@@ -336,10 +336,10 @@
 		<value>Bot sudah berjalan!</value>
 	</data>
 	<data name="BotAuthenticatorConverting" xml:space="preserve">
-		<value>Mengkonfirmasi .maFile ke format ASF...</value>
+		<value>Mengkonversi .maFile ke format ASF...</value>
 	</data>
 	<data name="BotAuthenticatorImportFinished" xml:space="preserve">
-		<value>Berhasil meng-import mobile authenticator!</value>
+		<value>Berhasil mengimpor mobile authenticator!</value>
 	</data>
 	<data name="BotAuthenticatorToken" xml:space="preserve">
 		<value>Token 2FA: {0}</value>
@@ -391,7 +391,7 @@
 		<value>Penawaran trade gagal!</value>
 	</data>
 	<data name="BotLootingMasterNotDefined" xml:space="preserve">
-		<value>Perdagangan tidak dapat dikirim karena ada tidak ada pengguna dengan izin master yang didefinisikan!</value>
+		<value>Perdagangan tidak dapat dikirim karena tidak ada pengguna dengan izin master yang didefinisikan!</value>
 	</data>
 	<data name="BotLootingSuccess" xml:space="preserve">
 		<value>Trade Offer berhasil dikirim!</value>
@@ -418,7 +418,7 @@
 		<comment>{0} will be replaced by the points balance value (integer)</comment>
 	</data>
 	<data name="BotRateLimitExceeded" xml:space="preserve">
-		<value>Melebihi batas, kami akan mencoba lagi setelah menunggu selama {0}...</value>
+		<value>Batas terlampaui, kami akan mencoba lagi setelah menunggu selama {0}...</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
 	</data>
 	<data name="BotReconnecting" xml:space="preserve">
@@ -436,7 +436,7 @@
 		<value>Menghapus kunci login yang sudah kadaluarsa!</value>
 	</data>
 	<data name="BotStatusNotIdling" xml:space="preserve">
-		<value>Bot sedang tidak melakukan farming.</value>
+		<value>Bot tidak sedang farming.</value>
 	</data>
 	<data name="BotStatusLimited" xml:space="preserve">
 		<value>Bot dalam kondisi terbatas dan tidak bisa mendapatkan kartu saat farming.</value>
@@ -462,7 +462,7 @@
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="UnusedKeys" xml:space="preserve">
-		<value>Key yang tidak terpakai: {0}</value>
+		<value>Kunci yang tidak terpakai: {0}</value>
 		<comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
 	</data>
 	<data name="WarningFailedWithError" xml:space="preserve">
@@ -473,26 +473,26 @@
 		<value>Koneksi ke Steam terputus, menghubungkan kembali...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Akun sedang tidak dipakai, proses farming dilanjutkan!</value>
+		<value>Akun tidak sedang digunakan, proses farming dilanjutkan!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
-		<value>Akun sedang digunakan: ASF akan melanjutkan farming saat akun sedang tidak digunakan...</value>
+		<value>Akun sedang digunakan: ASF akan melanjutkan farming saat akun tidak sedang digunakan...</value>
 	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Menghubungkan...</value>
 	</data>
 	<data name="BotHeartBeatFailed" xml:space="preserve">
-		<value>Gagal untuk memutuskan klien, meninggalkan instansi bot ini!</value>
+		<value>Gagal memutuskan klien, meninggalkan instansi bot ini!</value>
 	</data>
 	<data name="BotStopping" xml:space="preserve">
-		<value>Menghentikan...</value>
+		<value>Menhentikan...</value>
 	</data>
 	<data name="ErrorBotConfigInvalid" xml:space="preserve">
-		<value>Konfigurasi bot tidak valid, silakan memverifikasi isi konfigurasi dari {0} dan coba lagi!</value>
+		<value>Konfigurasi bot tidak valid, harap periksa konfigurasi di {0} dan coba lagi!</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="ErrorDatabaseInvalid" xml:space="preserve">
-		<value>Database utama tidak dapat dimuat, jika masalah tetap berlanjut, silakan hapus {0} untuk membuat ulang database!</value>
+		<value>Database utama tidak dapat dimuat, jika masalah berlanjut, hapus {0} untuk membuat ulang database!</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="Initializing" xml:space="preserve">
@@ -500,16 +500,16 @@
 		<comment>{0} will be replaced by service name that is being initialized</comment>
 	</data>
 	<data name="WarningPrivacyPolicy" xml:space="preserve">
-		<value>Harap tinjau kebijakan privasi kami di wiki jika Anda khawatir dengan apa saja yang sebenarnya ASF lakukan!</value>
+		<value>Harap tinjau kebijakan privasi kami di wiki jika Anda khawatir dengan apa saja yang sebenarnya dilakukan ASF!</value>
 	</data>
 	<data name="Welcome" xml:space="preserve">
-		<value>Sepertinya ini pertama kali bagi anda untuk meluncurkan program ini, Selamat Datang!</value>
+		<value>Sepertinya ini pertama kali bagi Anda untuk meluncurkan program ini, Selamat Datang!</value>
 	</data>
 	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-		<value>CurrentCulture yang anda berikan tidak valid, ASF akan tetap berjalan dengan kondisi default!</value>
+		<value>CurrentCulture yang Anda berikan tidak valid, ASF akan tetap berjalan dengan kondisi default!</value>
 	</data>
 	<data name="TranslationIncomplete" xml:space="preserve">
-		<value>ASF akan mencoba menggunakan bahasa {0} pilihan Anda, namun terjemahan ke dalam bahasa tersebut baru {1}. Mungkin kamu bisa membantu kami meningkatkan terjemahan ASF untuk bahasa-mu?</value>
+		<value>ASF akan mencoba menggunakan bahasa {0} pilihan Anda, namun terjemahan ke dalam bahasa tersebut baru {1}. Mungkin Anda bisa membantu kami meningkatkan terjemahan ASF untuk bahasa Anda?</value>
 		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
 	</data>
 	<data name="IdlingGameNotPossible" xml:space="preserve">
@@ -517,7 +517,7 @@
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="WarningIdlingGameMismatch" xml:space="preserve">
-		<value>ASF mendeetksi ketidakcocokan ID untuk {0} ({1}) dan akan menggunakan ID {2} sebagai gantinya.</value>
+		<value>ASF mendeteksi ketidakcocokan ID untuk {0} ({1}) dan akan menggunakan ID {2} sebagai gantinya.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
 	</data>
 	<data name="BotVersion" xml:space="preserve">
@@ -528,7 +528,7 @@
 		<value>Akun ini terkunci, proses farming tidak tersedia secara permanen!</value>
 	</data>
 	<data name="BotStatusLocked" xml:space="preserve">
-		<value>Bot sedang terkundi dan tidak bisa mendapatkan kartu saat farming.</value>
+		<value>Bot sedang terkunci dan tidak bisa mendapatkan kartu saat farming.</value>
 	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
 		<value>Fungsi ini tersedia hanya dalam mode headless!</value>
@@ -544,8 +544,7 @@
 		<value>Anda menggunakan versi yang lebih baru dari versi terbaru yang dirilis untuk saluran pembaruan Anda. Harap dicatat bahwa versi pra-rilis ditujukan untuk pengguna yang mengetahui cara melaporkan bug, menangani masalah, dan memberikan umpan balik - tidak ada dukungan teknis yang akan diberikan.</value>
 	</data>
 	<data name="BotStats" xml:space="preserve">
-		<value>Penggunaan memori saat ini: {0} MB.
-Waktu aktif proses: {1}</value>
+		<value>Penggunaan memori saat ini: {0} MB. Waktu aktif proses: {1}</value>
 		<comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
 	</data>
 	<data name="ClearingDiscoveryQueue" xml:space="preserve">
@@ -605,7 +604,7 @@ Waktu aktif proses: {1}</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
 	</data>
 	<data name="PluginLoaded" xml:space="preserve">
-		<value>{0} telah berhasil memuat!</value>
+		<value>{0} telah berhasil dimuat!</value>
 		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
 	</data>
 	<data name="PluginLoading" xml:space="preserve">
@@ -649,7 +648,7 @@ Waktu aktif proses: {1}</value>
 		<value>Membersihkan file lama setelah pembaruan...</value>
 	</data>
 	<data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-		<value>Seadng membuat Steam parental code, ini bisa memakan waktu cukup lama, pertimbangkan untuk memasukkannya ke dalam konfigurasi...</value>
+		<value>Sedang membuat Steam parental code, ini bisa memakan waktu cukup lama, pertimbangkan untuk memasukkannya ke dalam konfigurasi...</value>
 	</data>
 	<data name="IPCConfigChanged" xml:space="preserve">
 		<value>Konfigurasi IPC telah diubah!</value>
@@ -666,43 +665,135 @@ Waktu aktif proses: {1}</value>
 		<value>Hasil: {0}</value>
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
+		<value>Anda mencoba menjalankan varian {0} dari ASF di lingkungan yang tidak didukung: {1}. Berikan argumen --ignore-unsupported-environment jika Anda benar-benar tahu apa yang Anda lakukan.</value>
+	</data>
+	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+		<value>Argumen command-line yang tidak dikenal: {0}</value>
+		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
+	</data>
+	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+		<value>Direktori konfigurasi tidak ditemukan, dibatalkan!</value>
+	</data>
+	<data name="BotIdlingSelectedGames" xml:space="preserve">
+		<value>Memainkan {0} yang dipilih: {1}</value>
+		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+	</data>
+	<data name="AutomaticFileMigration" xml:space="preserve">
+		<value>File konfigurasi {0} akan dimigrasikan ke sintaks terbaru...</value>
+		<comment>{0} will be replaced with the relative path to the affected config file</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Kunci enkripsi Anda terlalu pendek. Kami menyarankan untuk menggunakan kunci yang panjangnya setidaknya {0} byte (karakter).</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Anda menggunakan pengaturan {0} dari properti {1}, tetapi Anda tidak menyediakan --cryptkey khusus. Anda dapat memberikan --cryptkey khusus untuk keamanan yang lebih baik jika Anda inginkan.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>Anda menggunakan pengaturan {0} dari properti {1}, tetapi Anda tidak menyediakan --cryptkey khusus. Ini sepenuhnya menghilangkan perlindungan, karena ASF dipaksa menggunakan kunci (yang dikenal) miliknya. Anda harus menyediakan --cryptkey khusus untuk memanfaatkan manfaat keamanan yang ditawarkan oleh pengaturan ini.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Anda mencoba menjalankan ASF sebagai administrator (root). Ini menyebabkan risiko keamanan yang signifikan bagi mesin Anda, dan karena ASF tidak memerlukan akses root untuk operasinya, kami menyarankan untuk menjalankannya sebagai pengguna non-administrator jika memungkinkan.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Anda menjalankan ASF di lingkungan yang tidak didukung, memberikan argumen --ignore-unsupported-environment. Harap dicatat bahwa kami tidak menawarkan dukungan untuk skenario ini dan Anda melakukannya sepenuhnya dengan risiko Anda sendiri. Anda telah diperingatkan.</value>
+	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Mengambil checksum dari server jarak jauh...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>Memverifikasi checksum dari binary yang diunduh dengan yang ada di server jarak jauh...</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>Server jarak jauh tidak tahu apapun tentang rilis yang akan diperbarui. Situasi ini mungkin terjadi jika rilis baru saja dipublikasikan - menolak untuk melanjutkan prosedur pembaruan langsung sebagai langkah keamanan tambahan.</value>
+	</data>
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>Gagal mengambil checksum dari binary yang diunduh - menolak untuk melanjutkan prosedur pembaruan saat ini sebagai langkah keamanan tambahan.</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>Server jarak jauh membalas dengan checksum yang berbeda, ini mungkin menunjukkan unduhan yang rusak atau serangan MITM, menolak untuk melanjutkan prosedur pembaruan!</value>
+	</data>
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>Membetulkan file ASF...</value>
+	</data>
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Masukkan cryptkey Anda: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="ErrorIPNotBanned" xml:space="preserve">
 		<value>Alamat IP {0} tidak diblokir!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Anda mencoba menggunakan fitur berbayar {0} tetapi Anda tidak memiliki LicenseID yang valid di konfigurasi global ASF. Harap tinjau konfigurasi Anda, karena fungsionalitas ini tidak akan berfungsi tanpa detail tambahan.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>ASF tidak dapat memainkan app {0} karena ada pembatasan wilayah untuk negara {1} yang berlaku hingga {2}.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>Anda mencoba menjalankan plugin resmi {0} dengan versi ASF yang tidak sesuai: {1} (diharapkan {2}). Ini menunjukkan bahwa Anda melakukan sesuatu yang salah, baik perbaiki pengaturan Anda atau berikan argumen --ignore-unsupported-environment jika Anda benar-benar tahu apa yang Anda lakukan.</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>ASF Anda telah mengalami kegagalan terlalu banyak baru-baru ini, dan karena itu inisialisasi proses telah dinonaktifkan. Periksa, perbaiki pengaturan Anda, kemudian hapus file ASF.crash dari direktori konfigurasi Anda, atau berikan argumen --ignore-unsupported-environment jika Anda benar-benar tahu apa yang Anda lakukan.</value>
+	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>Farming {0} ({1}) dinonaktifkan, karena game tersebut saat ini ditandai sebagai pribadi. Jika Anda berniat agar ASF melakukan farming pada game tersebut, pertimbangkan untuk mengubah pengaturan privasinya.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>Melewati: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>Memeriksa pembaruan plugin...</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>Memeriksa pembaruan untuk plugin {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>Tidak ada pembaruan tersedia untuk plugin {0}: {1} ≥ {2}.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>Versi baru plugin {0} tersedia! Pertimbangkan untuk memperbarui!</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>Ditemukan pembaruan plugin {0} dari versi {1} ke {2}...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>Tidak ada aset yang tersedia untuk pembaruan plugin {0} dari versi {1} ke {2}, ini biasanya berarti pembaruan akan tersedia di waktu yang lebih nanti.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>Tidak ada aset yang dapat ditentukan untuk pembaruan plugin {0} dari versi {1} ke {2}. Ini bisa terjadi jika rilis belum selesai - jika terus terjadi, Anda harus memberitahukan pembuat plugin tersebut.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>Memperbarui plugin {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>Pembaruan plugin {0} telah berhasil, perubahan akan dimuat pada peluncuran ASF berikutnya.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>{0}/{1} plugin telah terdaftar dan diaktifkan untuk pembaruan otomatis.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>{0} ({1}) plugin telah dinonaktifkan untuk pembaruan otomatis, meskipun mendukung fitur tersebut.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Plugin kustom telah didaftarkan untuk pembaruan otomatis. Tim ASF ingin mengingatkan Anda bahwa, demi keamanan Anda, Anda hanya boleh mengaktifkan pembaruan otomatis dari pihak yang tepercaya. Jika Anda tidak bermaksud melakukan ini, Anda dapat menonaktifkan pembaruan plugin di konfigurasi global ASF.</value>
+	</data>
 </root>
