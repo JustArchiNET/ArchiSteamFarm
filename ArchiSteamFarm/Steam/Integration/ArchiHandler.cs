@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -49,11 +50,11 @@ using EPersonaStateFlag = SteamKit2.EPersonaStateFlag;
 
 namespace ArchiSteamFarm.Steam.Integration;
 
-public sealed class ArchiHandler : ClientMsgHandler {
+public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
 
 	private readonly ArchiLogger ArchiLogger;
-
+	private readonly SemaphoreSlim InventorySemaphore = new(1, 1);
 	private readonly AccountPrivateApps UnifiedAccountPrivateApps;
 	private readonly ChatRoom UnifiedChatRoomService;
 	private readonly ClanChatRooms UnifiedClanChatRoomsService;
@@ -86,6 +87,8 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		UnifiedStoreService = steamUnifiedMessages.CreateService<Store>();
 		UnifiedTwoFactorService = steamUnifiedMessages.CreateService<TwoFactor>();
 	}
+
+	public void Dispose() => InventorySemaphore.Dispose();
 
 	[PublicAPI]
 	public async Task<bool> AddFriend(ulong steamID) {
@@ -208,111 +211,117 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 		Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>? descriptions = null;
 
-		while (true) {
-			SteamUnifiedMessages.ServiceMethodResponse<CEcon_GetInventoryItemsWithDescriptions_Response>? response = null;
+		await InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
-			for (byte i = 0; (i < WebBrowser.MaxTries) && (response?.Result != EResult.OK) && Client.IsConnected && (Client.SteamID != null); i++) {
-				if (i > 0) {
-					// It seems 2 seconds is enough to win over DuplicateRequest, so we'll use that for this and also other network-related failures
-					await Task.Delay(2000).ConfigureAwait(false);
-				}
+		try {
+			while (true) {
+				SteamUnifiedMessages.ServiceMethodResponse<CEcon_GetInventoryItemsWithDescriptions_Response>? response = null;
 
-				try {
-					response = await UnifiedEconService.GetInventoryItemsWithDescriptions(request).ToLongRunningTask().ConfigureAwait(false);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericWarningException(e);
+				for (byte i = 0; (i < WebBrowser.MaxTries) && (response?.Result != EResult.OK) && Client.IsConnected && (Client.SteamID != null); i++) {
+					if (i > 0) {
+						// It seems 2 seconds is enough to win over DuplicateRequest, so we'll use that for this and also other network-related failures
+						await Task.Delay(2000).ConfigureAwait(false);
+					}
 
-					continue;
-				}
+					try {
+						response = await UnifiedEconService.GetInventoryItemsWithDescriptions(request).ToLongRunningTask().ConfigureAwait(false);
+					} catch (Exception e) {
+						ArchiLogger.LogGenericWarningException(e);
 
-				// Interpret the result and see what we should do about it
-				switch (response.Result) {
-					case EResult.OK:
-						// Success, we can continue
-						break;
-					case EResult.Busy:
-					case EResult.DuplicateRequest:
-					case EResult.Fail:
-					case EResult.RemoteCallFailed:
-					case EResult.ServiceUnavailable:
-					case EResult.Timeout:
-						// Expected failures that we should be able to retry
 						continue;
-					case EResult.NoMatch:
-						// Expected failures that we're not going to retry
-						throw new TimeoutException(Strings.FormatWarningFailedWithError(response.Result));
-					default:
-						// Unknown failures, report them and do not retry since we're unsure if we should
-						ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(response.Result), response.Result));
+					}
 
-						throw new TimeoutException(Strings.FormatWarningFailedWithError(response.Result));
-				}
-			}
+					// Interpret the result and see what we should do about it
+					switch (response.Result) {
+						case EResult.OK:
+							// Success, we can continue
+							break;
+						case EResult.Busy:
+						case EResult.DuplicateRequest:
+						case EResult.Fail:
+						case EResult.RemoteCallFailed:
+						case EResult.ServiceUnavailable:
+						case EResult.Timeout:
+							// Expected failures that we should be able to retry
+							continue;
+						case EResult.NoMatch:
+							// Expected failures that we're not going to retry
+							throw new TimeoutException(Strings.FormatWarningFailedWithError(response.Result));
+						default:
+							// Unknown failures, report them and do not retry since we're unsure if we should
+							ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(response.Result), response.Result));
 
-			if (response == null) {
-				throw new TimeoutException(Strings.FormatErrorObjectIsNull(nameof(response)));
-			}
-
-			if (response.Result != EResult.OK) {
-				throw new TimeoutException(Strings.FormatWarningFailedWithError(response.Result));
-			}
-
-			if ((response.Body.total_inventory_count == 0) || (response.Body.assets.Count == 0)) {
-				// Empty inventory
-				yield break;
-			}
-
-			if (response.Body.descriptions.Count == 0) {
-				throw new InvalidOperationException(nameof(response.Body.descriptions));
-			}
-
-			if (response.Body.total_inventory_count > Array.MaxLength) {
-				throw new InvalidOperationException(nameof(response.Body.total_inventory_count));
-			}
-
-			assetIDs ??= new HashSet<ulong>((int) response.Body.total_inventory_count);
-
-			if (descriptions == null) {
-				descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>();
-			} else {
-				// We don't need descriptions from the previous request
-				descriptions.Clear();
-			}
-
-			foreach (CEconItem_Description? description in response.Body.descriptions) {
-				if (description.classid == 0) {
-					throw new NotSupportedException(Strings.FormatErrorObjectIsNull(nameof(description.classid)));
+							throw new TimeoutException(Strings.FormatWarningFailedWithError(response.Result));
+					}
 				}
 
-				(ulong ClassID, ulong InstanceID) key = (description.classid, description.instanceid);
-
-				if (descriptions.ContainsKey(key)) {
-					continue;
+				if (response == null) {
+					throw new TimeoutException(Strings.FormatErrorObjectIsNull(nameof(response)));
 				}
 
-				descriptions.Add(key, new InventoryDescription(description));
-			}
-
-			foreach (CEcon_Asset? asset in response.Body.assets.Where(asset => assetIDs.Add(asset.assetid))) {
-				InventoryDescription? description = descriptions.GetValueOrDefault((asset.classid, asset.instanceid));
-
-				// Extra bulletproofing against Steam showing us middle finger
-				if ((tradableOnly && (description?.Tradable != true)) || (marketableOnly && (description?.Marketable != true))) {
-					continue;
+				if (response.Result != EResult.OK) {
+					throw new TimeoutException(Strings.FormatWarningFailedWithError(response.Result));
 				}
 
-				yield return new Asset(asset, description);
-			}
+				if ((response.Body.total_inventory_count == 0) || (response.Body.assets.Count == 0)) {
+					// Empty inventory
+					yield break;
+				}
 
-			if (!response.Body.more_items) {
-				yield break;
-			}
+				if (response.Body.descriptions.Count == 0) {
+					throw new InvalidOperationException(nameof(response.Body.descriptions));
+				}
 
-			if (response.Body.last_assetid == 0) {
-				throw new NotSupportedException(Strings.FormatErrorObjectIsNull(nameof(response.Body.last_assetid)));
-			}
+				if (response.Body.total_inventory_count > Array.MaxLength) {
+					throw new InvalidOperationException(nameof(response.Body.total_inventory_count));
+				}
 
-			request.start_assetid = response.Body.last_assetid;
+				assetIDs ??= new HashSet<ulong>((int) response.Body.total_inventory_count);
+
+				if (descriptions == null) {
+					descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>();
+				} else {
+					// We don't need descriptions from the previous request
+					descriptions.Clear();
+				}
+
+				foreach (CEconItem_Description? description in response.Body.descriptions) {
+					if (description.classid == 0) {
+						throw new NotSupportedException(Strings.FormatErrorObjectIsNull(nameof(description.classid)));
+					}
+
+					(ulong ClassID, ulong InstanceID) key = (description.classid, description.instanceid);
+
+					if (descriptions.ContainsKey(key)) {
+						continue;
+					}
+
+					descriptions.Add(key, new InventoryDescription(description));
+				}
+
+				foreach (CEcon_Asset? asset in response.Body.assets.Where(asset => assetIDs.Add(asset.assetid))) {
+					InventoryDescription? description = descriptions.GetValueOrDefault((asset.classid, asset.instanceid));
+
+					// Extra bulletproofing against Steam showing us middle finger
+					if ((tradableOnly && (description?.Tradable != true)) || (marketableOnly && (description?.Marketable != true))) {
+						continue;
+					}
+
+					yield return new Asset(asset, description);
+				}
+
+				if (!response.Body.more_items) {
+					yield break;
+				}
+
+				if (response.Body.last_assetid == 0) {
+					throw new NotSupportedException(Strings.FormatErrorObjectIsNull(nameof(response.Body.last_assetid)));
+				}
+
+				request.start_assetid = response.Body.last_assetid;
+			}
+		} finally {
+			InventorySemaphore.Release();
 		}
 	}
 
