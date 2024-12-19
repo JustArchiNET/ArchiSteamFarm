@@ -650,9 +650,8 @@ public sealed class BotConfig {
 		SkipRefundableGames = 16,
 		SkipUnplayedGames = 32,
 		EnableRiskyCardsDiscovery = 64,
-		AutoSteamSaleEvent = 128,
 		AutoUnpackBoosterPacks = 256,
-		All = FarmingPausedByDefault | ShutdownOnFarmingFinished | SendOnFarmingFinished | FarmPriorityQueueOnly | SkipRefundableGames | SkipUnplayedGames | EnableRiskyCardsDiscovery | AutoSteamSaleEvent | AutoUnpackBoosterPacks
+		All = FarmingPausedByDefault | ShutdownOnFarmingFinished | SendOnFarmingFinished | FarmPriorityQueueOnly | SkipRefundableGames | SkipUnplayedGames | EnableRiskyCardsDiscovery | AutoUnpackBoosterPacks
 	}
 
 	[Flags]
