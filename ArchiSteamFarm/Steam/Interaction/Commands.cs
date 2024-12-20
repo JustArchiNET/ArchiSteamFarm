@@ -690,7 +690,7 @@ public sealed class Commands {
 					break;
 				}
 				default: {
-					if (Bot.OwnedPackages.TryGetValue(gameID, out SteamApps.LicenseListCallback.License? package) && !package.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)) {
+					if (Bot.OwnedPackages.TryGetValue(gameID, out LicenseData? package) && !package.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)) {
 						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
 
 						break;
@@ -2087,7 +2087,7 @@ public sealed class Commands {
 
 					continue;
 				case "S" or "SUB" when uint.TryParse(game, out uint packageID) && (packageID > 0):
-					if (Bot.OwnedPackages.TryGetValue(packageID, out SteamApps.LicenseListCallback.License? package) && !package.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)) {
+					if (Bot.OwnedPackages.TryGetValue(packageID, out LicenseData? package) && !package.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)) {
 						result[$"sub/{packageID}"] = packageID.ToString(CultureInfo.InvariantCulture);
 						response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlready($"sub/{packageID}")));
 					} else {

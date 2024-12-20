@@ -1500,7 +1500,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 						if (packageIDs != null) {
 							foreach (uint packageID in packageIDs) {
-								if (!Bot.OwnedPackages.TryGetValue(packageID, out SteamApps.LicenseListCallback.License? packageData)) {
+								if (!Bot.OwnedPackages.TryGetValue(packageID, out LicenseData? packageData)) {
 									Bot.ArchiLogger.LogNullError(packageData);
 
 									return;

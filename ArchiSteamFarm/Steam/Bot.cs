@@ -263,7 +263,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[JsonIgnore]
 	[PublicAPI]
-	public FrozenDictionary<uint, SteamApps.LicenseListCallback.License> OwnedPackages { get; private set; } = FrozenDictionary<uint, SteamApps.LicenseListCallback.License>.Empty;
+	public FrozenDictionary<uint, LicenseData> OwnedPackages { get; private set; } = FrozenDictionary<uint, LicenseData>.Empty;
 
 	[JsonInclude]
 	[JsonRequired]
@@ -1127,7 +1127,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			DateTime mostRecent = DateTime.MinValue;
 
 			foreach (uint packageID in packageIDs) {
-				if (!OwnedPackages.TryGetValue(packageID, out SteamApps.LicenseListCallback.License? packageData)) {
+				if (!OwnedPackages.TryGetValue(packageID, out LicenseData? packageData)) {
 					continue;
 				}
 
@@ -1152,7 +1152,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			DateTime safePlayableBefore = DateTime.UtcNow.AddMonths(-RegionRestrictionPlayableBlockMonths);
 
 			foreach (uint packageID in packageIDs) {
-				if (!OwnedPackages.TryGetValue(packageID, out SteamApps.LicenseListCallback.License? ownedPackageData)) {
+				if (!OwnedPackages.TryGetValue(packageID, out LicenseData? ownedPackageData)) {
 					// We don't own that packageID, keep checking
 					continue;
 				}
@@ -2854,7 +2854,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		Trading.OnDisconnected();
 
 		FirstTradeSent = false;
-		OwnedPackages = FrozenDictionary<uint, SteamApps.LicenseListCallback.License>.Empty;
+		OwnedPackages = FrozenDictionary<uint, LicenseData>.Empty;
 
 		EResult lastLogOnResult = LastLogOnResult;
 
@@ -3178,7 +3178,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		Commands.OnNewLicenseList();
 
-		Dictionary<uint, SteamApps.LicenseListCallback.License> ownedPackages = new();
+		Dictionary<uint, LicenseData> ownedPackages = new();
 
 		Dictionary<uint, ulong> packageAccessTokens = new();
 		Dictionary<uint, uint> packagesToRefresh = new();
@@ -3187,7 +3187,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		// We want to record only the most relevant entry, therefore we apply ordering here so we end up preferably with the most recent non-borrowed entry
 		foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.OrderByDescending(static license => license.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)).ThenBy(static license => license.TimeCreated)) {
-			ownedPackages[license.PackageID] = license;
+			ownedPackages[license.PackageID] = new LicenseData {
+				LicenseFlags = license.LicenseFlags,
+				PackageID = license.PackageID,
+				PaymentMethod = license.PaymentMethod,
+				TimeCreated = license.TimeCreated
+			};
 
 			if (!OwnedPackages.ContainsKey(license.PackageID)) {
 				hasNewEntries = true;
