@@ -1430,11 +1430,12 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal async Task<(EResult Result, EPurchaseResultDetail PurchaseResult)> AddFreeLicense(uint subID) {
 		ArgumentOutOfRangeException.ThrowIfZero(subID);
 
-		Uri request = new(SteamStoreURL, $"/freelicense/addfreelicense/{subID}");
+		Uri request = new(SteamStoreURL, "/freelicense/addfreelicense");
 
 		// Extra entry for sessionID
-		Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
-			{ "ajax", "true" }
+		Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
+			{ "ajax", "true" },
+			{ "subid", subID.ToString(CultureInfo.InvariantCulture) }
 		};
 
 		ObjectResponse<JsonNode>? response = await UrlPostToJsonObjectWithSession<JsonNode>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
