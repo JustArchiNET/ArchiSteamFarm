@@ -479,14 +479,6 @@ StackTrace:
 	</data>
 	
 	
-	<data name="ClearingDiscoveryQueue" xml:space="preserve">
-		<value>Genomgår Steam discovery-kön #{0}...</value>
-		<comment>{0} will be replaced by queue number</comment>
-	</data>
-	<data name="DoneClearingDiscoveryQueue" xml:space="preserve">
-		<value>Genomgått Steam discovery-kön #{0}.</value>
-		<comment>{0} will be replaced by queue number</comment>
-	</data>
 	
 	
 	
