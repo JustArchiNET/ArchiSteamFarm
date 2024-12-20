@@ -342,7 +342,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				return;
 			}
 
-			HashSet<uint> packageIDs = bot.OwnedPackageIDs.Where(static package => (Config?.SecretPackageIDs.Contains(package.Key) != true) && ((package.Value.PaymentMethod != EPaymentMethod.AutoGrant) || (Config?.SkipAutoGrantPackages == false))).Select(static package => package.Key).ToHashSet();
+			HashSet<uint> packageIDs = bot.OwnedPackages.Where(static package => (Config?.SecretPackageIDs.Contains(package.Key) != true) && ((package.Value.PaymentMethod != EPaymentMethod.AutoGrant) || (Config?.SkipAutoGrantPackages == false))).Select(static package => package.Key).ToHashSet();
 
 			HashSet<uint> appIDsToRefresh = [];
 
@@ -644,7 +644,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				return;
 			}
 
-			ulong contributorSteamID = ASF.GlobalConfig is { SteamOwnerID: > 0 } && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : Bot.Bots.Values.Where(static bot => bot.SteamID > 0).MaxBy(static bot => bot.OwnedPackageIDs.Count)?.SteamID ?? 0;
+			ulong contributorSteamID = ASF.GlobalConfig is { SteamOwnerID: > 0 } && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : Bot.Bots.Values.Where(static bot => bot.SteamID > 0).MaxBy(static bot => bot.OwnedPackages.Count)?.SteamID ?? 0;
 
 			if (contributorSteamID == 0) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatSubmissionNoContributorSet(nameof(ASF.GlobalConfig.SteamOwnerID)));

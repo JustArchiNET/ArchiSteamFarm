@@ -257,8 +257,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	public string? Nickname { get; private set; }
 
 	[JsonIgnore]
+	[Obsolete($"Use {nameof(OwnedPackages)} instead, this property will be removed in the future version")]
 	[PublicAPI]
-	public FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs { get; private set; } = FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
+	public FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs => OwnedPackages.Values.ToFrozenDictionary(static entry => entry.PackageID, static entry => (entry.PaymentMethod, entry.TimeCreated));
+
+	[JsonIgnore]
+	[PublicAPI]
+	public FrozenDictionary<uint, SteamApps.LicenseListCallback.License> OwnedPackages { get; private set; } = FrozenDictionary<uint, SteamApps.LicenseListCallback.License>.Empty;
 
 	[JsonInclude]
 	[JsonRequired]
@@ -1112,7 +1117,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfNegative(hoursPlayed);
 
-		HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(appID, OwnedPackageIDs.Keys);
+		HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(appID, OwnedPackages.Keys);
 
 		if ((packageIDs == null) || (packageIDs.Count == 0)) {
 			return (0, DateTime.MaxValue, true);
@@ -1122,7 +1127,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			DateTime mostRecent = DateTime.MinValue;
 
 			foreach (uint packageID in packageIDs) {
-				if (!OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
+				if (!OwnedPackages.TryGetValue(packageID, out SteamApps.LicenseListCallback.License? packageData)) {
 					continue;
 				}
 
@@ -1147,7 +1152,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			DateTime safePlayableBefore = DateTime.UtcNow.AddMonths(-RegionRestrictionPlayableBlockMonths);
 
 			foreach (uint packageID in packageIDs) {
-				if (!OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) ownedPackageData)) {
+				if (!OwnedPackages.TryGetValue(packageID, out SteamApps.LicenseListCallback.License? ownedPackageData)) {
 					// We don't own that packageID, keep checking
 					continue;
 				}
@@ -2849,7 +2854,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		Trading.OnDisconnected();
 
 		FirstTradeSent = false;
-		OwnedPackageIDs = FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
+		OwnedPackages = FrozenDictionary<uint, SteamApps.LicenseListCallback.License>.Empty;
 
 		EResult lastLogOnResult = LastLogOnResult;
 
@@ -3173,17 +3178,18 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		Commands.OnNewLicenseList();
 
-		Dictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> ownedPackageIDs = new();
+		Dictionary<uint, SteamApps.LicenseListCallback.License> ownedPackages = new();
 
 		Dictionary<uint, ulong> packageAccessTokens = new();
 		Dictionary<uint, uint> packagesToRefresh = new();
 
 		bool hasNewEntries = false;
 
-		foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.GroupBy(static license => license.PackageID, static (_, licenses) => licenses.OrderByDescending(static license => license.TimeCreated).First())) {
-			ownedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
+		// We want to record only the most relevant entry, therefore we apply ordering here so we end up preferably with the most recent non-borrowed entry
+		foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.OrderByDescending(static license => license.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)).ThenBy(static license => license.TimeCreated)) {
+			ownedPackages[license.PackageID] = license;
 
-			if (!OwnedPackageIDs.ContainsKey(license.PackageID)) {
+			if (!OwnedPackages.ContainsKey(license.PackageID)) {
 				hasNewEntries = true;
 			}
 
@@ -3197,7 +3203,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		OwnedPackageIDs = ownedPackageIDs.ToFrozenDictionary();
+		OwnedPackages = ownedPackages.ToFrozenDictionary();
 
 		if (packageAccessTokens.Count > 0) {
 			ASF.GlobalDatabase.RefreshPackageAccessTokens(packageAccessTokens);

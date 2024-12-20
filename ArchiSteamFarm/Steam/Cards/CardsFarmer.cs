@@ -1496,11 +1496,11 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 					foreach (Game game in GamesToFarm) {
 						DateTime redeemDate = DateTime.MinValue;
-						HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(game.AppID, Bot.OwnedPackageIDs.Keys);
+						HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(game.AppID, Bot.OwnedPackages.Values.Where(static package => !package.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)).Select(static package => package.PackageID));
 
 						if (packageIDs != null) {
 							foreach (uint packageID in packageIDs) {
-								if (!Bot.OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
+								if (!Bot.OwnedPackages.TryGetValue(packageID, out SteamApps.LicenseListCallback.License? packageData)) {
 									Bot.ArchiLogger.LogNullError(packageData);
 
 									return;
