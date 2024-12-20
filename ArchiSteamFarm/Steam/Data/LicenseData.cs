@@ -27,7 +27,6 @@ using SteamKit2;
 namespace ArchiSteamFarm.Steam.Data;
 
 public sealed record LicenseData {
-	public required ELicenseFlags LicenseFlags { get; init; }
 	public required uint PackageID { get; init; }
 	public required EPaymentMethod PaymentMethod { get; init; }
 	public required DateTime TimeCreated { get; init; }

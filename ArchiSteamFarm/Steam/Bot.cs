@@ -3185,10 +3185,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		bool hasNewEntries = false;
 
-		// We want to record only the most relevant entry, therefore we apply ordering here so we end up preferably with the most recent non-borrowed entry
-		foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.OrderByDescending(static license => !license.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)).ThenByDescending(static license => license.TimeCreated).Where(license => !ownedPackages.ContainsKey(license.PackageID))) {
+		// We want to record only the most relevant entry from non-borrowed games, therefore we also apply ordering here
+		foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.Where(static license => !license.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)).OrderByDescending(static license => license.TimeCreated).Where(license => !ownedPackages.ContainsKey(license.PackageID))) {
 			ownedPackages[license.PackageID] = new LicenseData {
-				LicenseFlags = license.LicenseFlags,
 				PackageID = license.PackageID,
 				PaymentMethod = license.PaymentMethod,
 				TimeCreated = license.TimeCreated

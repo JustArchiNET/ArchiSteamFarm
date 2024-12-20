@@ -45,7 +45,6 @@ using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
-using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Cards;
 
@@ -1496,7 +1495,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 					foreach (Game game in GamesToFarm) {
 						DateTime redeemDate = DateTime.MinValue;
-						HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(game.AppID, Bot.OwnedPackages.Values.Where(static package => !package.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)).Select(static package => package.PackageID));
+						HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(game.AppID, Bot.OwnedPackages.Keys);
 
 						if (packageIDs != null) {
 							foreach (uint packageID in packageIDs) {

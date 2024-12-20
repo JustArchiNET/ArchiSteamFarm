@@ -666,7 +666,7 @@ public sealed class Commands {
 
 			switch (type.ToUpperInvariant()) {
 				case "A" or "APP": {
-					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(gameID, Bot.OwnedPackages.Values.Where(static package => !package.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)).Select(static package => package.PackageID), 1);
+					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(gameID, Bot.OwnedPackages.Keys, 1);
 
 					if (packageIDs is { Count: > 0 }) {
 						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"app/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
@@ -690,7 +690,7 @@ public sealed class Commands {
 					break;
 				}
 				default: {
-					if (Bot.OwnedPackages.TryGetValue(gameID, out LicenseData? package) && !package.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)) {
+					if (Bot.OwnedPackages.ContainsKey(gameID)) {
 						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
 
 						break;
@@ -2020,7 +2020,7 @@ public sealed class Commands {
 
 			switch (type.ToUpperInvariant()) {
 				case "A" or "APP" when uint.TryParse(game, out uint appID) && (appID > 0):
-					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(appID, Bot.OwnedPackages.Values.Where(static package => !package.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)).Select(static package => package.PackageID), 1);
+					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(appID, Bot.OwnedPackages.Keys, 1);
 
 					if (packageIDs?.Count > 0) {
 						if ((gamesOwned != null) && gamesOwned.TryGetValue(appID, out string? cachedGameName)) {
@@ -2087,7 +2087,7 @@ public sealed class Commands {
 
 					continue;
 				case "S" or "SUB" when uint.TryParse(game, out uint packageID) && (packageID > 0):
-					if (Bot.OwnedPackages.TryGetValue(packageID, out LicenseData? package) && !package.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)) {
+					if (Bot.OwnedPackages.ContainsKey(packageID)) {
 						result[$"sub/{packageID}"] = packageID.ToString(CultureInfo.InvariantCulture);
 						response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlready($"sub/{packageID}")));
 					} else {
