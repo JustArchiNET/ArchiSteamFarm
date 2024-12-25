@@ -35,13 +35,6 @@ namespace ArchiSteamFarm.Plugins.Interfaces;
 [PublicAPI]
 public interface IPlugin {
 	/// <summary>
-	///     Helper property which determines whether the plugin is official, mostly for IPC.
-	/// </summary>
-	[JsonInclude]
-	[Required]
-	public sealed bool IsOfficialPlugin => this is OfficialPlugin;
-
-	/// <summary>
 	///     ASF will use this property as general plugin identifier for the user.
 	/// </summary>
 	/// <returns>String that will be used as the name of this plugin.</returns>
