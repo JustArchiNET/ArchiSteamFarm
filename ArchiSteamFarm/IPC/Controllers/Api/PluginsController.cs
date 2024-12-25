@@ -37,9 +37,28 @@ namespace ArchiSteamFarm.IPC.Controllers.Api;
 
 [Route("Api/Plugins")]
 public sealed class PluginsController : ArchiController {
+	/// <summary>
+	///     Gets active plugins loaded into the process.
+	/// </summary>
 	[HttpGet]
 	[ProducesResponseType<GenericResponse<IReadOnlyCollection<IPlugin>>>((int) HttpStatusCode.OK)]
-	public ActionResult<GenericResponse<IReadOnlyCollection<IPlugin>>> PluginsGet() => Ok(new GenericResponse<IReadOnlyCollection<IPlugin>>(PluginsCore.ActivePlugins));
+	public ActionResult<GenericResponse<IReadOnlyCollection<IPlugin>>> PluginsGet([FromQuery] bool official = true, [FromQuery] bool custom = true) {
+		HashSet<IPlugin> result = [];
+
+		foreach (IPlugin plugin in PluginsCore.ActivePlugins) {
+			if (plugin is OfficialPlugin) {
+				if (official) {
+					result.Add(plugin);
+				}
+			} else {
+				if (custom) {
+					result.Add(plugin);
+				}
+			}
+		}
+
+		return Ok(new GenericResponse<IReadOnlyCollection<IPlugin>>(result));
+	}
 
 	/// <summary>
 	///     Makes ASF update selected plugins.
