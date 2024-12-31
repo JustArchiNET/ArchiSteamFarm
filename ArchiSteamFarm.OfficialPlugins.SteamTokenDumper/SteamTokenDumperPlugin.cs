@@ -468,11 +468,11 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 							try {
 								SteamApps.DepotKeyCallback depotResponse = await bot.SteamApps.GetDepotDecryptionKey(depotID, app.ID).ToLongRunningTask().ConfigureAwait(false);
 
-								depotKeysSuccessful++;
-
 								if (depotResponse.Result != EResult.OK) {
 									continue;
 								}
+
+								depotKeysSuccessful++;
 
 								shouldFetchMainKey = true;
 
