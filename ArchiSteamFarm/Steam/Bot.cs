@@ -257,11 +257,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	public string? Nickname { get; private set; }
 
 	[JsonIgnore]
-	[Obsolete($"Use {nameof(OwnedPackages)} instead, this property will be removed in the future version")]
-	[PublicAPI]
-	public FrozenDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs => OwnedPackages.Values.ToFrozenDictionary(static entry => entry.PackageID, static entry => (entry.PaymentMethod, entry.TimeCreated));
-
-	[JsonIgnore]
 	[PublicAPI]
 	public FrozenDictionary<uint, LicenseData> OwnedPackages { get; private set; } = FrozenDictionary<uint, LicenseData>.Empty;
 
