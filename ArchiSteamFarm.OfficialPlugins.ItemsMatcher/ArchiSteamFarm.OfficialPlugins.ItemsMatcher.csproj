@@ -19,4 +19,8 @@
 	<ItemGroup>
 		<EmbeddedResource Update="Localization\Strings.resx" EmitFormatMethods="true" />
 	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Copy SourceFolders="$(TargetDir)" DestinationFolder="..\ArchiSteamFarm\bin\$(Configuration)\$(TargetFramework)\plugins\$(AssemblyName)\" SkipUnchangedFiles="true" />
+	</Target>
 </Project>
