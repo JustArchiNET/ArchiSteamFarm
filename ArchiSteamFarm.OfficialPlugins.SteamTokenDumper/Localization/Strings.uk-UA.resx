@@ -104,10 +104,7 @@
 		<value>Завершено отримання {0} інформації про програму.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
-		<value>Успішно отримано {0} з {1} ключів депо.</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys that were successfully retrieved, {1} will be replaced by the number (count this batch) of depot keys that were supposed to be retrieved</comment>
-	</data>
+	
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Завершено отримання всіх ключів депо для {0} програм.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>

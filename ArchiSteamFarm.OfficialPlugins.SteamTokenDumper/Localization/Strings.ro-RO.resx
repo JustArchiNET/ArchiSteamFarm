@@ -104,10 +104,7 @@
 		<value>S-a terminat preluarea a {0} informații despre aplicații.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
-		<value>{0} din {1} chei de depozit au fost recuperate cu succes.</value>
-		<comment>{0} will be replaced by the number (count this batch) of depot keys that were successfully retrieved, {1} will be replaced by the number (count this batch) of depot keys that were supposed to be retrieved</comment>
-	</data>
+	
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>S-a terminat preluarea tuturor depot keys pentru un total de {0} aplicații.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
