@@ -107,7 +107,10 @@
 		<value>已完成获取 {0} 个 App 的信息。</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>已完成 {0}/{1} 个 Depot Key 请求。</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot key requests that were successfully answered, {1} will be replaced by the number (count this batch) of depot key requests that were supposed to be sent</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>已完成获取共计 {0} 个 App 的所有 Depot Key。</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
