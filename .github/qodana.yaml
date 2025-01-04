@@ -10,6 +10,9 @@ exclude:
       - ArchiSteamFarm.OfficialPlugins.MobileAuthenticator/Localization
       - ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/Localization
   - name: AsyncVoidMethod
+  - name: CA1515
+    paths:
+      - ArchiSteamFarm
   - name: InternalOrPrivateMemberNotDocumented
   - name: InvertIf
   - name: NullableWarningSuppressionIsUsed

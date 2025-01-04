@@ -17,7 +17,7 @@
 		<LangVersion>latest</LangVersion>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<NeutralLanguage>en</NeutralLanguage>
-		<NoWarn>CS1591</NoWarn>
+		<NoWarn>CA1028,CA1031,CS1591</NoWarn>
 		<Nullable>enable</Nullable>
 		<PackageIcon>../resources/ASF.ico</PackageIcon>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
