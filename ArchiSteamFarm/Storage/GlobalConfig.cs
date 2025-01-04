@@ -504,6 +504,21 @@ public sealed class GlobalConfig {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(IPCPasswordFormat), IPCPasswordFormat));
 		}
 
+		switch (IPCPasswordFormat) {
+			case ArchiCryptoHelper.EHashingMethod.Pbkdf2 when !string.IsNullOrEmpty(IPCPassword):
+			case ArchiCryptoHelper.EHashingMethod.SCrypt when !string.IsNullOrEmpty(IPCPassword):
+				try {
+					// Ensure IPCPassword is in the appropriate format, base64-encoded string in this case
+					_ = Convert.FromBase64String(IPCPassword);
+				} catch (FormatException e) {
+					ASF.ArchiLogger.LogGenericWarningException(e);
+
+					return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(IPCPassword), IPCPassword));
+				}
+
+				break;
+		}
+
 		if (MaxFarmingTime == 0) {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(MaxFarmingTime), MaxFarmingTime));
 		}
