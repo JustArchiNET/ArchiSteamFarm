@@ -19,6 +19,10 @@
 	</assembly>
 
 	<!-- Entries below are needed for our official plugins -->
+	<assembly fullname="Microsoft.AspNetCore.Http.Extensions">
+		<type fullname="Microsoft.AspNetCore.Http.TagsAttribute" />
+	</assembly>
+
 	<assembly fullname="System.Linq">
 		<type fullname="System.Linq.Enumerable">
 			<method name="MaxBy" />
