@@ -73,6 +73,7 @@ public sealed class WebBrowser : IDisposable {
 			AutomaticDecompression = DecompressionMethods.All,
 			CookieContainer = CookieContainer,
 			EnableMultipleHttp2Connections = true,
+			EnableMultipleHttp3Connections = true,
 			MaxConnectionsPerServer = MaxConnections,
 			PooledConnectionIdleTimeout = TimeSpan.FromSeconds(MaxIdleTime)
 		};
