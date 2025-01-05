@@ -26,6 +26,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Responses;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
@@ -43,6 +44,8 @@ public sealed class HealthCheckController : ControllerBase {
 		HealthCheckService = healthCheckService;
 	}
 
+	[EndpointDescription("This endpoint can be called in order to easily check whether the program is up")]
+	[EndpointSummary("Fetches current application's status")]
 	[HttpGet]
 	[ProducesResponseType(typeof(HealthCheckResponse), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(HealthCheckResponse), (int) HttpStatusCode.ServiceUnavailable)]

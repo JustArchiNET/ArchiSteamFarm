@@ -25,7 +25,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Metrics;
@@ -73,13 +72,11 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IDisposable, IOfficialG
 	private static FrozenSet<Measurement<int>>? PluginMeasurements;
 
 	[JsonInclude]
-	[Required]
 	public override string Name => nameof(MonitoringPlugin);
 
 	public string RepositoryName => SharedInfo.GithubRepo;
 
 	[JsonInclude]
-	[Required]
 	public override Version Version => typeof(MonitoringPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 	private readonly ConcurrentDictionary<Bot, TradeStatistics> TradeStatistics = new();

@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using ArchiSteamFarm.Storage;
@@ -29,57 +30,43 @@ using ArchiSteamFarm.Storage;
 namespace ArchiSteamFarm.IPC.Responses;
 
 public sealed class ASFResponse {
-	/// <summary>
-	///     ASF's build variant.
-	/// </summary>
+	[Description("ASF's build variant")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
 	public string BuildVariant { get; private init; }
 
-	/// <summary>
-	///     A value specifying whether this variant of ASF is capable of auto-update.
-	/// </summary>
+	[Description("A value specifying whether this variant of ASF is capable of auto-update")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
 	public bool CanUpdate { get; private init; }
 
-	/// <summary>
-	///     Currently loaded ASF's global config.
-	/// </summary>
+	[Description("Currently loaded ASF's global config")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
 	public GlobalConfig GlobalConfig { get; private init; }
 
-	/// <summary>
-	///     Current amount of managed memory being used by the process, in kilobytes.
-	/// </summary>
+	[Description("Current amount of managed memory being used by the process, in kilobytes")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
 	public uint MemoryUsage { get; private init; }
 
-	/// <summary>
-	///     Start date of the process.
-	/// </summary>
+	[Description("Start date of the process")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
 	public DateTime ProcessStartTime { get; private init; }
 
-	/// <summary>
-	///     Boolean value specifying whether ASF has been started with a --service parameter.
-	/// </summary>
+	[Description("Boolean value specifying whether ASF has been started with a --service parameter")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
 	public bool Service { get; private init; }
 
-	/// <summary>
-	///     ASF version of currently running binary.
-	/// </summary>
+	[Description("ASF version of currently running binary")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]

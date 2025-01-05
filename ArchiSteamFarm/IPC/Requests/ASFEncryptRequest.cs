@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
@@ -30,17 +31,13 @@ namespace ArchiSteamFarm.IPC.Requests;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class ASFEncryptRequest {
-	/// <summary>
-	///     Encryption method used for encrypting this string.
-	/// </summary>
+	[Description("Encryption method used for encrypting this string")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
 	public ArchiCryptoHelper.ECryptoMethod CryptoMethod { get; private init; }
 
-	/// <summary>
-	///     String to encrypt with provided <see cref="CryptoMethod" />.
-	/// </summary>
+	[Description($"String to encrypt with provided {nameof(CryptoMethod)}")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]

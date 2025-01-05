@@ -34,6 +34,7 @@ using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Storage;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SteamKit2;
 using SteamKit2.Internal;
@@ -42,10 +43,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api;
 
 [Route("Api/Bot")]
 public sealed class BotController : ArchiController {
-	/// <summary>
-	///     Adds (free) licenses on given bots.
-	/// </summary>
-	[Consumes("application/json")]
+	[EndpointSummary("Adds (free) licenses on given bots")]
 	[HttpPost("{botNames:required}/AddLicense")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, BotAddLicenseResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -74,9 +72,7 @@ public sealed class BotController : ArchiController {
 		return Ok(new GenericResponse<IReadOnlyDictionary<string, BotAddLicenseResponse>>(result));
 	}
 
-	/// <summary>
-	///     Deletes all files related to given bots.
-	/// </summary>
+	[EndpointSummary("Deletes all files related to given bots")]
 	[HttpDelete("{botNames:required}")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -94,9 +90,7 @@ public sealed class BotController : ArchiController {
 		return Ok(new GenericResponse(results.All(static result => result)));
 	}
 
-	/// <summary>
-	///     Fetches common info related to given bots.
-	/// </summary>
+	[EndpointSummary("Fetches common info related to given bots")]
 	[HttpGet("{botNames:required}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, Bot>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -112,10 +106,7 @@ public sealed class BotController : ArchiController {
 		return Ok(new GenericResponse<IReadOnlyDictionary<string, Bot>>(bots.Where(static bot => !string.IsNullOrEmpty(bot.BotName)).ToDictionary(static bot => bot.BotName, static bot => bot, Bot.BotsComparer)));
 	}
 
-	/// <summary>
-	///     Updates bot config of given bot.
-	/// </summary>
-	[Consumes("application/json")]
+	[EndpointSummary("Updates bot config of given bot")]
 	[HttpPost("{botNames:required}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, bool>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -185,9 +176,7 @@ public sealed class BotController : ArchiController {
 		return Ok(new GenericResponse<IReadOnlyDictionary<string, bool>>(result.Values.All(static value => value), result));
 	}
 
-	/// <summary>
-	///     Removes BGR output files of given bots.
-	/// </summary>
+	[EndpointSummary("Removes BGR output files of given bots")]
 	[HttpDelete("{botNames:required}/GamesToRedeemInBackground")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -205,9 +194,7 @@ public sealed class BotController : ArchiController {
 		return Ok(results.All(static result => result) ? new GenericResponse(true) : new GenericResponse(false, Strings.WarningFailed));
 	}
 
-	/// <summary>
-	///     Fetches BGR output files of given bots.
-	/// </summary>
+	[EndpointSummary("Fetches BGR output files of given bots")]
 	[HttpGet("{botNames:required}/GamesToRedeemInBackground")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -232,10 +219,7 @@ public sealed class BotController : ArchiController {
 		return Ok(new GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>(result));
 	}
 
-	/// <summary>
-	///     Adds keys to redeem using BGR to given bot.
-	/// </summary>
-	[Consumes("application/json")]
+	[EndpointSummary("Adds keys to redeem using BGR to given bot")]
 	[HttpPost("{botNames:required}/GamesToRedeemInBackground")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -270,10 +254,7 @@ public sealed class BotController : ArchiController {
 		return Ok(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(result));
 	}
 
-	/// <summary>
-	///     Provides input value to given bot for next usage.
-	/// </summary>
-	[Consumes("application/json")]
+	[EndpointSummary("Provides input value to given bot for next usage")]
 	[HttpPost("{botNames:required}/Input")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -296,10 +277,7 @@ public sealed class BotController : ArchiController {
 		return Ok(results.All(static result => result) ? new GenericResponse(true) : new GenericResponse(false, Strings.WarningFailed));
 	}
 
-	/// <summary>
-	///     Pauses given bots.
-	/// </summary>
-	[Consumes("application/json")]
+	[EndpointSummary("Pauses given bots")]
 	[HttpPost("{botNames:required}/Pause")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -318,10 +296,7 @@ public sealed class BotController : ArchiController {
 		return Ok(new GenericResponse(results.All(static result => result.Success), string.Join(Environment.NewLine, results.Select(static result => result.Message))));
 	}
 
-	/// <summary>
-	///     Redeems points on given bots.
-	/// </summary>
-	[Consumes("application/json")]
+	[EndpointSummary("Redeems points on given bots")]
 	[HttpPost("{botNames:required}/RedeemPoints/{definitionID:required}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, EResult>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -346,14 +321,8 @@ public sealed class BotController : ArchiController {
 		return Ok(new GenericResponse<IReadOnlyDictionary<string, EResult>>(result));
 	}
 
-	/// <summary>
-	///     Redeems cd-keys on given bot.
-	/// </summary>
-	/// <remarks>
-	///     Response contains a map that maps each provided cd-key to its redeem result.
-	///     Redeem result can be a null value, this means that ASF didn't even attempt to send a request (e.g. because of bot not being connected to Steam network).
-	/// </remarks>
-	[Consumes("application/json")]
+	[EndpointDescription("Response contains a map that maps each provided cd-key to its redeem result. Redeem result can be a null value, this means that ASF didn't even attempt to send a request (e.g. because of bot not being connected to Steam network)")]
+	[EndpointSummary("Redeems cd-keys on given bot")]
 	[HttpPost("{botNames:required}/Redeem")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, CStore_RegisterCDKey_Response>>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -389,10 +358,7 @@ public sealed class BotController : ArchiController {
 		return Ok(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, CStore_RegisterCDKey_Response?>>>(result.Values.SelectMany(static responses => responses.Values).All(static value => value != null), result));
 	}
 
-	/// <summary>
-	///     Renames given bot along with all its related files.
-	/// </summary>
-	[Consumes("application/json")]
+	[EndpointSummary("Renames given bot along with all its related files")]
 	[HttpPost("{botName:required}/Rename")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -417,9 +383,7 @@ public sealed class BotController : ArchiController {
 		return Ok(new GenericResponse(result));
 	}
 
-	/// <summary>
-	///     Resumes given bots.
-	/// </summary>
+	[EndpointSummary("Resumes given bots")]
 	[HttpPost("{botNames:required}/Resume")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -437,9 +401,7 @@ public sealed class BotController : ArchiController {
 		return Ok(new GenericResponse(results.All(static result => result.Success), string.Join(Environment.NewLine, results.Select(static result => result.Message))));
 	}
 
-	/// <summary>
-	///     Starts given bots.
-	/// </summary>
+	[EndpointSummary("Starts given bots")]
 	[HttpPost("{botNames:required}/Start")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -457,9 +419,7 @@ public sealed class BotController : ArchiController {
 		return Ok(new GenericResponse(results.All(static result => result.Success), string.Join(Environment.NewLine, results.Select(static result => result.Message))));
 	}
 
-	/// <summary>
-	///     Stops given bots.
-	/// </summary>
+	[EndpointSummary("Stops given bots")]
 	[HttpPost("{botNames:required}/Stop")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]

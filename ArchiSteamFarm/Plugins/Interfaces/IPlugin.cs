@@ -22,7 +22,6 @@
 // limitations under the License.
 
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -39,7 +38,6 @@ public interface IPlugin {
 	/// </summary>
 	/// <returns>String that will be used as the name of this plugin.</returns>
 	[JsonInclude]
-	[Required]
 	string Name { get; }
 
 	/// <summary>
@@ -48,7 +46,6 @@ public interface IPlugin {
 	/// </summary>
 	/// <returns>Version that will be shown to the user when plugin is loaded.</returns>
 	[JsonInclude]
-	[Required]
 	Version Version { get; }
 
 	/// <summary>

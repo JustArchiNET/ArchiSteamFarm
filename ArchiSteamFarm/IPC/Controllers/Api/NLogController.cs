@@ -6,7 +6,7 @@
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2025 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
@@ -37,6 +38,7 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.NLog.Targets;
 using Microsoft.AspNetCore.Connections;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 
@@ -54,16 +56,12 @@ public sealed class NLogController : ArchiController {
 		ApplicationLifetime = applicationLifetime;
 	}
 
-	/// <summary>
-	///     Fetches ASF log file, this works on assumption that the log file is in fact generated, as user could disable it through custom configuration.
-	/// </summary>
-	/// <param name="count">Maximum amount of lines from the log file returned. The respone naturally might have less amount than specified, if you've read whole file already.</param>
-	/// <param name="lastAt">Ending index, used for pagination. Omit it for the first request, then initialize to TotalLines returned, and on every following request subtract count that you've used in the previous request from it until you hit 0 or less, which means you've read whole file already.</param>
+	[EndpointSummary("Fetches ASF log file, this works on assumption that the log file is in fact generated, as user could disable it through custom configuration")]
 	[HttpGet("File")]
 	[ProducesResponseType<GenericResponse<GenericResponse<LogResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
-	public async Task<ActionResult<GenericResponse>> FileGet(int count = 100, int lastAt = 0) {
+	public async Task<ActionResult<GenericResponse>> FileGet([Description("Maximum amount of lines from the log file returned. The respone naturally might have less amount than specified, if you've read whole file already")] int count = 100, [Description("Ending index, used for pagination. Omit it for the first request, then initialize to TotalLines returned, and on every following request subtract count that you've used in the previous request from it until you hit 0 or less, which means you've read whole file already")] int lastAt = 0) {
 		if (count <= 0) {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(count))));
 		}
@@ -91,12 +89,8 @@ public sealed class NLogController : ArchiController {
 		return Ok(new GenericResponse<LogResponse>(new LogResponse(lines.Length, lines[startFrom..lastAt])));
 	}
 
-	/// <summary>
-	///     Fetches ASF log in realtime.
-	/// </summary>
-	/// <remarks>
-	///     This API endpoint requires a websocket connection.
-	/// </remarks>
+	[EndpointDescription("This API endpoint requires a websocket connection")]
+	[EndpointSummary("Fetches ASF log in realtime")]
 	[HttpGet]
 	[ProducesResponseType<IEnumerable<GenericResponse<string>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]

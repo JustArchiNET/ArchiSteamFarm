@@ -38,7 +38,6 @@ public static class SharedInfo {
 	internal const string ArchivalLogsDirectory = "logs";
 	internal const string ASF = nameof(ASF);
 	internal const ulong ASFGroupSteamID = 103582791440160998;
-	internal const string AssemblyDocumentation = $"{AssemblyName}.xml";
 	internal const string AssemblyName = nameof(ArchiSteamFarm);
 	internal const string DatabaseExtension = ".db";
 	internal const string DebugDirectory = "debug";

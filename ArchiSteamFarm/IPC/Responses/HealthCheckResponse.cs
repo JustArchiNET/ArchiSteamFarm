@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -29,10 +30,11 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 namespace ArchiSteamFarm.IPC.Responses;
 
 public sealed class HealthCheckResponse {
+	[Description($"{nameof(Status)} written as text")]
 	[JsonInclude]
-	[Required]
 	public string StatusText => Status.ToString();
 
+	[Description("Health status of the application")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]

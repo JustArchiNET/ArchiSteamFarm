@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json.Serialization;
@@ -28,17 +29,13 @@ using System.Text.Json.Serialization;
 namespace ArchiSteamFarm.IPC.Responses;
 
 public sealed class StatusCodeResponse {
-	/// <summary>
-	///     Value indicating whether the status is permanent. If yes, retrying the request with exactly the same payload doesn't make sense due to a permanent problem (e.g. ASF misconfiguration).
-	/// </summary>
+	[Description("Value indicating whether the status is permanent. If yes, retrying the request with exactly the same payload doesn't make sense due to a permanent problem (e.g. ASF misconfiguration)")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
 	public bool Permanent { get; private init; }
 
-	/// <summary>
-	///     Status code transmitted in addition to the one in HTTP spec.
-	/// </summary>
+	[Description("Status code transmitted in addition to the one in HTTP spec")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]

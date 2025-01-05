@@ -34,6 +34,7 @@ using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Interaction;
 using ArchiSteamFarm.Storage;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 
@@ -51,10 +52,7 @@ public sealed class ASFController : ArchiController {
 		ApplicationLifetime = applicationLifetime;
 	}
 
-	/// <summary>
-	///     Encrypts data with ASF encryption mechanisms using provided details.
-	/// </summary>
-	[Consumes("application/json")]
+	[EndpointSummary("Encrypts data with ASF encryption mechanisms using provided details.")]
 	[HttpPost("Encrypt")]
 	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -70,9 +68,7 @@ public sealed class ASFController : ArchiController {
 		return Ok(new GenericResponse<string>(encryptedString));
 	}
 
-	/// <summary>
-	///     Fetches common info related to ASF as a whole.
-	/// </summary>
+	[EndpointSummary("Fetches common info related to ASF as a whole")]
 	[HttpGet]
 	[ProducesResponseType<GenericResponse<ASFResponse>>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse<ASFResponse>> ASFGet() {
@@ -87,10 +83,7 @@ public sealed class ASFController : ArchiController {
 		return Ok(new GenericResponse<ASFResponse>(result));
 	}
 
-	/// <summary>
-	///     Hashes data with ASF hashing mechanisms using provided details.
-	/// </summary>
-	[Consumes("application/json")]
+	[EndpointSummary("Hashes data with ASF hashing mechanisms using provided details")]
 	[HttpPost("Hash")]
 	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -106,10 +99,7 @@ public sealed class ASFController : ArchiController {
 		return Ok(new GenericResponse<string>(hash));
 	}
 
-	/// <summary>
-	///     Updates ASF's global config.
-	/// </summary>
-	[Consumes("application/json")]
+	[EndpointSummary("Updates ASF's global config")]
 	[HttpPost]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -163,9 +153,7 @@ public sealed class ASFController : ArchiController {
 		return Ok(new GenericResponse(result));
 	}
 
-	/// <summary>
-	///     Makes ASF shutdown itself.
-	/// </summary>
+	[EndpointSummary("Makes ASF shutdown itself")]
 	[HttpPost("Exit")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> ExitPost() {
@@ -174,9 +162,7 @@ public sealed class ASFController : ArchiController {
 		return Ok(new GenericResponse(success, message));
 	}
 
-	/// <summary>
-	///     Makes ASF restart itself.
-	/// </summary>
+	[EndpointSummary("Makes ASF restart itself")]
 	[HttpPost("Restart")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> RestartPost() {
@@ -185,9 +171,7 @@ public sealed class ASFController : ArchiController {
 		return Ok(new GenericResponse(success, message));
 	}
 
-	/// <summary>
-	///     Makes ASF update itself.
-	/// </summary>
+	[EndpointSummary("Makes ASF update itself")]
 	[HttpPost("Update")]
 	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
 	public async Task<ActionResult<GenericResponse<string>>> UpdatePost([FromBody] UpdateRequest request) {

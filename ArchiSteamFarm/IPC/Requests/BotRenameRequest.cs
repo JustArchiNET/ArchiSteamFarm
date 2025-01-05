@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
@@ -29,9 +30,7 @@ namespace ArchiSteamFarm.IPC.Requests;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class BotRenameRequest {
-	/// <summary>
-	///     Specifies the new name for the bot. The new name can't be "ASF", neither the one used by any existing bot.
-	/// </summary>
+	[Description($"Specifies the new name for the bot. The new name can't be {SharedInfo.ASF}, neither the one used by any existing bot")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]

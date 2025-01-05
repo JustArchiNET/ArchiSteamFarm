@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using ArchiSteamFarm.Localization;
@@ -28,12 +29,7 @@ using ArchiSteamFarm.Localization;
 namespace ArchiSteamFarm.IPC.Responses;
 
 public sealed class GenericResponse<T> : GenericResponse {
-	/// <summary>
-	///     The actual result of the request, if available.
-	/// </summary>
-	/// <remarks>
-	///     The type of the result depends on the API endpoint that you've called.
-	/// </remarks>
+	[Description("The actual result of the request, if available. The type of the result depends on the API endpoint that you've called")]
 	[JsonInclude]
 	public T? Result { get; private init; }
 
@@ -47,18 +43,11 @@ public sealed class GenericResponse<T> : GenericResponse {
 }
 
 public class GenericResponse {
-	/// <summary>
-	///     A message that describes what happened with the request, if available.
-	/// </summary>
-	/// <remarks>
-	///     This property will provide exact reason for majority of expected failures.
-	/// </remarks>
+	[Description("A message that describes what happened with the request, if available. This property will provide exact reason for majority of expected failures")]
 	[JsonInclude]
 	public string? Message { get; private init; }
 
-	/// <summary>
-	///     Boolean type that specifies if the request has succeeded.
-	/// </summary>
+	[Description("Boolean type that specifies if the request has succeeded")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]

@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
@@ -30,9 +31,7 @@ namespace ArchiSteamFarm.IPC.Requests;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class BotRedeemRequest {
-	/// <summary>
-	///     A collection (set) of keys to redeem.
-	/// </summary>
+	[Description("A collection (set) of keys to redeem")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]

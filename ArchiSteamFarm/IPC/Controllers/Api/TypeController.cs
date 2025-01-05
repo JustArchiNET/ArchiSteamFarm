@@ -32,18 +32,15 @@ using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
 [Route("Api/Type")]
 public sealed class TypeController : ArchiController {
-	/// <summary>
-	///     Fetches type info of given type.
-	/// </summary>
-	/// <remarks>
-	///     Type info is defined as a representation of given object with its fields and properties being assigned to a string value that defines their type.
-	/// </remarks>
+	[EndpointDescription("Type info is defined as a representation of given object with its fields and properties being assigned to a string value that defines their type")]
+	[EndpointSummary("Fetches type info of given type")]
 	[HttpGet("{type:required}")]
 	[ProducesResponseType<GenericResponse<TypeResponse>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]

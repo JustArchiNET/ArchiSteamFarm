@@ -1,4 +1,4 @@
-// ----------------------------------------------------------------------------------------------
+﻿// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
@@ -6,7 +6,7 @@
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2025 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,36 +23,63 @@
 
 using System;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
+using ArchiSteamFarm.IPC.Integration;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ArchiSteamFarm.IPC.Integration;
+namespace ArchiSteamFarm.IPC.OpenApi;
 
+#pragma warning disable CA1812 // False positive, the class is used internally
 [UsedImplicitly]
-internal sealed class EnumSchemaFilter : ISchemaFilter {
-	public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
+internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
+	public Task TransformAsync(OpenApiSchema schema, OpenApiSchemaTransformerContext context, CancellationToken cancellationToken) {
 		ArgumentNullException.ThrowIfNull(schema);
 		ArgumentNullException.ThrowIfNull(context);
 
-		if (context.Type is not { IsEnum: true }) {
+		ApplyCustomAttributes(schema, context);
+		ApplyEnumDefinition(schema, context);
+
+		return Task.CompletedTask;
+	}
+
+	private static void ApplyCustomAttributes(OpenApiSchema schema, OpenApiSchemaTransformerContext context) {
+		ArgumentNullException.ThrowIfNull(schema);
+		ArgumentNullException.ThrowIfNull(context);
+
+		if (context.JsonPropertyInfo?.AttributeProvider == null) {
 			return;
 		}
 
-		if (context.Type.IsDefined(typeof(FlagsAttribute), false)) {
+		foreach (CustomSwaggerAttribute customSwaggerAttribute in context.JsonPropertyInfo.AttributeProvider.GetCustomAttributes(typeof(CustomSwaggerAttribute), true)) {
+			customSwaggerAttribute.Apply(schema);
+		}
+	}
+
+	private static void ApplyEnumDefinition(OpenApiSchema schema, OpenApiSchemaTransformerContext context) {
+		ArgumentNullException.ThrowIfNull(schema);
+		ArgumentNullException.ThrowIfNull(context);
+
+		if (context.JsonTypeInfo.Type is not { IsEnum: true }) {
+			return;
+		}
+
+		if (context.JsonTypeInfo.Type.IsDefined(typeof(FlagsAttribute), false)) {
 			schema.Format = "flags";
 		}
 
 		OpenApiObject definition = new();
 
-		foreach (object? enumValue in context.Type.GetEnumValues()) {
+		foreach (object? enumValue in context.JsonTypeInfo.Type.GetEnumValues()) {
 			if (enumValue == null) {
 				throw new InvalidOperationException(nameof(enumValue));
 			}
 
-			string? enumName = Enum.GetName(context.Type, enumValue);
+			string? enumName = Enum.GetName(context.JsonTypeInfo.Type, enumValue);
 
 			if (string.IsNullOrEmpty(enumName)) {
 				// Fallback
@@ -68,7 +95,7 @@ internal sealed class EnumSchemaFilter : ISchemaFilter {
 				continue;
 			}
 
-			IOpenApiPrimitive enumObject;
+			IOpenApiAny enumObject;
 
 			if (TryCast(enumValue, out int intValue)) {
 				enumObject = new OpenApiInteger(intValue);
@@ -105,3 +132,4 @@ internal sealed class EnumSchemaFilter : ISchemaFilter {
 		}
 	}
 }
+#pragma warning restore CA1812 // False positive, the class is used internally

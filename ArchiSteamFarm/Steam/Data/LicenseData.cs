@@ -22,12 +22,18 @@
 // limitations under the License.
 
 using System;
+using JetBrains.Annotations;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 public sealed record LicenseData {
+	[PublicAPI]
 	public required uint PackageID { get; init; }
+
+	[PublicAPI]
 	public required EPaymentMethod PaymentMethod { get; init; }
+
+	[PublicAPI]
 	public required DateTime TimeCreated { get; init; }
 }

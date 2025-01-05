@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
@@ -30,17 +31,13 @@ namespace ArchiSteamFarm.IPC.Requests;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class ASFHashRequest {
-	/// <summary>
-	///     Hashing method used for hashing this string.
-	/// </summary>
+	[Description("Hashing method used for hashing this string")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
 	public ArchiCryptoHelper.EHashingMethod HashingMethod { get; private init; }
 
-	/// <summary>
-	///     String to hash with provided <see cref="HashingMethod" />.
-	/// </summary>
+	[Description($"String to hash with provided {nameof(HashingMethod)}")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]

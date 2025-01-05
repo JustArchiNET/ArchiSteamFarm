@@ -23,8 +23,8 @@
 
 using System.Net;
 using ArchiSteamFarm.IPC.Controllers.Api;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
@@ -32,6 +32,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 public sealed class SteamTokenDumperController : ArchiController {
 	[HttpGet(nameof(GlobalConfigExtension))]
 	[ProducesResponseType<GlobalConfigExtension>((int) HttpStatusCode.OK)]
-	[SwaggerOperation(Tags = [nameof(GlobalConfigExtension)])]
+	[Tags(nameof(GlobalConfigExtension))]
 	public ActionResult<GlobalConfigExtension> Get() => Ok(new GlobalConfigExtension());
 }

@@ -23,20 +23,17 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
 public sealed class GamesToRedeemInBackgroundResponse {
-	/// <summary>
-	///     Keys that were redeemed and not used during the process, if available.
-	/// </summary>
+	[Description("Keys that were redeemed and not used during the process, if available")]
 	[JsonInclude]
 	public ImmutableDictionary<string, string>? UnusedKeys { get; private init; }
 
-	/// <summary>
-	///     Keys that were redeemed and used during the process, if available.
-	/// </summary>
+	[Description("Keys that were redeemed and used during the process, if available")]
 	[JsonInclude]
 	public ImmutableDictionary<string, string>? UsedKeys { get; private init; }
 

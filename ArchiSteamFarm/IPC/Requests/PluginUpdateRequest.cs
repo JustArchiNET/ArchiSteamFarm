@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using ArchiSteamFarm.Storage;
@@ -30,21 +31,15 @@ namespace ArchiSteamFarm.IPC.Requests;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class PluginUpdateRequest {
-	/// <summary>
-	///     Target update channel. Not required, will default to <see cref="GlobalConfig.UpdateChannel" /> if not provided.
-	/// </summary>
+	[Description($"Target update channel. Not required, will default to {nameof(GlobalConfig.UpdateChannel)} if not provided")]
 	[JsonInclude]
 	public GlobalConfig.EUpdateChannel? Channel { get; private init; }
 
-	/// <summary>
-	///     Forced update. This allows ASF to potentially downgrade to previous version available on selected <see cref="Channel" />, which isn't permitted normally.
-	/// </summary>
+	[Description($"Forced update. This allows ASF to potentially downgrade to previous version available on selected {nameof(Channel)}, which isn't permitted normally")]
 	[JsonInclude]
 	public bool Forced { get; private init; }
 
-	/// <summary>
-	///     Target plugins. Not required, will default to plugin update configuration in <see cref="GlobalConfig" /> if not provided.
-	/// </summary>
+	[Description($"Target plugins. Not required, will default to plugin update configuration in {nameof(GlobalConfig)} if not provided")]
 	[JsonInclude]
 	public ImmutableHashSet<string>? Plugins { get; private init; }
 

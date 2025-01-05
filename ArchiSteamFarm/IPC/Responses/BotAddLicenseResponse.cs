@@ -23,20 +23,17 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
 public sealed class BotAddLicenseResponse {
-	/// <summary>
-	///     A collection (set) of apps (appIDs) to ask license for.
-	/// </summary>
+	[Description("A collection (set) of apps (appIDs) to ask license for")]
 	[JsonInclude]
 	public ImmutableDictionary<uint, AddLicenseResult>? Apps { get; private init; }
 
-	/// <summary>
-	///     A collection (set) of packages (subIDs) to ask license for.
-	/// </summary>
+	[Description("A collection (set) of packages (subIDs) to ask license for")]
 	[JsonInclude]
 	public ImmutableDictionary<uint, AddLicenseResult>? Packages { get; private init; }
 

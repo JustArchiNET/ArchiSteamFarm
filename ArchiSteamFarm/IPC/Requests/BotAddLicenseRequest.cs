@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
@@ -29,15 +30,11 @@ namespace ArchiSteamFarm.IPC.Requests;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class BotAddLicenseRequest {
-	/// <summary>
-	///     A collection (set) of apps (appIDs) to ask license for.
-	/// </summary>
+	[Description("A collection (set) of apps (appIDs) to ask license for")]
 	[JsonInclude]
 	public ImmutableList<uint>? Apps { get; private init; }
 
-	/// <summary>
-	///     A collection (set) of packages (subIDs) to ask license for.
-	/// </summary>
+	[Description("A collection (set) of packages (subIDs) to ask license for")]
 	[JsonInclude]
 	public ImmutableList<uint>? Packages { get; private init; }
 

@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using ArchiSteamFarm.Storage;
@@ -29,15 +30,11 @@ namespace ArchiSteamFarm.IPC.Requests;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class UpdateRequest {
-	/// <summary>
-	///     Target update channel. Not required, will default to UpdateChannel in GlobalConfig if not provided.
-	/// </summary>
+	[Description("Target update channel. Not required, will default to UpdateChannel in GlobalConfig if not provided")]
 	[JsonInclude]
 	public GlobalConfig.EUpdateChannel? Channel { get; private init; }
 
-	/// <summary>
-	///     Forced update. This allows ASF to potentially downgrade to previous version available on selected <see cref="Channel" />, which isn't permitted normally.
-	/// </summary>
+	[Description($"Forced update. This allows ASF to potentially downgrade to previous version available on selected {nameof(Channel)}, which isn't permitted normally")]
 	[JsonInclude]
 	public bool Forced { get; private init; }
 

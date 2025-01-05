@@ -35,6 +35,7 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Controllers.Api;
 using ArchiSteamFarm.IPC.Integration;
+using ArchiSteamFarm.IPC.OpenApi;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.NLog.Targets;
@@ -52,7 +53,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-using Microsoft.OpenApi.Models;
 using NLog.Web;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
@@ -118,7 +118,7 @@ internal static class ArchiKestrel {
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "PathString is a primitive, it's unlikely to be trimmed to the best of our knowledge")]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL3000", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	private static void ConfigureApp([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] ConfigurationManager configuration, IApplicationBuilder app) {
+	private static void ConfigureApp([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] ConfigurationManager configuration, WebApplication app) {
 		ArgumentNullException.ThrowIfNull(configuration);
 		ArgumentNullException.ThrowIfNull(app);
 
@@ -252,10 +252,10 @@ internal static class ArchiKestrel {
 		}
 
 		// Finally register proper API endpoints once we're done with routing
-		app.UseEndpoints(static endpoints => endpoints.MapControllers());
+		app.MapControllers();
 
-		// Add support for swagger, responsible for automatic API documentation generation, this should be on the end, once we're done with API
-		app.UseSwagger();
+		// Add support for OpenAPI, responsible for automatic API documentation generation, this should be on the end, once we're done with API
+		app.MapOpenApi("/swagger/{documentName}/swagger.json");
 
 		// Add support for swagger UI, this should be after swagger, obviously
 		app.UseSwaggerUI(
@@ -331,66 +331,12 @@ internal static class ArchiKestrel {
 			services.AddCors(static options => options.AddDefaultPolicy(static policyBuilder => policyBuilder.AllowAnyOrigin()));
 		}
 
-		// Add support for swagger, responsible for automatic API documentation generation
-		services.AddSwaggerGen(
-			static options => {
-				options.AddSecurityDefinition(
-					nameof(GlobalConfig.IPCPassword), new OpenApiSecurityScheme {
-						Description = $"{nameof(GlobalConfig.IPCPassword)} authentication using request headers. Check {SharedInfo.ProjectURL}/wiki/IPC#authentication for more info.",
-						In = ParameterLocation.Header,
-						Name = ApiAuthenticationMiddleware.HeadersField,
-						Type = SecuritySchemeType.ApiKey
-					}
-				);
-
-				options.AddSecurityRequirement(
-					new OpenApiSecurityRequirement {
-						{
-							new OpenApiSecurityScheme {
-								Reference = new OpenApiReference {
-									Id = nameof(GlobalConfig.IPCPassword),
-									Type = ReferenceType.SecurityScheme
-								}
-							},
-
-							[]
-						}
-					}
-				);
-
-				// We require custom schema IDs due to conflicting type names, choosing the proper one is tricky as there is no good answer and any kind of convention has a potential to create conflict
-				// FullName and Name both do, ToString() for unknown to me reason doesn't, and I don't have courage to call our WebUtilities.GetUnifiedName() better than what .NET ships with (because it isn't)
-				// Let's use ToString() until we find a good enough reason to change it, also, the name must pass ^[a-zA-Z0-9.-_]+$ regex
-				options.CustomSchemaIds(static type => type.ToString().Replace('+', '-'));
-
-				options.EnableAnnotations(true, true);
-
-				options.SchemaFilter<CustomAttributesSchemaFilter>();
-				options.SchemaFilter<EnumSchemaFilter>();
-				options.SchemaFilter<ReadOnlyFixesSchemaFilter>();
-
-				options.SwaggerDoc(
-					SharedInfo.ASF, new OpenApiInfo {
-						Contact = new OpenApiContact {
-							Name = SharedInfo.GithubRepo,
-							Url = new Uri(SharedInfo.ProjectURL)
-						},
-
-						License = new OpenApiLicense {
-							Name = SharedInfo.LicenseName,
-							Url = new Uri(SharedInfo.LicenseURL)
-						},
-
-						Title = $"{SharedInfo.AssemblyName} API",
-						Version = SharedInfo.Version.ToString()
-					}
-				);
-
-				string xmlDocumentationFile = Path.Combine(AppContext.BaseDirectory, SharedInfo.AssemblyDocumentation);
-
-				if (File.Exists(xmlDocumentationFile)) {
-					options.IncludeXmlComments(xmlDocumentationFile);
-				}
+		// Add support for OpenAPI, responsible for automatic API documentation generation
+		services.AddOpenApi(
+			SharedInfo.ASF, static options => {
+				options.AddDocumentTransformer<DocumentTransformer>();
+				options.AddOperationTransformer<OperationTransformer>();
+				options.AddSchemaTransformer<SchemaTransformer>();
 			}
 		);
 
@@ -405,6 +351,16 @@ internal static class ArchiKestrel {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
+
+		services.ConfigureHttpJsonOptions(
+			static options => {
+				JsonSerializerOptions jsonSerializerOptions = Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions;
+
+				options.SerializerOptions.PropertyNamingPolicy = jsonSerializerOptions.PropertyNamingPolicy;
+				options.SerializerOptions.TypeInfoResolver = jsonSerializerOptions.TypeInfoResolver;
+				options.SerializerOptions.WriteIndented = jsonSerializerOptions.WriteIndented;
+			}
+		);
 
 		// We need MVC for /Api, but we're going to use only a small subset of all available features
 		IMvcBuilder mvc = services.AddControllers();

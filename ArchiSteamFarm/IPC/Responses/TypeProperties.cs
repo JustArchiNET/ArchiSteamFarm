@@ -24,35 +24,21 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
 public sealed class TypeProperties {
-	/// <summary>
-	///     Base type of given type, if available.
-	/// </summary>
-	/// <remarks>
-	///     This can be used for determining how the body of the response should be interpreted.
-	/// </remarks>
+	[Description("Base type of given type, if available. This can be used for determining how the body of the response should be interpreted")]
 	[JsonInclude]
 	public string? BaseType { get; private init; }
 
-	/// <summary>
-	///     Custom attributes of given type, if available.
-	/// </summary>
-	/// <remarks>
-	///     This can be used for determining main enum type if <see cref="BaseType" /> is <see cref="Enum" />.
-	/// </remarks>
+	[Description($"Custom attributes of given type, if available. This can be used for determining main enum type if {nameof(BaseType)} is {nameof(Enum)}")]
 	[JsonInclude]
 	public ImmutableHashSet<string>? CustomAttributes { get; private init; }
 
-	/// <summary>
-	///     Underlying type of given type, if available.
-	/// </summary>
-	/// <remarks>
-	///     This can be used for determining underlying enum type if <see cref="BaseType" /> is <see cref="Enum" />.
-	/// </remarks>
+	[Description($"Underlying type of given type, if available. This can be used for determining underlying enum type if {nameof(BaseType)} is {nameof(Enum)}")]
 	[JsonInclude]
 	public string? UnderlyingType { get; private init; }
 

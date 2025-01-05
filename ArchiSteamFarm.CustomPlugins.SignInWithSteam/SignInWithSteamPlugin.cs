@@ -22,7 +22,6 @@
 // limitations under the License.
 
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Composition;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -36,11 +35,9 @@ namespace ArchiSteamFarm.CustomPlugins.SignInWithSteam;
 [UsedImplicitly]
 internal sealed class SignInWithSteamPlugin : IPlugin {
 	[JsonInclude]
-	[Required]
 	public string Name => nameof(SignInWithSteamPlugin);
 
 	[JsonInclude]
-	[Required]
 	public Version Version => typeof(SignInWithSteamPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 	public Task OnLoaded() {

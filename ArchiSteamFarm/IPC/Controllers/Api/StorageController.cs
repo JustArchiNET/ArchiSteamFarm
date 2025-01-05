@@ -26,15 +26,14 @@ using System.Net;
 using System.Text.Json;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Responses;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
 [Route("Api/Storage/{key:required}")]
 public sealed class StorageController : ArchiController {
-	/// <summary>
-	///     Deletes entry under specified key from ASF's persistent KeyValue JSON storage.
-	/// </summary>
+	[EndpointSummary("Deletes entry under specified key from ASF's persistent KeyValue JSON storage")]
 	[HttpDelete]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StorageDelete(string key) {
@@ -49,9 +48,7 @@ public sealed class StorageController : ArchiController {
 		return Ok(new GenericResponse(true));
 	}
 
-	/// <summary>
-	///     Loads entry under specified key from ASF's persistent KeyValue JSON storage.
-	/// </summary>
+	[EndpointSummary("Loads entry under specified key from ASF's persistent KeyValue JSON storage")]
 	[HttpGet]
 	[ProducesResponseType<GenericResponse<JsonElement?>>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StorageGet(string key) {
@@ -66,10 +63,7 @@ public sealed class StorageController : ArchiController {
 		return Ok(new GenericResponse<JsonElement?>(true, value.ValueKind != JsonValueKind.Undefined ? value : null));
 	}
 
-	/// <summary>
-	///     Saves entry under specified key in ASF's persistent KeyValue JSON storage.
-	/// </summary>
-	[Consumes("application/json")]
+	[EndpointSummary("Saves entry under specified key in ASF's persistent KeyValue JSON storage")]
 	[HttpPost]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StoragePost(string key, [FromBody] JsonElement value) {

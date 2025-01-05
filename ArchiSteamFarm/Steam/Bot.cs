@@ -106,12 +106,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[JsonInclude]
 	[PublicAPI]
-	[Required]
 	public string BotName { get; }
 
 	[JsonInclude]
 	[PublicAPI]
-	[Required]
 	public CardsFarmer CardsFarmer { get; }
 
 	[JsonIgnore]
@@ -120,12 +118,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[JsonInclude]
 	[PublicAPI]
-	[Required]
 	public uint GamesToRedeemInBackgroundCount => BotDatabase.GamesToRedeemInBackgroundCount;
 
 	[JsonInclude]
 	[PublicAPI]
-	[Required]
 	public bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 
 	[JsonIgnore]
@@ -138,12 +134,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[JsonInclude]
 	[PublicAPI]
-	[Required]
 	public bool IsConnectedAndLoggedOn => SteamClient.SteamID != null;
 
 	[JsonInclude]
 	[PublicAPI]
-	[Required]
 	public bool IsPlayingPossible => !PlayingBlocked && !LibraryLocked;
 
 	[JsonInclude]
@@ -153,7 +147,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[JsonInclude]
 	[JsonPropertyName($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
 	[PublicAPI]
-	[Required]
 	public string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
 
 	[JsonIgnore]

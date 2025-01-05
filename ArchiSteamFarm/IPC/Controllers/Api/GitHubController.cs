@@ -32,18 +32,15 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.GitHub;
 using ArchiSteamFarm.Web.GitHub.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
 [Route("Api/WWW/GitHub")]
 public sealed class GitHubController : ArchiController {
-	/// <summary>
-	///     Fetches the most recent GitHub release of ASF project.
-	/// </summary>
-	/// <remarks>
-	///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
-	/// </remarks>
+	[EndpointDescription("This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime")]
+	[EndpointSummary("Fetches the most recent GitHub release of ASF project")]
 	[HttpGet("Release")]
 	[ProducesResponseType<GenericResponse<GitHubReleaseResponse>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
@@ -55,12 +52,8 @@ public sealed class GitHubController : ArchiController {
 		return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries)));
 	}
 
-	/// <summary>
-	///     Fetches specific GitHub release of ASF project. Use "latest" for latest stable release.
-	/// </summary>
-	/// <remarks>
-	///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
-	/// </remarks>
+	[EndpointDescription("This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime")]
+	[EndpointSummary("Fetches specific GitHub release of ASF project. Use \"latest\" for latest stable release")]
 	[HttpGet("Release/{version:required}")]
 	[ProducesResponseType<GenericResponse<GitHubReleaseResponse>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -90,12 +83,8 @@ public sealed class GitHubController : ArchiController {
 		return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries)));
 	}
 
-	/// <summary>
-	///     Fetches history of specific GitHub page from ASF project.
-	/// </summary>
-	/// <remarks>
-	///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
-	/// </remarks>
+	[EndpointDescription("This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime")]
+	[EndpointSummary("Fetches history of specific GitHub page from ASF project")]
 	[HttpGet("Wiki/History/{page:required}")]
 	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -110,13 +99,8 @@ public sealed class GitHubController : ArchiController {
 		return revisions != null ? revisions.Count > 0 ? Ok(new GenericResponse<ImmutableDictionary<string, DateTime>>(revisions.ToImmutableDictionary())) : BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(page)))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries)));
 	}
 
-	/// <summary>
-	///     Fetches specific GitHub page of ASF project.
-	/// </summary>
-	/// <remarks>
-	///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
-	///     Specifying revision is optional - when not specified, will fetch latest available. If specified revision is invalid, GitHub will automatically fetch the latest revision as well.
-	/// </remarks>
+	[EndpointDescription("This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime. Specifying revision is optional - when not specified, will fetch latest available. If specified revision is invalid, GitHub will automatically fetch the latest revision as well")]
+	[EndpointSummary("Fetches specific GitHub page of ASF project")]
 	[HttpGet("Wiki/Page/{page:required}")]
 	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]

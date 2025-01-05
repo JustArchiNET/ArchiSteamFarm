@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
@@ -30,9 +31,7 @@ namespace ArchiSteamFarm.IPC.Requests;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class BotRequest {
-	/// <summary>
-	///     ASF's bot config structure.
-	/// </summary>
+	[Description("ASF's bot config structure")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]

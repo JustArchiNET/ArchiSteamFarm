@@ -30,11 +30,13 @@ using SteamKit2;
 namespace ArchiSteamFarm.IPC.Responses;
 
 public sealed class AddLicenseResult {
+	[Description("Additional result of the license request")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
 	public EPurchaseResultDetail PurchaseResultDetail { get; private init; }
 
+	[Description("Main result of the license request")]
 	[JsonInclude]
 	[JsonRequired]
 	[Required]

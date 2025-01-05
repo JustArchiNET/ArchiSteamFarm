@@ -31,15 +31,14 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam.Interaction;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
 [Route("Api/Plugins")]
 public sealed class PluginsController : ArchiController {
-	/// <summary>
-	///     Gets active plugins loaded into the process.
-	/// </summary>
+	[EndpointSummary("Gets active plugins loaded into the process")]
 	[HttpGet]
 	[ProducesResponseType<GenericResponse<IReadOnlyCollection<IPlugin>>>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse<IReadOnlyCollection<IPlugin>>> PluginsGet([FromQuery] bool official = true, [FromQuery] bool custom = true) {
@@ -60,9 +59,7 @@ public sealed class PluginsController : ArchiController {
 		return Ok(new GenericResponse<IReadOnlyCollection<IPlugin>>(result));
 	}
 
-	/// <summary>
-	///     Makes ASF update selected plugins.
-	/// </summary>
+	[EndpointSummary("Makes ASF update selected plugins")]
 	[HttpPost("Update")]
 	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
 	public async Task<ActionResult<GenericResponse<string>>> UpdatePost([FromBody] PluginUpdateRequest request) {

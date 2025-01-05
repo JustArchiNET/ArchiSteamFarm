@@ -28,15 +28,14 @@ using System.Net;
 using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
 [Route("Api/IPC/Bans")]
 public sealed class IPCBansController : ArchiController {
-	/// <summary>
-	///     Clears the list of all IP addresses currently blocked by ASFs IPC module
-	/// </summary>
+	[EndpointSummary("Clears the list of all IP addresses currently blocked by ASFs IPC module")]
 	[HttpDelete]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> Delete() {
@@ -45,9 +44,7 @@ public sealed class IPCBansController : ArchiController {
 		return Ok(new GenericResponse(true));
 	}
 
-	/// <summary>
-	///     Removes an IP address from the list of addresses currently blocked by ASFs IPC module
-	/// </summary>
+	[EndpointSummary("Removes an IP address from the list of addresses currently blocked by ASFs IPC module")]
 	[HttpDelete("{ipAddress:required}")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
@@ -67,9 +64,7 @@ public sealed class IPCBansController : ArchiController {
 		return Ok(new GenericResponse(true));
 	}
 
-	/// <summary>
-	///     Gets all IP addresses currently blocked by ASFs IPC module
-	/// </summary>
+	[EndpointSummary("Gets all IP addresses currently blocked by ASFs IPC module")]
 	[HttpGet]
 	[ProducesResponseType<GenericResponse<IReadOnlySet<string>>>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse<IReadOnlySet<string>>> Get() => Ok(new GenericResponse<IReadOnlySet<string>>(ApiAuthenticationMiddleware.GetCurrentlyBannedIPs().Select(static ip => ip.ToString()).ToHashSet()));
