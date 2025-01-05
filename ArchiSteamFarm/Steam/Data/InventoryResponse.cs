@@ -34,17 +34,15 @@ namespace ArchiSteamFarm.Steam.Data;
 internal sealed class InventoryResponse : OptionalResultResponse {
 	internal EResult? ErrorCode {
 		get {
-			if (CachedErrorCode.HasValue) {
-				return CachedErrorCode;
+			if (field.HasValue) {
+				return field;
 			}
 
 			if (string.IsNullOrEmpty(ErrorText)) {
 				return null;
 			}
 
-			CachedErrorCode = SteamUtilities.InterpretError(ErrorText);
-
-			return CachedErrorCode;
+			return field = SteamUtilities.InterpretError(ErrorText);
 		}
 	}
 
@@ -75,8 +73,6 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	[JsonInclude]
 	[JsonPropertyName("total_inventory_count")]
 	internal uint TotalInventoryCount { get; private init; }
-
-	private EResult? CachedErrorCode;
 
 	[JsonConstructor]
 	private InventoryResponse() { }

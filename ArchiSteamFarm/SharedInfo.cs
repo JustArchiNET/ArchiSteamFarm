@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using ArchiSteamFarm.Core;
@@ -87,10 +88,12 @@ public static class SharedInfo {
 	[PublicAPI]
 	public static bool IsRuntimeTrimmed => BuildInfo.IsRuntimeTrimmed;
 
+	[field: AllowNull]
+	[field: MaybeNull]
 	internal static string HomeDirectory {
 		get {
-			if (!string.IsNullOrEmpty(CachedHomeDirectory)) {
-				return CachedHomeDirectory;
+			if (!string.IsNullOrEmpty(field)) {
+				return field;
 			}
 
 			// We're aiming to handle two possible cases here, classic publish and single-file publish which is possible with OS-specific builds
@@ -98,9 +101,7 @@ public static class SharedInfo {
 			// We can't just return our base directory since it could lead to the (wrong) temporary directory of extracted files in a single-publish scenario
 			// If the path goes to our own binary, the user is using OS-specific build, single-file or not, we'll use path to location of that binary then
 			// Otherwise, this path goes to some third-party binary, likely dotnet/mono, the user is using our generic build or other custom binary, we need to trust our base directory then
-			CachedHomeDirectory = Path.GetFileNameWithoutExtension(OS.ProcessFileName) == AssemblyName ? Path.GetDirectoryName(OS.ProcessFileName) ?? AppContext.BaseDirectory : AppContext.BaseDirectory;
-
-			return CachedHomeDirectory;
+			return field = Path.GetFileNameWithoutExtension(OS.ProcessFileName) == AssemblyName ? Path.GetDirectoryName(OS.ProcessFileName) ?? AppContext.BaseDirectory : AppContext.BaseDirectory;
 		}
 	}
 
@@ -109,6 +110,4 @@ public static class SharedInfo {
 	internal static Version Version => Assembly.GetExecutingAssembly().GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 	private static Guid ModuleVersion => Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
-
-	private static string? CachedHomeDirectory;
 }

@@ -39,8 +39,8 @@ namespace ArchiSteamFarm.Web.GitHub.Data;
 public sealed class ReleaseResponse {
 	internal string? ChangelogHTML {
 		get {
-			if (BackingChangelogHTML != null) {
-				return BackingChangelogHTML;
+			if (field != null) {
+				return field;
 			}
 
 			if (Changelog == null) {
@@ -56,14 +56,14 @@ public sealed class ReleaseResponse {
 			renderer.Render(Changelog);
 			writer.Flush();
 
-			return BackingChangelogHTML = writer.ToString();
+			return field = writer.ToString();
 		}
 	}
 
 	internal string? ChangelogPlainText {
 		get {
-			if (BackingChangelogPlainText != null) {
-				return BackingChangelogPlainText;
+			if (field != null) {
+				return field;
 			}
 
 			if (Changelog == null) {
@@ -83,14 +83,14 @@ public sealed class ReleaseResponse {
 			renderer.Render(Changelog);
 			writer.Flush();
 
-			return BackingChangelogPlainText = writer.ToString();
+			return field = writer.ToString();
 		}
 	}
 
 	private MarkdownDocument? Changelog {
 		get {
-			if (BackingChangelog != null) {
-				return BackingChangelog;
+			if (field != null) {
+				return field;
 			}
 
 			if (string.IsNullOrEmpty(MarkdownBody)) {
@@ -99,7 +99,7 @@ public sealed class ReleaseResponse {
 				return null;
 			}
 
-			return BackingChangelog = ExtractChangelogFromBody(MarkdownBody);
+			return field = ExtractChangelogFromBody(MarkdownBody);
 		}
 	}
 
@@ -127,10 +127,6 @@ public sealed class ReleaseResponse {
 	[JsonPropertyName("tag_name")]
 	[JsonRequired]
 	public string Tag { get; private init; } = "";
-
-	private MarkdownDocument? BackingChangelog;
-	private string? BackingChangelogHTML;
-	private string? BackingChangelogPlainText;
 
 	[JsonConstructor]
 	private ReleaseResponse() { }

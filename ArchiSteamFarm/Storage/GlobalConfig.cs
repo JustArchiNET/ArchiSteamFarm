@@ -154,8 +154,8 @@ public sealed class GlobalConfig {
 	[PublicAPI]
 	public WebProxy? WebProxy {
 		get {
-			if (BackingWebProxy != null) {
-				return BackingWebProxy;
+			if (field != null) {
+				return field;
 			}
 
 			if (string.IsNullOrEmpty(WebProxyText)) {
@@ -191,9 +191,7 @@ public sealed class GlobalConfig {
 				proxy.Credentials = credentials;
 			}
 
-			BackingWebProxy = proxy;
-
-			return proxy;
+			return field = proxy;
 		}
 	}
 
@@ -253,13 +251,13 @@ public sealed class GlobalConfig {
 	[JsonInclude]
 	[SwaggerSecurityCritical]
 	public string? IPCPassword {
-		get => BackingIPCPassword;
+		get;
 
 		internal set {
 			IsIPCPasswordSet = true;
-			BackingIPCPassword = value;
+			field = value;
 		}
-	}
+	} = DefaultIPCPassword;
 
 	[JsonInclude]
 	public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private init; } = DefaultIPCPasswordFormat;
@@ -268,13 +266,13 @@ public sealed class GlobalConfig {
 	[JsonInclude]
 	[SwaggerSecurityCritical]
 	public Guid? LicenseID {
-		get => BackingLicenseID;
+		get;
 
 		internal set {
 			IsLicenseIDSet = true;
-			BackingLicenseID = value;
+			field = value;
 		}
-	}
+	} = DefaultLicenseID;
 
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
@@ -349,18 +347,13 @@ public sealed class GlobalConfig {
 	[JsonInclude]
 	[SwaggerSecurityCritical]
 	internal string? WebProxyPassword {
-		get => BackingWebProxyPassword;
+		get;
 
 		set {
 			IsWebProxyPasswordSet = true;
-			BackingWebProxyPassword = value;
+			field = value;
 		}
-	}
-
-	private string? BackingIPCPassword = DefaultIPCPassword;
-	private Guid? BackingLicenseID = DefaultLicenseID;
-	private WebProxy? BackingWebProxy;
-	private string? BackingWebProxyPassword = DefaultWebProxyPassword;
+	} = DefaultWebProxyPassword;
 
 	[JsonDisallowNull]
 	[JsonInclude]

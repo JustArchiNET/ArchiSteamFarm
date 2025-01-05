@@ -14,7 +14,7 @@
 		<Description>ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously.</Description>
 		<Deterministic>true</Deterministic>
 		<ErrorReport>none</ErrorReport>
-		<LangVersion>latest</LangVersion>
+		<LangVersion>preview</LangVersion>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<NeutralLanguage>en</NeutralLanguage>
 		<NoWarn>CA1028,CA1031,CS1591</NoWarn>

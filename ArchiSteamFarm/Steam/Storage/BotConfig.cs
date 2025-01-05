@@ -210,13 +210,13 @@ public sealed class BotConfig {
 
 	[JsonInclude]
 	public string? SteamLogin {
-		get => BackingSteamLogin;
+		get;
 
 		internal set {
 			IsSteamLoginSet = true;
-			BackingSteamLogin = value;
+			field = value;
 		}
-	}
+	} = DefaultSteamLogin;
 
 	[JsonInclude]
 	[SwaggerSteamIdentifier(AccountType = EAccountType.Clan)]
@@ -229,24 +229,24 @@ public sealed class BotConfig {
 	[SwaggerValidValues(ValidStringValues = ["0"])]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
 	public string? SteamParentalCode {
-		get => BackingSteamParentalCode;
+		get;
 
 		internal set {
 			IsSteamParentalCodeSet = true;
-			BackingSteamParentalCode = value;
+			field = value;
 		}
-	}
+	} = DefaultSteamParentalCode;
 
 	[JsonInclude]
 	[SwaggerSecurityCritical]
 	public string? SteamPassword {
-		get => BackingSteamPassword;
+		get;
 
 		internal set {
 			IsSteamPasswordSet = true;
-			BackingSteamPassword = value;
+			field = value;
 		}
-	}
+	} = DefaultSteamPassword;
 
 	[JsonInclude]
 	[MaxLength(SteamTradeTokenLength)]
@@ -283,10 +283,6 @@ public sealed class BotConfig {
 	internal bool IsSteamParentalCodeSet { get; set; }
 	internal bool IsSteamPasswordSet { get; set; }
 	internal bool Saving { get; set; }
-
-	private string? BackingSteamLogin = DefaultSteamLogin;
-	private string? BackingSteamParentalCode = DefaultSteamParentalCode;
-	private string? BackingSteamPassword = DefaultSteamPassword;
 
 	[JsonDisallowNull]
 	[JsonInclude]

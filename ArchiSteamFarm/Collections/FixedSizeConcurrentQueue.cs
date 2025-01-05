@@ -33,18 +33,16 @@ internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> where T : not
 	private readonly ConcurrentQueue<T> BackingQueue = new();
 
 	internal byte MaxCount {
-		get => BackingMaxCount;
+		get;
 
 		set {
 			ArgumentOutOfRangeException.ThrowIfZero(value);
 
-			BackingMaxCount = value;
+			field = value;
 
 			Resize();
 		}
 	}
-
-	private byte BackingMaxCount;
 
 	internal FixedSizeConcurrentQueue(byte maxCount) {
 		ArgumentOutOfRangeException.ThrowIfZero(maxCount);

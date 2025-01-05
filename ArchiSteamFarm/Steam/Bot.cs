@@ -198,13 +198,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[JsonIgnore]
 	[PublicAPI]
 	public string? AccessToken {
-		get => BackingAccessToken;
+		get;
 
 		private set {
 			AccessTokenValidUntil = null;
 
 			if (string.IsNullOrEmpty(value)) {
-				BackingAccessToken = null;
+				field = null;
 
 				return;
 			}
@@ -215,7 +215,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			BackingAccessToken = value;
+			field = value;
 
 			if (accessToken.ValidTo > DateTime.MinValue) {
 				AccessTokenValidUntil = accessToken.ValidTo;
@@ -289,7 +289,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private DateTime? AccessTokenValidUntil;
 	private string? AuthCode;
-	private string? BackingAccessToken;
 	private CancellationTokenSource? CallbacksAborted;
 	private Timer? ConnectionFailureTimer;
 	private bool FirstTradeSent;

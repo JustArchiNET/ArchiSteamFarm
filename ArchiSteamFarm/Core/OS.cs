@@ -24,6 +24,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -56,19 +57,18 @@ internal static class OS {
 
 	internal static string? Runtime => TrimAndNullifyEmptyText(RuntimeInformation.RuntimeIdentifier);
 
+	[field: AllowNull]
+	[field: MaybeNull]
 	internal static string Version {
 		get {
-			if (!string.IsNullOrEmpty(BackingVersion)) {
-				return BackingVersion;
+			if (!string.IsNullOrEmpty(field)) {
+				return field;
 			}
 
-			BackingVersion = $"{Framework ?? "Unknown Framework"}; {Runtime ?? "Unknown Runtime"}; {Description ?? "Unknown OS"}";
-
-			return BackingVersion;
+			return field = $"{Framework ?? "Unknown Framework"}; {Runtime ?? "Unknown Runtime"}; {Description ?? "Unknown OS"}";
 		}
 	}
 
-	private static string? BackingVersion;
 	private static Mutex? SingleInstance;
 
 	internal static void CoreInit(bool minimized, bool systemRequired) {
