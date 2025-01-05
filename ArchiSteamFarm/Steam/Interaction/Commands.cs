@@ -2054,7 +2054,9 @@ public sealed class Commands {
 					Regex regex;
 
 					try {
-						regex = new Regex(game, RegexOptions.CultureInvariant);
+#pragma warning disable CA3012 // We're aware of a potential denial of service here, this is why we limit maximum matching time to a sane value
+						regex = new Regex(game, RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
+#pragma warning restore CA3012 // We're aware of a potential denial of service here, this is why we limit maximum matching time to a sane value
 					} catch (ArgumentException e) {
 						Bot.ArchiLogger.LogGenericWarningException(e);
 						response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(regex))));
@@ -2074,11 +2076,18 @@ public sealed class Commands {
 
 					bool foundWithRegex = false;
 
-					foreach ((uint appID, string gameName) in gamesOwned.Where(gameOwned => regex.IsMatch(gameOwned.Value))) {
-						foundWithRegex = true;
+					try {
+						foreach ((uint appID, string gameName) in gamesOwned.Where(gameOwned => regex.IsMatch(gameOwned.Value))) {
+							foundWithRegex = true;
 
-						result[$"app/{appID}"] = gameName;
-						response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlreadyWithName($"app/{appID}", gameName)));
+							result[$"app/{appID}"] = gameName;
+							response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlreadyWithName($"app/{appID}", gameName)));
+						}
+					} catch (RegexMatchTimeoutException e) {
+						Bot.ArchiLogger.LogGenericWarningException(e);
+						response.AppendLine(FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(regex))));
+
+						break;
 					}
 
 					if (!foundWithRegex) {

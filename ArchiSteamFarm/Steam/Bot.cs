@@ -640,7 +640,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 					result.UnionWith(regexMatches);
 				} catch (RegexMatchTimeoutException e) {
-					ASF.ArchiLogger.LogGenericException(e);
+					ASF.ArchiLogger.LogGenericWarningException(e);
 				}
 
 				continue;
@@ -1811,13 +1811,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			string newFilePath = GetFilePath(newBotName, fileType);
 
 			if (string.IsNullOrEmpty(newFilePath)) {
-				ArchiLogger.LogNullError(newFilePath);
-
-				return false;
+				throw new InvalidOperationException(nameof(newFilePath));
 			}
 
 			try {
+#pragma warning disable CA3003 // New file path derived from bot's name that was validated above
 				File.Move(filePath, newFilePath);
+#pragma warning restore CA3003 // New file path derived from bot's name that was validated above
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 

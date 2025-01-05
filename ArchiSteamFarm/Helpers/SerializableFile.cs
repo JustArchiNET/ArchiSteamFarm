@@ -154,6 +154,7 @@ public abstract class SerializableFile : IDisposable {
 
 		try {
 			// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
+#pragma warning disable CA3003 // Ignored due to caller's intent
 			if (File.Exists(filePath)) {
 				string currentJson = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
@@ -169,6 +170,7 @@ public abstract class SerializableFile : IDisposable {
 
 				File.Move(newFilePath, filePath);
 			}
+#pragma warning restore CA3003 // Ignored due to caller's intent
 
 			return true;
 		} catch (Exception e) {
