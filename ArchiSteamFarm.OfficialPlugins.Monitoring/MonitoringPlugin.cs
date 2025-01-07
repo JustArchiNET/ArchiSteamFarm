@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Composition;
 using System.Diagnostics.CodeAnalysis;
@@ -51,7 +52,22 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 	private const string MetricNamePrefix = "asf";
 	private const string UnknownLabelValueFallback = "unknown";
 
+	private static readonly Measurement<byte> BuildInfo = new(
+		1,
+		new KeyValuePair<string, object?>(TagNames.Version, SharedInfo.Version.ToString()),
+		new KeyValuePair<string, object?>(TagNames.Variant, Core.BuildInfo.Variant)
+	);
+
+	private static readonly Measurement<byte> RuntimeInfo = new(
+		1,
+		new KeyValuePair<string, object?>(TagNames.Framework, OS.Framework ?? UnknownLabelValueFallback),
+		new KeyValuePair<string, object?>(TagNames.Runtime, OS.Runtime ?? UnknownLabelValueFallback),
+		new KeyValuePair<string, object?>(TagNames.OS, OS.Description ?? UnknownLabelValueFallback)
+	);
+
 	private static bool Enabled => ASF.GlobalConfig?.IPC ?? GlobalConfig.DefaultIPC;
+
+	private static FrozenSet<Measurement<int>>? PluginMeasurements;
 
 	[JsonInclude]
 	public override string Name => nameof(MonitoringPlugin);
@@ -135,26 +151,23 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 			return;
 		}
 
+		PluginMeasurements = new HashSet<Measurement<int>>(3) {
+			new(PluginsCore.ActivePlugins.Count),
+			new(PluginsCore.ActivePlugins.Count(static plugin => plugin is OfficialPlugin), new KeyValuePair<string, object?>(TagNames.PluginType, "official")),
+			new(PluginsCore.ActivePlugins.Count(static plugin => plugin is not OfficialPlugin), new KeyValuePair<string, object?>(TagNames.PluginType, "custom"))
+		}.ToFrozenSet();
+
 		Meter = new Meter(MeterName, Version.ToString());
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_build_info",
-			static () => new Measurement<byte>(
-				1,
-				new KeyValuePair<string, object?>(TagNames.Version, SharedInfo.Version.ToString()),
-				new KeyValuePair<string, object?>(TagNames.Variant, BuildInfo.Variant)
-			),
+			static () => BuildInfo,
 			description: "Build information about ASF in form of label values"
 		);
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_runtime_info",
-			static () => new Measurement<byte>(
-				1,
-				new KeyValuePair<string, object?>(TagNames.Framework, OS.Framework ?? UnknownLabelValueFallback),
-				new KeyValuePair<string, object?>(TagNames.Runtime, OS.Runtime ?? UnknownLabelValueFallback),
-				new KeyValuePair<string, object?>(TagNames.OS, OS.Description ?? UnknownLabelValueFallback)
-			),
+			static () => RuntimeInfo,
 			description: "Runtime information about ASF in form of label values"
 		);
 
@@ -166,11 +179,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 
 		Meter.CreateObservableGauge(
 			$"{MetricNamePrefix}_active_plugins",
-			static () => new HashSet<Measurement<int>>(3) {
-				new(PluginsCore.ActivePlugins.Count),
-				new(PluginsCore.ActivePlugins.Count(static plugin => plugin is OfficialPlugin), new KeyValuePair<string, object?>(TagNames.PluginType, "official")),
-				new(PluginsCore.ActivePlugins.Count(static plugin => plugin is not OfficialPlugin), new KeyValuePair<string, object?>(TagNames.PluginType, "custom"))
-			},
+			static () => PluginMeasurements,
 			description: "Number of plugins currently loaded in ASF"
 		);
 
