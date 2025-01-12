@@ -531,7 +531,7 @@ jobs:
         path: out/SHA512SUMS.sign
 
     - name: Create ArchiSteamFarm GitHub release
-      uses: ncipollo/release-action@v1.14.0
+      uses: ncipollo/release-action@v1.15.0
       with:
         allowUpdates: true
         artifactErrorsFailBuild: true
