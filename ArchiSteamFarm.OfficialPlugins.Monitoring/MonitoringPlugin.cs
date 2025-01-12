@@ -151,10 +151,12 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 			return;
 		}
 
+		int officialPluginCount = PluginsCore.ActivePlugins.Count(static plugin => plugin is OfficialPlugin);
+
 		PluginMeasurements = new HashSet<Measurement<int>>(3) {
 			new(PluginsCore.ActivePlugins.Count),
-			new(PluginsCore.ActivePlugins.Count(static plugin => plugin is OfficialPlugin), new KeyValuePair<string, object?>(TagNames.PluginType, "official")),
-			new(PluginsCore.ActivePlugins.Count(static plugin => plugin is not OfficialPlugin), new KeyValuePair<string, object?>(TagNames.PluginType, "custom"))
+			new(officialPluginCount, new KeyValuePair<string, object?>(TagNames.PluginType, "official")),
+			new(PluginsCore.ActivePlugins.Count - officialPluginCount, new KeyValuePair<string, object?>(TagNames.PluginType, "custom"))
 		}.ToFrozenSet();
 
 		Meter = new Meter(MeterName, Version.ToString());
