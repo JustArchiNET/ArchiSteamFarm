@@ -28,7 +28,7 @@ using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ArchiSteamFarm.IPC.Swagger;
+namespace ArchiSteamFarm.IPC.Swashbuckle;
 
 [UsedImplicitly]
 internal sealed class CustomAttributesSchemaFilter : ISchemaFilter {

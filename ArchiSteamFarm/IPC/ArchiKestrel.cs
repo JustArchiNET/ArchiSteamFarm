@@ -36,7 +36,7 @@ using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Controllers.Api;
 using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.IPC.OpenApi;
-using ArchiSteamFarm.IPC.Swagger;
+using ArchiSteamFarm.IPC.Swashbuckle;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.NLog.Targets;
