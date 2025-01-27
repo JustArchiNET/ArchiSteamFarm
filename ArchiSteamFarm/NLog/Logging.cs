@@ -106,6 +106,8 @@ internal static class Logging {
 						Console.Write(cryptKeyText);
 						result = ConsoleReadLineMasked();
 
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(new string('*', result.Length)));
+
 						break;
 					case ASF.EUserInputType.DeviceConfirmation:
 						string deviceConfirmationText = Bot.FormatBotResponse(Strings.UserInputDeviceConfirmation, botName);
@@ -115,6 +117,8 @@ internal static class Logging {
 
 							Console.Write(deviceConfirmationText);
 							result = ConsoleReadLine();
+
+							ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result));
 
 							if (string.IsNullOrEmpty(result) || result.Equals("Y", StringComparison.OrdinalIgnoreCase) || result.Equals("N", StringComparison.OrdinalIgnoreCase)) {
 								break;
@@ -130,6 +134,8 @@ internal static class Logging {
 						Console.Write(loginText);
 						result = ConsoleReadLine();
 
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result));
+
 						break;
 					case ASF.EUserInputType.Password:
 						string passwordText = Bot.FormatBotResponse(Strings.UserInputSteamPassword, botName);
@@ -138,6 +144,8 @@ internal static class Logging {
 
 						Console.Write(passwordText);
 						result = ConsoleReadLineMasked();
+
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(new string('*', result.Length)));
 
 						break;
 					case ASF.EUserInputType.SteamGuard:
@@ -148,6 +156,8 @@ internal static class Logging {
 						Console.Write(steamGuardText);
 						result = ConsoleReadLine();
 
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result));
+
 						break;
 					case ASF.EUserInputType.SteamParentalCode:
 						string steamParentalCodeText = Bot.FormatBotResponse(Strings.UserInputSteamParentalCode, botName);
@@ -157,6 +167,8 @@ internal static class Logging {
 						Console.Write(steamParentalCodeText);
 						result = ConsoleReadLineMasked();
 
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(new string('*', result.Length)));
+
 						break;
 					case ASF.EUserInputType.TwoFactorAuthentication:
 						string twoFactorAuthenticationText = Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName);
@@ -165,6 +177,8 @@ internal static class Logging {
 
 						Console.Write(twoFactorAuthenticationText);
 						result = ConsoleReadLine();
+
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result));
 
 						break;
 					default:
@@ -422,6 +436,8 @@ internal static class Logging {
 
 						Console.Write(enterCommandText);
 						string? command = ConsoleReadLine();
+
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(command));
 
 						if (string.IsNullOrEmpty(command)) {
 							continue;

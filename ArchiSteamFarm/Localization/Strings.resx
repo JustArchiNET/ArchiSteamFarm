@@ -792,4 +792,8 @@ Process uptime: {1}</value>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Custom plugins have been registered for automatic updates. ASF team would like to remind you that, for your own safety, you should enable automatic updates only from trusted parties. If you didn't intend to do this, you can disable plugin updates in ASF global config.</value>
 	</data>
+	<data name="Input" xml:space="preserve">
+		<value>Input: {0}</value>
+		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
 </root>
