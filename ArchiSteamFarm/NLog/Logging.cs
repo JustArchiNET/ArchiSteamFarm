@@ -178,7 +178,7 @@ internal static class Logging {
 						Console.Write(twoFactorAuthenticationText);
 						result = ConsoleReadLine();
 
-						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result));
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(new string('*', result?.Length ?? 0)));
 
 						break;
 					default:
