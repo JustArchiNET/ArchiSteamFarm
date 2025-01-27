@@ -64,6 +64,13 @@ public static class Utilities {
 	}
 
 	[PublicAPI]
+	public static string AsMasked(this string text, char mask = '*') {
+		ArgumentNullException.ThrowIfNull(text);
+
+		return new string(mask, text.Length);
+	}
+
+	[PublicAPI]
 	public static string GenerateChecksumFor(byte[] source) {
 		ArgumentNullException.ThrowIfNull(source);
 

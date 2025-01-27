@@ -106,7 +106,7 @@ internal static class Logging {
 						Console.Write(cryptKeyText);
 						result = ConsoleReadLineMasked();
 
-						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(new string('*', result.Length)));
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result.AsMasked()));
 
 						break;
 					case ASF.EUserInputType.DeviceConfirmation:
@@ -145,7 +145,7 @@ internal static class Logging {
 						Console.Write(passwordText);
 						result = ConsoleReadLineMasked();
 
-						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(new string('*', result.Length)));
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result.AsMasked()));
 
 						break;
 					case ASF.EUserInputType.SteamGuard:
@@ -167,7 +167,7 @@ internal static class Logging {
 						Console.Write(steamParentalCodeText);
 						result = ConsoleReadLineMasked();
 
-						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(new string('*', result.Length)));
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result.AsMasked()));
 
 						break;
 					case ASF.EUserInputType.TwoFactorAuthentication:
@@ -178,7 +178,7 @@ internal static class Logging {
 						Console.Write(twoFactorAuthenticationText);
 						result = ConsoleReadLine();
 
-						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(new string('*', result?.Length ?? 0)));
+						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result?.AsMasked()));
 
 						break;
 					default:
