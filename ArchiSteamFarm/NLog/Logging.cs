@@ -96,15 +96,24 @@ internal static class Logging {
 			OnUserInputStart();
 
 			try {
+				// Since we're in the user input section, logging to NLog will not spam our console targets, but will still leave appropriate trace e.g. in the file targets
 				switch (userInputType) {
 					case ASF.EUserInputType.Cryptkey:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputCryptkey, botName));
+						string cryptKeyText = Bot.FormatBotResponse(Strings.UserInputCryptkey, botName);
+
+						ASF.ArchiLogger.LogGenericWarning(cryptKeyText);
+
+						Console.Write(cryptKeyText);
 						result = ConsoleReadLineMasked();
 
 						break;
 					case ASF.EUserInputType.DeviceConfirmation:
+						string deviceConfirmationText = Bot.FormatBotResponse(Strings.UserInputDeviceConfirmation, botName);
+
 						while (true) {
-							Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceConfirmation, botName));
+							ASF.ArchiLogger.LogGenericWarning(deviceConfirmationText);
+
+							Console.Write(deviceConfirmationText);
 							result = ConsoleReadLine();
 
 							if (string.IsNullOrEmpty(result) || result.Equals("Y", StringComparison.OrdinalIgnoreCase) || result.Equals("N", StringComparison.OrdinalIgnoreCase)) {
@@ -114,27 +123,47 @@ internal static class Logging {
 
 						break;
 					case ASF.EUserInputType.Login:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
+						string loginText = Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName);
+
+						ASF.ArchiLogger.LogGenericWarning(loginText);
+
+						Console.Write(loginText);
 						result = ConsoleReadLine();
 
 						break;
 					case ASF.EUserInputType.Password:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamPassword, botName));
+						string passwordText = Bot.FormatBotResponse(Strings.UserInputSteamPassword, botName);
+
+						ASF.ArchiLogger.LogGenericWarning(passwordText);
+
+						Console.Write(passwordText);
 						result = ConsoleReadLineMasked();
 
 						break;
 					case ASF.EUserInputType.SteamGuard:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamGuard, botName));
+						string steamGuardText = Bot.FormatBotResponse(Strings.UserInputSteamGuard, botName);
+
+						ASF.ArchiLogger.LogGenericWarning(steamGuardText);
+
+						Console.Write(steamGuardText);
 						result = ConsoleReadLine();
 
 						break;
 					case ASF.EUserInputType.SteamParentalCode:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamParentalCode, botName));
+						string steamParentalCodeText = Bot.FormatBotResponse(Strings.UserInputSteamParentalCode, botName);
+
+						ASF.ArchiLogger.LogGenericWarning(steamParentalCodeText);
+
+						Console.Write(steamParentalCodeText);
 						result = ConsoleReadLineMasked();
 
 						break;
 					case ASF.EUserInputType.TwoFactorAuthentication:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName));
+						string twoFactorAuthenticationText = Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName);
+
+						ASF.ArchiLogger.LogGenericWarning(twoFactorAuthenticationText);
+
+						Console.Write(twoFactorAuthenticationText);
 						result = ConsoleReadLine();
 
 						break;
@@ -386,7 +415,12 @@ internal static class Logging {
 					OnUserInputStart();
 
 					try {
-						Console.Write($@">> {Strings.EnterCommand}");
+						// Since we're in the user input section, logging to NLog will not spam our console targets, but will still leave appropriate trace e.g. in the file targets
+						string enterCommandText = $@">> {Strings.EnterCommand}";
+
+						ASF.ArchiLogger.LogGenericInfo(enterCommandText);
+
+						Console.Write(enterCommandText);
 						string? command = ConsoleReadLine();
 
 						if (string.IsNullOrEmpty(command)) {
@@ -407,7 +441,11 @@ internal static class Logging {
 						Bot? targetBot = Bot.GetDefaultBot();
 
 						if (targetBot == null) {
-							Console.WriteLine($@"<< {Strings.ErrorNoBotsDefined}");
+							string noBotsDefinedText = $@"<< {Strings.ErrorNoBotsDefined}";
+
+							ASF.ArchiLogger.LogGenericInfo(noBotsDefinedText);
+
+							Console.WriteLine(noBotsDefinedText);
 
 							continue;
 						}
@@ -418,12 +456,21 @@ internal static class Logging {
 
 						if (string.IsNullOrEmpty(response)) {
 							ASF.ArchiLogger.LogNullError(response);
-							Console.WriteLine(Strings.ErrorIsEmpty, nameof(response));
+
+							string emptyResponseText = $@"<< {Strings.FormatErrorIsEmpty(nameof(response))}";
+
+							ASF.ArchiLogger.LogGenericInfo(emptyResponseText);
+
+							Console.WriteLine(emptyResponseText);
 
 							continue;
 						}
 
-						Console.WriteLine($@"<< {response}");
+						string responseText = $@"<< {response}";
+
+						ASF.ArchiLogger.LogGenericInfo(responseText);
+
+						Console.WriteLine(responseText);
 					} finally {
 						OnUserInputEnd();
 					}
