@@ -785,4 +785,5 @@ Tempo di attività: {1}</value>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>I plugin personalizzati sono stati registrati per aggiornamenti automatici. Il team di ASF vorrebbe ricordarti che, per la tua sicurezza, dovresti abilitare gli aggiornamenti automatici solo da parti fidate. Se non hai intenzione di farlo, puoi disabilitare gli aggiornamenti dei plugin nella configurazione globale di ASF.</value>
 	</data>
+	
 </root>

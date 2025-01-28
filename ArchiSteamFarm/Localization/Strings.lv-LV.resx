@@ -792,4 +792,5 @@ Darbspējas laiks: {1}</value>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Pielāgotie spraudņi ir reģistrēti automātiskajiem atjauninājumiem. ASF komanda vēlās atgādināt, ka Tavai drošībai, automātiskos atjauninājumus vajag iespējot tikai no uzticamiem izstrādātājiem. Ja to neplānoji darīt, Tu vari atspējot spraudņu atjauninājumus ASF globālajā konfigurācijā.</value>
 	</data>
+	
 </root>

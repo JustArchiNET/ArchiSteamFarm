@@ -793,4 +793,5 @@ Prozesslaufzeit: {1}</value>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Benutzerdefinierte Erweiterungen wurden für automatische Updates registriert. Das ASF-Team möchte Sie daran erinnern, dass Sie zu Ihrer eigenen Sicherheit automatische Updates nur von vertrauenswürdigen Parteien aktivieren sollten. Wenn Sie dies nicht beabsichtigen, können Sie Plugin-Updates in der globalen ASF-Konfuguration deaktivieren.</value>
 	</data>
+	
 </root>

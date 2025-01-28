@@ -792,4 +792,5 @@
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>自定义插件已被注册自动更新。ASF 团队提醒您，为了您的安全，您只应该为信任来源启用自动更新，如果您不想这样做，则应该在 ASF 全局配置中禁用插件更新。</value>
 	</data>
+	
 </root>

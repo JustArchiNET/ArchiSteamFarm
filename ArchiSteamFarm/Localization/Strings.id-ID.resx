@@ -788,4 +788,5 @@
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Plugin kustom telah didaftarkan untuk pembaruan otomatis. Tim ASF ingin mengingatkan Anda bahwa, demi keamanan Anda, Anda hanya boleh mengaktifkan pembaruan otomatis dari pihak yang tepercaya. Jika Anda tidak bermaksud melakukan ini, Anda dapat menonaktifkan pembaruan plugin di konfigurasi global ASF.</value>
 	</data>
+	
 </root>

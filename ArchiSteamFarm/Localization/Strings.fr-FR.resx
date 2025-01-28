@@ -792,4 +792,5 @@ Durée de fonctionnement : {1}</value>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Les plugins personnalisés ont été enregistrés pour les mises à jour automatiques. L'équipe ASF voudrait vous rappeler que, pour votre propre sécurité, vous ne devriez activer les mises à jour automatiques que des groupes de confiance. Si vous n'aviez pas l'intention de le faire, vous pouvez désactiver les mises à jour de plugin dans la configuration globale d'ASF.</value>
 	</data>
+	
 </root>

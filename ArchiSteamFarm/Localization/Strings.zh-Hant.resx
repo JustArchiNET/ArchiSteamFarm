@@ -792,4 +792,8 @@
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>自訂外掛程式已被登錄自動更新。ASF 團隊提醒您，為了您的安全，您應僅為受信任的內容啟用自動更新。若您不想啟用，您可以在 ASF 全域設定中停用外掛程式更新。</value>
 	</data>
+	<data name="Input" xml:space="preserve">
+		<value>輸入：{0}</value>
+		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
 </root>

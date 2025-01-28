@@ -792,4 +792,5 @@ Tempo de execução: {1}</value>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Os plugins personalizados foram registrados para atualizações automáticas. A equipe do ASF gostaria de lembrá-lo de que, para sua própria segurança, você deve habilitar atualizações automáticas apenas de desenvolvedores confiáveis. Caso você não pretendia fazer isso, pode desabilitar as atualizações de plugin na configuração global do ASF.</value>
 	</data>
+	
 </root>

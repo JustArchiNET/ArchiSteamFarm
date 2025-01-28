@@ -792,4 +792,5 @@ Thời gian hoạt động: {1}</value>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Các plugin tùy chỉnh đã được đặt sang cập nhật tự động. Nhóm ASF muốn nhắc nhở bạn rằng, vì lí do bảo mật, bạn chỉ nên bật cập nhật tự động cho các nguồn đáng tin cậy. Nếu không có ý định thực hiện việc này, bạn nên tắt cập nhật plugin trong cấu hình toàn cầu ASF.</value>
 	</data>
+	
 </root>

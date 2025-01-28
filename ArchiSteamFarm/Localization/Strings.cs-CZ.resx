@@ -792,4 +792,5 @@ StackTrace:
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Vlastní zásuvné moduly byly zaregistrovány pro automatické aktualizace. Tým ASF by vám rád připomněl, že pro vaši vlastní bezpečnost byste měli povolit automatické aktualizace pouze od důvěryhodných stran. Pokud jste to nechtěli udělat, můžete aktualizace zásuvných modulů zakázat v globální konfiguraci ASF.</value>
 	</data>
+	
 </root>
