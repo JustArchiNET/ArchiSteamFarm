@@ -791,5 +791,8 @@ Tiempo de actividad del proceso: {1}</value>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Los plugins personalizados han sido registados para actualizaciones automáticas. El equipo de ASF desea recordarte que, por tu propia seguridad, únicamente deberías habilitar las actualizaciones automáticas de fuentes confiables. Si no pretendías hacer esto, puedes deshabilitar la actualización de plugins en la configuración global de ASF.</value>
 	</data>
-	
+	<data name="Input" xml:space="preserve">
+		<value>Entrada: {0}</value>
+		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
 </root>
