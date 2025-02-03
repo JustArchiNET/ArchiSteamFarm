@@ -404,7 +404,7 @@ internal static class ArchiKestrel {
 			);
 		}
 
-		// Add support for optional healtchecks
+		// Add support for optional health-checks
 		services.AddHealthChecks();
 
 		// Add support for additional services provided by plugins
