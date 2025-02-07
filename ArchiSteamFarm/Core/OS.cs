@@ -304,6 +304,11 @@ internal static class OS {
 			return;
 		}
 
+		if (!consoleMode.HasFlag(NativeMethods.EConsoleMode.EnableQuickEditMode)) {
+			// Quick edit mode already disabled
+			return;
+		}
+
 		consoleMode &= ~NativeMethods.EConsoleMode.EnableQuickEditMode;
 
 		if (!NativeMethods.SetConsoleMode(consoleHandle, consoleMode)) {
