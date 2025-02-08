@@ -121,7 +121,9 @@
 	
 	
 	
-	
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>STD 글로벌 캐시 로드 중...</value>
+	</data>
 	
 	
 </root>
