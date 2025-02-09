@@ -30,7 +30,7 @@ using SteamKit2.Internal;
 namespace ArchiSteamFarm.IPC.Responses;
 
 public sealed class BotInventoryResponse {
-	[Description("Inventory assetsr")]
+	[Description("Inventory assets")]
 	[JsonInclude]
 	public ImmutableHashSet<CEcon_Asset>? Assets { get; private init; }
 
