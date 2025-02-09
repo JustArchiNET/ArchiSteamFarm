@@ -36,6 +36,7 @@ using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
+using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
@@ -170,6 +171,33 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
 
 		return (steamOwnerID > 0) && new SteamID(steamOwnerID).IsIndividualAccount ? steamOwnerID : 0;
+	}
+
+	/// <remarks>This action should be used if you require full inventory exclusively, otherwise consider calling <see cref="ArchiHandler.GetMyInventoryAsync" /> instead.</remarks>
+	[PublicAPI]
+	public async Task<(HashSet<Asset>? Result, string Message)> GetInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, Func<Asset, bool>? filterFunction = null) {
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(contextID);
+
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return (null, Strings.BotNotConnected);
+		}
+
+		filterFunction ??= static _ => true;
+
+		using (await GetTradingLock().ConfigureAwait(false)) {
+			try {
+				return (await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID).Where(item => filterFunction(item)).ToHashSetAsync().ConfigureAwait(false), Strings.Success);
+			} catch (TimeoutException e) {
+				Bot.ArchiLogger.LogGenericWarningException(e);
+
+				return (null, Strings.FormatWarningFailedWithError(e.Message));
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericException(e);
+
+				return (null, Strings.FormatWarningFailedWithError(e.Message));
+			}
+		}
 	}
 
 	[PublicAPI]
