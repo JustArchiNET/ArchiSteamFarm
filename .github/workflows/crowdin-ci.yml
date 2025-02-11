@@ -20,7 +20,7 @@ jobs:
         submodules: recursive
 
     - name: Upload latest strings for translation on Crowdin
-      uses: crowdin/github-action@v2.5.2
+      uses: crowdin/github-action@v2.6.0
       with:
         crowdin_branch_name: main
         config: '.github/crowdin.yml'
