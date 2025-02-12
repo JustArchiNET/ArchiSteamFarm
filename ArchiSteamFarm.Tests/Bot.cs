@@ -106,7 +106,7 @@ internal sealed class Bot {
 			CreateCard(2, realAppID: appID)
 		];
 
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => GetItemsForFullBadge(items, 2, appID, MinCardsPerBadge - 1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => GetItemsForFullBadge(items, 2, appID, MinCardsPerBadge - 1));
 	}
 
 	[TestMethod]
@@ -512,7 +512,7 @@ internal sealed class Bot {
 			CreateCard(4, realAppID: appID0)
 		];
 
-		Assert.ThrowsException<InvalidOperationException>(
+		Assert.ThrowsExactly<InvalidOperationException>(
 			() => GetItemsForFullBadge(
 				items, new Dictionary<uint, byte> {
 					{ appID0, 3 },

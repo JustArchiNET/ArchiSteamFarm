@@ -320,7 +320,7 @@ internal sealed class SteamChatMessage {
 
 		const string message = "asdf";
 
-		await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false)).ConfigureAwait(false);
+		await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
@@ -329,7 +329,7 @@ internal sealed class SteamChatMessage {
 
 		const string message = "asdf";
 
-		await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false)).ConfigureAwait(false);
+		await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false)).ConfigureAwait(false);
 	}
 }
 #pragma warning restore CA1812 // False positive, the class is used during MSTest
