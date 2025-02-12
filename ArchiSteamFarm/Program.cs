@@ -59,7 +59,6 @@ internal static class Program {
 	internal static bool Service { get; private set; }
 	internal static bool ShutdownSequenceInitialized { get; private set; }
 	internal static bool SteamParentalGeneration { get; private set; } = true;
-	internal static bool UseOpenApi { get; private set; }
 
 	private static readonly Dictionary<PosixSignal, PosixSignalRegistration> RegisteredPosixSignals = new();
 	private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
@@ -610,10 +609,6 @@ internal static class Program {
 					break;
 				case "--SYSTEM-REQUIRED" when noArgumentValueNext():
 					SystemRequired = true;
-
-					break;
-				case "--USE-OPENAPI" when noArgumentValueNext():
-					UseOpenApi = true;
 
 					break;
 				default:

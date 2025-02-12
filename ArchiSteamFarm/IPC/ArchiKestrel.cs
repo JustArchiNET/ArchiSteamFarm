@@ -36,7 +36,6 @@ using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Controllers.Api;
 using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.IPC.OpenApi;
-using ArchiSteamFarm.IPC.Swashbuckle;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.NLog.Targets;
@@ -54,7 +53,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-using Microsoft.OpenApi.Models;
 using NLog.Web;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
@@ -257,11 +255,7 @@ internal static class ArchiKestrel {
 		app.MapControllers();
 
 		// Add support for OpenAPI, responsible for automatic API documentation generation, this should be on the end, once we're done with API
-		if (Program.UseOpenApi) {
-			app.MapOpenApi("/swagger/{documentName}/swagger.json");
-		} else {
-			app.UseSwagger();
-		}
+		app.MapOpenApi("/swagger/{documentName}/swagger.json");
 
 		// Add support for swagger UI, this should be after swagger, obviously
 		app.UseSwaggerUI(
@@ -338,71 +332,13 @@ internal static class ArchiKestrel {
 		}
 
 		// Add support for OpenAPI, responsible for automatic API documentation generation
-		if (Program.UseOpenApi) {
-			services.AddOpenApi(
-				SharedInfo.ASF, static options => {
-					options.AddDocumentTransformer<DocumentTransformer>();
-					options.AddOperationTransformer<OperationTransformer>();
-					options.AddSchemaTransformer<SchemaTransformer>();
-				}
-			);
-		} else {
-			services.AddSwaggerGen(
-				static options => {
-					options.AddSecurityDefinition(
-						nameof(GlobalConfig.IPCPassword), new OpenApiSecurityScheme {
-							Description = $"{nameof(GlobalConfig.IPCPassword)} authentication using request headers. Check {SharedInfo.ProjectURL}/wiki/IPC#authentication for more info.",
-							In = ParameterLocation.Header,
-							Name = ApiAuthenticationMiddleware.HeadersField,
-							Type = SecuritySchemeType.ApiKey
-						}
-					);
-
-					options.AddSecurityRequirement(
-						new OpenApiSecurityRequirement {
-							{
-								new OpenApiSecurityScheme {
-									Reference = new OpenApiReference {
-										Id = nameof(GlobalConfig.IPCPassword),
-										Type = ReferenceType.SecurityScheme
-									}
-								},
-
-								[]
-							}
-						}
-					);
-
-					// We require custom schema IDs due to conflicting type names, choosing the proper one is tricky as there is no good answer and any kind of convention has a potential to create conflict
-					// FullName and Name both do, ToString() for unknown to me reason doesn't, and I don't have courage to call our WebUtilities.GetUnifiedName() better than what .NET ships with (because it isn't)
-					// Let's use ToString() until we find a good enough reason to change it, also, the name must pass ^[a-zA-Z0-9.-_]+$ regex
-					options.CustomSchemaIds(static type => type.ToString().Replace('+', '-'));
-
-					options.EnableAnnotations(true, true);
-
-					options.SchemaFilter<CustomAttributesSchemaFilter>();
-					options.SchemaFilter<EnumSchemaFilter>();
-					options.SchemaFilter<ReadOnlyFixesSchemaFilter>();
-
-					options.SwaggerDoc(
-						SharedInfo.ASF, new OpenApiInfo {
-							Contact = new OpenApiContact {
-								Name = SharedInfo.GithubRepo,
-								Url = new Uri(SharedInfo.ProjectURL)
-							},
-
-							License = new OpenApiLicense {
-								Name = SharedInfo.LicenseName,
-								Url = new Uri(SharedInfo.LicenseURL)
-							},
-
-							Title = $"{SharedInfo.AssemblyName} API",
-							Version = SharedInfo.Version.ToString()
-						}
-					);
-				}
-			);
-		}
+		services.AddOpenApi(
+			SharedInfo.ASF, static options => {
+				options.AddDocumentTransformer<DocumentTransformer>();
+				options.AddOperationTransformer<OperationTransformer>();
+				options.AddSchemaTransformer<SchemaTransformer>();
+			}
+		);
 
 		// Add support for optional health-checks
 		services.AddHealthChecks();
