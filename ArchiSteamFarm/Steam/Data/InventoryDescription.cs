@@ -64,7 +64,7 @@ public sealed class InventoryDescription {
 		private init => Body.classid = value;
 	}
 
-	[JsonConverter(typeof(BooleanNumberConverter))]
+	[JsonConverter(typeof(BooleanNormalizationConverter))]
 	[JsonInclude]
 	[JsonPropertyName("commodity")]
 	public bool Commodity {
@@ -72,7 +72,7 @@ public sealed class InventoryDescription {
 		private init => Body.commodity = value;
 	}
 
-	[JsonConverter(typeof(BooleanNumberConverter))]
+	[JsonConverter(typeof(BooleanNormalizationConverter))]
 	[JsonInclude]
 	[JsonPropertyName("currency")]
 	public bool Currency {
@@ -127,7 +127,7 @@ public sealed class InventoryDescription {
 		private init => Body.instanceid = value;
 	}
 
-	[JsonConverter(typeof(BooleanNumberConverter))]
+	[JsonConverter(typeof(BooleanNormalizationConverter))]
 	[JsonInclude]
 	[JsonPropertyName("marketable")]
 	[JsonRequired]
@@ -340,7 +340,7 @@ public sealed class InventoryDescription {
 		}
 	}
 
-	[JsonConverter(typeof(BooleanNumberConverter))]
+	[JsonConverter(typeof(BooleanNormalizationConverter))]
 	[JsonInclude]
 	[JsonPropertyName("tradable")]
 	[JsonRequired]

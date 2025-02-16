@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -140,12 +141,14 @@ public sealed class Commands {
 						return ResponseFarmingQueue(access);
 					case "HELP":
 						return ResponseHelp(access);
-					case "MAB":
-						return ResponseMatchActivelyBlacklist(access);
+					case "INVENTORY":
+						return await ResponseInventory(access).ConfigureAwait(false);
 					case "LEVEL":
 						return await ResponseLevel(access).ConfigureAwait(false);
 					case "LOOT":
 						return await ResponseLoot(access).ConfigureAwait(false);
+					case "MAB":
+						return ResponseMatchActivelyBlacklist(access);
 					case "PAUSE":
 						return await ResponsePause(access, true).ConfigureAwait(false);
 					case "PAUSE~":
@@ -233,6 +236,8 @@ public sealed class Commands {
 						return await ResponseInput(access, args[1], args[2], Utilities.GetArgsAsText(message, 3), steamID).ConfigureAwait(false);
 					case "INPUT" when args.Length > 2:
 						return ResponseInput(access, args[1], args[2]);
+					case "INVENTORY":
+						return await ResponseInventory(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
 					case "LEVEL":
 						return await ResponseLevel(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
 					case "LOOT":
@@ -1658,6 +1663,64 @@ public sealed class Commands {
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseInput(GetProxyAccess(bot, access, steamID), propertyName, inputValue)))).ConfigureAwait(false);
+
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
+
+		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+	}
+
+	private async Task<string?> ResponseInventory(EAccess access) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		if (access < EAccess.Operator) {
+			return null;
+		}
+
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return FormatBotResponse(Strings.BotNotConnected);
+		}
+
+		ImmutableDictionary<uint, InventoryAppData>? inventory = await Bot.ArchiWebHandler.GetInventoryContextData().ConfigureAwait(false);
+
+		if (inventory == null) {
+			return FormatBotResponse(Strings.WarningFailed);
+		}
+
+		if (inventory.Count == 0) {
+			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(inventory)));
+		}
+
+		StringBuilder response = new();
+
+		foreach (InventoryAppData appData in inventory.Values) {
+			foreach (InventoryContextData? contextData in appData.Contexts.Values) {
+				if (response.Length > 0) {
+					response.AppendLine();
+				}
+
+				response.Append(FormatBotResponse(Strings.FormatBotInventory(appData.AppID, contextData.ID, appData.Name, contextData.Name, contextData.AssetsCount)));
+			}
+		}
+
+		return response.ToString();
+	}
+
+	private static async Task<string?> ResponseInventory(EAccess access, string botNames, ulong steamID = 0) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
+		}
+
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseInventory(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
 		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
 

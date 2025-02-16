@@ -28,20 +28,20 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers.Json;
 
-[Obsolete($"Use {nameof(BooleanNormalizationConverter)} instead if you want to always serialize as booleans, or roll out your own solution that would preserve original type. This helper class will be removed in the next ASF version, as we switched to the other converter instead.")]
 [PublicAPI]
-public sealed class BooleanNumberConverter : JsonConverter<bool> {
+public sealed class BooleanNormalizationConverter : JsonConverter<bool> {
 	public override bool Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
 		reader.TokenType switch {
 			JsonTokenType.True => true,
 			JsonTokenType.False => false,
 			JsonTokenType.Number => reader.GetByte() == 1,
+			JsonTokenType.String => reader.GetString() == "1",
 			_ => throw new JsonException()
 		};
 
 	public override void Write(Utf8JsonWriter writer, bool value, JsonSerializerOptions options) {
 		ArgumentNullException.ThrowIfNull(writer);
 
-		writer.WriteNumberValue(value ? 1 : 0);
+		writer.WriteBooleanValue(value);
 	}
 }

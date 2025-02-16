@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
@@ -278,7 +279,31 @@ public sealed class BotController : ArchiController {
 		return Ok(results.All(static result => result) ? new GenericResponse(true) : new GenericResponse(false, Strings.WarningFailed));
 	}
 
-	[EndpointSummary("Fetches inventory of given bots")]
+	[EndpointSummary("Fetches general inventory information of given bots")]
+	[HttpGet("{botNames:required}/Inventory")]
+	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, ImmutableDictionary<uint, InventoryAppData>>>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
+	public async Task<ActionResult<GenericResponse>> InventoryInfoGet(string botNames) {
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
+		}
+
+		IList<ImmutableDictionary<uint, InventoryAppData>?> results = await Utilities.InParallel(bots.Select(static bot => bot.ArchiWebHandler.GetInventoryContextData())).ConfigureAwait(false);
+
+		Dictionary<string, ImmutableDictionary<uint, InventoryAppData>?> result = new(bots.Count, Bot.BotsComparer);
+
+		foreach (Bot bot in bots) {
+			result[bot.BotName] = results[result.Count];
+		}
+
+		return Ok(new GenericResponse<IReadOnlyDictionary<string, ImmutableDictionary<uint, InventoryAppData>?>>(result));
+	}
+
+	[EndpointSummary("Fetches specific inventory of given bots")]
 	[HttpGet("{botNames:required}/Inventory/{appID}/{contextID}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, BotInventoryResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]

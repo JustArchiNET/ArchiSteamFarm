@@ -21,27 +21,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Helpers.Json;
+namespace ArchiSteamFarm.Steam.Data;
 
-[Obsolete($"Use {nameof(BooleanNormalizationConverter)} instead if you want to always serialize as booleans, or roll out your own solution that would preserve original type. This helper class will be removed in the next ASF version, as we switched to the other converter instead.")]
-[PublicAPI]
-public sealed class BooleanNumberConverter : JsonConverter<bool> {
-	public override bool Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-		reader.TokenType switch {
-			JsonTokenType.True => true,
-			JsonTokenType.False => false,
-			JsonTokenType.Number => reader.GetByte() == 1,
-			_ => throw new JsonException()
-		};
+public sealed class InventoryContextData {
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("id")]
+	[JsonRequired]
+	public ulong ID { get; private init; }
 
-	public override void Write(Utf8JsonWriter writer, bool value, JsonSerializerOptions options) {
-		ArgumentNullException.ThrowIfNull(writer);
+	[JsonInclude]
+	[JsonPropertyName("name")]
+	[JsonRequired]
+	public string Name { get; private init; } = "";
 
-		writer.WriteNumberValue(value ? 1 : 0);
-	}
+	[JsonInclude]
+	[JsonPropertyName("asset_count")]
+	[JsonRequired]
+	public uint AssetsCount { get; private init; }
 }

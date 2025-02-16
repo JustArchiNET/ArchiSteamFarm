@@ -394,6 +394,59 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<ImmutableDictionary<uint, InventoryAppData>?> GetInventoryContextData() {
+		Uri request = new(SteamCommunityURL, "/my/inventory?l=english");
+
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+
+		INode? htmlNode = response?.Content?.SelectSingleNode("//div[@role='main']/script[contains(., 'g_rgAppContextData')]");
+
+		if (htmlNode == null) {
+			return null;
+		}
+
+		string text = htmlNode.TextContent;
+
+		if (string.IsNullOrEmpty(text)) {
+			Bot.ArchiLogger.LogNullError(text);
+
+			return null;
+		}
+
+		const string appContextDataVariableName = "g_rgAppContextData = {";
+
+		int startIndex = text.IndexOf(appContextDataVariableName, StringComparison.Ordinal);
+
+		if (startIndex < 0) {
+			Bot.ArchiLogger.LogNullError(startIndex);
+
+			return null;
+		}
+
+		startIndex += appContextDataVariableName.Length - 1;
+
+		int endIndex = text.IndexOf("};", startIndex, StringComparison.Ordinal);
+
+		if (endIndex < 0) {
+			Bot.ArchiLogger.LogNullError(endIndex);
+
+			return null;
+		}
+
+		endIndex++;
+
+		text = text[startIndex..endIndex];
+
+		try {
+			return text.ToJsonObject<ImmutableDictionary<uint, InventoryAppData>>();
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericWarningException(e);
+
+			return null;
+		}
+	}
+
+	[PublicAPI]
 	public async Task<HashSet<TradeOffer>?> GetTradeOffers(bool? activeOffers = null, bool? receivedOffers = null, bool? sentOffers = null, bool? withDescriptions = null) {
 		if ((receivedOffers == false) && (sentOffers == false)) {
 			throw new ArgumentException($"{nameof(receivedOffers)} && {nameof(sentOffers)}");
