@@ -584,6 +584,7 @@ Darbspējas laiks: {1}</value>
 		<value>Botam ir {0}. līmenis.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Salīdzina Steam preces, #{0}. raunds...</value>
 		<comment>{0} will be replaced by round number</comment>

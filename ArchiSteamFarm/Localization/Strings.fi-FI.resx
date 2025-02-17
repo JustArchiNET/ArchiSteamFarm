@@ -581,6 +581,7 @@ Prosessin käyttöaika: {1}</value>
 		<value>Botin taso on {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Vertaillaan Steam-esineitä, kierros #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>

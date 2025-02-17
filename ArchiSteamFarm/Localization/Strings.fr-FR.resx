@@ -584,6 +584,7 @@ Durée de fonctionnement : {1}</value>
 		<value>Le bot a le niveau {0}</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Correspondance des éléments Steam, tour #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>

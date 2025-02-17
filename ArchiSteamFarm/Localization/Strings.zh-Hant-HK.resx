@@ -578,6 +578,7 @@
 		<value>當前機械人的等級為 {0}。</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>正在匹配 Steam 物品，第 #{0} 輪……</value>
 		<comment>{0} will be replaced by round number</comment>

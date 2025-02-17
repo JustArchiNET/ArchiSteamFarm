@@ -585,6 +585,7 @@ Prozesslaufzeit: {1}</value>
 		<value>Der Bot hat das Level {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Vergleiche Steam-Gegenstände, Durchgang #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>

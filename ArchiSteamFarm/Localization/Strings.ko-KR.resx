@@ -584,6 +584,7 @@ StackTrace:
 		<value>봇은 레벨 {0} 입니다.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>#{0} 번째 Steam 아이템 매칭 중입니다.</value>
 		<comment>{0} will be replaced by round number</comment>

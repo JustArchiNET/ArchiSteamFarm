@@ -566,6 +566,7 @@ Vrijeme rada procesa: {1}</value>
 		<value>Bot ima nivo {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Podudaranje Steam itema, runda #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>

@@ -581,6 +581,7 @@ Process uptime: {1}</value>
 		<value>bot のレベルは {0} です。</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Steam アイテムをマッチさせています: #{0}</value>
 		<comment>{0} will be replaced by round number</comment>

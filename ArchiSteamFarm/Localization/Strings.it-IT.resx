@@ -582,6 +582,7 @@ Tempo di attività: {1}</value>
 		<value>Il Bot ha il livello {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Elementi Corrispondenza Steam, round #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>

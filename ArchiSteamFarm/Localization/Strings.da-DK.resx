@@ -584,6 +584,7 @@ Processens oppetid: {1}</value>
 		<value>Bot har niveau {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Matcher Steam inventar, runde #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>

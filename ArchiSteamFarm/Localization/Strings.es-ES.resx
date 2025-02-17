@@ -583,6 +583,10 @@ Tiempo de actividad del proceso: {1}</value>
 		<value>El bot tiene nivel {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	<data name="BotInventory" xml:space="preserve">
+		<value>{0}/{1} ({2}/{3}): {4} elementos</value>
+		<comment>{0} will be replaced by appID (number), {1} will be replaced by contextID (number), {2} will be replaced by app's name (string), {3} will be replaced by name of the context (string), {4} will be replaced by number of assets in the specified inventory (number).</comment>
+	</data>
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Emparejando artículos de Steam, ronda #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>

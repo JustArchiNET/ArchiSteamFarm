@@ -584,6 +584,7 @@ StackTrace:
 		<value>Το bot βρίσκεται στο επίπεδο {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Ταίριασμα στοιχείων Steam, γύρος #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>

@@ -584,6 +584,7 @@ Thời gian hoạt động: {1}</value>
 		<value>Bot cấp {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Đang soát vật phẩm Steam, lần #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>

@@ -581,6 +581,7 @@ Proceso veikimo laikas: {1}</value>
 		<value>Botas neturi {0} lygio.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Derinami Steam item'ai, #{0} raundas...</value>
 		<comment>{0} will be replaced by round number</comment>

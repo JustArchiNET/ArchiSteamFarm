@@ -584,6 +584,7 @@ Proces: {1}</value>
 		<value>Botul are nivelul {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Se potrivesc obiectele Steam, runda #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>

@@ -584,6 +584,7 @@
 		<value>机器人的等级为 {0}。</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>正在匹配 Steam 物品，第 #{0} 轮……</value>
 		<comment>{0} will be replaced by round number</comment>

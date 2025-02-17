@@ -584,6 +584,7 @@ Doba prevádzky procesu: {1}</value>
 		<value>Bot má level {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Porovnávanie položiek na Steame, kolo #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>

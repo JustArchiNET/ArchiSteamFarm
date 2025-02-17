@@ -580,6 +580,7 @@
 		<value>Bot mempunyai level {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Mencocokkan item dari Steam, fase #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>

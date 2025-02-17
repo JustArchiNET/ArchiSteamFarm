@@ -584,6 +584,7 @@ Süreç çalışma zamanı: {1}</value>
 		<value>Bot seviyesi {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Steam eşyaları eşleştiriliyor, tur #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>
