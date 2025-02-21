@@ -43,7 +43,7 @@ jobs:
       run: npm run-script deploy --no-progress --prefix ASF-ui
 
     - name: Upload ASF-ui
-      uses: actions/upload-artifact@v4.6.0
+      uses: actions/upload-artifact@v4.6.1
       with:
         if-no-files-found: error
         name: ASF-ui
@@ -367,7 +367,7 @@ jobs:
         subject-path: out/ASF-${{ matrix.variant }}.zip
 
     - name: Upload ASF-${{ matrix.variant }}
-      uses: actions/upload-artifact@v4.6.0
+      uses: actions/upload-artifact@v4.6.1
       with:
         if-no-files-found: error
         name: ${{ matrix.os }}_ASF-${{ matrix.variant }}
@@ -415,7 +415,7 @@ jobs:
 
     - name: Upload ArchiSteamFarm.OfficialPlugins.Monitoring
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
-      uses: actions/upload-artifact@v4.6.0
+      uses: actions/upload-artifact@v4.6.1
       with:
         if-no-files-found: error
         name: ArchiSteamFarm.OfficialPlugins.Monitoring
@@ -512,7 +512,7 @@ jobs:
         subject-path: out/SHA512SUMS
 
     - name: Upload SHA512SUMS
-      uses: actions/upload-artifact@v4.6.0
+      uses: actions/upload-artifact@v4.6.1
       with:
         if-no-files-found: error
         name: SHA512SUMS
@@ -524,7 +524,7 @@ jobs:
         subject-path: out/SHA512SUMS.sign
 
     - name: Upload SHA512SUMS.sign
-      uses: actions/upload-artifact@v4.6.0
+      uses: actions/upload-artifact@v4.6.1
       with:
         if-no-files-found: error
         name: SHA512SUMS.sign
