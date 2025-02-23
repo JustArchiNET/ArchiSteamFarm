@@ -98,12 +98,12 @@ public static class GitHubService {
 			return null;
 		}
 
-		IEnumerable<IElement> revisionNodes = response.Content.SelectNodes<IElement>("//li[contains(@class, 'wiki-history-revision')]");
+		IHtmlCollection<IElement> revisionNodes = response.Content.QuerySelectorAll("li[class*='wiki-history-revision']");
 
 		Dictionary<string, DateTime> result = new();
 
 		foreach (IElement revisionNode in revisionNodes) {
-			IAttr? versionNode = revisionNode.SelectSingleNode<IAttr>(".//input/@value");
+			IElement? versionNode = revisionNode.QuerySelector("input[value]");
 
 			if (versionNode == null) {
 				ASF.ArchiLogger.LogNullError(versionNode);
@@ -111,7 +111,7 @@ public static class GitHubService {
 				return null;
 			}
 
-			string versionText = versionNode.Value;
+			string? versionText = versionNode.GetAttribute("value");
 
 			if (string.IsNullOrEmpty(versionText)) {
 				ASF.ArchiLogger.LogNullError(versionText);
@@ -119,7 +119,7 @@ public static class GitHubService {
 				return null;
 			}
 
-			IAttr? dateTimeNode = revisionNode.SelectSingleNode<IAttr>(".//relative-time/@datetime");
+			IElement? dateTimeNode = revisionNode.QuerySelector("relative-time[datetime]");
 
 			if (dateTimeNode == null) {
 				ASF.ArchiLogger.LogNullError(dateTimeNode);
@@ -127,7 +127,7 @@ public static class GitHubService {
 				return null;
 			}
 
-			string dateTimeText = dateTimeNode.Value;
+			string? dateTimeText = dateTimeNode.GetAttribute("datetime");
 
 			if (string.IsNullOrEmpty(dateTimeText)) {
 				ASF.ArchiLogger.LogNullError(dateTimeText);
@@ -162,7 +162,7 @@ public static class GitHubService {
 			return null;
 		}
 
-		IElement? markdownBodyNode = response.Content.SelectSingleNode<IElement>("//div[@class='markdown-body']");
+		IElement? markdownBodyNode = response.Content.QuerySelector("div[class='markdown-body']");
 
 		return markdownBodyNode?.InnerHtml.Trim() ?? "";
 	}
