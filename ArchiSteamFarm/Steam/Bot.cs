@@ -758,7 +758,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		byte maxPages = 1;
-		INode? htmlNode = badgePage.SelectSingleNode("(//a[@class='pagelink'])[last()]");
+
+		IElement? htmlNode = badgePage.QuerySelectorAll("a[class='pagelink']").LastOrDefault();
 
 		if (htmlNode != null) {
 			string lastPage = htmlNode.TextContent;
@@ -2159,16 +2160,18 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return GetPossiblyCompletedBadgeAppIDs(badgePage);
 	}
 
-	private HashSet<uint>? GetPossiblyCompletedBadgeAppIDs(IDocument badgePage) {
+	private HashSet<uint>? GetPossiblyCompletedBadgeAppIDs(IParentNode badgePage) {
 		ArgumentNullException.ThrowIfNull(badgePage);
 
 		// We select badges that are ready to craft, as well as those that are already crafted to a maximum level, as those will not display with a craft button
 		// Level 5 is maximum level for card badges according to https://steamcommunity.com/tradingcards/faq
-		IEnumerable<IAttr> linkElements = badgePage.SelectNodes<IAttr>("//a[@class='badge_craft_button']/@href | //div[@class='badges_sheet']/div[contains(@class, 'badge_row') and .//div[@class='badge_info_description']/div[contains(text(), 'Level 5')]]/a[@class='badge_row_overlay']/@href");
+		IHtmlCollection<IElement> craftNodes = badgePage.QuerySelectorAll("a[class='badge_craft_button'][href]");
+
+		IEnumerable<IElement?> maxBadgeNodes = badgePage.QuerySelectorAll("div[class='badge_row is_link']").Where(static htmlNode => htmlNode.QuerySelector("div[class='badge_info_description']")?.TextContent.Contains("Level 5", StringComparison.Ordinal) == true).Select(static htmlNode => htmlNode.QuerySelector("a[class='badge_row_overlay'][href]"));
 
 		HashSet<uint> result = [];
 
-		foreach (string badgeUri in linkElements.Select(static htmlNode => htmlNode.Value)) {
+		foreach (string? badgeUri in craftNodes.Concat(maxBadgeNodes).Select(static htmlNode => htmlNode?.GetAttribute("href"))) {
 			if (string.IsNullOrEmpty(badgeUri)) {
 				ArchiLogger.LogNullError(badgeUri);
 

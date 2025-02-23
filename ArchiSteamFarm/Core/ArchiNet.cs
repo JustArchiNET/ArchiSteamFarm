@@ -114,7 +114,7 @@ internal static class ArchiNet {
 			return null;
 		}
 
-		IAttr? paramsNode = challengeResponse.Content.SelectSingleNode<IAttr>("//input[@name='openidparams']/@value");
+		IElement? paramsNode = challengeResponse.Content.QuerySelector("input[name='openidparams'][value]");
 
 		if (paramsNode == null) {
 			ASF.ArchiLogger.LogNullError(paramsNode);
@@ -122,7 +122,7 @@ internal static class ArchiNet {
 			return null;
 		}
 
-		string paramsValue = paramsNode.Value;
+		string? paramsValue = paramsNode.GetAttribute("value");
 
 		if (string.IsNullOrEmpty(paramsValue)) {
 			ASF.ArchiLogger.LogNullError(paramsValue);
@@ -130,7 +130,7 @@ internal static class ArchiNet {
 			return null;
 		}
 
-		IAttr? nonceNode = challengeResponse.Content.SelectSingleNode<IAttr>("//input[@name='nonce']/@value");
+		IElement? nonceNode = challengeResponse.Content.QuerySelector("input[name='nonce'][value]");
 
 		if (nonceNode == null) {
 			ASF.ArchiLogger.LogNullError(nonceNode);
@@ -138,7 +138,7 @@ internal static class ArchiNet {
 			return null;
 		}
 
-		string nonceValue = nonceNode.Value;
+		string? nonceValue = nonceNode.GetAttribute("value");
 
 		if (string.IsNullOrEmpty(nonceValue)) {
 			ASF.ArchiLogger.LogNullError(nonceValue);

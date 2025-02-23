@@ -197,6 +197,7 @@ public static class Utilities {
 		return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
 	}
 
+	[Obsolete($"Use {nameof(document.QuerySelectorAll)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
 	[PublicAPI]
 	public static IList<INode> SelectNodes(this IDocument document, string xpath) {
 		ArgumentNullException.ThrowIfNull(document);
@@ -204,6 +205,7 @@ public static class Utilities {
 		return document.Body.SelectNodes(xpath);
 	}
 
+	[Obsolete($"Use {nameof(document.QuerySelectorAll)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
 	[PublicAPI]
 	public static IEnumerable<T> SelectNodes<T>(this IDocument document, string xpath) where T : class, INode {
 		ArgumentNullException.ThrowIfNull(document);
@@ -211,6 +213,7 @@ public static class Utilities {
 		return document.Body.SelectNodes(xpath).OfType<T>();
 	}
 
+	[Obsolete($"Use {nameof(Element.QuerySelectorAll)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
 	[PublicAPI]
 	public static IEnumerable<T> SelectNodes<T>(this IElement element, string xpath) where T : class, INode {
 		ArgumentNullException.ThrowIfNull(element);
@@ -218,6 +221,7 @@ public static class Utilities {
 		return element.SelectNodes(xpath).OfType<T>();
 	}
 
+	[Obsolete($"Use {nameof(document.QuerySelector)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
 	[PublicAPI]
 	public static INode? SelectSingleNode(this IDocument document, string xpath) {
 		ArgumentNullException.ThrowIfNull(document);
@@ -225,6 +229,7 @@ public static class Utilities {
 		return document.Body.SelectSingleNode(xpath);
 	}
 
+	[Obsolete($"Use {nameof(document.QuerySelector)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
 	[PublicAPI]
 	public static T? SelectSingleNode<T>(this IDocument document, string xpath) where T : class, INode {
 		ArgumentNullException.ThrowIfNull(document);
@@ -232,6 +237,7 @@ public static class Utilities {
 		return document.Body.SelectSingleNode(xpath) as T;
 	}
 
+	[Obsolete($"Use {nameof(element.QuerySelector)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
 	[PublicAPI]
 	public static T? SelectSingleNode<T>(this IElement element, string xpath) where T : class, INode {
 		ArgumentNullException.ThrowIfNull(element);

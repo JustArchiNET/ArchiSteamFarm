@@ -34,7 +34,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
-using AngleSharp.XPath;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -446,24 +445,24 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		await StartFarming().ConfigureAwait(false);
 	}
 
-	private async Task CheckPage(IDocument htmlDocument, ISet<uint> parsedAppIDs, IReadOnlyCollection<uint>? privateAppIDs = null) {
-		ArgumentNullException.ThrowIfNull(htmlDocument);
+	private async Task CheckPage(IParentNode badgePage, ISet<uint> parsedAppIDs, IReadOnlyCollection<uint>? privateAppIDs = null) {
+		ArgumentNullException.ThrowIfNull(badgePage);
 		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
-		IEnumerable<IElement> htmlNodes = htmlDocument.SelectNodes<IElement>("//div[@class='badge_row_inner']");
+		IHtmlCollection<IElement> htmlNodes = badgePage.QuerySelectorAll("div[class='badge_row_inner']");
 
 		HashSet<Task>? backgroundTasks = null;
 
 		foreach (IElement htmlNode in htmlNodes) {
-			IElement? statsNode = htmlNode.SelectSingleNode<IElement>(".//div[@class='badge_title_stats_content']");
-			IAttr? appIDNode = statsNode?.SelectSingleNode<IAttr>(".//div[@class='card_drop_info_dialog']/@id");
+			IElement? statsNode = htmlNode.QuerySelector("div[class='badge_title_stats_content']");
+			IElement? appIDNode = statsNode?.QuerySelector("div[class='card_drop_info_dialog'][id]");
 
 			if (appIDNode == null) {
 				// It's just a badge, nothing more
 				continue;
 			}
 
-			string appIDText = appIDNode.Value;
+			string? appIDText = appIDNode.GetAttribute("id");
 
 			if (string.IsNullOrEmpty(appIDText)) {
 				Bot.ArchiLogger.LogNullError(appIDText);
@@ -498,7 +497,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			// Cards
-			INode? progressNode = statsNode?.SelectSingleNode(".//span[@class='progress_info_bold']");
+			IElement? progressNode = statsNode?.QuerySelector("span[class='progress_info_bold']");
 
 			if (progressNode == null) {
 				Bot.ArchiLogger.LogNullError(progressNode);
@@ -537,7 +536,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				}
 
 				// To save us on extra work, check cards earned so far first
-				INode? cardsEarnedNode = statsNode?.SelectSingleNode(".//div[@class='card_drop_info_header']");
+				IElement? cardsEarnedNode = statsNode?.QuerySelector("div[class='card_drop_info_header']");
 
 				if (cardsEarnedNode == null) {
 					Bot.ArchiLogger.LogNullError(cardsEarnedNode);
@@ -582,7 +581,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			// Hours
-			INode? timeNode = statsNode?.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
+			IElement? timeNode = statsNode?.QuerySelector("div[class='badge_title_stats_playtime']");
 
 			if (timeNode == null) {
 				Bot.ArchiLogger.LogNullError(timeNode);
@@ -616,7 +615,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			// Names
-			INode? nameNode = statsNode?.SelectSingleNode("(.//div[@class='card_drop_info_body'])[last()]");
+			IElement? nameNode = statsNode?.QuerySelectorAll("div[class='card_drop_info_body']").LastOrDefault();
 
 			if (nameNode == null) {
 				Bot.ArchiLogger.LogNullError(nameNode);
@@ -675,7 +674,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			// Levels
 			byte badgeLevel = 0;
 
-			INode? levelNode = htmlNode.SelectSingleNode(".//div[@class='badge_info_description']/div[2]");
+			IElement? levelNode = htmlNode.QuerySelectorAll("div[class='badge_info_description'] > div").Skip(1).FirstOrDefault();
 
 			if (levelNode != null) {
 				// There is no levelNode if we didn't craft that badge yet (level 0)
@@ -1025,7 +1024,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return null;
 		}
 
-		INode? nameNode = htmlDocument.SelectSingleNode("(//span[@class='profile_small_header_location'])[last()]");
+		IElement? nameNode = htmlDocument.QuerySelectorAll("span[class='profile_small_header_location']").LastOrDefault();
 
 		if (nameNode == null) {
 			Bot.ArchiLogger.LogNullError(nameNode);
@@ -1041,7 +1040,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return null;
 		}
 
-		INode? hoursNode = htmlDocument.SelectSingleNode("//div[@class='badge_title_stats_playtime']");
+		IElement? hoursNode = htmlDocument.QuerySelector("div[class='badge_title_stats_playtime']");
 
 		if (hoursNode == null) {
 			Bot.ArchiLogger.LogNullError(hoursNode);
@@ -1061,7 +1060,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		INode? progressNode = htmlDocument.SelectSingleNode("//span[@class='progress_info_bold']");
+		IElement? progressNode = htmlDocument.QuerySelector("span[class='progress_info_bold']");
 
 		if (progressNode == null) {
 			Bot.ArchiLogger.LogNullError(progressNode);
@@ -1091,7 +1090,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		byte badgeLevel = 0;
 
-		INode? levelNode = htmlDocument.SelectSingleNode("//div[@class='badge_info_description']/div[2]");
+		IElement? levelNode = htmlDocument.QuerySelectorAll("div[class='badge_info_description']").Skip(1).FirstOrDefault();
 
 		// There is no levelNode if we didn't craft that badge yet (level 0)
 		if (levelNode != null) {
@@ -1159,7 +1158,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		byte maxPages = 1;
 
-		INode? htmlNode = htmlDocument.SelectSingleNode("(//a[@class='pagelink'])[last()]");
+		IElement? htmlNode = htmlDocument.QuerySelectorAll("a[class='pagelink']").LastOrDefault();
 
 		if (htmlNode != null) {
 			string lastPage = htmlNode.TextContent;
