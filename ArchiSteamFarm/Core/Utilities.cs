@@ -213,7 +213,7 @@ public static class Utilities {
 		return document.Body.SelectNodes(xpath).OfType<T>();
 	}
 
-	[Obsolete($"Use {nameof(Element.QuerySelectorAll)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
+	[Obsolete($"Use {nameof(element.QuerySelectorAll)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
 	[PublicAPI]
 	public static IEnumerable<T> SelectNodes<T>(this IElement element, string xpath) where T : class, INode {
 		ArgumentNullException.ThrowIfNull(element);
