@@ -35,8 +35,6 @@ using System.Resources;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using AngleSharp.Dom;
-using AngleSharp.XPath;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Storage;
@@ -195,54 +193,6 @@ public static class Utilities {
 		ArgumentException.ThrowIfNullOrEmpty(text);
 
 		return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
-	}
-
-	[Obsolete($"Use {nameof(document.QuerySelectorAll)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
-	[PublicAPI]
-	public static IList<INode> SelectNodes(this IDocument document, string xpath) {
-		ArgumentNullException.ThrowIfNull(document);
-
-		return document.Body.SelectNodes(xpath);
-	}
-
-	[Obsolete($"Use {nameof(document.QuerySelectorAll)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
-	[PublicAPI]
-	public static IEnumerable<T> SelectNodes<T>(this IDocument document, string xpath) where T : class, INode {
-		ArgumentNullException.ThrowIfNull(document);
-
-		return document.Body.SelectNodes(xpath).OfType<T>();
-	}
-
-	[Obsolete($"Use {nameof(element.QuerySelectorAll)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
-	[PublicAPI]
-	public static IEnumerable<T> SelectNodes<T>(this IElement element, string xpath) where T : class, INode {
-		ArgumentNullException.ThrowIfNull(element);
-
-		return element.SelectNodes(xpath).OfType<T>();
-	}
-
-	[Obsolete($"Use {nameof(document.QuerySelector)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
-	[PublicAPI]
-	public static INode? SelectSingleNode(this IDocument document, string xpath) {
-		ArgumentNullException.ThrowIfNull(document);
-
-		return document.Body.SelectSingleNode(xpath);
-	}
-
-	[Obsolete($"Use {nameof(document.QuerySelector)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
-	[PublicAPI]
-	public static T? SelectSingleNode<T>(this IDocument document, string xpath) where T : class, INode {
-		ArgumentNullException.ThrowIfNull(document);
-
-		return document.Body.SelectSingleNode(xpath) as T;
-	}
-
-	[Obsolete($"Use {nameof(element.QuerySelector)} instead, we're removing our AngleSharp.XPath dependency and helpers in the future ASF version")]
-	[PublicAPI]
-	public static T? SelectSingleNode<T>(this IElement element, string xpath) where T : class, INode {
-		ArgumentNullException.ThrowIfNull(element);
-
-		return element.SelectSingleNode(xpath) as T;
 	}
 
 	[PublicAPI]
