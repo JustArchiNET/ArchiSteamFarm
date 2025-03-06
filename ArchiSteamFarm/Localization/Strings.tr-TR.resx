@@ -793,5 +793,8 @@ Süreç çalışma zamanı: {1}</value>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Otomatik güncellemeler için özel eklentiler kaydedildi. ASF ekibi, kendi güvenliğiniz için yalnızca güvenilir taraflardan gelen otomatik güncellemeleri etkinleştirmeniz gerektiğini hatırlatmak ister. Bunu yapmayı planlamadıysanız ASF global yapılandırmasında eklenti güncellemelerini devre dışı bırakabilirsiniz.</value>
 	</data>
-	
+	<data name="Input" xml:space="preserve">
+		<value>Veri girişi: {0}</value>
+		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
 </root>
