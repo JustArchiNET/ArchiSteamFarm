@@ -54,6 +54,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using NLog.Web;
+using Scalar.AspNetCore;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 namespace ArchiSteamFarm.IPC;
@@ -258,14 +259,12 @@ internal static class ArchiKestrel {
 		app.MapOpenApi("/swagger/{documentName}/swagger.json");
 
 		// Add support for swagger UI, this should be after swagger, obviously
-		app.UseSwaggerUI(
-			static options => {
-				options.DisplayRequestDuration();
-				options.EnableDeepLinking();
-				options.EnableTryItOutByDefault();
-				options.ShowCommonExtensions();
-				options.ShowExtensions();
-				options.SwaggerEndpoint($"{SharedInfo.ASF}/swagger.json", $"{SharedInfo.ASF} API");
+		app.MapScalarApiReference(
+			"/swagger", static options => {
+				options.DefaultFonts = false;
+				options.OpenApiRoutePattern = $"/swagger/{SharedInfo.ASF}/swagger.json";
+				options.Theme = ScalarTheme.Kepler;
+				options.Title = $"{SharedInfo.AssemblyName} API";
 			}
 		);
 	}
