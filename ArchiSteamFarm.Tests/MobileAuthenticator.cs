@@ -81,7 +81,7 @@ internal sealed class MobileAuthenticator {
 			["shared_secret"] = sharedSecret
 		};
 
-		Steam.Security.MobileAuthenticator? result = jsonObject.ToJsonElement().ToJsonObject<Steam.Security.MobileAuthenticator>();
+		Steam.Security.MobileAuthenticator? result = jsonObject.ToJsonObject<Steam.Security.MobileAuthenticator>();
 
 		if (result == null) {
 			throw new InvalidOperationException(nameof(result));
