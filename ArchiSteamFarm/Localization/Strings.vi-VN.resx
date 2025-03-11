@@ -584,7 +584,10 @@ Thời gian hoạt động: {1}</value>
 		<value>Bot cấp {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
+	<data name="BotInventory" xml:space="preserve">
+		<value>{0}/{1} ({2}/{3}): {4} vật phẩm</value>
+		<comment>{0} will be replaced by appID (number), {1} will be replaced by contextID (number), {2} will be replaced by app's name (string), {3} will be replaced by name of the context (string), {4} will be replaced by number of assets in the specified inventory (number).</comment>
+	</data>
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Đang soát vật phẩm Steam, lần #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>
@@ -793,5 +796,8 @@ Thời gian hoạt động: {1}</value>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Các plugin tùy chỉnh đã được đặt sang cập nhật tự động. Nhóm ASF muốn nhắc nhở bạn rằng, vì lí do bảo mật, bạn chỉ nên bật cập nhật tự động cho các nguồn đáng tin cậy. Nếu không có ý định thực hiện việc này, bạn nên tắt cập nhật plugin trong cấu hình toàn cầu ASF.</value>
 	</data>
-	
+	<data name="Input" xml:space="preserve">
+		<value>Đầu vào: {0}</value>
+		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
 </root>
