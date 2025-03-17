@@ -25,7 +25,7 @@ jobs:
         submodules: recursive
 
     - name: Setup Node.js with npm
-      uses: actions/setup-node@v4.2.0
+      uses: actions/setup-node@v4.3.0
       with:
         check-latest: true
         node-version: ${{ env.NODE_JS_VERSION }}
