@@ -41,6 +41,8 @@ using SteamKit2.WebUI.Internal;
 using CMsgClientChangeStatus = SteamKit2.Internal.CMsgClientChangeStatus;
 using CMsgClientCommentNotifications = SteamKit2.Internal.CMsgClientCommentNotifications;
 using CMsgClientGamesPlayed = SteamKit2.Internal.CMsgClientGamesPlayed;
+using CMsgClientGetClientAppList = SteamKit2.Internal.CMsgClientGetClientAppList;
+using CMsgClientGetClientAppListResponse = SteamKit2.Internal.CMsgClientGetClientAppListResponse;
 using CMsgClientItemAnnouncements = SteamKit2.Internal.CMsgClientItemAnnouncements;
 using CMsgClientRedeemGuestPass = SteamKit2.Internal.CMsgClientRedeemGuestPass;
 using CMsgClientRequestItemAnnouncements = SteamKit2.Internal.CMsgClientRequestItemAnnouncements;
@@ -510,6 +512,11 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			case EMsg.ClientCommentNotifications:
 				ClientMsgProtobuf<CMsgClientCommentNotifications> commentNotifications = new(packetMsg);
 				Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, commentNotifications.Body));
+
+				break;
+			case EMsg.ClientGetClientAppList:
+				ClientMsgProtobuf<CMsgClientGetClientAppList> getClientAppList = new(packetMsg);
+				Client.PostCallback(new GetClientAppListCallback(packetMsg.SourceJobID, getClientAppList.Body));
 
 				break;
 			case EMsg.ClientItemAnnouncements:
@@ -1026,6 +1033,24 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 		}
 
 		ClientMsgProtobuf<CMsgClientRequestItemAnnouncements> request = new(EMsg.ClientRequestItemAnnouncements);
+		Client.Send(request);
+	}
+
+	internal void SendClientAppListResponse(JobID jobID) {
+		ArgumentNullException.ThrowIfNull(jobID);
+
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return;
+		}
+
+		ClientMsgProtobuf<CMsgClientGetClientAppListResponse> request = new(EMsg.ClientGetClientAppListResponse) {
+			TargetJobID = jobID
+		};
+
 		Client.Send(request);
 	}
 

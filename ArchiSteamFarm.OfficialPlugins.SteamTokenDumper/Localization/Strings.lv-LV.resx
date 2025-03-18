@@ -107,7 +107,10 @@
 		<value>Pabeidza iegūt {0} aplikāciju informāciju.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Pabeigts {0} no {1} noliktavas atslēgu pieprasījumiem.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot key requests that were successfully answered, {1} will be replaced by the number (count this batch) of depot key requests that were supposed to be sent</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Pabeigta visu depot atslēgu izgūšana, kopā {0} lietotnēm.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>

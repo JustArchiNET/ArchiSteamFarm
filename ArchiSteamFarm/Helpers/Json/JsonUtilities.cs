@@ -28,6 +28,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,6 +55,10 @@ public static class JsonUtilities {
 	[PublicAPI]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	public static T? ToJsonObject<T>(this JsonElement jsonElement) => jsonElement.Deserialize<T>(DefaultJsonSerialierOptions);
+
+	[PublicAPI]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
+	public static T? ToJsonObject<T>(this JsonNode jsonNode) => jsonNode.Deserialize<T>(DefaultJsonSerialierOptions);
 
 	[PublicAPI]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]

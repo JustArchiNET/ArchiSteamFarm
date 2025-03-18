@@ -25,7 +25,7 @@ jobs:
         submodules: recursive
 
     - name: Setup Node.js with npm
-      uses: actions/setup-node@v4.2.0
+      uses: actions/setup-node@v4.3.0
       with:
         check-latest: true
         node-version: ${{ env.NODE_JS_VERSION }}
@@ -87,7 +87,7 @@ jobs:
         show-progress: false
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v4.3.0
+      uses: actions/setup-dotnet@v4.3.1
       with:
         dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
 
@@ -362,7 +362,7 @@ jobs:
 
     - name: Generate artifact attestation for ASF-${{ matrix.variant }}.zip
       if: ${{ github.event_name == 'push' }}
-      uses: actions/attest-build-provenance@v2.2.2
+      uses: actions/attest-build-provenance@v2.2.3
       with:
         subject-path: out/ASF-${{ matrix.variant }}.zip
 
@@ -409,7 +409,7 @@ jobs:
 
     - name: Generate artifact attestation for ArchiSteamFarm.OfficialPlugins.Monitoring
       if: ${{ github.event_name == 'push' && matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
-      uses: actions/attest-build-provenance@v2.2.2
+      uses: actions/attest-build-provenance@v2.2.3
       with:
         subject-path: out/ArchiSteamFarm.OfficialPlugins.Monitoring.zip
 
@@ -507,7 +507,7 @@ jobs:
         gpg -a -b -o SHA512SUMS.sign SHA512SUMS
 
     - name: Generate artifact attestation for SHA512SUMS
-      uses: actions/attest-build-provenance@v2.2.2
+      uses: actions/attest-build-provenance@v2.2.3
       with:
         subject-path: out/SHA512SUMS
 
@@ -519,7 +519,7 @@ jobs:
         path: out/SHA512SUMS
 
     - name: Generate artifact attestation for SHA512SUMS.sign
-      uses: actions/attest-build-provenance@v2.2.2
+      uses: actions/attest-build-provenance@v2.2.3
       with:
         subject-path: out/SHA512SUMS.sign
 

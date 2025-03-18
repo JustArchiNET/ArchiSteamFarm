@@ -26,7 +26,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
@@ -50,7 +49,7 @@ internal sealed class Bot {
 			throw new InvalidOperationException(nameof(constructor));
 		}
 
-		JsonElement emptyObject = new JsonObject().ToJsonElement();
+		JsonObject emptyObject = new();
 
 		BotConfig? botConfig = emptyObject.ToJsonObject<BotConfig>();
 

@@ -384,6 +384,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		CallbackManager.Subscribe<SteamUser.VanityURLChangedCallback>(OnVanityURLChangedCallback);
 		CallbackManager.Subscribe<SteamUser.WalletInfoCallback>(OnWalletInfo);
 
+		CallbackManager.Subscribe<GetClientAppListCallback>(OnGetClientAppList);
 		CallbackManager.Subscribe<SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 		CallbackManager.Subscribe<UserNotificationsCallback>(OnUserNotifications);
 
@@ -3006,6 +3007,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					break;
 			}
 		}
+	}
+
+	private void OnGetClientAppList(GetClientAppListCallback callback) {
+		ArgumentNullException.ThrowIfNull(callback);
+
+		ArchiHandler.SendClientAppListResponse(callback.JobID);
 	}
 
 	private async void OnGuestPassList(SteamApps.GuestPassListCallback callback) {
