@@ -232,6 +232,27 @@
 	
 	
 	
+	<data name="PleaseWait" xml:space="preserve">
+		<value>გთხოვთ დაელოდოთ...</value>
+	</data>
+	<data name="EnterCommand" xml:space="preserve">
+		<value>შეიყვანეთ ბრძანება: </value>
+	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<data name="Result" xml:space="preserve">
+		<value>შედეგი: {0}</value>
+		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
+	</data>
 	
 	
 	
@@ -255,21 +276,10 @@
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>გამოტოვება: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
 	
 	
 	
