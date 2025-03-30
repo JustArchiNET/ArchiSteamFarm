@@ -24,6 +24,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 using Nito.AsyncEx;
@@ -60,6 +61,12 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 			ArgumentOutOfRangeException.ThrowIfNegative(index);
 
 			using (Lock.WriterLock()) {
+				T oldValue = BackingCollection[index];
+
+				if (EqualityComparer<T>.Default.Equals(oldValue, value)) {
+					return;
+				}
+
 				BackingCollection[index] = value;
 			}
 
@@ -86,6 +93,10 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 
 	public void Clear() {
 		using (Lock.WriterLock()) {
+			if (BackingCollection.Count == 0) {
+				return;
+			}
+
 			BackingCollection.Clear();
 		}
 
@@ -155,9 +166,15 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 	public void ReplaceWith(IEnumerable<T> collection) {
 		ArgumentNullException.ThrowIfNull(collection);
 
+		ICollection<T> newCollection = collection as ICollection<T> ?? collection.ToList();
+
 		using (Lock.WriterLock()) {
+			if (BackingCollection.SequenceEqual(newCollection)) {
+				return;
+			}
+
 			BackingCollection.Clear();
-			BackingCollection.AddRange(collection);
+			BackingCollection.AddRange(newCollection);
 		}
 
 		OnModified?.Invoke(this, EventArgs.Empty);

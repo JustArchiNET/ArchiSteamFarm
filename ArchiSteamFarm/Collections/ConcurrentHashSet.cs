@@ -100,9 +100,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 	public void ExceptWith(IEnumerable<T> other) {
 		ArgumentNullException.ThrowIfNull(other);
 
-		foreach (T item in other) {
-			Remove(item);
-		}
+		RemoveRange(other);
 	}
 
 	[MustDisposeResource]
@@ -113,8 +111,14 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 
 		IReadOnlySet<T> otherSet = other as IReadOnlySet<T> ?? other.ToHashSet();
 
-		foreach (T item in this.Where(item => !otherSet.Contains(item))) {
-			Remove(item);
+		bool modified = false;
+
+		foreach (T _ in this.Where(item => !otherSet.Contains(item) && BackingCollection.TryRemove(item, out _))) {
+			modified = true;
+		}
+
+		if (modified) {
+			OnModified?.Invoke(this, EventArgs.Empty);
 		}
 	}
 
@@ -182,24 +186,24 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 		ArgumentNullException.ThrowIfNull(other);
 
 		IReadOnlySet<T> otherSet = other as IReadOnlySet<T> ?? other.ToHashSet();
-		HashSet<T> removed = [];
 
-		foreach (T item in otherSet.Where(Contains)) {
-			removed.Add(item);
-			Remove(item);
+		HashSet<T> removed = otherSet.Where(item => Contains(item) && BackingCollection.TryRemove(item, out _)).ToHashSet();
+
+		bool modified = removed.Count > 0;
+
+		foreach (T _ in otherSet.Where(item => !removed.Contains(item) && BackingCollection.TryAdd(item, true))) {
+			modified = true;
 		}
 
-		foreach (T item in otherSet.Where(item => !removed.Contains(item))) {
-			Add(item);
+		if (modified) {
+			OnModified?.Invoke(this, EventArgs.Empty);
 		}
 	}
 
 	public void UnionWith(IEnumerable<T> other) {
 		ArgumentNullException.ThrowIfNull(other);
 
-		foreach (T otherElement in other) {
-			Add(otherElement);
-		}
+		AddRange(other);
 	}
 
 	void ICollection<T>.Add(T item) {
@@ -215,44 +219,66 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 	public bool AddRange(IEnumerable<T> items) {
 		ArgumentNullException.ThrowIfNull(items);
 
-		bool result = false;
+		bool modified = false;
 
-		foreach (T _ in items.Where(Add)) {
-			result = true;
+		foreach (T _ in items.Where(item => BackingCollection.TryAdd(item, true))) {
+			modified = true;
 		}
 
-		return result;
+		if (modified) {
+			OnModified?.Invoke(this, EventArgs.Empty);
+		}
+
+		return modified;
 	}
 
 	[PublicAPI]
 	public bool RemoveRange(IEnumerable<T> items) {
 		ArgumentNullException.ThrowIfNull(items);
 
-		bool result = false;
+		bool modified = false;
 
-		foreach (T _ in items.Where(Remove)) {
-			result = true;
+		foreach (T _ in items.Where(item => BackingCollection.TryRemove(item, out _))) {
+			modified = true;
 		}
 
-		return result;
+		if (modified) {
+			OnModified?.Invoke(this, EventArgs.Empty);
+		}
+
+		return modified;
 	}
 
 	[PublicAPI]
 	public int RemoveWhere(Predicate<T> match) {
 		ArgumentNullException.ThrowIfNull(match);
 
-		return BackingCollection.Keys.Where(match.Invoke).Count(key => BackingCollection.TryRemove(key, out _));
+		int count = BackingCollection.Keys.Where(match.Invoke).Count(key => BackingCollection.TryRemove(key, out _));
+
+		if (count > 0) {
+			OnModified?.Invoke(this, EventArgs.Empty);
+		}
+
+		return count;
 	}
 
 	[PublicAPI]
-	public bool ReplaceIfNeededWith(IReadOnlyCollection<T> other) {
+	public bool ReplaceIfNeededWith(IEnumerable<T> other) {
 		ArgumentNullException.ThrowIfNull(other);
 
-		if (SetEquals(other)) {
+		ICollection<T> otherCollection = other as ICollection<T> ?? other.ToHashSet();
+
+		if (SetEquals(otherCollection)) {
 			return false;
 		}
 
-		ReplaceWith(other);
+		BackingCollection.Clear();
+
+		foreach (T item in otherCollection) {
+			BackingCollection.TryAdd(item, true);
+		}
+
+		OnModified?.Invoke(this, EventArgs.Empty);
 
 		return true;
 	}
@@ -261,7 +287,6 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 	public void ReplaceWith(IEnumerable<T> other) {
 		ArgumentNullException.ThrowIfNull(other);
 
-		Clear();
-		UnionWith(other);
+		ReplaceIfNeededWith(other);
 	}
 }

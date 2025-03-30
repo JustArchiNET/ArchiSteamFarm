@@ -65,6 +65,7 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 			}
 
 			BackingDictionary[key] = value;
+
 			OnModified?.Invoke(this, EventArgs.Empty);
 		}
 	}
@@ -111,6 +112,7 @@ public sealed class ObservableConcurrentDictionary<TKey, TValue> : IDictionary<T
 		}
 
 		BackingDictionary.Clear();
+
 		OnModified?.Invoke(this, EventArgs.Empty);
 	}
 

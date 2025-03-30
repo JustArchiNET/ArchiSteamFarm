@@ -105,12 +105,6 @@ public abstract class SerializableFile : IDisposable {
 			string newFilePath = $"{serializableFile.FilePath}.new";
 
 			if (File.Exists(serializableFile.FilePath)) {
-				string currentJson = await File.ReadAllTextAsync(serializableFile.FilePath).ConfigureAwait(false);
-
-				if (json == currentJson) {
-					return;
-				}
-
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
 				File.Replace(newFilePath, serializableFile.FilePath, null);
@@ -156,12 +150,6 @@ public abstract class SerializableFile : IDisposable {
 			// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
 #pragma warning disable CA3003 // Ignored due to caller's intent
 			if (File.Exists(filePath)) {
-				string currentJson = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
-
-				if (json == currentJson) {
-					return true;
-				}
-
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
 				File.Replace(newFilePath, filePath, null);
