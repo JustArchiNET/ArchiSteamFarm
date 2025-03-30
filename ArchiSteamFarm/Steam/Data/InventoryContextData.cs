@@ -27,6 +27,11 @@ namespace ArchiSteamFarm.Steam.Data;
 
 public sealed class InventoryContextData {
 	[JsonInclude]
+	[JsonPropertyName("asset_count")]
+	[JsonRequired]
+	public uint AssetsCount { get; private init; }
+
+	[JsonInclude]
 	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
 	[JsonPropertyName("id")]
 	[JsonRequired]
@@ -36,9 +41,4 @@ public sealed class InventoryContextData {
 	[JsonPropertyName("name")]
 	[JsonRequired]
 	public string Name { get; private init; } = "";
-
-	[JsonInclude]
-	[JsonPropertyName("asset_count")]
-	[JsonRequired]
-	public uint AssetsCount { get; private init; }
 }

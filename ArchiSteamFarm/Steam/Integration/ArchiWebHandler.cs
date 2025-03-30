@@ -324,8 +324,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				if (rateLimitingDelay == 0) {
 					ASF.InventorySemaphore.Release();
 				} else {
-					Utilities.InBackground(
-						async () => {
+					Utilities.InBackground(async () => {
 							await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 							ASF.InventorySemaphore.Release();
 						}
@@ -1400,8 +1399,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			await limiters.RateLimitingSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 			// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
-			Utilities.InBackground(
-				async () => {
+			Utilities.InBackground(async () => {
 					// ReSharper disable once MethodSupportsCancellation - we must always wait given time before releasing semaphore
 					await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
 					limiters.RateLimitingSemaphore.Release();
@@ -2090,8 +2088,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			if (rateLimitingDelay == 0) {
 				ASF.InventorySemaphore.Release();
 			} else {
-				Utilities.InBackground(
-					async () => {
+				Utilities.InBackground(async () => {
 						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 						ASF.InventorySemaphore.Release();
 					}

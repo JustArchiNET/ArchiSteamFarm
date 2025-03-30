@@ -329,8 +329,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		ArchiWebHandler = new ArchiWebHandler(this);
 
-		SteamConfiguration = SteamConfiguration.Create(
-			builder => {
+		SteamConfiguration = SteamConfiguration.Create(builder => {
 				builder.WithCellID(ASF.GlobalDatabase.CellID);
 				builder.WithHttpClientFactory(ArchiWebHandler.GenerateDisposableHttpClient);
 				builder.WithProtocolTypes(ASF.GlobalConfig?.SteamProtocols ?? GlobalConfig.DefaultSteamProtocols);
@@ -2062,8 +2061,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		CancellationTokenSource? callbacksAborted = CallbacksAborted;
 
 		if (callbacksAborted is { IsCancellationRequested: false }) {
-			Utilities.InBackground(
-				async () => {
+			Utilities.InBackground(async () => {
 					await Task.Delay(CallbackSleep * WebBrowser.MaxTries, CancellationToken.None).ConfigureAwait(false);
 
 					try {
@@ -2671,8 +2669,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			await ASF.LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
 			ASF.LoginRateLimitingSemaphore.Release();
 		} finally {
-			Utilities.InBackground(
-				async () => {
+			Utilities.InBackground(async () => {
 					await Task.Delay(loginLimiterDelay * 1000).ConfigureAwait(false);
 					ASF.LoginSemaphore.Release();
 				}
@@ -3137,8 +3134,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		// The following actions should be synchronized, as they modify the state of the inventory
 		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.AutoUnpackBoosterPacks)) {
-			Utilities.InBackground(
-				async () => {
+			Utilities.InBackground(async () => {
 					if (!await UnpackBoosterPacks().ConfigureAwait(false)) {
 						// Another task is already in progress, so it'll handle the actions below as well
 						return;
@@ -3384,8 +3380,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ResetPersonaState();
 
 		if (BotConfig.SteamMasterClanID != 0) {
-			Utilities.InBackground(
-				async () => {
+			Utilities.InBackground(async () => {
 					if (!await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false)) {
 						ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(ArchiWebHandler.JoinGroup)));
 					}

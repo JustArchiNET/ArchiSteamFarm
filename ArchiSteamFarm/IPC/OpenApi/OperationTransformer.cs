@@ -52,7 +52,7 @@ internal sealed class OperationTransformer : IOpenApiOperationTransformer {
 							}
 						},
 
-						Array.Empty<string>()
+						[]
 					}
 				}
 			);

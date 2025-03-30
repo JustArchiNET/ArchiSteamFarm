@@ -60,7 +60,7 @@ internal static class Program {
 
 	private static readonly Dictionary<PosixSignal, PosixSignalRegistration> RegisteredPosixSignals = new();
 	private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
-	private static readonly FrozenSet<PosixSignal> SupportedPosixSignals = new HashSet<PosixSignal>(2) { PosixSignal.SIGINT, PosixSignal.SIGTERM }.ToFrozenSet();
+	private static readonly FrozenSet<PosixSignal> SupportedPosixSignals = [PosixSignal.SIGINT, PosixSignal.SIGTERM];
 
 	private static bool InputCryptkeyManually;
 	private static bool Minimized;
@@ -187,8 +187,7 @@ internal static class Program {
 		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 		// Add support for custom logging targets
-		LogManager.Setup().SetupExtensions(
-			static extensions => {
+		LogManager.Setup().SetupExtensions(static extensions => {
 				extensions.RegisterTarget<HistoryTarget>(HistoryTarget.TargetName);
 				extensions.RegisterTarget<SteamTarget>(SteamTarget.TargetName);
 			}

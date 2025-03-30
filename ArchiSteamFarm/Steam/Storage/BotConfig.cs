@@ -129,16 +129,16 @@ public sealed class BotConfig {
 	public static readonly ImmutableList<uint> DefaultGamesPlayedWhileIdle = [];
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<EAssetType> DefaultLootableTypes = ImmutableHashSet.Create(EAssetType.BoosterPack, EAssetType.FoilTradingCard, EAssetType.TradingCard);
+	public static readonly ImmutableHashSet<EAssetType> DefaultLootableTypes = [EAssetType.BoosterPack, EAssetType.FoilTradingCard, EAssetType.TradingCard];
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<EAssetType> DefaultMatchableTypes = ImmutableHashSet.Create(EAssetType.TradingCard);
+	public static readonly ImmutableHashSet<EAssetType> DefaultMatchableTypes = [EAssetType.TradingCard];
 
 	[PublicAPI]
 	public static readonly ImmutableDictionary<ulong, EAccess> DefaultSteamUserPermissions = ImmutableDictionary<ulong, EAccess>.Empty;
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<EAssetType> DefaultTransferableTypes = ImmutableHashSet.Create(EAssetType.BoosterPack, EAssetType.FoilTradingCard, EAssetType.TradingCard);
+	public static readonly ImmutableHashSet<EAssetType> DefaultTransferableTypes = [EAssetType.BoosterPack, EAssetType.FoilTradingCard, EAssetType.TradingCard];
 
 	[JsonInclude]
 	public bool AcceptGifts { get; private init; } = DefaultAcceptGifts;

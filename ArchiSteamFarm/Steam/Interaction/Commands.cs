@@ -1337,8 +1337,7 @@ public sealed class Commands {
 		}
 
 		if (Bot.CardsFarmer.NowFarming && Bot.CardsFarmer.GamesToFarmReadOnly.Any(game => appIDs.Contains(game.AppID))) {
-			Utilities.InBackground(
-				async () => {
+			Utilities.InBackground(async () => {
 					await Bot.CardsFarmer.StopFarming().ConfigureAwait(false);
 					await Bot.CardsFarmer.StartFarming().ConfigureAwait(false);
 				}
@@ -1493,8 +1492,7 @@ public sealed class Commands {
 
 				break;
 			case true when Bot.CardsFarmer.GamesToFarmReadOnly.Any(game => appIDs.Contains(game.AppID)):
-				Utilities.InBackground(
-					async () => {
+				Utilities.InBackground(async () => {
 						await Bot.CardsFarmer.StopFarming().ConfigureAwait(false);
 						await Bot.CardsFarmer.StartFarming().ConfigureAwait(false);
 					}
@@ -1559,8 +1557,7 @@ public sealed class Commands {
 		}
 
 		if (Bot.CardsFarmer.NowFarming && Bot.CardsFarmer.GamesToFarmReadOnly.Any(game => appIDs.Contains(game.AppID))) {
-			Utilities.InBackground(
-				async () => {
+			Utilities.InBackground(async () => {
 					await Bot.CardsFarmer.StopFarming().ConfigureAwait(false);
 					await Bot.CardsFarmer.StartFarming().ConfigureAwait(false);
 				}
@@ -1695,7 +1692,7 @@ public sealed class Commands {
 		StringBuilder response = new();
 
 		foreach (InventoryAppData appData in inventory.Values) {
-			foreach (InventoryContextData? contextData in appData.Contexts.Values) {
+			foreach (InventoryContextData contextData in appData.Contexts.Values) {
 				if (response.Length > 0) {
 					response.AppendLine();
 				}

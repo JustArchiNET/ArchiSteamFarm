@@ -183,7 +183,7 @@ internal static class ArchiNet {
 
 	private static async Task<(bool Success, IReadOnlyCollection<ulong>? Result)> ResolveCachedBadBots(CancellationToken cancellationToken = default) {
 		if (ASF.GlobalDatabase == null) {
-			throw new InvalidOperationException(nameof(ASF.WebBrowser));
+			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 		}
 
 		if (ASF.WebBrowser == null) {

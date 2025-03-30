@@ -301,8 +301,7 @@ internal static class ArchiKestrel {
 		}
 
 		// Add support for proxies
-		services.Configure<ForwardedHeadersOptions>(
-			options => {
+		services.Configure<ForwardedHeadersOptions>(options => {
 				options.ForwardedHeaders = ForwardedHeaders.All;
 
 				if (knownNetworks != null) {
@@ -351,8 +350,7 @@ internal static class ArchiKestrel {
 			}
 		}
 
-		services.ConfigureHttpJsonOptions(
-			static options => {
+		services.ConfigureHttpJsonOptions(static options => {
 				JsonSerializerOptions jsonSerializerOptions = Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions;
 
 				options.SerializerOptions.PropertyNamingPolicy = jsonSerializerOptions.PropertyNamingPolicy;
@@ -377,8 +375,7 @@ internal static class ArchiKestrel {
 		mvc.AddControllersAsServices();
 
 		// Modify default JSON options
-		mvc.AddJsonOptions(
-			static options => {
+		mvc.AddJsonOptions(static options => {
 				JsonSerializerOptions jsonSerializerOptions = Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions;
 
 				options.JsonSerializerOptions.PropertyNamingPolicy = jsonSerializerOptions.PropertyNamingPolicy;
@@ -439,8 +436,7 @@ internal static class ArchiKestrel {
 			builder.WebHost.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(SharedInfo.IPCConfigFile, false, true).Build());
 		}
 
-		builder.WebHost.ConfigureKestrel(
-			options => {
+		builder.WebHost.ConfigureKestrel(options => {
 				options.AddServerHeader = false;
 
 				if (customConfigExists) {

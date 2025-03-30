@@ -89,8 +89,7 @@ public sealed class InventoryDescription {
 			Body.descriptions.Clear();
 
 			Body.descriptions.AddRange(
-				value.Select(
-					static description => new CEconItem_DescriptionLine {
+				value.Select(static description => new CEconItem_DescriptionLine {
 						color = description.Color,
 						label = description.Label,
 						type = description.Type,
@@ -173,8 +172,7 @@ public sealed class InventoryDescription {
 			Body.owner_actions.Clear();
 
 			Body.owner_actions.AddRange(
-				value.Select(
-					static action => new CEconItem_Action {
+				value.Select(static action => new CEconItem_Action {
 						link = action.Link,
 						name = action.Name
 					}
@@ -326,8 +324,7 @@ public sealed class InventoryDescription {
 			Body.tags.Clear();
 
 			Body.tags.AddRange(
-				value.Select(
-					tag => new CEconItem_Tag {
+				value.Select(tag => new CEconItem_Tag {
 						appid = AppID,
 						category = tag.Identifier,
 						color = tag.Color,

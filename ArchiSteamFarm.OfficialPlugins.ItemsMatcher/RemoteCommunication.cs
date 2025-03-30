@@ -62,12 +62,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const byte MinimumSteamGuardEnabledDays = 15; // As imposed by Steam limits
 	private const byte MinPersonaStateTTL = 5; // Minimum amount of minutes we must wait before requesting persona state update
 
-	private static readonly FrozenSet<EAssetType> AcceptedMatchableTypes = new HashSet<EAssetType>(4) {
+	private static readonly FrozenSet<EAssetType> AcceptedMatchableTypes = [
 		EAssetType.Emoticon,
 		EAssetType.FoilTradingCard,
 		EAssetType.ProfileBackground,
 		EAssetType.TradingCard
-	}.ToFrozenSet();
+	];
 
 	private readonly Bot Bot;
 	private readonly Timer? HeartBeatTimer;

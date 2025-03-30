@@ -51,7 +51,7 @@ public static class Utilities {
 	private const byte TimeoutForLongRunningTasksInSeconds = 60;
 	private const uint UnauthorizedAccessHResult = 0x80070005;
 
-	private static readonly FrozenSet<char> DirectorySeparators = new HashSet<char>(2) { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }.ToFrozenSet();
+	private static readonly FrozenSet<char> DirectorySeparators = [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar];
 
 	[PublicAPI]
 	public static IEnumerable<T> AsLinqThreadSafeEnumerable<T>(this ICollection<T> collection) {

@@ -50,7 +50,7 @@ public sealed class MobileAuthenticator : IDisposable {
 	// For how many minutes we can assume that SteamTimeDifference is correct
 	private const byte SteamTimeTTL = 15;
 
-	internal static readonly ImmutableSortedSet<char> CodeCharacters = ImmutableSortedSet.Create('2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'V', 'W', 'X', 'Y');
+	internal static readonly ImmutableSortedSet<char> CodeCharacters = ['2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'V', 'W', 'X', 'Y'];
 
 	private static readonly SemaphoreSlim TimeSemaphore = new(1, 1);
 
@@ -194,7 +194,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			return null;
 		}
 
-		foreach (Confirmation? confirmation in response.Confirmations.Where(static confirmation => (confirmation.ConfirmationType == Confirmation.EConfirmationType.Unknown) || !Enum.IsDefined(confirmation.ConfirmationType))) {
+		foreach (Confirmation confirmation in response.Confirmations.Where(static confirmation => (confirmation.ConfirmationType == Confirmation.EConfirmationType.Unknown) || !Enum.IsDefined(confirmation.ConfirmationType))) {
 			Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(confirmation.ConfirmationType), $"{confirmation.ConfirmationType} ({confirmation.ConfirmationTypeName ?? "null"})"));
 		}
 
@@ -394,8 +394,7 @@ public sealed class MobileAuthenticator : IDisposable {
 
 		await ASF.ConfirmationsSemaphore.WaitAsync().ConfigureAwait(false);
 
-		Utilities.InBackground(
-			async () => {
+		Utilities.InBackground(async () => {
 				await Task.Delay(confirmationsLimiterDelay * 1000).ConfigureAwait(false);
 				ASF.ConfirmationsSemaphore.Release();
 			}

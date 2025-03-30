@@ -478,8 +478,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 								// We can still try other depots
 								bot.ArchiLogger.LogGenericWarningException(e);
 							} finally {
-								Utilities.InBackground(
-									async () => {
+								Utilities.InBackground(async () => {
 										await Task.Delay(DepotsRateLimitingDelay).ConfigureAwait(false);
 
 										// ReSharper disable once AccessToDisposedClosure - we're waiting for the semaphore to be free before disposing it
@@ -505,8 +504,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 								// We can still try other depots
 								bot.ArchiLogger.LogGenericWarningException(e);
 							} finally {
-								Utilities.InBackground(
-									async () => {
+								Utilities.InBackground(async () => {
 										await Task.Delay(DepotsRateLimitingDelay).ConfigureAwait(false);
 
 										// ReSharper disable once AccessToDisposedClosure - we're waiting for the semaphore to be free before disposing it
@@ -561,8 +559,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			return bot.Commands.FormatBotResponse(ArchiSteamFarm.Localization.Strings.FormatWarningFailedWithError(nameof(GlobalCache)));
 		}
 
-		Utilities.InBackground(
-			async () => {
+		Utilities.InBackground(async () => {
 				await Refresh(bot).ConfigureAwait(false);
 				await SubmitData().ConfigureAwait(false);
 			}
@@ -598,8 +595,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			return Commands.FormatStaticResponse(ArchiSteamFarm.Localization.Strings.FormatWarningFailedWithError(nameof(GlobalCache)));
 		}
 
-		Utilities.InBackground(
-			async () => {
+		Utilities.InBackground(async () => {
 				await Utilities.InParallel(bots.Select(static bot => Refresh(bot))).ConfigureAwait(false);
 
 				await SubmitData().ConfigureAwait(false);

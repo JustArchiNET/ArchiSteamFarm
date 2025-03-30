@@ -511,8 +511,7 @@ internal sealed class Bot {
 			CreateCard(4, realAppID: appID0)
 		];
 
-		Assert.ThrowsExactly<InvalidOperationException>(
-			() => GetItemsForFullBadge(
+		Assert.ThrowsExactly<InvalidOperationException>(() => GetItemsForFullBadge(
 				items, new Dictionary<uint, byte> {
 					{ appID0, 3 },
 					{ appID1, 3 },

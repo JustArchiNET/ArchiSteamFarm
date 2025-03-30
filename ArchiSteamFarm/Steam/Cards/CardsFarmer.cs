@@ -56,12 +56,12 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	private const byte HoursToIgnore = 1; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
 	[PublicAPI]
-	public static readonly FrozenSet<uint> SalesBlacklist = new HashSet<uint>(22) { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740, 991980, 1195670, 1343890, 1465680, 1658760, 1797760, 2021850, 2243720, 2459330, 2640280, 2861690, 2861720 }.ToFrozenSet();
+	public static readonly FrozenSet<uint> SalesBlacklist = [267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740, 991980, 1195670, 1343890, 1465680, 1658760, 1797760, 2021850, 2243720, 2459330, 2640280, 2861690, 2861720];
 
 	private static readonly ConcurrentDictionary<uint, DateTime> GloballyIgnoredAppIDs = new(); // Reserved for unreleased games
 
 	// Games that were confirmed to show false status on general badges page
-	private static readonly FrozenSet<uint> UntrustedAppIDs = new HashSet<uint>(3) { 440, 570, 730 }.ToFrozenSet();
+	private static readonly FrozenSet<uint> UntrustedAppIDs = [440, 570, 730];
 
 	[JsonInclude]
 	[JsonPropertyName(nameof(CurrentGamesFarming))]

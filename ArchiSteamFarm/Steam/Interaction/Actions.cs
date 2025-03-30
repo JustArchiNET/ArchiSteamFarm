@@ -120,8 +120,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	[PublicAPI]
 	public static (bool Success, string Message) Exit() {
 		// Schedule the task after some time so user can receive response
-		Utilities.InBackground(
-			static async () => {
+		Utilities.InBackground(static async () => {
 				await Task.Delay(1000).ConfigureAwait(false);
 				await Program.Exit().ConfigureAwait(false);
 			}
@@ -264,7 +263,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 			handledConfirmations ??= new Dictionary<ulong, Confirmation>();
 
-			foreach (Confirmation? confirmation in remainingConfirmations) {
+			foreach (Confirmation confirmation in remainingConfirmations) {
 				handledConfirmations[confirmation.CreatorID] = confirmation;
 			}
 
@@ -381,8 +380,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		}
 
 		// Schedule the task after some time so user can receive response
-		Utilities.InBackground(
-			static async () => {
+		Utilities.InBackground(static async () => {
 				await Task.Delay(1000).ConfigureAwait(false);
 				await Program.Restart().ConfigureAwait(false);
 			}
@@ -700,8 +698,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 		await ASF.GiftsSemaphore.WaitAsync().ConfigureAwait(false);
 
-		Utilities.InBackground(
-			async () => {
+		Utilities.InBackground(async () => {
 				await Task.Delay(giftsLimiterDelay * 1000).ConfigureAwait(false);
 				ASF.GiftsSemaphore.Release();
 			}

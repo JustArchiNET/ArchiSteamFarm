@@ -133,8 +133,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 			throw new InvalidOperationException(nameof(Meter));
 		}
 
-		services.AddOpenTelemetry().WithMetrics(
-			builder => {
+		services.AddOpenTelemetry().WithMetrics(builder => {
 				builder.AddPrometheusExporter(static config => config.ScrapeEndpointPath = "/Api/metrics");
 				builder.AddRuntimeInstrumentation();
 				builder.AddAspNetCoreInstrumentation();
@@ -153,11 +152,11 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 
 		int officialPluginCount = PluginsCore.ActivePlugins.Count(static plugin => plugin is OfficialPlugin);
 
-		PluginMeasurements = new HashSet<Measurement<int>>(3) {
-			new(PluginsCore.ActivePlugins.Count),
-			new(officialPluginCount, new KeyValuePair<string, object?>(TagNames.PluginType, "official")),
-			new(PluginsCore.ActivePlugins.Count - officialPluginCount, new KeyValuePair<string, object?>(TagNames.PluginType, "custom"))
-		}.ToFrozenSet();
+		PluginMeasurements = [
+			new Measurement<int>(PluginsCore.ActivePlugins.Count),
+			new Measurement<int>(officialPluginCount, new KeyValuePair<string, object?>(TagNames.PluginType, "official")),
+			new Measurement<int>(PluginsCore.ActivePlugins.Count - officialPluginCount, new KeyValuePair<string, object?>(TagNames.PluginType, "custom"))
+		];
 
 		Meter = new Meter(MeterName, Version.ToString());
 
@@ -272,8 +271,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 		);
 
 		Meter.CreateObservableCounter(
-			$"{MetricNamePrefix}_bot_trades", () => TradeStatistics.SelectMany<KeyValuePair<Bot, TradeStatistics>, Measurement<int>>(
-				static kv => [
+			$"{MetricNamePrefix}_bot_trades", () => TradeStatistics.SelectMany<KeyValuePair<Bot, TradeStatistics>, Measurement<int>>(static kv => [
 					new Measurement<int>(
 						kv.Value.AcceptedOffers,
 						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),

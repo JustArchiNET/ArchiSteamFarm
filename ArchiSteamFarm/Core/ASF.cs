@@ -83,7 +83,7 @@ public static class ASF {
 	internal static ICrossProcessSemaphore? RateLimitingSemaphore { get; private set; }
 	internal static FrozenDictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>? WebLimitingSemaphores { get; private set; }
 
-	private static readonly FrozenSet<string> AssembliesNeededBeforeUpdate = new HashSet<string>(1, StringComparer.Ordinal) { "System.IO.Pipes" }.ToFrozenSet(StringComparer.Ordinal);
+	private static readonly FrozenSet<string> AssembliesNeededBeforeUpdate = FrozenSet.Create(StringComparer.Ordinal, "System.IO.Pipes");
 	private static readonly SemaphoreSlim UpdateSemaphore = new(1, 1);
 
 	private static Timer? AutoUpdatesTimer;
@@ -773,13 +773,7 @@ public static class ASF {
 
 			ReleaseResponse? releaseResponse = await GitHubService.GetLatestRelease(SharedInfo.GithubRepo, channel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
 
-			if (releaseResponse == null) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
-
-				return (false, null);
-			}
-
-			if (string.IsNullOrEmpty(releaseResponse.Tag)) {
+			if ((releaseResponse == null) || string.IsNullOrEmpty(releaseResponse.Tag)) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
 
 				return (false, null);
