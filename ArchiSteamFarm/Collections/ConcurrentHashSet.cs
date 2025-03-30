@@ -187,7 +187,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 
 		IReadOnlySet<T> otherSet = other as IReadOnlySet<T> ?? other.ToHashSet();
 
-		HashSet<T> removed = otherSet.Where(item => Contains(item) && BackingCollection.TryRemove(item, out _)).ToHashSet();
+		HashSet<T> removed = otherSet.Where(item => BackingCollection.TryRemove(item, out _)).ToHashSet();
 
 		bool modified = removed.Count > 0;
 
