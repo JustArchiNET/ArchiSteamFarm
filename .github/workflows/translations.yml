@@ -27,7 +27,7 @@ jobs:
       run: |
         set -eu
 
-        git fetch --depth=1 origin master
+        git fetch origin master
         git reset --hard origin/master
 
     - name: Download latest translations from Crowdin
