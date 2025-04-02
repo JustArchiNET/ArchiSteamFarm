@@ -68,7 +68,10 @@
 		<value>{0} on tällä hetkellä poistettu käytöstä asetuksistasi. Jos haluat auttaa SteamDB:tä tietojen lähettämisessä, ole hyvä ja tutustu wikimme.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} on alustettu onnistuneesti, kiitos etukäteen avustasi. Ensimmäiseen lähetykseen on noin {1}.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} ei voitu ladata. Uusi instanssi alustetaan...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
@@ -104,7 +107,10 @@
 		<value>Saatiin haettua {0} sovelluksen tiedot.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Suoritettiin {0}/{1} depot-avaimien pyynnöistä.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot key requests that were successfully answered, {1} will be replaced by the number (count this batch) of depot key requests that were supposed to be sent</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Saatiin haettua kaikki depot-avaimet yhteensä {0} sovellukselle.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
