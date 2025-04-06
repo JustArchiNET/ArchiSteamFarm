@@ -68,7 +68,10 @@
 		<value>{0} este momentan dezactivat în funcție de configurația ta. Dacă doriți să ajutați SteamDB în transmiterea de date, vă rugăm să consultați wiki-ul.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} a fost inițializat cu succes, îți mulțumim anticipat pentru ajutorul tău. Prima trimitere va avea loc în aproximativ {1}.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} nu a putut fi încărcat, o nouă instanță va fi inițializată...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
@@ -104,7 +107,10 @@
 		<value>S-a terminat preluarea a {0} informații despre aplicații.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Am terminat {0} din {1} cereri de chei de depozit.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot key requests that were successfully answered, {1} will be replaced by the number (count this batch) of depot key requests that were supposed to be sent</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>S-a terminat preluarea tuturor depot keys pentru un total de {0} aplicații.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
