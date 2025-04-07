@@ -687,7 +687,10 @@ Prosessin käyttöaika: {1}</value>
 		<value>Salausavaimesi on liian lyhyt. Suosittelemme käyttämään salausavainta, joka on vähintään {0} tavua (merkkiä) pitkä.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Käytät ominaisuuden {1} asetusta {0}, mutta et antanut mukautettua --cryptkey -argumenttia. Sinun tulisi antaa mukautettu --cryptkey lisäturvallisuuden takaamiseksi, jos haluat.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Käytät ominaisuuden {1} asetusta {0}, mutta et antanut mukautettua --cryptkey -argumenttia. Tämä tekee suojauksen täysin tyhjäksi, koska ASF joutuu käyttämään omaa (tunnettua) avaintaan. Sinun tulisi antaa mukautettu --cryptkey tämän asetuksen turvallisuushyöydyn saavuttamiseksi.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -707,7 +710,9 @@ Prosessin käyttöaika: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Etäpalvelin ei tiedä mitään julkaisusta, johon olemme päivittämässä. Tämä tilanne on mahdollinen, jos julkistaminen on hiljattain julkaistu - kieltäydytään jatkamasta päivitystä ylimääräisenä turvatoimenpiteenä.</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>Virhe noudettaessa tarkistussummaa ladatulle binäärille - kieltäydytään jatkamasta päivitysmenettelyä tällä hetkellä lisäsuojaustoimenpiteenä.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Etäpalvelin on vastannut eri tarkistussummalla, mikä saattaa merkitä viallista latausta tai MITM-hyökkäystä, kieltäydytään jatkamasta päivitystä!</value>
 	</data>
@@ -730,9 +735,17 @@ Prosessin käyttöaika: {1}</value>
 		<value>ASF ei pysty pelaamaan sovellusta {0}, koska sillä on aluekohtainen rajoitus maassa {1}, joka kestää {2} asti.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
 	</data>
-	
-	
-	
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>Yrität suorittaa virallista {0} -liitännäistä, joka ei täsmää ASF-versioon: {1} (odotettiin {2}). Tämä viittaa siihen, että teet jotain hirvittävän väärin; joko korjaa asennuksesi tai anna --ignore-unsupported-environment argumentti, jos todella tiedät mitä teet.</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>ASF on kaatunut liian monta kertaa viime aikoina ja sen vuoksi prosessin alustus on poistettu käytöstä. Joko tutki, korjaa asetuksesi ja poista sitten ASF.crash -tiedosto asetushakemistostasi, tai anna --ignore-unsupported-environment -argumentti, jos todella tiedät mitä olet tekemässä.</value>
+	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>Pelin {0} ({1}) farmaus on poistettu käytöstä, koska kyseinen peli on tällä hetkellä merkitty yksityiseksi. Jos aiot ASF:n farmata tuota peliä, harkitse sen yksityisyysasetusten muuttamista.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="WarningSkipping" xml:space="preserve">
 		<value>Ohitetaan: {0}...</value>
 		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
@@ -748,18 +761,41 @@ Prosessin käyttöaika: {1}</value>
 		<value>Ei päivitystä saatavilla lisäosalle {0}: {1} ≥ {2}.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
-	
-	
-	
-	
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>Uusi versio {0} -laajennukesta on saatavilla! Suositellaan päivittämistä!</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>Löydetty laajennuksen {0} päivitys versiosta {1} versioon {2}...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>Lisäosan {0} päivitystä ei ole saatavilla versiosta {1} versioon {2}, tämä yleensä tarkoittaa, että päivitys on saatavilla myöhemmin.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>Assettia ei voitu selvittää laajennuksen {0} päivitykselle versiosta {1} versioon {2}. Tämä voi tapahtua, jos julkaisu ei ole vielä valmis - jos tämä jatkaa tapahtumasta, sinun tulisi ilmoittaa laajennuksen tekijälle asiasta.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
 	<data name="PluginUpdateInProgress" xml:space="preserve">
 		<value>Päivitetään lisäosa {0}...</value>
 		<comment>{0} will be replaced by plugin name (string).</comment>
 	</data>
-	
-	
-	
-	
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>{0} -laajennuksen päivittäminen on onnistunut, muutokset ladataan seuraavan ASF-käynnistyksen yhteydessä.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>{0}/{1} -laajennus on rekisteröity ja automaattiset päivitykset otettu käyttöön.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>{0} ({1}) -laajennukselta on poistettu automaattiset päivitykset huolimatta siitä että sillä on tällainen ominaisuus.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Mukautettuja laajennuksia on rekisteröity automaattisia päivityksiä varten. ASF-tiimi haluaa muistuttaa sinua siitä, että oman turvallisuutesi vuoksi sinun pitäisi ottaa käyttöön automaattiset päivitykset vain luotettavilta osapuolilta. Jos et aikonut tehdä tätä, voit poistaa laajennukset päivitykset käytöstä ASF globaalissa asetuksessa.</value>
+	</data>
 	<data name="Input" xml:space="preserve">
 		<value>Syöte: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
