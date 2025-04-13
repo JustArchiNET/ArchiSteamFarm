@@ -174,7 +174,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 	/// <remarks>This action should be used if you require full inventory exclusively, otherwise consider calling <see cref="ArchiHandler.GetMyInventoryAsync" /> instead.</remarks>
 	[PublicAPI]
-	public async Task<(HashSet<Asset>? Result, string Message)> GetInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, Func<Asset, bool>? filterFunction = null) {
+	public async Task<(HashSet<Asset>? Result, string Message)> GetInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, string? language = null, Func<Asset, bool>? filterFunction = null) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 
@@ -186,7 +186,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 		using (await GetTradingLock().ConfigureAwait(false)) {
 			try {
-				return (await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID).Where(item => filterFunction(item)).ToHashSetAsync().ConfigureAwait(false), Strings.Success);
+				return (await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID, language: language).Where(item => filterFunction(item)).ToHashSetAsync().ConfigureAwait(false), Strings.Success);
 			} catch (TimeoutException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 
