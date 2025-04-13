@@ -174,7 +174,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 	/// <remarks>This action should be used if you require full inventory exclusively, otherwise consider calling <see cref="ArchiHandler.GetMyInventoryAsync" /> instead.</remarks>
 	[PublicAPI]
-	public async Task<(HashSet<Asset>? Result, string Message)> GetInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, string? language = null, Func<Asset, bool>? filterFunction = null) {
+	public async Task<(HashSet<Asset>? Result, string Message)> GetInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, Func<Asset, bool>? filterFunction = null, string? language = null) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 

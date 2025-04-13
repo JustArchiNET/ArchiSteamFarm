@@ -205,9 +205,12 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 
 			get_descriptions = true,
 			steamid = steamID,
-			count = itemsCountPerRequest,
-			language = language ?? ""
+			count = itemsCountPerRequest
 		};
+
+		if (language != null) {
+			request.language = language;
+		}
 
 		// We need to store asset IDs to make sure we won't get duplicate items
 		HashSet<ulong>? assetIDs = null;

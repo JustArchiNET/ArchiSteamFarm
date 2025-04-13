@@ -233,7 +233,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	///     This method should be used exclusively for foreign inventories (other users), but in special circumstances it can be used for fetching bot's own inventory as well.
 	/// </remarks>
 	[PublicAPI]
-	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, string language = "english") {
+	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, string? language = null) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 
@@ -258,6 +258,8 @@ public sealed class ArchiWebHandler : IDisposable {
 		if (ASF.InventorySemaphore == null) {
 			throw new InvalidOperationException(nameof(ASF.InventorySemaphore));
 		}
+
+		language ??= "english";
 
 		ulong startAssetID = 0;
 
