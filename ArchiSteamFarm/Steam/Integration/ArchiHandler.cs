@@ -179,7 +179,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false, ushort itemsCountPerRequest = ArchiWebHandler.MaxItemsInSingleInventoryRequest) {
+	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false, ushort itemsCountPerRequest = ArchiWebHandler.MaxItemsInSingleInventoryRequest, string language = "english") {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(itemsCountPerRequest);
@@ -205,7 +205,8 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 
 			get_descriptions = true,
 			steamid = steamID,
-			count = itemsCountPerRequest
+			count = itemsCountPerRequest,
+			language = language
 		};
 
 		// We need to store asset IDs to make sure we won't get duplicate items
