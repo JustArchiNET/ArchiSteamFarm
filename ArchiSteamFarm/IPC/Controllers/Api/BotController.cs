@@ -300,7 +300,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<(HashSet<Asset>? Result, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.GetInventory(appID, contextID, language))).ConfigureAwait(false);
+		IList<(HashSet<Asset>? Result, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.GetInventory(appID, contextID, language: language))).ConfigureAwait(false);
 
 		Dictionary<string, BotInventoryResponse> result = new(bots.Count, Bot.BotsComparer);
 
