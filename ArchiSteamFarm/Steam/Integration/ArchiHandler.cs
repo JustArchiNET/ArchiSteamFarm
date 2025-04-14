@@ -208,7 +208,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			count = itemsCountPerRequest
 		};
 
-		if (language != null) {
+		if (!string.IsNullOrEmpty(language)) {
 			request.language = language;
 		}
 

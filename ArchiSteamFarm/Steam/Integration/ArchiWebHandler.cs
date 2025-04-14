@@ -259,7 +259,9 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new InvalidOperationException(nameof(ASF.InventorySemaphore));
 		}
 
-		language ??= "english";
+		if (string.IsNullOrEmpty(language)) {
+			language = "english";
+		}
 
 		ulong startAssetID = 0;
 
