@@ -233,7 +233,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	///     This method should be used exclusively for foreign inventories (other users), but in special circumstances it can be used for fetching bot's own inventory as well.
 	/// </remarks>
 	[PublicAPI]
-	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
+	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, string? language = null) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 
@@ -259,6 +259,8 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new InvalidOperationException(nameof(ASF.InventorySemaphore));
 		}
 
+		language ??= "english";
+
 		ulong startAssetID = 0;
 
 		// We need to store asset IDs to make sure we won't get duplicate items
@@ -269,7 +271,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		int rateLimitingDelay = (ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay) * 1000;
 
 		while (true) {
-			Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?l=english&count={MaxItemsInSingleInventoryRequest}{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
+			Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?l={language}&count={MaxItemsInSingleInventoryRequest}{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
 
 			await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
 

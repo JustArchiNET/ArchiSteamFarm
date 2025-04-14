@@ -283,7 +283,7 @@ public sealed class BotController : ArchiController {
 	[HttpGet("{botNames:required}/Inventory/{appID}/{contextID}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, BotInventoryResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> InventoryGet(string botNames, uint appID, ulong contextID) {
+	public async Task<ActionResult<GenericResponse>> InventoryGet(string botNames, uint appID, ulong contextID, [FromQuery] string? language = null) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		if (appID == 0) {
@@ -300,7 +300,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<(HashSet<Asset>? Result, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.GetInventory(appID, contextID))).ConfigureAwait(false);
+		IList<(HashSet<Asset>? Result, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.GetInventory(appID, contextID, language: language))).ConfigureAwait(false);
 
 		Dictionary<string, BotInventoryResponse> result = new(bots.Count, Bot.BotsComparer);
 
