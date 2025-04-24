@@ -760,7 +760,7 @@ Prozesslaufzeit: {1}</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
 	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
-		<value>Es ist eine neue ASF-Version verfügbar! Erwägen Sie, das Programm selbst zu aktualisieren!</value>
+		<value>Es ist eine neue Plugin-Version verfügbar! Erwägen Sie, dieses selbst zu aktualisieren!</value>
 		<comment>{0} will be replaced by plugin name (string).</comment>
 	</data>
 	<data name="PluginUpdateFound" xml:space="preserve">
