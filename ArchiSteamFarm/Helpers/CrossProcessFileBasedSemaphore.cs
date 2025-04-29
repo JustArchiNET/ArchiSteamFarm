@@ -176,38 +176,50 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 		}
 
 		if (!Directory.Exists(directoryPath)) {
-			DirectoryInfo directoryInfo = Directory.CreateDirectory(directoryPath);
-
 			if (OperatingSystem.IsWindows()) {
+				DirectoryInfo directoryInfo = new(directoryPath);
+
 				try {
 					DirectorySecurity directorySecurity = new(directoryPath, AccessControlSections.All);
 
-					directoryInfo.SetAccessControl(directorySecurity);
-				} catch (PrivilegeNotHeldException e) {
+					directoryInfo.Create(directorySecurity);
+				} catch (UnauthorizedAccessException e) {
 					// Non-critical, user might have no rights to manage the resource
 					ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+					directoryInfo.Create();
 				}
 			} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-				directoryInfo.UnixFileMode |= UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute | UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.GroupExecute | UnixFileMode.OtherRead | UnixFileMode.OtherWrite | UnixFileMode.OtherExecute;
+				// We require global access from all users, as other ASFs might need to put additional files in there
+				Directory.CreateDirectory(directoryPath, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute | UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.GroupExecute | UnixFileMode.OtherRead | UnixFileMode.OtherWrite | UnixFileMode.OtherExecute);
 			}
 		}
 
 		try {
-			new FileStream(FilePath, FileMode.CreateNew).Dispose();
-
-			FileInfo fileInfo = new(FilePath);
-
 			if (OperatingSystem.IsWindows()) {
 				try {
 					FileSecurity fileSecurity = new(FilePath, AccessControlSections.All);
 
-					fileInfo.SetAccessControl(fileSecurity);
-				} catch (PrivilegeNotHeldException e) {
+					FileInfo fileInfo = new(FilePath);
+
+					fileInfo.Create(FileMode.CreateNew, FileSystemRights.Write, FileShare.None, 4096, FileOptions.None, fileSecurity).Dispose();
+				} catch (UnauthorizedAccessException e) {
 					// Non-critical, user might have no rights to manage the resource
 					ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+					new FileStream(FilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None).Dispose();
 				}
 			} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-				fileInfo.UnixFileMode |= UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.OtherRead | UnixFileMode.OtherWrite;
+				FileStreamOptions fileStreamOptions = new() {
+					Mode = FileMode.CreateNew,
+					Access = FileAccess.Write,
+					Share = FileShare.None,
+
+					// Since we only create and read the files, we don't need write/execute permissions on them from other instances
+					UnixCreateMode = UnixFileMode.UserRead | UnixFileMode.GroupRead | UnixFileMode.OtherRead
+				};
+
+				new FileStream(FilePath, fileStreamOptions).Dispose();
 			}
 		} catch (IOException) {
 			// Ignored, if the file was already created in the meantime by another instance, this is fine
