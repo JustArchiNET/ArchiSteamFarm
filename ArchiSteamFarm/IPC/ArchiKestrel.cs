@@ -119,8 +119,9 @@ internal static class ArchiKestrel {
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "PathString is a primitive, it's unlikely to be trimmed to the best of our knowledge")]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL3000", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	private static void ConfigureApp([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] ConfigurationManager configuration, WebApplication app) {
+	private static void ConfigureApp([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] ConfigurationManager configuration, IWebHostEnvironment environment, WebApplication app) {
 		ArgumentNullException.ThrowIfNull(configuration);
+		ArgumentNullException.ThrowIfNull(environment);
 		ArgumentNullException.ThrowIfNull(app);
 
 		// The order of dependency injection is super important, doing things in wrong order will most likely break everything
@@ -155,8 +156,10 @@ internal static class ArchiKestrel {
 		// This must be called before default files, because we don't know the exact file name that will be used for index page
 		app.UseWhen(static context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), static appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
 
-		// Add support for default root path redirection (GET / -> GET /index.html), must come before static files
-		app.UseDefaultFiles();
+		if (!string.IsNullOrEmpty(environment.WebRootPath)) {
+			// Add support for default root path redirection (GET / -> GET /index.html), must come before static files
+			app.UseDefaultFiles();
+		}
 
 		// Add support for additional default files provided by plugins
 		Dictionary<string, string> pluginPaths = new(StringComparer.Ordinal);
@@ -219,12 +222,14 @@ internal static class ArchiKestrel {
 			app.UseStaticFiles(options);
 		}
 
-		// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
-		app.UseStaticFiles(
-			new StaticFileOptions {
-				OnPrepareResponse = OnPrepareResponse
-			}
-		);
+		if (!string.IsNullOrEmpty(environment.WebRootPath)) {
+			// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
+			app.UseStaticFiles(
+				new StaticFileOptions {
+					OnPrepareResponse = OnPrepareResponse
+				}
+			);
+		}
 
 		// Use routing for our API controllers, this should be called once we're done with all the static files mess
 		app.UseRouting();
@@ -461,7 +466,7 @@ internal static class ArchiKestrel {
 
 		WebApplication result = builder.Build();
 
-		ConfigureApp(builder.Configuration, result);
+		ConfigureApp(builder.Configuration, builder.Environment, result);
 
 		return result;
 	}
