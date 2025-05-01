@@ -36,7 +36,7 @@ public static class SteamUtilities {
 	public static string ToSteamClientLanguage(this CultureInfo cultureInfo) {
 		ArgumentNullException.ThrowIfNull(cultureInfo);
 
-		// We're doing our best here to map provided CultureInfo to language supported by Steam
+		// We're doing our best here to map provided CultureInfo to language supported by Steam: https://partner.steamgames.com/doc/store/localization/languages
 		return cultureInfo.TwoLetterISOLanguageName switch {
 			"bg" => "bulgarian",
 			"cs" => "czech",
@@ -50,6 +50,7 @@ public static class SteamUtilities {
 			"hu" => "hungarian",
 			"id" => "indonesian",
 			"it" => "italian",
+			"ja" => "japanese",
 			"ko" => "koreana",
 			"nl" => "dutch",
 			"no" => "norwegian",
