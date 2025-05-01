@@ -28,6 +28,7 @@ using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm.Helpers;
 
@@ -43,8 +44,6 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 		ArgumentException.ThrowIfNullOrEmpty(name);
 
 		FilePath = Path.Combine(Path.GetTempPath(), SharedInfo.ASF, name);
-
-		EnsureFileExists();
 	}
 
 	public void Dispose() {
@@ -86,6 +85,10 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 
 		try {
 			while (true) {
+				if (!await EnsureFileExists().ConfigureAwait(false)) {
+					throw new IOException(Strings.FormatWarningFailedWithError(nameof(EnsureFileExists)));
+				}
+
 				try {
 					// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 					lock (LocalSemaphore) {
@@ -93,13 +96,13 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 							throw new InvalidOperationException(nameof(FileLock));
 						}
 
-						EnsureFileExists();
-
-						FileLock = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
+						FileLock = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.None);
 						success = true;
 
 						return;
 					}
+				} catch (FileNotFoundException) {
+					throw;
 				} catch (IOException) {
 					await Task.Delay(SpinLockDelay, cancellationToken).ConfigureAwait(false);
 				}
@@ -132,6 +135,10 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 			millisecondsTimeout -= (int) stopwatch.ElapsedMilliseconds;
 
 			while (true) {
+				if (!await EnsureFileExists().ConfigureAwait(false)) {
+					throw new IOException(Strings.FormatWarningFailedWithError(nameof(EnsureFileExists)));
+				}
+
 				try {
 					// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 					lock (LocalSemaphore) {
@@ -139,13 +146,13 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 							throw new InvalidOperationException(nameof(FileLock));
 						}
 
-						EnsureFileExists();
-
-						FileLock = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
+						FileLock = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.None);
 						success = true;
 
 						return true;
 					}
+				} catch (FileNotFoundException) {
+					throw;
 				} catch (IOException) {
 					if (millisecondsTimeout <= SpinLockDelay) {
 						return false;
@@ -162,67 +169,72 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 		}
 	}
 
-	private void EnsureFileExists() {
-		if (File.Exists(FilePath)) {
-			return;
-		}
+	private async Task<bool> EnsureFileExists() {
+		for (byte i = 0; i < 2; i++) {
+			if (File.Exists(FilePath)) {
+				return true;
+			}
 
-		string? directoryPath = Path.GetDirectoryName(FilePath);
+			string? directoryPath = Path.GetDirectoryName(FilePath);
 
-		if (string.IsNullOrEmpty(directoryPath)) {
-			ASF.ArchiLogger.LogNullError(directoryPath);
+			if (string.IsNullOrEmpty(directoryPath)) {
+				ASF.ArchiLogger.LogNullError(directoryPath);
 
-			return;
-		}
+				return false;
+			}
 
-		if (!Directory.Exists(directoryPath)) {
-			if (OperatingSystem.IsWindows()) {
-				DirectoryInfo directoryInfo = new(directoryPath);
+			if (!Directory.Exists(directoryPath)) {
+				if (OperatingSystem.IsWindows()) {
+					DirectoryInfo directoryInfo = new(directoryPath);
 
-				try {
-					DirectorySecurity directorySecurity = new(directoryPath, AccessControlSections.All);
+					try {
+						DirectorySecurity directorySecurity = new(directoryPath, AccessControlSections.All);
 
-					directoryInfo.Create(directorySecurity);
-				} catch (UnauthorizedAccessException e) {
-					// Non-critical, user might have no rights to manage the resource
-					ASF.ArchiLogger.LogGenericDebuggingException(e);
+						directoryInfo.Create(directorySecurity);
+					} catch (UnauthorizedAccessException e) {
+						// Non-critical, user might have no rights to manage the resource
+						ASF.ArchiLogger.LogGenericDebuggingException(e);
 
-					directoryInfo.Create();
+						directoryInfo.Create();
+					}
+				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
+					// We require global access from all users, as other ASFs might need to put additional files in there
+					Directory.CreateDirectory(directoryPath, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute | UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.GroupExecute | UnixFileMode.OtherRead | UnixFileMode.OtherWrite | UnixFileMode.OtherExecute);
 				}
-			} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-				// We require global access from all users, as other ASFs might need to put additional files in there
-				Directory.CreateDirectory(directoryPath, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute | UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.GroupExecute | UnixFileMode.OtherRead | UnixFileMode.OtherWrite | UnixFileMode.OtherExecute);
+			}
+
+			try {
+				if (OperatingSystem.IsWindows()) {
+					try {
+						FileSecurity fileSecurity = new(FilePath, AccessControlSections.All);
+
+						FileInfo fileInfo = new(FilePath);
+
+						await fileInfo.Create(FileMode.CreateNew, FileSystemRights.Write, FileShare.None, 4096, FileOptions.None, fileSecurity).DisposeAsync().ConfigureAwait(false);
+					} catch (UnauthorizedAccessException e) {
+						// Non-critical, user might have no rights to manage the resource
+						ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+						await new FileStream(FilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None).DisposeAsync().ConfigureAwait(false);
+					}
+				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
+					FileStreamOptions fileStreamOptions = new() {
+						Mode = FileMode.CreateNew,
+						Access = FileAccess.Write,
+						Share = FileShare.None,
+
+						// Since we only create and read the files, we don't need write/execute permissions on them from other instances
+						UnixCreateMode = UnixFileMode.UserRead | UnixFileMode.GroupRead | UnixFileMode.OtherRead
+					};
+
+					await new FileStream(FilePath, fileStreamOptions).DisposeAsync().ConfigureAwait(false);
+				}
+			} catch (IOException e) {
+				// Ignored, if the file was already created in the meantime by another instance, this is fine
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			}
 		}
 
-		try {
-			if (OperatingSystem.IsWindows()) {
-				try {
-					FileSecurity fileSecurity = new(FilePath, AccessControlSections.All);
-
-					FileInfo fileInfo = new(FilePath);
-
-					fileInfo.Create(FileMode.CreateNew, FileSystemRights.Write, FileShare.None, 4096, FileOptions.None, fileSecurity).Dispose();
-				} catch (UnauthorizedAccessException e) {
-					// Non-critical, user might have no rights to manage the resource
-					ASF.ArchiLogger.LogGenericDebuggingException(e);
-
-					new FileStream(FilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None).Dispose();
-				}
-			} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-				FileStreamOptions fileStreamOptions = new() {
-					Mode = FileMode.CreateNew,
-					Access = FileAccess.Write,
-					Share = FileShare.None,
-
-					// Since we only create and read the files, we don't need write/execute permissions on them from other instances
-					UnixCreateMode = UnixFileMode.UserRead | UnixFileMode.GroupRead | UnixFileMode.OtherRead
-				};
-
-				new FileStream(FilePath, fileStreamOptions).Dispose();
-			}
-		} catch (IOException) {
-			// Ignored, if the file was already created in the meantime by another instance, this is fine
-		}
+		return false;
 	}
 }
