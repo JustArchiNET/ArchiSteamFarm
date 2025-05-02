@@ -330,7 +330,7 @@ internal static class Commands {
 		CTwoFactor_AddAuthenticator_Response? response = await mobileAuthenticatorHandler.AddAuthenticator(bot.SteamID, deviceID).ConfigureAwait(false);
 
 		if (response == null) {
-			return bot.Commands.FormatBotResponse(Strings.WarningFailed);
+			return bot.Commands.FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(mobileAuthenticatorHandler.AddAuthenticator)));
 		}
 
 		EResult result = (EResult) response.status;

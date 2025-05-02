@@ -76,7 +76,8 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 			return null;
 		}
 
-		return response.Result == EResult.OK ? response.Body : null;
+		// We want to return the response even with failed EResult
+		return response.Body;
 	}
 
 	internal async Task<CTwoFactor_FinalizeAddAuthenticator_Response?> FinalizeAuthenticator(ulong steamID, string activationCode, string authenticatorCode, ulong authenticatorTime) {
@@ -113,6 +114,7 @@ internal sealed class MobileAuthenticatorHandler : ClientMsgHandler {
 			return null;
 		}
 
-		return response.Result == EResult.OK ? response.Body : null;
+		// We want to return the response even with failed EResult
+		return response.Body;
 	}
 }
