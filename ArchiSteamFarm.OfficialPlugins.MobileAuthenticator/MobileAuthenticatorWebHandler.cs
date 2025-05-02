@@ -60,16 +60,16 @@ internal static class MobileAuthenticatorWebHandler {
 			{ "steamid", bot.SteamID }
 		};
 
+		using WebAPI.AsyncInterface twoFactorService = bot.SteamConfiguration.GetAsyncWebAPIInterface(TwoFactorService);
+
+		twoFactorService.Timeout = bot.ArchiWebHandler.WebBrowser.Timeout;
+
 		CTwoFactor_AddAuthenticator_Response? response = null;
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 			if ((i > 0) && (ArchiWebHandler.WebLimiterDelay > 0)) {
 				await Task.Delay(ArchiWebHandler.WebLimiterDelay).ConfigureAwait(false);
 			}
-
-			using WebAPI.AsyncInterface twoFactorService = bot.SteamConfiguration.GetAsyncWebAPIInterface(TwoFactorService);
-
-			twoFactorService.Timeout = bot.ArchiWebHandler.WebBrowser.Timeout;
 
 			try {
 				// TODO: Move to CallProtobufAsync<TResponse, TRequest> when we update to SK2 3.2.0+ <https://github.com/SteamRE/SteamKit/pull/1537>
@@ -119,16 +119,16 @@ internal static class MobileAuthenticatorWebHandler {
 			{ "steamid", bot.SteamID }
 		};
 
+		using WebAPI.AsyncInterface twoFactorService = bot.SteamConfiguration.GetAsyncWebAPIInterface(TwoFactorService);
+
+		twoFactorService.Timeout = bot.ArchiWebHandler.WebBrowser.Timeout;
+
 		CTwoFactor_FinalizeAddAuthenticator_Response? response = null;
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 			if ((i > 0) && (ArchiWebHandler.WebLimiterDelay > 0)) {
 				await Task.Delay(ArchiWebHandler.WebLimiterDelay).ConfigureAwait(false);
 			}
-
-			using WebAPI.AsyncInterface twoFactorService = bot.SteamConfiguration.GetAsyncWebAPIInterface(TwoFactorService);
-
-			twoFactorService.Timeout = bot.ArchiWebHandler.WebBrowser.Timeout;
 
 			try {
 				// TODO: Move to CallProtobufAsync<TResponse, TRequest> when we update to SK2 3.2.0+ <https://github.com/SteamRE/SteamKit/pull/1537>

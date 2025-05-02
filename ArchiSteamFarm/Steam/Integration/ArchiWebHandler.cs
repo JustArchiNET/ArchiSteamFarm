@@ -1597,16 +1597,16 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal HttpClient GenerateDisposableHttpClient() => WebBrowser.GenerateDisposableHttpClient();
 
 	internal async Task<HashSet<uint>?> GetAppList() {
+		using WebAPI.AsyncInterface steamAppsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamAppsService);
+
+		steamAppsService.Timeout = WebBrowser.Timeout;
+
 		KeyValue? response = null;
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 			if ((i > 0) && (WebLimiterDelay > 0)) {
 				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
 			}
-
-			using WebAPI.AsyncInterface steamAppsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamAppsService);
-
-			steamAppsService.Timeout = WebBrowser.Timeout;
 
 			try {
 				response = await WebLimitRequest(
@@ -1712,16 +1712,16 @@ public sealed class ArchiWebHandler : IDisposable {
 			arguments["trade_offer_access_token"] = tradeToken;
 		}
 
+		using WebAPI.AsyncInterface econService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(EconService);
+
+		econService.Timeout = WebBrowser.Timeout;
+
 		KeyValue? response = null;
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 			if ((i > 0) && (WebLimiterDelay > 0)) {
 				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
 			}
-
-			using WebAPI.AsyncInterface econService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(EconService);
-
-			econService.Timeout = WebBrowser.Timeout;
 
 			try {
 				response = await WebLimitRequest(
