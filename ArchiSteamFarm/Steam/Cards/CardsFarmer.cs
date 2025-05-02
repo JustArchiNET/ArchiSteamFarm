@@ -142,9 +142,13 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	[JsonRequired]
 	[PublicAPI]
 	[Required]
-	public bool Paused { get; private set; }
+	public bool NowFarming { get; private set; }
 
-	internal bool NowFarming { get; private set; }
+	[JsonInclude]
+	[JsonRequired]
+	[PublicAPI]
+	[Required]
+	public bool Paused { get; private set; }
 
 	private TaskCompletionSource<bool>? FarmingResetEvent;
 	private bool ParsingScheduled;
