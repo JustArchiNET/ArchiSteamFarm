@@ -22,7 +22,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Composition;
 using System.Diagnostics.CodeAnalysis;
@@ -39,7 +38,7 @@ namespace ArchiSteamFarm.OfficialPlugins.MobileAuthenticator;
 
 [Export(typeof(IPlugin))]
 [SuppressMessage("ReSharper", "MemberCanBeFileLocal")]
-internal sealed class MobileAuthenticatorPlugin : OfficialPlugin, IBotCommand2, IBotSteamClient {
+internal sealed class MobileAuthenticatorPlugin : OfficialPlugin, IBotCommand2 {
 	[JsonInclude]
 	public override string Name => nameof(MobileAuthenticatorPlugin);
 
@@ -64,25 +63,6 @@ internal sealed class MobileAuthenticatorPlugin : OfficialPlugin, IBotCommand2, 
 		}
 
 		return await Commands.OnBotCommand(bot, access, message, args, steamID).ConfigureAwait(false);
-	}
-
-	public Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager) {
-		ArgumentNullException.ThrowIfNull(bot);
-		ArgumentNullException.ThrowIfNull(callbackManager);
-
-		return Task.CompletedTask;
-	}
-
-	public Task<IReadOnlyCollection<ClientMsgHandler>?> OnBotSteamHandlersInit(Bot bot) {
-		ArgumentNullException.ThrowIfNull(bot);
-
-		SteamUnifiedMessages? steamUnifiedMessages = bot.GetHandler<SteamUnifiedMessages>();
-
-		if (steamUnifiedMessages == null) {
-			throw new InvalidOperationException(nameof(steamUnifiedMessages));
-		}
-
-		return Task.FromResult<IReadOnlyCollection<ClientMsgHandler>?>(new HashSet<ClientMsgHandler>(1) { new MobileAuthenticatorHandler(bot.ArchiLogger, steamUnifiedMessages) });
 	}
 
 	public override Task OnLoaded() {

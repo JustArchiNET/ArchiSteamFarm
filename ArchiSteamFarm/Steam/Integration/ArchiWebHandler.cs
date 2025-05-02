@@ -72,7 +72,8 @@ public sealed class ArchiWebHandler : IDisposable {
 	[PublicAPI]
 	public static Uri SteamStoreURL => new("https://store.steampowered.com");
 
-	private static ushort WebLimiterDelay => ASF.GlobalConfig?.WebLimiterDelay ?? GlobalConfig.DefaultWebLimiterDelay;
+	[PublicAPI]
+	public static ushort WebLimiterDelay => ASF.GlobalConfig?.WebLimiterDelay ?? GlobalConfig.DefaultWebLimiterDelay;
 
 	[PublicAPI]
 	public WebBrowser WebBrowser { get; }

@@ -135,12 +135,6 @@ internal static class Commands {
 
 		mobileAuthenticator.Init(bot);
 
-		MobileAuthenticatorHandler? mobileAuthenticatorHandler = bot.GetHandler<MobileAuthenticatorHandler>();
-
-		if (mobileAuthenticatorHandler == null) {
-			throw new InvalidOperationException(nameof(mobileAuthenticatorHandler));
-		}
-
 		ulong steamTime = await mobileAuthenticator.GetSteamTime().ConfigureAwait(false);
 
 		string? code = mobileAuthenticator.GenerateTokenForTime(steamTime);
@@ -149,10 +143,10 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(mobileAuthenticator.GenerateTokenForTime)));
 		}
 
-		CTwoFactor_FinalizeAddAuthenticator_Response? response = await mobileAuthenticatorHandler.FinalizeAuthenticator(bot.SteamID, activationCode, code, steamTime).ConfigureAwait(false);
+		CTwoFactor_FinalizeAddAuthenticator_Response? response = await MobileAuthenticatorWebHandler.FinalizeAuthenticator(bot, activationCode, code, steamTime).ConfigureAwait(false);
 
 		if (response == null) {
-			return bot.Commands.FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(mobileAuthenticatorHandler.FinalizeAuthenticator)));
+			return bot.Commands.FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(MobileAuthenticatorWebHandler.FinalizeAuthenticator)));
 		}
 
 		if (!response.success) {
@@ -319,18 +313,12 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		MobileAuthenticatorHandler? mobileAuthenticatorHandler = bot.GetHandler<MobileAuthenticatorHandler>();
-
-		if (mobileAuthenticatorHandler == null) {
-			throw new InvalidOperationException(nameof(mobileAuthenticatorHandler));
-		}
-
 		string deviceID = $"android:{Guid.NewGuid()}";
 
-		CTwoFactor_AddAuthenticator_Response? response = await mobileAuthenticatorHandler.AddAuthenticator(bot.SteamID, deviceID).ConfigureAwait(false);
+		CTwoFactor_AddAuthenticator_Response? response = await MobileAuthenticatorWebHandler.AddAuthenticator(bot, deviceID).ConfigureAwait(false);
 
 		if (response == null) {
-			return bot.Commands.FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(mobileAuthenticatorHandler.AddAuthenticator)));
+			return bot.Commands.FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(MobileAuthenticatorWebHandler.AddAuthenticator)));
 		}
 
 		EResult result = (EResult) response.status;
