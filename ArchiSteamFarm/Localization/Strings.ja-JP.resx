@@ -581,7 +581,10 @@ Process uptime: {1}</value>
 		<value>bot のレベルは {0} です。</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
+	<data name="BotInventory" xml:space="preserve">
+		<value>{0}/{1} ({2}/{3}): アセット数 {4}</value>
+		<comment>{0} will be replaced by appID (number), {1} will be replaced by contextID (number), {2} will be replaced by app's name (string), {3} will be replaced by name of the context (string), {4} will be replaced by number of assets in the specified inventory (number).</comment>
+	</data>
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Steam アイテムをマッチさせています: #{0}</value>
 		<comment>{0} will be replaced by round number</comment>
@@ -681,7 +684,10 @@ Process uptime: {1}</value>
 		<value>暗号化キーが短すぎます。少なくとも {0} バイト (文字) の長いものを使用することをお勧めします。</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>{1} プロパティの {0} 設定を使用していますが、カスタム --cryptkey が指定されていません。必要に応じて、セキュリティ向上のためにカスタム --cryptkey を指定できます。</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>{0} 設定の {1} プロパティを使用していますが、カスタム --cryptkey が設定されていません。 ASFは独自の(既知の) キーを使用することを余儀なくされているため、この状態ではセキュリティ保護がされていないことを意味します。 この設定で提供されるセキュリティ上のメリットを利用するためには、カスタム --cryptkey を提供する必要があります。</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -701,7 +707,9 @@ Process uptime: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>リモートサーバーがアップデート中のリリースを認知していません。このリリースが直近に公開された場合、この状況が起こることがあります - 万全なセキュリティ対策を期すため、このアップデートを却下します。</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>ダウンロードしたバイナリのチェックサムの取得に失敗しました。セキュリティ上の理由から、今回はアップデート手順を中止します。</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>リモートサーバーがチェックサムの不一致を確認しました。これはダウンロードが破損しているか、MITM攻撃を示す可能性があります。このアップデートを却下します！</value>
 	</data>
@@ -720,10 +728,21 @@ Process uptime: {1}</value>
 		<value>有償機能の{0} の使用を試みましたが、ASFグローバル設定に有効なLicenseIDが設定されていません。追加の設定が行われていない場合、この機能は動作しません。設定を確認してください。</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
-	
-	
-	
-	
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>アプリ {0} は、{1} の国に対する地域制限が {2} まで有効なため、ASF ではプレイできません。</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>公式の {0} プラグインを ASF バージョン {1} で使用しようとしていますが、互換性がありません（想定バージョン: {2}）。構成に問題がある可能性が高いため、修正するか、本当に内容を理解している場合のみ --ignore-unsupported-environment を指定してください。</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>ASF が最近頻繁にクラッシュしているため、プロセスの初期化が無効化されています。構成を確認・修正したうえで、設定ディレクトリ内の ASF.crash ファイルを削除するか、本当に理解している場合のみ --ignore-unsupported-environment を指定してください。</value>
+	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>{0}（{1}）のファーミングは無効です。このゲームは現在プライベート設定になっています。ASF でファーミングを行いたい場合は、プライバシー設定の変更を検討してください。</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="WarningSkipping" xml:space="preserve">
 		<value>スキップ中: {0}...</value>
 		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
@@ -731,16 +750,48 @@ Process uptime: {1}</value>
 	<data name="PluginUpdatesChecking" xml:space="preserve">
 		<value>プラグインのアップデートを確認しています...</value>
 	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>{0} プラグインのアップデートを確認中…</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>新しい {0} プラグインバージョンが利用可能です！アップデートを検討してください！</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>{0} プラグインのアップデートが見つかりました（バージョン {1} → {2}）…</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>{0} プラグインのバージョン {1} から {2} へのアップデート用アセットが見つかりません。通常、この場合は後ほど利用可能になります。</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>{0} プラグインのバージョン {1} から {2} へのアップデートに使用するアセットが特定できませんでした。これはリリースが未完了の場合に発生することがあります。繰り返し発生する場合は、プラグインの作者に連絡してください。</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>{0} プラグインを更新中…</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>{0} プラグインの更新に成功しました。変更は次回 ASF の起動時に反映されます。</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>{0}/{1} プラグインは登録され、自動アップデートが有効になりました。</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>{0}（{1}）プラグインは自動アップデート機能に対応していますが、無効化されています。</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>カスタムプラグインが自動アップデート対象として登録されました。ASFチームからのお願いとして、安全のため信頼できる提供元からのプラグインのみ自動アップデートを有効にしてください。意図しない登録であれば、ASFのグローバル設定でプラグインの自動アップデートを無効にできます。</value>
+	</data>
+	<data name="Input" xml:space="preserve">
+		<value>入力: {0}</value>
+		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
 </root>

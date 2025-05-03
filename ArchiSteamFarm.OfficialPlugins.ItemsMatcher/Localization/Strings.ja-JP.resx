@@ -64,4 +64,12 @@
 		<value>すべてのうち、{0} セットにマッチしたためこのラウンドを終了します。</value>
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
+  <data name="ListingAnnouncing" xml:space="preserve">
+		<value>{0}（{1}）をリスト上でアナウンス中です。インベントリには合計 {2} 個のアイテムが含まれています…</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname, {2} will be replaced with number of items in the inventory</comment>
+	</data>
+  <data name="MatchingFound" xml:space="preserve">
+		<value>ボット {1}（{2}）と合計 {0} 個のアイテムが一致しました。トレードオファーを送信しています…</value>
+		<comment>{0} will be replaced by number of items matched, {1} will be replaced by steam ID (number), {2} will be replaced by user's nickname</comment>
+	</data>
 </root>
