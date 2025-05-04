@@ -185,17 +185,15 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 
 			if (!Directory.Exists(directoryPath)) {
 				if (OperatingSystem.IsWindows()) {
-					DirectoryInfo directoryInfo = new(directoryPath);
+					DirectoryInfo directoryInfo = Directory.CreateDirectory(directoryPath);
 
 					try {
 						DirectorySecurity directorySecurity = new(directoryPath, AccessControlSections.All);
 
-						directoryInfo.Create(directorySecurity);
-					} catch (UnauthorizedAccessException e) {
+						directoryInfo.SetAccessControl(directorySecurity);
+					} catch (PrivilegeNotHeldException e) {
 						// Non-critical, user might have no rights to manage the resource
 						ASF.ArchiLogger.LogGenericDebuggingException(e);
-
-						directoryInfo.Create();
 					}
 				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 					// We require global access from all users, as other ASFs might need to put additional files in there
@@ -203,29 +201,29 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 				}
 			}
 
+			FileStreamOptions fileStreamOptions = new() {
+				Mode = FileMode.CreateNew,
+				Access = FileAccess.Write,
+				Share = FileShare.None
+			};
+
 			try {
 				if (OperatingSystem.IsWindows()) {
+					await new FileStream(FilePath, fileStreamOptions).DisposeAsync().ConfigureAwait(false);
+
+					FileInfo fileInfo = new(FilePath);
+
 					try {
 						FileSecurity fileSecurity = new(FilePath, AccessControlSections.All);
 
-						FileInfo fileInfo = new(FilePath);
-
-						await fileInfo.Create(FileMode.CreateNew, FileSystemRights.Write, FileShare.None, 4096, FileOptions.None, fileSecurity).DisposeAsync().ConfigureAwait(false);
-					} catch (UnauthorizedAccessException e) {
+						fileInfo.SetAccessControl(fileSecurity);
+					} catch (PrivilegeNotHeldException e) {
 						// Non-critical, user might have no rights to manage the resource
 						ASF.ArchiLogger.LogGenericDebuggingException(e);
-
-						await new FileStream(FilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None).DisposeAsync().ConfigureAwait(false);
 					}
 				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-					FileStreamOptions fileStreamOptions = new() {
-						Mode = FileMode.CreateNew,
-						Access = FileAccess.Write,
-						Share = FileShare.None,
-
-						// Since we only create and read the files, we don't need write/execute permissions on them from other instances
-						UnixCreateMode = UnixFileMode.UserRead | UnixFileMode.GroupRead | UnixFileMode.OtherRead
-					};
+					// Since we only create and read the files, we don't need write/execute permissions on them from other instances
+					fileStreamOptions.UnixCreateMode = UnixFileMode.UserRead | UnixFileMode.GroupRead | UnixFileMode.OtherRead;
 
 					await new FileStream(FilePath, fileStreamOptions).DisposeAsync().ConfigureAwait(false);
 				}
