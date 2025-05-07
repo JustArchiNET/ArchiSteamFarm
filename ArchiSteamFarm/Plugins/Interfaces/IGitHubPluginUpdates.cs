@@ -175,7 +175,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 
 		if (!forced && (Version >= newVersion)) {
 			// Allow same version to be re-updated when we're updating ASF release and more than one asset is found - potential compatibility difference
-			if ((Version > newVersion) || !asfUpdate || (releaseResponse.Assets.Count(static asset => asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)) < 2)) {
+			if ((Version > newVersion) || !asfUpdate || (releaseResponse.Assets.Count(asset => asset.Name.Equals($"{Name}.zip", StringComparison.OrdinalIgnoreCase) || (asset.Name.StartsWith($"{Name}-V", StringComparison.OrdinalIgnoreCase) && asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))) < 2)) {
 				ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateNotFound(Name, Version, newVersion));
 
 				return null;
