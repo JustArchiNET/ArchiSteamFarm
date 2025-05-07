@@ -181,7 +181,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			// Then calculate assets that can possibly take part in the update process, in order to determine whether the change of plugin variant is possible
 			// The base condition is that the release must have at least 2 total assets, therefore we need to only take into account GetPossibleMatchesByName() logic, while assuming that version is flexible
 			// If by the end we have at least 2 assets we're considering for an update, then that's a possible variant change and in this case we should proceed to cover for the edge case explained above
-			if ((Version > newVersion) || !asfUpdate || (GetPossibleNames().Sum(pluginName => releaseResponse.Assets.Count(asset => asset.Name.Equals($"{pluginName}.zip", StringComparison.OrdinalIgnoreCase) || (asset.Name.StartsWith($"{pluginName}-V", StringComparison.OrdinalIgnoreCase) && asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)))) < 2)) {
+			if ((Version > newVersion) || !asfUpdate || (releaseResponse.Assets.Count < 2) || (GetPossibleNames().Sum(pluginName => releaseResponse.Assets.Count(asset => asset.Name.Equals($"{pluginName}.zip", StringComparison.OrdinalIgnoreCase) || (asset.Name.StartsWith($"{pluginName}-V", StringComparison.OrdinalIgnoreCase) && asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)))) < 2)) {
 				ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateNotFound(Name, Version, newVersion));
 
 				return null;
