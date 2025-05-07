@@ -174,8 +174,14 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		Version newVersion = new(releaseResponse.Tag);
 
 		if (!forced && (Version >= newVersion)) {
-			// Allow same version to be re-updated when we're updating ASF release and more than one asset is found - potential compatibility difference
-			if ((Version > newVersion) || !asfUpdate || (releaseResponse.Assets.Count(asset => asset.Name.Equals($"{Name}.zip", StringComparison.OrdinalIgnoreCase) || (asset.Name.StartsWith($"{Name}-V", StringComparison.OrdinalIgnoreCase) && asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))) < 2)) {
+			// Normally we should skip the update in this case, as the update is non-forced and there is no new version available
+			// However, allow the same version to be re-updated when we're updating ASF release and more than one asset is found - this allows us to update to a different variant of the same plugin version that happened due to ASF version change
+
+			// Start from evaluating whether the version is the same and we're actually updating ASF as part of this call
+			// Then calculate assets that can possibly take part in the update process, in order to determine whether the change of plugin variant is possible
+			// The base condition is that the release must have at least 2 total assets, therefore we need to only take into account GetPossibleMatchesByName() logic, while assuming that version is flexible
+			// If by the end we have at least 2 assets we're considering for an update, then that's a possible variant change and in this case we should proceed to cover for the edge case explained above
+			if ((Version > newVersion) || !asfUpdate || (GetPossibleNames().Sum(pluginName => releaseResponse.Assets.Count(asset => asset.Name.Equals($"{pluginName}.zip", StringComparison.OrdinalIgnoreCase) || (asset.Name.StartsWith($"{pluginName}-V", StringComparison.OrdinalIgnoreCase) && asset.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)))) < 2)) {
 				ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateNotFound(Name, Version, newVersion));
 
 				return null;
@@ -204,20 +210,8 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	private IEnumerable<string> GetPossibleMatches(Version version) {
 		ArgumentNullException.ThrowIfNull(version);
 
-		string pluginName = Name;
-
-		if (!string.IsNullOrEmpty(pluginName)) {
-			foreach (string possibleMatch in GetPossibleMatchesByName(version, pluginName)) {
-				yield return possibleMatch;
-			}
-		}
-
-		string? assemblyName = GetType().Assembly.GetName().Name;
-
-		if (!string.IsNullOrEmpty(assemblyName)) {
-			foreach (string possibleMatch in GetPossibleMatchesByName(version, assemblyName)) {
-				yield return possibleMatch;
-			}
+		foreach (string possibleMatch in GetPossibleNames().SelectMany(pluginName => GetPossibleMatchesByName(version, pluginName))) {
+			yield return possibleMatch;
 		}
 	}
 
@@ -230,5 +224,19 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		yield return $"{name}-V{version.Major}-{version.Minor}.zip";
 		yield return $"{name}-V{version.Major}.zip";
 		yield return $"{name}.zip";
+	}
+
+	private IEnumerable<string> GetPossibleNames() {
+		string pluginName = Name;
+
+		if (!string.IsNullOrEmpty(pluginName)) {
+			yield return pluginName;
+		}
+
+		string? assemblyName = GetType().Assembly.GetName().Name;
+
+		if (!string.IsNullOrEmpty(assemblyName) && !assemblyName.Equals(pluginName, StringComparison.OrdinalIgnoreCase)) {
+			yield return assemblyName;
+		}
 	}
 }
