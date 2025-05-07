@@ -127,7 +127,7 @@ if [ "$CLEAN" -eq 1 ]; then
 fi
 
 if [ "$TEST" -eq 1 ]; then
-	dotnet test "$TESTS_PROJECT" $DOTNET_FLAGS
+	dotnet test "$TESTS_PROJECT" --filter TestCategory!=Manual $DOTNET_FLAGS
 fi
 
 echo "INFO: Building ${MAIN_PROJECT}..."

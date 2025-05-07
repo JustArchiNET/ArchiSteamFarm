@@ -38,4 +38,4 @@ jobs:
       run: dotnet build -c "${{ matrix.configuration }}" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false --nologo
 
     - name: Run ${{ matrix.configuration }} ArchiSteamFarm.Tests
-      run: dotnet test ArchiSteamFarm.Tests -c "${{ matrix.configuration }}" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false --nologo
+      run: dotnet test ArchiSteamFarm.Tests -c "${{ matrix.configuration }}" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false --filter TestCategory!=Manual --nologo

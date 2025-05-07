@@ -40,7 +40,7 @@ internal sealed class IGitHubPluginUpdates {
 	private const string PluginName = "ArchiSteamFarm.OfficialPlugins.Monitoring";
 	private const string Repository = "JustArchiNET/ArchiSteamFarm";
 
-	[Ignore("For manual testing only, since it calls remote resources")]
+	[TestCategory("Manual")]
 	[TestMethod]
 	internal async Task DoesNotOfferPointlessUpdatesWhenMultipleAssetsAreFound() {
 		using WebBrowser webBrowser = new(new ArchiLogger("Test"));
