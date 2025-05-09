@@ -154,9 +154,21 @@
 		<value>新しいデポ: {0}</value>
 		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
-	
-	
-	
+	<data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+		<value>検証済みのデポ: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="PluginSecretListInitialized" xml:space="preserve">
+		<value>{0} を初期化しました。このプラグインは次の項目には対応しません: {1}。</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>STD のグローバルキャッシュを読み込み中…</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>STD のグローバルキャッシュの整合性を検証中…</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>STD のグローバルキャッシュの整合性を検証できませんでした。ファイルまたはメモリの破損が疑われます。新しいインスタンスを初期化します。</value>
+	</data>
 </root>
