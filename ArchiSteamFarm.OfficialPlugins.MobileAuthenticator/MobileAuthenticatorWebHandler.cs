@@ -52,19 +52,22 @@ internal static class MobileAuthenticatorWebHandler {
 			return null;
 		}
 
-		Dictionary<string, object?> arguments = new(5, StringComparer.Ordinal) {
-			{ "access_token", accessToken },
-			{ "authenticator_time", Utilities.GetUnixTime() },
-			{ "authenticator_type", 1 },
-			{ "device_identifier", deviceID },
-			{ "steamid", bot.SteamID }
+		CTwoFactor_AddAuthenticator_Request request = new() {
+			authenticator_time = Utilities.GetUnixTime(),
+			authenticator_type = 1,
+			device_identifier = deviceID,
+			steamid = bot.SteamID
+		};
+
+		Dictionary<string, object?> arguments = new(1, StringComparer.Ordinal) {
+			{ "access_token", accessToken }
 		};
 
 		using WebAPI.AsyncInterface twoFactorService = bot.SteamConfiguration.GetAsyncWebAPIInterface(TwoFactorService);
 
 		twoFactorService.Timeout = bot.ArchiWebHandler.WebBrowser.Timeout;
 
-		CTwoFactor_AddAuthenticator_Response? response = null;
+		WebAPI.WebAPIResponse<CTwoFactor_AddAuthenticator_Response>? response = null;
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 			if ((i > 0) && (ArchiWebHandler.WebLimiterDelay > 0)) {
@@ -72,12 +75,11 @@ internal static class MobileAuthenticatorWebHandler {
 			}
 
 			try {
-				// TODO: Move to CallProtobufAsync<TResponse, TRequest> when we update to SK2 3.2.0+ <https://github.com/SteamRE/SteamKit/pull/1537>
 				response = await ArchiWebHandler.WebLimitRequest(
 					WebAPI.DefaultBaseAddress,
 
 					// ReSharper disable once AccessToDisposedClosure
-					async () => await twoFactorService.CallProtobufAsync<CTwoFactor_AddAuthenticator_Response>(HttpMethod.Post, "AddAuthenticator", args: arguments).ConfigureAwait(false)
+					async () => await twoFactorService.CallProtobufAsync<CTwoFactor_AddAuthenticator_Response, CTwoFactor_AddAuthenticator_Request>(HttpMethod.Post, "AddAuthenticator", request, extraArgs: arguments).ConfigureAwait(false)
 				).ConfigureAwait(false);
 			} catch (TaskCanceledException e) {
 				bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -92,7 +94,7 @@ internal static class MobileAuthenticatorWebHandler {
 			return null;
 		}
 
-		return response;
+		return response.Body;
 	}
 
 	internal static async Task<CTwoFactor_FinalizeAddAuthenticator_Response?> FinalizeAuthenticator(Bot bot, string activationCode, string authenticatorCode, ulong authenticatorTime) {
@@ -111,19 +113,22 @@ internal static class MobileAuthenticatorWebHandler {
 			return null;
 		}
 
-		Dictionary<string, object?> arguments = new(5, StringComparer.Ordinal) {
-			{ "access_token", accessToken },
-			{ "activation_code", activationCode },
-			{ "authenticator_code", authenticatorCode },
-			{ "authenticator_time", authenticatorTime },
-			{ "steamid", bot.SteamID }
+		CTwoFactor_FinalizeAddAuthenticator_Request request = new() {
+			activation_code = activationCode,
+			authenticator_code = authenticatorCode,
+			authenticator_time = authenticatorTime,
+			steamid = bot.SteamID
+		};
+
+		Dictionary<string, object?> arguments = new(1, StringComparer.Ordinal) {
+			{ "access_token", accessToken }
 		};
 
 		using WebAPI.AsyncInterface twoFactorService = bot.SteamConfiguration.GetAsyncWebAPIInterface(TwoFactorService);
 
 		twoFactorService.Timeout = bot.ArchiWebHandler.WebBrowser.Timeout;
 
-		CTwoFactor_FinalizeAddAuthenticator_Response? response = null;
+		WebAPI.WebAPIResponse<CTwoFactor_FinalizeAddAuthenticator_Response>? response = null;
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 			if ((i > 0) && (ArchiWebHandler.WebLimiterDelay > 0)) {
@@ -131,12 +136,11 @@ internal static class MobileAuthenticatorWebHandler {
 			}
 
 			try {
-				// TODO: Move to CallProtobufAsync<TResponse, TRequest> when we update to SK2 3.2.0+ <https://github.com/SteamRE/SteamKit/pull/1537>
 				response = await ArchiWebHandler.WebLimitRequest(
 					WebAPI.DefaultBaseAddress,
 
 					// ReSharper disable once AccessToDisposedClosure
-					async () => await twoFactorService.CallProtobufAsync<CTwoFactor_FinalizeAddAuthenticator_Response>(HttpMethod.Post, "FinalizeAddAuthenticator", args: arguments).ConfigureAwait(false)
+					async () => await twoFactorService.CallProtobufAsync<CTwoFactor_FinalizeAddAuthenticator_Response, CTwoFactor_FinalizeAddAuthenticator_Request>(HttpMethod.Post, "FinalizeAddAuthenticator", request, extraArgs: arguments).ConfigureAwait(false)
 				).ConfigureAwait(false);
 			} catch (TaskCanceledException e) {
 				bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -151,6 +155,6 @@ internal static class MobileAuthenticatorWebHandler {
 			return null;
 		}
 
-		return response;
+		return response.Body;
 	}
 }
