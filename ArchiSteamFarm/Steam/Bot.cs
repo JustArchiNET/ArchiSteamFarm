@@ -2112,7 +2112,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			await RefreshStoreData(allPackages, packagesToRefresh).ConfigureAwait(false);
 		}
 
-		foreach (uint packageID in BotDatabase.ExtraStorePackages.Where(packageID => !ownedPackages.ContainsKey(packageID))) {
+		foreach (uint packageID in BotDatabase.ExtraStorePackages.Where(packageID => !allPackages.Contains(packageID))) {
 			ownedPackages.Add(
 				packageID, new LicenseData {
 					PackageID = packageID,
