@@ -21,17 +21,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
+using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
-internal static class SharedInfo {
-	internal const byte ApiVersion = 2;
-	internal const byte HoursBetweenUploads = 24;
-	internal const byte MaximumHoursBetweenRefresh = 8; // Per single bot account, makes sense to be 2 or 3 times less than MinimumHoursBetweenUploads
-	internal const byte MaximumMinutesBeforeFirstUpload = 60; // Must be greater or equal to MinimumMinutesBeforeFirstUpload
-	internal const byte MinimumMinutesBeforeFirstUpload = 10; // Must be less or equal to MaximumMinutesBeforeFirstUpload
-	internal const byte MinimumMinutesBetweenUploads = 5; // Rate limiting for the server
-	internal const string ServerURL = "https://tokendumper-asf.steamdb.info";
-	internal const string Token = "STEAM_TOKEN_DUMPER_TOKEN"; // This is filled automatically during our CI build with API key provided by xPaw for ASF project
+namespace ArchiSteamFarm.Steam.Data;
 
-	internal static bool HasValidToken => Token.Length == 128;
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+internal sealed class StoreUserData {
+	[JsonInclude]
+	[JsonPropertyName("rgOwnedPackages")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> OwnedPackages { get; private init; } = ImmutableHashSet<uint>.Empty;
+
+	[JsonConstructor]
+	private StoreUserData() { }
 }
