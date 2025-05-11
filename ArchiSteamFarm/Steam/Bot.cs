@@ -2112,12 +2112,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			await RefreshStoreData(allPackages, packagesToRefresh).ConfigureAwait(false);
 		}
 
-		foreach (uint packageID in BotDatabase.ExtraStorePackages) {
-			ownedPackages[packageID] = new LicenseData {
-				PackageID = packageID,
-				PaymentMethod = EPaymentMethod.None,
-				TimeCreated = DateTime.UnixEpoch
-			};
+		foreach (uint packageID in BotDatabase.ExtraStorePackages.Where(packageID => !ownedPackages.ContainsKey(packageID))) {
+			ownedPackages.Add(
+				packageID, new LicenseData {
+					PackageID = packageID,
+					PaymentMethod = EPaymentMethod.None,
+					TimeCreated = DateTime.UnixEpoch
+				}
+			);
 		}
 	}
 
