@@ -360,7 +360,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 			bot.ArchiLogger.LogGenericInfo(Strings.FormatBotRetrievingTotalAppAccessTokens(appIDsToRefresh.Count));
 
-			HashSet<uint> appIDsThisRound = new(Math.Min(appIDsToRefresh.Count, SharedInfo.AppInfosPerSingleRequest));
+			HashSet<uint> appIDsThisRound = new(Math.Min(appIDsToRefresh.Count, Bot.EntriesPerSinglePICSRequest));
 
 			using (HashSet<uint>.Enumerator enumerator = appIDsToRefresh.GetEnumerator()) {
 				while (true) {
@@ -368,7 +368,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						return;
 					}
 
-					while ((appIDsThisRound.Count < SharedInfo.AppInfosPerSingleRequest) && enumerator.MoveNext()) {
+					while ((appIDsThisRound.Count < Bot.EntriesPerSinglePICSRequest) && enumerator.MoveNext()) {
 						appIDsThisRound.Add(enumerator.Current);
 					}
 
@@ -409,7 +409,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						return;
 					}
 
-					while ((appIDsThisRound.Count < SharedInfo.AppInfosPerSingleRequest) && enumerator.MoveNext()) {
+					while ((appIDsThisRound.Count < Bot.EntriesPerSinglePICSRequest) && enumerator.MoveNext()) {
 						appIDsThisRound.Add(enumerator.Current);
 					}
 

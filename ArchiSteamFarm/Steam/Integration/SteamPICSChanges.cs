@@ -35,12 +35,12 @@ namespace ArchiSteamFarm.Steam.Integration;
 internal static class SteamPICSChanges {
 	private const byte RefreshTimerInMinutes = 5;
 
+	internal static uint LastChangeNumber { get; private set; }
 	internal static bool LiveUpdate { get; private set; }
 
 	private static readonly SemaphoreSlim RefreshSemaphore = new(1, 1);
 	private static readonly Timer RefreshTimer = new(RefreshChanges);
 
-	private static uint LastChangeNumber;
 	private static bool TimerAlreadySet;
 
 	internal static void Init(uint changeNumberToStartFrom) => LastChangeNumber = changeNumberToStartFrom;

@@ -30,6 +30,7 @@ using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -65,9 +66,11 @@ namespace ArchiSteamFarm.Steam;
 
 public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal const ushort CallbackSleep = 500; // In milliseconds
+	internal const byte EntriesPerSinglePICSRequest = byte.MaxValue;
 	internal const byte MinCardsPerBadge = 5;
 
 	private const char DefaultBackgroundKeysRedeemerSeparator = '\t';
+	private const byte ExtraStorePackagesValidForDays = 7;
 	private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 	private const uint LoginID = 1242; // This must be the same for all ASF bots and all ASF processes
 	private const byte MaxLoginFailures = WebBrowser.MaxTries; // Max login failures in a row before we determine that our credentials are invalid (because Steam wrongly returns those, of course)course)
@@ -2100,6 +2103,24 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		UnpackBoosterPacksSemaphore.Dispose();
 	}
 
+	private async Task ExtendWithStoreData([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<uint, LicenseData> ownedPackages, HashSet<uint> allPackages, Dictionary<uint, uint> packagesToRefresh) {
+		ArgumentNullException.ThrowIfNull(ownedPackages);
+		ArgumentNullException.ThrowIfNull(allPackages);
+		ArgumentNullException.ThrowIfNull(packagesToRefresh);
+
+		if (BotDatabase.ExtraStorePackagesRefreshedAt.AddDays(ExtraStorePackagesValidForDays) < DateTime.UtcNow) {
+			await RefreshStoreData(allPackages, packagesToRefresh).ConfigureAwait(false);
+		}
+
+		foreach (uint packageID in BotDatabase.ExtraStorePackages) {
+			ownedPackages[packageID] = new LicenseData {
+				PackageID = packageID,
+				PaymentMethod = EPaymentMethod.None,
+				TimeCreated = DateTime.UnixEpoch
+			};
+		}
+	}
+
 	private async Task<Dictionary<string, string>?> GetKeysFromFile(string filePath) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
@@ -3171,15 +3192,22 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		Commands.OnNewLicenseList();
 
-		Dictionary<uint, LicenseData> ownedPackages = new();
+		Dictionary<uint, LicenseData> ownedPackages = [];
+		HashSet<uint> allPackages = [];
 
-		Dictionary<uint, ulong> packageAccessTokens = new();
-		Dictionary<uint, uint> packagesToRefresh = new();
+		Dictionary<uint, ulong> packageAccessTokens = [];
+		Dictionary<uint, uint> packagesToRefresh = [];
 
 		bool hasNewEntries = false;
 
 		// We want to record only the most relevant entry from non-borrowed games, therefore we also apply ordering here
-		foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.Where(static license => !license.LicenseFlags.HasFlag(ELicenseFlags.Borrowed)).OrderByDescending(static license => license.TimeCreated).Where(license => !ownedPackages.ContainsKey(license.PackageID))) {
+		foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.OrderByDescending(static license => license.TimeCreated)) {
+			allPackages.Add(license.PackageID);
+
+			if (license.LicenseFlags.HasFlag(ELicenseFlags.Borrowed) || ownedPackages.ContainsKey(license.PackageID)) {
+				continue;
+			}
+
 			ownedPackages[license.PackageID] = new LicenseData {
 				PackageID = license.PackageID,
 				PaymentMethod = license.PaymentMethod,
@@ -3199,6 +3227,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
 			}
 		}
+
+		await ExtendWithStoreData(ownedPackages, allPackages, packagesToRefresh).ConfigureAwait(false);
 
 		OwnedPackages = ownedPackages.ToFrozenDictionary();
 
@@ -3684,6 +3714,63 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			ArchiLogger.LogGenericInfo(Strings.Done);
 		} finally {
 			GamesRedeemerInBackgroundSemaphore.Release();
+		}
+	}
+
+	private async Task RefreshStoreData([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] HashSet<uint> allPackages, [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<uint, uint> packagesToRefresh) {
+		ArgumentNullException.ThrowIfNull(allPackages);
+		ArgumentNullException.ThrowIfNull(packagesToRefresh);
+
+		if (ASF.GlobalDatabase == null) {
+			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
+		}
+
+		StoreUserData? storeData = await ArchiWebHandler.GetStoreUserData().ConfigureAwait(false);
+
+		if (storeData == null) {
+			return;
+		}
+
+		BotDatabase.ExtraStorePackages.ReplaceWith(storeData.OwnedPackages.Where(packageID => !allPackages.Contains(packageID)));
+		BotDatabase.ExtraStorePackagesRefreshedAt = DateTime.UtcNow;
+
+		HashSet<uint> extraPackagesForAccessTokens = BotDatabase.ExtraStorePackages.Where(static packageID => !ASF.GlobalDatabase.PackageAccessTokensReadOnly.ContainsKey(packageID)).ToHashSet();
+
+		if (extraPackagesForAccessTokens.Count > 0) {
+			HashSet<uint> entriesThisRound = new(Math.Min(extraPackagesForAccessTokens.Count, EntriesPerSinglePICSRequest));
+
+			using HashSet<uint>.Enumerator enumerator = extraPackagesForAccessTokens.GetEnumerator();
+
+			while (IsConnectedAndLoggedOn) {
+				entriesThisRound.Clear();
+
+				while ((entriesThisRound.Count < EntriesPerSinglePICSRequest) && enumerator.MoveNext()) {
+					entriesThisRound.Add(enumerator.Current);
+				}
+
+				if (entriesThisRound.Count == 0) {
+					break;
+				}
+
+				try {
+					SteamApps.PICSTokensCallback accessTokens = await SteamApps.PICSGetAccessTokens([], entriesThisRound);
+
+					if (accessTokens.PackageTokens.Count > 0) {
+						ASF.GlobalDatabase.RefreshPackageAccessTokens(accessTokens.PackageTokens);
+					}
+				} catch (Exception e) {
+					ArchiLogger.LogGenericWarningException(e);
+				}
+			}
+		}
+
+		// Wait up to 5 seconds for initialization, we can work with any change number, although non-zero is preferred
+		for (byte i = 0; (i < WebBrowser.MaxTries) && (SteamPICSChanges.LastChangeNumber == 0); i++) {
+			await Task.Delay(1000).ConfigureAwait(false);
+		}
+
+		foreach (uint packageID in BotDatabase.ExtraStorePackages) {
+			packagesToRefresh.Add(packageID, SteamPICSChanges.LastChangeNumber);
 		}
 	}
 

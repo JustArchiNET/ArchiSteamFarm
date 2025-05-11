@@ -1875,6 +1875,14 @@ public sealed class ArchiWebHandler : IDisposable {
 		return response?.Content;
 	}
 
+	internal async Task<StoreUserData?> GetStoreUserData() {
+		Uri request = new(SteamStoreURL, "/dynamicstore/userdata?l=english");
+
+		ObjectResponse<StoreUserData>? response = await UrlGetToJsonObjectWithSession<StoreUserData>(request).ConfigureAwait(false);
+
+		return response?.Content;
+	}
+
 	internal async Task<byte?> GetTradeHoldDurationForTrade(ulong tradeID) {
 		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 

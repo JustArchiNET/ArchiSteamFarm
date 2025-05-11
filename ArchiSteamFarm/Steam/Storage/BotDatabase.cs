@@ -65,6 +65,23 @@ public sealed class BotDatabase : GenericDatabase {
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	internal ConcurrentHashSet<uint> ExtraStorePackages { get; private init; } = [];
+
+	internal DateTime ExtraStorePackagesRefreshedAt {
+		get => BackingExtraStorePackagesRefreshedAt;
+
+		set {
+			if (BackingExtraStorePackagesRefreshedAt == value) {
+				return;
+			}
+
+			BackingExtraStorePackagesRefreshedAt = value;
+			Utilities.InBackground(Save);
+		}
+	}
+
+	[JsonDisallowNull]
+	[JsonInclude]
 	internal ConcurrentHashSet<uint> FarmingBlacklistAppIDs { get; private init; } = [];
 
 	[JsonDisallowNull]
@@ -130,6 +147,9 @@ public sealed class BotDatabase : GenericDatabase {
 	private string? BackingAccessToken { get; set; }
 
 	[JsonInclude]
+	private DateTime BackingExtraStorePackagesRefreshedAt { get; set; }
+
+	[JsonInclude]
 	[JsonPropertyName($"_{nameof(MobileAuthenticator)}")]
 	private MobileAuthenticator? BackingMobileAuthenticator { get; set; }
 
@@ -151,6 +171,7 @@ public sealed class BotDatabase : GenericDatabase {
 
 	[JsonConstructor]
 	private BotDatabase() {
+		ExtraStorePackages.OnModified += OnObjectModified;
 		FarmingBlacklistAppIDs.OnModified += OnObjectModified;
 		FarmingPriorityQueueAppIDs.OnModified += OnObjectModified;
 		FarmingRiskyIgnoredAppIDs.OnModified += OnObjectModified;
@@ -189,6 +210,9 @@ public sealed class BotDatabase : GenericDatabase {
 	public bool ShouldSerializeBackingAccessToken() => !string.IsNullOrEmpty(BackingAccessToken);
 
 	[UsedImplicitly]
+	public bool ShouldSerializeBackingExtraStorePackagesRefreshedAt() => BackingExtraStorePackagesRefreshedAt > DateTime.MinValue;
+
+	[UsedImplicitly]
 	public bool ShouldSerializeBackingMobileAuthenticator() => BackingMobileAuthenticator != null;
 
 	[UsedImplicitly]
@@ -196,6 +220,9 @@ public sealed class BotDatabase : GenericDatabase {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeBackingSteamGuardData() => !string.IsNullOrEmpty(BackingSteamGuardData);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeExtraStorePackages() => ExtraStorePackages.Count > 0;
 
 	[UsedImplicitly]
 	public bool ShouldSerializeFarmingBlacklistAppIDs() => FarmingBlacklistAppIDs.Count > 0;
@@ -221,6 +248,7 @@ public sealed class BotDatabase : GenericDatabase {
 	protected override void Dispose(bool disposing) {
 		if (disposing) {
 			// Events we registered
+			ExtraStorePackages.OnModified -= OnObjectModified;
 			FarmingBlacklistAppIDs.OnModified -= OnObjectModified;
 			FarmingPriorityQueueAppIDs.OnModified -= OnObjectModified;
 			FarmingRiskyIgnoredAppIDs.OnModified -= OnObjectModified;
