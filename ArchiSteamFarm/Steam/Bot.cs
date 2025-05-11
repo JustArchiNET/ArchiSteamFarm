@@ -3734,7 +3734,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		BotDatabase.ExtraStorePackages.ReplaceWith(storeData.OwnedPackages.Where(packageID => !allPackages.Contains(packageID)));
 		BotDatabase.ExtraStorePackagesRefreshedAt = DateTime.UtcNow;
 
-		foreach (uint[] packageIDs in BotDatabase.ExtraStorePackages.Where(static packageID => !ASF.GlobalDatabase.PackageAccessTokensReadOnly.ContainsKey(packageID)).Chunk(EntriesPerSinglePICSRequest)) {
+		foreach (uint[] packageIDs in BotDatabase.ExtraStorePackages.Chunk(EntriesPerSinglePICSRequest)) {
 			try {
 				SteamApps.PICSTokensCallback accessTokens = await SteamApps.PICSGetAccessTokens([], packageIDs);
 
