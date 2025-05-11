@@ -3734,33 +3734,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		BotDatabase.ExtraStorePackages.ReplaceWith(storeData.OwnedPackages.Where(packageID => !allPackages.Contains(packageID)));
 		BotDatabase.ExtraStorePackagesRefreshedAt = DateTime.UtcNow;
 
-		HashSet<uint> extraPackagesForAccessTokens = BotDatabase.ExtraStorePackages.Where(static packageID => !ASF.GlobalDatabase.PackageAccessTokensReadOnly.ContainsKey(packageID)).ToHashSet();
+		foreach (uint[] packageIDs in BotDatabase.ExtraStorePackages.Where(static packageID => !ASF.GlobalDatabase.PackageAccessTokensReadOnly.ContainsKey(packageID)).Chunk(EntriesPerSinglePICSRequest)) {
+			try {
+				SteamApps.PICSTokensCallback accessTokens = await SteamApps.PICSGetAccessTokens([], packageIDs);
 
-		if (extraPackagesForAccessTokens.Count > 0) {
-			HashSet<uint> entriesThisRound = new(Math.Min(extraPackagesForAccessTokens.Count, EntriesPerSinglePICSRequest));
-
-			using HashSet<uint>.Enumerator enumerator = extraPackagesForAccessTokens.GetEnumerator();
-
-			while (IsConnectedAndLoggedOn) {
-				entriesThisRound.Clear();
-
-				while ((entriesThisRound.Count < EntriesPerSinglePICSRequest) && enumerator.MoveNext()) {
-					entriesThisRound.Add(enumerator.Current);
+				if (accessTokens.PackageTokens.Count > 0) {
+					ASF.GlobalDatabase.RefreshPackageAccessTokens(accessTokens.PackageTokens);
 				}
-
-				if (entriesThisRound.Count == 0) {
-					break;
-				}
-
-				try {
-					SteamApps.PICSTokensCallback accessTokens = await SteamApps.PICSGetAccessTokens([], entriesThisRound);
-
-					if (accessTokens.PackageTokens.Count > 0) {
-						ASF.GlobalDatabase.RefreshPackageAccessTokens(accessTokens.PackageTokens);
-					}
-				} catch (Exception e) {
-					ArchiLogger.LogGenericWarningException(e);
-				}
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
 			}
 		}
 
