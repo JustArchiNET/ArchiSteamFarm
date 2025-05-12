@@ -104,13 +104,11 @@ public abstract class SerializableFile : IDisposable {
 			// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
 			string newFilePath = $"{serializableFile.FilePath}.new";
 
-			if (File.Exists(serializableFile.FilePath)) {
-				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+			await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
+			if (File.Exists(serializableFile.FilePath)) {
 				File.Replace(newFilePath, serializableFile.FilePath, null);
 			} else {
-				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
 				File.Move(newFilePath, serializableFile.FilePath);
 			}
 		} catch (Exception e) {
@@ -149,13 +147,11 @@ public abstract class SerializableFile : IDisposable {
 		try {
 			// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
 #pragma warning disable CA3003 // Ignored due to caller's intent
-			if (File.Exists(filePath)) {
-				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+			await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
+			if (File.Exists(filePath)) {
 				File.Replace(newFilePath, filePath, null);
 			} else {
-				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
 				File.Move(newFilePath, filePath);
 			}
 #pragma warning restore CA3003 // Ignored due to caller's intent
