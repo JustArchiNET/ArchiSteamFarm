@@ -464,6 +464,10 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 						try {
 							SteamApps.DepotKeyCallback depotResponse = await bot.SteamApps.GetDepotDecryptionKey(app.ID, app.ID).ToLongRunningTask().ConfigureAwait(false);
 
+							// Increment total in combination with successful, we allow this one to fail on us
+							depotKeysTotal++;
+							depotKeysSuccessful++;
+
 							GlobalCache.UpdateDepotKey(depotResponse);
 						} catch (Exception e) {
 							// We can still try other depots
