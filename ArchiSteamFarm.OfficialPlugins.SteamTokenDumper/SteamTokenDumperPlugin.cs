@@ -488,11 +488,6 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 					bot.ArchiLogger.LogGenericInfo(Strings.FormatBotFinishedRetrievingDepotKeys(depotKeysSuccessful, depotKeysTotal));
 				}
 
-				if (depotKeysSuccessful < depotKeysTotal) {
-					// We're not going to record app change numbers, as we didn't fetch all the depot keys we wanted
-					continue;
-				}
-
 				GlobalCache.UpdateAppChangeNumbers(appChangeNumbers);
 			}
 
