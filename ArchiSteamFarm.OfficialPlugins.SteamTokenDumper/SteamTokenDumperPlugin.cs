@@ -459,14 +459,10 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 					// Consider fetching main appID key only if we've actually considered some new depots for resolving
 					if (shouldFetchMainKey && (knownDepotIDs?.Contains(app.ID) != true) && GlobalCache.ShouldRefreshDepotKey(app.ID)) {
-						depotKeysTotal++;
-
 						await depotsRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
 
 						try {
 							SteamApps.DepotKeyCallback depotResponse = await bot.SteamApps.GetDepotDecryptionKey(app.ID, app.ID).ToLongRunningTask().ConfigureAwait(false);
-
-							depotKeysSuccessful++;
 
 							GlobalCache.UpdateDepotKey(depotResponse);
 						} catch (Exception e) {
@@ -486,6 +482,11 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 				if (depotKeysTotal > 0) {
 					bot.ArchiLogger.LogGenericInfo(Strings.FormatBotFinishedRetrievingDepotKeys(depotKeysSuccessful, depotKeysTotal));
+				}
+
+				if (depotKeysSuccessful < depotKeysTotal) {
+					// We're not going to record app change numbers, as we didn't fetch all the depot keys we wanted
+					continue;
 				}
 
 				GlobalCache.UpdateAppChangeNumbers(appChangeNumbers);
