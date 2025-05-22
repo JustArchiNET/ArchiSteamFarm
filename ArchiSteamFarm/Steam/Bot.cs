@@ -2531,7 +2531,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			);
 		}
 
-		if (BotConfig.TradeCheckPeriod > 0) {
+		if (BotConfig.TradeCheckPeriod > 0 && !BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DisableIncomingTradesParsing)) {
 			TradeCheckTimer = new Timer(
 				OnTradeCheckTimer,
 				null,
@@ -3550,7 +3550,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					OnInventoryChanged();
 
 					break;
-				case UserNotificationsCallback.EUserNotification.Trading when newNotification:
+				case UserNotificationsCallback.EUserNotification.Trading when newNotification && !BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DisableIncomingTradesParsing):
 					if ((TradeCheckTimer != null) && (BotConfig.TradeCheckPeriod > 0)) {
 						TradeCheckTimer.Change(TimeSpan.FromMinutes(BotConfig.TradeCheckPeriod), TimeSpan.FromMinutes(BotConfig.TradeCheckPeriod));
 					}

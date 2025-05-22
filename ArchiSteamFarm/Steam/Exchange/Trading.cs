@@ -207,6 +207,10 @@ public sealed class Trading : IDisposable {
 	internal void OnDisconnected() => HandledTradeOfferIDs.Clear();
 
 	internal async Task OnNewTrade() {
+		if (Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DisableIncomingTradesParsing)) {
+			return;
+		}
+
 		// We aim to have a maximum of 2 tasks, one already working, and one waiting in the queue
 		// This way we can call this function as many times as needed e.g. because of Steam events
 
