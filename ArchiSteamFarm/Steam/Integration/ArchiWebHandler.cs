@@ -491,11 +491,28 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		string queryString = string.Join('&', arguments.Select(static argument => $"{argument.Key}={HttpUtility.UrlEncode(argument.Value.ToString())}"));
 
+		// This endpoint is notorious for giving false 429 errors, add workaround for that case
 		Uri request = new(Bot.SteamConfiguration.WebAPIBaseAddress, $"/{EconService}/GetTradeOffers/v1?{queryString}");
 
-		TradeOffersResponse? response = (await WebLimitRequest(Bot.SteamConfiguration.WebAPIBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(request).ConfigureAwait(false)).ConfigureAwait(false))?.Content?.Response;
+		TradeOffersResponse? tradeOffersResponse = null;
 
-		if (response == null) {
+		for (byte i = 0; (i < WebBrowser.MaxTries) && (tradeOffersResponse == null); i++) {
+			if (i > 0) {
+				await Task.Delay(i * 1000).ConfigureAwait(false);
+			}
+
+			ObjectResponse<APIWrappedResponse<TradeOffersResponse>>? response = await WebLimitRequest(Bot.SteamConfiguration.WebAPIBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false)).ConfigureAwait(false);
+
+			if ((response == null) || (response.StatusCode == HttpStatusCode.TooManyRequests)) {
+				continue;
+			}
+
+			if (response.StatusCode.IsSuccessCode()) {
+				tradeOffersResponse = response.Content?.Response;
+			}
+		}
+
+		if (tradeOffersResponse == null) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
 
 			return null;
@@ -504,23 +521,23 @@ public sealed class ArchiWebHandler : IDisposable {
 		IEnumerable<TradeOffer> trades = [];
 
 		if (receivedOffers.GetValueOrDefault(true)) {
-			trades = trades.Concat(response.TradeOffersReceived);
+			trades = trades.Concat(tradeOffersResponse.TradeOffersReceived);
 		}
 
 		if (sentOffers.GetValueOrDefault(true)) {
-			trades = trades.Concat(response.TradeOffersSent);
+			trades = trades.Concat(tradeOffersResponse.TradeOffersSent);
 		}
 
 		HashSet<TradeOffer> result = trades.Where(tradeOffer => !activeOffers.HasValue || ((!activeOffers.Value || (tradeOffer.State == ETradeOfferState.Active)) && (activeOffers.Value || (tradeOffer.State != ETradeOfferState.Active)))).ToHashSet();
 
-		if ((result.Count == 0) || (response.Descriptions.Count == 0)) {
+		if ((result.Count == 0) || (tradeOffersResponse.Descriptions.Count == 0)) {
 			return result;
 		}
 
 		// Due to a possibility of duplicate descriptions, we can't simply call ToDictionary() here
 		Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
 
-		foreach (InventoryDescription description in response.Descriptions) {
+		foreach (InventoryDescription description in tradeOffersResponse.Descriptions) {
 			if (description.AppID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(description.AppID));
 
