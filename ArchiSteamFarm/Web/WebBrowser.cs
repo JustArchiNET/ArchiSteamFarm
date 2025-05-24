@@ -205,7 +205,7 @@ public sealed class WebBrowser : IDisposable {
 						throw;
 					} catch (Exception e) {
 						ArchiLogger.LogGenericWarningException(e);
-						ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+						ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 						return null;
 					} finally {
@@ -220,7 +220,7 @@ public sealed class WebBrowser : IDisposable {
 		}
 
 		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
-		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 		return null;
 	}
@@ -276,13 +276,13 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					ArchiLogger.LogGenericWarningException(e);
-					ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+					ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 				}
 			}
 		}
 
 		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
-		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 		return null;
 	}
@@ -340,7 +340,7 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					ArchiLogger.LogGenericWarningException(e);
-					ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+					ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 					continue;
 				}
@@ -360,7 +360,7 @@ public sealed class WebBrowser : IDisposable {
 		}
 
 		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
-		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 		return null;
 	}
@@ -405,7 +405,7 @@ public sealed class WebBrowser : IDisposable {
 		}
 
 		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
-		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 		return null;
 	}
@@ -449,7 +449,7 @@ public sealed class WebBrowser : IDisposable {
 		}
 
 		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
-		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 		return null;
 	}
@@ -493,7 +493,7 @@ public sealed class WebBrowser : IDisposable {
 		}
 
 		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
-		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 		return null;
 	}
@@ -549,13 +549,13 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					ArchiLogger.LogGenericWarningException(e);
-					ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+					ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 				}
 			}
 		}
 
 		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
-		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 		return null;
 	}
@@ -613,7 +613,7 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					ArchiLogger.LogGenericWarningException(e);
-					ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+					ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 					continue;
 				}
@@ -633,7 +633,7 @@ public sealed class WebBrowser : IDisposable {
 		}
 
 		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
-		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 		return null;
 	}
@@ -678,7 +678,7 @@ public sealed class WebBrowser : IDisposable {
 		}
 
 		ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(maxTries));
-		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+		ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 		return null;
 	}

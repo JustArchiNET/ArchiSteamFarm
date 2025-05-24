@@ -703,7 +703,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -722,7 +722,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -743,7 +743,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 			return null;
 		}
@@ -754,7 +754,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (--maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -785,7 +785,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -804,7 +804,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -825,7 +825,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 			return null;
 		}
@@ -836,7 +836,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (--maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -867,7 +867,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return false;
 			}
@@ -886,7 +886,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return false;
 			}
@@ -907,7 +907,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 			return false;
 		}
@@ -918,7 +918,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (--maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return false;
 			}
@@ -954,7 +954,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -973,7 +973,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -1017,7 +1017,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 			return null;
 		}
@@ -1028,7 +1028,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (--maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -1064,7 +1064,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -1083,7 +1083,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -1127,7 +1127,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 			return null;
 		}
@@ -1138,7 +1138,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (--maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -1174,7 +1174,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -1193,7 +1193,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -1240,7 +1240,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 			return null;
 		}
@@ -1251,7 +1251,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (--maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return null;
 			}
@@ -1287,7 +1287,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return false;
 			}
@@ -1306,7 +1306,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (!Initialized) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return false;
 			}
@@ -1350,7 +1350,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 			return false;
 		}
@@ -1361,7 +1361,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (--maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 				return false;
 			}
@@ -2300,7 +2300,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	private async Task<bool> UnlockParentalAccount(string parentalCode) {
+	private async ValueTask<bool> UnlockParentalAccount(string parentalCode) {
 		ArgumentException.ThrowIfNullOrEmpty(parentalCode);
 
 		Bot.ArchiLogger.LogGenericInfo(Strings.UnlockingParentalAccount);
@@ -2326,7 +2326,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (maxTries == 0) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
-			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(request));
+			Bot.ArchiLogger.LogGenericDebug(Strings.FormatErrorFailingRequest(Debugging.IsUserDebugging ? request : request.GetLeftPart(UriPartial.Path)));
 
 			return false;
 		}
