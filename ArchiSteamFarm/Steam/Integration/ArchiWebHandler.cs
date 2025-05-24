@@ -491,9 +491,9 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		string queryString = string.Join('&', arguments.Select(static argument => $"{argument.Key}={HttpUtility.UrlEncode(argument.Value.ToString())}"));
 
-		Uri request = new(WebAPI.DefaultBaseAddress, $"/{EconService}/GetTradeOffers/v1?{queryString}");
+		Uri request = new(Bot.SteamConfiguration.WebAPIBaseAddress, $"/{EconService}/GetTradeOffers/v1?{queryString}");
 
-		TradeOffersResponse? response = (await WebLimitRequest(WebAPI.DefaultBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(request).ConfigureAwait(false)).ConfigureAwait(false))?.Content?.Response;
+		TradeOffersResponse? response = (await WebLimitRequest(Bot.SteamConfiguration.WebAPIBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(request).ConfigureAwait(false)).ConfigureAwait(false))?.Content?.Response;
 
 		if (response == null) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
@@ -1597,6 +1597,9 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal HttpClient GenerateDisposableHttpClient() => WebBrowser.GenerateDisposableHttpClient();
 
 	internal async Task<HashSet<uint>?> GetAppList() {
+		const string endpoint = "GetAppList";
+		HttpMethod method = HttpMethod.Get;
+
 		using WebAPI.AsyncInterface steamAppsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamAppsService);
 
 		steamAppsService.Timeout = WebBrowser.Timeout;
@@ -1608,12 +1611,16 @@ public sealed class ArchiWebHandler : IDisposable {
 				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
 			}
 
+			if (Debugging.IsUserDebugging) {
+				Bot.ArchiLogger.LogGenericDebug($"{method} {Bot.SteamConfiguration.WebAPIBaseAddress}{SteamAppsService}/{endpoint}");
+			}
+
 			try {
 				response = await WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
+					Bot.SteamConfiguration.WebAPIBaseAddress,
 
 					// ReSharper disable once AccessToDisposedClosure
-					async () => await steamAppsService.CallAsync(HttpMethod.Get, "GetAppList", 2).ConfigureAwait(false)
+					async () => await steamAppsService.CallAsync(method, endpoint, 2).ConfigureAwait(false)
 				).ConfigureAwait(false);
 			} catch (TaskCanceledException e) {
 				Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1703,6 +1710,9 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
+		const string endpoint = "GetTradeHoldDurations";
+		HttpMethod method = HttpMethod.Get;
+
 		Dictionary<string, object?> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 3 : 2, StringComparer.Ordinal) {
 			{ "access_token", accessToken },
 			{ "steamid_target", steamID }
@@ -1723,12 +1733,16 @@ public sealed class ArchiWebHandler : IDisposable {
 				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
 			}
 
+			if (Debugging.IsUserDebugging) {
+				Bot.ArchiLogger.LogGenericDebug($"{method} {Bot.SteamConfiguration.WebAPIBaseAddress}{EconService}/{endpoint}");
+			}
+
 			try {
 				response = await WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
+					Bot.SteamConfiguration.WebAPIBaseAddress,
 
 					// ReSharper disable once AccessToDisposedClosure
-					async () => await econService.CallAsync(HttpMethod.Get, "GetTradeHoldDurations", args: arguments).ConfigureAwait(false)
+					async () => await econService.CallAsync(method, endpoint, args: arguments).ConfigureAwait(false)
 				).ConfigureAwait(false);
 			} catch (TaskCanceledException e) {
 				Bot.ArchiLogger.LogGenericDebuggingException(e);

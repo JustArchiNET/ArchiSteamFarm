@@ -52,6 +52,9 @@ internal static class MobileAuthenticatorWebHandler {
 			return null;
 		}
 
+		const string endpoint = "AddAuthenticator";
+		HttpMethod method = HttpMethod.Post;
+
 		CTwoFactor_AddAuthenticator_Request request = new() {
 			authenticator_time = Utilities.GetUnixTime(),
 			authenticator_type = 1,
@@ -74,12 +77,16 @@ internal static class MobileAuthenticatorWebHandler {
 				await Task.Delay(ArchiWebHandler.WebLimiterDelay).ConfigureAwait(false);
 			}
 
+			if (Debugging.IsUserDebugging) {
+				bot.ArchiLogger.LogGenericDebug($"{method} {bot.SteamConfiguration.WebAPIBaseAddress}{TwoFactorService}/{endpoint}");
+			}
+
 			try {
 				response = await ArchiWebHandler.WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
+					bot.SteamConfiguration.WebAPIBaseAddress,
 
 					// ReSharper disable once AccessToDisposedClosure
-					async () => await twoFactorService.CallProtobufAsync<CTwoFactor_AddAuthenticator_Response, CTwoFactor_AddAuthenticator_Request>(HttpMethod.Post, "AddAuthenticator", request, extraArgs: arguments).ConfigureAwait(false)
+					async () => await twoFactorService.CallProtobufAsync<CTwoFactor_AddAuthenticator_Response, CTwoFactor_AddAuthenticator_Request>(method, endpoint, request, extraArgs: arguments).ConfigureAwait(false)
 				).ConfigureAwait(false);
 			} catch (TaskCanceledException e) {
 				bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -113,6 +120,9 @@ internal static class MobileAuthenticatorWebHandler {
 			return null;
 		}
 
+		const string endpoint = "FinalizeAddAuthenticator";
+		HttpMethod method = HttpMethod.Post;
+
 		CTwoFactor_FinalizeAddAuthenticator_Request request = new() {
 			activation_code = activationCode,
 			authenticator_code = authenticatorCode,
@@ -135,12 +145,16 @@ internal static class MobileAuthenticatorWebHandler {
 				await Task.Delay(ArchiWebHandler.WebLimiterDelay).ConfigureAwait(false);
 			}
 
+			if (Debugging.IsUserDebugging) {
+				bot.ArchiLogger.LogGenericDebug($"{method} {bot.SteamConfiguration.WebAPIBaseAddress}{TwoFactorService}/{endpoint}");
+			}
+
 			try {
 				response = await ArchiWebHandler.WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
+					bot.SteamConfiguration.WebAPIBaseAddress,
 
 					// ReSharper disable once AccessToDisposedClosure
-					async () => await twoFactorService.CallProtobufAsync<CTwoFactor_FinalizeAddAuthenticator_Response, CTwoFactor_FinalizeAddAuthenticator_Request>(HttpMethod.Post, "FinalizeAddAuthenticator", request, extraArgs: arguments).ConfigureAwait(false)
+					async () => await twoFactorService.CallProtobufAsync<CTwoFactor_FinalizeAddAuthenticator_Response, CTwoFactor_FinalizeAddAuthenticator_Request>(method, endpoint, request, extraArgs: arguments).ConfigureAwait(false)
 				).ConfigureAwait(false);
 			} catch (TaskCanceledException e) {
 				bot.ArchiLogger.LogGenericDebuggingException(e);
