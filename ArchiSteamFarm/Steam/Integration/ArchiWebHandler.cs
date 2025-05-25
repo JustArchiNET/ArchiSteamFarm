@@ -503,7 +503,13 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			ObjectResponse<APIWrappedResponse<TradeOffersResponse>>? response = await WebLimitRequest(Bot.SteamConfiguration.WebAPIBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false)).ConfigureAwait(false);
 
-			if ((response == null) || (response.StatusCode == HttpStatusCode.TooManyRequests)) {
+			if (response == null) {
+				continue;
+			}
+
+			if (response.StatusCode == HttpStatusCode.TooManyRequests) {
+				Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered($"{nameof(GetTradeOffers)}/{response.StatusCode}"));
+
 				continue;
 			}
 
