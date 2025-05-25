@@ -866,7 +866,7 @@ public sealed class WebBrowser : IDisposable {
 		}
 
 		if (!Debugging.IsUserDebugging) {
-			ArchiLogger.LogGenericDebug($"{response.StatusCode} <- {httpMethod} {request}");
+			ArchiLogger.LogGenericDebug($"{response.StatusCode} <- {httpMethod} {request.GetLeftPart(UriPartial.Path)}");
 		}
 
 		if (response.StatusCode.IsClientErrorCode()) {
