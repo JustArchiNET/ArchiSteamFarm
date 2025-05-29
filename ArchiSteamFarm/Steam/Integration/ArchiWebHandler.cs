@@ -52,7 +52,7 @@ namespace ArchiSteamFarm.Steam.Integration;
 
 public sealed class ArchiWebHandler : IDisposable {
 	// Steam network (ArchiHandler) works unstable with more items than this (throwing upon description details), while Steam web (ArchiWebHandler) silently limits to this value maximum
-	internal const ushort MaxItemsInSingleInventoryRequest = 5000;
+	internal const ushort MaxItemsInSingleInventoryRequest = 2500;
 
 	private const string EconService = "IEconService";
 	private const byte MaxTradeOfferMessageLength = 128;
@@ -234,9 +234,10 @@ public sealed class ArchiWebHandler : IDisposable {
 	///     This method should be used exclusively for foreign inventories (other users), but in special circumstances it can be used for fetching bot's own inventory as well.
 	/// </remarks>
 	[PublicAPI]
-	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, string? language = null) {
+	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, ushort itemsCountPerRequest = MaxItemsInSingleInventoryRequest, string? language = null) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
+		ArgumentOutOfRangeException.ThrowIfZero(itemsCountPerRequest);
 
 		if (steamID == 0) {
 			if (!Initialized) {
@@ -274,7 +275,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		int rateLimitingDelay = (ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay) * 1000;
 
 		while (true) {
-			Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?l={language}&count={MaxItemsInSingleInventoryRequest}{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
+			Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?l={language}&count={itemsCountPerRequest}{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
 
 			await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
