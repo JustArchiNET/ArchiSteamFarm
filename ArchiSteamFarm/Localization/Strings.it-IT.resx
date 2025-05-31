@@ -705,7 +705,9 @@ Tempo di attività: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Il server remoto non sa nulla della versione alla quale stiamo aggiornando. Questa situazione è possibile se la versione è stata pubblicata di recente, come misura di sicurezza aggiuntiva si rifiuta l'aggiornamento a questa versione per il momento.</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>Impossibile recuperare il checksum del binario scaricato - rifiutato il procedimento con la procedura di aggiornamento al momento come misura di sicurezza aggiuntiva.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Il server remoto ha risposto con un checksum diverso, questo potrebbe indicare un download danneggiato o un attacco MITM, procedura di aggiornamento fermata!</value>
 	</data>
@@ -739,7 +741,10 @@ Tempo di attività: {1}</value>
 		<value>Farming {0} ({1}) è disabilitato, in quanto quel gioco è attualmente contrassegnato come privato. Se si intende da ASF farmare quel gioco, prendere in considerazione di modificare le sue impostazioni sulla privacy.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
-	
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>Saltando: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
 	<data name="PluginUpdatesChecking" xml:space="preserve">
 		<value>Controllo aggiornamenti plugin...</value>
 	</data>
@@ -786,5 +791,8 @@ Tempo di attività: {1}</value>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>I plugin personalizzati sono stati registrati per aggiornamenti automatici. Il team di ASF vorrebbe ricordarti che, per la tua sicurezza, dovresti abilitare gli aggiornamenti automatici solo da parti fidate. Se non hai intenzione di farlo, puoi disabilitare gli aggiornamenti dei plugin nella configurazione globale di ASF.</value>
 	</data>
-	
+	<data name="Input" xml:space="preserve">
+		<value>Inserisci: {0}</value>
+		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
 </root>
