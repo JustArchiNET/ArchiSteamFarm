@@ -567,7 +567,7 @@
 		<comment>{0} will be replaced by trade's ID (number)</comment>
 	</data>
 	<data name="WarningWorkaroundTriggered" xml:space="preserve">
-		<value>已觸發 {0} 錯誤的解決方法。</value>
+		<value>已觸發對於 {0} 錯誤的權變措施（臨時解決方案）。</value>
 		<comment>{0} will be replaced by the bug's name provided by ASF</comment>
 	</data>
 	<data name="TargetBotNotConnected" xml:space="preserve">
