@@ -3073,11 +3073,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
-		if ((notification.Body.steamid_sender != SteamID) && (notification.Body.timestamp > 0)) {
-			if (ShouldAckChatMessage(notification.Body.steamid_sender)) {
-				Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.Body.chat_group_id, notification.Body.chat_id, notification.Body.timestamp));
+		if ((notification.Body.steamid_sender != SteamID) && ShouldAckChatMessage(notification.Body.steamid_sender)) {
+			uint timestamp = notification.Body.timestamp;
+
+			// Under normal circumstances, timestamp should always be greater than 0, but Steam already proved that it's capable of going against the logic
+			if (timestamp == 0) {
+				timestamp = (uint) Utilities.GetUnixTime();
 			}
+
+			Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.Body.chat_group_id, notification.Body.chat_id, timestamp));
 		}
 
 		string message;
@@ -3113,15 +3117,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		if ((EChatEntryType) notification.Body.chat_entry_type != EChatEntryType.ChatMsg) {
-			return;
-		}
+		if (!notification.Body.local_echo && ShouldAckChatMessage(notification.Body.steamid_friend)) {
+			uint timestamp = notification.Body.rtime32_server_timestamp;
 
-		// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
-		if (notification.Body is { local_echo: false, rtime32_server_timestamp: > 0 }) {
-			if (ShouldAckChatMessage(notification.Body.steamid_friend)) {
-				Utilities.InBackground(() => ArchiHandler.AckMessage(notification.Body.steamid_friend, notification.Body.rtime32_server_timestamp));
+			// Under normal circumstances, timestamp should always be greater than 0, but Steam already proved that it's capable of going against the logic
+			if (timestamp == 0) {
+				timestamp = (uint) Utilities.GetUnixTime();
 			}
+
+			Utilities.InBackground(() => ArchiHandler.AckMessage(notification.Body.steamid_friend, timestamp));
 		}
 
 		string message;
@@ -3141,7 +3145,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		// We'll explicitly ignore those messages when using offline mode, as it was done in the first version of Steam chat when no messages were broadcasted at all before signing in
 		// Handling messages will still work correctly in invisible mode, which is how it should work in the first place
 		// This goes in addition to usual logic that ignores irrelevant messages from being parsed further
-		if (notification.Body.local_echo || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
+		if (((EChatEntryType) notification.Body.chat_entry_type != EChatEntryType.ChatMsg) || notification.Body.local_echo || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
 			return;
 		}
 
