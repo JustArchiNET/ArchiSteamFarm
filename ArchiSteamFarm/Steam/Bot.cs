@@ -2531,7 +2531,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			);
 		}
 
-		if (BotConfig.TradeCheckPeriod > 0 && !BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DisableIncomingTradesParsing)) {
+		if ((BotConfig.TradeCheckPeriod > 0) && !BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DisableIncomingTradesParsing)) {
 			TradeCheckTimer = new Timer(
 				OnTradeCheckTimer,
 				null,

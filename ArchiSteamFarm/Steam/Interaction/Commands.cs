@@ -304,6 +304,10 @@ public sealed class Commands {
 						return await ResponseAdvancedRedeem(access, args[1], args[2], Utilities.GetArgsAsText(args, 3, ","), steamID).ConfigureAwait(false);
 					case "R^" or "REDEEM^" when args.Length > 2:
 						return await ResponseAdvancedRedeem(access, args[1], args[2], steamID).ConfigureAwait(false);
+					case "RL" or "RMLICENCE" or "RMLICENSE" when args.Length > 2:
+						return await ResponseRemoveLicense(access, args[1], Utilities.GetArgsAsText(args, 2, ","), steamID).ConfigureAwait(false);
+					case "RL" or "RMLICENCE" or "RMLICENSE":
+						return await ResponseRemoveLicense(access, args[1]).ConfigureAwait(false);
 					case "RP" or "REDEEMPOINTS" when args.Length > 2:
 						return await ResponseRedeemPoints(access, args[1], Utilities.GetArgsAsText(args, 2, ","), steamID).ConfigureAwait(false);
 					case "RP" or "REDEEMPOINTS":
@@ -694,7 +698,8 @@ public sealed class Commands {
 
 					break;
 				}
-				default: {
+
+				case "S" or "SUB": {
 					if (Bot.OwnedPackages.ContainsKey(gameID)) {
 						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
 
@@ -706,6 +711,12 @@ public sealed class Commands {
 					response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", $"{result}/{purchaseResult}")));
 
 					break;
+				}
+
+				default: {
+					response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
+
+					continue;
 				}
 			}
 		}
@@ -2949,6 +2960,110 @@ public sealed class Commands {
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseRedeemPoints(GetProxyAccess(bot, access, steamID), targetDefinitionIDs))).ConfigureAwait(false);
+
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
+
+		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+	}
+
+	private async Task<string?> ResponseRemoveLicense(EAccess access, string query) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(query);
+
+		if (access < EAccess.Master) {
+			return null;
+		}
+
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return FormatBotResponse(Strings.BotNotConnected);
+		}
+
+		StringBuilder response = new();
+
+		string[] entries = query.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+		foreach (string entry in entries) {
+			uint gameID;
+			string type;
+
+			int index = entry.IndexOf('/', StringComparison.Ordinal);
+
+			if ((index > 0) && (entry.Length > index + 1)) {
+				if (!uint.TryParse(entry[(index + 1)..], out gameID) || (gameID == 0)) {
+					response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
+
+					continue;
+				}
+
+				type = entry[..index];
+			} else if (uint.TryParse(entry, out gameID) && (gameID > 0)) {
+				type = "SUB";
+			} else {
+				response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
+
+				continue;
+			}
+
+			switch (type.ToUpperInvariant()) {
+				case "A" or "APP": {
+					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(gameID, Bot.OwnedPackages.Keys, 1);
+
+					if (packageIDs is { Count: 0 }) {
+						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"app/{gameID}", EResult.InvalidState)));
+
+						break;
+					}
+
+					EResult result = await Bot.Actions.RemoveLicenseApp(gameID).ConfigureAwait(false);
+
+					response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"app/{gameID}", result)));
+
+					break;
+				}
+
+				case "S" or "SUB": {
+					if (!Bot.OwnedPackages.ContainsKey(gameID)) {
+						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", EResult.InvalidState)));
+
+						break;
+					}
+
+					EResult result = await Bot.Actions.RemoveLicensePackage(gameID).ConfigureAwait(false);
+
+					response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", result)));
+
+					break;
+				}
+
+				default: {
+					response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
+
+					continue;
+				}
+			}
+		}
+
+		return response.Length > 0 ? response.ToString() : null;
+	}
+
+	private static async Task<string?> ResponseRemoveLicense(EAccess access, string botNames, string query, ulong steamID = 0) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(query);
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return access >= EAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
+		}
+
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseRemoveLicense(GetProxyAccess(bot, access, steamID), query))).ConfigureAwait(false);
 
 		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
 

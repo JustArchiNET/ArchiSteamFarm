@@ -68,6 +68,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	private readonly Player UnifiedPlayerService;
 	private readonly Store UnifiedStoreService;
 	private readonly TwoFactor UnifiedTwoFactorService;
+	private readonly UserAccount UnifiedUserAccountService;
 
 	internal DateTime LastPacketReceived { get; private set; }
 
@@ -88,6 +89,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 		UnifiedPlayerService = steamUnifiedMessages.CreateService<Player>();
 		UnifiedStoreService = steamUnifiedMessages.CreateService<Store>();
 		UnifiedTwoFactorService = steamUnifiedMessages.CreateService<TwoFactor>();
+		UnifiedUserAccountService = steamUnifiedMessages.CreateService<UserAccount>();
 	}
 
 	public void Dispose() => InventorySemaphore.Dispose();
@@ -1025,6 +1027,26 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 
 		// We want to return the response even with failed EResult
 		return response.Body;
+	}
+
+	internal async Task<EResult> RemoveLicenseForApp(uint appID) {
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+
+		CUserAccount_CancelLicenseForApp_Request request = new() {
+			appid = appID
+		};
+
+		SteamUnifiedMessages.ServiceMethodResponse<CUserAccount_CancelLicenseForApp_Response> response;
+
+		try {
+			response = await UnifiedUserAccountService.CancelLicenseForApp(request).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return EResult.Timeout;
+		}
+
+		return response.Result;
 	}
 
 	internal void RequestItemAnnouncements() {

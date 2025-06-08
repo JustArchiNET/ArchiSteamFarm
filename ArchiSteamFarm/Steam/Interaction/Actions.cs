@@ -374,6 +374,20 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<EResult> RemoveLicenseApp(uint appID) {
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+
+		return await Bot.ArchiHandler.RemoveLicenseForApp(appID).ConfigureAwait(false);
+	}
+
+	[PublicAPI]
+	public async Task<EResult> RemoveLicensePackage(uint subID) {
+		ArgumentOutOfRangeException.ThrowIfZero(subID);
+
+		return await Bot.ArchiWebHandler.RemoveLicense(subID).ConfigureAwait(false);
+	}
+
+	[PublicAPI]
 	public static (bool Success, string Message) Restart() {
 		if (!Program.RestartAllowed) {
 			return (false, $"!{nameof(Program.RestartAllowed)}");

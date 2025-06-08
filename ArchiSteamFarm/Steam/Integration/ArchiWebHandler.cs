@@ -2180,6 +2180,21 @@ public sealed class ArchiWebHandler : IDisposable {
 		return (EResult.OK, EPurchaseResultDetail.NoDetail, response.Content.BalanceText);
 	}
 
+	internal async Task<EResult> RemoveLicense(uint subID) {
+		ArgumentOutOfRangeException.ThrowIfZero(subID);
+
+		Uri request = new(SteamStoreURL, "/account/removelicense");
+
+		// Extra entry for sessionID
+		Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
+			{ "packageid", subID.ToString(CultureInfo.InvariantCulture) }
+		};
+
+		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
+
+		return response?.Content?.Result ?? EResult.Timeout;
+	}
+
 	internal async Task<bool> UnpackBooster(uint appID, ulong itemID) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(itemID);
