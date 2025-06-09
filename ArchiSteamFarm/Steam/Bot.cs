@@ -334,7 +334,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		SteamConfiguration = SteamConfiguration.Create(builder => {
 				builder.WithCellID(ASF.GlobalDatabase.CellID);
-				builder.WithHttpClientFactory(ArchiWebHandler.GenerateDisposableHttpClient);
+				builder.WithHttpClientFactory(_ => ArchiWebHandler.WebBrowser.GenerateDisposableHttpClient());
 				builder.WithProtocolTypes(ASF.GlobalConfig?.SteamProtocols ?? GlobalConfig.DefaultSteamProtocols);
 				builder.WithServerListProvider(ASF.GlobalDatabase.ServerListProvider);
 

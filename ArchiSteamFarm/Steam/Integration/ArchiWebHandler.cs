@@ -1618,8 +1618,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		return await UrlPostWithSession(request).ConfigureAwait(false);
 	}
 
-	internal HttpClient GenerateDisposableHttpClient() => WebBrowser.GenerateDisposableHttpClient();
-
 	internal async Task<HashSet<uint>?> GetAppList() {
 		const string endpoint = "GetAppList";
 		HttpMethod method = HttpMethod.Get;
