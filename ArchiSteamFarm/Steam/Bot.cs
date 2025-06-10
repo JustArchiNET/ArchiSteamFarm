@@ -2254,6 +2254,22 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				// Likely permanently wrong account credentials
 				LoginFailures = 0;
 
+				// Reset temporary login credentials, as user used wrong ones most likely, allow them to fix their mistake if they start the bot again
+				if (!BotConfig.IsSteamLoginSet) {
+					BotConfig.SteamLogin = null;
+					BotConfig.IsSteamLoginSet = false;
+				}
+
+				if (!BotConfig.IsSteamPasswordSet) {
+					BotConfig.SteamPassword = null;
+					BotConfig.IsSteamPasswordSet = false;
+				}
+
+				if (!BotConfig.IsSteamParentalCodeSet) {
+					BotConfig.SteamParentalCode = null;
+					BotConfig.IsSteamParentalCodeSet = false;
+				}
+
 				ArchiLogger.LogGenericError(Strings.FormatBotInvalidPasswordDuringLogin(MaxLoginFailures));
 
 				await Stop().ConfigureAwait(false);
