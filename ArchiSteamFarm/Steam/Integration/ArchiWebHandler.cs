@@ -2351,12 +2351,15 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	private async ValueTask<bool> UnlockParentalAccount(string parentalCode) {
+	private async Task<bool> UnlockParentalAccount(string parentalCode) {
 		ArgumentException.ThrowIfNullOrEmpty(parentalCode);
 
 		Bot.ArchiLogger.LogGenericInfo(Strings.UnlockingParentalAccount);
 
-		bool[] results = await Task.WhenAll(UnlockParentalAccountForService(SteamCommunityURL, parentalCode), UnlockParentalAccountForService(SteamStoreURL, parentalCode)).ConfigureAwait(false);
+		bool[] results = await Task.WhenAll(
+			UnlockParentalAccountForService(SteamCommunityURL, parentalCode),
+			UnlockParentalAccountForService(SteamStoreURL, parentalCode)
+		).ConfigureAwait(false);
 
 		if (results.Any(static result => !result)) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);

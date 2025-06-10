@@ -73,7 +73,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private const byte ExtraStorePackagesValidForDays = 7;
 	private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 	private const uint LoginID = 1242; // This must be the same for all ASF bots and all ASF processes
-	private const byte MaxLoginFailures = WebBrowser.MaxTries; // Max login failures in a row before we determine that our credentials are invalid (because Steam wrongly returns those, of course)course)
+	private const byte MaxLoginFailures = 3; // Max login failures in a row before we determine that our credentials are invalid (because Steam wrongly returns those, of course)
 	private const byte MinimumAccessTokenValidityMinutes = 5;
 	private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
 	private const byte RegionRestrictionPlayableBlockMonths = 3;
