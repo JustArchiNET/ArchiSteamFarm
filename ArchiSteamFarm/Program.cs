@@ -399,6 +399,8 @@ internal static class Program {
 			await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 		}
 
+		ASF.ArchiLogger.LogGenericInfo(Strings.FormatInitializing(nameof(GlobalDatabase)));
+
 		GlobalDatabase? globalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
 
 		if (globalDatabase == null) {
