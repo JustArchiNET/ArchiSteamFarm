@@ -2799,6 +2799,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				).ConfigureAwait(false);
 
 				pollResult = await authSession.PollingWaitForResultAsync(authCancellationTokenSource.Token).ConfigureAwait(false);
+			} catch (AsyncJobFailedException e) {
+				ArchiLogger.LogGenericWarningException(e);
+
+				await HandleLoginResult(EResult.Timeout, EResult.Timeout).ConfigureAwait(false);
+
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
+
+				return;
 			} catch (AuthenticationException e) {
 				ArchiLogger.LogGenericWarningException(e);
 
