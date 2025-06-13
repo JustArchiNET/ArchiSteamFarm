@@ -91,7 +91,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		Bot = bot;
-		WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy);
+		WebBrowser = new WebBrowser(bot.ArchiLogger, bot.BotConfig.WebProxy ?? ASF.GlobalConfig?.WebProxy);
 	}
 
 	public void Dispose() {

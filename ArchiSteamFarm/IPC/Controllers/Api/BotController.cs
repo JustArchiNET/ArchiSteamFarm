@@ -153,6 +153,10 @@ public sealed class BotController : ArchiController {
 					request.BotConfig.SteamParentalCode = bot.BotConfig.SteamParentalCode;
 				}
 
+				if (!request.BotConfig.IsWebProxyPasswordSet && bot.BotConfig.IsWebProxyPasswordSet) {
+					request.BotConfig.WebProxyPassword = bot.BotConfig.WebProxyPassword;
+				}
+
 				if (bot.BotConfig.AdditionalProperties?.Count > 0) {
 					request.BotConfig.AdditionalProperties ??= new Dictionary<string, JsonElement>(bot.BotConfig.AdditionalProperties.Count, bot.BotConfig.AdditionalProperties.Comparer);
 

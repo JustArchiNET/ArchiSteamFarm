@@ -29,6 +29,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -116,6 +117,15 @@ public sealed class BotConfig {
 	[PublicAPI]
 	public const EUIMode DefaultUserInterfaceMode = EUIMode.VGUI;
 
+	[PublicAPI]
+	public const string? DefaultWebProxyPassword = null;
+
+	[PublicAPI]
+	public const string? DefaultWebProxyText = null;
+
+	[PublicAPI]
+	public const string? DefaultWebProxyUsername = null;
+
 	internal const byte SteamParentalCodeLength = 4;
 	internal const byte SteamTradeTokenLength = 8;
 
@@ -139,6 +149,51 @@ public sealed class BotConfig {
 
 	[PublicAPI]
 	public static readonly ImmutableHashSet<EAssetType> DefaultTransferableTypes = [EAssetType.BoosterPack, EAssetType.FoilTradingCard, EAssetType.TradingCard];
+
+	[JsonIgnore]
+	[PublicAPI]
+	public WebProxy? WebProxy {
+		get {
+			if (field != null) {
+				return field;
+			}
+
+			if (string.IsNullOrEmpty(WebProxyText)) {
+				return null;
+			}
+
+			Uri uri;
+
+			try {
+				uri = new Uri(WebProxyText);
+			} catch (UriFormatException e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return null;
+			}
+
+			WebProxy proxy = new() {
+				Address = uri,
+				BypassProxyOnLocal = true
+			};
+
+			if (!string.IsNullOrEmpty(WebProxyUsername) || !string.IsNullOrEmpty(WebProxyPassword)) {
+				NetworkCredential credentials = new();
+
+				if (!string.IsNullOrEmpty(WebProxyUsername)) {
+					credentials.UserName = WebProxyUsername;
+				}
+
+				if (!string.IsNullOrEmpty(WebProxyPassword)) {
+					credentials.Password = WebProxyPassword;
+				}
+
+				proxy.Credentials = credentials;
+			}
+
+			return field = proxy;
+		}
+	}
 
 	[JsonInclude]
 	public bool AcceptGifts { get; private init; } = DefaultAcceptGifts;
@@ -275,6 +330,13 @@ public sealed class BotConfig {
 	[JsonInclude]
 	public EUIMode UserInterfaceMode { get; private init; } = DefaultUserInterfaceMode;
 
+	[JsonInclude]
+	[JsonPropertyName(nameof(WebProxy))]
+	public string? WebProxyText { get; private init; } = DefaultWebProxyText;
+
+	[JsonInclude]
+	public string? WebProxyUsername { get; private init; } = DefaultWebProxyUsername;
+
 	[JsonExtensionData]
 	[JsonInclude]
 	internal Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
@@ -282,7 +344,20 @@ public sealed class BotConfig {
 	internal bool IsSteamLoginSet { get; set; }
 	internal bool IsSteamParentalCodeSet { get; set; }
 	internal bool IsSteamPasswordSet { get; set; }
+	internal bool IsWebProxyPasswordSet { get; private set; }
+
 	internal bool Saving { get; set; }
+
+	[JsonInclude]
+	[SwaggerSecurityCritical]
+	internal string? WebProxyPassword {
+		get;
+
+		set {
+			IsWebProxyPasswordSet = true;
+			field = value;
+		}
+	} = DefaultWebProxyPassword;
 
 	[JsonDisallowNull]
 	[JsonInclude]
@@ -393,6 +468,15 @@ public sealed class BotConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeUserInterfaceMode() => !Saving || (UserInterfaceMode != DefaultUserInterfaceMode);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeWebProxyPassword() => Saving && IsWebProxyPasswordSet && (WebProxyPassword != DefaultWebProxyPassword);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeWebProxyText() => !Saving || (WebProxyText != DefaultWebProxyText);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeWebProxyUsername() => !Saving || (WebProxyUsername != DefaultWebProxyUsername);
 
 	[PublicAPI]
 	public static async Task<bool> Write(string filePath, BotConfig botConfig) {
