@@ -60,7 +60,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
 	private const byte MinimumPasswordResetCooldownDays = 5; // As imposed by Steam limits
 	private const byte MinimumSteamGuardEnabledDays = 15; // As imposed by Steam limits
-	private const byte MinPersonaStateTTL = 5; // Minimum amount of minutes we must wait before requesting persona state update
+	private const byte MinPersonaStateTTL = MinAnnouncementTTL; // Minimum amount of minutes we must wait before requesting persona state update
 
 	private static readonly FrozenSet<EAssetType> AcceptedMatchableTypes = [
 		EAssetType.Emoticon,
@@ -187,7 +187,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		if ((DateTime.UtcNow < LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL)) && ShouldSendHeartBeats) {
+		if (DateTime.UtcNow < LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL)) {
 			return;
 		}
 
@@ -199,7 +199,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
-			if ((DateTime.UtcNow < LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL)) && ShouldSendHeartBeats) {
+			if (DateTime.UtcNow < LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL)) {
 				return;
 			}
 
