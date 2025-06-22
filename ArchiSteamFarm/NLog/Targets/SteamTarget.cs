@@ -30,17 +30,14 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
 using NLog;
-using NLog.Config;
 using NLog.Layouts;
 using NLog.Targets;
 
 namespace ArchiSteamFarm.NLog.Targets;
 
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-[Target(TargetName)]
+[Target("Steam")]
 internal sealed class SteamTarget : AsyncTaskTarget {
-	internal const string TargetName = "Steam";
-
 	// This is NLog config property, it must have public get() and set() capabilities
 	[UsedImplicitly]
 	public Layout? BotName { get; set; }
@@ -50,7 +47,6 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 	public ulong ChatGroupID { get; set; }
 
 	// This is NLog config property, it must have public get() and set() capabilities
-	[RequiredParameter]
 	[UsedImplicitly]
 	public ulong SteamID { get; set; }
 
@@ -58,6 +54,14 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 	// It must stay like this as we want to have our targets defined in our NLog.config
 	// Keeping date in default layout also doesn't make much sense (Steam offers that), so we remove it by default
 	public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
+
+	protected override void InitializeTarget() {
+		base.InitializeTarget();
+
+		if (SteamID == 0) {
+			throw new NLogConfigurationException(Strings.FormatErrorIsInvalid(nameof(SteamID)));
+		}
+	}
 
 	protected override async Task WriteAsyncTask(LogEventInfo logEvent, CancellationToken cancellationToken) {
 		ArgumentNullException.ThrowIfNull(logEvent);

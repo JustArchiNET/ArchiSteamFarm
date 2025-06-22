@@ -14,6 +14,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.ResxSourceGenerator" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
 		<PackageReference Include="Nito.AsyncEx.Coordination" />
+		<PackageReference Include="NLog.Targets.ConcurrentFile" />
 		<PackageReference Include="NLog.Web.AspNetCore" />
 		<PackageReference Include="Scalar.AspNetCore" />
 		<PackageReference Include="SteamKit2" />

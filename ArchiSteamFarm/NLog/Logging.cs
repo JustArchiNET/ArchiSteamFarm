@@ -206,6 +206,11 @@ internal static class Logging {
 	}
 
 	internal static void InitCoreLoggers(bool uniqueInstance) {
+		if (LogManager.Configuration == null) {
+			// Configuration must be initialized by now, either by user's config or InitEmergencyLoggers()
+			throw new InvalidOperationException(nameof(LogManager.Configuration));
+		}
+
 		try {
 			if ((Directory.GetCurrentDirectory() != AppContext.BaseDirectory) && File.Exists(NLogConfigurationFile)) {
 				IsUsingCustomConfiguration = true;
@@ -231,7 +236,8 @@ internal static class Logging {
 			}
 
 #pragma warning disable CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
-			FileTarget fileTarget = new("File") {
+			ConcurrentFileTarget fileTarget = new("File") {
+				ArchiveFileKind = FilePathKind.Absolute,
 				ArchiveFileName = Path.Combine("${currentdir}", SharedInfo.ArchivalLogsDirectory, SharedInfo.ArchivalLogFile),
 				ArchiveNumbering = ArchiveNumberingMode.Rolling,
 				ArchiveOldFileOnStartup = true,
@@ -265,6 +271,7 @@ internal static class Logging {
 
 		// This is a temporary, bare, file-less configuration that must work until we're able to initialize it properly
 		ConfigurationItemFactory.Default.ParseMessageTemplates = false;
+
 		LoggingConfiguration config = new();
 
 #pragma warning disable CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it

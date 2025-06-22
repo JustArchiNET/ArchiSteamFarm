@@ -31,10 +31,8 @@ using NLog.Targets;
 
 namespace ArchiSteamFarm.NLog.Targets;
 
-[Target(TargetName)]
+[Target("History")]
 internal sealed class HistoryTarget : TargetWithLayout {
-	internal const string TargetName = "History";
-
 	private const byte DefaultMaxCount = 20;
 
 	internal IEnumerable<string> ArchivedMessages => HistoryQueue;

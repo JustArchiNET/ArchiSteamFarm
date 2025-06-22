@@ -43,6 +43,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using NLog;
+using NLog.Targets;
 using SteamKit2;
 
 namespace ArchiSteamFarm;
@@ -188,8 +189,9 @@ internal static class Program {
 
 		// Add support for custom logging targets
 		LogManager.Setup().SetupExtensions(static extensions => {
-				extensions.RegisterTarget<HistoryTarget>(HistoryTarget.TargetName);
-				extensions.RegisterTarget<SteamTarget>(SteamTarget.TargetName);
+				extensions.RegisterTarget<ConcurrentFileTarget>();
+				extensions.RegisterTarget<HistoryTarget>();
+				extensions.RegisterTarget<SteamTarget>();
 			}
 		);
 
