@@ -206,12 +206,8 @@ internal static class Logging {
 	}
 
 	internal static void InitCoreLoggers(bool uniqueInstance) {
-		if (LogManager.Configuration == null) {
-			// Configuration must be initialized by now, either by user's config or InitEmergencyLoggers()
-			throw new InvalidOperationException(nameof(LogManager.Configuration));
-		}
-
 		try {
+			// Handle edge case of user using NLog.config in non-standard directory (current directory)
 			if ((Directory.GetCurrentDirectory() != AppContext.BaseDirectory) && File.Exists(NLogConfigurationFile)) {
 				IsUsingCustomConfiguration = true;
 
@@ -229,6 +225,11 @@ internal static class Logging {
 		}
 
 		if (uniqueInstance) {
+			if (LogManager.Configuration == null) {
+				// This should never happen, as configuration must be initialized by now (either by user's config, InitEmergencyLoggers() or InitCoreLoggers() above)
+				throw new InvalidOperationException(nameof(LogManager.Configuration));
+			}
+
 			try {
 				Directory.CreateDirectory(SharedInfo.ArchivalLogsDirectory);
 			} catch (Exception e) {
