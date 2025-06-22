@@ -236,13 +236,10 @@ internal static class Logging {
 			}
 
 #pragma warning disable CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
-			ConcurrentFileTarget fileTarget = new("File") {
-				ArchiveFileKind = FilePathKind.Absolute,
-				ArchiveFileName = Path.Combine("${currentdir}", SharedInfo.ArchivalLogsDirectory, SharedInfo.ArchivalLogFile),
-				ArchiveNumbering = ArchiveNumberingMode.Rolling,
+			FileTarget fileTarget = new("File") {
+				ArchiveFileName = Path.Combine("${currentdir}", SharedInfo.ArchivalLogsDirectory, SharedInfo.LogFile),
 				ArchiveOldFileOnStartup = true,
-				CleanupFileName = false,
-				DeleteOldFileOnStartup = true,
+				ArchiveSuffixFormat = ".{1:yyyy-MM-dd_HH-mm-ss}",
 				FileName = Path.Combine("${currentdir}", SharedInfo.LogFile),
 
 				// Windows OS prevents other apps from reading file when actively holding exclusive (write) lock over it
