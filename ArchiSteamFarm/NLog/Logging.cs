@@ -240,7 +240,7 @@ internal static class Logging {
 			FileTarget fileTarget = new("File") {
 				ArchiveFileName = Path.Combine("${currentdir:cached=true}", SharedInfo.ArchivalLogsDirectory, SharedInfo.LogFile),
 				ArchiveOldFileOnStartup = true,
-				ArchiveSuffixFormat = ".{1:yyyy-MM-dd_HH-mm-ss}",
+				ArchiveSuffixFormat = ".{1:yyyyMMdd-HHmmss}",
 				FileName = Path.Combine("${currentdir:cached=true}", SharedInfo.LogFile),
 
 				// Windows OS prevents other apps from reading file when actively holding exclusive (write) lock over it
