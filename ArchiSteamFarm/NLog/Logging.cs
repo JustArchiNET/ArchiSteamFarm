@@ -237,10 +237,10 @@ internal static class Logging {
 
 #pragma warning disable CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
 			FileTarget fileTarget = new("File") {
-				ArchiveFileName = Path.Combine("${currentdir}", SharedInfo.ArchivalLogsDirectory, SharedInfo.LogFile),
+				ArchiveFileName = Path.Combine("${currentdir:cached=true}", SharedInfo.ArchivalLogsDirectory, SharedInfo.LogFile),
 				ArchiveOldFileOnStartup = true,
 				ArchiveSuffixFormat = ".{1:yyyy-MM-dd_HH-mm-ss}",
-				FileName = Path.Combine("${currentdir}", SharedInfo.LogFile),
+				FileName = Path.Combine("${currentdir:cached=true}", SharedInfo.LogFile),
 
 				// Windows OS prevents other apps from reading file when actively holding exclusive (write) lock over it
 				// We require read access for GET /Api/NLog/File ASF API usage, therefore we shouldn't keep the lock all the time
