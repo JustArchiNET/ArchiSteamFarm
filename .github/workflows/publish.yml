@@ -73,7 +73,6 @@ jobs:
         - os: windows-latest
           variant: win-x64
 
-    environment: build
     runs-on: ${{ matrix.os }}
 
     permissions:
