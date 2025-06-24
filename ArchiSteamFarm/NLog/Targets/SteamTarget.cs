@@ -32,6 +32,7 @@ using JetBrains.Annotations;
 using NLog;
 using NLog.Layouts;
 using NLog.Targets;
+using SteamKit2;
 
 namespace ArchiSteamFarm.NLog.Targets;
 
@@ -58,7 +59,7 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 	protected override void InitializeTarget() {
 		base.InitializeTarget();
 
-		if (SteamID == 0) {
+		if ((SteamID == 0) || ((ChatGroupID == 0) && !new SteamID(SteamID).IsIndividualAccount)) {
 			throw new NLogConfigurationException(Strings.FormatErrorIsInvalid(nameof(SteamID)));
 		}
 	}
@@ -68,7 +69,7 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 
 		Write(logEvent);
 
-		if ((SteamID == 0) || (Bot.Bots == null) || Bot.Bots.IsEmpty) {
+		if ((Bot.Bots == null) || Bot.Bots.IsEmpty) {
 			return;
 		}
 
