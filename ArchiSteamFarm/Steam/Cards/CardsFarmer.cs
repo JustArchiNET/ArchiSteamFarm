@@ -660,7 +660,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				continue;
 			}
 
-			name = Uri.UnescapeDataString(name[nameStartIndex..nameEndIndex]);
+			name = Uri.UnescapeDataString(name[nameStartIndex..nameEndIndex]).Trim();
 
 			if (string.IsNullOrEmpty(name)) {
 				Bot.ArchiLogger.LogNullError(name);
@@ -1036,7 +1036,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return null;
 		}
 
-		string name = nameNode.TextContent;
+		string name = nameNode.TextContent.Trim();
 
 		if (string.IsNullOrEmpty(name)) {
 			Bot.ArchiLogger.LogNullError(name);
