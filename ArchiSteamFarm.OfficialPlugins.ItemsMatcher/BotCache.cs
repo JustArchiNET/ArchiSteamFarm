@@ -38,6 +38,7 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 internal sealed class BotCache : SerializableFile {
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ConcurrentList<AssetForListing> LastAnnouncedAssetsForListing { get; private init; } = [];
 
 	internal string? LastAnnouncedTradeToken {

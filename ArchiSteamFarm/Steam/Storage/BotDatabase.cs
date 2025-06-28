@@ -65,6 +65,7 @@ public sealed class BotDatabase : GenericDatabase {
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ConcurrentHashSet<uint> ExtraStorePackages { get; private init; } = [];
 
 	internal DateTime ExtraStorePackagesRefreshedAt {
@@ -82,22 +83,27 @@ public sealed class BotDatabase : GenericDatabase {
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ConcurrentHashSet<uint> FarmingBlacklistAppIDs { get; private init; } = [];
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs { get; private init; } = [];
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ObservableConcurrentDictionary<uint, DateTime> FarmingRiskyIgnoredAppIDs { get; private init; } = new();
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs { get; private init; } = [];
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs { get; private init; } = [];
 
 	internal MobileAuthenticator? MobileAuthenticator {
@@ -141,6 +147,7 @@ public sealed class BotDatabase : GenericDatabase {
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ConcurrentHashSet<ulong> TradingBlacklistSteamIDs { get; private init; } = [];
 
 	[JsonInclude]

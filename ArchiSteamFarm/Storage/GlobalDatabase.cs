@@ -57,10 +57,12 @@ public sealed class GlobalDatabase : GenericDatabase {
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ConcurrentHashSet<ulong> CachedBadBots { get; private init; } = [];
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ObservableConcurrentDictionary<uint, byte> CardCountsPerGame { get; private init; } = new();
 
 	internal uint CellID {
@@ -91,6 +93,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal InMemoryServerListProvider ServerListProvider { get; private init; } = new();
 
 	[JsonInclude]
