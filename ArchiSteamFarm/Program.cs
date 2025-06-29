@@ -188,8 +188,8 @@ internal static class Program {
 
 		// Add support for custom logging targets
 		LogManager.Setup().SetupExtensions(static extensions => {
-				extensions.RegisterTarget<HistoryTarget>(HistoryTarget.TargetName);
-				extensions.RegisterTarget<SteamTarget>(SteamTarget.TargetName);
+				extensions.RegisterTarget<HistoryTarget>();
+				extensions.RegisterTarget<SteamTarget>();
 			}
 		);
 

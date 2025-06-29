@@ -30,17 +30,15 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
 using NLog;
-using NLog.Config;
 using NLog.Layouts;
 using NLog.Targets;
+using SteamKit2;
 
 namespace ArchiSteamFarm.NLog.Targets;
 
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-[Target(TargetName)]
+[Target("Steam")]
 internal sealed class SteamTarget : AsyncTaskTarget {
-	internal const string TargetName = "Steam";
-
 	// This is NLog config property, it must have public get() and set() capabilities
 	[UsedImplicitly]
 	public Layout? BotName { get; set; }
@@ -50,7 +48,6 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 	public ulong ChatGroupID { get; set; }
 
 	// This is NLog config property, it must have public get() and set() capabilities
-	[RequiredParameter]
 	[UsedImplicitly]
 	public ulong SteamID { get; set; }
 
@@ -59,12 +56,20 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 	// Keeping date in default layout also doesn't make much sense (Steam offers that), so we remove it by default
 	public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
 
+	protected override void InitializeTarget() {
+		base.InitializeTarget();
+
+		if ((SteamID == 0) || ((ChatGroupID == 0) && !new SteamID(SteamID).IsIndividualAccount)) {
+			throw new NLogConfigurationException(Strings.FormatErrorIsInvalid(nameof(SteamID)));
+		}
+	}
+
 	protected override async Task WriteAsyncTask(LogEventInfo logEvent, CancellationToken cancellationToken) {
 		ArgumentNullException.ThrowIfNull(logEvent);
 
 		Write(logEvent);
 
-		if ((SteamID == 0) || (Bot.Bots == null) || Bot.Bots.IsEmpty) {
+		if ((Bot.Bots == null) || Bot.Bots.IsEmpty) {
 			return;
 		}
 
