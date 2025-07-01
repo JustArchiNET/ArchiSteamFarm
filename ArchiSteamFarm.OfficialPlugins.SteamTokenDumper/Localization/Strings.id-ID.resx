@@ -107,7 +107,10 @@
 		<value>Selesai memuat {0} informasi aplikasi.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Selesai {0} dari {1} depot key yang di minta.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot key requests that were successfully answered, {1} will be replaced by the number (count this batch) of depot key requests that were supposed to be sent</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Selesai memuat semua kunci depot untuk total {0} aplikasi.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
