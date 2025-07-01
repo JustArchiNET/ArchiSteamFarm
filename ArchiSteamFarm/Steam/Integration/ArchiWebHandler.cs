@@ -51,8 +51,8 @@ using SteamKit2;
 namespace ArchiSteamFarm.Steam.Integration;
 
 public sealed class ArchiWebHandler : IDisposable {
-	// Steam network (ArchiHandler) works unstable with more items than this (throwing upon description details), while Steam web (ArchiWebHandler) silently limits to this value maximum
-	internal const ushort MaxItemsInSingleInventoryRequest = 2500;
+	// Steam network (ArchiHandler) may work unstable with more items than this (throwing upon description details), while Steam web (ArchiWebHandler) forcefully limits to this value maximum
+	internal const ushort MaxItemsInSingleInventoryRequest = 2000;
 
 	private const string EconService = "IEconService";
 	private const byte MaxTradeOfferMessageLength = 128;
