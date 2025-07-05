@@ -35,7 +35,6 @@ public static class SharedInfo {
 	[PublicAPI]
 	public const string ConfigDirectory = "config";
 
-	internal const string ArchivalLogFile = "log.{#}.txt";
 	internal const string ArchivalLogsDirectory = "logs";
 	internal const string ASF = nameof(ASF);
 	internal const ulong ASFGroupSteamID = 103582791440160998;

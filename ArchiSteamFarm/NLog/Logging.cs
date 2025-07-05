@@ -207,6 +207,7 @@ internal static class Logging {
 
 	internal static void InitCoreLoggers(bool uniqueInstance) {
 		try {
+			// Handle edge case of user using NLog.config in non-standard directory (current directory)
 			if ((Directory.GetCurrentDirectory() != AppContext.BaseDirectory) && File.Exists(NLogConfigurationFile)) {
 				IsUsingCustomConfiguration = true;
 
@@ -224,6 +225,11 @@ internal static class Logging {
 		}
 
 		if (uniqueInstance) {
+			if (LogManager.Configuration == null) {
+				// This should never happen, as configuration must be initialized by now (either by user's config, InitEmergencyLoggers() or InitCoreLoggers() above)
+				throw new InvalidOperationException(nameof(LogManager.Configuration));
+			}
+
 			try {
 				Directory.CreateDirectory(SharedInfo.ArchivalLogsDirectory);
 			} catch (Exception e) {
@@ -232,12 +238,10 @@ internal static class Logging {
 
 #pragma warning disable CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
 			FileTarget fileTarget = new("File") {
-				ArchiveFileName = Path.Combine("${currentdir}", SharedInfo.ArchivalLogsDirectory, SharedInfo.ArchivalLogFile),
-				ArchiveNumbering = ArchiveNumberingMode.Rolling,
+				ArchiveFileName = Path.Combine("${currentdir:cached=true}", SharedInfo.ArchivalLogsDirectory, SharedInfo.LogFile),
 				ArchiveOldFileOnStartup = true,
-				CleanupFileName = false,
-				DeleteOldFileOnStartup = true,
-				FileName = Path.Combine("${currentdir}", SharedInfo.LogFile),
+				ArchiveSuffixFormat = ".{1:yyyyMMdd-HHmmss}",
+				FileName = Path.Combine("${currentdir:cached=true}", SharedInfo.LogFile),
 
 				// Windows OS prevents other apps from reading file when actively holding exclusive (write) lock over it
 				// We require read access for GET /Api/NLog/File ASF API usage, therefore we shouldn't keep the lock all the time
@@ -265,6 +269,7 @@ internal static class Logging {
 
 		// This is a temporary, bare, file-less configuration that must work until we're able to initialize it properly
 		ConfigurationItemFactory.Default.ParseMessageTemplates = false;
+
 		LoggingConfiguration config = new();
 
 #pragma warning disable CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
