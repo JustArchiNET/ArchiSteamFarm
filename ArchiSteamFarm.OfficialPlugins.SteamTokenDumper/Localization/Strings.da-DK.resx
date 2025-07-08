@@ -60,33 +60,115 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
 		</value>
 	</resheader>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginDisabledMissingBuildToken" xml:space="preserve">
+		<value>{0} er blevet deaktiveret på grund af en manglende build token</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginDisabledInConfig" xml:space="preserve">
+		<value>{0} er i øjeblikket deaktiveret i henhold til din konfiguration. Hvis du vil hjælpe SteamDB i dataindsendelse, så tjek vores wiki.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} er blevet initialiseret med succes, tak på forhånd for din hjælp. Den første indsendelse vil ske i cirka {1}.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+		<value>{0} kunne ikke indlæses, en ny instans vil blive initialiseret...</value>
+		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+	</data>
+	<data name="BotNoAppsToRefresh" xml:space="preserve">
+		<value>Der er ingen apps, der kræver en opdatering i denne bot instans.</value>
+	</data>
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Henter i alt {0} app-adgangstokens...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Henter {0} app-adgangstokens...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Færdig med at hente {0} app-adgangstegn.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Færdig med at hente i alt {0} app-adgangstokiner.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotRetrievingTotalDepots" xml:space="preserve">
+		<value>Henter alle depoter for i alt {0} apps...</value>
+		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppInfos" xml:space="preserve">
+		<value>Retrieving {0} app infos...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
+		<value>Færdig med at hente {0} app-info.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Færdig {0} ud af {1} depot nøgleanmodninger.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot key requests that were successfully answered, {1} will be replaced by the number (count this batch) of depot key requests that were supposed to be sent</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
+		<value>Færdig med at hente alle depot nøgler for i alt {0} apps.</value>
+		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
+	</data>
+	<data name="SubmissionNoNewData" xml:space="preserve">
+		<value>Der er ingen nye data at indsende, alt er opdateret.</value>
+	</data>
+	<data name="SubmissionNoContributorSet" xml:space="preserve">
+		<value>Kunne ikke indsende data, da der ikke er noget gyldigt SteamID sæt, som vi kunne klassificere som bidragsyder. Overvej opsætning af {0} egenskab.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
+	</data>
+	<data name="SubmissionInProgress" xml:space="preserve">
+		<value>Indsender i alt registrerede apps/pakker/depots: {0}/{1}/{2}...</value>
+		<comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
+	</data>
+	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+		<value>Indsendelsen er mislykkedes på grund af for mange anmodninger, vi vil prøve igen om cirka {0} fra nu.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="SubmissionSuccessful" xml:space="preserve">
+		<value>Dataene er blevet indsendt. Serveren har registreret i alt nye apps/packages/depots: {0} ({1} verificeret)/{2} ({3} verificeret)/{4} ({5} verificeret).</value>
+		<comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+		<value>Nye apps: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+		<value>Verificerede apps: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+		<value>Nye pakker: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+		<value>Verificerede pakker: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+		<value>Nye depoter: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+		<value>Verificerede depot: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="PluginSecretListInitialized" xml:space="preserve">
+		<value>{0} initialiseret, plugin vil ikke løse nogen af dem: {1}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>Indlæser STD global cache...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>Validerer STD global cache integritet...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>Mislykkedes at verificere STD global cache integritet. Dette tyder på en potentiel fil / hukommelse korruption, en ny instans vil blive initialiseret i stedet.</value>
+	</data>
 </root>

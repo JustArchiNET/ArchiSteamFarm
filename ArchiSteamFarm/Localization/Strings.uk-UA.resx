@@ -793,5 +793,8 @@
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Були зареєстровані власні плагіни для автоматичних оновлень. Команда ASF хоче нагадати вам, що з метою вашої безпеки слід увімкнути автоматичні оновлення лише від довірених джерел. Якщо ви не мали на це наміру, ви можете вимкнути оновлення плагінів у загальному конфігураційному файлі ASF.</value>
 	</data>
-	
+	<data name="Input" xml:space="preserve">
+		<value>Input: {0}</value>
+		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
 </root>

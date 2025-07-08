@@ -64,4 +64,16 @@
 		<value>Ο τελικός αριθμός συνόλων που έχουν ταιριάξει είναι {0}, αυτόν τον γύρο.</value>
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
+  <data name="ListingAnnouncing" xml:space="preserve">
+		<value>Ανακοίνωση {0} ({1}) με απογραφή από στοιχεία {2} συνολικά στην καταχώρηση...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname, {2} will be replaced with number of items in the inventory</comment>
+	</data>
+  <data name="MatchingFound" xml:space="preserve">
+		<value>Ταίριαξε ένα σύνολο αντικειμένων {0} με bot {1} ({2}), στέλνοντας προσφορά συναλλαγής...</value>
+		<comment>{0} will be replaced by number of items matched, {1} will be replaced by steam ID (number), {2} will be replaced by user's nickname</comment>
+	</data>
+  <data name="TradeOfferFailed" xml:space="preserve">
+		<value>Αποτυχία αποστολής μιας προσφοράς συναλλαγής στο bot {0} ({1}), με κίνηση...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname'</comment>
+	</data>
 </root>

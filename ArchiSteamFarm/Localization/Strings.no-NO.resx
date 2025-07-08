@@ -185,62 +185,175 @@ StackTrace:
 	<data name="UpdateNewVersionAvailable" xml:space="preserve">
 		<value>Ny ASF-versjon er tilgjengelig! Vurder å oppdatere!</value>
 	</data>
+	<data name="UpdateVersionInfo" xml:space="preserve">
+		<value>Lokal versjon: {0} ART Fjernversjon: {1}</value>
+		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+	</data>
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Vennligst sjekk din Steam mobil app, du bør ha mottatt et varsel om innloggingsgodkjenning. Skriv Y hvis du har mottatt og godkjent varslen, N hvis du ønsker å legge til kode i stedet: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteam2FA" xml:space="preserve">
+		<value>Vennligst skriv inn 2FA-koden fra Steam-autentiseringsappen din: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Skriv inn SteamGuard auth kode som ble sendt til din e-post: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamLogin" xml:space="preserve">
+		<value>Vennligst skriv inn din Steam-innlogging: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamParentalCode" xml:space="preserve">
+		<value>Vennligst legg inn Steam foreldrekode: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamPassword" xml:space="preserve">
+		<value>Skriv inn ditt Steam-passord: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+		<value>Mottatt ukjent verdi for {0}, vennligst rapport dette: {1}</value>
+		<comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+	</data>
+	<data name="IPCReady" xml:space="preserve">
+		<value>IPC server klar!</value>
+	</data>
+	<data name="IPCStarting" xml:space="preserve">
+		<value>Starter IPC server...</value>
+	</data>
+	<data name="BotAlreadyStopped" xml:space="preserve">
+		<value>Denne botten har allerede stoppet!</value>
+	</data>
+	<data name="BotNotFound" xml:space="preserve">
+		<value>Kunne ikke finne noen bot som heter {0}!</value>
+		<comment>{0} will be replaced by bot's name query (string)</comment>
+	</data>
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="BotStatusIdling" xml:space="preserve">
+		<value>Bot dyrkingsspill: {0} ({1}, {2} kort dråper igjen) fra totalt {3} spill ({4} kort) igjen til gården (~{5} igjen).</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="BotStatusIdlingList" xml:space="preserve">
+		<value>Bot dyrker dyrkingsspill: {0} fra totalt {1} spill ({2} kort) igjen til gården (~{3} igjen).</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="CheckingFirstBadgePage" xml:space="preserve">
+		<value>Kontrollerer førstemblemsiden...</value>
+	</data>
+	<data name="CheckingOtherBadgePages" xml:space="preserve">
+		<value>Sjekker andre emblemsider...</value>
+	</data>
+	<data name="ChosenFarmingAlgorithm" xml:space="preserve">
+		<value>Valgt landbruks algoritme: {0}</value>
+		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+	</data>
 	<data name="Done" xml:space="preserve">
 		<value>Utført!</value>
 	</data>
+	<data name="GamesToIdle" xml:space="preserve">
+		<value>Vi har totalt {0} spill ({1} kort) fra gården (~{2} gjenstår)...</value>
+		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinished" xml:space="preserve">
+		<value>Jordbruk er ferdig!</value>
+	</data>
+	<data name="IdlingFinishedForGame" xml:space="preserve">
+		<value>Ferdig med drift: {0} ({1}) etter {2} spilletid!</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinishedForGames" xml:space="preserve">
+		<value>Fullførte landbruksspill: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="IdlingStatusForGame" xml:space="preserve">
+		<value>Gårdsstatus for {0} ({1}): {2} kort gjenstår</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm</comment>
+	</data>
+	<data name="IdlingStopped" xml:space="preserve">
+		<value>Jordbruk stoppet!</value>
+	</data>
+	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+		<value>Å ignorere denne forespørselen, siden permanent pause er aktivert!</value>
+	</data>
+	<data name="NothingToIdle" xml:space="preserve">
+		<value>Vi har ingen ting å dyrke på denne kontoen!</value>
+	</data>
+	<data name="NowIdling" xml:space="preserve">
+		<value>Nærliggende nå: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PlayingNotAvailable" xml:space="preserve">
+		<value>Å spille er utilgjengelig for øyeblikket, vi vil prøve igjen senere!</value>
+	</data>
+	<data name="StillIdling" xml:space="preserve">
+		<value>Fortsatt landing: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StillIdlingList" xml:space="preserve">
+		<value>Fortsatt landing: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="StoppedIdling" xml:space="preserve">
+		<value>Stoppet drift: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StoppedIdlingList" xml:space="preserve">
+		<value>Stoppet drift: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="UnknownCommand" xml:space="preserve">
 		<value>Ukjent kommando!</value>
 	</data>
-	
-	
+	<data name="WarningCouldNotCheckBadges" xml:space="preserve">
+		<value>Kunne ikke hente merker,informasjon, vi vil prøve igjen senere!</value>
+	</data>
+	<data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+		<value>Kunne ikke sjekke kortstatus for: {0} ({1}), vi skal prøve igjen senere!</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="BotAcceptingGift" xml:space="preserve">
 		<value>Godta gave: {0}...</value>
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="BotAccountLimited" xml:space="preserve">
+		<value>Denne kontoen er begrenset, driftsprosessen er utilgjengelig inntil begrensningen er fjernet!</value>
+	</data>
+	<data name="BotAddLicense" xml:space="preserve">
+		<value>ID: {0} ＋ Status: {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotAddLicenseWithItems" xml:space="preserve">
+		<value>ID: {0} APEXStatus: {1} eventuelle: {2}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+	</data>
+	<data name="BotAlreadyRunning" xml:space="preserve">
+		<value>Denne botten kjører!</value>
+	</data>
+	<data name="BotAuthenticatorConverting" xml:space="preserve">
+		<value>Konverterer .maFile til ASF-format...</value>
+	</data>
+	<data name="BotAuthenticatorImportFinished" xml:space="preserve">
+		<value>Vellykket import av mobilautentisering!</value>
+	</data>
+	<data name="BotAuthenticatorToken" xml:space="preserve">
+		<value>2FA token: {0}</value>
+		<comment>{0} will be replaced by generated 2FA token (string)</comment>
+	</data>
+	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+		<value>Automatisk jordbruk har pauset!</value>
+	</data>
+	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+		<value>Automatisk jordbruk har gjenopptatt!</value>
+	</data>
+	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+		<value>Automatisk jordbruk er midlertidig stanset!</value>
+	</data>
+	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+		<value>Automatisk jordbruk er allerede gjenopptatt allerede!</value>
+	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>Koblet til Steam!</value>
 	</data>
@@ -250,37 +363,87 @@ StackTrace:
 	<data name="BotDisconnecting" xml:space="preserve">
 		<value>Kobler fra...</value>
 	</data>
-	
-	
+	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+		<value>Ikke start denne bot forekomsten fordi den er deaktivert i config filen!</value>
+	</data>
+	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+		<value>Mottok TwoFactorCodeMismatch feilkode {0} ganger på rad. Uansett er 2FA-opplysningene dine ikke lenger gyldig, eller så er klokken din ikke synkronisert, avbryt!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+	</data>
 	<data name="BotLoggedOff" xml:space="preserve">
 		<value>Logget av Steam: {0}</value>
 		<comment>{0} will be replaced by logging off reason (string)</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="BotLoggedOn" xml:space="preserve">
+		<value>Vellykket logget på som {0}.</value>
+		<comment>{0} will be replaced by steam ID (number)</comment>
+	</data>
+	<data name="BotLoggingIn" xml:space="preserve">
+		<value>Logger inn...</value>
+	</data>
+	<data name="BotLogonSessionReplaced" xml:space="preserve">
+		<value>Denne kontoen ser ut til å bli brukt i en annen ASF-forekomst, som er udefinert oppførsel, vil nekte å holde den kjørende!</value>
+	</data>
+	<data name="BotLootingFailed" xml:space="preserve">
+		<value>Handelstilbud mislyktes!</value>
+	</data>
+	<data name="BotLootingMasterNotDefined" xml:space="preserve">
+		<value>Handelen kunne ikke sendes fordi det ikke er noen bruker med mestertillatelse definert!</value>
+	</data>
+	<data name="BotLootingSuccess" xml:space="preserve">
+		<value>Handelstilbudet ble sendt!</value>
+	</data>
+	<data name="BotSendingTradeToYourself" xml:space="preserve">
+		<value>Du kan ikke sende en handel til deg selv!</value>
+	</data>
+	<data name="BotNoASFAuthenticator" xml:space="preserve">
+		<value>Denne boten har ikke ASF 2FA aktivert! Har du glemt å importere autentiseringen din som ASF 2FA?</value>
+	</data>
+	<data name="BotNotConnected" xml:space="preserve">
+		<value>Denne robot-forekomsten er ikke tilkoblet!</value>
+	</data>
+	<data name="BotNotOwnedYet" xml:space="preserve">
+		<value>Ikke eid ennå: {0}</value>
+		<comment>{0} will be replaced by query (string)</comment>
+	</data>
+	<data name="BotOwnedAlreadyWithName" xml:space="preserve">
+		<value>Egnet allerede: {0} == {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>Poengsaldo: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
+	<data name="BotRateLimitExceeded" xml:space="preserve">
+		<value>Rammegrensen overskredet, vi vil prøve på nytt etter {0} med kjøling...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+	</data>
 	<data name="BotReconnecting" xml:space="preserve">
 		<value>Kobler til på nytt...</value>
 	</data>
 	
 	
-	
-	
-	
-	
-	
-	
-	
+	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+		<value>Fjernet utgått innloggingsnøkkel!</value>
+	</data>
+	<data name="BotStatusNotIdling" xml:space="preserve">
+		<value>Bot gir ikke noe bruk.</value>
+	</data>
+	<data name="BotStatusLimited" xml:space="preserve">
+		<value>Bot er begrenset og kan ikke slippe alle kort gjennom akk.</value>
+	</data>
+	<data name="BotStatusConnecting" xml:space="preserve">
+		<value>Bot kobler til Steam-nettverket.</value>
+	</data>
+	<data name="BotStatusNotRunning" xml:space="preserve">
+		<value>Bot kjører ikke.</value>
+	</data>
+	<data name="BotStatusPaused" xml:space="preserve">
+		<value>Bot er satt på pause eller kjører i manuell modus.</value>
+	</data>
+	<data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+		<value>Bot er i bruk for øyeblikket.</value>
+	</data>
 	<data name="BotUnableToLogin" xml:space="preserve">
 		<value>Kan ikke logge inn på Steam: {0}/{1}</value>
 		<comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
@@ -297,103 +460,323 @@ StackTrace:
 		<value>Mislyktes på grunn av feil: {0}</value>
 		<comment>{0} will be replaced by failure reason (string)</comment>
 	</data>
-	
-	
-	
+	<data name="BotConnectionLost" xml:space="preserve">
+		<value>Tilkobling til Steam nettverk tapt. Gjenopprettes...</value>
+	</data>
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>Kontoen er ikke lenger brukt: jordbruksprosessen gjenopptatt!</value>
+	</data>
+	<data name="BotAccountOccupied" xml:space="preserve">
+		<value>Konto er for øyeblikket i bruk: ASF vil gjenoppta oppdrett når det er gratis...</value>
+	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Kobler til...</value>
 	</data>
-	
+	<data name="BotHeartBeatFailed" xml:space="preserve">
+		<value>Kan ikke koble fra klienten. Forlat denne botten instans!</value>
+	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Stopper...</value>
 	</data>
-	
-	
+	<data name="ErrorBotConfigInvalid" xml:space="preserve">
+		<value>Din bot konfigurasjon er ugyldig. Kontroller innholdet i {0} og prøv igjen!</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="ErrorDatabaseInvalid" xml:space="preserve">
+		<value>Vedvarende database kunne ikke lastes, hvis problemet vedvarer, fjern {0} for å gjenopprette databasen!</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
 	<data name="Initializing" xml:space="preserve">
 		<value>Initialiserer {0}...</value>
 		<comment>{0} will be replaced by service name that is being initialized</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningPrivacyPolicy" xml:space="preserve">
+		<value>Se gjennom seksjonen om personvern på wikien hvis du er bekymret for hva ASF faktisk gjør!</value>
+	</data>
+	<data name="Welcome" xml:space="preserve">
+		<value>Det ser ut til at det er din første lansering av programmet, velkommen!</value>
+	</data>
+	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+		<value>Den angitte nålkulturen er ugyldig, ASF vil fortsette å kjøre med standarden!</value>
+	</data>
+	<data name="TranslationIncomplete" xml:space="preserve">
+		<value>ASF vil forsøke å bruke {0} kulturen, men oversettelse til det språket er bare {1} fullført. Kanskje du kan hjelpe oss med å forbedre ASF-oversettelsen for ditt språk?</value>
+		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+	</data>
+	<data name="IdlingGameNotPossible" xml:space="preserve">
+		<value>Jordbruk av {0} ({1}) er midlertidig deaktivert, da ASF ikke kan spille det akkurat nå.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="WarningIdlingGameMismatch" xml:space="preserve">
+		<value>ASF oppdaget ID-feil for {0} ({1}), og vil i stedet bruke ID til {2}.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
+	</data>
+	<data name="BotVersion" xml:space="preserve">
+		<value>{0} V{1}</value>
+		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
+	</data>
+	<data name="BotAccountLocked" xml:space="preserve">
+		<value>Denne kontoen er låst, jordbruksprosessen er permanent utilgjengelig!</value>
+	</data>
+	<data name="BotStatusLocked" xml:space="preserve">
+		<value>Bot er låst og kan ikke slippe noen kort gjennom innhøsting.</value>
+	</data>
+	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+		<value>Denne funksjonen er bare tilgjengelig i headless modus!</value>
+	</data>
+	<data name="BotOwnedAlready" xml:space="preserve">
+		<value>Egne allerede: {0}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="ErrorAccessDenied" xml:space="preserve">
+		<value>Ingen tilgang!</value>
+	</data>
+	<data name="WarningPreReleaseVersion" xml:space="preserve">
+		<value>Du bruker en versjon som er nyere enn den som ble utgitt nyeste versjonen for oppgraderingskanalen din. Vær oppmerksom på at forhåndslanseringsversjoner er ment for brukere som vet hvordan du skal rapportere feil, behandle problemer og gi tilbakemelding – ingen teknisk støtte vil bli gitt.</value>
+	</data>
+	<data name="BotStats" xml:space="preserve">
+		<value>Gjeldende minnebruk: {0} MB.
+prosess oppgang: {1}</value>
+		<comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+	</data>
+	<data name="BotOwnsOverviewPerGame" xml:space="preserve">
+		<value>{0}/{1} bots allerede eier spill {2}.</value>
+		<comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
+	</data>
+	<data name="BotRefreshingPackagesData" xml:space="preserve">
+		<value>Oppdaterer pakker data...</value>
+	</data>
+	<data name="WarningDeprecated" xml:space="preserve">
+		<value>Bruk av {0} er foreldet og vil bli fjernet i fremtidige versjoner av programmet. Vennligst bruk {1} i stedet.</value>
+		<comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+	</data>
+	<data name="BotAcceptedDonationTrade" xml:space="preserve">
+		<value>Akseptert donasjons handel: {0}</value>
+		<comment>{0} will be replaced by trade's ID (number)</comment>
+	</data>
+	<data name="WarningWorkaroundTriggered" xml:space="preserve">
+		<value>Workaround for {0} bug ble utløst.</value>
+		<comment>{0} will be replaced by the bug's name provided by ASF</comment>
+	</data>
+	<data name="TargetBotNotConnected" xml:space="preserve">
+		<value>Target bot instans er ikke tilkoblet!</value>
+	</data>
+	<data name="BotWalletBalance" xml:space="preserve">
+		<value>Lommeboksaldo: {0} {1}</value>
+		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+	</data>
+	<data name="BotHasNoWallet" xml:space="preserve">
+		<value>Bot har ingen lommebok.</value>
+	</data>
+	
+	<data name="BotInventory" xml:space="preserve">
+		<value>{0}/{1} ({2}/{3}): {4} ressurser</value>
+		<comment>{0} will be replaced by appID (number), {1} will be replaced by contextID (number), {2} will be replaced by app's name (string), {3} will be replaced by name of the context (string), {4} will be replaced by number of assets in the specified inventory (number).</comment>
+	</data>
+	
+	<data name="DoneActivelyMatchingItems" xml:space="preserve">
+		<value>Samsvarer med Steam-elementer, fra omkring #{0}.</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
+	<data name="ErrorAborted" xml:space="preserve">
+		<value>Avbrutt!</value>
+	</data>
+	<data name="WarningExcessiveBotsCount" xml:space="preserve">
+		<value>Du har flere personlige bot kontoer enn vår øvre anbefalte grense ({0}). Vær oppmerksom på at dette oppsettet ikke støttes og kan forårsake forskjellige Steam-relaterte problemer, inkludert kontosuspensjoner. Sjekk ut FAQ for mer detaljer.</value>
+		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+	</data>
+	
+	<data name="PluginLoading" xml:space="preserve">
+		<value>Laster {0} V{1}...</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+	</data>
+	<data name="NothingFound" xml:space="preserve">
+		<value>Ingenting funnet!</value>
+	</data>
+	<data name="PluginsWarning" xml:space="preserve">
+		<value>Du har lastet en eller flere tilpassede plugins inn i ASF. Siden vi ikke kan tilby støtte for modded oppsett, Ta kontakt med de passende utviklerne av programtilleggene du bestemte deg for å bruke i tilfelle problemer oppstår.</value>
+	</data>
+	<data name="PleaseWait" xml:space="preserve">
+		<value>Vennligst vent...</value>
+	</data>
+	<data name="EnterCommand" xml:space="preserve">
+		<value>Angi kommando: </value>
+	</data>
+	<data name="Executing" xml:space="preserve">
+		<value>Utfører...</value>
+	</data>
+	<data name="InteractiveConsoleEnabled" xml:space="preserve">
+		<value>Interaktiv konsoll er nå aktiv, skriv 'c' for å angi kommando modus.</value>
+	</data>
+	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+		<value>Bot har {0} spill igjen i sin bakgrunnkø.</value>
+		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+	</data>
+	<data name="ErrorSingleInstanceRequired" xml:space="preserve">
+		<value>ASF-prosessen kjører allerede for denne arbeidsmappen, avbryt !</value>
+	</data>
+	<data name="BotHandledConfirmations" xml:space="preserve">
+		<value>{0} ble håndtert bekreftelsene!</value>
+		<comment>{0} will be replaced by number of confirmations</comment>
+	</data>
+	<data name="BotExtraIdlingCooldown" xml:space="preserve">
+		<value>Venter på {0} for å sikre at vi er fri til å starte gård...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+	</data>
+	<data name="UpdateCleanup" xml:space="preserve">
+		<value>Rydder opp gamle filer etter oppdatering...</value>
+	</data>
+	<data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+		<value>Genererer Steam foreldrekode, dette kan ta en stund, vurder å sette den i config i steden...</value>
+	</data>
+	<data name="IPCConfigChanged" xml:space="preserve">
+		<value>IPC konfigurasjonen har blitt endret!</value>
+	</data>
+	<data name="BotTradeOfferResult" xml:space="preserve">
+		<value>Handelstilbudet {0} er bestemt til å være {1} på grunn av {2}.</value>
+		<comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
+	</data>
+	<data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
+		<value>Mottok feil passord feilkode {0} ganger på rad. Passordet for denne kontoen vil mest sannsynlig bli galt, avbryt!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
+	</data>
+	<data name="Result" xml:space="preserve">
+		<value>Resultat: {0}</value>
+		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
+	</data>
+	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
+		<value>Du prøver å kjøre {0} variant av ASF i et miljø som ikke støttes: {1}. Gi tilgang - ignorert miljø argument hvis du virkelig vet hva du gjør.</value>
+	</data>
+	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+		<value>Ukjent kommandolinje-argument: {0}</value>
+		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
+	</data>
+	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+		<value>Mappe for konfigurasjon ble ikke funnet, avbryt !</value>
+	</data>
+	<data name="BotIdlingSelectedGames" xml:space="preserve">
+		<value>Spiller valgte {0}: {1}</value>
+		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+	</data>
+	<data name="AutomaticFileMigration" xml:space="preserve">
+		<value>{0} config filen vil bli overført til siste syntaks...</value>
+		<comment>{0} will be replaced with the relative path to the affected config file</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Din krypteringsnøkkel er for kort. Vi anbefaler å bruke en som er minst {0} byte (tegn) lang.</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Du bruker {0} innstillinger for {1} egenskaper, men du ga ikke en tilpasset --cryptkey. Du kan eventuelt stille inn en tilpasset --cryptkey for økt sikkerhet hvis du ønsker det.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>Du bruker {0} innstillinger for {1} egenskaper, men du ga ikke en tilpasset --cryptkey. Dette har med seg beskyttelsen helt, ettersom ASF tvinges til å bruke sin egen (kjent) nøkkel. Du bør gi en egendefinert --kryptkey for å gjøre bruk av sikkerhetsfordeler tilbudt av denne innstillingen.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Du prøver å kjøre ASF som administrator (root). Det gir en betydelig sikkerhetsrisiko for maskinen din, og siden ASF ikke krever root-tilgang for maskinen, vi anbefaler å kjøre det som ikke-administrator bruker hvis mulig.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Du kjører ASF i miljøet som ikke er støttet – levere --ignore-unsupported-environment argument. Vær oppmerksom på at vi ikke tilbyr noen form for støtte for dette scenarioet og gjør det helt på egen risiko. Du har blitt advart.</value>
+	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Henter checksum fra ekstern server...</value>
+	</data>
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>Bekrefter kontrollsummen av de nedlastede binærfilene mot serveren fra serveren...</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>Ekstern server vet ikke noe om utgivelsen vi oppdaterer til. Denne situasjonen er mulig dersom utgivelsen nylig ble publisert, nekter å gå videre med oppdateringen umiddelbart som et ekstra sikkerhetstiltak.</value>
+	</data>
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>Kunne ikke hente kontrollsummen av det nedlastede binærsystemet - nekte å fortsette med oppdateringsprosedyren på dette tidspunktet som et ytterligere sikkerhetstiltak.</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>Fjerntjeneren har svart med en annen sjekk, dette kan indikere ødelagte nedlastinger eller MITM angrep, nekter å fortsette med oppdateringsprosedyren!</value>
+	</data>
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>mønstrer ASF-filer...</value>
+	</data>
+	<data name="UserInputCryptkey" xml:space="preserve">
+		<value>Vennligst skriv inn din krypteringsnøkkel: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="ErrorIPNotBanned" xml:space="preserve">
+		<value>IP-adressen {0} er ikke utestengt!</value>
+		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
+	</data>
+	<data name="WarningNoLicense" xml:space="preserve">
+		<value>Du har forsøkt å bruke betalt funksjon {0} , men du har ikke en gyldig LicenseID satt i ASF-global konfigurasjonen. Vennligst se gjennom din konfigurasjon, siden funksjonen ikke fungerer uten flere detaljer.</value>
+		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>ASF kan ikke spille app {0} fordi den har regionrelatert begrensning for {1} land som varer frem til {2}.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>Du prøver å kjøre offisiell {0} -plugin i feil matchet med ASF-versjon: {1} (forventet {2}). Dette foreslår at du gjør noe forferdelig feil, enten fikser ditt oppsett eller leveranse - ignorert-ikke støttede omgivelser hvis du vet hva du gjør.</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>ASF har krasjet for mange ganger den siste tiden, og på grunn av at prosessinitialisering er deaktivert. Enten undersøk, reparer oppsettet ditt, deretter fjern ASF. utslett filen fra konfigurasjonsmappen, eller tillat --ignorer et argument som ikke støttes – hvis du virkelig vet hva du gjør.</value>
+	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>Jordbruk {0} ({1}) er deaktivert, siden spillet er merket som privat. Hvis du har tenkt fra ASF til gård som spillet, bør du vurdere å endre personverninnstillingene.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>Skilter: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>Ser etter tilleggsoppdateringer...</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>Sjekker oppdatering for {0} plugin...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>Ingen oppdatering tilgjengelig for {0} utvidelsen: {1} ≥ {2}.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>Ny {0} plugin versjon tilgjengelig! Vurder å oppdatere deg selv!</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>Fant {0} oppdatering for programtillegg fra versjon {1} til {2}-...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>Ingen ressurser tilgjengelig for {0} plugin oppdatering fra versjon {1} til {2}, betyr dette vanligvis at den vil være tilgjengelig senere.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>Ingen elementer kunne bli bestemt for {0} plugin oppdatering fra versjon {1} til {2}. Dette kan skje hvis utgivelsen ikke er ferdig ennå - hvis den fortsetter å skje, må du varsle skaperen av plugin om det.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>Oppdaterer {0} plugin...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>Oppdatering av {0} utvidelsen har lyktes, endringene vil bli lastet ved neste ASF lansering.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>{0}/{1} programtillegg er registrert og aktivert for automatiske oppdateringer.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>{0} ({1}) plugin har blitt deaktivert fra automatiske oppdateringer, til tross for støttende slik funksjon.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Egendefinerte programtillegg er registrert for automatiske oppdateringer. ASF-teamet vil minne deg på at for din egen sikkerhet bør du aktivere automatiske oppdateringer bare fra parter du stoler på. Hvis du ikke har tenkt å gjøre dette, kan du deaktivere plugin-oppdateringer i ASF-global konfigurasjon.</value>
+	</data>
+	<data name="Input" xml:space="preserve">
+		<value>Input: {0}</value>
+		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
 </root>

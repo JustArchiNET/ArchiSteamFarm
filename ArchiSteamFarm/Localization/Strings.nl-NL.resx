@@ -86,7 +86,10 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Afsluiten met {0} foutcode!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
+	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Verzoek mislukt: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -185,7 +188,10 @@ StackTrace:
 		<value>Lokale versie: {0} | Externe versie: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
-	
+	<data name="UserInputDeviceConfirmation" xml:space="preserve">
+		<value>Controleer je Steam mobiele app, je zou een login goedkeuringsmelding moeten hebben ontvangen. Typ Y als je de melding hebt ontvangen en goedgekeurd, N als je in plaats daarvan code wil invoeren: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Voer de 2FA code in van je Steam authenticator app: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -577,7 +583,10 @@ Proces uptime: {1}</value>
 		<value>Bot is level {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
+	<data name="BotInventory" xml:space="preserve">
+		<value>{0}/{1} ({2}/{3}): {4} activa</value>
+		<comment>{0} will be replaced by appID (number), {1} will be replaced by contextID (number), {2} will be replaced by app's name (string), {3} will be replaced by name of the context (string), {4} will be replaced by number of assets in the specified inventory (number).</comment>
+	</data>
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Steam-items matchen, ronde #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>
@@ -677,7 +686,10 @@ Proces uptime: {1}</value>
 		<value>Uw encryptiesleutel is te kort. We raden u aan om er één te gebruiken die minstens {0} bytes (tekens) lang is.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>U gebruikt de instelling {0} van {1} eigenschap, maar u heeft geen aangepaste --cryptkey opgegeven. U kunt optioneel een aangepaste --cryptkey geven voor verhoogde beveiliging als u dat wilt.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>U gebruikt {0} instelling van {1} eigenschap, maar u heeft geen aangepaste --cryptkey opgegeven. Dit ondermijnt de bescherming volledig, omdat ASF zijn eigen (bekend) sleutel moet gebruiken. U moet een aangepaste --cryptkey opgeven om gebruik te maken van het beveiligingsvoordeel dat deze instelling biedt.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -697,7 +709,9 @@ Proces uptime: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Externe server weet niets over de release waar we naar bijwerken. Deze situatie is mogelijk als de vrijlating onlangs werd gepubliceerd - door als aanvullende veiligheidsmaatregel de actualiseringsprocedure onmiddellijk te weigeren.</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>Fout bij het ophalen van een checksum van de gedownloade binary - weigering om verder te gaan met de updateprocedure op dit moment als aanvullende beveiligingsmaatregel.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Externe server heeft geantwoord met een andere checksum, dit kan duiden op corrupte download of MITM aanval, de update procedure zal gestopt worden!</value>
 	</data>
@@ -716,22 +730,73 @@ Proces uptime: {1}</value>
 		<value>Je hebt geprobeerd om de betaalde functie {0} te gebruiken, maar je hebt geen geldige LicenseID ingesteld in de ASF global config. Controleer uw configuratie, aangezien de functie niet werkt zonder aanvullende details.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>ASF kan app {0} niet spelen omdat het een regionale beperking heeft voor {1} land dat duurt tot {2}.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>U probeert de officiële {0} plugin uit te voeren die niet overeenkomt met de ASF-versie: {1} (verwacht {2}) Dit geeft aan dat je iets vreselijk verkeerd doet. Repareer je instellingen of geef --ignore-unsupport-environment argument als je echt weet wat je doet.</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>Je ASF is de laatste tijd te vaak gecrasht en door het feit dat de initialisatie van de procedure is uitgeschakeld. Ofwel onderzoeken en repareer je installatie, en verwijder ASF. rash bestand vanuit uw config directory, of geef --ignore-unsupported-environment argument als je echt weet wat je aan het doen bent.</value>
+	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>Landbouw {0} ({1}) is uitgeschakeld, omdat dat spel momenteel als privé is gemarkeerd. Als je van ASF van plan bent dat spel te bewerken, overweeg dan om de privacy-instellingen te veranderen.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>Overslaan: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>Controleren op plugin updates...</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>Controleren van update voor {0} plugin...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>Geen update beschikbaar voor {0} plugin: {1} ≥ {2}.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>Nieuwe versie van {0} plugin is beschikbaar! Overweeg uzelf te updaten!</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>Gevonden {0} plugin update van versie {1} naar {2}...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>Geen asset beschikbaar voor {0} plugin update van versie {1} naar {2}, meestal betekent dit dat de update op een later tijdstip beschikbaar zal zijn.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>Er kon geen asset worden bepaald voor {0} plugin update van versie {1} naar {2}. Dit kan gebeuren als de release nog niet klaar is - als het blijft gebeuren, moet je de maker van de plugin hiervan op de hoogte stellen.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>Bijwerken {0} plugin...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>Bijwerken van de {0} plugin is geslaagd, de wijzigingen worden geladen op de volgende ASF lancering.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>{0}/{1} plugin is geregistreerd en geactiveerd voor automatische updates.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>{0} ({1}) plugin is uitgeschakeld voor automatische updates, ondanks het ondersteunen van deze functie.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Aangepaste plugins zijn geregistreerd voor automatische updates. Het ASF-team wil je eraan herinneren dat je voor je eigen veiligheid alleen automatische updates van vertrouwde partijen inschakelt. Als u niet van plan bent dit te doen, kunt u plugin updates uitschakelen in de ASF globale configuratie.</value>
+	</data>
+	<data name="Input" xml:space="preserve">
+		<value>Input: {0}</value>
+		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
 </root>

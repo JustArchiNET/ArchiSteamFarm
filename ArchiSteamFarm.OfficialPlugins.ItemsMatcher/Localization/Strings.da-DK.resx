@@ -64,6 +64,10 @@
 		<value>Matched totalt {0} sæt denne runde.</value>
 		<comment>{0} will be replaced by number of sets traded</comment>
 	</data>
+  <data name="ListingAnnouncing" xml:space="preserve">
+		<value>Annoncerer {0} ({1}) med inventar lavet af {2} varer i alt på listen...</value>
+		<comment>{0} will be replaced by steam ID (number), {1} will be replaced by user's nickname, {2} will be replaced with number of items in the inventory</comment>
+	</data>
   <data name="MatchingFound" xml:space="preserve">
 		<value>Matchede i alt {0} varer med bot {1} ({2}), sender handelstilbud...</value>
 		<comment>{0} will be replaced by number of items matched, {1} will be replaced by steam ID (number), {2} will be replaced by user's nickname</comment>

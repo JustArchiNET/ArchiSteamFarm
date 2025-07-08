@@ -68,7 +68,10 @@
 		<value>{0} is momenteel uitgeschakeld volgens uw configuratie. Als je SteamDB wilt helpen bij het indienen van gegevens, bekijk dan onze wiki.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} is met succes geïnitialiseerd. Alvast bedankt voor uw hulp. De eerste uitwerking zal gebeuren in ongeveer {1}.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} kon niet worden geladen, een nieuwe instantie zal worden geïnitialiseerd...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
@@ -104,13 +107,33 @@
 		<value>Ophalen van {0} app-infos voltooid.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Klaar {0} van {1} depot sleutelverzoeken.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot key requests that were successfully answered, {1} will be replaced by the number (count this batch) of depot key requests that were supposed to be sent</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
+		<value>Ophalen van alle depot keys voltooid voor een totaal van {0} apps.</value>
+		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
+	</data>
+	<data name="SubmissionNoNewData" xml:space="preserve">
+		<value>Er zijn geen nieuwe gegevens om in te dienen, alles is up-to-date.</value>
+	</data>
+	<data name="SubmissionNoContributorSet" xml:space="preserve">
+		<value>Kon de gegevens niet indienen omdat er geen geldige SteamID is die we als bijdrager kunnen classificeren. Overweeg het instellen van {0} property.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
+	</data>
+	<data name="SubmissionInProgress" xml:space="preserve">
+		<value>Verzenden van een totaal van geregistreerde apps/packages/depos: {0}/{1}/{2}...</value>
+		<comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
+	</data>
+	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+		<value>De indiening is mislukt door te veel verzonden, we zullen het vanaf nu opnieuw proberen in ongeveer {0}.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="SubmissionSuccessful" xml:space="preserve">
+		<value>De gegevens zijn succesvol ingediend. De server heeft een totaal van nieuwe apps/pakketten/depots: {0} ({1} geverifieerd)/{2} ({3} geverifieerd)/{4} ({5} geverifieerd).</value>
+		<comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
+	</data>
 	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
 		<value>Nieuwe apps: {0}</value>
 		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
@@ -127,10 +150,25 @@
 		<value>Geverifieerde pakketten: {0}</value>
 		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
-	
-	
-	
-	
+	<data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+		<value>Nieuwe depoten: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+		<value>Geverifieerde depot: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="PluginSecretListInitialized" xml:space="preserve">
+		<value>{0} geïnitialiseerd, de plugin zal geen van deze oplossen: {1}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="LoadingGlobalCache" xml:space="preserve">
+		<value>STD global cache laden...</value>
+	</data>
+	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
+		<value>Valideren van STD globale cache integriteit...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>Kon de wereldwijde STD cache integriteit niet verifiëren. Dit suggereert een potentiële bestands/geheugencorruptie, een nieuw exemplaar zal in plaats daarvan worden geïnitialiseerd.</value>
+	</data>
 </root>

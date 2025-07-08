@@ -584,7 +584,10 @@ StackTrace:
 		<value>Το bot βρίσκεται στο επίπεδο {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
+	<data name="BotInventory" xml:space="preserve">
+		<value>{0}/{1} ({2}/{3}): {4} assets</value>
+		<comment>{0} will be replaced by appID (number), {1} will be replaced by contextID (number), {2} will be replaced by app's name (string), {3} will be replaced by name of the context (string), {4} will be replaced by number of assets in the specified inventory (number).</comment>
+	</data>
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Ταίριασμα στοιχείων Steam, γύρος #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>
@@ -707,7 +710,9 @@ StackTrace:
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Ο απομακρυσμένος διακομιστής δε γνωρίζει τίποτα σχετικά με την έκδοση στην οποία ενημερώνουμε. Αυτή η κατάσταση είναι πιθανή εάν η νέα έκδοση δημοσιεύτηκε πρόσφατα - Ως πρόσθετο μέτρο ασφαλείας το πρόγραμμα δε θα προβεί στην άμεση διαδικασία ενημέρωσης.</value>
 	</data>
-	
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>Αποτυχία λήψης του αθροίσματος ελέγχου του ληφθέντος δυαδικού - άρνηση να προχωρήσει με τη διαδικασία ενημέρωσης αυτή τη στιγμή ως πρόσθετο μέτρο ασφαλείας.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Ο απομακρυσμένος διακομιστής απάντησε με ένα διαφορετικό checksum, αυτό μπορεί να υποδεικνύει κατεστραμμένο download ή MITM attack, αρνούμενος να προχωρήσει με τη διαδικασία ενημέρωσης!</value>
 	</data>
@@ -730,9 +735,17 @@ StackTrace:
 		<value>Το ASF δεν είναι σε θέση να εκτελέσει την εφαρμογή {0} λόγω γεωγραφικού περιορισμού ως προς τη χώρα {1} που διαρκεί έως {2}.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
 	</data>
-	
-	
-	
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>Προσπαθείτε να εκτελέσετε επίσημο πρόσθετο {0} σε αναντιστοιχία με την έκδοση ASF: {1} (αναμένεται {2}). Αυτό υποδηλώνει ότι κάνετε κάτι τρομερά λάθος, είτε διορθώσετε τις ρυθμίσεις σας είτε παρέχετε την επιλογή --ignore-unsupported-environment αν πραγματικά ξέρετε τι κάνετε.</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>Το ASF σας συνετρίβη πάρα πολλές φορές πρόσφατα και λόγω αυτού η έναρξη της διαδικασίας έχει απενεργοποιηθεί. Είτε διερευνήσετε, να διορθώσετε την εγκατάστασή σας και, στη συνέχεια, αφαιρέστε το ASF. rash file from your config directory, or supply --ignore-unsupported-environment argument if you really know what you're doing .</value>
+	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>Η γεωργία {0} ({1}) είναι απενεργοποιημένη, καθώς το παιχνίδι αυτή τη στιγμή επισημαίνεται ως ιδιωτικό. Εάν προτίθεστε από το ASF στο αγρόκτημα αυτό το παιχνίδι, τότε εξετάστε το ενδεχόμενο αλλαγής των ρυθμίσεων απορρήτου του.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="WarningSkipping" xml:space="preserve">
 		<value>Παράλειψη: {0}...</value>
 		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
@@ -748,14 +761,37 @@ StackTrace:
 		<value>Δεν υπάρχει διαθέσιμη ενημέρωση για το πρόσθετο {0}: {1} ≥ {2}.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>Νέα έκδοση {0} plugin είναι διαθέσιμη! Σκεφτείτε να ενημερώσετε τον εαυτό σας!</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>Βρέθηκε ενημέρωση του πρόσθετου {0} από την έκδοση {1} σε {2}...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>Ενημέρωση του πρόσθετου {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>Επιτυχής ενημέρωση του {0} plugin, οι αλλαγές θα φορτωθούν στην επόμενη εκκίνηση του ASF.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>{0}/{1} plugin έχει καταχωρηθεί και ενεργοποιηθεί για αυτόματες ενημερώσεις.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>{0} ({1}) plugin έχει απενεργοποιηθεί από αυτόματες ενημερώσεις, παρά την υποστήριξη αυτής της δυνατότητας.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Τα προσαρμοσμένα πρόσθετα έχουν καταχωρηθεί για αυτόματες ενημερώσεις. Ομάδα ASF θα ήθελε να σας υπενθυμίσει ότι, για τη δική σας ασφάλεια, θα πρέπει να ενεργοποιήσετε την αυτόματη ενημέρωση μόνο από αξιόπιστα μέρη. Αν δεν προτίθεστε να το κάνετε αυτό, μπορείτε να απενεργοποιήσετε ενημερώσεις plugin σε γενικές ρυθμίσεις ASF.</value>
+	</data>
+	<data name="Input" xml:space="preserve">
+		<value>Input: {0}</value>
+		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
 </root>
