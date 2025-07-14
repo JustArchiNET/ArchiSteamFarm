@@ -72,6 +72,7 @@ public sealed class Confirmation {
 		PhoneNumberChange = 5,
 		AccountRecovery = 6,
 		ApiKeyRegistration = 9,
-		FamilyJoin = 11
+		FamilyJoin = 11,
+		AccountSecurity = 12
 	}
 }
