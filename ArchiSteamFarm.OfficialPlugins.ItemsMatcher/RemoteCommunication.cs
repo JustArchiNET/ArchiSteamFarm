@@ -1276,26 +1276,15 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			Bot.ArchiLogger.LogGenericTrace($"{listedUser.SteamID}...");
 
-			byte? tradeHoldDuration = await Bot.ArchiWebHandler.GetCombinedTradeHoldDurationAgainstUser(listedUser.SteamID, listedUser.TradeToken).ConfigureAwait(false);
-
-			switch (tradeHoldDuration) {
-				case null:
-					Bot.ArchiLogger.LogGenericTrace(Strings.FormatErrorIsEmpty(nameof(tradeHoldDuration)));
-
-					continue;
-				case > 0 when (tradeHoldDuration.Value > maxTradeHoldDuration) || (tradeHoldDuration.Value > listedUser.MaxTradeHoldDuration):
-					Bot.ArchiLogger.LogGenericTrace($"{tradeHoldDuration.Value} > {maxTradeHoldDuration} || {listedUser.MaxTradeHoldDuration}");
-
-					continue;
-			}
-
-			HashSet<Asset> theirInventory = listedUser.Assets.Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity)) && ((tradeHoldDuration.Value == 0) || !(item.Type is EAssetType.FoilTradingCard or EAssetType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)))).Select(static asset => asset.ToAsset()).ToHashSet();
+			HashSet<Asset> theirInventory = listedUser.Assets.Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).Select(static asset => asset.ToAsset()).ToHashSet();
 
 			if (theirInventory.Count == 0) {
 				continue;
 			}
 
 			skippedSetsThisUser.Clear();
+
+			byte? tradeHoldDuration = null;
 
 			Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> theirTradableState = MatchingUtilities.GetTradableInventoryState(theirInventory);
 
@@ -1335,6 +1324,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 						match = false;
 
 						foreach ((ulong ourItem, uint ourFullAmount) in ourFullSet.Where(static item => item.Value > 1).OrderByDescending(static item => item.Value)) {
+							if ((tradeHoldDuration > maxTradeHoldDuration) || (tradeHoldDuration > listedUser.MaxTradeHoldDuration)) {
+								break;
+							}
+
 							if (!ourTradableSet.TryGetValue(ourItem, out uint ourTradableAmount) || (ourTradableAmount == 0)) {
 								continue;
 							}
@@ -1376,6 +1369,29 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 										continue;
 									}
+								}
+
+								// Now that we have a match, check trade hold to ensure user is valid to match against
+								// Since it involves remote call, we didn't do it previously, to skip checking against users with no matches for us
+								if (tradeHoldDuration == null) {
+									tradeHoldDuration = await Bot.ArchiWebHandler.GetCombinedTradeHoldDurationAgainstUser(listedUser.SteamID, listedUser.TradeToken).ConfigureAwait(false);
+
+									if (tradeHoldDuration == null) {
+										Bot.ArchiLogger.LogGenericTrace(Strings.FormatErrorIsEmpty(nameof(tradeHoldDuration)));
+
+										break;
+									}
+
+									if ((tradeHoldDuration.Value > maxTradeHoldDuration) || (tradeHoldDuration.Value > listedUser.MaxTradeHoldDuration)) {
+										Bot.ArchiLogger.LogGenericTrace($"{tradeHoldDuration.Value} > {maxTradeHoldDuration} || {listedUser.MaxTradeHoldDuration}");
+
+										break;
+									}
+								}
+
+								if ((tradeHoldDuration.Value > 0) && set.Type is EAssetType.FoilTradingCard or EAssetType.TradingCard && CardsFarmer.SalesBlacklist.Contains(set.RealAppID)) {
+									// We're not considering this set for matching due to trade hold
+									continue;
 								}
 
 								// Skip this set from the remaining of this round
