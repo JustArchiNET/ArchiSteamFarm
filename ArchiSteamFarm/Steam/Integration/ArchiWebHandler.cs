@@ -1507,6 +1507,17 @@ public sealed class ArchiWebHandler : IDisposable {
 		return response?.Content != null ? (true, response.Content.RequiresMobileConfirmation) : (false, false);
 	}
 
+	internal async Task<bool> AcknowledgeTradeRestrictions() {
+		Uri request = new(SteamCommunityURL, "/trade/new/acknowledge");
+
+		// Extra entry for sessionID
+		Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
+			{ "message", "1" }
+		};
+
+		return await UrlPostWithSession(request, data: data).ConfigureAwait(false);
+	}
+
 	internal async Task<(EResult Result, EPurchaseResultDetail PurchaseResult)> AddFreeLicense(uint subID) {
 		ArgumentOutOfRangeException.ThrowIfZero(subID);
 

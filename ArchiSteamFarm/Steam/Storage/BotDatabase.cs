@@ -50,6 +50,21 @@ public sealed class BotDatabase : GenericDatabase {
 
 	internal bool HasGamesToRedeemInBackground => GamesToRedeemInBackgroundCount > 0;
 
+	[JsonIgnore]
+	[PublicAPI]
+	public bool TradeRestrictionsAcknowledged {
+		get => BackingTradeRestrictionsAcknowledged;
+
+		internal set {
+			if (BackingTradeRestrictionsAcknowledged == value) {
+				return;
+			}
+
+			BackingTradeRestrictionsAcknowledged = value;
+			Utilities.InBackground(Save);
+		}
+	}
+
 	internal string? AccessToken {
 		get => BackingAccessToken;
 
@@ -166,6 +181,9 @@ public sealed class BotDatabase : GenericDatabase {
 	[JsonInclude]
 	private string? BackingSteamGuardData { get; set; }
 
+	[JsonInclude]
+	private bool BackingTradeRestrictionsAcknowledged { get; set; }
+
 	[JsonDisallowNull]
 	[JsonInclude]
 	private OrderedDictionary GamesToRedeemInBackground { get; init; } = new();
@@ -227,6 +245,9 @@ public sealed class BotDatabase : GenericDatabase {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeBackingSteamGuardData() => !string.IsNullOrEmpty(BackingSteamGuardData);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingTradeRestrictionsAcknowledged() => BackingTradeRestrictionsAcknowledged;
 
 	[UsedImplicitly]
 	public bool ShouldSerializeExtraStorePackages() => ExtraStorePackages.Count > 0;

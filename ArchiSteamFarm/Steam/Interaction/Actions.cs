@@ -459,6 +459,12 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return (false, Strings.BotLootingFailed);
 		}
 
+		// In similar way we might need to accept popup on Steam side, we limit it only to cases that we're aware of, as sending this request otherwise is additional overhead for no reason
+		if (!Bot.BotDatabase.TradeRestrictionsAcknowledged && items.Any(static item => Trading.TradeRestrictionsAppIDs.Contains(item.AppID))) {
+			// We should normally fail the process in case of a failure here, but since the popup could be marked already in the past, we'll allow it in hope it wasn't needed after all
+			await Bot.Trading.AcknowledgeTradeRestrictions().ConfigureAwait(false);
+		}
+
 		(bool success, _, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, customMessage: customMessage, itemsPerTrade: itemsPerTrade).ConfigureAwait(false);
 
 		if ((mobileTradeOfferIDs?.Count > 0) && Bot.HasMobileAuthenticator) {

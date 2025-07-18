@@ -164,6 +164,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[PublicAPI]
 	public SteamFriends SteamFriends { get; }
 
+	[JsonIgnore]
+	[PublicAPI]
+	public Trading Trading { get; }
+
 	internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
 	internal bool HasLoginCodeReady => !string.IsNullOrEmpty(TwoFactorCode) || !string.IsNullOrEmpty(AuthCode);
 
@@ -179,7 +183,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private readonly SteamClient SteamClient;
 	private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = [];
 	private readonly SteamUser SteamUser;
-	private readonly Trading Trading;
 	private readonly SemaphoreSlim UnpackBoosterPacksSemaphore = new(1, 1);
 
 	private IEnumerable<(string FilePath, EFileType FileType)> RelatedFiles {
