@@ -460,7 +460,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		}
 
 		// In similar way we might need to accept popup on Steam side, we limit it only to cases that we're aware of, as sending this request otherwise is additional overhead for no reason
-		if (!Bot.BotDatabase.TradeRestrictionsAcknowledged && items.Any(static item => Trading.TradeRestrictionsAppIDs.Contains(item.AppID))) {
+		if (!Bot.BotDatabase.TradeRestrictionsAcknowledged && items.Any(static item => item.AppID != Asset.SteamAppID)) {
 			// We should normally fail the process in case of a failure here, but since the popup could be marked already in the past, we'll allow it in hope it wasn't needed after all
 			await Bot.Trading.AcknowledgeTradeRestrictions().ConfigureAwait(false);
 		}

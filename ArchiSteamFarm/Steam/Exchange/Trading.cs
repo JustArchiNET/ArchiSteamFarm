@@ -22,7 +22,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -44,9 +43,6 @@ namespace ArchiSteamFarm.Steam.Exchange;
 public sealed class Trading : IDisposable {
 	internal const byte MaxItemsPerTrade = byte.MaxValue; // This is decided upon various factors, mainly stability of Steam servers when dealing with huge trade offers
 	internal const byte MaxTradesPerAccount = 5; // This is limit introduced by Valve
-
-	[PublicAPI]
-	public static readonly FrozenSet<uint> TradeRestrictionsAppIDs = [730];
 
 	private readonly Bot Bot;
 	private readonly ConcurrentHashSet<ulong> HandledTradeOfferIDs = [];
@@ -298,7 +294,7 @@ public sealed class Trading : IDisposable {
 
 			IList<ParseTradeResult> tradeResults = await Utilities.InParallel(tasks).ConfigureAwait(false);
 
-			if (!Bot.BotDatabase.TradeRestrictionsAcknowledged && tradeResults.Any(static result => ((result.Result == ParseTradeResult.EResult.Accepted) && (result.ItemsToGive?.Any(static item => TradeRestrictionsAppIDs.Contains(item.AppID)) == true)) || (result.ItemsToReceive?.Any(static item => TradeRestrictionsAppIDs.Contains(item.AppID)) == true))) {
+			if (!Bot.BotDatabase.TradeRestrictionsAcknowledged && tradeResults.Any(static result => ((result.Result == ParseTradeResult.EResult.Accepted) && (result.ItemsToGive?.Any(static item => item.AppID != Asset.SteamAppID) == true)) || (result.ItemsToReceive?.Any(static item => item.AppID != Asset.SteamAppID) == true))) {
 				// We should normally fail the process in case of a failure here, but since the popup could be marked already in the past, we'll allow it in hope it wasn't needed after all
 				await AcknowledgeTradeRestrictions().ConfigureAwait(false);
 			}
