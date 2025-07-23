@@ -637,8 +637,14 @@ public sealed class ArchiWebHandler : IDisposable {
 				singleTrade.ItemsToReceive.Assets.Add(itemToReceive);
 			}
 		}
+		string defaultTradeOfferSignature = $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}";
+		string tradeOfferSignature = ASF.GlobalConfig?.TradeOfferSignature ?? defaultTradeOfferSignature;
 
-		string tradeOfferMessage = $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}";
+		if (tradeOfferSignature.Length > MaxTradeOfferMessageLength) {
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(Strings.FormatErrorConfigPropertyInvalid(nameof(ASF.GlobalConfig.TradeOfferSignature), tradeOfferSignature)));
+			tradeOfferSignature = defaultTradeOfferSignature;
+		}
+		string tradeOfferMessage = tradeOfferSignature;
 
 		if (!string.IsNullOrEmpty(customMessage)) {
 			byte allowedExtraMessageLength = (byte) (MaxTradeOfferMessageLength - tradeOfferMessage.Length - 3); // We're going to add a space, opening and closing bracket
