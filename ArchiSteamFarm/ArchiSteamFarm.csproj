@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<DefaultItemExcludes>$(DefaultItemExcludes);config/**;debug/**;logs/**;overlay/**</DefaultItemExcludes>
 		<OutputType>Exe</OutputType>
+		<EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -27,9 +28,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Update="Localization\Strings.resx" EmitFormatMethods="true" Public="true" />
+		<EmbeddedResource Include="Localization\Strings.resx" EmitFormatMethods="true" Public="true" />
+		<EmbeddedResource Include="Localization\Strings.*.resx" Exclude="Localization\Strings.resx">
+			<GenerateSource>false</GenerateSource>
+		</EmbeddedResource>
 	</ItemGroup>
-
 	<ItemGroup>
 		<Content Include="..\LICENSE.txt">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
