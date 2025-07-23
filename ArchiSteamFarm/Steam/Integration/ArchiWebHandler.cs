@@ -55,7 +55,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal const ushort MaxItemsInSingleInventoryRequest = 2000;
 
 	private const string EconService = "IEconService";
-	private const byte MaxTradeOfferMessageLength = 128;
+	internal const byte MaxTradeOfferMessageLength = 128;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const byte SessionIDLength = 24; // For maximum compatibility, should be divisible by 2 and match the length of "sessionid" property that Steam uses across their websites
 	private const string SteamAppsService = "ISteamApps";
@@ -637,14 +637,8 @@ public sealed class ArchiWebHandler : IDisposable {
 				singleTrade.ItemsToReceive.Assets.Add(itemToReceive);
 			}
 		}
-		string defaultTradeOfferSignature = $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}";
-		string tradeOfferSignature = ASF.GlobalConfig?.TradeOfferSignature ?? defaultTradeOfferSignature;
 
-		if (tradeOfferSignature.Length > MaxTradeOfferMessageLength) {
-			Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(Strings.FormatErrorConfigPropertyInvalid(nameof(ASF.GlobalConfig.TradeOfferSignature), tradeOfferSignature)));
-			tradeOfferSignature = defaultTradeOfferSignature;
-		}
-		string tradeOfferMessage = tradeOfferSignature;
+		string tradeOfferMessage = Bot.BotConfig.TradeOfferSignature ?? $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}";
 
 		if (!string.IsNullOrEmpty(customMessage)) {
 			byte allowedExtraMessageLength = (byte) (MaxTradeOfferMessageLength - tradeOfferMessage.Length - 3); // We're going to add a space, opening and closing bracket

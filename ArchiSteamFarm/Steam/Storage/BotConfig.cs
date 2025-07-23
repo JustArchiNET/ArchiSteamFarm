@@ -109,6 +109,9 @@ public sealed class BotConfig {
 	public const byte DefaultTradeCheckPeriod = 60;
 
 	[PublicAPI]
+	public const string? DefaultTradeOfferSignature = null;
+
+	[PublicAPI]
 	public const ETradingPreferences DefaultTradingPreferences = ETradingPreferences.None;
 
 	[PublicAPI]
@@ -318,6 +321,10 @@ public sealed class BotConfig {
 	public byte TradeCheckPeriod { get; init; } = DefaultTradeCheckPeriod;
 
 	[JsonInclude]
+	[MaxLength(ArchiWebHandler.MaxTradeOfferMessageLength)]
+	public string? TradeOfferSignature { get; init; } = DefaultTradeOfferSignature;
+
+	[JsonInclude]
 	public ETradingPreferences TradingPreferences { get; init; } = DefaultTradingPreferences;
 
 	[JsonDisallowNull]
@@ -458,6 +465,9 @@ public sealed class BotConfig {
 	public bool ShouldSerializeTradeCheckPeriod() => !Saving || (TradeCheckPeriod != DefaultTradeCheckPeriod);
 
 	[UsedImplicitly]
+	public bool ShouldSerializeTradeOfferSignature() => !Saving || (TradeOfferSignature != DefaultTradeOfferSignature);
+
+	[UsedImplicitly]
 	public bool ShouldSerializeTradingPreferences() => !Saving || (TradingPreferences != DefaultTradingPreferences);
 
 	[UsedImplicitly]
@@ -574,6 +584,10 @@ public sealed class BotConfig {
 
 		if (!string.IsNullOrEmpty(SteamTradeToken) && (SteamTradeToken.Length != SteamTradeTokenLength)) {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(SteamTradeToken), SteamTradeToken));
+		}
+
+		if (!string.IsNullOrEmpty(TradeOfferSignature) && (TradeOfferSignature.Length > ArchiWebHandler.MaxTradeOfferMessageLength)) {
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(TradeOfferSignature), TradeOfferSignature));
 		}
 
 		foreach ((ulong steamID, EAccess permission) in SteamUserPermissions) {

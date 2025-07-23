@@ -138,8 +138,7 @@ public sealed class GlobalConfig {
 	[PublicAPI]
 	public const string? DefaultWebProxyText = null;
 
-	[PublicAPI]
-	public const string? DefaultTradeOfferSignature = null;
+	
 
 	[PublicAPI]
 	public const string? DefaultWebProxyUsername = null;
@@ -334,8 +333,7 @@ public sealed class GlobalConfig {
 	[JsonPropertyName(nameof(WebProxy))]
 	public string? WebProxyText { get; init; } = DefaultWebProxyText;
 
-	[JsonInclude]
-	public string? TradeOfferSignature { get; init; } = DefaultTradeOfferSignature;
+	
 
 	[JsonInclude]
 	public string? WebProxyUsername { get; init; } = DefaultWebProxyUsername;
@@ -477,8 +475,7 @@ public sealed class GlobalConfig {
 	[UsedImplicitly]
 	public bool ShouldSerializeWebLimiterDelay() => !Saving || (WebLimiterDelay != DefaultWebLimiterDelay);
 
-	[UsedImplicitly]
-	public bool ShouldSerializeTradeOfferSignature() => !Saving || (TradeOfferSignature != DefaultTradeOfferSignature);
+	
 
 	[UsedImplicitly]
 	public bool ShouldSerializeWebProxyPassword() => Saving && IsWebProxyPasswordSet && (WebProxyPassword != DefaultWebProxyPassword);
