@@ -100,6 +100,55 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID) {
+		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
+
+		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/accept");
+		Uri referer = new(SteamCommunityURL, $"/tradeoffer/{tradeID}");
+
+		// Extra entry for sessionID
+		Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
+			{ "serverid", "1" },
+			{ "tradeofferid", tradeID.ToString(CultureInfo.InvariantCulture) }
+		};
+
+		ObjectResponse<TradeOfferAcceptResponse>? response = null;
+
+		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+			response = await UrlPostToJsonObjectWithSession<TradeOfferAcceptResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+
+			if (response == null) {
+				return (false, false);
+			}
+
+			if (response.StatusCode.IsServerErrorCode()) {
+				if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
+					// This is a generic server error without a reason, try again
+					response = null;
+
+					continue;
+				}
+
+				// This is actually client error with a reason, so it doesn't make sense to retry
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(response.Content.ErrorText));
+
+				return (false, false);
+			}
+		}
+
+		return response?.Content != null ? (true, response.Content.RequiresMobileConfirmation) : (false, false);
+	}
+
+	[PublicAPI]
+	public async Task<bool> DeclineTradeOffer(ulong tradeID) {
+		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
+
+		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/decline");
+
+		return await UrlPostWithSession(request).ConfigureAwait(false);
+	}
+
+	[PublicAPI]
 	public async Task<bool> CancelTradeOffer(ulong tradeID) {
 		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
@@ -1468,45 +1517,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		return true;
 	}
 
-	internal async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID) {
-		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
-
-		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/accept");
-		Uri referer = new(SteamCommunityURL, $"/tradeoffer/{tradeID}");
-
-		// Extra entry for sessionID
-		Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
-			{ "serverid", "1" },
-			{ "tradeofferid", tradeID.ToString(CultureInfo.InvariantCulture) }
-		};
-
-		ObjectResponse<TradeOfferAcceptResponse>? response = null;
-
-		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			response = await UrlPostToJsonObjectWithSession<TradeOfferAcceptResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
-
-			if (response == null) {
-				return (false, false);
-			}
-
-			if (response.StatusCode.IsServerErrorCode()) {
-				if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
-					// This is a generic server error without a reason, try again
-					response = null;
-
-					continue;
-				}
-
-				// This is actually client error with a reason, so it doesn't make sense to retry
-				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(response.Content.ErrorText));
-
-				return (false, false);
-			}
-		}
-
-		return response?.Content != null ? (true, response.Content.RequiresMobileConfirmation) : (false, false);
-	}
-
 	internal async Task<bool> AcknowledgeTradeRestrictions() {
 		Uri request = new(SteamCommunityURL, "/trade/new/acknowledge");
 
@@ -1619,14 +1629,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		return true;
-	}
-
-	internal async Task<bool> DeclineTradeOffer(ulong tradeID) {
-		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
-
-		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/decline");
-
-		return await UrlPostWithSession(request).ConfigureAwait(false);
 	}
 
 	internal async Task<HashSet<uint>?> GetAppList() {
