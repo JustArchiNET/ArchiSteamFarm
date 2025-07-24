@@ -8,7 +8,7 @@
 		<PackageReference Include="AngleSharp" />
 		<PackageReference Include="CryptSharpStandard" />
 		<PackageReference Include="Humanizer" />
-		<PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
+		<PackageReference Include="JetBrains.Annotations.Sources" PrivateAssets="all" />
 		<PackageReference Include="Markdig.Signed" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 		<PackageReference Include="Microsoft.CodeAnalysis.ResxSourceGenerator" PrivateAssets="all" />
