@@ -16,5 +16,12 @@
 		"enabled": true
 	},
 
-	"ignoreUnstable": false
+	"packageRules": [
+		{
+			// TODO: Allow updates of selected packages with no stable release (yet) to latest versions
+			"matchManagers": [ "nuget" ],
+			"matchPackageNames": [ "Microsoft.CodeAnalysis.ResxSourceGenerator", "OpenTelemetry.Exporter.Prometheus.AspNetCore" ],
+			"ignoreUnstable": false
+		}
+	]
 }
