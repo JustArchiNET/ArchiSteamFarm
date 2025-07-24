@@ -14,5 +14,7 @@
 
 	"git-submodules": {
 		"enabled": true
-	}
+	},
+
+	"ignoreUnstable": false
 }
