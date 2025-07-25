@@ -140,19 +140,19 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<bool> DeclineTradeOffer(ulong tradeID) {
+	public async Task<bool> CancelTradeOffer(ulong tradeID) {
 		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
-		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/decline");
+		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/cancel");
 
 		return await UrlPostWithSession(request).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
-	public async Task<bool> CancelTradeOffer(ulong tradeID) {
+	public async Task<bool> DeclineTradeOffer(ulong tradeID) {
 		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
-		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/cancel");
+		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/decline");
 
 		return await UrlPostWithSession(request).ConfigureAwait(false);
 	}
