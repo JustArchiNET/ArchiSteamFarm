@@ -3650,26 +3650,30 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					continue;
 				}
 
-				EResult result = (EResult) response.purchase_receipt_info.purchase_status;
-				EPurchaseResultDetail purchaseResultDetail = (EPurchaseResultDetail) response.purchase_result_details;
-
+				EResult result = EResult.Timeout;
+				EPurchaseResultDetail purchaseResultDetail = EPurchaseResultDetail.NoDetail;
 				string? balanceText = null;
 
-				if ((purchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((purchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
-					// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
-					(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)? walletResult = await ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
+				if (response.purchase_receipt_info != null) {
+					result = (EResult) response.purchase_receipt_info.purchase_status;
+					purchaseResultDetail = (EPurchaseResultDetail) response.purchase_result_details;
 
-					if (walletResult != null) {
-						result = walletResult.Value.Result;
-						purchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.BadActivationCode); // BadActivationCode is our smart guess in this case
-						balanceText = walletResult.Value.BalanceText;
-					} else {
-						result = EResult.Timeout;
-						purchaseResultDetail = EPurchaseResultDetail.Timeout;
+					if ((purchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((purchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
+						// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
+						(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)? walletResult = await ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
+
+						if (walletResult != null) {
+							result = walletResult.Value.Result;
+							purchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.BadActivationCode); // BadActivationCode is our smart guess in this case
+							balanceText = walletResult.Value.BalanceText;
+						} else {
+							result = EResult.Timeout;
+							purchaseResultDetail = EPurchaseResultDetail.Timeout;
+						}
 					}
 				}
 
-				Dictionary<uint, string>? items = response.purchase_receipt_info.line_items.Count > 0 ? response.purchase_receipt_info.line_items.ToDictionary(static lineItem => lineItem.packageid, static lineItem => lineItem.line_item_description) : null;
+				Dictionary<uint, string>? items = response.purchase_receipt_info?.line_items.Count > 0 ? response.purchase_receipt_info.line_items.ToDictionary(static lineItem => lineItem.packageid, static lineItem => lineItem.line_item_description) : null;
 
 				ArchiLogger.LogGenericDebug(items?.Count > 0 ? Strings.FormatBotRedeemWithItems(key, $"{result}/{purchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}", string.Join(", ", items)) : Strings.FormatBotRedeem(key, $"{result}/{purchaseResultDetail}{(!string.IsNullOrEmpty(balanceText) ? $"/{balanceText}" : "")}"));
 

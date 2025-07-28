@@ -2652,16 +2652,19 @@ public sealed class Commands {
 							if (!skipRequest) {
 								CStore_RegisterCDKey_Response? redeemResult = await currentBot.Actions.RedeemKey(key).ConfigureAwait(false);
 
-								if (redeemResult != null) {
+								if (redeemResult == null) {
+									result = EResult.Timeout;
+									purchaseResultDetail = EPurchaseResultDetail.Timeout;
+								} else if (redeemResult.purchase_receipt_info == null) {
+									result = EResult.Timeout;
+									purchaseResultDetail = EPurchaseResultDetail.NoDetail;
+								} else {
 									result = (EResult) redeemResult.purchase_receipt_info.purchase_status;
 									purchaseResultDetail = (EPurchaseResultDetail) redeemResult.purchase_result_details;
 
 									if (redeemResult.purchase_receipt_info.line_items.Count > 0) {
 										items = redeemResult.purchase_receipt_info.line_items.ToDictionary(static lineItem => lineItem.packageid, static lineItem => lineItem.line_item_description);
 									}
-								} else {
-									result = EResult.Timeout;
-									purchaseResultDetail = EPurchaseResultDetail.Timeout;
 								}
 							}
 
@@ -2743,6 +2746,12 @@ public sealed class Commands {
 
 											if (redeemResponse == null) {
 												response.AppendLine(FormatBotResponse(Strings.FormatBotRedeem(key, $"{EResult.Timeout}/{EPurchaseResultDetail.Timeout}"), innerBot.BotName));
+
+												continue;
+											}
+
+											if (redeemResponse.purchase_receipt_info == null) {
+												response.AppendLine(FormatBotResponse(Strings.FormatBotRedeem(key, $"{EResult.Timeout}/{EPurchaseResultDetail.NoDetail}"), innerBot.BotName));
 
 												continue;
 											}
