@@ -3790,7 +3790,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		foreach (uint packageID in BotDatabase.ExtraStorePackages) {
-			packagesToRefresh.Add(packageID, SteamPICSChanges.LastChangeNumber);
+			packagesToRefresh.TryAdd(packageID, SteamPICSChanges.LastChangeNumber);
 		}
 	}
 
