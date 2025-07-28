@@ -3650,7 +3650,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					continue;
 				}
 
-				EResult result = EResult.Timeout;
+				EResult result = EResult.BadResponse;
 				EPurchaseResultDetail purchaseResultDetail = EPurchaseResultDetail.NoDetail;
 				string? balanceText = null;
 
@@ -3691,7 +3691,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						break;
 					case EPurchaseResultDetail.BadActivationCode:
 					case EPurchaseResultDetail.DuplicateActivationCode:
-					case EPurchaseResultDetail.NoDetail: // OK
+					case EPurchaseResultDetail.NoDetail:
 						redeemed = true;
 
 						break;
