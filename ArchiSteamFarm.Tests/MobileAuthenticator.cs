@@ -36,7 +36,7 @@ internal sealed class MobileAuthenticator {
 	[DataRow("qrg+wW8/u/TDt2i/+FQuPhuVrmY=", (ulong) 1337, "mYbCKs8ZvsVN2odCMxpvidrIu1c=", "conf")]
 	[DataRow("qrg+wW8/u/TDt2i/+FQuPhuVrmY=", (ulong) 1723332288, "hiEx+JBqJqFJnSSL+dEthPHOmsc=")]
 	[DataRow("qrg+wW8/u/TDt2i/+FQuPhuVrmY=", (ulong) 1723332288, "hpZUxyNgwBvtKPROvedjuvVPQiE=", "conf")]
-	[DataTestMethod]
+	[TestMethod]
 	internal void GenerateConfirmationHash(string identitySecret, ulong time, string expectedCode, string? tag = null) {
 		ArgumentException.ThrowIfNullOrEmpty(identitySecret);
 		ArgumentOutOfRangeException.ThrowIfZero(time);
@@ -58,7 +58,7 @@ internal sealed class MobileAuthenticator {
 
 	[DataRow("KDHC3rsY8+CmiswnXJcE5e5dRfd=", (ulong) 1337, "47J4D")]
 	[DataRow("KDHC3rsY8+CmiswnXJcE5e5dRfd=", (ulong) 1723332288, "JQ3HQ")]
-	[DataTestMethod]
+	[TestMethod]
 	internal void GenerateTokenForTime(string sharedSecret, ulong time, string expectedCode) {
 		ArgumentException.ThrowIfNullOrEmpty(sharedSecret);
 		ArgumentOutOfRangeException.ThrowIfZero(time);

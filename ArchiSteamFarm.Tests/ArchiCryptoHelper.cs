@@ -36,7 +36,7 @@ internal sealed class ArchiCryptoHelper {
 
 	[DataRow(ECryptoMethod.PlainText)]
 	[DataRow(ECryptoMethod.AES)]
-	[DataTestMethod]
+	[TestMethod]
 	internal async Task CanEncryptDecrypt(ECryptoMethod cryptoMethod) {
 		if (!Enum.IsDefined(cryptoMethod)) {
 			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ECryptoMethod));

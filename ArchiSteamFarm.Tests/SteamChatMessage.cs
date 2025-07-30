@@ -66,7 +66,7 @@ internal sealed class SteamChatMessage {
 
 	[DataRow(false)]
 	[DataRow(true)]
-	[DataTestMethod]
+	[TestMethod]
 	internal async Task DoesntSplitInTheMiddleOfMultiByteChar(bool isAccountLimited) {
 		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
@@ -97,7 +97,7 @@ internal sealed class SteamChatMessage {
 
 	[DataRow(false)]
 	[DataRow(true)]
-	[DataTestMethod]
+	[TestMethod]
 	internal async Task DoesntSplitOnBackslashNotUsedForEscaping(bool isAccountLimited) {
 		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
@@ -113,7 +113,7 @@ internal sealed class SteamChatMessage {
 
 	[DataRow(false)]
 	[DataRow(true)]
-	[DataTestMethod]
+	[TestMethod]
 	internal async Task DoesntSplitOnEscapeCharacter(bool isAccountLimited) {
 		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
@@ -178,7 +178,7 @@ internal sealed class SteamChatMessage {
 
 	[DataRow(false)]
 	[DataRow(true)]
-	[DataTestMethod]
+	[TestMethod]
 	internal async Task ProperlySplitsLongSingleLine(bool isAccountLimited) {
 		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
@@ -285,7 +285,7 @@ internal sealed class SteamChatMessage {
 
 	[DataRow(false)]
 	[DataRow(true)]
-	[DataTestMethod]
+	[TestMethod]
 	internal async Task SplitsOnNewlinesWithParagraphCharacter(bool isAccountLimited) {
 		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 
