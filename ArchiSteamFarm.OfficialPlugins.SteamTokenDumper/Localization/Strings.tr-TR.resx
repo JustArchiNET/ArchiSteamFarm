@@ -69,7 +69,7 @@
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
 	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} başarıyla başlatıldı, yardımınız için şimdiden teşekkürler. İlk sunum yaklaşık olarak {1} içinde gerçekleşecektir.</value>
+		<value>{0} başarıyla başlatıldı, yardımınız için şimdiden teşekkürler. İlk gönderim yaklaşık olarak {1} içinde gerçekleşecektir.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
 	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
