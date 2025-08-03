@@ -38,6 +38,7 @@ using ArchiSteamFarm.Storage;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using NLog.Targets.Wrappers;
 
 namespace ArchiSteamFarm.NLog;
 
@@ -286,7 +287,7 @@ internal static class Logging {
 			return;
 		}
 
-		HistoryTarget? historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
+		HistoryTarget? historyTarget = LogManager.Configuration.AllTargets.Select(static target => target is WrapperTargetBase wrapper ? wrapper.WrappedTarget : target).OfType<HistoryTarget>().FirstOrDefault();
 
 		if ((historyTarget == null) && !IsUsingCustomConfiguration) {
 			historyTarget = new HistoryTarget("History") {
@@ -541,7 +542,7 @@ internal static class Logging {
 			OnUserInputStart();
 		}
 
-		HistoryTarget? historyTarget = LogManager.Configuration?.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
+		HistoryTarget? historyTarget = LogManager.Configuration?.AllTargets.Select(static target => target is WrapperTargetBase wrapper ? wrapper.WrappedTarget : target).OfType<HistoryTarget>().FirstOrDefault();
 		ArchiKestrel.OnNewHistoryTarget(historyTarget);
 	}
 
