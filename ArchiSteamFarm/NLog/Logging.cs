@@ -306,7 +306,7 @@ internal static class Logging {
 			return File.Exists(SharedInfo.LogFile) ? await ReadLogFileLines(SharedInfo.LogFile).ConfigureAwait(false) : null;
 		}
 
-		foreach (string fileName in LogManager.Configuration.LoggingRules.OrderBy(static rule => rule.Filters.Count).SelectMany(static rule => rule.Targets.Select(static target => target is WrapperTargetBase wrapper ? wrapper.WrappedTarget : target).OfType<FileTarget>().Select(static fileTarget => fileTarget.FileName.Render(new LogEventInfo { TimeStamp = DateTime.UtcNow })).Where(File.Exists))) {
+		foreach (string fileName in LogManager.Configuration.LoggingRules.OrderBy(static rule => rule.Filters.Count).ThenByDescending(static rule => rule.Levels.Count).SelectMany(static rule => rule.Targets.Select(static target => target is WrapperTargetBase wrapper ? wrapper.WrappedTarget : target).OfType<FileTarget>().Select(static fileTarget => fileTarget.FileName.Render(new LogEventInfo { TimeStamp = DateTime.UtcNow })).Where(File.Exists))) {
 			return await ReadLogFileLines(fileName).ConfigureAwait(false);
 		}
 
