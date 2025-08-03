@@ -313,18 +313,6 @@ internal static class Logging {
 		return null;
 	}
 
-	private static async Task<string[]?> ReadLogFileLines(string filePath) {
-		ArgumentException.ThrowIfNullOrEmpty(filePath);
-
-		try {
-			return await File.ReadAllLinesAsync(filePath).ConfigureAwait(false);
-		} catch (Exception e) {
-			ASF.ArchiLogger.LogGenericException(e);
-
-			return null;
-		}
-	}
-
 	internal static void StartInteractiveConsole() {
 		Utilities.InBackground(HandleConsoleInteractively, true);
 		ASF.ArchiLogger.LogGenericInfo(Strings.InteractiveConsoleEnabled);
@@ -592,6 +580,18 @@ internal static class Logging {
 
 		if (reconfigure) {
 			LogManager.ReconfigExistingLoggers();
+		}
+	}
+
+	private static async Task<string[]?> ReadLogFileLines(string filePath) {
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
+
+		try {
+			return await File.ReadAllLinesAsync(filePath).ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return null;
 		}
 	}
 }
