@@ -39,7 +39,7 @@ internal sealed class UserPrivacy {
 	[JsonInclude]
 	[JsonPropertyName("PrivacySettings")]
 	[JsonRequired]
-	internal PrivacySettings Settings { get; private init; } = new();
+	internal PrivacySettings Settings { get; private init; } = null!;
 
 	// Constructed from privacy change request
 	internal UserPrivacy(PrivacySettings settings, ECommentPermission commentPermission) {
@@ -122,7 +122,7 @@ internal sealed class UserPrivacy {
 		}
 
 		[JsonConstructor]
-		internal PrivacySettings() { }
+		private PrivacySettings() { }
 	}
 
 	internal enum ECommentPermission : byte {
