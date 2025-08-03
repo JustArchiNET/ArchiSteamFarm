@@ -73,7 +73,7 @@ internal static class Logging {
 				.FirstOrDefault();
 
 			if (fileTarget != null) {
-				fileName = fileTarget.FileName.Render(new LogEventInfo { TimeStamp = DateTime.Now });
+				fileName = fileTarget.FileName.Render(new LogEventInfo { TimeStamp = DateTime.MinValue });
 			}
 
 			return field = fileName;
