@@ -23,6 +23,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -38,6 +39,7 @@ using ArchiSteamFarm.Storage;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using NLog.Targets.Wrappers;
 
 namespace ArchiSteamFarm.NLog;
 
@@ -48,12 +50,35 @@ internal static class Logging {
 	private const string GeneralLayout = $@"${{date:format=yyyy-MM-dd HH\:mm\:ss}}|${{processname}}-${{processid}}|${{level:uppercase=true}}|{LayoutMessage}";
 	private const string LayoutMessage = @"${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}";
 
-	internal static bool LogFileExists => File.Exists(SharedInfo.LogFile);
+	internal static bool LogFileExists => File.Exists(LogFilePath);
 
 	private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = [];
 	private static readonly SemaphoreSlim ConsoleSemaphore = new(1, 1);
 
 	private static string Backspace => "\b \b";
+
+	[field: AllowNull]
+	[field: MaybeNull]
+	private static string LogFilePath {
+		get {
+			if (field != null) {
+				return field;
+			}
+
+			string fileName = SharedInfo.LogFile;
+
+			FileTarget? fileTarget = LogManager.Configuration?.AllTargets
+				.Select(static target => target is WrapperTargetBase wrapper ? wrapper.WrappedTarget : target)
+				.OfType<FileTarget>()
+				.FirstOrDefault();
+
+			if (fileTarget != null) {
+				fileName = fileTarget.FileName.Render(new LogEventInfo { TimeStamp = DateTime.Now });
+			}
+
+			return field = fileName;
+		}
+	}
 
 	private static bool IsUsingCustomConfiguration;
 	private static bool IsWaitingForUserInput;
@@ -304,7 +329,7 @@ internal static class Logging {
 
 	internal static async Task<string[]?> ReadLogFileLines() {
 		try {
-			return await File.ReadAllLinesAsync(SharedInfo.LogFile).ConfigureAwait(false);
+			return await File.ReadAllLinesAsync(LogFilePath).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
