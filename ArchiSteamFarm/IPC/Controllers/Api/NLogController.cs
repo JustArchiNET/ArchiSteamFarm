@@ -70,10 +70,6 @@ public sealed class NLogController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(lastAt))));
 		}
 
-		if (!Logging.LogFileExists) {
-			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(SharedInfo.LogFile))));
-		}
-
 		string[]? lines = await Logging.ReadLogFileLines().ConfigureAwait(false);
 
 		if ((lines == null) || (lines.Length == 0)) {

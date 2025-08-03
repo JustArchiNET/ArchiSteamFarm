@@ -49,8 +49,6 @@ internal static class Logging {
 	private const string GeneralLayout = $@"${{date:format=yyyy-MM-dd HH\:mm\:ss}}|${{processname}}-${{processid}}|${{level:uppercase=true}}|{LayoutMessage}";
 	private const string LayoutMessage = @"${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}";
 
-	internal static bool LogFileExists => File.Exists(SharedInfo.LogFile);
-
 	private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = [];
 	private static readonly SemaphoreSlim ConsoleSemaphore = new(1, 1);
 
@@ -304,8 +302,22 @@ internal static class Logging {
 	}
 
 	internal static async Task<string[]?> ReadLogFileLines() {
+		if (LogManager.Configuration == null) {
+			return File.Exists(SharedInfo.LogFile) ? await ReadLogFileLines(SharedInfo.LogFile).ConfigureAwait(false) : null;
+		}
+
+		foreach (string fileName in LogManager.Configuration.LoggingRules.OrderBy(static rule => rule.Filters.Count).SelectMany(static rule => rule.Targets.Select(static target => target is WrapperTargetBase wrapper ? wrapper.WrappedTarget : target).OfType<FileTarget>().Select(static fileTarget => fileTarget.FileName.Render(new LogEventInfo { TimeStamp = DateTime.UtcNow })).Where(File.Exists))) {
+			return await ReadLogFileLines(fileName).ConfigureAwait(false);
+		}
+
+		return null;
+	}
+
+	private static async Task<string[]?> ReadLogFileLines(string filePath) {
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
+
 		try {
-			return await File.ReadAllLinesAsync(SharedInfo.LogFile).ConfigureAwait(false);
+			return await File.ReadAllLinesAsync(filePath).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
