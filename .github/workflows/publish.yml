@@ -94,7 +94,7 @@ jobs:
       run: dotnet --info
 
     - name: Download previously built ASF-ui
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: ASF-ui
         path: ASF-ui/dist
@@ -438,55 +438,55 @@ jobs:
         show-progress: false
 
     - name: Download ASF-generic artifact from ubuntu-latest
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: ubuntu-latest_ASF-generic
         path: out
 
     - name: Download ASF-linux-arm artifact from ubuntu-latest
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: ubuntu-latest_ASF-linux-arm
         path: out
 
     - name: Download ASF-linux-arm64 artifact from ubuntu-latest
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: ubuntu-latest_ASF-linux-arm64
         path: out
 
     - name: Download ASF-linux-x64 artifact from ubuntu-latest
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: ubuntu-latest_ASF-linux-x64
         path: out
 
     - name: Download ASF-osx-arm64 artifact from macos-latest
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: macos-latest_ASF-osx-arm64
         path: out
 
     - name: Download ASF-osx-x64 artifact from macos-latest
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: macos-latest_ASF-osx-x64
         path: out
 
     - name: Download ASF-win-arm64 artifact from windows-latest
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: windows-latest_ASF-win-arm64
         path: out
 
     - name: Download ASF-win-x64 artifact from windows-latest
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: windows-latest_ASF-win-x64
         path: out
 
     - name: Download ArchiSteamFarm.OfficialPlugins.Monitoring artifact
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: ArchiSteamFarm.OfficialPlugins.Monitoring
         path: out
