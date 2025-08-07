@@ -46,10 +46,12 @@ public static class JsonUtilities {
 
 	// TODO: Remove me in the future
 	[Obsolete($"Use {nameof(DefaultJsonSerializerOptions)} instead of this typo, thanks")]
+	[PublicAPI]
 	public static JsonSerializerOptions DefaultJsonSerialierOptions => DefaultJsonSerializerOptions;
 
 	// TODO: Remove me in the future
 	[Obsolete($"Use {nameof(IndentedJsonSerializerOptions)} instead of this typo, thanks")]
+	[PublicAPI]
 	public static JsonSerializerOptions IndentedJsonSerialierOptions => IndentedJsonSerializerOptions;
 
 	[PublicAPI]
