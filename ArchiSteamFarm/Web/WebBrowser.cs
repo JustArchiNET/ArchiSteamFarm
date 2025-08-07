@@ -753,7 +753,7 @@ public sealed class WebBrowser : IDisposable {
 
 							break;
 						default:
-							requestMessage.Content = JsonContent.Create(data, options: JsonUtilities.DefaultJsonSerialierOptions);
+							requestMessage.Content = JsonContent.Create(data, options: JsonUtilities.DefaultJsonSerializerOptions);
 
 							break;
 					}

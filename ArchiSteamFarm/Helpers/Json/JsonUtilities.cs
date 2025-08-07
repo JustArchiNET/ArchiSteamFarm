@@ -39,33 +39,41 @@ namespace ArchiSteamFarm.Helpers.Json;
 
 public static class JsonUtilities {
 	[PublicAPI]
-	public static readonly JsonSerializerOptions DefaultJsonSerialierOptions = CreateDefaultJsonSerializerOptions();
+	public static readonly JsonSerializerOptions DefaultJsonSerializerOptions = CreateDefaultJsonSerializerOptions();
 
 	[PublicAPI]
-	public static readonly JsonSerializerOptions IndentedJsonSerialierOptions = CreateDefaultJsonSerializerOptions(true);
+	public static readonly JsonSerializerOptions IndentedJsonSerializerOptions = CreateDefaultJsonSerializerOptions(true);
+
+	// TODO: Remove me in the future
+	[Obsolete($"Use {nameof(DefaultJsonSerializerOptions)} instead of this typo, thanks")]
+	public static JsonSerializerOptions DefaultJsonSerialierOptions => DefaultJsonSerializerOptions;
+
+	// TODO: Remove me in the future
+	[Obsolete($"Use {nameof(IndentedJsonSerializerOptions)} instead of this typo, thanks")]
+	public static JsonSerializerOptions IndentedJsonSerialierOptions => IndentedJsonSerializerOptions;
 
 	[PublicAPI]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	public static JsonElement ToJsonElement<T>(this T obj) where T : notnull {
 		ArgumentNullException.ThrowIfNull(obj);
 
-		return JsonSerializer.SerializeToElement(obj, DefaultJsonSerialierOptions);
+		return JsonSerializer.SerializeToElement(obj, DefaultJsonSerializerOptions);
 	}
 
 	[PublicAPI]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	public static T? ToJsonObject<T>(this JsonElement jsonElement) => jsonElement.Deserialize<T>(DefaultJsonSerialierOptions);
+	public static T? ToJsonObject<T>(this JsonElement jsonElement) => jsonElement.Deserialize<T>(DefaultJsonSerializerOptions);
 
 	[PublicAPI]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	public static T? ToJsonObject<T>(this JsonNode jsonNode) => jsonNode.Deserialize<T>(DefaultJsonSerialierOptions);
+	public static T? ToJsonObject<T>(this JsonNode jsonNode) => jsonNode.Deserialize<T>(DefaultJsonSerializerOptions);
 
 	[PublicAPI]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	public static async ValueTask<T?> ToJsonObject<T>(this Stream stream, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(stream);
 
-		return await JsonSerializer.DeserializeAsync<T>(stream, DefaultJsonSerialierOptions, cancellationToken).ConfigureAwait(false);
+		return await JsonSerializer.DeserializeAsync<T>(stream, DefaultJsonSerializerOptions, cancellationToken).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
@@ -73,12 +81,12 @@ public static class JsonUtilities {
 	public static T? ToJsonObject<T>([StringSyntax(StringSyntaxAttribute.Json)] this string json) {
 		ArgumentException.ThrowIfNullOrEmpty(json);
 
-		return JsonSerializer.Deserialize<T>(json, DefaultJsonSerialierOptions);
+		return JsonSerializer.Deserialize<T>(json, DefaultJsonSerializerOptions);
 	}
 
 	[PublicAPI]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	public static string ToJsonText<T>(this T obj, bool writeIndented = false) => JsonSerializer.Serialize(obj, writeIndented ? IndentedJsonSerialierOptions : DefaultJsonSerialierOptions);
+	public static string ToJsonText<T>(this T obj, bool writeIndented = false) => JsonSerializer.Serialize(obj, writeIndented ? IndentedJsonSerializerOptions : DefaultJsonSerializerOptions);
 
 	private static void ApplyCustomModifiers(JsonTypeInfo jsonTypeInfo) {
 		ArgumentNullException.ThrowIfNull(jsonTypeInfo);

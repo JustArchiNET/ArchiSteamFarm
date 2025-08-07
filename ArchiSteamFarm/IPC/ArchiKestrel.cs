@@ -356,7 +356,7 @@ internal static class ArchiKestrel {
 		}
 
 		services.ConfigureHttpJsonOptions(static options => {
-				JsonSerializerOptions jsonSerializerOptions = Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions;
+				JsonSerializerOptions jsonSerializerOptions = Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerializerOptions : JsonUtilities.DefaultJsonSerializerOptions;
 
 				options.SerializerOptions.PropertyNamingPolicy = jsonSerializerOptions.PropertyNamingPolicy;
 				options.SerializerOptions.TypeInfoResolver = jsonSerializerOptions.TypeInfoResolver;
@@ -381,7 +381,7 @@ internal static class ArchiKestrel {
 
 		// Modify default JSON options
 		mvc.AddJsonOptions(static options => {
-				JsonSerializerOptions jsonSerializerOptions = Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerialierOptions : JsonUtilities.DefaultJsonSerialierOptions;
+				JsonSerializerOptions jsonSerializerOptions = Debugging.IsUserDebugging ? JsonUtilities.IndentedJsonSerializerOptions : JsonUtilities.DefaultJsonSerializerOptions;
 
 				options.JsonSerializerOptions.PropertyNamingPolicy = jsonSerializerOptions.PropertyNamingPolicy;
 				options.JsonSerializerOptions.TypeInfoResolver = jsonSerializerOptions.TypeInfoResolver;
