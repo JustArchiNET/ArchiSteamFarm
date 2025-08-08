@@ -38,7 +38,7 @@ namespace ArchiSteamFarm.Steam.Data;
 [PublicAPI]
 public sealed class InventoryDescription {
 	[JsonIgnore]
-	public CEconItem_Description Body { get; } = new();
+	public CEconItem_Description Body { get; }
 
 	[JsonInclude]
 	[JsonPropertyName("appid")]
@@ -531,7 +531,7 @@ public sealed class InventoryDescription {
 		Body = description;
 	}
 
-	public InventoryDescription(uint appID, ulong classID, ulong instanceID = 0, bool marketable = false, bool tradable = false, uint realAppID = 0, EAssetType type = EAssetType.Unknown, EAssetRarity rarity = EAssetRarity.Unknown) {
+	public InventoryDescription(uint appID, ulong classID, ulong instanceID = 0, bool marketable = false, bool tradable = false, uint realAppID = 0, EAssetType type = EAssetType.Unknown, EAssetRarity rarity = EAssetRarity.Unknown) : this() {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(classID);
 
@@ -555,7 +555,7 @@ public sealed class InventoryDescription {
 	}
 
 	[JsonConstructor]
-	private InventoryDescription() { }
+	private InventoryDescription() => Body = new CEconItem_Description();
 
 	public InventoryDescription DeepClone() => new(Serializer.DeepClone(Body));
 }

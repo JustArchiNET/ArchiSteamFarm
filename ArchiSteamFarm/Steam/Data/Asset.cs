@@ -37,7 +37,7 @@ public sealed class Asset {
 	public const ulong SteamPointsShopInstanceID = 3865004543;
 
 	[JsonIgnore]
-	public CEcon_Asset Body { get; } = new();
+	public CEcon_Asset Body { get; }
 
 	[JsonIgnore]
 	public bool IsSteamPointsShopItem => !Tradable && (InstanceID == SteamPointsShopInstanceID);
@@ -123,7 +123,7 @@ public sealed class Asset {
 		Description = description;
 	}
 
-	public Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription? description = null, ulong assetID = 0, ulong instanceID = 0) {
+	public Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription? description = null, ulong assetID = 0, ulong instanceID = 0) : this() {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(classID);
@@ -140,7 +140,7 @@ public sealed class Asset {
 	}
 
 	[JsonConstructor]
-	private Asset() { }
+	private Asset() => Body = new CEcon_Asset();
 
 	public Asset DeepClone() => new(Serializer.DeepClone(Body), Description?.DeepClone());
 }
