@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -43,6 +44,8 @@ internal sealed class IGitHubPluginUpdates {
 
 	private readonly TestContext TestContext;
 
+	private CancellationToken CancellationToken => TestContext.CancellationTokenSource.Token;
+
 	[UsedImplicitly]
 	public IGitHubPluginUpdates(TestContext testContext) {
 		ArgumentNullException.ThrowIfNull(testContext);
@@ -57,7 +60,7 @@ internal sealed class IGitHubPluginUpdates {
 
 		typeof(ASF).GetProperty(nameof(ASF.WebBrowser))?.SetValue(null, webBrowser);
 
-		ReleaseResponse? response = await GitHubService.GetLatestRelease(Repository, cancellationToken: TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
+		ReleaseResponse? response = await GitHubService.GetLatestRelease(Repository, cancellationToken: CancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			Assert.Inconclusive(Strings.FormatWarningFailedWithError(nameof(response)));
