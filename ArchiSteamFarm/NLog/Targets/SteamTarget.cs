@@ -22,7 +22,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,7 +35,6 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.NLog.Targets;
 
-[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 [Target("Steam")]
 internal sealed class SteamTarget : AsyncTaskTarget {
 	// This is NLog config property, it must have public get() and set() capabilities
@@ -54,6 +52,7 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 	// This parameter-less constructor is intentionally public, as NLog uses it for creating targets
 	// It must stay like this as we want to have our targets defined in our NLog.config
 	// Keeping date in default layout also doesn't make much sense (Steam offers that), so we remove it by default
+	[UsedImplicitly]
 	public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
 
 	protected override void InitializeTarget() {

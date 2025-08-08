@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ArchiSteamFarm.Steam.Integration.SteamChatMessage;
 
@@ -34,6 +35,15 @@ namespace ArchiSteamFarm.Tests;
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
 internal sealed class SteamChatMessage {
+	private readonly TestContext TestContext;
+
+	[UsedImplicitly]
+	public SteamChatMessage(TestContext testContext) {
+		ArgumentNullException.ThrowIfNull(testContext);
+
+		TestContext = testContext;
+	}
+
 	[TestMethod]
 	internal async Task CanSplitEvenWithStupidlyLongPrefix() {
 		string prefix = new('x', MaxMessagePrefixBytes);
@@ -41,9 +51,9 @@ internal sealed class SteamChatMessage {
 		const string emoji = "😎";
 		const string message = $"{emoji}{emoji}{emoji}{emoji}";
 
-		List<string> output = await GetMessageParts(message, prefix, true).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message, prefix, true).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(4, output.Count);
+		Assert.HasCount(4, output);
 
 		Assert.AreEqual($"{prefix}{emoji}{ContinuationCharacter}", output[0]);
 		Assert.AreEqual($"{prefix}{ContinuationCharacter}{emoji}{ContinuationCharacter}", output[1]);
@@ -58,9 +68,9 @@ internal sealed class SteamChatMessage {
 	internal async Task DoesntSkipEmptyNewlines() {
 		string message = $"asdf{Environment.NewLine}{Environment.NewLine}asdf";
 
-		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(1, output.Count);
+		Assert.HasCount(1, output);
 		Assert.AreEqual(message, output.First());
 	}
 
@@ -76,9 +86,9 @@ internal sealed class SteamChatMessage {
 		string longSequence = new('a', longLineLength - 1);
 		string message = $"{longSequence}{emoji}";
 
-		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(2, output.Count);
+		Assert.HasCount(2, output);
 
 		Assert.AreEqual($"{longSequence}{ContinuationCharacter}", output[0]);
 		Assert.AreEqual($"{ContinuationCharacter}{emoji}", output[1]);
@@ -89,9 +99,9 @@ internal sealed class SteamChatMessage {
 		const string message = "abcdef[";
 		const string escapedMessage = @"abcdef\[";
 
-		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(1, output.Count);
+		Assert.HasCount(1, output);
 		Assert.AreEqual(escapedMessage, output.First());
 	}
 
@@ -105,9 +115,9 @@ internal sealed class SteamChatMessage {
 		string longLine = new('a', longLineLength - 2);
 		string message = $@"{longLine}\";
 
-		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(1, output.Count);
+		Assert.HasCount(1, output);
 		Assert.AreEqual($@"{message}\", output.First());
 	}
 
@@ -121,9 +131,9 @@ internal sealed class SteamChatMessage {
 		string longLine = new('a', longLineLength - 1);
 		string message = $"{longLine}[";
 
-		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(2, output.Count);
+		Assert.HasCount(2, output);
 
 		Assert.AreEqual($"{longLine}{ContinuationCharacter}", output[0]);
 		Assert.AreEqual($@"{ContinuationCharacter}\[", output[1]);
@@ -133,9 +143,9 @@ internal sealed class SteamChatMessage {
 	internal async Task NoNeedForAnySplittingWithNewlines() {
 		string message = $"abcdef{Environment.NewLine}ghijkl{Environment.NewLine}mnopqr";
 
-		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(1, output.Count);
+		Assert.HasCount(1, output);
 		Assert.AreEqual(message, output.First());
 	}
 
@@ -143,23 +153,23 @@ internal sealed class SteamChatMessage {
 	internal async Task NoNeedForAnySplittingWithoutNewlines() {
 		const string message = "abcdef";
 
-		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(1, output.Count);
+		Assert.HasCount(1, output);
 		Assert.AreEqual(message, output.First());
 	}
 
 	[TestMethod]
-	internal void ParagraphCharacterSizeIsLessOrEqualToContinuationCharacterSize() => Assert.IsTrue(ContinuationCharacterBytes >= Encoding.UTF8.GetByteCount(ParagraphCharacter.ToString()));
+	internal void ParagraphCharacterSizeIsLessOrEqualToContinuationCharacterSize() => Assert.IsGreaterThanOrEqualTo(Encoding.UTF8.GetByteCount(ParagraphCharacter.ToString()), ContinuationCharacterBytes);
 
 	[TestMethod]
 	internal async Task ProperlyEscapesCharacters() {
 		const string message = @"[b]bold[/b] \n";
 		const string escapedMessage = @"\[b]bold\[/b] \\n";
 
-		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(1, output.Count);
+		Assert.HasCount(1, output);
 		Assert.AreEqual(escapedMessage, output.First());
 	}
 
@@ -170,9 +180,9 @@ internal sealed class SteamChatMessage {
 
 		const string message = "asdf";
 
-		List<string> output = await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message, prefix).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(1, output.Count);
+		Assert.HasCount(1, output);
 		Assert.AreEqual($"{escapedPrefix}{message}", output.First());
 	}
 
@@ -186,9 +196,9 @@ internal sealed class SteamChatMessage {
 		string longLine = new('a', longLineLength);
 		string message = $"{longLine}{longLine}{longLine}{longLine}";
 
-		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(4, output.Count);
+		Assert.HasCount(4, output);
 
 		Assert.AreEqual($"{longLine}{ContinuationCharacter}", output[0]);
 		Assert.AreEqual($"{ContinuationCharacter}{longLine}{ContinuationCharacter}", output[1]);
@@ -260,9 +270,9 @@ internal sealed class SteamChatMessage {
 								<ASF> 1/1 ботов уже имеют игру app/304930 | Unturned.
 								""";
 
-		List<string> output = await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message, prefix).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(2, output.Count);
+		Assert.HasCount(2, output);
 
 		foreach (string messagePart in output) {
 			if ((messagePart.Length <= prefix.Length) || !messagePart.StartsWith(prefix, StringComparison.Ordinal)) {
@@ -304,9 +314,9 @@ internal sealed class SteamChatMessage {
 		string newlinePart = newlinePartBuilder.ToString();
 		string message = $"{newlinePart}{Environment.NewLine}{newlinePart}{Environment.NewLine}{newlinePart}{Environment.NewLine}{newlinePart}";
 
-		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
-		Assert.AreEqual(4, output.Count);
+		Assert.HasCount(4, output);
 
 		Assert.AreEqual($"{newlinePart}{ParagraphCharacter}", output[0]);
 		Assert.AreEqual($"{newlinePart}{ParagraphCharacter}", output[1]);
@@ -320,7 +330,7 @@ internal sealed class SteamChatMessage {
 
 		const string message = "asdf";
 
-		await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false)).ConfigureAwait(false);
+		await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false)).ConfigureAwait(false);
 	}
 
 	[TestMethod]
@@ -329,7 +339,7 @@ internal sealed class SteamChatMessage {
 
 		const string message = "asdf";
 
-		await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false)).ConfigureAwait(false);
+		await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync(TestContext.CancellationTokenSource.Token).ConfigureAwait(false)).ConfigureAwait(false);
 	}
 }
 #pragma warning restore CA1812 // False positive, the class is used during MSTest

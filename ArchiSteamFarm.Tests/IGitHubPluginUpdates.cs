@@ -30,6 +30,7 @@ using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.GitHub;
 using ArchiSteamFarm.Web.GitHub.Data;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ArchiSteamFarm.Tests;
@@ -40,6 +41,15 @@ internal sealed class IGitHubPluginUpdates {
 	private const string PluginName = "ArchiSteamFarm.OfficialPlugins.Monitoring";
 	private const string Repository = "JustArchiNET/ArchiSteamFarm";
 
+	private readonly TestContext TestContext;
+
+	[UsedImplicitly]
+	public IGitHubPluginUpdates(TestContext testContext) {
+		ArgumentNullException.ThrowIfNull(testContext);
+
+		TestContext = testContext;
+	}
+
 	[TestCategory("Manual")]
 	[TestMethod]
 	internal async Task DoesNotOfferPointlessUpdatesWhenMultipleAssetsAreFound() {
@@ -47,7 +57,7 @@ internal sealed class IGitHubPluginUpdates {
 
 		typeof(ASF).GetProperty(nameof(ASF.WebBrowser))?.SetValue(null, webBrowser);
 
-		ReleaseResponse? response = await GitHubService.GetLatestRelease(Repository).ConfigureAwait(false);
+		ReleaseResponse? response = await GitHubService.GetLatestRelease(Repository, cancellationToken: TestContext.CancellationTokenSource.Token).ConfigureAwait(false);
 
 		if (response == null) {
 			Assert.Inconclusive(Strings.FormatWarningFailedWithError(nameof(response)));

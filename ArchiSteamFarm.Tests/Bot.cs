@@ -471,7 +471,7 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
 
-		Assert.IsTrue(itemsToSend.Count <= Steam.Exchange.Trading.MaxItemsPerTrade);
+		Assert.IsLessThanOrEqualTo(Steam.Exchange.Trading.MaxItemsPerTrade, itemsToSend.Count);
 	}
 
 	[TestMethod]
@@ -495,7 +495,7 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, itemsPerSet);
 
-		Assert.IsTrue(itemsToSend.Count <= Steam.Exchange.Trading.MaxItemsPerTrade);
+		Assert.IsLessThanOrEqualTo(Steam.Exchange.Trading.MaxItemsPerTrade, itemsToSend.Count);
 	}
 
 	[TestMethod]
