@@ -32,7 +32,7 @@ internal sealed class StoreUserData {
 	[JsonInclude]
 	[JsonPropertyName("rgOwnedPackages")]
 	[JsonRequired]
-	internal ImmutableHashSet<uint> OwnedPackages { get; private init; } = ImmutableHashSet<uint>.Empty;
+	internal ImmutableHashSet<uint> OwnedPackages { get; private init; } = [];
 
 	[JsonConstructor]
 	private StoreUserData() { }

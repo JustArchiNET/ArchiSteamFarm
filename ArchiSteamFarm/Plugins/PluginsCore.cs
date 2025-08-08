@@ -57,9 +57,9 @@ public static class PluginsCore {
 	internal static bool HasCustomPluginsLoaded => ActivePlugins.Any(static plugin => plugin is not OfficialPlugin officialPlugin || !officialPlugin.HasSameVersion());
 
 	[ImportMany]
-	internal static FrozenSet<IPlugin> ActivePlugins { get; private set; } = FrozenSet<IPlugin>.Empty;
+	internal static FrozenSet<IPlugin> ActivePlugins { get; private set; } = [];
 
-	private static FrozenSet<IPluginUpdates> ActivePluginUpdates = FrozenSet<IPluginUpdates>.Empty;
+	private static FrozenSet<IPluginUpdates> ActivePluginUpdates = [];
 
 	[PublicAPI]
 	public static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName) {
