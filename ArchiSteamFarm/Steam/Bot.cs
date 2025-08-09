@@ -3583,10 +3583,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 					break;
 				case UserNotificationsCallback.EUserNotification.Trading when newNotification && !BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DisableIncomingTradesParsing):
-					if ((TradeCheckTimer != null) && (BotConfig.TradeCheckPeriod > 0)) {
-						TradeCheckTimer.Change(TimeSpan.FromMinutes(BotConfig.TradeCheckPeriod), TimeSpan.FromMinutes(BotConfig.TradeCheckPeriod));
-					}
-
 					Utilities.InBackground(Trading.OnNewTrade);
 
 					break;
