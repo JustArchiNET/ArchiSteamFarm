@@ -706,8 +706,8 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "tradeoffermessage", tradeOfferMessage }
 		};
 
-		HashSet<ulong> tradeOfferIDs = new(trades.Count);
-		HashSet<ulong> mobileTradeOfferIDs = new(trades.Count);
+		HashSet<ulong>? tradeOfferIDs = null;
+		HashSet<ulong>? mobileTradeOfferIDs = null;
 
 		foreach (TradeOfferSendRequest trade in trades) {
 			data["json_tradeoffer"] = trade.ToJsonText();
@@ -746,9 +746,13 @@ public sealed class ArchiWebHandler : IDisposable {
 				return (false, tradeOfferIDs, mobileTradeOfferIDs);
 			}
 
+			tradeOfferIDs ??= new HashSet<ulong>(trades.Count);
+
 			tradeOfferIDs.Add(response.Content.TradeOfferID);
 
 			if (response.Content.RequiresMobileConfirmation) {
+				mobileTradeOfferIDs ??= [];
+
 				mobileTradeOfferIDs.Add(response.Content.TradeOfferID);
 			}
 		}
