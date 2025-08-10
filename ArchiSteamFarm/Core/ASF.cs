@@ -843,8 +843,7 @@ public static class ASF {
 			BinaryResponse? response;
 
 			try {
-				// ReSharper disable once MethodSupportsCancellation - the token initialized above is not meant to be passed here
-				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL, progressReporter: progressReporter).ConfigureAwait(false);
+				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL, progressReporter: progressReporter, cancellationToken: CancellationToken.None).ConfigureAwait(false);
 			} finally {
 				progressReporter.ProgressChanged -= onProgressChanged;
 			}

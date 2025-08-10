@@ -108,7 +108,9 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			return false;
 		}
 
-		CPlayer_AddFriend_Request request = new() { steamid = steamID };
+		CPlayer_AddFriend_Request request = new() {
+			steamid = steamID
+		};
 
 		SteamUnifiedMessages.ServiceMethodResponse<CPlayer_AddFriend_Response> response;
 
@@ -640,7 +642,9 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			return false;
 		}
 
-		CPlayer_RemoveFriend_Request request = new() { steamid = steamID };
+		CPlayer_RemoveFriend_Request request = new() {
+			steamid = steamID
+		};
 
 		SteamUnifiedMessages.ServiceMethodResponse<CPlayer_RemoveFriend_Response> response;
 

@@ -1478,8 +1478,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
 			Utilities.InBackground(async () => {
-					// ReSharper disable once MethodSupportsCancellation - we must always wait given time before releasing semaphore
-					await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
+					await Task.Delay(WebLimiterDelay, CancellationToken.None).ConfigureAwait(false);
 					limiters.RateLimitingSemaphore.Release();
 				}
 			);
