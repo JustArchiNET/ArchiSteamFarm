@@ -8,7 +8,7 @@
 		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.ResxSourceGenerator" Version="5.0.0-1.25277.114" />
 		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.13.1" />
-		<PackageVersion Include="MSTest" Version="3.10.1" />
+		<PackageVersion Include="MSTest" Version="3.10.2" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
 		<PackageVersion Include="NLog.Web.AspNetCore" Version="6.0.3" />
 		<PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.12.0-beta.1" />
