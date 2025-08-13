@@ -41,53 +41,50 @@ internal sealed class BotCache : SerializableFile {
 	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ConcurrentList<AssetForListing> LastAnnouncedAssetsForListing { get; private init; } = [];
 
+	[JsonInclude]
+	[JsonPropertyName("BackingLastAnnouncedTradeToken")]
 	internal string? LastAnnouncedTradeToken {
-		get => BackingLastAnnouncedTradeToken;
+		get;
 
 		set {
-			if (BackingLastAnnouncedTradeToken == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingLastAnnouncedTradeToken = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
 
+	[JsonInclude]
+	[JsonPropertyName("BackingLastInventoryChecksumBeforeDeduplication")]
 	internal string? LastInventoryChecksumBeforeDeduplication {
-		get => BackingLastInventoryChecksumBeforeDeduplication;
+		get;
 
 		set {
-			if (BackingLastInventoryChecksumBeforeDeduplication == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingLastInventoryChecksumBeforeDeduplication = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
 
+	[JsonInclude]
+	[JsonPropertyName("BackingLastRequestAt")]
 	internal DateTime? LastRequestAt {
-		get => BackingLastRequestAt;
+		get;
 
 		set {
-			if (BackingLastRequestAt == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingLastRequestAt = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
-
-	[JsonInclude]
-	private string? BackingLastAnnouncedTradeToken { get; set; }
-
-	[JsonInclude]
-	private string? BackingLastInventoryChecksumBeforeDeduplication { get; set; }
-
-	[JsonInclude]
-	private DateTime? BackingLastRequestAt { get; set; }
 
 	private BotCache(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -99,16 +96,16 @@ internal sealed class BotCache : SerializableFile {
 	private BotCache() => LastAnnouncedAssetsForListing.OnModified += OnObjectModified;
 
 	[UsedImplicitly]
-	public bool ShouldSerializeBackingLastAnnouncedTradeToken() => !string.IsNullOrEmpty(BackingLastAnnouncedTradeToken);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingLastInventoryChecksumBeforeDeduplication() => !string.IsNullOrEmpty(BackingLastInventoryChecksumBeforeDeduplication);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingLastRequestAt() => BackingLastRequestAt.HasValue;
-
-	[UsedImplicitly]
 	public bool ShouldSerializeLastAnnouncedAssetsForListing() => LastAnnouncedAssetsForListing.Count > 0;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeLastAnnouncedTradeToken() => !string.IsNullOrEmpty(LastAnnouncedTradeToken);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeLastInventoryChecksumBeforeDeduplication() => !string.IsNullOrEmpty(LastInventoryChecksumBeforeDeduplication);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeLastRequestAt() => LastRequestAt.HasValue;
 
 	protected override void Dispose(bool disposing) {
 		if (disposing) {

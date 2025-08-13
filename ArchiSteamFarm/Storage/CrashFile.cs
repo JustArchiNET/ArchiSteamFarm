@@ -34,37 +34,35 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Storage;
 
 internal sealed class CrashFile : SerializableFile {
+	[JsonInclude]
+	[JsonPropertyName("BackingLastStartup")]
 	internal DateTime LastStartup {
-		get => BackingLastStartup;
+		get;
 
 		set {
-			if (BackingLastStartup == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingLastStartup = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
 
+	[JsonInclude]
+	[JsonPropertyName("BackingStartupCount")]
 	internal byte StartupCount {
-		get => BackingStartupCount;
+		get;
 
 		set {
-			if (BackingStartupCount == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingStartupCount = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
-
-	[JsonInclude]
-	private DateTime BackingLastStartup { get; set; }
-
-	[JsonInclude]
-	private byte BackingStartupCount { get; set; }
 
 	private CrashFile(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -76,10 +74,10 @@ internal sealed class CrashFile : SerializableFile {
 	private CrashFile() { }
 
 	[UsedImplicitly]
-	public bool ShouldSerializeBackingLastStartup() => BackingLastStartup > DateTime.MinValue;
+	public bool ShouldSerializeLastStartup() => LastStartup > DateTime.MinValue;
 
 	[UsedImplicitly]
-	public bool ShouldSerializeBackingStartupCount() => BackingStartupCount > 0;
+	public bool ShouldSerializeStartupCount() => StartupCount > 0;
 
 	protected override Task Save() => Save(this);
 

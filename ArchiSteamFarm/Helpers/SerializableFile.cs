@@ -67,7 +67,7 @@ public abstract class SerializableFile : IDisposable {
 		ArgumentNullException.ThrowIfNull(serializableFile);
 
 		if (string.IsNullOrEmpty(serializableFile.FilePath)) {
-			throw new InvalidOperationException(nameof(serializableFile.FilePath));
+			return;
 		}
 
 		if (serializableFile.ReadOnly) {

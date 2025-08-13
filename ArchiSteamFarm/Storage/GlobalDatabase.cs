@@ -65,28 +65,32 @@ public sealed class GlobalDatabase : GenericDatabase {
 	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ObservableConcurrentDictionary<uint, byte> CardCountsPerGame { get; private init; } = new();
 
+	[JsonInclude]
+	[JsonPropertyName($"_{nameof(CellID)}")]
 	internal uint CellID {
-		get => BackingCellID;
+		get;
 
 		set {
-			if (BackingCellID == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingCellID = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
 
+	[JsonInclude]
+	[JsonPropertyName($"_{nameof(LastChangeNumber)}")]
 	internal uint LastChangeNumber {
-		get => BackingLastChangeNumber;
+		get;
 
 		set {
-			if (BackingLastChangeNumber == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingLastChangeNumber = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
@@ -95,14 +99,6 @@ public sealed class GlobalDatabase : GenericDatabase {
 	[JsonInclude]
 	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal InMemoryServerListProvider ServerListProvider { get; private init; } = new();
-
-	[JsonInclude]
-	[JsonPropertyName($"_{nameof(CellID)}")]
-	private uint BackingCellID { get; set; }
-
-	[JsonInclude]
-	[JsonPropertyName($"_{nameof(LastChangeNumber)}")]
-	private uint BackingLastChangeNumber { get; set; }
 
 	[JsonDisallowNull]
 	[JsonInclude]
@@ -152,16 +148,16 @@ public sealed class GlobalDatabase : GenericDatabase {
 	}
 
 	[UsedImplicitly]
-	public bool ShouldSerializeBackingCellID() => BackingCellID != 0;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingLastChangeNumber() => BackingLastChangeNumber != 0;
-
-	[UsedImplicitly]
 	public bool ShouldSerializeCachedBadBots() => CachedBadBots.Count > 0;
 
 	[UsedImplicitly]
 	public bool ShouldSerializeCardCountsPerGame() => !CardCountsPerGame.IsEmpty;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeCellID() => CellID != 0;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeLastChangeNumber() => LastChangeNumber != 0;
 
 	[UsedImplicitly]
 	public bool ShouldSerializePackagesAccessTokens() => !PackagesAccessTokens.IsEmpty;

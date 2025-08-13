@@ -50,30 +50,33 @@ public sealed class BotDatabase : GenericDatabase {
 
 	internal bool HasGamesToRedeemInBackground => GamesToRedeemInBackgroundCount > 0;
 
-	[JsonIgnore]
+	[JsonInclude]
+	[JsonPropertyName("BackingTradeRestrictionsAcknowledged")]
 	[PublicAPI]
 	public bool TradeRestrictionsAcknowledged {
-		get => BackingTradeRestrictionsAcknowledged;
+		get;
 
 		internal set {
-			if (BackingTradeRestrictionsAcknowledged == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingTradeRestrictionsAcknowledged = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
 
+	[JsonInclude]
+	[JsonPropertyName("BackingAccessToken")]
 	internal string? AccessToken {
-		get => BackingAccessToken;
+		get;
 
 		set {
-			if (BackingAccessToken == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingAccessToken = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
@@ -83,15 +86,17 @@ public sealed class BotDatabase : GenericDatabase {
 	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ConcurrentHashSet<uint> ExtraStorePackages { get; private init; } = [];
 
+	[JsonInclude]
+	[JsonPropertyName("BackingExtraStorePackagesRefreshedAt")]
 	internal DateTime ExtraStorePackagesRefreshedAt {
-		get => BackingExtraStorePackagesRefreshedAt;
+		get => field;
 
 		set {
-			if (BackingExtraStorePackagesRefreshedAt == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingExtraStorePackagesRefreshedAt = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
@@ -121,41 +126,47 @@ public sealed class BotDatabase : GenericDatabase {
 	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs { get; private init; } = [];
 
+	[JsonInclude]
+	[JsonPropertyName($"_{nameof(MobileAuthenticator)}")]
 	internal MobileAuthenticator? MobileAuthenticator {
-		get => BackingMobileAuthenticator;
+		get;
 
 		set {
-			if (BackingMobileAuthenticator == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingMobileAuthenticator = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
 
+	[JsonInclude]
+	[JsonPropertyName("BackingRefreshToken")]
 	internal string? RefreshToken {
-		get => BackingRefreshToken;
+		get;
 
 		set {
-			if (BackingRefreshToken == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingRefreshToken = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
 
+	[JsonInclude]
+	[JsonPropertyName("BackingSteamGuardData")]
 	internal string? SteamGuardData {
-		get => BackingSteamGuardData;
+		get;
 
 		set {
-			if (BackingSteamGuardData == value) {
+			if (field == value) {
 				return;
 			}
 
-			BackingSteamGuardData = value;
+			field = value;
 			Utilities.InBackground(Save);
 		}
 	}
@@ -164,25 +175,6 @@ public sealed class BotDatabase : GenericDatabase {
 	[JsonInclude]
 	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	internal ConcurrentHashSet<ulong> TradingBlacklistSteamIDs { get; private init; } = [];
-
-	[JsonInclude]
-	private string? BackingAccessToken { get; set; }
-
-	[JsonInclude]
-	private DateTime BackingExtraStorePackagesRefreshedAt { get; set; }
-
-	[JsonInclude]
-	[JsonPropertyName($"_{nameof(MobileAuthenticator)}")]
-	private MobileAuthenticator? BackingMobileAuthenticator { get; set; }
-
-	[JsonInclude]
-	private string? BackingRefreshToken { get; set; }
-
-	[JsonInclude]
-	private string? BackingSteamGuardData { get; set; }
-
-	[JsonInclude]
-	private bool BackingTradeRestrictionsAcknowledged { get; set; }
 
 	[JsonDisallowNull]
 	[JsonInclude]
@@ -232,25 +224,13 @@ public sealed class BotDatabase : GenericDatabase {
 	}
 
 	[UsedImplicitly]
-	public bool ShouldSerializeBackingAccessToken() => !string.IsNullOrEmpty(BackingAccessToken);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingExtraStorePackagesRefreshedAt() => BackingExtraStorePackagesRefreshedAt > DateTime.MinValue;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingMobileAuthenticator() => BackingMobileAuthenticator != null;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingRefreshToken() => !string.IsNullOrEmpty(BackingRefreshToken);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingSteamGuardData() => !string.IsNullOrEmpty(BackingSteamGuardData);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeBackingTradeRestrictionsAcknowledged() => BackingTradeRestrictionsAcknowledged;
+	public bool ShouldSerializeAccessToken() => !string.IsNullOrEmpty(AccessToken);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeExtraStorePackages() => ExtraStorePackages.Count > 0;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeExtraStorePackagesRefreshedAt() => ExtraStorePackagesRefreshedAt > DateTime.MinValue;
 
 	[UsedImplicitly]
 	public bool ShouldSerializeFarmingBlacklistAppIDs() => FarmingBlacklistAppIDs.Count > 0;
@@ -271,6 +251,18 @@ public sealed class BotDatabase : GenericDatabase {
 	public bool ShouldSerializeMatchActivelyBlacklistAppIDs() => MatchActivelyBlacklistAppIDs.Count > 0;
 
 	[UsedImplicitly]
+	public bool ShouldSerializeMobileAuthenticator() => MobileAuthenticator != null;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeRefreshToken() => !string.IsNullOrEmpty(RefreshToken);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeSteamGuardData() => !string.IsNullOrEmpty(SteamGuardData);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeTradeRestrictionsAcknowledged() => TradeRestrictionsAcknowledged;
+
+	[UsedImplicitly]
 	public bool ShouldSerializeTradingBlacklistSteamIDs() => TradingBlacklistSteamIDs.Count > 0;
 
 	protected override void Dispose(bool disposing) {
@@ -285,7 +277,7 @@ public sealed class BotDatabase : GenericDatabase {
 			TradingBlacklistSteamIDs.OnModified -= OnObjectModified;
 
 			// Those are objects that might be null and the check should be in-place
-			BackingMobileAuthenticator?.Dispose();
+			MobileAuthenticator?.Dispose();
 		}
 
 		// Base dispose
