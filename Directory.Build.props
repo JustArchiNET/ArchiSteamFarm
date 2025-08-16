@@ -14,6 +14,7 @@
 		<Description>ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously.</Description>
 		<Deterministic>true</Deterministic>
 		<ErrorReport>none</ErrorReport>
+		<GenerateDocumentationFile>false</GenerateDocumentationFile>
 		<LangVersion>preview</LangVersion>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<NeutralLanguage>en</NeutralLanguage>
@@ -24,6 +25,8 @@
 		<PackageProjectUrl>https://github.com/$(Company)/ArchiSteamFarm</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
+		<PublishDocumentationFile>false</PublishDocumentationFile>
+		<PublishDocumentationFiles>false</PublishDocumentationFiles>
 		<RepositoryBranch>main</RepositoryBranch>
 		<RepositoryType>Git</RepositoryType>
 		<RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
