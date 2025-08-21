@@ -44,16 +44,6 @@ public static class JsonUtilities {
 	[PublicAPI]
 	public static readonly JsonSerializerOptions IndentedJsonSerializerOptions = CreateDefaultJsonSerializerOptions(true);
 
-	// TODO: Remove me in the future
-	[Obsolete($"Use {nameof(DefaultJsonSerializerOptions)} instead of this typo, thanks")]
-	[PublicAPI]
-	public static JsonSerializerOptions DefaultJsonSerialierOptions => DefaultJsonSerializerOptions;
-
-	// TODO: Remove me in the future
-	[Obsolete($"Use {nameof(IndentedJsonSerializerOptions)} instead of this typo, thanks")]
-	[PublicAPI]
-	public static JsonSerializerOptions IndentedJsonSerialierOptions => IndentedJsonSerializerOptions;
-
 	[PublicAPI]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	public static JsonElement ToJsonElement<T>(this T obj) where T : notnull {
