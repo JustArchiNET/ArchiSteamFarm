@@ -67,11 +67,16 @@ public sealed class BotConfig {
 	public const EFarmingPreferences DefaultFarmingPreferences = EFarmingPreferences.None;
 
 	[PublicAPI]
+	public const EGamingDeviceType DefaultGamingDeviceType = EGamingDeviceType.StandardPC;
+
+	[PublicAPI]
 	public const byte DefaultHoursUntilCardDrops = 3;
 
 	[PublicAPI]
 	public const EPersonaStateFlag DefaultOnlineFlags = 0;
 
+	// TODO: Remove me
+	[Obsolete("Will be removed in the next stable release")]
 	[PublicAPI]
 	public const EOnlinePreferences DefaultOnlinePreferences = EOnlinePreferences.None;
 
@@ -229,6 +234,10 @@ public sealed class BotConfig {
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
 	public ImmutableList<uint> GamesPlayedWhileIdle { get; init; } = DefaultGamesPlayedWhileIdle;
 
+	// TODO: Change set to init
+	[JsonInclude]
+	public EGamingDeviceType GamingDeviceType { get; internal set; } = DefaultGamingDeviceType;
+
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
 	public byte HoursUntilCardDrops { get; init; } = DefaultHoursUntilCardDrops;
@@ -244,7 +253,9 @@ public sealed class BotConfig {
 	[JsonInclude]
 	public EPersonaStateFlag OnlineFlags { get; init; } = DefaultOnlineFlags;
 
+	// TODO: Remove me
 	[JsonInclude]
+	[Obsolete("Will be removed in the next stable release")]
 	public EOnlinePreferences OnlinePreferences { get; init; } = DefaultOnlinePreferences;
 
 	[JsonInclude]
@@ -404,6 +415,9 @@ public sealed class BotConfig {
 	public bool ShouldSerializeGamesPlayedWhileIdle() => !Saving || ((GamesPlayedWhileIdle != DefaultGamesPlayedWhileIdle) && !GamesPlayedWhileIdle.SequenceEqual(DefaultGamesPlayedWhileIdle));
 
 	[UsedImplicitly]
+	public bool ShouldSerializeGamingDeviceType() => !Saving || (GamingDeviceType != DefaultGamingDeviceType);
+
+	[UsedImplicitly]
 	public bool ShouldSerializeHoursUntilCardDrops() => !Saving || (HoursUntilCardDrops != DefaultHoursUntilCardDrops);
 
 	[UsedImplicitly]
@@ -415,8 +429,10 @@ public sealed class BotConfig {
 	[UsedImplicitly]
 	public bool ShouldSerializeOnlineFlags() => !Saving || (OnlineFlags != DefaultOnlineFlags);
 
+#pragma warning disable CA1822 // TODO: Remove me
 	[UsedImplicitly]
-	public bool ShouldSerializeOnlinePreferences() => !Saving || (OnlinePreferences != DefaultOnlinePreferences);
+	public bool ShouldSerializeOnlinePreferences() => false;
+#pragma warning restore CA1822 // TODO: Remove me
 
 	[UsedImplicitly]
 	public bool ShouldSerializeOnlineStatus() => !Saving || (OnlineStatus != DefaultOnlineStatus);
@@ -514,6 +530,10 @@ public sealed class BotConfig {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(GamesPlayedWhileIdle), $"{nameof(GamesPlayedWhileIdle.Count)} {GamesPlayedWhileIdle.Count} > {ArchiHandler.MaxGamesPlayedConcurrently}"));
 		}
 
+		if (GamingDeviceType == EGamingDeviceType.Unknown || !Enum.IsDefined(GamingDeviceType)) {
+			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(GamingDeviceType), GamingDeviceType));
+		}
+
 		foreach (EAssetType lootableType in LootableTypes.Where(static lootableType => !Enum.IsDefined(lootableType))) {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(LootableTypes), lootableType));
 		}
@@ -548,9 +568,15 @@ public sealed class BotConfig {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(OnlineFlags), OnlineFlags));
 		}
 
+#pragma warning disable CS0618 // TODO: Remove me
 		if (OnlinePreferences > EOnlinePreferences.All) {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(OnlinePreferences), OnlinePreferences));
 		}
+
+		if (OnlinePreferences.HasFlag(EOnlinePreferences.IsSteamDeck)) {
+			GamingDeviceType = EGamingDeviceType.SteamDeck;
+		}
+#pragma warning restore CS0618 // TODO: Remove me
 
 		if (!Enum.IsDefined(OnlineStatus)) {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(OnlineStatus), OnlineStatus));
@@ -736,6 +762,7 @@ public sealed class BotConfig {
 	}
 
 	[Flags]
+	[Obsolete("Will be removed in the next stable release")]
 	[PublicAPI]
 	public enum EOnlinePreferences : byte {
 		None = 0,
