@@ -172,10 +172,7 @@ public sealed class GlobalConfig {
 				return null;
 			}
 
-			WebProxy proxy = new() {
-				Address = uri,
-				BypassProxyOnLocal = true
-			};
+			WebProxy proxy = new(uri, true);
 
 			if (!string.IsNullOrEmpty(WebProxyUsername) || !string.IsNullOrEmpty(WebProxyPassword)) {
 				NetworkCredential credentials = new();
