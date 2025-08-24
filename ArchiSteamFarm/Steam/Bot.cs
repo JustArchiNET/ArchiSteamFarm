@@ -493,26 +493,17 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return EAccess.Owner;
 		}
 
-		EAccess familySharingAccess = SteamFamilySharingIDs.Contains(steamID) ? EAccess.FamilySharing : EAccess.None;
-
-		if (!BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess permission)) {
-			return familySharingAccess;
+		if (BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess permission)) {
+			return permission switch {
+				BotConfig.EAccess.None => EAccess.None,
+				BotConfig.EAccess.FamilySharing => EAccess.FamilySharing,
+				BotConfig.EAccess.Operator => EAccess.Operator,
+				BotConfig.EAccess.Master => EAccess.Master,
+				_ => throw new InvalidOperationException(Strings.FormatWarningUnknownValuePleaseReport(nameof(permission), permission))
+			};
 		}
 
-		switch (permission) {
-			case BotConfig.EAccess.None:
-				return EAccess.None;
-			case BotConfig.EAccess.FamilySharing:
-				return EAccess.FamilySharing;
-			case BotConfig.EAccess.Operator:
-				return EAccess.Operator;
-			case BotConfig.EAccess.Master:
-				return EAccess.Master;
-			default:
-				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(permission), permission));
-
-				return familySharingAccess;
-		}
+		return SteamFamilySharingIDs.Contains(steamID) ? EAccess.FamilySharing : EAccess.None;
 	}
 
 	[PublicAPI]
