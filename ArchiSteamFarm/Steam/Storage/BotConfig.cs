@@ -75,11 +75,6 @@ public sealed class BotConfig {
 	[PublicAPI]
 	public const EPersonaStateFlag DefaultOnlineFlags = 0;
 
-	// TODO: Remove me
-	[Obsolete("Will be removed in the next stable release")]
-	[PublicAPI]
-	public const EOnlinePreferences DefaultOnlinePreferences = EOnlinePreferences.None;
-
 	[PublicAPI]
 	public const EPersonaState DefaultOnlineStatus = EPersonaState.Online;
 
@@ -231,9 +226,8 @@ public sealed class BotConfig {
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
 	public ImmutableList<uint> GamesPlayedWhileIdle { get; init; } = DefaultGamesPlayedWhileIdle;
 
-	// TODO: Change set to init
 	[JsonInclude]
-	public EGamingDeviceType GamingDeviceType { get; internal set; } = DefaultGamingDeviceType;
+	public EGamingDeviceType GamingDeviceType { get; init; } = DefaultGamingDeviceType;
 
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
@@ -249,11 +243,6 @@ public sealed class BotConfig {
 
 	[JsonInclude]
 	public EPersonaStateFlag OnlineFlags { get; init; } = DefaultOnlineFlags;
-
-	// TODO: Remove me
-	[JsonInclude]
-	[Obsolete("Will be removed in the next stable release")]
-	public EOnlinePreferences OnlinePreferences { get; init; } = DefaultOnlinePreferences;
 
 	[JsonInclude]
 	public EPersonaState OnlineStatus { get; init; } = DefaultOnlineStatus;
@@ -426,11 +415,6 @@ public sealed class BotConfig {
 	[UsedImplicitly]
 	public bool ShouldSerializeOnlineFlags() => !Saving || (OnlineFlags != DefaultOnlineFlags);
 
-#pragma warning disable CA1822 // TODO: Remove me
-	[UsedImplicitly]
-	public bool ShouldSerializeOnlinePreferences() => false;
-#pragma warning restore CA1822 // TODO: Remove me
-
 	[UsedImplicitly]
 	public bool ShouldSerializeOnlineStatus() => !Saving || (OnlineStatus != DefaultOnlineStatus);
 
@@ -564,16 +548,6 @@ public sealed class BotConfig {
 		if (OnlineFlags < 0) {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(OnlineFlags), OnlineFlags));
 		}
-
-#pragma warning disable CS0618 // TODO: Remove me
-		if (OnlinePreferences > EOnlinePreferences.All) {
-			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(OnlinePreferences), OnlinePreferences));
-		}
-
-		if (OnlinePreferences.HasFlag(EOnlinePreferences.IsSteamDeck)) {
-			GamingDeviceType = EGamingDeviceType.SteamDeck;
-		}
-#pragma warning restore CS0618 // TODO: Remove me
 
 		if (!Enum.IsDefined(OnlineStatus)) {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(OnlineStatus), OnlineStatus));
@@ -756,15 +730,6 @@ public sealed class BotConfig {
 		EnableRiskyCardsDiscovery = 64,
 		AutoUnpackBoosterPacks = 256,
 		All = FarmingPausedByDefault | ShutdownOnFarmingFinished | SendOnFarmingFinished | FarmPriorityQueueOnly | SkipRefundableGames | SkipUnplayedGames | EnableRiskyCardsDiscovery | AutoUnpackBoosterPacks
-	}
-
-	[Flags]
-	[Obsolete("Will be removed in the next stable release")]
-	[PublicAPI]
-	public enum EOnlinePreferences : byte {
-		None = 0,
-		IsSteamDeck = 1,
-		All = IsSteamDeck
 	}
 
 	[Flags]
