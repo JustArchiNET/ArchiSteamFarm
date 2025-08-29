@@ -66,7 +66,7 @@
 		<WarningsNotAsErrors>CS8002,IL2026,IL2104,NU1901,NU1902,NU1903,NU1904</WarningsNotAsErrors>
 
 		<!-- TODO: Workaround for Jetbrains.Annotations issues, https://youtrack.jetbrains.com/issue/RIDER-128181/JetBrains.Annotations.Sources-produces-compilation-error -->
-		<WarningsNotAsErrors>$(WarningsNotAsErrors),CA1019,CA1069,CS0436</WarningsNotAsErrors>
+		<WarningsNotAsErrors>$(WarningsNotAsErrors),CS0436</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<!-- Enable public signing -->
