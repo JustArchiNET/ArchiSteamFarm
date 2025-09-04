@@ -45,6 +45,7 @@ jobs:
     - name: Upload ASF-ui
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
+        compression-level: 1
         if-no-files-found: error
         name: ASF-ui
         path: ASF-ui/dist
@@ -368,6 +369,7 @@ jobs:
     - name: Upload ASF-${{ matrix.variant }}
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
+        compression-level: 1
         if-no-files-found: error
         name: ${{ matrix.os }}_ASF-${{ matrix.variant }}
         path: out/ASF-${{ matrix.variant }}.zip
@@ -416,6 +418,7 @@ jobs:
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
+        compression-level: 1
         if-no-files-found: error
         name: ArchiSteamFarm.OfficialPlugins.Monitoring
         path: out/ArchiSteamFarm.OfficialPlugins.Monitoring.zip
@@ -513,6 +516,7 @@ jobs:
     - name: Upload SHA512SUMS
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
+        compression-level: 1
         if-no-files-found: error
         name: SHA512SUMS
         path: out/SHA512SUMS
@@ -525,6 +529,7 @@ jobs:
     - name: Upload SHA512SUMS.sign
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
+        compression-level: 1
         if-no-files-found: error
         name: SHA512SUMS.sign
         path: out/SHA512SUMS.sign
@@ -536,6 +541,7 @@ jobs:
         artifactErrorsFailBuild: true
         artifacts: "out/*"
         bodyFile: .github/RELEASE_TEMPLATE.md
+        immutableCreate: true
         makeLatest: false
         name: ArchiSteamFarm V${{ github.ref_name }}
         prerelease: true
