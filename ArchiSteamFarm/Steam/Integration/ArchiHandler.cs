@@ -631,6 +631,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	[PublicAPI]
 	public async Task<EResult> RedeemPointsForBadgeLevel(uint definitionID, byte levels = 1) {
 		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
+		ArgumentOutOfRangeException.ThrowIfZero(levels);
 
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
