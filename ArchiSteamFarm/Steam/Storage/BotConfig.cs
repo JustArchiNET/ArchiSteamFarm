@@ -73,6 +73,9 @@ public sealed class BotConfig {
 	public const byte DefaultHoursUntilCardDrops = 3;
 
 	[PublicAPI]
+	public const string? DefaultMachineName = null;
+
+	[PublicAPI]
 	public const EPersonaStateFlag DefaultOnlineFlags = 0;
 
 	[PublicAPI]
@@ -236,6 +239,9 @@ public sealed class BotConfig {
 	[JsonDisallowNull]
 	[JsonInclude]
 	public ImmutableHashSet<EAssetType> LootableTypes { get; init; } = DefaultLootableTypes;
+
+	[JsonInclude]
+	public string? MachineName { get; init; } = DefaultMachineName;
 
 	[JsonDisallowNull]
 	[JsonInclude]
@@ -410,6 +416,9 @@ public sealed class BotConfig {
 	public bool ShouldSerializeLootableTypes() => !Saving || ((LootableTypes != DefaultLootableTypes) && !LootableTypes.SetEquals(DefaultLootableTypes));
 
 	[UsedImplicitly]
+	public bool ShouldSerializeMachineName() => !Saving || (MachineName != DefaultMachineName);
+
+	[UsedImplicitly]
 	public bool ShouldSerializeMatchableTypes() => !Saving || ((MatchableTypes != DefaultMatchableTypes) && !MatchableTypes.SetEquals(DefaultMatchableTypes));
 
 	[UsedImplicitly]
@@ -490,6 +499,28 @@ public sealed class BotConfig {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(BotBehaviour), BotBehaviour));
 		}
 
+		HashSet<EAssetType>? completeTypesToSendValidTypes = null;
+
+		foreach (EAssetType completableType in CompleteTypesToSend) {
+			if (!Enum.IsDefined(completableType)) {
+				return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(CompleteTypesToSend), completableType));
+			}
+
+			if (completeTypesToSendValidTypes == null) {
+				SwaggerValidValuesAttribute? completeTypesToSendValidValues = typeof(BotConfig).GetProperty(nameof(CompleteTypesToSend))?.GetCustomAttribute<SwaggerValidValuesAttribute>();
+
+				if (completeTypesToSendValidValues?.ValidIntValues == null) {
+					throw new InvalidOperationException(nameof(completeTypesToSendValidValues));
+				}
+
+				completeTypesToSendValidTypes = completeTypesToSendValidValues.ValidIntValues.Select(static value => (EAssetType) value).ToHashSet();
+			}
+
+			if (!completeTypesToSendValidTypes.Contains(completableType)) {
+				return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(CompleteTypesToSend), completableType));
+			}
+		}
+
 		if (!string.IsNullOrEmpty(CustomGamePlayedWhileFarming)) {
 			try {
 				// Test CustomGamePlayedWhileFarming against supported format, otherwise we'll throw later when used
@@ -519,25 +550,12 @@ public sealed class BotConfig {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(LootableTypes), lootableType));
 		}
 
-		HashSet<EAssetType>? completeTypesToSendValidTypes = null;
-
-		foreach (EAssetType completableType in CompleteTypesToSend) {
-			if (!Enum.IsDefined(completableType)) {
-				return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(CompleteTypesToSend), completableType));
-			}
-
-			if (completeTypesToSendValidTypes == null) {
-				SwaggerValidValuesAttribute? completeTypesToSendValidValues = typeof(BotConfig).GetProperty(nameof(CompleteTypesToSend))?.GetCustomAttribute<SwaggerValidValuesAttribute>();
-
-				if (completeTypesToSendValidValues?.ValidIntValues == null) {
-					throw new InvalidOperationException(nameof(completeTypesToSendValidValues));
-				}
-
-				completeTypesToSendValidTypes = completeTypesToSendValidValues.ValidIntValues.Select(static value => (EAssetType) value).ToHashSet();
-			}
-
-			if (!completeTypesToSendValidTypes.Contains(completableType)) {
-				return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(CompleteTypesToSend), completableType));
+		if (!string.IsNullOrEmpty(MachineName)) {
+			try {
+				// Test MachineName against supported format, otherwise we'll throw later when used
+				string _ = string.Format(CultureInfo.CurrentCulture, MachineName, null, null, null);
+			} catch (FormatException e) {
+				return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(MachineName), e.Message));
 			}
 		}
 

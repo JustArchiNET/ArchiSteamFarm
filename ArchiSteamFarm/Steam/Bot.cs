@@ -2843,6 +2843,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			UpdateTokens(pollResult.AccessToken, pollResult.RefreshToken);
 		}
 
+		string machineNameFormat = !string.IsNullOrEmpty(BotConfig.MachineName) ? BotConfig.MachineName : "{0} ({1}/{2})";
+
 		SteamUser.LogOnDetails logOnDetails = new() {
 			AccessToken = RefreshToken,
 			CellID = ASF.GlobalDatabase?.CellID,
@@ -2850,6 +2852,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			ClientLanguage = CultureInfo.CurrentCulture.ToSteamClientLanguage(),
 			GamingDeviceType = BotConfig.GamingDeviceType,
 			LoginID = LoginID,
+			MachineName = string.Format(CultureInfo.CurrentCulture, machineNameFormat, Environment.MachineName, SharedInfo.PublicIdentifier, SharedInfo.Version),
 			ShouldRememberPassword = BotConfig.UseLoginKeys,
 			UIMode = BotConfig.UserInterfaceMode,
 			Username = username
