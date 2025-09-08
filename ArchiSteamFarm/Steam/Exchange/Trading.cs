@@ -503,7 +503,7 @@ public sealed class Trading : IDisposable {
 		}
 
 		// Decline trade if we're requested to handle any not-accepted item type or if it's not fair games/types exchange
-		if (!tradeOffer.IsValidSteamItemsRequest(Bot.BotConfig.MatchableTypes) || !IsFairExchange(tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive)) {
+		if (Bot.BotConfig.MatchableTypes.IsEmpty || !tradeOffer.IsValidSteamItemsRequest(Bot.BotConfig.MatchableTypes) || !IsFairExchange(tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(tradeOffer.IsValidSteamItemsRequest)} || {nameof(IsFairExchange)}"));
 
 			return ParseTradeResult.EResult.Rejected;

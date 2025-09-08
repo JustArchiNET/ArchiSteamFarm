@@ -233,6 +233,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			HashSet<EAssetType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
 
 			if (acceptedMatchableTypes.Count == 0) {
+				// Should never happen, since IsEligibleForListing() check above ensured we have at least one matchable type
 				throw new InvalidOperationException(nameof(acceptedMatchableTypes));
 			}
 
@@ -905,9 +906,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		HashSet<EAssetType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
 
 		if (acceptedMatchableTypes.Count == 0) {
-			Bot.ArchiLogger.LogNullError(acceptedMatchableTypes);
-
-			return;
+			// Should never happen, since IsEligibleForMatching() check above ensured we have at least one matchable type
+			throw new InvalidOperationException(nameof(acceptedMatchableTypes));
 		}
 
 		if (!await MatchActivelySemaphore.WaitAsync(0).ConfigureAwait(false)) {
