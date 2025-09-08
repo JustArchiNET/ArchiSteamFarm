@@ -629,6 +629,36 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<EResult> RedeemPointsForBadgeLevel(uint definitionID, byte levels = 1) {
+		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
+
+		if (Client == null) {
+			throw new InvalidOperationException(nameof(Client));
+		}
+
+		if (!Client.IsConnected) {
+			return EResult.NoConnection;
+		}
+
+		CLoyaltyRewards_RedeemPointsForBadgeLevel_Request request = new() {
+			defid = definitionID,
+			num_levels = levels
+		};
+
+		SteamUnifiedMessages.ServiceMethodResponse<CLoyaltyRewards_RedeemPoints_Response> response;
+
+		try {
+			response = await UnifiedLoyaltyRewards.RedeemPointsForBadgeLevel(request).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			return EResult.Timeout;
+		}
+
+		return response.Result;
+	}
+
+	[PublicAPI]
 	public async Task<bool> RemoveFriend(ulong steamID) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));

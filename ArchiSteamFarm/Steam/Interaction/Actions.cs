@@ -354,23 +354,23 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	public async Task<EResult> RedeemPoints(uint definitionID, bool forced = false) {
 		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
 
+		Dictionary<uint, LoyaltyRewardDefinition>? definitions = await Bot.Actions.GetRewardItems(new HashSet<uint>(1) { definitionID }).ConfigureAwait(false);
+
+		if (definitions == null) {
+			return EResult.Timeout;
+		}
+
+		if (!definitions.TryGetValue(definitionID, out LoyaltyRewardDefinition? definition)) {
+			return EResult.InvalidParam;
+		}
+
 		if (!forced) {
-			Dictionary<uint, LoyaltyRewardDefinition>? definitions = await Bot.Actions.GetRewardItems(new HashSet<uint>(1) { definitionID }).ConfigureAwait(false);
-
-			if (definitions == null) {
-				return EResult.Timeout;
-			}
-
-			if (!definitions.TryGetValue(definitionID, out LoyaltyRewardDefinition? definition)) {
-				return EResult.InvalidParam;
-			}
-
 			if (definition.point_cost > 0) {
 				return EResult.InvalidState;
 			}
 		}
 
-		return await Bot.ArchiHandler.RedeemPoints(definitionID).ConfigureAwait(false);
+		return definition.type == 2 ? await Bot.ArchiHandler.RedeemPointsForBadgeLevel(definitionID).ConfigureAwait(false) : await Bot.ArchiHandler.RedeemPoints(definitionID).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
