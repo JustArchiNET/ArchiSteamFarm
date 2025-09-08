@@ -355,8 +355,8 @@ public static class ASF {
 		}
 
 		ArchiLogger.LogGenericInfo(Strings.IPCConfigChanged);
-		await ArchiKestrel.Stop().ConfigureAwait(false);
-		await ArchiKestrel.Start().ConfigureAwait(false);
+
+		await ArchiKestrel.Restart().ConfigureAwait(false);
 	}
 
 	private static async Task OnChangedFile(string name, string fullPath) {

@@ -30,6 +30,7 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
@@ -64,6 +65,8 @@ internal static class ArchiKestrel {
 
 	internal static HistoryTarget? HistoryTarget { get; private set; }
 
+	private static readonly SemaphoreSlim StateSemaphore = new(1, 1);
+
 	private static WebApplication? WebApplication;
 
 	internal static void OnNewHistoryTarget(HistoryTarget? historyTarget = null) {
@@ -78,43 +81,43 @@ internal static class ArchiKestrel {
 		}
 	}
 
-	internal static async Task Start() {
-		if (WebApplication != null) {
-			return;
-		}
-
-		ASF.ArchiLogger.LogGenericInfo(Strings.IPCStarting);
-
-		// Init history logger for /Api/Log usage
-		Logging.InitHistoryLogger();
-
-		WebApplication webApplication = await CreateWebApplication().ConfigureAwait(false);
+	internal static async Task Restart() {
+		await StateSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
-			// Start the server
-			await webApplication.StartAsync().ConfigureAwait(false);
-		} catch (Exception e) {
-			ASF.ArchiLogger.LogGenericException(e);
+			await StopInternally().ConfigureAwait(false);
+			await StartInternally().ConfigureAwait(false);
+		} finally {
+			StateSemaphore.Release();
+		}
+	}
 
-			await webApplication.DisposeAsync().ConfigureAwait(false);
-
+	internal static async Task Start() {
+		if (IsRunning) {
 			return;
 		}
 
-		WebApplication = webApplication;
+		await StateSemaphore.WaitAsync().ConfigureAwait(false);
 
-		ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);
+		try {
+			await StartInternally().ConfigureAwait(false);
+		} finally {
+			StateSemaphore.Release();
+		}
 	}
 
 	internal static async Task Stop() {
-		if (WebApplication == null) {
+		if (!IsRunning) {
 			return;
 		}
 
-		await WebApplication.StopAsync().ConfigureAwait(false);
-		await WebApplication.DisposeAsync().ConfigureAwait(false);
+		await StateSemaphore.WaitAsync().ConfigureAwait(false);
 
-		WebApplication = null;
+		try {
+			await StopInternally().ConfigureAwait(false);
+		} finally {
+			StateSemaphore.Release();
+		}
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "PathString is a primitive, it's unlikely to be trimmed to the best of our knowledge")]
@@ -518,5 +521,44 @@ internal static class ArchiKestrel {
 		ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
 
 		headers.CacheControl = cacheControl;
+	}
+
+	private static async Task StartInternally() {
+		if (WebApplication != null) {
+			return;
+		}
+
+		ASF.ArchiLogger.LogGenericInfo(Strings.IPCStarting);
+
+		// Init history logger for /Api/Log usage
+		Logging.InitHistoryLogger();
+
+		WebApplication webApplication = await CreateWebApplication().ConfigureAwait(false);
+
+		try {
+			// Start the server
+			await webApplication.StartAsync().ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			await webApplication.DisposeAsync().ConfigureAwait(false);
+
+			return;
+		}
+
+		WebApplication = webApplication;
+
+		ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);
+	}
+
+	private static async Task StopInternally() {
+		if (WebApplication == null) {
+			return;
+		}
+
+		await WebApplication.StopAsync().ConfigureAwait(false);
+		await WebApplication.DisposeAsync().ConfigureAwait(false);
+
+		WebApplication = null;
 	}
 }
