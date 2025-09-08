@@ -261,7 +261,11 @@ internal static class ArchiKestrel {
 		app.MapControllers();
 
 		// Add support for OpenAPI, responsible for automatic API documentation generation, this should be on the end, once we're done with API
-		app.MapOpenApi("/swagger/{documentName}/swagger.json");
+		IEndpointConventionBuilder openApi = app.MapOpenApi("/swagger/{documentName}/swagger.json");
+
+		if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+			openApi.CacheOutput();
+		}
 
 		// Add support for swagger UI, this should be after swagger, obviously
 		app.MapScalarApiReference(
