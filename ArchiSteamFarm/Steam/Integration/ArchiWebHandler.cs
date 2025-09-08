@@ -1548,6 +1548,11 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		switch (response.StatusCode) {
+			case HttpStatusCode.BadGateway:
+			case HttpStatusCode.NotFound:
+			case HttpStatusCode.ServiceUnavailable:
+				// Steam maintenance as usual
+				return (EResult.Timeout, EPurchaseResultDetail.Timeout);
 			case HttpStatusCode.Forbidden:
 				// Let's convert this into something reasonable
 				return (EResult.AccessDenied, EPurchaseResultDetail.InvalidPackage);
