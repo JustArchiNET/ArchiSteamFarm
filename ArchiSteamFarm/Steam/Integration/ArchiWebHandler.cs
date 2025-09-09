@@ -1544,7 +1544,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		ObjectResponse<JsonNode>? response = await UrlPostToJsonObjectWithSession<JsonNode>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
 
 		if (response == null) {
-			return (EResult.Fail, EPurchaseResultDetail.Timeout);
+			return (EResult.Timeout, EPurchaseResultDetail.Timeout);
 		}
 
 		switch (response.StatusCode) {
@@ -1552,7 +1552,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			case HttpStatusCode.NotFound:
 			case HttpStatusCode.ServiceUnavailable:
 				// Steam maintenance as usual
-				return (EResult.Timeout, EPurchaseResultDetail.Timeout);
+				return (EResult.ServiceUnavailable, EPurchaseResultDetail.Timeout);
 			case HttpStatusCode.Forbidden:
 				// Let's convert this into something reasonable
 				return (EResult.AccessDenied, EPurchaseResultDetail.InvalidPackage);
