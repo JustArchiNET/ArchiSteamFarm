@@ -4,7 +4,7 @@
 		<PackageVersion Include="CryptSharpStandard" Version="1.0.0" />
 		<PackageVersion Include="Humanizer" Version="3.0.0-beta.96" />
 		<PackageVersion Include="JetBrains.Annotations.Sources" Version="2025.2.2" />
-		<PackageVersion Include="Markdig.Signed" Version="0.41.3" />
+		<PackageVersion Include="Markdig.Signed" Version="0.42.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.ResxSourceGenerator" Version="5.0.0-1.25277.114" />
 		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.14.0" />
