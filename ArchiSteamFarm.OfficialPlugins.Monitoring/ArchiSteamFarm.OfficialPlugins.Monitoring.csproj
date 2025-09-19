@@ -6,6 +6,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="JetBrains.Annotations.Sources" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" IncludeAssets="compile" />
 		<PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" />
 		<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />

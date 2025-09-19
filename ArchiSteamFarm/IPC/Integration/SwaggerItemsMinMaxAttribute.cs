@@ -22,8 +22,9 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using JetBrains.Annotations;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace ArchiSteamFarm.IPC.Integration;
 
@@ -45,16 +46,16 @@ public sealed class SwaggerItemsMinMaxAttribute : CustomSwaggerAttribute {
 	public override void Apply(OpenApiSchema schema) {
 		ArgumentNullException.ThrowIfNull(schema);
 
-		if (schema.Items == null) {
+		if (schema.Items is not OpenApiSchema items) {
 			throw new InvalidOperationException(nameof(schema.Items));
 		}
 
 		if (BackingMinimum.HasValue) {
-			schema.Items.Minimum = BackingMinimum.Value;
+			items.Minimum = BackingMinimum.Value.ToString(CultureInfo.InvariantCulture);
 		}
 
 		if (BackingMaximum.HasValue) {
-			schema.Items.Maximum = BackingMaximum.Value;
+			items.Maximum = BackingMaximum.Value.ToString(CultureInfo.InvariantCulture);
 		}
 	}
 }

@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace ArchiSteamFarm.IPC.OpenApi;
 
@@ -45,13 +45,7 @@ internal sealed class OperationTransformer : IOpenApiOperationTransformer {
 			operation.Security.Add(
 				new OpenApiSecurityRequirement {
 					{
-						new OpenApiSecurityScheme {
-							Reference = new OpenApiReference {
-								Id = nameof(GlobalConfig.IPCPassword),
-								Type = ReferenceType.SecurityScheme
-							}
-						},
-
+						new OpenApiSecuritySchemeReference(nameof(GlobalConfig.IPCPassword), context.Document),
 						[]
 					}
 				}
