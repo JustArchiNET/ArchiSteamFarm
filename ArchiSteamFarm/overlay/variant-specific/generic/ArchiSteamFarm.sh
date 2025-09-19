@@ -64,11 +64,11 @@ done
 
 BINARY_PREFIX=""
 
-if [ -n "${ASF_USER-}" ] && [ "$(id -u)" -eq 0 ] && id -u "$ASF_USER" >/dev/null 2>&1 && [ "$(id -u "$ASF_USER")" -gt 0 ]; then
+if [ -n "${ASF_UID-}" ] && [ "$(id -u)" -eq 0 ] && id -u "$ASF_UID" >/dev/null 2>&1 && [ "$(id -u "$ASF_UID")" -gt 0 ]; then
 	# Fix permissions first to ensure ASF has read/write access to the directory specified by --path and its own
-	chown -hR "${ASF_USER}:${ASF_USER}" . "$SCRIPT_DIR" || true
+	chown -hR "${ASF_UID}:${ASF_UID}" . "$SCRIPT_DIR" || true
 
-	BINARY_PREFIX="su ${ASF_USER} -c"
+	BINARY_PREFIX="su $(id -nu "$ASF_UID") -c"
 fi
 
 CONFIG_PATH="$(pwd)/${CONFIG_PATH}"
