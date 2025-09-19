@@ -121,7 +121,7 @@ internal static class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => ResponseMatch(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot)))).ConfigureAwait(false);
 
-		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))!];
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result)).Select(static result => result!)];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
