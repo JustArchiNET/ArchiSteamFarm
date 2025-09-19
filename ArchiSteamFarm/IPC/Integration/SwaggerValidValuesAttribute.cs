@@ -42,13 +42,13 @@ public sealed class SwaggerValidValuesAttribute : CustomSwaggerAttribute {
 
 		if (ValidIntValues != null) {
 			foreach (int value in ValidIntValues) {
-				validValues.Add(value);
+				validValues.Add(JsonValue.Create(value));
 			}
 		}
 
 		if (ValidStringValues != null) {
 			foreach (string value in ValidStringValues) {
-				validValues.Add(value);
+				validValues.Add(JsonValue.Create(value));
 			}
 		}
 

@@ -30,7 +30,6 @@ using ArchiSteamFarm.IPC.Integration;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
-using Microsoft.OpenApi.MicrosoftExtensions;
 
 namespace ArchiSteamFarm.IPC.OpenApi;
 
@@ -97,24 +96,23 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 
 			// OpenApi seems to support only int and long from underlying enum types: https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/integral-numeric-types
 			definition[enumName] = enumValue switch {
-				sbyte value => JsonValue.Create<int>(value),
-				byte value => JsonValue.Create<int>(value),
-				short value => JsonValue.Create<int>(value),
-				ushort value => JsonValue.Create<int>(value),
+				sbyte value => JsonValue.Create((int) value),
+				byte value => JsonValue.Create((int) value),
+				short value => JsonValue.Create((int) value),
+				ushort value => JsonValue.Create((int) value),
 				int value => JsonValue.Create(value),
-				uint value => JsonValue.Create<long>(value),
+				uint value => JsonValue.Create((long) value),
 				long value => JsonValue.Create(value),
 				ulong value => JsonValue.Create(value.ToString(CultureInfo.InvariantCulture)),
-				nint value when nint.Size <= 4 => JsonValue.Create<int>((int) value),
-				nint value when nint.Size <= 8 => JsonValue.Create<long>(value),
+				nint value when nint.Size <= 4 => JsonValue.Create((int) value),
+				nint value when nint.Size <= 8 => JsonValue.Create((long) value),
 				nint value => JsonValue.Create(value.ToString(CultureInfo.InvariantCulture)),
-				nuint value when nuint.Size <= 4 => JsonValue.Create<long>((long) value),
+				nuint value when nuint.Size <= 4 => JsonValue.Create((long) value),
 				nuint value => JsonValue.Create(value.ToString(CultureInfo.InvariantCulture)),
 				_ => throw new InvalidOperationException(nameof(enumValue))
 			};
 		}
 
-		schema.AddExtension("x-test", new OpenApiEnumFlagsExtension());
 		schema.AddExtension("x-definition", new JsonNodeExtension(definition));
 	}
 }
