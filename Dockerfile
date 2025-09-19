@@ -15,7 +15,7 @@ RUN <<EOF
     npm run deploy --no-progress
 EOF
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0${IMAGESUFFIX} AS build-dotnet
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0${IMAGESUFFIX} AS build-dotnet
 ARG CONFIGURATION=Release
 ARG TARGETARCH
 ARG TARGETOS
@@ -76,7 +76,7 @@ RUN --mount=type=secret,id=ASF_PRIVATE_SNK --mount=type=secret,id=STEAM_TOKEN_DU
     done
 EOF
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0${IMAGESUFFIX} AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0${IMAGESUFFIX} AS runtime
 ENV ASF_PATH=/app
 ENV ASF_USER=asf
 ENV ASPNETCORE_URLS=
