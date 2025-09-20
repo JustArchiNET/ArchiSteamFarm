@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Nodes;
 using JetBrains.Annotations;
 using Microsoft.OpenApi;
@@ -35,6 +36,7 @@ public sealed class SwaggerValidValuesAttribute : CustomSwaggerAttribute {
 	public int[]? ValidIntValues { get; init; }
 	public string[]? ValidStringValues { get; init; }
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We're not creating json values with non-primitive types")]
 	public override void Apply(OpenApiSchema schema) {
 		ArgumentNullException.ThrowIfNull(schema);
 
