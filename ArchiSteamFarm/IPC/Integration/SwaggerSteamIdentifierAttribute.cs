@@ -22,8 +22,9 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using JetBrains.Annotations;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using SteamKit2;
 
 namespace ArchiSteamFarm.IPC.Integration;
@@ -38,7 +39,7 @@ public sealed class SwaggerSteamIdentifierAttribute : CustomSwaggerAttribute {
 	public override void Apply(OpenApiSchema schema) {
 		ArgumentNullException.ThrowIfNull(schema);
 
-		schema.Minimum = new SteamID(MinimumAccountID, Universe, AccountType);
-		schema.Maximum = new SteamID(MaximumAccountID, Universe, AccountType);
+		schema.Minimum = new SteamID(MinimumAccountID, Universe, AccountType).ConvertToUInt64().ToString(CultureInfo.InvariantCulture);
+		schema.Maximum = new SteamID(MaximumAccountID, Universe, AccountType).ConvertToUInt64().ToString(CultureInfo.InvariantCulture);
 	}
 }

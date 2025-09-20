@@ -56,7 +56,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using NLog.Web;
 using Scalar.AspNetCore;
-using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
+using IPNetwork = System.Net.IPNetwork;
 
 namespace ArchiSteamFarm.IPC;
 
@@ -323,7 +323,7 @@ internal static class ArchiKestrel {
 
 				if (knownNetworks != null) {
 					foreach (IPNetwork knownNetwork in knownNetworks) {
-						options.KnownNetworks.Add(knownNetwork);
+						options.KnownIPNetworks.Add(knownNetwork);
 					}
 				}
 			}
