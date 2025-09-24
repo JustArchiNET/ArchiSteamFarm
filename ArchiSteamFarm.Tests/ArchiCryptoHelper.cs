@@ -61,5 +61,21 @@ internal sealed class ArchiCryptoHelper {
 
 		await CanEncryptDecrypt(ECryptoMethod.ProtectedDataForCurrentUser).ConfigureAwait(false);
 	}
+
+	[DataRow(EHashingMethod.PlainText, TestPassword)]
+	[DataRow(EHashingMethod.Pbkdf2, "WlS48GNrs1hAhcNHPfV09TPTLhf03gExb6zpaKiwX5A=")]
+	[DataRow(EHashingMethod.SCrypt, "9LjhjyugakDQ7Haq/ufyTZDfIGeeWbLcE+/9IeKm8gc=")]
+	[TestMethod]
+	internal void CanHash(EHashingMethod hashingMethod, string expectedHash) {
+		if (!Enum.IsDefined(hashingMethod)) {
+			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(expectedHash);
+
+		string hashed = Hash(hashingMethod, TestPassword);
+
+		Assert.AreEqual(expectedHash, hashed);
+	}
 }
 #pragma warning restore CA1812 // False positive, the class is used during MSTest
