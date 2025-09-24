@@ -54,9 +54,9 @@ internal sealed class ArchiCryptoHelper {
 
 	[TestMethod]
 	internal async Task CanEncryptDecryptProtectedDataForCurrentUser() {
+		// Not supported on other platforms than Windows
 		if (!OperatingSystem.IsWindows()) {
-			// Not supported on other platforms than Windows
-			return;
+			Assert.Inconclusive($"!{nameof(OperatingSystem.IsWindows)}");
 		}
 
 		await CanEncryptDecrypt(ECryptoMethod.ProtectedDataForCurrentUser).ConfigureAwait(false);
