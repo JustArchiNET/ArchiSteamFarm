@@ -15,7 +15,7 @@ RUN <<EOF
     npm run deploy --no-progress
 EOF
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0${IMAGESUFFIX} AS build-dotnet
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0${IMAGESUFFIX} AS build-dotnet
 ARG CONFIGURATION=Release
 ARG TARGETARCH
 ARG TARGETOS
@@ -76,9 +76,9 @@ RUN --mount=type=secret,id=ASF_PRIVATE_SNK --mount=type=secret,id=STEAM_TOKEN_DU
     done
 EOF
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0${IMAGESUFFIX} AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0${IMAGESUFFIX} AS runtime
 ENV ASF_PATH=/app
-ENV ASF_USER=asf
+ENV ASF_UID=1000
 ENV ASPNETCORE_URLS=
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
 ENV DOTNET_NOLOGO=true
@@ -101,9 +101,12 @@ RUN <<EOF
 
     mkdir -p "$ASF_PATH"
 
-    groupadd -r -g 1000 "$ASF_USER"
-    useradd -r -d "$ASF_PATH" -g 1000 -u 1000 "$ASF_USER"
-    chown -hR "${ASF_USER}:${ASF_USER}" "$ASF_PATH" /asf
+    if ! id -u "$ASF_UID" >/dev/null 2>&1; then
+        groupadd -r -g "$ASF_UID" "asf"
+        useradd -r -d "$ASF_PATH" -g "$ASF_UID" -u "$ASF_UID" "asf"
+    fi
+
+    chown -hR "${ASF_UID}:${ASF_UID}" "$ASF_PATH" /asf
 
     ln -s /asf/ArchiSteamFarm.sh /usr/bin/ArchiSteamFarm
 EOF

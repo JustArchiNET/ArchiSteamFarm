@@ -313,7 +313,7 @@ public static class Utilities {
 		// Now extract the zip file to entirely new location, this decreases chance of corruptions if user kills the process during this stage
 		string updateDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryNew);
 
-		zipArchive.ExtractToDirectory(updateDirectory, true);
+		await zipArchive.ExtractToDirectoryAsync(updateDirectory, true).ConfigureAwait(false);
 
 		// Now, critical section begins, we're going to move all files from target directory to a backup directory
 		string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryOld);
