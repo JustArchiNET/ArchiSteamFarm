@@ -124,19 +124,19 @@ internal sealed class ApiAuthenticationMiddleware {
 				return (HttpStatusCode.OK, true);
 			}
 
-			if (ForwardedHeadersOptions.KnownNetworks.Count == 0) {
+			if (ForwardedHeadersOptions.KnownIPNetworks.Count == 0) {
 				return (HttpStatusCode.Forbidden, true);
 			}
 
 			if (clientIP.IsIPv4MappedToIPv6) {
 				IPAddress mappedClientIP = clientIP.MapToIPv4();
 
-				if (ForwardedHeadersOptions.KnownNetworks.Any(network => network.Contains(mappedClientIP))) {
+				if (ForwardedHeadersOptions.KnownIPNetworks.Any(network => network.Contains(mappedClientIP))) {
 					return (HttpStatusCode.OK, true);
 				}
 			}
 
-			return (ForwardedHeadersOptions.KnownNetworks.Any(network => network.Contains(clientIP)) ? HttpStatusCode.OK : HttpStatusCode.Forbidden, true);
+			return (ForwardedHeadersOptions.KnownIPNetworks.Any(network => network.Contains(clientIP)) ? HttpStatusCode.OK : HttpStatusCode.Forbidden, true);
 		}
 
 		if (!context.Request.Headers.TryGetValue(HeadersField, out StringValues passwords) && !context.Request.Query.TryGetValue("password", out passwords)) {

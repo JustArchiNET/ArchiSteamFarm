@@ -22,10 +22,9 @@
 // limitations under the License.
 
 using System;
+using System.Text.Json.Nodes;
 using JetBrains.Annotations;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Extensions;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace ArchiSteamFarm.IPC.Integration;
 
@@ -36,10 +35,20 @@ public sealed class SwaggerSecurityCriticalAttribute : CustomSwaggerAttribute {
 	public override void Apply(OpenApiSchema schema) {
 		ArgumentNullException.ThrowIfNull(schema);
 
-		if (schema.Items is { Reference: null }) {
-			schema.Items.AddExtension(ExtensionName, new OpenApiBoolean(true));
-		} else {
-			schema.AddExtension(ExtensionName, new OpenApiBoolean(true));
+		JsonValue value = JsonValue.Create(true);
+
+		if (schema.Items != null) {
+			if (schema.Items is OpenApiSchema items) {
+				items.AddExtension(ExtensionName, new JsonNodeExtension(value));
+			} else if (schema.Items.Extensions != null) {
+				schema.Items.Extensions[ExtensionName] = new JsonNodeExtension(value);
+			} else {
+				throw new InvalidOperationException(nameof(schema.Items));
+			}
+
+			return;
 		}
+
+		schema.AddExtension(ExtensionName, new JsonNodeExtension(value));
 	}
 }
