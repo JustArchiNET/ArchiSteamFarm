@@ -526,7 +526,7 @@ internal sealed class Bot {
 		ArgumentNullException.ThrowIfNull(itemsToSend);
 
 		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), long> realResult = itemsToSend.GroupBy(static asset => (asset.RealAppID, asset.ContextID, asset.ClassID)).ToDictionary(static group => group.Key, static group => group.Sum(static asset => asset.Amount));
-		Assert.AreEqual(expectedResult.Count, realResult.Count);
+		Assert.HasCount(expectedResult.Count, realResult);
 		Assert.IsTrue(expectedResult.All(expectation => realResult.TryGetValue(expectation.Key, out long reality) && (expectation.Value == reality)));
 	}
 
