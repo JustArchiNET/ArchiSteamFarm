@@ -2323,6 +2323,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			case EResult.Busy: // No clue, might be some internal gateway timeout, just try again
 			case EResult.DuplicateRequest: // This will happen if user reacts to popup and tries to use the code afterwards, we have the code saved in ASF, we just need to try again
 			case EResult.Expired: // Usually means refresh token is no longer authorized to use, otherwise just try again
+			case EResult.Fail: // Usually some internal issue during authorization, just try again
 			case EResult.FileNotFound: // User denied approval despite telling us that they accepted it, just try again
 			case EResult.InvalidPassword: // Usually means refresh token is no longer authorized to use, otherwise just try again
 			case EResult.NoConnection: // Usually network issues
