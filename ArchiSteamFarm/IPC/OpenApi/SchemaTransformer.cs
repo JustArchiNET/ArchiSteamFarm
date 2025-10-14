@@ -23,14 +23,13 @@
 
 using System;
 using System.Globalization;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Integration;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Extensions;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace ArchiSteamFarm.IPC.OpenApi;
 
@@ -72,9 +71,9 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 			schema.Format = "flags";
 		}
 
-		OpenApiObject definition = new();
+		JsonObject definition = new();
 
-		foreach (object? enumValue in context.JsonTypeInfo.Type.GetEnumValues()) {
+		foreach (object? enumValue in context.JsonTypeInfo.Type.GetEnumValuesAsUnderlyingType()) {
 			if (enumValue == null) {
 				throw new InvalidOperationException(nameof(enumValue));
 			}
@@ -95,41 +94,26 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 				continue;
 			}
 
-			IOpenApiAny enumObject;
-
-			if (TryCast(enumValue, out int intValue)) {
-				enumObject = new OpenApiInteger(intValue);
-			} else if (TryCast(enumValue, out long longValue)) {
-				enumObject = new OpenApiLong(longValue);
-			} else if (TryCast(enumValue, out ulong ulongValue)) {
-				// OpenApi spec doesn't support ulongs as of now
-				enumObject = new OpenApiString(ulongValue.ToString(CultureInfo.InvariantCulture));
-			} else {
-				throw new InvalidOperationException(nameof(enumValue));
-			}
-
-			definition.Add(enumName, enumObject);
+			// OpenApi seems to support only int and long from underlying enum types: https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/integral-numeric-types
+			definition[enumName] = enumValue switch {
+				sbyte value => JsonValue.Create((int) value),
+				byte value => JsonValue.Create((int) value),
+				short value => JsonValue.Create((int) value),
+				ushort value => JsonValue.Create((int) value),
+				int value => JsonValue.Create(value),
+				uint value => JsonValue.Create((long) value),
+				long value => JsonValue.Create(value),
+				ulong value => JsonValue.Create(value.ToString(CultureInfo.InvariantCulture)),
+				nint value when nint.Size <= 4 => JsonValue.Create((int) value),
+				nint value when nint.Size <= 8 => JsonValue.Create((long) value),
+				nint value => JsonValue.Create(value.ToString(CultureInfo.InvariantCulture)),
+				nuint value when nuint.Size <= 4 => JsonValue.Create((long) value),
+				nuint value => JsonValue.Create(value.ToString(CultureInfo.InvariantCulture)),
+				_ => throw new InvalidOperationException(nameof(enumValue))
+			};
 		}
 
-		schema.AddExtension("x-definition", definition);
-	}
-
-	private static bool TryCast<T>(object value, out T typedValue) where T : struct {
-		ArgumentNullException.ThrowIfNull(value);
-
-		try {
-			typedValue = (T) Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
-
-			return true;
-		} catch (InvalidCastException) {
-			typedValue = default(T);
-
-			return false;
-		} catch (OverflowException) {
-			typedValue = default(T);
-
-			return false;
-		}
+		schema.AddExtension("x-definition", new JsonNodeExtension(definition));
 	}
 }
 #pragma warning restore CA1812 // False positive, the class is used internally
