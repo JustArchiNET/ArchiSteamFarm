@@ -38,7 +38,7 @@ public interface IPlugin {
 	/// </summary>
 	/// <returns>String that will be used as the name of this plugin.</returns>
 	[JsonInclude]
-	string Name { get; }
+	public string Name { get; }
 
 	/// <summary>
 	///     ASF will use this property as version indicator of your plugin to the user.
@@ -46,10 +46,10 @@ public interface IPlugin {
 	/// </summary>
 	/// <returns>Version that will be shown to the user when plugin is loaded.</returns>
 	[JsonInclude]
-	Version Version { get; }
+	public Version Version { get; }
 
 	/// <summary>
 	///     ASF will call this method right after plugin initialization.
 	/// </summary>
-	Task OnLoaded();
+	public Task OnLoaded();
 }

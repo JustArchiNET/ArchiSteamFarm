@@ -44,7 +44,7 @@ internal sealed class IGitHubPluginUpdates {
 
 	private readonly TestContext TestContext;
 
-	private CancellationToken CancellationToken => TestContext.CancellationTokenSource.Token;
+	private CancellationToken CancellationToken => TestContext.CancellationToken;
 
 	[UsedImplicitly]
 	public IGitHubPluginUpdates(TestContext testContext) {

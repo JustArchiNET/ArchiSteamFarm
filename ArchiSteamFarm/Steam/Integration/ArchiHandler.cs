@@ -986,7 +986,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 		}
 
 		if (gameIDs.Count > 0) {
-			IReadOnlySet<uint> uniqueGameIDs = gameIDs as IReadOnlySet<uint> ?? gameIDs.ToHashSet();
+			IEnumerable<uint> uniqueGameIDs = gameIDs as IReadOnlySet<uint> ?? gameIDs.Distinct();
 
 			foreach (uint gameID in uniqueGameIDs.Where(static gameID => gameID > 0)) {
 				if (request.Body.games_played.Count >= MaxGamesPlayedConcurrently) {

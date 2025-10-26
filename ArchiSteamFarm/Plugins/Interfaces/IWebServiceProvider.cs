@@ -37,11 +37,11 @@ public interface IWebServiceProvider : IPlugin {
 	///     ASF will call this method during configuration of the IPC endpoints.
 	/// </summary>
 	/// <param name="app">Application builder related to this callback.</param>
-	void OnConfiguringEndpoints(IApplicationBuilder app);
+	public void OnConfiguringEndpoints(IApplicationBuilder app);
 
 	/// <summary>
 	///     ASF will call this method during configuration of the IPC services.
 	/// </summary>
 	/// <param name="services">Service collection related to this callback.</param>
-	void OnConfiguringServices(IServiceCollection services);
+	public void OnConfiguringServices(IServiceCollection services);
 }

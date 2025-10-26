@@ -35,7 +35,7 @@ public interface IWebInterface : IPlugin {
 	/// </summary>
 	/// <example>www</example>
 	/// <remarks>You'll need to ship this folder together with your plugin for the interface to work.</remarks>
-	string PhysicalPath => "www";
+	public string PhysicalPath => "www";
 
 	/// <summary>
 	///     Specifies web path (address) under which ASF should host your static WWW files in <see cref="PhysicalPath" /> directory. Default value of "/" allows you to override default ASF files and gives you full flexibility in your <see cref="PhysicalPath" /> directory. However, you can instead host your files under some other fixed location specified here, such as "/MyPlugin", which is especially useful if you want to have your own default index.html in addition to the one provided by us (ASF-ui).
@@ -43,5 +43,5 @@ public interface IWebInterface : IPlugin {
 	/// <example>/MyPlugin</example>
 	/// <remarks>If you're using path other than default, ensure it does NOT end with a slash.</remarks>
 	[JsonInclude]
-	string WebPath => "/";
+	public string WebPath => "/";
 }

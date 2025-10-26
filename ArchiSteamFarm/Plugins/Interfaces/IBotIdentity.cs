@@ -41,5 +41,5 @@ public interface IBotIdentity : IPlugin {
 	/// <param name="data">Full data received by ASF in the callback that relates to this bot (Steam) account.</param>
 	/// <param name="nickname">Parsed nickname set for this bot (Steam) account.</param>
 	/// <param name="avatarHash">Parsed hash of the avatar of this bot (Steam) account, as hex.</param>
-	Task OnSelfPersonaState(Bot bot, SteamFriends.PersonaStateCallback data, string? nickname, string? avatarHash);
+	public Task OnSelfPersonaState(Bot bot, SteamFriends.PersonaStateCallback data, string? nickname, string? avatarHash);
 }

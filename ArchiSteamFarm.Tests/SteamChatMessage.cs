@@ -38,7 +38,7 @@ namespace ArchiSteamFarm.Tests;
 internal sealed class SteamChatMessage {
 	private readonly TestContext TestContext;
 
-	private CancellationToken CancellationToken => TestContext.CancellationTokenSource.Token;
+	private CancellationToken CancellationToken => TestContext.CancellationToken;
 
 	[UsedImplicitly]
 	public SteamChatMessage(TestContext testContext) {

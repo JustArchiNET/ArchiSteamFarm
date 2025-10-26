@@ -103,7 +103,7 @@ public sealed class BotDatabase : GenericDatabase {
 	[JsonInclude]
 	[JsonPropertyName("BackingExtraStorePackagesRefreshedAt")]
 	internal DateTime ExtraStorePackagesRefreshedAt {
-		get => field;
+		get;
 
 		set {
 			if (field == value) {

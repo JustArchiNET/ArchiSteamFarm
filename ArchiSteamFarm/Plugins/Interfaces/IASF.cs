@@ -40,5 +40,5 @@ public interface IASF : IPlugin {
 	///     ASF will call this method right after global config initialization.
 	/// </summary>
 	/// <param name="additionalConfigProperties">Extra config properties made out of <see cref="JsonExtensionDataAttribute" />. Can be null if no extra properties are found.</param>
-	Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null);
+	public Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null);
 }
