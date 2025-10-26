@@ -1,0 +1,19 @@
+[Unit]
+Description=ArchiSteamFarm podman systemd unit
+Documentation=https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Docker
+After=local-fs.target
+
+[Container]
+ContainerName=asf
+Image=docker.io/justarchi/archisteamfarm:latest
+# auto-updates based on registry image tag (unnecessary for `latest` which features auto-updating but might be useful for `main`
+#AutoUpdate=registry
+#PublishPort=127.0.0.1:1242:1242
+#PublishPort=[::]:1242:1242
+# read-only attribute not sensible for config as ASF wants to chown. Also IPC may write to config 
+Volume=ArchiSteamFarm-config:/app/config:z
+#Volume=ArchiSteamFarm-logs:/app/logs:z
+#Volume=ArchiSteamFarm-plugins:/app/plugins:z
+
+[Install]
+WantedBy=multi-user.target default.target
