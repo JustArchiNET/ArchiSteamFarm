@@ -21,7 +21,7 @@ ProtectKernelModules=yes
 ProtectKernelTunables=yes
 ProtectProc=invisible
 ProtectSystem=strict
-ReadWritePaths=/home/%i/ArchiSteamFarm /tmp
+ReadWritePaths=/home/%i/ArchiSteamFarm
 RemoveIPC=yes
 RestrictAddressFamilies=AF_INET AF_INET6 AF_NETLINK AF_UNIX
 RestrictNamespaces=yes
@@ -46,9 +46,7 @@ Image=docker.io/justarchi/archisteamfarm:latest
 #PublishPort=127.0.0.1:1242:1242
 #PublishPort=[::]:1242:1242
 # read-only attribute not sensible for config as ASF wants to chown. Also IPC may write to config 
-Volume=ArchiSteamFarm-config:/app/config:z
-#Volume=ArchiSteamFarm-logs:/app/logs:z
-#Volume=ArchiSteamFarm-plugins:/app/plugins:z
+Volume=/home/%i/ArchiSteamFarm:/app:z
 
 [Install]
 WantedBy=multi-user.target default.target
