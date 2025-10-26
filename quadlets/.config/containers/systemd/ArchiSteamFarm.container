@@ -1,3 +1,38 @@
+[Service]
+# Just reuse ASF service security hardening from https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/ArchiSteamFarm/overlay/variant-specific/generic/ArchiSteamFarm%40.service
+# https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+# Podman supports building and starting containers (and creating volumes) via systemd by using a systemd generator. These files are read during boot (and when systemctl daemon-reload is run) and generate corresponding regular systemd service unit files. Both system and user systemd units are supported. All options and tables available in standard systemd unit files are supported. For example, options defined in the [Service] table and [Install] tables pass directly to systemd and are handled by it. See systemd.unit(5) man page for more information.
+# ASF security hardening, all of the below entries are optional, but their existence improves security of your system
+CapabilityBoundingSet=
+DevicePolicy=closed
+LockPersonality=yes
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateIPC=yes
+PrivateMounts=yes
+PrivateUsers=yes
+ProcSubset=pid
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectHome=read-only
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectProc=invisible
+ProtectSystem=strict
+ReadWritePaths=/home/%i/ArchiSteamFarm /tmp
+RemoveIPC=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_NETLINK AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+SecureBits=noroot-locked
+SystemCallArchitectures=native
+SystemCallFilter=@system-service mincore
+SystemCallFilter=~@privileged
+UMask=0077
+
 [Unit]
 Description=ArchiSteamFarm podman systemd unit
 Documentation=https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Docker
