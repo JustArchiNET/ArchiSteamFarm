@@ -48,6 +48,9 @@
 
 		<!-- Required for protobuf-net -->
 		<_DefaultValueAttributeSupport>true</_DefaultValueAttributeSupport>
+
+		<!-- TODO: Workaround for https://github.com/dotnet/runtime/issues/118630, evaluate if possible to remove later -->
+		<EnableConfigurationBindingGenerator>false</EnableConfigurationBindingGenerator>
 	</PropertyGroup>
 
 	<!-- Default configuration for fast-debugging builds -->
