@@ -81,6 +81,20 @@ public sealed class BotDatabase : GenericDatabase {
 		}
 	}
 
+	[JsonInclude]
+	internal string? CachedSteamParentalCode {
+		get;
+
+		set {
+			if (field == value) {
+				return;
+			}
+
+			field = value;
+			Utilities.InBackground(Save);
+		}
+	}
+
 	[JsonDisallowNull]
 	[JsonInclude]
 	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
@@ -89,7 +103,7 @@ public sealed class BotDatabase : GenericDatabase {
 	[JsonInclude]
 	[JsonPropertyName("BackingExtraStorePackagesRefreshedAt")]
 	internal DateTime ExtraStorePackagesRefreshedAt {
-		get => field;
+		get;
 
 		set {
 			if (field == value) {
@@ -225,6 +239,9 @@ public sealed class BotDatabase : GenericDatabase {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeAccessToken() => !string.IsNullOrEmpty(AccessToken);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeCachedSteamParentalCode() => !string.IsNullOrEmpty(CachedSteamParentalCode);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeExtraStorePackages() => ExtraStorePackages.Count > 0;

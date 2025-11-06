@@ -37,5 +37,5 @@ public interface IBotsComparer : IPlugin {
 	///     Unless you know what you're doing, you should not implement this property yourself and let ASF decide.
 	/// </summary>
 	/// <returns>Comparer that will be used for the bots, as well as bot regexes.</returns>
-	StringComparer BotsComparer => StringComparer.Ordinal;
+	public StringComparer BotsComparer => StringComparer.Ordinal;
 }

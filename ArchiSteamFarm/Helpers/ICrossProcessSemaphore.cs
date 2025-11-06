@@ -29,7 +29,7 @@ namespace ArchiSteamFarm.Helpers;
 
 [PublicAPI]
 public interface ICrossProcessSemaphore {
-	void Release();
-	Task WaitAsync(CancellationToken cancellationToken = default);
-	Task<bool> WaitAsync(int millisecondsTimeout, CancellationToken cancellationToken = default);
+	public void Release();
+	public Task WaitAsync(CancellationToken cancellationToken = default);
+	public Task<bool> WaitAsync(int millisecondsTimeout, CancellationToken cancellationToken = default);
 }

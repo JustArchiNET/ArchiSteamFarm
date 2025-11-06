@@ -1031,7 +1031,8 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		IElement? nameNode = htmlDocument.QuerySelectorAll("span[class='profile_small_header_location']").LastOrDefault();
 
 		if (nameNode == null) {
-			Bot.ArchiLogger.LogNullError(nameNode);
+			// Normally we should log null error here, but here's why we don't: https://www.youtube.com/watch?v=nSKp2StlS6s&t=40s
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorIsInvalid(nameof(nameNode)));
 
 			return null;
 		}

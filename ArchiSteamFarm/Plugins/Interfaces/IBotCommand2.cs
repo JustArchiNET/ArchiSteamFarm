@@ -44,5 +44,5 @@ public interface IBotCommand2 : IPlugin {
 	/// <param name="args">Pre-parsed message using standard ASF delimiters.</param>
 	/// <param name="steamID">Optionally, steamID of the user who executed the command - may not be available with value of 0 (e.g. ASF API).</param>
 	/// <returns>Response to the command, or null/empty (as the task value) if the command isn't handled by this plugin.</returns>
-	Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0);
+	public Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0);
 }

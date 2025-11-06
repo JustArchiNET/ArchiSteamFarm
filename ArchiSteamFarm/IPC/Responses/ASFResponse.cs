@@ -75,7 +75,6 @@ public sealed class ASFResponse {
 	internal ASFResponse(string buildVariant, bool canUpdate, GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
 		ArgumentException.ThrowIfNullOrEmpty(buildVariant);
 		ArgumentNullException.ThrowIfNull(globalConfig);
-		ArgumentOutOfRangeException.ThrowIfZero(memoryUsage);
 		ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(processStartTime, DateTime.UnixEpoch);
 		ArgumentNullException.ThrowIfNull(version);
 

@@ -39,5 +39,5 @@ public interface ICrossProcessSemaphoreProvider : IPlugin {
 	/// </summary>
 	/// <param name="resourceName">Unique resource name provided by ASF for identification purposes.</param>
 	/// <returns>Concrete implementation of <see cref="ICrossProcessSemaphore" /> providing required functionality. It's allowed to return null if you want to use ASF's default implementation for specified resource instead.</returns>
-	Task<ICrossProcessSemaphore?> GetCrossProcessSemaphore(string resourceName);
+	public Task<ICrossProcessSemaphore?> GetCrossProcessSemaphore(string resourceName);
 }

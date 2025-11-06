@@ -2323,6 +2323,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			case EResult.Busy: // No clue, might be some internal gateway timeout, just try again
 			case EResult.DuplicateRequest: // This will happen if user reacts to popup and tries to use the code afterwards, we have the code saved in ASF, we just need to try again
 			case EResult.Expired: // Usually means refresh token is no longer authorized to use, otherwise just try again
+			case EResult.Fail: // Usually some internal issue during authorization, just try again
 			case EResult.FileNotFound: // User denied approval despite telling us that they accepted it, just try again
 			case EResult.InvalidPassword: // Usually means refresh token is no longer authorized to use, otherwise just try again
 			case EResult.NoConnection: // Usually network issues
@@ -3382,7 +3383,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (callback.ParentalSettings != null) {
-			(SteamParentalActive, string? steamParentalCode) = ValidateSteamParental(callback.ParentalSettings, BotConfig.SteamParentalCode, Program.SteamParentalGeneration);
+			(SteamParentalActive, string? steamParentalCode) = ValidateSteamParental(callback.ParentalSettings, BotConfig.SteamParentalCode, BotDatabase.CachedSteamParentalCode, Program.SteamParentalGeneration);
 
 			if (SteamParentalActive) {
 				// Steam parental enabled
@@ -3411,6 +3412,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						return;
 					}
 				}
+
+				BotDatabase.CachedSteamParentalCode = steamParentalCode;
 			}
 		} else {
 			// Steam parental disabled
@@ -4104,7 +4107,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private (bool IsSteamParentalEnabled, string? SteamParentalCode) ValidateSteamParental(ParentalSettings settings, string? steamParentalCode = null, bool allowGeneration = true) {
+	private (bool IsSteamParentalEnabled, string? SteamParentalCode) ValidateSteamParental(ParentalSettings settings, string? steamParentalCode = null, string? cachedSteamParentalCode = null, bool allowGeneration = true) {
 		ArgumentNullException.ThrowIfNull(settings);
 
 		if (!settings.is_enabled || (settings.passwordhash == null)) {
@@ -4132,21 +4135,27 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return (true, null);
 		}
 
-		if (!string.IsNullOrEmpty(steamParentalCode)) {
+		foreach (string? parentalCode in steamParentalCode.ToEnumerable().Append(cachedSteamParentalCode)) {
+			if (string.IsNullOrEmpty(parentalCode)) {
+				continue;
+			}
+
 			byte i = 0;
 
-			byte[] password = new byte[steamParentalCode.Length];
+			byte[] password = new byte[parentalCode.Length];
 
-			foreach (char character in steamParentalCode.TakeWhile(static character => character is >= '0' and <= '9')) {
+			foreach (char character in parentalCode.TakeWhile(static character => character is >= '0' and <= '9')) {
 				password[i++] = (byte) character;
 			}
 
-			if (i >= steamParentalCode.Length) {
-				byte[] passwordHash = ArchiCryptoHelper.Hash(password, settings.salt, (byte) settings.passwordhash.Length, steamParentalHashingMethod);
+			if (i < parentalCode.Length) {
+				continue;
+			}
 
-				if (passwordHash.SequenceEqual(settings.passwordhash)) {
-					return (true, steamParentalCode);
-				}
+			byte[] passwordHash = ArchiCryptoHelper.Hash(password, settings.salt, (byte) settings.passwordhash.Length, steamParentalHashingMethod);
+
+			if (passwordHash.SequenceEqual(settings.passwordhash)) {
+				return (true, parentalCode);
 			}
 		}
 

@@ -38,12 +38,12 @@ public interface IUpdateAware : IPlugin {
 	/// </summary>
 	/// <param name="currentVersion">The current (old) version of ASF program.</param>
 	/// <param name="newVersion">The target (new) version of ASF program.</param>
-	Task OnUpdateFinished(Version currentVersion, Version newVersion);
+	public Task OnUpdateFinished(Version currentVersion, Version newVersion);
 
 	/// <summary>
 	///     ASF will call this method before proceeding with an update to a particular ASF version.
 	/// </summary>
 	/// <param name="currentVersion">The current (old) version of ASF program.</param>
 	/// <param name="newVersion">The target (new) version of ASF program.</param>
-	Task OnUpdateProceeding(Version currentVersion, Version newVersion);
+	public Task OnUpdateProceeding(Version currentVersion, Version newVersion);
 }

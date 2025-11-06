@@ -42,5 +42,5 @@ public interface IBotMessage : IPlugin {
 	/// <param name="steamID">64-bit long unsigned integer of steamID executing the command.</param>
 	/// <param name="message">Message in its raw format.</param>
 	/// <returns>Response to the message, or null/empty (as the task value) for silence.</returns>
-	Task<string?> OnBotMessage(Bot bot, ulong steamID, string message);
+	public Task<string?> OnBotMessage(Bot bot, ulong steamID, string message);
 }

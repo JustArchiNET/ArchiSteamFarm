@@ -23,11 +23,13 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using ArchiSteamFarm.Helpers.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
 
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 public sealed class InventoryAppData {
 	[JsonInclude]
 	[JsonPropertyName("appid")]
@@ -88,4 +90,7 @@ public sealed class InventoryAppData {
 	[JsonPropertyName("trade_permissions")]
 	[JsonRequired]
 	public string TradePermissions { get; private init; } = "";
+
+	[JsonConstructor]
+	private InventoryAppData() { }
 }

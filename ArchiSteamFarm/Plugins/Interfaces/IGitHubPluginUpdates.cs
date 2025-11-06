@@ -48,14 +48,14 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	///     Boolean value that determines whether your plugin is able to update at the time of calling. You may provide false if, for example, you're inside a critical section and you don't want to update at this time, despite supporting updates otherwise.
 	///     This effectively skips unnecessary request to GitHub if you're certain that you're not interested in any updates right now.
 	/// </summary>
-	bool CanUpdate => true;
+	public bool CanUpdate => true;
 
 	/// <summary>
 	///     ASF will use this property as a target for GitHub updates. GitHub repository specified here must have valid releases that will be used for updates.
 	/// </summary>
 	/// <returns>Repository name in format of {Author}/{Repository}.</returns>
 	/// <example>JustArchiNET/ArchiSteamFarm</example>
-	string RepositoryName { get; }
+	public string RepositoryName { get; }
 
 	Task<Uri?> IPluginUpdates.GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, GlobalConfig.EUpdateChannel updateChannel, bool forced) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
@@ -104,7 +104,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	///     - *.zip, if exactly one match is found
 	/// </remarks>
 	/// <returns>Target release asset from those provided that should be used for auto-update. You may return null if the update is unavailable, for example, because ASF version/variant is determined unsupported, or due to any other reason.</returns>
-	Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets) {
+	public Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 		ArgumentNullException.ThrowIfNull(newPluginVersion);

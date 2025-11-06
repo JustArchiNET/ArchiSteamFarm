@@ -86,7 +86,11 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 		try {
 			while (true) {
 				if (!await EnsureFileExists().ConfigureAwait(false)) {
-					throw new IOException(Strings.FormatWarningFailedWithError(nameof(EnsureFileExists)));
+					ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(EnsureFileExists)));
+
+					await Task.Delay(SpinLockDelay * 25, cancellationToken).ConfigureAwait(false);
+
+					continue;
 				}
 
 				try {
@@ -128,7 +132,7 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 		try {
 			stopwatch.Stop();
 
-			if (stopwatch.ElapsedMilliseconds >= millisecondsTimeout) {
+			if (stopwatch.ElapsedMilliseconds > millisecondsTimeout) {
 				return false;
 			}
 
@@ -136,7 +140,18 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 
 			while (true) {
 				if (!await EnsureFileExists().ConfigureAwait(false)) {
-					throw new IOException(Strings.FormatWarningFailedWithError(nameof(EnsureFileExists)));
+					ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(EnsureFileExists)));
+
+					if (millisecondsTimeout <= 0) {
+						return false;
+					}
+
+					int sleep = Math.Min(millisecondsTimeout, SpinLockDelay * 25);
+
+					await Task.Delay(sleep, cancellationToken).ConfigureAwait(false);
+					millisecondsTimeout -= sleep;
+
+					continue;
 				}
 
 				try {
@@ -154,12 +169,14 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 				} catch (FileNotFoundException) {
 					throw;
 				} catch (IOException) {
-					if (millisecondsTimeout <= SpinLockDelay) {
+					if (millisecondsTimeout <= 0) {
 						return false;
 					}
 
-					await Task.Delay(SpinLockDelay, cancellationToken).ConfigureAwait(false);
-					millisecondsTimeout -= SpinLockDelay;
+					int sleep = Math.Min(millisecondsTimeout, SpinLockDelay);
+
+					await Task.Delay(sleep, cancellationToken).ConfigureAwait(false);
+					millisecondsTimeout -= sleep;
 				}
 			}
 		} finally {
@@ -184,20 +201,26 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 			}
 
 			if (!Directory.Exists(directoryPath)) {
-				if (OperatingSystem.IsWindows()) {
-					DirectoryInfo directoryInfo = Directory.CreateDirectory(directoryPath);
+				try {
+					if (OperatingSystem.IsWindows()) {
+						DirectoryInfo directoryInfo = Directory.CreateDirectory(directoryPath);
 
-					try {
-						DirectorySecurity directorySecurity = new(directoryPath, AccessControlSections.All);
+						try {
+							DirectorySecurity directorySecurity = new(directoryPath, AccessControlSections.All);
 
-						directoryInfo.SetAccessControl(directorySecurity);
-					} catch (PrivilegeNotHeldException e) {
-						// Non-critical, user might have no rights to manage the resource
-						ASF.ArchiLogger.LogGenericDebuggingException(e);
+							directoryInfo.SetAccessControl(directorySecurity);
+						} catch (PrivilegeNotHeldException e) {
+							// Non-critical, user might have no rights to manage the resource
+							ASF.ArchiLogger.LogGenericDebuggingException(e);
+						}
+					} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
+						// We require global access from all users, as other ASFs might need to put additional files in there
+						Directory.CreateDirectory(directoryPath, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute | UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.GroupExecute | UnixFileMode.OtherRead | UnixFileMode.OtherWrite | UnixFileMode.OtherExecute);
 					}
-				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-					// We require global access from all users, as other ASFs might need to put additional files in there
-					Directory.CreateDirectory(directoryPath, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute | UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.GroupExecute | UnixFileMode.OtherRead | UnixFileMode.OtherWrite | UnixFileMode.OtherExecute);
+				} catch (IOException e) {
+					ASF.ArchiLogger.LogGenericException(e);
+
+					return false;
 				}
 			}
 
@@ -228,11 +251,21 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 					await new FileStream(FilePath, fileStreamOptions).DisposeAsync().ConfigureAwait(false);
 				}
 			} catch (IOException e) {
-				// Ignored, if the file was already created in the meantime by another instance, this is fine
-				ASF.ArchiLogger.LogGenericDebuggingException(e);
+				if (i == 0) {
+					// Ignored, if the file was already created in the meantime by another instance, this is fine
+					ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+					continue;
+				}
+
+				// It's not fine if the same issue happened again
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return false;
 			}
 		}
 
-		return false;
+		// It's also not fine if we failed to create the file twice in a row
+		return File.Exists(FilePath);
 	}
 }
