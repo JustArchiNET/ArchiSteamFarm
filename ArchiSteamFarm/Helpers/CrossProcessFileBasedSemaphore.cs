@@ -107,7 +107,9 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 					}
 				} catch (FileNotFoundException) {
 					throw;
-				} catch (IOException) {
+				} catch (IOException e) {
+					ASF.ArchiLogger.LogGenericDebuggingException(e);
+
 					await Task.Delay(SpinLockDelay, cancellationToken).ConfigureAwait(false);
 				}
 			}
@@ -168,7 +170,9 @@ internal sealed class CrossProcessFileBasedSemaphore : IAsyncDisposable, ICrossP
 					}
 				} catch (FileNotFoundException) {
 					throw;
-				} catch (IOException) {
+				} catch (IOException e) {
+					ASF.ArchiLogger.LogGenericDebuggingException(e);
+
 					if (millisecondsTimeout <= 0) {
 						return false;
 					}
