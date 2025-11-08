@@ -500,8 +500,14 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				continue;
 			}
 
+			if (statsNode == null) {
+				Bot.ArchiLogger.LogNullError(statsNode);
+
+				continue;
+			}
+
 			// Cards
-			IElement? progressNode = statsNode?.QuerySelector("span[class='progress_info_bold']");
+			IElement? progressNode = statsNode.QuerySelector("span[class='progress_info_bold']");
 
 			if (progressNode == null) {
 				Bot.ArchiLogger.LogNullError(progressNode);
@@ -540,7 +546,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				}
 
 				// To save us on extra work, check cards earned so far first
-				IElement? cardsEarnedNode = statsNode?.QuerySelector("div[class='card_drop_info_header']");
+				IElement? cardsEarnedNode = statsNode.QuerySelector("div[class='card_drop_info_header']");
 
 				if (cardsEarnedNode == null) {
 					Bot.ArchiLogger.LogNullError(cardsEarnedNode);
@@ -585,7 +591,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			// Hours
-			IElement? timeNode = statsNode?.QuerySelector("div[class='badge_title_stats_playtime']");
+			IElement? timeNode = statsNode.QuerySelector("div[class='badge_title_stats_playtime']");
 
 			if (timeNode == null) {
 				Bot.ArchiLogger.LogNullError(timeNode);
@@ -619,15 +625,17 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			// Names
-			IElement? nameNode = statsNode?.QuerySelectorAll("div[class='card_drop_info_body']").LastOrDefault();
+			IHtmlCollection<IElement> cardDropInfoNodes = statsNode.QuerySelectorAll("div[class='card_drop_info_body']");
 
-			if (nameNode == null) {
-				Bot.ArchiLogger.LogNullError(nameNode);
+			if (cardDropInfoNodes.Count == 0) {
+				Bot.ArchiLogger.LogNullError(cardDropInfoNodes);
 
 				continue;
 			}
 
-			string name = nameNode.TextContent;
+			IElement lastCardDropInfoNode = cardDropInfoNodes[^1];
+
+			string name = lastCardDropInfoNode.TextContent;
 
 			if (string.IsNullOrEmpty(name)) {
 				Bot.ArchiLogger.LogNullError(name);
@@ -1028,16 +1036,18 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return null;
 		}
 
-		IElement? nameNode = htmlDocument.QuerySelectorAll("span[class='profile_small_header_location']").LastOrDefault();
+		IHtmlCollection<IElement> profileHeaderNodes = htmlDocument.QuerySelectorAll("span[class='profile_small_header_location']");
 
-		if (nameNode == null) {
+		if (profileHeaderNodes.Count == 0) {
 			// Normally we should log null error here, but here's why we don't: https://www.youtube.com/watch?v=nSKp2StlS6s&t=40s
-			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorIsInvalid(nameof(nameNode)));
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorIsInvalid(nameof(profileHeaderNodes)));
 
 			return null;
 		}
 
-		string name = nameNode.TextContent.Trim();
+		IElement lastProfileHeaderNode = profileHeaderNodes[^1];
+
+		string name = lastProfileHeaderNode.TextContent.Trim();
 
 		if (string.IsNullOrEmpty(name)) {
 			Bot.ArchiLogger.LogNullError(name);
@@ -1163,10 +1173,12 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		byte maxPages = 1;
 
-		IElement? htmlNode = htmlDocument.QuerySelectorAll("a[class='pagelink']").LastOrDefault();
+		IHtmlCollection<IElement> pageLinkNodes = htmlDocument.QuerySelectorAll("a[class='pagelink']");
 
-		if (htmlNode != null) {
-			string lastPage = htmlNode.TextContent;
+		if (pageLinkNodes.Count > 0) {
+			IElement lastPageLinkNode = pageLinkNodes[^1];
+
+			string lastPage = lastPageLinkNode.TextContent;
 
 			if (string.IsNullOrEmpty(lastPage)) {
 				Bot.ArchiLogger.LogNullError(lastPage);
