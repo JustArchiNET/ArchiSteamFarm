@@ -756,10 +756,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		byte maxPages = 1;
 
-		IElement? htmlNode = badgePage.QuerySelectorAll("a[class='pagelink']").LastOrDefault();
+		IHtmlCollection<IElement> pageLinkNodes = badgePage.QuerySelectorAll("a[class='pagelink']");
 
-		if (htmlNode != null) {
-			string lastPage = htmlNode.TextContent;
+		if (pageLinkNodes.Count > 0) {
+			IElement lastPageLinkNode = pageLinkNodes[^1];
+
+			string lastPage = lastPageLinkNode.TextContent;
 
 			if (string.IsNullOrEmpty(lastPage)) {
 				ArchiLogger.LogNullError(lastPage);
