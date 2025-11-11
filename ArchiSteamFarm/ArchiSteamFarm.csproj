@@ -4,6 +4,11 @@
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 
+	<!-- TODO: It seems CA1515 is no longer respected inside editorconfig, might be possible to remove later -->
+	<PropertyGroup>
+		<NoWarn>$(NoWarn),CA1515</NoWarn>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="AngleSharp" />
 		<PackageReference Include="CryptSharpStandard" />
