@@ -170,18 +170,6 @@ public static class Utilities {
 	}
 
 	[PublicAPI]
-	public static bool IsClientErrorCode(this HttpStatusCode statusCode) => statusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError;
-
-	[PublicAPI]
-	public static bool IsRedirectionCode(this HttpStatusCode statusCode) => statusCode is >= HttpStatusCode.Ambiguous and < HttpStatusCode.BadRequest;
-
-	[PublicAPI]
-	public static bool IsServerErrorCode(this HttpStatusCode statusCode) => statusCode is >= HttpStatusCode.InternalServerError and < (HttpStatusCode) 600;
-
-	[PublicAPI]
-	public static bool IsSuccessCode(this HttpStatusCode statusCode) => statusCode is >= HttpStatusCode.OK and < HttpStatusCode.Ambiguous;
-
-	[PublicAPI]
 	public static bool IsValidCdKey(string key) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
@@ -524,5 +512,19 @@ public static class Utilities {
 		}
 
 		return prefixes.Any(prefix => !string.IsNullOrEmpty(prefix) && (directory.Length > prefix.Length) && DirectorySeparators.Contains(directory[prefix.Length]) && directory.StartsWith(prefix, StringComparison.Ordinal));
+	}
+
+	extension(HttpStatusCode statusCode) {
+		[PublicAPI]
+		public bool IsClientErrorCode() => statusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError;
+
+		[PublicAPI]
+		public bool IsRedirectionCode() => statusCode is >= HttpStatusCode.Ambiguous and < HttpStatusCode.BadRequest;
+
+		[PublicAPI]
+		public bool IsServerErrorCode() => statusCode is >= HttpStatusCode.InternalServerError and < (HttpStatusCode) 600;
+
+		[PublicAPI]
+		public bool IsSuccessCode() => statusCode is >= HttpStatusCode.OK and < HttpStatusCode.Ambiguous;
 	}
 }

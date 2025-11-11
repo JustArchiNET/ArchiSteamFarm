@@ -891,14 +891,16 @@ public static class PluginsCore {
 			MemoryStream memoryStream = new(responseBytes);
 
 			await using (memoryStream.ConfigureAwait(false)) {
-				using ZipArchive zipArchive = new(memoryStream);
+				ZipArchive zipArchive = new(memoryStream);
 
-				await plugin.OnPluginUpdateProceeding().ConfigureAwait(false);
+				await using (zipArchive.ConfigureAwait(false)) {
+					await plugin.OnPluginUpdateProceeding().ConfigureAwait(false);
 
-				if (!await Utilities.UpdateFromArchive(zipArchive, assemblyDirectory).ConfigureAwait(false)) {
-					ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
+					if (!await Utilities.UpdateFromArchive(zipArchive, assemblyDirectory).ConfigureAwait(false)) {
+						ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
 
-					return false;
+						return false;
+					}
 				}
 			}
 		} catch (Exception e) {

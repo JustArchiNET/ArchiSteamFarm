@@ -887,10 +887,12 @@ public static class ASF {
 				MemoryStream memoryStream = new(responseBytes);
 
 				await using (memoryStream.ConfigureAwait(false)) {
-					using ZipArchive zipArchive = new(memoryStream);
+					ZipArchive zipArchive = new(memoryStream);
 
-					if (!await UpdateFromArchive(newVersion, channel.Value, updateOverride, forced, zipArchive).ConfigureAwait(false)) {
-						ArchiLogger.LogGenericError(Strings.WarningFailed);
+					await using (zipArchive.ConfigureAwait(false)) {
+						if (!await UpdateFromArchive(newVersion, channel.Value, updateOverride, forced, zipArchive).ConfigureAwait(false)) {
+							ArchiLogger.LogGenericError(Strings.WarningFailed);
+						}
 					}
 				}
 			} catch (Exception e) {
