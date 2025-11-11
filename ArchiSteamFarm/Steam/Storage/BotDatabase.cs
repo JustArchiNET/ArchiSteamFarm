@@ -22,8 +22,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -192,7 +191,7 @@ public sealed class BotDatabase : GenericDatabase {
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	private OrderedDictionary GamesToRedeemInBackground { get; init; } = new();
+	private OrderedDictionary<string, string> GamesToRedeemInBackground { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
 	private BotDatabase(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -303,18 +302,18 @@ public sealed class BotDatabase : GenericDatabase {
 
 	protected override Task Save() => Save(this);
 
-	internal void AddGamesToRedeemInBackground(IOrderedDictionary games) {
+	internal void AddGamesToRedeemInBackground(IReadOnlyDictionary<string, string> games) {
 		if ((games == null) || (games.Count == 0)) {
 			throw new ArgumentNullException(nameof(games));
 		}
 
 		lock (GamesToRedeemInBackground) {
-			foreach (DictionaryEntry game in games) {
-				if (!IsValidGameToRedeemInBackground(game)) {
-					throw new InvalidOperationException(nameof(game));
+			foreach ((string key, string name) in games) {
+				if (!IsValidGameToRedeemInBackground(key, name)) {
+					throw new InvalidOperationException(nameof(IsValidGameToRedeemInBackground));
 				}
 
-				GamesToRedeemInBackground[game.Key] = game.Value;
+				GamesToRedeemInBackground[key] = name;
 			}
 		}
 
@@ -381,33 +380,15 @@ public sealed class BotDatabase : GenericDatabase {
 
 	internal (string? Key, string? Name) GetGameToRedeemInBackground() {
 		lock (GamesToRedeemInBackground) {
-			foreach (DictionaryEntry game in GamesToRedeemInBackground) {
-				return game.Value switch {
-					string name => (game.Key as string, name),
-					JsonElement { ValueKind: JsonValueKind.String } jsonElement => (game.Key as string, jsonElement.GetString()),
-					_ => throw new InvalidOperationException(nameof(game.Value))
-				};
+			foreach ((string key, string name) in GamesToRedeemInBackground) {
+				return (key, name);
 			}
 		}
 
 		return (null, null);
 	}
 
-	internal static bool IsValidGameToRedeemInBackground(DictionaryEntry game) {
-		string? key = game.Key as string;
-
-		if (string.IsNullOrEmpty(key) || !Utilities.IsValidCdKey(key)) {
-			return false;
-		}
-
-		switch (game.Value) {
-			case string name when !string.IsNullOrEmpty(name):
-			case JsonElement { ValueKind: JsonValueKind.String } jsonElement when !string.IsNullOrEmpty(jsonElement.GetString()):
-				return true;
-			default:
-				return false;
-		}
-	}
+	internal static bool IsValidGameToRedeemInBackground(string key, string name) => !string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(name) && Utilities.IsValidCdKey(key);
 
 	internal void PerformMaintenance() {
 		DateTime now = DateTime.UtcNow;
@@ -421,17 +402,15 @@ public sealed class BotDatabase : GenericDatabase {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		lock (GamesToRedeemInBackground) {
-			if (!GamesToRedeemInBackground.Contains(key)) {
+			if (!GamesToRedeemInBackground.Remove(key)) {
 				return;
 			}
-
-			GamesToRedeemInBackground.Remove(key);
 		}
 
 		Utilities.InBackground(Save);
 	}
 
-	private (bool Valid, string? ErrorMessage) CheckValidation() => GamesToRedeemInBackground.Cast<DictionaryEntry>().Any(static game => !IsValidGameToRedeemInBackground(game)) ? (false, Strings.FormatErrorConfigPropertyInvalid(nameof(GamesToRedeemInBackground), string.Join("", GamesToRedeemInBackground))) : (true, null);
+	private (bool Valid, string? ErrorMessage) CheckValidation() => GamesToRedeemInBackground.Any(static entry => !IsValidGameToRedeemInBackground(entry.Key, entry.Value)) ? (false, Strings.FormatErrorConfigPropertyInvalid(nameof(GamesToRedeemInBackground), string.Join("", GamesToRedeemInBackground))) : (true, null);
 
 	private async void OnObjectModified(object? sender, EventArgs e) {
 		if (string.IsNullOrEmpty(FilePath)) {

@@ -22,12 +22,10 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
@@ -1020,7 +1018,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
-	internal void AddGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
+	internal void AddGamesToRedeemInBackground(IReadOnlyDictionary<string, string> gamesToRedeemInBackground) {
 		if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
 			throw new ArgumentNullException(nameof(gamesToRedeemInBackground));
 		}
@@ -1461,7 +1459,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		try {
-			OrderedDictionary gamesToRedeemInBackground = new();
+			OrderedDictionary<string, string> gamesToRedeemInBackground = new(StringComparer.OrdinalIgnoreCase);
 
 			using (StreamReader reader = new(filePath)) {
 				while (await reader.ReadLineAsync().ConfigureAwait(false) is { } line) {
@@ -1489,7 +1487,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			if (gamesToRedeemInBackground.Count > 0) {
-				IOrderedDictionary validGamesToRedeemInBackground = ValidateGamesToRedeemInBackground(gamesToRedeemInBackground);
+				OrderedDictionary<string, string> validGamesToRedeemInBackground = ValidateGamesToRedeemInBackground(gamesToRedeemInBackground);
 
 				if (validGamesToRedeemInBackground.Count > 0) {
 					AddGamesToRedeemInBackground(validGamesToRedeemInBackground);
@@ -2009,18 +2007,22 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
-	internal static IOrderedDictionary ValidateGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
+	internal static OrderedDictionary<string, string> ValidateGamesToRedeemInBackground(IReadOnlyDictionary<string, string> gamesToRedeemInBackground) {
 		if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
 			throw new ArgumentNullException(nameof(gamesToRedeemInBackground));
 		}
 
-		HashSet<object> invalidKeys = gamesToRedeemInBackground.Cast<DictionaryEntry>().Where(static game => !BotDatabase.IsValidGameToRedeemInBackground(game)).Select(static game => game.Key).ToHashSet();
+		OrderedDictionary<string, string> result = new(StringComparer.OrdinalIgnoreCase);
 
-		foreach (object invalidKey in invalidKeys) {
-			gamesToRedeemInBackground.Remove(invalidKey);
+		foreach ((string key, string name) in gamesToRedeemInBackground) {
+			if (!BotDatabase.IsValidGameToRedeemInBackground(key, name)) {
+				continue;
+			}
+
+			result[key] = name;
 		}
 
-		return gamesToRedeemInBackground;
+		return result;
 	}
 
 	private async Task Connect() {

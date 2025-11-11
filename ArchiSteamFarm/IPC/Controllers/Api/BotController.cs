@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
@@ -227,7 +226,7 @@ public sealed class BotController : ArchiController {
 
 	[EndpointSummary("Adds keys to redeem using BGR to given bot")]
 	[HttpPost("{botNames:required}/GamesToRedeemInBackground")]
-	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, OrderedDictionary<string, string>>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundPost(string botNames, [FromBody] BotGamesToRedeemInBackgroundRequest request) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
@@ -243,7 +242,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IOrderedDictionary validGamesToRedeemInBackground = Bot.ValidateGamesToRedeemInBackground(request.GamesToRedeemInBackground);
+		OrderedDictionary<string, string> validGamesToRedeemInBackground = Bot.ValidateGamesToRedeemInBackground(request.GamesToRedeemInBackground);
 
 		if (validGamesToRedeemInBackground.Count == 0) {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(validGamesToRedeemInBackground))));
@@ -251,13 +250,13 @@ public sealed class BotController : ArchiController {
 
 		await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.AddGamesToRedeemInBackground(validGamesToRedeemInBackground)))).ConfigureAwait(false);
 
-		Dictionary<string, IOrderedDictionary> result = new(bots.Count, Bot.BotsComparer);
+		Dictionary<string, OrderedDictionary<string, string>> result = new(bots.Count, Bot.BotsComparer);
 
 		foreach (Bot bot in bots) {
 			result[bot.BotName] = validGamesToRedeemInBackground;
 		}
 
-		return Ok(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(result));
+		return Ok(new GenericResponse<IReadOnlyDictionary<string, OrderedDictionary<string, string>>>(result));
 	}
 
 	[EndpointSummary("Provides input value to given bot for next usage")]

@@ -21,7 +21,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Specialized;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
@@ -35,7 +36,7 @@ public sealed class BotGamesToRedeemInBackgroundRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public OrderedDictionary GamesToRedeemInBackground { get; private init; } = new();
+	public OrderedDictionary<string, string> GamesToRedeemInBackground { get; private init; } = new(StringComparer.OrdinalIgnoreCase);
 
 	[JsonConstructor]
 	private BotGamesToRedeemInBackgroundRequest() { }
