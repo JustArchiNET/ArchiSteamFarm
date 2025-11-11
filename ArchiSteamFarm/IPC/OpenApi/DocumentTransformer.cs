@@ -29,7 +29,7 @@ using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace ArchiSteamFarm.IPC.OpenApi;
 
@@ -40,7 +40,6 @@ internal sealed class DocumentTransformer : IOpenApiDocumentTransformer {
 		ArgumentNullException.ThrowIfNull(document);
 		ArgumentNullException.ThrowIfNull(context);
 
-		document.Info ??= new OpenApiInfo();
 		document.Info.Title = $"{SharedInfo.AssemblyName} API";
 		document.Info.Version = SharedInfo.Version.ToString();
 
@@ -53,7 +52,7 @@ internal sealed class DocumentTransformer : IOpenApiDocumentTransformer {
 		document.Info.License.Url = new Uri(SharedInfo.LicenseURL);
 
 		document.Components ??= new OpenApiComponents();
-		document.Components.SecuritySchemes ??= new Dictionary<string, OpenApiSecurityScheme>(1);
+		document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>(1);
 
 		document.Components.SecuritySchemes.Add(
 			nameof(GlobalConfig.IPCPassword), new OpenApiSecurityScheme {

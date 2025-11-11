@@ -18,7 +18,6 @@
 		<PackageReference Include="Scalar.AspNetCore" />
 		<PackageReference Include="SteamKit2" />
 		<PackageReference Include="System.Composition" />
-		<PackageReference Include="System.Linq.Async" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" />
 	</ItemGroup>
 

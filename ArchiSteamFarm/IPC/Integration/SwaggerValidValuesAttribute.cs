@@ -22,36 +22,50 @@
 // limitations under the License.
 
 using System;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Nodes;
 using JetBrains.Annotations;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Extensions;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace ArchiSteamFarm.IPC.Integration;
 
 [PublicAPI]
 public sealed class SwaggerValidValuesAttribute : CustomSwaggerAttribute {
+	private const string ExtensionName = "x-valid-values";
+
 	public int[]? ValidIntValues { get; init; }
 	public string[]? ValidStringValues { get; init; }
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We're not creating json values with non-primitive types")]
 	public override void Apply(OpenApiSchema schema) {
 		ArgumentNullException.ThrowIfNull(schema);
 
-		OpenApiArray validValues = [];
+		JsonArray validValues = [];
 
 		if (ValidIntValues != null) {
-			validValues.AddRange(ValidIntValues.Select(static type => new OpenApiInteger(type)));
+			foreach (int value in ValidIntValues) {
+				validValues.Add(JsonValue.Create(value));
+			}
 		}
 
 		if (ValidStringValues != null) {
-			validValues.AddRange(ValidStringValues.Select(static type => new OpenApiString(type)));
+			foreach (string value in ValidStringValues) {
+				validValues.Add(JsonValue.Create(value));
+			}
 		}
 
-		if (schema.Items is { Reference: null }) {
-			schema.Items.AddExtension("x-valid-values", validValues);
-		} else {
-			schema.AddExtension("x-valid-values", validValues);
+		if (schema.Items != null) {
+			if (schema.Items is OpenApiSchema items) {
+				items.AddExtension(ExtensionName, new JsonNodeExtension(validValues));
+			} else if (schema.Items.Extensions != null) {
+				schema.Items.Extensions[ExtensionName] = new JsonNodeExtension(validValues);
+			} else {
+				throw new InvalidOperationException(nameof(schema.Items));
+			}
+
+			return;
 		}
+
+		schema.AddExtension(ExtensionName, new JsonNodeExtension(validValues));
 	}
 }
