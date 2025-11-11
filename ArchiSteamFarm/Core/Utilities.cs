@@ -514,6 +514,7 @@ public static class Utilities {
 		return prefixes.Any(prefix => !string.IsNullOrEmpty(prefix) && (directory.Length > prefix.Length) && DirectorySeparators.Contains(directory[prefix.Length]) && directory.StartsWith(prefix, StringComparison.Ordinal));
 	}
 
+#pragma warning disable CA1034 // False positive, there's no other way we can declare this block
 	extension(HttpStatusCode statusCode) {
 		[PublicAPI]
 		public bool IsClientErrorCode() => statusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError;
@@ -527,4 +528,5 @@ public static class Utilities {
 		[PublicAPI]
 		public bool IsSuccessCode() => statusCode is >= HttpStatusCode.OK and < HttpStatusCode.Ambiguous;
 	}
+#pragma warning restore CA1034 // False positive, there's no other way we can declare this block
 }
