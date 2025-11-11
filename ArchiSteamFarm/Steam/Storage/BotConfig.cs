@@ -542,7 +542,7 @@ public sealed class BotConfig {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(GamesPlayedWhileIdle), $"{nameof(GamesPlayedWhileIdle.Count)} {GamesPlayedWhileIdle.Count} > {ArchiHandler.MaxGamesPlayedConcurrently}"));
 		}
 
-		if (GamingDeviceType == EGamingDeviceType.Unknown || !Enum.IsDefined(GamingDeviceType)) {
+		if ((GamingDeviceType == EGamingDeviceType.Unknown) || !Enum.IsDefined(GamingDeviceType)) {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(GamingDeviceType), GamingDeviceType));
 		}
 
