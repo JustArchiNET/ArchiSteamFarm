@@ -191,6 +191,7 @@ public sealed class BotDatabase : GenericDatabase {
 
 	[JsonDisallowNull]
 	[JsonInclude]
+	[JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
 	private OrderedDictionary<string, string> GamesToRedeemInBackground { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
 	private BotDatabase(string filePath) : this() {

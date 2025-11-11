@@ -1091,6 +1091,18 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
+	internal static void FilterGamesToRedeemInBackground(IDictionary<string, string> gamesToRedeemInBackground) {
+		if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
+			throw new ArgumentNullException(nameof(gamesToRedeemInBackground));
+		}
+
+		HashSet<string> invalidKeys = gamesToRedeemInBackground.Where(static entry => !BotDatabase.IsValidGameToRedeemInBackground(entry.Key, entry.Value)).Select(static game => game.Key).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+		foreach (string invalidKey in invalidKeys) {
+			gamesToRedeemInBackground.Remove(invalidKey);
+		}
+	}
+
 	internal static string FormatBotResponse(string response, string botName) {
 		ArgumentException.ThrowIfNullOrEmpty(response);
 		ArgumentException.ThrowIfNullOrEmpty(botName);
@@ -1487,10 +1499,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			if (gamesToRedeemInBackground.Count > 0) {
-				OrderedDictionary<string, string> validGamesToRedeemInBackground = ValidateGamesToRedeemInBackground(gamesToRedeemInBackground);
+				FilterGamesToRedeemInBackground(gamesToRedeemInBackground);
 
-				if (validGamesToRedeemInBackground.Count > 0) {
-					AddGamesToRedeemInBackground(validGamesToRedeemInBackground);
+				if (gamesToRedeemInBackground.Count > 0) {
+					AddGamesToRedeemInBackground(gamesToRedeemInBackground);
 				}
 			}
 
@@ -2005,24 +2017,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
 
 		return true;
-	}
-
-	internal static OrderedDictionary<string, string> ValidateGamesToRedeemInBackground(IReadOnlyDictionary<string, string> gamesToRedeemInBackground) {
-		if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
-			throw new ArgumentNullException(nameof(gamesToRedeemInBackground));
-		}
-
-		OrderedDictionary<string, string> result = new(StringComparer.OrdinalIgnoreCase);
-
-		foreach ((string key, string name) in gamesToRedeemInBackground) {
-			if (!BotDatabase.IsValidGameToRedeemInBackground(key, name)) {
-				continue;
-			}
-
-			result[key] = name;
-		}
-
-		return result;
 	}
 
 	private async Task Connect() {

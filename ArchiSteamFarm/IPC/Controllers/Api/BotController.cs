@@ -242,18 +242,18 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		OrderedDictionary<string, string> validGamesToRedeemInBackground = Bot.ValidateGamesToRedeemInBackground(request.GamesToRedeemInBackground);
+		Bot.FilterGamesToRedeemInBackground(request.GamesToRedeemInBackground);
 
-		if (validGamesToRedeemInBackground.Count == 0) {
-			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(validGamesToRedeemInBackground))));
+		if (request.GamesToRedeemInBackground.Count == 0) {
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(request.GamesToRedeemInBackground))));
 		}
 
-		await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.AddGamesToRedeemInBackground(validGamesToRedeemInBackground)))).ConfigureAwait(false);
+		await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.AddGamesToRedeemInBackground(request.GamesToRedeemInBackground)))).ConfigureAwait(false);
 
 		Dictionary<string, OrderedDictionary<string, string>> result = new(bots.Count, Bot.BotsComparer);
 
 		foreach (Bot bot in bots) {
-			result[bot.BotName] = validGamesToRedeemInBackground;
+			result[bot.BotName] = request.GamesToRedeemInBackground;
 		}
 
 		return Ok(new GenericResponse<IReadOnlyDictionary<string, OrderedDictionary<string, string>>>(result));
