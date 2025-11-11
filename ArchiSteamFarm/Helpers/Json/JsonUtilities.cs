@@ -29,6 +29,7 @@ using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
@@ -116,12 +117,15 @@ public static class JsonUtilities {
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	private static JsonSerializerOptions CreateDefaultJsonSerializerOptions(bool writeIndented = false) =>
-		new() {
+		new(JsonSerializerDefaults.Strict) {
 			AllowTrailingCommas = true,
 			Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+			IndentCharacter = '\t',
+			IndentSize = 1,
 			PropertyNamingPolicy = null,
 			ReadCommentHandling = JsonCommentHandling.Skip,
 			TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { ApplyCustomModifiers } },
+			UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip,
 			WriteIndented = writeIndented
 		};
 
