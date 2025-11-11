@@ -23,9 +23,21 @@
 		<type fullname="Microsoft.AspNetCore.Http.TagsAttribute" />
 	</assembly>
 
+	<assembly fullname="System.Collections">
+		<type fullname="System.Collections.Generic.HashSet`1">
+			<method name="SetEquals" />
+		</type>
+	</assembly>
+
 	<assembly fullname="System.Linq">
 		<type fullname="System.Linq.Enumerable">
 			<method name="MaxBy" />
+		</type>
+	</assembly>
+
+	<assembly fullname="System.Linq.AsyncEnumerable">
+		<type fullname="System.Linq.AsyncEnumerable">
+			<method name="ToListAsync" />
 		</type>
 	</assembly>
 
