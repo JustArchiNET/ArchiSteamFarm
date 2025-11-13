@@ -206,7 +206,7 @@ StackTrace:
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamParentalCode" xml:space="preserve">
-		<value>Bitte geben Sie Ihre Steam-Familienansicht-PIN ein: </value>
+		<value>Bitte geben Sie Ihre Steam-Familienansicht (PIN) ein: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamPassword" xml:space="preserve">
