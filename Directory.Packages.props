@@ -10,7 +10,7 @@
 		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.14.0" />
 		<PackageVersion Include="MSTest" Version="4.0.2" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
-		<PackageVersion Include="NLog.Web.AspNetCore" Version="6.0.6" />
+		<PackageVersion Include="NLog.Web.AspNetCore" Version="6.1.0" />
 		<PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.14.0-beta.1" />
 		<PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.13.0" />
