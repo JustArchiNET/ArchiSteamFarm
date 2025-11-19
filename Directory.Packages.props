@@ -7,7 +7,7 @@
 		<PackageVersion Include="Markdig.Signed" Version="0.43.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.ResxSourceGenerator" Version="5.0.0-1.25277.114" />
-		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.14.0" />
+		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.15.0" />
 		<PackageVersion Include="MSTest" Version="4.0.2" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
 		<PackageVersion Include="NLog.Web.AspNetCore" Version="6.1.0" />
