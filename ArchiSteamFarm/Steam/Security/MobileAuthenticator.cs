@@ -118,7 +118,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		Span<byte> hash = stackalloc byte[HMACSHA1.HashSizeInBytes];
 
 #pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-		_ = HMACSHA1.HashData(sharedSecret, timeArray, hash);
+		HMACSHA1.HashData(sharedSecret, timeArray, hash);
 #pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
 
 		// The last 4 bits of the mac say where the code starts
