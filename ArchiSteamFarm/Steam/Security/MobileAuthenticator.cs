@@ -23,6 +23,7 @@
 
 using System;
 using System.Buffers;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
@@ -101,53 +102,33 @@ public sealed class MobileAuthenticator : IDisposable {
 			throw new InvalidOperationException(nameof(SharedSecret));
 		}
 
-		byte[] sharedSecret;
+		Span<byte> sharedSecret = stackalloc byte[32];
 
-		try {
-			sharedSecret = Convert.FromBase64String(SharedSecret);
-		} catch (FormatException e) {
-			Bot.ArchiLogger.LogGenericException(e);
+		if (!Convert.TryFromBase64String(SharedSecret, sharedSecret, out int bytesWritten)) {
 			Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(SharedSecret)));
 
 			return null;
 		}
 
-		byte[] timeArray = BitConverter.GetBytes(time / CodeInterval);
+		sharedSecret = sharedSecret[..bytesWritten];
 
-		if (BitConverter.IsLittleEndian) {
-			Array.Reverse(timeArray);
-		}
+		Span<byte> timeArray = stackalloc byte[sizeof(long)];
+		BinaryPrimitives.WriteInt64BigEndian(timeArray, (long) (time / CodeInterval));
+
+		Span<byte> hash = stackalloc byte[HMACSHA1.HashSizeInBytes];
 
 #pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-		byte[] hash = HMACSHA1.HashData(sharedSecret, timeArray);
+		_ = HMACSHA1.HashData(sharedSecret, timeArray, hash);
 #pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
 
 		// The last 4 bits of the mac say where the code starts
 		int start = hash[^1] & 0x0f;
 
-		uint fullCode;
-
 		// Extract those 4 bytes
-		byte[] bytes = ArrayPool<byte>.Shared.Rent(4);
+		Span<byte> bytes = hash[start..(start + 4)];
 
-		try {
-			Array.Copy(hash, start, bytes, 0, 4);
-
-			Span<byte> span;
-
-			if (BitConverter.IsLittleEndian) {
-				Array.Reverse(bytes);
-
-				span = bytes.AsSpan()[^4..];
-			} else {
-				span = bytes.AsSpan()[..4];
-			}
-
-			// Build the alphanumeric code
-			fullCode = BitConverter.ToUInt32(span) & 0x7fffffff;
-		} finally {
-			ArrayPool<byte>.Shared.Return(bytes);
-		}
+		// Build the alphanumeric code
+		uint fullCode = BinaryPrimitives.ReadUInt32BigEndian(bytes) & 0x7fffffff;
 
 		return string.Create(
 			CodeDigits, fullCode, static (buffer, state) => {
