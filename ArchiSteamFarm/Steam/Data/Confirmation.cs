@@ -69,8 +69,9 @@ public sealed class Confirmation {
 		Generic,
 		Trade,
 		Market,
-		PhoneNumberChange = 5,
-		AccountRecovery = 6,
+		FeatureOptOut,
+		PhoneNumberChange,
+		AccountRecovery,
 		ApiKeyRegistration = 9,
 		FamilyJoin = 11,
 		AccountSecurity = 12
