@@ -2705,7 +2705,7 @@ public sealed class Commands {
 										// Next key
 										key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null;
 
-										if (purchaseResultDetail == EPurchaseResultDetail.NoDetail || (distribute && !keepMissingGames)) {
+										if ((purchaseResultDetail == EPurchaseResultDetail.NoDetail) || (distribute && !keepMissingGames)) {
 											// Next bot (if needed)
 											break;
 										}
