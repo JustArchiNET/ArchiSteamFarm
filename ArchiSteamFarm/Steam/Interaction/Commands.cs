@@ -1640,19 +1640,13 @@ public sealed class Commands {
 			return null;
 		}
 
-		bool headless = Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless);
-
-		if (!headless) {
-			return FormatBotResponse(Strings.ErrorFunctionOnlyInHeadlessMode);
-		}
-
 		if (!Enum.TryParse(propertyName, true, out ASF.EUserInputType inputType) || (inputType == ASF.EUserInputType.None) || !Enum.IsDefined(inputType)) {
 			return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(inputType)));
 		}
 
-		bool result = Bot.SetUserInput(inputType, inputValue);
+		(bool success, string message) = Bot.Actions.Input(inputType, inputValue);
 
-		return FormatBotResponse(result ? Strings.Done : Strings.WarningFailed);
+		return FormatBotResponse(success ? Strings.Done : message);
 	}
 
 	private static async Task<string?> ResponseInput(EAccess access, string botNames, string propertyName, string inputValue, ulong steamID = 0) {

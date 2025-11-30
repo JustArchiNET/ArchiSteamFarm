@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -169,5 +170,36 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 		}
 
 		return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(result));
+	}
+
+	[EndpointSummary("Sets 2FA token of given bot")]
+	[HttpPost("Token")]
+	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
+	public async Task<ActionResult<GenericResponse>> TokenPost(string botNames, [FromQuery] ASF.EUserInputType inputType, [FromQuery] string value) {
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+
+		if (!Enum.IsDefined(inputType)) {
+			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(value);
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(false, Strings.FormatBotNotFound(botNames)));
+		}
+
+		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Actions.Input(inputType, value)))).ConfigureAwait(false);
+
+		Dictionary<string, GenericResponse> result = new(bots.Count, Bot.BotsComparer);
+
+		foreach (Bot bot in bots) {
+			(bool success, string message) = results[result.Count];
+			result[bot.BotName] = new GenericResponse<string>(success, message);
+		}
+
+		return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(result));
 	}
 }
