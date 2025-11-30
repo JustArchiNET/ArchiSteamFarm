@@ -294,6 +294,25 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
+	public (bool Success, string Message) Input(ASF.EUserInputType inputType, string inputValue) {
+		if (!Enum.IsDefined(inputType)) {
+			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(inputValue);
+
+		bool headless = Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless);
+
+		if (!headless) {
+			return (false, Strings.ErrorFunctionOnlyInHeadlessMode);
+		}
+
+		bool result = Bot.SetUserInput(inputType, inputValue);
+
+		return (result, result ? Strings.Done : Strings.WarningFailed);
+	}
+
+	[PublicAPI]
 	public async Task<(bool Success, string Message)> Pause(bool permanent, ushort resumeInSeconds = 0) {
 		if (Bot.CardsFarmer.Paused) {
 			return (false, Strings.BotAutomaticIdlingPausedAlready);
