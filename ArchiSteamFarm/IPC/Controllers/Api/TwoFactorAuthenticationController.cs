@@ -23,7 +23,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -176,14 +176,13 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 	[HttpPost("Token")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> TokenPost(string botNames, [FromQuery] ASF.EUserInputType inputType, [FromQuery] string value) {
+	public async Task<ActionResult<GenericResponse>> TokenPost(string botNames, [FromQuery(Name = "inputType")] [Required] string inputTypeString, [FromQuery] [Required] string value) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
-
-		if (!Enum.IsDefined(inputType)) {
-			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
-		}
-
 		ArgumentException.ThrowIfNullOrEmpty(value);
+
+		if (!Enum.TryParse(inputTypeString, true, out ASF.EUserInputType inputType) || (inputType == ASF.EUserInputType.None) || !Enum.IsDefined(inputType)) {
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(inputType))));
+		}
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
