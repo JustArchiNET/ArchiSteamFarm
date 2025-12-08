@@ -2778,14 +2778,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		InitConnectionFailureTimer();
 
 		if (string.IsNullOrEmpty(RefreshToken)) {
+			BotCredentialsProvider botCredentialsProvider = new(this);
+
 			AuthPollResult pollResult;
 
 			try {
-				using CancellationTokenSource authCancellationTokenSource = new();
-
 				CredentialsAuthSession authSession = await SteamClient.Authentication.BeginAuthSessionViaCredentialsAsync(
 					new AuthSessionDetails {
-						Authenticator = new BotCredentialsProvider(this, authCancellationTokenSource),
+						Authenticator = botCredentialsProvider,
 						DeviceFriendlyName = machineName,
 						GuardData = BotConfig.UseLoginKeys ? BotDatabase.SteamGuardData : null,
 						IsPersistentSession = true,
@@ -2794,9 +2794,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					}
 				).ConfigureAwait(false);
 
-				pollResult = await authSession.PollingWaitForResultAsync(authCancellationTokenSource.Token).ConfigureAwait(false);
+				pollResult = await authSession.PollingWaitForResultAsync().ConfigureAwait(false);
 			} catch (AsyncJobFailedException e) {
 				ArchiLogger.LogGenericWarningException(e);
+
+				LoginFailures += botCredentialsProvider.LoginFailures;
 
 				await HandleLoginResult(EResult.Timeout, EResult.Timeout).ConfigureAwait(false);
 
@@ -2807,6 +2809,17 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			} catch (AuthenticationException e) {
 				ArchiLogger.LogGenericWarningException(e);
 
+				LoginFailures += botCredentialsProvider.LoginFailures;
+
+				await HandleLoginResult(e.Result, e.Result).ConfigureAwait(false);
+
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
+
+				return;
+			} catch (BotAuthenticationException e) {
+				LoginFailures += botCredentialsProvider.LoginFailures;
+
 				await HandleLoginResult(e.Result, e.Result).ConfigureAwait(false);
 
 				ReconnectOnUserInitiated = true;
@@ -2814,9 +2827,17 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				return;
 			} catch (OperationCanceledException) {
-				// This is okay, we already took care of that and can ignore it here
+				LoginFailures += botCredentialsProvider.LoginFailures;
+
+				await HandleLoginResult(EResult.Timeout, EResult.Timeout).ConfigureAwait(false);
+
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
+
 				return;
 			}
+
+			LoginFailures += botCredentialsProvider.LoginFailures;
 
 			if (!string.IsNullOrEmpty(pollResult.NewGuardData) && BotConfig.UseLoginKeys) {
 				BotDatabase.SteamGuardData = pollResult.NewGuardData;

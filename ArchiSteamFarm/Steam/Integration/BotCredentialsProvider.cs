@@ -23,10 +23,10 @@
 
 using System;
 using System.ComponentModel;
-using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Steam.Security;
 using ArchiSteamFarm.Storage;
 using SteamKit2;
 using SteamKit2.Authentication;
@@ -34,19 +34,16 @@ using SteamKit2.Authentication;
 namespace ArchiSteamFarm.Steam.Integration;
 
 internal sealed class BotCredentialsProvider : IAuthenticator {
-	private const byte MaxLoginFailures = 5;
+	private const byte MaxLoginFailures = 3;
 
 	private readonly Bot Bot;
-	private readonly CancellationTokenSource CancellationTokenSource;
 
-	private byte LoginFailures;
+	internal byte LoginFailures { get; private set; }
 
-	internal BotCredentialsProvider(Bot bot, CancellationTokenSource cancellationTokenSource) {
+	internal BotCredentialsProvider(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
-		ArgumentNullException.ThrowIfNull(cancellationTokenSource);
 
 		Bot = bot;
-		CancellationTokenSource = cancellationTokenSource;
 	}
 
 	public async Task<bool> AcceptDeviceConfirmationAsync() {
@@ -75,24 +72,26 @@ internal sealed class BotCredentialsProvider : IAuthenticator {
 			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
 		}
 
-		if (previousCodeWasIncorrect && (++LoginFailures >= MaxLoginFailures)) {
-			EResult reason = inputType == ASF.EUserInputType.TwoFactorAuthentication ? EResult.TwoFactorCodeMismatch : EResult.InvalidLoginAuthCode;
+		EResult reason = inputType == ASF.EUserInputType.TwoFactorAuthentication ? EResult.TwoFactorCodeMismatch : EResult.InvalidLoginAuthCode;
 
+		if (previousCodeWasIncorrect) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.FormatBotUnableToLogin(reason, reason));
 
-			await CancellationTokenSource.CancelAsync().ConfigureAwait(false);
-
-			return "";
+			if (++LoginFailures >= MaxLoginFailures) {
+				throw new BotAuthenticationException(reason);
+			}
 		}
 
-		string? result = await Bot.RequestInput(inputType, previousCodeWasIncorrect).ConfigureAwait(false);
+		string? input = await Bot.RequestInput(inputType, previousCodeWasIncorrect).ConfigureAwait(false);
 
-		if (string.IsNullOrEmpty(result)) {
-			await CancellationTokenSource.CancelAsync().ConfigureAwait(false);
+		if (string.IsNullOrEmpty(input)) {
+			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorIsEmpty(nameof(input)));
 
-			return "";
+			LoginFailures = MaxLoginFailures;
+
+			throw new BotAuthenticationException(reason);
 		}
 
-		return result;
+		return input;
 	}
 }
