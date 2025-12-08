@@ -358,7 +358,10 @@
 	
 	
 	
-	
+	<data name="TranslationIncomplete" xml:space="preserve">
+		<value>L'ASF intentarà utilitzar el teu idioma preferit, {0}, però aquesta traducció està completa en un {1}. Potser t'agradaria ajudar a completar o millorar la traducció de l'ASF a la teva llengua?</value>
+		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+	</data>
 	
 	
 	<data name="BotVersion" xml:space="preserve">
@@ -388,21 +391,35 @@
 	
 	
 	
+	<data name="PluginLoaded" xml:space="preserve">
+		<value>{0} s'ha carregat correctament!</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+	</data>
+	<data name="PluginLoading" xml:space="preserve">
+		<value>Inicialitzant {0} V{1}...</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+	</data>
 	
 	
-	
-	
-	
-	
+	<data name="PleaseWait" xml:space="preserve">
+		<value>Si us plau, espera...</value>
+	</data>
+	<data name="EnterCommand" xml:space="preserve">
+		<value>Introdueix l'ordre: </value>
+	</data>
 	<data name="Executing" xml:space="preserve">
 		<value>Executant...</value>
+	</data>
+	<data name="InteractiveConsoleEnabled" xml:space="preserve">
+		<value>La consola interactiva ja està activa, prem "c" per entrar al mode d'introducció d'ordres.</value>
 	</data>
 	
 	
 	
 	
-	
-	
+	<data name="UpdateCleanup" xml:space="preserve">
+		<value>Fent neteja dels arxius antics després de l'actualització...</value>
+	</data>
 	
 	
 	
@@ -426,7 +443,9 @@
 	
 	
 	
-	
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>Apedaçant els arxius de l'ASF...</value>
+	</data>
 	
 	
 	
