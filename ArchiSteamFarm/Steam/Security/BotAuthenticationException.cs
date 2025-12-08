@@ -27,6 +27,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Security;
 
+#pragma warning disable CA1032 // This type is internal and we don't require additional constructors
 internal sealed class BotAuthenticationException : Exception {
 	internal readonly EResult Result;
 
@@ -38,3 +39,4 @@ internal sealed class BotAuthenticationException : Exception {
 		Result = result;
 	}
 }
+#pragma warning restore CA1032 // This type is internal and we don't require additional constructors
