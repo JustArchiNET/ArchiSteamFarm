@@ -2770,6 +2770,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
+		string machineNameFormat = !string.IsNullOrEmpty(BotConfig.MachineName) ? BotConfig.MachineName : "{0} ({1}/{2})";
+		string machineName = string.Format(CultureInfo.CurrentCulture, machineNameFormat, Environment.MachineName, SharedInfo.PublicIdentifier, SharedInfo.Version);
+
 		ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
 
 		InitConnectionFailureTimer();
@@ -2783,7 +2786,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				CredentialsAuthSession authSession = await SteamClient.Authentication.BeginAuthSessionViaCredentialsAsync(
 					new AuthSessionDetails {
 						Authenticator = new BotCredentialsProvider(this, authCancellationTokenSource),
-						DeviceFriendlyName = SharedInfo.PublicIdentifier,
+						DeviceFriendlyName = machineName,
 						GuardData = BotConfig.UseLoginKeys ? BotDatabase.SteamGuardData : null,
 						IsPersistentSession = true,
 						Password = password,
@@ -2842,8 +2845,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			UpdateTokens(pollResult.AccessToken, pollResult.RefreshToken);
 		}
 
-		string machineNameFormat = !string.IsNullOrEmpty(BotConfig.MachineName) ? BotConfig.MachineName : "{0} ({1}/{2})";
-
 		SteamUser.LogOnDetails logOnDetails = new() {
 			AccessToken = RefreshToken,
 			CellID = ASF.GlobalDatabase?.CellID,
@@ -2851,7 +2852,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			ClientLanguage = CultureInfo.CurrentCulture.ToSteamClientLanguage(),
 			GamingDeviceType = BotConfig.GamingDeviceType,
 			LoginID = LoginID,
-			MachineName = string.Format(CultureInfo.CurrentCulture, machineNameFormat, Environment.MachineName, SharedInfo.PublicIdentifier, SharedInfo.Version),
+			MachineName = machineName,
 			ShouldRememberPassword = BotConfig.UseLoginKeys,
 			UIMode = BotConfig.UserInterfaceMode,
 			Username = username
