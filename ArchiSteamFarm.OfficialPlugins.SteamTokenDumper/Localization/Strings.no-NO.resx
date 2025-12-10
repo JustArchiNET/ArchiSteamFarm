@@ -122,7 +122,6 @@
 		<value>Kunne ikke sende inn data fordi det ikke er gyldig SteamID satt som vi kan klassifisere som bidragsyter. Vurder å sette opp {0} egenskapen.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
 	</data>
-	
 	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
 		<value>Innsendingen mislyktes på grunn av for mange forespørsler sendt, vi prøver igjen om lag {0} nå.</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
