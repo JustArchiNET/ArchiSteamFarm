@@ -43,7 +43,7 @@ jobs:
       run: npm run-script deploy --no-progress --prefix ASF-ui
 
     - name: Upload ASF-ui
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         compression-level: 1
         if-no-files-found: error
@@ -95,7 +95,7 @@ jobs:
       run: dotnet --info
 
     - name: Download previously built ASF-ui
-      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: ASF-ui
         path: ASF-ui/dist
@@ -367,7 +367,7 @@ jobs:
         subject-path: out/ASF-${{ matrix.variant }}.zip
 
     - name: Upload ASF-${{ matrix.variant }}
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         compression-level: 1
         if-no-files-found: error
@@ -416,7 +416,7 @@ jobs:
 
     - name: Upload ArchiSteamFarm.OfficialPlugins.Monitoring
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         compression-level: 1
         if-no-files-found: error
@@ -441,55 +441,55 @@ jobs:
         show-progress: false
 
     - name: Download ASF-generic artifact from ubuntu-latest
-      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: ubuntu-latest_ASF-generic
         path: out
 
     - name: Download ASF-linux-arm artifact from ubuntu-latest
-      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: ubuntu-latest_ASF-linux-arm
         path: out
 
     - name: Download ASF-linux-arm64 artifact from ubuntu-latest
-      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: ubuntu-latest_ASF-linux-arm64
         path: out
 
     - name: Download ASF-linux-x64 artifact from ubuntu-latest
-      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: ubuntu-latest_ASF-linux-x64
         path: out
 
     - name: Download ASF-osx-arm64 artifact from macos-latest
-      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: macos-latest_ASF-osx-arm64
         path: out
 
     - name: Download ASF-osx-x64 artifact from macos-latest
-      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: macos-latest_ASF-osx-x64
         path: out
 
     - name: Download ASF-win-arm64 artifact from windows-latest
-      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: windows-latest_ASF-win-arm64
         path: out
 
     - name: Download ASF-win-x64 artifact from windows-latest
-      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: windows-latest_ASF-win-x64
         path: out
 
     - name: Download ArchiSteamFarm.OfficialPlugins.Monitoring artifact
-      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
         name: ArchiSteamFarm.OfficialPlugins.Monitoring
         path: out
@@ -514,7 +514,7 @@ jobs:
         subject-path: out/SHA512SUMS
 
     - name: Upload SHA512SUMS
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         compression-level: 1
         if-no-files-found: error
@@ -527,7 +527,7 @@ jobs:
         subject-path: out/SHA512SUMS.sign
 
     - name: Upload SHA512SUMS.sign
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         compression-level: 1
         if-no-files-found: error
