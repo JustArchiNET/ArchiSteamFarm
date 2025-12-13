@@ -80,6 +80,7 @@ internal static class OS {
 		}
 
 		if (OperatingSystem.IsLinux()) {
+			// TODO: Check systemRequired here once we're done testing
 			await LinuxKeepSystemActive().ConfigureAwait(false);
 		}
 
@@ -291,7 +292,15 @@ internal static class OS {
 
 		using Connection connection = new(systemAddress);
 
-		await connection.ConnectAsync().ConfigureAwait(false);
+		try {
+			await connection.ConnectAsync().ConfigureAwait(false);
+		} catch (ConnectException e) {
+			// Possible if no DBus is available at all
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(connection)));
+
+			return;
+		}
 
 		MessageWriter writer = connection.GetMessageWriter();
 
