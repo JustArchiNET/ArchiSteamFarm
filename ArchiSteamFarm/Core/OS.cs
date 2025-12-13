@@ -37,7 +37,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
-using Login.DBus;
+using Microsoft.Win32.SafeHandles;
 using Tmds.DBus.Protocol;
 
 namespace ArchiSteamFarm.Core;
@@ -274,6 +274,63 @@ internal static class OS {
 		NativeMethods.FlashWindowEx(ref flashInfo);
 	}
 
+	[SupportedOSPlatform("Linux")]
+	private static async Task LinuxKeepSystemActive() {
+		if (!OperatingSystem.IsLinux()) {
+			throw new PlatformNotSupportedException();
+		}
+
+		// Docs: https://systemd.io/INHIBITOR_LOCKS
+		string? systemAddress = Address.System;
+
+		if (string.IsNullOrEmpty(systemAddress)) {
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(systemAddress)));
+
+			return;
+		}
+
+		using Connection connection = new(systemAddress);
+
+		await connection.ConnectAsync().ConfigureAwait(false);
+
+		MessageWriter writer = connection.GetMessageWriter();
+
+		writer.WriteMethodCallHeader(
+			"org.freedesktop.login1",
+			"/org/freedesktop/login1",
+			"org.freedesktop.login1.Manager",
+			"Inhibit",
+			"ssss"
+		);
+
+		// Colon-separated list of lock types
+		writer.WriteString("idle");
+
+		// Human-readable, descriptive string of who is taking the lock
+		writer.WriteString(SharedInfo.PublicIdentifier);
+
+		// Human-readable, descriptive string of why the lock is taken
+		writer.WriteString("--system-required");
+
+		// Mode
+		writer.WriteString("block");
+
+		MessageBuffer message = writer.CreateMessage();
+
+		// Inhibit() returns a single value, a file descriptor that encapsulates the lock
+		InhibitLock = await connection.CallMethodAsync(
+			message, static (response, _) => {
+				Reader reader = response.GetBodyReader();
+
+				return reader.ReadHandle<SafeFileHandle>();
+			}
+		).ConfigureAwait(false);
+
+		if (InhibitLock == null) {
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(InhibitLock)));
+		}
+	}
+
 	private static void MinimizeConsoleWindow() {
 		(_, int top) = Console.GetCursorPosition();
 
@@ -327,31 +384,6 @@ internal static class OS {
 		if (!NativeMethods.SetConsoleMode(consoleHandle, consoleMode)) {
 			ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
 		}
-	}
-
-	[SupportedOSPlatform("Linux")]
-	private static async Task LinuxKeepSystemActive() {
-		if (!OperatingSystem.IsLinux()) {
-			throw new PlatformNotSupportedException();
-		}
-
-		string? systemAddress = Address.System;
-
-		if (string.IsNullOrEmpty(systemAddress)) {
-			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(systemAddress)));
-
-			return;
-		}
-
-		using Connection connection = new(systemAddress);
-
-		await connection.ConnectAsync().ConfigureAwait(false);
-
-		LoginService loginService = new(connection, "org.freedesktop.login1");
-
-		Manager manager = loginService.CreateManager("/org/freedesktop/login1");
-
-		InhibitLock = await manager.InhibitAsync("idle", SharedInfo.PublicIdentifier, "--system-required", "block");
 	}
 
 	[SupportedOSPlatform("Windows")]
