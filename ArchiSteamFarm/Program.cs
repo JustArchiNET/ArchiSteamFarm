@@ -278,7 +278,7 @@ internal static class Program {
 			return false;
 		}
 
-		OS.CoreInit(Minimized, SystemRequired);
+		await OS.CoreInit(Minimized, SystemRequired).ConfigureAwait(false);
 
 		Console.Title = SharedInfo.ProgramIdentifier;
 		ASF.ArchiLogger.LogGenericInfo(SharedInfo.ProgramIdentifier);

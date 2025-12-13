@@ -37,6 +37,8 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
+using Login.DBus;
+using Tmds.DBus.Protocol;
 
 namespace ArchiSteamFarm.Core;
 
@@ -69,11 +71,16 @@ internal static class OS {
 		}
 	}
 
+	private static SafeHandle? InhibitLock;
 	private static Mutex? SingleInstance;
 
-	internal static void CoreInit(bool minimized, bool systemRequired) {
+	internal static async Task CoreInit(bool minimized, bool systemRequired) {
 		if (minimized) {
 			MinimizeConsoleWindow();
+		}
+
+		if (OperatingSystem.IsLinux()) {
+			await LinuxKeepSystemActive().ConfigureAwait(false);
 		}
 
 		if (OperatingSystem.IsWindows()) {
@@ -181,6 +188,12 @@ internal static class OS {
 		// Instead, we'll dispose the mutex which should automatically release it by the CLR
 		SingleInstance.Dispose();
 		SingleInstance = null;
+
+		// Release the inhibit lock as well, if needed
+		if (InhibitLock != null) {
+			InhibitLock.Dispose();
+			InhibitLock = null;
+		}
 	}
 
 	internal static bool VerifyEnvironment() {
@@ -314,6 +327,31 @@ internal static class OS {
 		if (!NativeMethods.SetConsoleMode(consoleHandle, consoleMode)) {
 			ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
 		}
+	}
+
+	[SupportedOSPlatform("Linux")]
+	private static async Task LinuxKeepSystemActive() {
+		if (!OperatingSystem.IsLinux()) {
+			throw new PlatformNotSupportedException();
+		}
+
+		string? systemAddress = Address.System;
+
+		if (string.IsNullOrEmpty(systemAddress)) {
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(systemAddress)));
+
+			return;
+		}
+
+		using Connection connection = new(systemAddress);
+
+		await connection.ConnectAsync().ConfigureAwait(false);
+
+		LoginService loginService = new(connection, "org.freedesktop.login1");
+
+		Manager manager = loginService.CreateManager("/org/freedesktop/login1");
+
+		InhibitLock = await manager.InhibitAsync("idle", SharedInfo.PublicIdentifier, "--system-required", "block");
 	}
 
 	[SupportedOSPlatform("Windows")]
