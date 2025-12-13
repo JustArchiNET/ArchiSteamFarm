@@ -24,6 +24,7 @@
 		<PackageReference Include="SteamKit2" />
 		<PackageReference Include="System.Composition" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" />
+		<PackageReference Include="Tmds.DBus.Protocol" />
 	</ItemGroup>
 
 	<ItemGroup>
