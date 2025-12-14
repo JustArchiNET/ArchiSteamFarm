@@ -510,24 +510,6 @@ StackTrace:
 	<data name="Welcome" xml:space="preserve">
 		<value>بنظر می رسد اولین استفاده ی شما از این برنامه باشد، خوش آمدید! 3:</value>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	<data name="BotWalletBalance" xml:space="preserve">
 		<value>موجودی والت: {0} {1}</value>
 		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
@@ -539,19 +521,12 @@ StackTrace:
 		<value>بات لول {0} است.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
-	
-	
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>کنسل شد!</value>
 	</data>
-	
-	
-	
 	<data name="NothingFound" xml:space="preserve">
 		<value>چیزی پیدا نشد!</value>
 	</data>
-	
 	<data name="PleaseWait" xml:space="preserve">
 		<value>لطفا صبر کنید...</value>
 	</data>
@@ -561,65 +536,22 @@ StackTrace:
 	<data name="Executing" xml:space="preserve">
 		<value>در حال اجرا...</value>
 	</data>
-	
-	
-	
-	
-	
 	<data name="UpdateCleanup" xml:space="preserve">
 		<value>درحال پاک سازی فایل های قدیمی بعد از به روزرسانی...</value>
 	</data>
-	
-	
-	
-	
 	<data name="Result" xml:space="preserve">
 		<value>نتایج: {0}</value>
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>در حال پچ کردن فایل های ASF...</value>
 	</data>
-	
 	<data name="ErrorIPNotBanned" xml:space="preserve">
 		<value>آدرس آیپی {0} بن نشده است!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
-	
-	
-	
-	
-	
 	<data name="WarningSkipping" xml:space="preserve">
 		<value>در حال رد کردن: {0}...</value>
 		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 </root>

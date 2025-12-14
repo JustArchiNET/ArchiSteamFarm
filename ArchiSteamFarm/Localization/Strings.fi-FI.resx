@@ -800,4 +800,7 @@ Prosessin käyttöaika: {1}</value>
 		<value>Syöte: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>Olet julistanut --system-pakolliseksi, vaikka käyttöjärjestelmästäsi puuttuu vaaditut riippuvuudet, jotta toiminto toimisi. Harkitse dbusin asentamista, vaikka voit myös turvallisesti ohittaa tämän varoituksen, jos et vaadi estoa toimimaan kunnolla.</value>
+	</data>
 </root>

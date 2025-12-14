@@ -799,4 +799,7 @@ Proces uptime: {1}</value>
 		<value>Input: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>Je hebt verklaard --system-verplicht te zijn, hoewel je OS vereiste afhankelijkheden mist om die functie te laten werken. Overweeg het installeren van dbus, maar je kunt deze waarschuwing ook negeren als je geen remmen nodig hebt om goed te werken.</value>
+	</data>
 </root>

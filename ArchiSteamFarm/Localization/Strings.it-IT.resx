@@ -798,4 +798,7 @@ Tempo di attività: {1}</value>
 		<value>Inserisci: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>Hai dichiarato --system-requireed, anche se il tuo sistema operativo manca di dipendenze richieste per far funzionare quella funzione. Considerare l'installazione di dbus, anche se si può tranquillamente ignorare questo avviso se non si richiede inibizione per funzionare correttamente.</value>
+	</data>
 </root>

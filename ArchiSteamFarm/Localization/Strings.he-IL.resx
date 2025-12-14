@@ -87,7 +87,6 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>בקשה נכשלה: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -581,7 +580,6 @@ StackTrace:
 		<value>לבוט יש רמה {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>מתאים פריטי Steam, שלב #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>
@@ -681,7 +679,6 @@ StackTrace:
 		<value>מפתח ההצפנה שלך קצר מדי. אנו ממליצים להשתמש באחד שאורכו לפחות {0} בייטים (תווים).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>אתה משתמש בהגדרה {0} של המאפיין {1}, אך לא סיפקת --cryptkey מותאם אישית. זה מביס לחלוטין את ההגנה, מכיוון ש-ASF נאלץ להשתמש במפתח (ידוע) משלו. עליך לספק --cryptkey מותאם אישית כדי לעשות שימוש בהטבת האבטחה שמציעה הגדרה זו.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -701,7 +698,6 @@ StackTrace:
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>השרת המרוחק לא יודע כלום על המהדורה שאליה אנחנו מעדכנים. מצב זה אפשרי אם המהדורה פורסמה לאחרונה - מסרב להמשיך בהליך העדכון באופן מיידי כאמצעי אבטחה נוסף.</value>
 	</data>
-	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>שרת מרוחק השיב עם סכום ביקורת אחר, זה עשוי להצביע על הורדה פגומה או התקפת MITM, מסרב להמשיך בהליך העדכון!</value>
 	</data>
@@ -720,22 +716,4 @@ StackTrace:
 		<value>ניסית להשתמש בתכונה בתשלום {0} אך אין לך מזהה רישיון חוקי שהוגדר בתצורה הגלובלית של ASF. אנא בדוק את התצורה שלך, מכיוון שהפונקציונליות לא תעבוד ללא פרטים נוספים.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 </root>

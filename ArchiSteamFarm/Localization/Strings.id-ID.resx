@@ -580,7 +580,6 @@
 		<value>Bot mempunyai level {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Mencocokkan item dari Steam, fase #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>
@@ -789,5 +788,4 @@
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
 		<value>Plugin kustom telah didaftarkan untuk pembaruan otomatis. Tim ASF ingin mengingatkan Anda bahwa, demi keamanan Anda, Anda hanya boleh mengaktifkan pembaruan otomatis dari pihak yang tepercaya. Jika Anda tidak bermaksud melakukan ini, Anda dapat menonaktifkan pembaruan plugin di konfigurasi global ASF.</value>
 	</data>
-	
 </root>

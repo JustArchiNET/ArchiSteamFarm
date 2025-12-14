@@ -800,4 +800,7 @@
 		<value>输入：{0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>您已声明--system-require, 尽管您的操作系统缺少该功能所需的依赖关系。 考虑安装 dbus ，不过如果你不需要抑制才能正常工作，你也可以安全地忽略这个警告。</value>
+	</data>
 </root>

@@ -584,7 +584,6 @@ Doba prevádzky procesu: {1}</value>
 		<value>Bot má level {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Porovnávanie položiek na Steame, kolo #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>
@@ -685,7 +684,6 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
 		<value>Váš šifrovací kľuč je príliš krátky. Doporučujeme použiť ten, ktorý je aspoň {0} bajtu (znakov) dlhý.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Používate {0} nastavenie vlastnosti {1}, ale neposkytujete vlastný --cryptkey. To celkovo ruší ochranu, pretože ASF je nútený použiť svoj vlastný (známy) kľuč. Pre využitie bezpečnostného prínosu ponúkaného týmto nastavením, by ste mali poskytnúť vlastní --cryptkey.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -705,7 +703,6 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Vzdialený server nepozná verziu na ktorú se snažíte aktualizovať. Táto situácia nastáva, pokiaľ verzia bola vydaná nedávno - aktualizácia nebude z bezpečnostných dôvodov pokračovať.</value>
 	</data>
-	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Vzdialený server odpovedal s iným kontrolným súčtom, čo môže naznačovať chybu pri sťahovaní alebo útok MITM, proces aktualizácie preto nebude pokračovať!</value>
 	</data>
@@ -728,10 +725,6 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
 		<value>ASF nemôže spustiť aplikáciu {0}, pretože má regionálne obmedzenie pre krajinu {1}, ktoré trvá do {2}.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
 	</data>
-	
-	
-	
-	
 	<data name="PluginUpdatesChecking" xml:space="preserve">
 		<value>Kontrolujem aktualizácie pluginov...</value>
 	</data>
@@ -743,13 +736,10 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
 		<value>Žiadne dostupné aktualizácie pre {0} plugin: {1} ≥ {2}.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
-	
 	<data name="PluginUpdateFound" xml:space="preserve">
 		<value>Našla sa aktualizácia pre {0} plugin z verzie {1} na {2}...</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
-	
-	
 	<data name="PluginUpdateInProgress" xml:space="preserve">
 		<value>Aktualizujem {0} plugin...</value>
 		<comment>{0} will be replaced by plugin name (string).</comment>
@@ -762,7 +752,4 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
 		<value>{0}/{1} plugin bol zaregistrovaný a automatické aktualizácie boli aktivované.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
 	</data>
-	
-	
-	
 </root>

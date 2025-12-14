@@ -804,4 +804,7 @@
 Файл: Strings.resx</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>Вы объявили --system-required, хотя ваша ОС не имеет необходимых зависимостей для работы этой функции. Рассмотрим установку dbus, хотя вы также можете безопасно проигнорировать это предупреждение, если вам не требуется запрещение для нормальной работы.</value>
+	</data>
 </root>

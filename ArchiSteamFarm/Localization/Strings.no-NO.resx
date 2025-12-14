@@ -772,4 +772,7 @@ prosess oppgang: {1}</value>
 		<value>Input: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>Du har erklært --system-nødvendig, selv om OS mangler nødvendige avhengigheter for at den funksjonen skal fungere. Vurder å installere dbus, selv om du også trygt kan overse denne advarselen hvis du ikke trenger hemming av denne funksjonen.</value>
+	</data>
 </root>

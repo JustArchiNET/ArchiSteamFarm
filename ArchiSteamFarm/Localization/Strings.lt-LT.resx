@@ -87,7 +87,6 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Užklausa nutrūksta: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -581,7 +580,6 @@ Proceso veikimo laikas: {1}</value>
 		<value>Botas neturi {0} lygio.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Derinami Steam item'ai, #{0} raundas...</value>
 		<comment>{0} will be replaced by round number</comment>
@@ -681,7 +679,6 @@ Proceso veikimo laikas: {1}</value>
 		<value>Jūsų šifravimo raktas yra per trumpas. Rekomenduojame naudoti raktą, kuris yra bent {0} baitų (simbolių) ilgio.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Jūs naudojate {0} nustatymą is {1} ypatybės, tačiau nenurodėte tinkintos --cryptkey savybės. Tai prieštarauja apsaugai, kadangi ASF bus priversta naudoti savo (žinomą) raktą. Reiktų nurodyti tinkintą --cryptkey savybę, kad šio gautumėte šio nustatymo naudą.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -701,7 +698,6 @@ Proceso veikimo laikas: {1}</value>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Nuotolinis serveris nežino apie išleidimą, į kurį bandote atsinaujinti. Ši situacija galima, jeigu išleidimas buvo neseniai paskelbtas - neleidžiama atnaujinti iš karto dėl papildomos apsaugos.</value>
 	</data>
-	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Nuotolinis serveris atsakė su nesutampančia kontroline suma. Tai gali būti dėl sugadinto atsisiuntimo arba MITM atakos. Atsisakoma tęsti atnaujinimo procesą!</value>
 	</data>
@@ -720,22 +716,4 @@ Proceso veikimo laikas: {1}</value>
 		<value>Jūs bandote naudoti mokamą funkciją {0}, tačiau jūs neturite tinkamo LicenseID nustatyto globalioje konfigūracijoje. Prašome patikrinti savo konfigūraciją, kadangi funkcija neveiks be papildomų detalių.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 </root>

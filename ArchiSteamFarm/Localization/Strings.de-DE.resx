@@ -801,4 +801,7 @@ Prozesslaufzeit: {1}</value>
 		<value>Eingabe: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>Sie haben --system-required deklariert, obwohl Ihrem Betriebssystem die erforderlichen Abhängigkeiten fehlen, damit diese Funktion funktioniert. Erwägen Sie die Installation von dbus, obwohl Sie diese Warnung auch sicher ignorieren können, wenn Sie keine Hemmung benötigen, um ordnungsgemäß zu funktionieren.</value>
+	</data>
 </root>

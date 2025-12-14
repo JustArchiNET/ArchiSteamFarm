@@ -84,7 +84,6 @@
 		<value>Изключение: {0}() {1} StackTrace:{2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Провалена заявка: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -578,7 +577,6 @@
 		<value>Ботът има ниво {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>Сравняват се Steam предмети, #{0} път...</value>
 		<comment>{0} will be replaced by round number</comment>
@@ -678,7 +676,6 @@
 		<value>Вашият криптиращ ключ е много къс. Препоръчваме да ползвате някой, който е поне {0} байта (символа) голям.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Ползвате {0} настройка от {1} стойност, но не сте осигурили персонализиран крипто-ключ. Това напълно нарушава защитата, тъй като ASF е принуден да ползва собствен (познат) ключ. Трябва да осигурите персонализиран крипто-ключ, за да ползвате предлаганата защита от тези настройки.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -698,7 +695,6 @@
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Отдалечения сървър не знае нищо за версията до която се опитвате да ъпгрейднете. Подобна ситуация е възможна ако версията е публикувана скоро - отказване да се продължи с ъпдейта като допълнителна мярка за сигурност.</value>
 	</data>
-	
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Отдалечения сървър отговори с различен checksum, това може да показва корумпирано сваляне или MITM атака - отказване да се продължи с ъпдейта!</value>
 	</data>
@@ -717,22 +713,4 @@
 		<value>Опитахте да използвате платена функция {0}, но нямате зададен валиден LicenseID в глобалната конфигурация на ASF. Моля, прегледайте конфигурацията си, тъй като функционалността няма да работи без допълнителни подробности.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 </root>

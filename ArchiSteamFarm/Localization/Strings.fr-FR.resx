@@ -800,4 +800,7 @@ Durée de fonctionnement : {1}</value>
 		<value>Saisie : {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>Vous avez déclaré que --system-needed était nécessaire pour que cette fonctionnalité fonctionne, mais il manque à votre système d'exploitation des dépendances nécessaires. Pensez à installer dbus, bien que vous puissiez également ignorer cet avertissement en toute sécurité si vous n'avez pas besoin d'une inhibition pour fonctionner correctement.</value>
+	</data>
 </root>

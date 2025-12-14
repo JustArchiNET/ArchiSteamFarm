@@ -792,4 +792,7 @@ StackTrace:
 		<value>Input: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>Έχετε δηλώσει το -- system-required αν και λείπουν οι απαιτούμενες εξαρτήσεις του λειτουργικού σας συστήματος για να λειτουργήσει αυτή η λειτουργία. Σκεφτείτε την εγκατάσταση dbus, αν και μπορείτε επίσης να αγνοήσετε με ασφάλεια αυτή την προειδοποίηση αν δεν χρειάζεστε αναστολή για να λειτουργήσει σωστά.</value>
+	</data>
 </root>

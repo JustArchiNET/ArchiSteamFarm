@@ -800,4 +800,7 @@ StackTrace:
 		<value>Input: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>Prohlásili jste --system-required i když na vašem OS chybí požadované závislosti, aby tato funkce fungovala. Zvažte instalaci dbus, i když můžete bezpečně ignorovat toto upozornění, pokud nepotřebujete inhibici pro správné fungování.</value>
+	</data>
 </root>

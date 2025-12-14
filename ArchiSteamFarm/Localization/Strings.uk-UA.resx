@@ -800,4 +800,7 @@
 		<value>Input: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>Ви оголосили --system-required, хоча у вашої ОС немає необхідних залежностей, щоб ця функція працювала. Розгляньте встановлення dbus, хоча також можна безпечно ігнорувати це попередження, якщо вам не потрібно гальмувати для належної роботи.</value>
+	</data>
 </root>
