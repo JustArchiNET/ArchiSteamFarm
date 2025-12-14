@@ -114,4 +114,4 @@ EOF
 WORKDIR /app
 VOLUME ["/app/config", "/app/logs"]
 HEALTHCHECK CMD ["pidof", "-q", "dotnet"]
-ENTRYPOINT ["ArchiSteamFarm", "--no-restart", "--system-required"]
+ENTRYPOINT ["ArchiSteamFarm", "--no-restart"]
