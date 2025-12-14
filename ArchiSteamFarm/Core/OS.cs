@@ -37,6 +37,8 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
+using Microsoft.Win32.SafeHandles;
+using Tmds.DBus.Protocol;
 
 namespace ArchiSteamFarm.Core;
 
@@ -69,11 +71,18 @@ internal static class OS {
 		}
 	}
 
+	private static SafeHandle? InhibitLock;
 	private static Mutex? SingleInstance;
 
-	internal static void CoreInit(bool minimized, bool systemRequired) {
+	internal static async Task CoreInit(bool minimized, bool systemRequired) {
 		if (minimized) {
 			MinimizeConsoleWindow();
+		}
+
+		if (OperatingSystem.IsLinux()) {
+			if (systemRequired) {
+				await LinuxKeepSystemActive().ConfigureAwait(false);
+			}
 		}
 
 		if (OperatingSystem.IsWindows()) {
@@ -181,6 +190,12 @@ internal static class OS {
 		// Instead, we'll dispose the mutex which should automatically release it by the CLR
 		SingleInstance.Dispose();
 		SingleInstance = null;
+
+		// Release the inhibit lock as well, if needed
+		if (InhibitLock != null) {
+			InhibitLock.Dispose();
+			InhibitLock = null;
+		}
 	}
 
 	internal static bool VerifyEnvironment() {
@@ -259,6 +274,79 @@ internal static class OS {
 		};
 
 		NativeMethods.FlashWindowEx(ref flashInfo);
+	}
+
+	[SupportedOSPlatform("Linux")]
+	private static async Task LinuxKeepSystemActive() {
+		if (!OperatingSystem.IsLinux()) {
+			throw new PlatformNotSupportedException();
+		}
+
+		// Docs: https://systemd.io/INHIBITOR_LOCKS
+		string? systemAddress = Address.System;
+
+		if (string.IsNullOrEmpty(systemAddress)) {
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(systemAddress)));
+
+			return;
+		}
+
+		using Connection connection = new(systemAddress);
+
+		try {
+			await connection.ConnectAsync().ConfigureAwait(false);
+		} catch (ConnectException e) {
+			// Possible if no DBus is available at all
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(connection)));
+
+			return;
+		}
+
+		MessageWriter writer = connection.GetMessageWriter();
+
+		writer.WriteMethodCallHeader(
+			"org.freedesktop.login1",
+			"/org/freedesktop/login1",
+			"org.freedesktop.login1.Manager",
+			"Inhibit",
+			"ssss"
+		);
+
+		// Colon-separated list of lock types
+		writer.WriteString("idle");
+
+		// Human-readable, descriptive string of who is taking the lock
+		writer.WriteString(SharedInfo.PublicIdentifier);
+
+		// Human-readable, descriptive string of why the lock is taken
+		writer.WriteString("--system-required");
+
+		// Mode
+		writer.WriteString("block");
+
+		MessageBuffer message = writer.CreateMessage();
+
+		try {
+			// Inhibit() returns a single value, a file descriptor that encapsulates the lock
+			InhibitLock = await connection.CallMethodAsync(
+				message, static (response, _) => {
+					Reader reader = response.GetBodyReader();
+
+					return reader.ReadHandle<SafeFileHandle>();
+				}
+			).ConfigureAwait(false);
+		} catch (DBusException e) {
+			// Possible if login manager does not support inhibit, although that should be super rare
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(connection)));
+
+			return;
+		}
+
+		if (InhibitLock == null) {
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(InhibitLock)));
+		}
 	}
 
 	private static void MinimizeConsoleWindow() {
