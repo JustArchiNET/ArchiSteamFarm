@@ -800,4 +800,7 @@ Process uptime: {1}</value>
 		<value>Input: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>You've declared --system-required, although your OS is missing required dependencies for that feature to work. Consider installing dbus, although you can also safely ignore this warning if you do not require inhibition to work properly.</value>
+	</data>
 </root>

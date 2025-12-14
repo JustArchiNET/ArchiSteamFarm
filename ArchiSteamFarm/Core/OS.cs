@@ -298,7 +298,7 @@ internal static class OS {
 		} catch (ConnectException e) {
 			// Possible if no DBus is available at all
 			ASF.ArchiLogger.LogGenericDebuggingException(e);
-			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(connection)));
+			ASF.ArchiLogger.LogGenericWarning(Strings.WarningNoSystemRequiredLinuxDependencies);
 
 			return;
 		}
@@ -339,7 +339,7 @@ internal static class OS {
 		} catch (DBusException e) {
 			// Possible if login manager does not support inhibit, although that should be super rare
 			ASF.ArchiLogger.LogGenericDebuggingException(e);
-			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(connection)));
+			ASF.ArchiLogger.LogGenericWarning(Strings.WarningNoSystemRequiredLinuxDependencies);
 
 			return;
 		}
