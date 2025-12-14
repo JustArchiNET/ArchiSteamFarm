@@ -80,8 +80,9 @@ internal static class OS {
 		}
 
 		if (OperatingSystem.IsLinux()) {
-			// TODO: Check systemRequired here once we're done testing
-			await LinuxKeepSystemActive().ConfigureAwait(false);
+			if (systemRequired) {
+				await LinuxKeepSystemActive().ConfigureAwait(false);
+			}
 		}
 
 		if (OperatingSystem.IsWindows()) {
@@ -326,14 +327,22 @@ internal static class OS {
 
 		MessageBuffer message = writer.CreateMessage();
 
-		// Inhibit() returns a single value, a file descriptor that encapsulates the lock
-		InhibitLock = await connection.CallMethodAsync(
-			message, static (response, _) => {
-				Reader reader = response.GetBodyReader();
+		try {
+			// Inhibit() returns a single value, a file descriptor that encapsulates the lock
+			InhibitLock = await connection.CallMethodAsync(
+				message, static (response, _) => {
+					Reader reader = response.GetBodyReader();
 
-				return reader.ReadHandle<SafeFileHandle>();
-			}
-		).ConfigureAwait(false);
+					return reader.ReadHandle<SafeFileHandle>();
+				}
+			).ConfigureAwait(false);
+		} catch (DBusException e) {
+			// Possible if login manager does not support inhibit, although that should be super rare
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(connection)));
+
+			return;
+		}
 
 		if (InhibitLock == null) {
 			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(InhibitLock)));
