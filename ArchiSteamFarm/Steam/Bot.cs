@@ -1321,8 +1321,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return Bots.AsLinqThreadSafeEnumerable().OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).FirstOrDefault();
 	}
 
-	internal Task<HashSet<uint>?> GetMarketableAppIDs() => ArchiWebHandler.GetAppList();
-
 	internal async Task<Dictionary<uint, PackageData>?> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
 		if ((packageIDs == null) || (packageIDs.Count == 0)) {
 			throw new ArgumentNullException(nameof(packageIDs));

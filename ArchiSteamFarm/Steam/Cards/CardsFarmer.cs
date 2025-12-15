@@ -36,6 +36,7 @@ using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Steam.Data;
@@ -59,6 +60,8 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	public static readonly FrozenSet<uint> SalesBlacklist = [267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740, 991980, 1195670, 1343890, 1465680, 1658760, 1797760, 2021850, 2243720, 2459330, 2640280, 2861690, 2861720, 3558920, 3558940];
 
 	private static readonly ConcurrentDictionary<uint, DateTime> GloballyIgnoredAppIDs = new(); // Reserved for unreleased games
+
+	private static readonly ArchiCacheable<FrozenSet<uint>> MarketableAppIDs = new(ResolveMarketableAppIDs, TimeSpan.FromDays(1));
 
 	// Games that were confirmed to show false status on general badges page
 	private static readonly FrozenSet<uint> UntrustedAppIDs = [440, 570, 730];
@@ -1383,6 +1386,18 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
+	private static async Task<(bool Success, FrozenSet<uint>? Result)> ResolveMarketableAppIDs(CancellationToken cancellationToken) {
+		Bot? bot = Bot.Bots?.Values.FirstOrDefault(static targetBot => targetBot.IsConnectedAndLoggedOn);
+
+		if (bot == null) {
+			return (false, null);
+		}
+
+		HashSet<uint>? result = await bot.ArchiWebHandler.GetAppList().ConfigureAwait(false);
+
+		return (result?.Count > 0, result?.ToFrozenSet());
+	}
+
 	private async Task<bool?> ShouldFarm(Game game) {
 		ArgumentNullException.ThrowIfNull(game);
 
@@ -1467,10 +1482,10 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					break;
 				case BotConfig.EFarmingOrder.MarketableAscending:
 				case BotConfig.EFarmingOrder.MarketableDescending:
-					HashSet<uint>? marketableAppIDs = await Bot.GetMarketableAppIDs().ConfigureAwait(false);
+					(_, FrozenSet<uint>? marketableAppIDs) = await MarketableAppIDs.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
 					if (marketableAppIDs?.Count > 0) {
-						HashSet<uint> marketableAppIDsCopy = marketableAppIDs;
+						FrozenSet<uint> marketableAppIDsCopy = marketableAppIDs;
 
 						orderedGamesToFarm = farmingOrder switch {
 							BotConfig.EFarmingOrder.MarketableAscending => orderedGamesToFarm.ThenBy(game => marketableAppIDsCopy.Contains(game.AppID)),
