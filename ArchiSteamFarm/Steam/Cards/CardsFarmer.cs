@@ -1387,7 +1387,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private static async Task<(bool Success, FrozenSet<uint>? Result)> ResolveMarketableAppIDs(CancellationToken cancellationToken) {
-		Bot? bot = Bot.Bots?.Values.FirstOrDefault(static targetBot => targetBot.IsConnectedAndLoggedOn);
+		Bot? bot = Bot.Bots?.Values.FirstOrDefault(static targetBot => targetBot.IsConnectedAndLoggedOn && !string.IsNullOrEmpty(targetBot.AccessToken));
 
 		if (bot == null) {
 			return (false, null);
