@@ -58,7 +58,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	private const byte MaxTradeOfferMessageLength = 128;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const byte SessionIDLength = 24; // For maximum compatibility, should be divisible by 2 and match the length of "sessionid" property that Steam uses across their websites
-	private const string SteamAppsService = "ISteamApps";
+	private const string SteamStoreService = "IStoreService";
 
 	[PublicAPI]
 	public static Uri SteamCheckoutURL => new("https://checkout.steampowered.com");
@@ -1640,62 +1640,86 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<HashSet<uint>?> GetAppList() {
+		string? accessToken = Bot.AccessToken;
+
+		if (string.IsNullOrEmpty(accessToken)) {
+			return null;
+		}
+
 		const string endpoint = "GetAppList";
 		HttpMethod method = HttpMethod.Get;
 
-		using WebAPI.AsyncInterface steamAppsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamAppsService);
+		// Extra entry for last_appid that will end up here for sure
+		Dictionary<string, object?> arguments = new(3, StringComparer.Ordinal) {
+			{ "access_token", accessToken },
+			{ "max_results", 50000 }
+		};
+
+		HashSet<uint>? result = null;
+
+		using WebAPI.AsyncInterface steamAppsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamStoreService);
 
 		steamAppsService.Timeout = WebBrowser.Timeout;
 
-		KeyValue? response = null;
+		while (true) {
+			KeyValue? response = null;
 
-		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			if ((i > 0) && (WebLimiterDelay > 0)) {
-				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+				if ((i > 0) && (WebLimiterDelay > 0)) {
+					await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
+				}
+
+				if (Debugging.IsUserDebugging) {
+					Bot.ArchiLogger.LogGenericDebug($"{method} {Bot.SteamConfiguration.WebAPIBaseAddress}{SteamStoreService}/{endpoint}");
+				}
+
+				try {
+					response = await WebLimitRequest(
+						Bot.SteamConfiguration.WebAPIBaseAddress,
+
+						// ReSharper disable once AccessToDisposedClosure
+						async () => await steamAppsService.CallAsync(method, endpoint, args: arguments).ConfigureAwait(false)
+					).ConfigureAwait(false);
+				} catch (TaskCanceledException e) {
+					Bot.ArchiLogger.LogGenericDebuggingException(e);
+				} catch (Exception e) {
+					Bot.ArchiLogger.LogGenericWarningException(e);
+				}
 			}
 
-			if (Debugging.IsUserDebugging) {
-				Bot.ArchiLogger.LogGenericDebug($"{method} {Bot.SteamConfiguration.WebAPIBaseAddress}{SteamAppsService}/{endpoint}");
-			}
-
-			try {
-				response = await WebLimitRequest(
-					Bot.SteamConfiguration.WebAPIBaseAddress,
-
-					// ReSharper disable once AccessToDisposedClosure
-					async () => await steamAppsService.CallAsync(method, endpoint, 2).ConfigureAwait(false)
-				).ConfigureAwait(false);
-			} catch (TaskCanceledException e) {
-				Bot.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-			}
-		}
-
-		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
-
-			return null;
-		}
-
-		List<KeyValue> apps = response["apps"].Children;
-
-		if (apps.Count == 0) {
-			Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorIsEmpty(nameof(apps)));
-
-			return null;
-		}
-
-		HashSet<uint> result = new(apps.Count);
-
-		foreach (uint appID in apps.Select(static app => app["appid"].AsUnsignedInteger())) {
-			if (appID == 0) {
-				Bot.ArchiLogger.LogNullError(appID);
+			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
 
 				return null;
 			}
 
-			result.Add(appID);
+			List<KeyValue> apps = response["apps"].Children;
+
+			if (apps.Count == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.FormatErrorIsEmpty(nameof(apps)));
+
+				return null;
+			}
+
+			result ??= new HashSet<uint>(apps.Count);
+
+			foreach (uint appID in apps.Select(static app => app["appid"].AsUnsignedInteger())) {
+				if (appID == 0) {
+					Bot.ArchiLogger.LogNullError(appID);
+
+					return null;
+				}
+
+				result.Add(appID);
+			}
+
+			uint lastAppID = response["last_appid"].AsUnsignedInteger();
+
+			if (lastAppID == 0) {
+				break;
+			}
+
+			arguments["last_appid"] = lastAppID;
 		}
 
 		return result;
