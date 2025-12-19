@@ -2496,10 +2496,22 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		if (BotConfig.PasswordFormat.HasTransformation()) {
 			if (!string.IsNullOrEmpty(accessTokenText)) {
 				accessTokenText = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, accessTokenText).ConfigureAwait(false);
+
+				if (string.IsNullOrEmpty(accessTokenText)) {
+					BotDatabase.AccessToken = null;
+
+					ArchiLogger.LogGenericWarning(Strings.FormatWarningBotDatabaseComponentDecryptionFailed(nameof(BotDatabase.AccessToken), nameof(BotConfig.PasswordFormat)));
+				}
 			}
 
 			if (!string.IsNullOrEmpty(refreshTokenText)) {
 				refreshTokenText = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshTokenText).ConfigureAwait(false);
+
+				if (string.IsNullOrEmpty(refreshTokenText)) {
+					BotDatabase.RefreshToken = null;
+
+					ArchiLogger.LogGenericWarning(Strings.FormatWarningBotDatabaseComponentDecryptionFailed(nameof(BotDatabase.RefreshToken), nameof(BotConfig.PasswordFormat)));
+				}
 			}
 		}
 
