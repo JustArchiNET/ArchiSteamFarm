@@ -40,8 +40,11 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
-internal sealed class GlobalCache : SerializableFile {
+internal sealed class GlobalCache : SerializableFile, IDisposable {
+        private readonly object _saveLock = new();
+        private bool _disposed;
 	internal static readonly ArchiCacheable<FrozenSet<uint>> KnownDepotIDs = new(ResolveKnownDepotIDs, TimeSpan.FromDays(7));
+        private bool _isDisposed;
 
 	private static string SharedFilePath => Path.Combine(ArchiSteamFarm.SharedInfo.ConfigDirectory, $"{nameof(SteamTokenDumper)}.cache");
 
@@ -96,9 +99,48 @@ internal sealed class GlobalCache : SerializableFile {
 	[UsedImplicitly]
 	public bool ShouldSerializeSubmittedPackages() => !SubmittedPackages.IsEmpty;
 
-	protected override Task Save() => Save(this);
+	protected override Task Save()
+        {
+            ThrowIfDisposed();
+            
+            lock (_saveLock)
+            {
+                return Save(this);
+            }
+        }
 
-	internal ulong GetAppToken(uint appID) => AppTokens[appID];
+        public void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            // Clear collections to free memory
+            AppChangeNumbers.Clear();
+            AppTokens.Clear();
+            DepotKeys.Clear();
+            SubmittedApps.Clear();
+            SubmittedDepots.Clear();
+            SubmittedPackages.Clear();
+
+            _isDisposed = true;
+            GC.SuppressFinalize(this);
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (_isDisposed)
+            {
+                throw new ObjectDisposedException(GetType().FullName);
+            }
+        }
+
+	internal ulong GetAppToken(uint appID)
+        {
+            ThrowIfDisposed();
+            return AppTokens.TryGetValue(appID, out ulong token) ? token : throw new KeyNotFoundException($"App ID {appID} not found in the cache.");
+        }
 
 	internal Dictionary<uint, ulong> GetAppTokensForSubmission() => AppTokens.Where(appToken => (SteamTokenDumperPlugin.Config?.SecretAppIDs.Contains(appToken.Key) != true) && (appToken.Value > 0) && (!SubmittedApps.TryGetValue(appToken.Key, out ulong token) || (appToken.Value != token))).ToDictionary(static appToken => appToken.Key, static appToken => appToken.Value);
 	internal Dictionary<uint, string> GetDepotKeysForSubmission() => DepotKeys.Where(depotKey => (SteamTokenDumperPlugin.Config?.SecretDepotIDs.Contains(depotKey.Key) != true) && !string.IsNullOrEmpty(depotKey.Value) && (!SubmittedDepots.TryGetValue(depotKey.Key, out string? key) || (depotKey.Value != key))).ToDictionary(static depotKey => depotKey.Key, static depotKey => depotKey.Value);
@@ -111,7 +153,12 @@ internal sealed class GlobalCache : SerializableFile {
 		return ASF.GlobalDatabase.PackageAccessTokensReadOnly.Where(packageToken => (SteamTokenDumperPlugin.Config?.SecretPackageIDs.Contains(packageToken.Key) != true) && (packageToken.Value > 0) && (!SubmittedPackages.TryGetValue(packageToken.Key, out ulong token) || (packageToken.Value != token))).ToDictionary(static packageToken => packageToken.Key, static packageToken => packageToken.Value);
 	}
 
-	internal static async Task<GlobalCache?> Load() {
+	internal static async Task<GlobalCache?> Load()
+        {
+            if (string.IsNullOrEmpty(SharedFilePath))
+            {
+                throw new InvalidOperationException("Shared file path is not set.");
+            }
 		if (!File.Exists(SharedFilePath)) {
 			return new GlobalCache();
 		}
@@ -153,7 +200,11 @@ internal sealed class GlobalCache : SerializableFile {
 		return globalCache;
 	}
 
-	internal void OnPICSChanges(uint currentChangeNumber, IReadOnlyCollection<KeyValuePair<uint, SteamApps.PICSChangesCallback.PICSChangeData>> appChanges) {
+	internal void OnPICSChanges(uint currentChangeNumber, IReadOnlyCollection<KeyValuePair<uint, SteamApps.PICSChangesCallback.PICSChangeData>> appChanges)
+        {
+            ThrowIfDisposed();
+            ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
+            ArgumentNullException.ThrowIfNull(appChanges);
 		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 		ArgumentNullException.ThrowIfNull(appChanges);
 
@@ -174,7 +225,10 @@ internal sealed class GlobalCache : SerializableFile {
 		Utilities.InBackground(Save);
 	}
 
-	internal void OnPICSChangesRestart(uint currentChangeNumber) {
+	internal void OnPICSChangesRestart(uint currentChangeNumber)
+        {
+            ThrowIfDisposed();
+            ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 
 		if (currentChangeNumber <= LastChangeNumber) {
@@ -186,7 +240,9 @@ internal sealed class GlobalCache : SerializableFile {
 		Reset();
 	}
 
-	internal void Reset(bool clear = false) {
+	internal void Reset(bool clear = false)
+        {
+            ThrowIfDisposed();
 		AppChangeNumbers.Clear();
 
 		if (clear) {
@@ -197,10 +253,22 @@ internal sealed class GlobalCache : SerializableFile {
 		Utilities.InBackground(Save);
 	}
 
-	internal bool ShouldRefreshAppInfo(uint appID) => !AppChangeNumbers.ContainsKey(appID);
-	internal bool ShouldRefreshDepotKey(uint depotID) => !DepotKeys.ContainsKey(depotID);
+	internal bool ShouldRefreshAppInfo(uint appID)
+        {
+            ThrowIfDisposed();
+            return !AppChangeNumbers.ContainsKey(appID);
+        }
 
-	internal void UpdateAppChangeNumbers(IReadOnlyCollection<KeyValuePair<uint, uint>> appChangeNumbers) {
+        internal bool ShouldRefreshDepotKey(uint depotID)
+        {
+            ThrowIfDisposed();
+            return !DepotKeys.ContainsKey(depotID);
+        }
+
+	internal void UpdateAppChangeNumbers(IReadOnlyCollection<KeyValuePair<uint, uint>> appChangeNumbers)
+        {
+            ThrowIfDisposed();
+            ArgumentNullException.ThrowIfNull(appChangeNumbers);
 		ArgumentNullException.ThrowIfNull(appChangeNumbers);
 
 		bool save = false;
@@ -219,7 +287,11 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 	}
 
-	internal void UpdateAppTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> appTokens, IReadOnlyCollection<uint> publicAppIDs) {
+	internal void UpdateAppTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> appTokens, IReadOnlyCollection<uint> publicAppIDs)
+        {
+            ThrowIfDisposed();
+            ArgumentNullException.ThrowIfNull(appTokens);
+            ArgumentNullException.ThrowIfNull(publicAppIDs);
 		ArgumentNullException.ThrowIfNull(appTokens);
 		ArgumentNullException.ThrowIfNull(publicAppIDs);
 
@@ -248,7 +320,10 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 	}
 
-	internal void UpdateDepotKey(SteamApps.DepotKeyCallback depotKeyResult) {
+	internal void UpdateDepotKey(SteamApps.DepotKeyCallback depotKeyResult)
+        {
+            ThrowIfDisposed();
+            ArgumentNullException.ThrowIfNull(depotKeyResult);
 		ArgumentNullException.ThrowIfNull(depotKeyResult);
 
 		if (depotKeyResult.Result != EResult.OK) {
@@ -272,7 +347,12 @@ internal sealed class GlobalCache : SerializableFile {
 		Utilities.InBackground(Save);
 	}
 
-	internal void UpdateSubmittedData(IReadOnlyDictionary<uint, ulong> apps, IReadOnlyDictionary<uint, ulong> packages, IReadOnlyDictionary<uint, string> depots) {
+	internal void UpdateSubmittedData(IReadOnlyDictionary<uint, ulong> apps, IReadOnlyDictionary<uint, ulong> packages, IReadOnlyDictionary<uint, string> depots)
+        {
+            ThrowIfDisposed();
+            ArgumentNullException.ThrowIfNull(apps);
+            ArgumentNullException.ThrowIfNull(packages);
+            ArgumentNullException.ThrowIfNull(depots);
 		ArgumentNullException.ThrowIfNull(apps);
 		ArgumentNullException.ThrowIfNull(packages);
 		ArgumentNullException.ThrowIfNull(depots);
@@ -305,24 +385,6 @@ internal sealed class GlobalCache : SerializableFile {
 			SubmittedDepots[depotID] = key;
 			save = true;
 		}
-
-		if (save) {
-			Utilities.InBackground(Save);
-		}
-	}
-
-	private static bool IsValidDepotKey(string depotKey) {
-		ArgumentException.ThrowIfNullOrEmpty(depotKey);
-
-		return (depotKey.Length == 64) && Utilities.IsValidHexadecimalText(depotKey);
-	}
-
-	private static async Task<(bool Success, FrozenSet<uint>? Result)> ResolveKnownDepotIDs(CancellationToken cancellationToken = default) {
-		if (ASF.WebBrowser == null) {
-			throw new InvalidOperationException(nameof(ASF.WebBrowser));
-		}
-
-		Uri request = new($"{SharedInfo.ServerURL}/knowndepots.csv");
 
 		StreamResponse? response = await ASF.WebBrowser.UrlGetToStream(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
