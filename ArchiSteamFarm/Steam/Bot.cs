@@ -580,10 +580,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 							query = botName.StartsWith("..", StringComparison.Ordinal) ? query.TakeWhile(bot => bot != firstBot) : query.SkipWhile(bot => bot != firstBot);
 
-							foreach (Bot bot in query) {
-								result.Add(bot);
-							}
-
+							result.UnionWith(query);
 							result.Add(firstBot);
 
 							continue;
@@ -592,10 +589,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 							Bot? lastBot = GetBot(botRange[1]);
 
 							if ((lastBot != null) && (BotsComparer.Compare(firstBot.BotName, lastBot.BotName) <= 0)) {
-								foreach (Bot bot in Bots.AsLinqThreadSafeEnumerable().OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).SkipWhile(bot => bot != firstBot).TakeWhile(bot => bot != lastBot)) {
-									result.Add(bot);
-								}
-
+								result.UnionWith(Bots.AsLinqThreadSafeEnumerable().OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).SkipWhile(bot => bot != firstBot).TakeWhile(bot => bot != lastBot));
 								result.Add(lastBot);
 
 								continue;

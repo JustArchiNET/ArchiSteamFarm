@@ -170,9 +170,7 @@ public sealed class Trading : IDisposable {
 		}
 
 		// Now we can add items that we're supposed to receive, this one doesn't require advanced amounts logic since we can just add items regardless
-		foreach (Asset itemToReceive in itemsToReceive) {
-			inventoryState.Add(itemToReceive);
-		}
+		inventoryState.UnionWith(itemsToReceive);
 
 		// Now we can get final sets state of our inventory after the exchange
 		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> finalSets = GetInventorySets(inventoryState);

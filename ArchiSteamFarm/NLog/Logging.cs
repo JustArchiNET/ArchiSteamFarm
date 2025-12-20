@@ -512,9 +512,7 @@ internal static class Logging {
 			return;
 		}
 
-		foreach (LoggingRule loggingRule in LogManager.Configuration.LoggingRules.Where(static loggingRule => loggingRule.Targets.Any(static target => target is ColoredConsoleTarget or ConsoleTarget))) {
-			ConsoleLoggingRules.Add(loggingRule);
-		}
+		ConsoleLoggingRules.UnionWith(LogManager.Configuration.LoggingRules.Where(static loggingRule => loggingRule.Targets.Any(static target => target is ColoredConsoleTarget or ConsoleTarget)));
 	}
 
 	private static void InitializeTarget(LoggingConfiguration config, Target target) {
