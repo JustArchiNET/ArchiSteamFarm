@@ -803,4 +803,8 @@ Proces: {1}</value>
 	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
 		<value>Ați declarat --necesar sistemului, deși sistemul dvs. de operare lipsește dependențele necesare pentru ca această caracteristică să funcționeze. Luați în considerare instalarea autobuzului, deși puteți ignora în siguranță această avertizare dacă nu aveți nevoie de inhibiție pentru a funcționa corect.</value>
 	</data>
+	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
+		<value>Decriptarea componentei bazei de date {0} a eșuat. Acest lucru poate fi OK dacă tocmai l-ai schimbat pe bot-ul {1}, atunci nu ar trebui să mai observi acest avertisment la următoarea rulare. Altfel, ar trebui să investighezi şi să afli exact motivul eşecului.</value>
+		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
+	</data>
 </root>

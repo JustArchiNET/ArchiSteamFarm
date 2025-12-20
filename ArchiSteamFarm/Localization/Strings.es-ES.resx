@@ -802,4 +802,8 @@ Tiempo de actividad del proceso: {1}</value>
 	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
 		<value>Declaraste --system-required, aunque tu sistema operativo no tiene las dependencias para que esa característica funcione. Considera instalar dbus, aunque también puedes ignorar esta advertencia si no requieres inhibición para trabajar correctamente.</value>
 	</data>
+	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
+		<value>El descifrado del componente de base de datos {0} ha fallado. Esto puede estar bien si acabas de cambiar la {1}de tu bot, ya no deberías observar esta advertencia en la próxima ejecución entonces. De lo contrario, debería investigar y averiguar la razón exacta del fracaso.</value>
+		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
+	</data>
 </root>

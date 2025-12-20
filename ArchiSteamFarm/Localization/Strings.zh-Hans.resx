@@ -803,4 +803,8 @@
 	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
 		<value>您已声明 --system-require，但您的操作系统缺少该功能所需的依赖条件。请考虑安装 dbus，但如果您不需要阻止系统休眠，也可以安全地忽略这个警告。</value>
 	</data>
+	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
+		<value>解密 {0} 数据库组件失败。如果您刚刚更改了机器人的 {1}，则可能是正常现象，并且下次运行时应该不会再看到这个警告。否则，您应该检查并找出失败的具体原因。</value>
+		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
+	</data>
 </root>
