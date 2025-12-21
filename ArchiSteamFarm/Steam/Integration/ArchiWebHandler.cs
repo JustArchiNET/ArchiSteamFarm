@@ -1655,6 +1655,8 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "max_results", 50000 }
 		};
 
+		uint previousLastAppID = 0;
+
 		HashSet<uint>? result = null;
 
 		using WebAPI.AsyncInterface steamAppsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamStoreService);
@@ -1715,11 +1717,11 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			uint lastAppID = response["last_appid"].AsUnsignedInteger();
 
-			if (lastAppID == 0) {
+			if ((lastAppID == 0) || (lastAppID <= previousLastAppID)) {
 				break;
 			}
 
-			arguments["last_appid"] = lastAppID;
+			arguments["last_appid"] = previousLastAppID = lastAppID;
 		}
 
 		return result;
