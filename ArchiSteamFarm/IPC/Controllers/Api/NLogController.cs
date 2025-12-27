@@ -87,6 +87,7 @@ public sealed class NLogController : ArchiController {
 
 	[EndpointDescription("This API endpoint requires a websocket connection")]
 	[EndpointSummary("Fetches ASF log in realtime")]
+	[ProducesResponseType((int) HttpStatusCode.SwitchingProtocols)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult> Get() {
 		if (HttpContext == null) {
