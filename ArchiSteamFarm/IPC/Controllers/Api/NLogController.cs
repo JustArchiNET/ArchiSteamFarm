@@ -55,7 +55,8 @@ public sealed class NLogController : ArchiController {
 		ApplicationLifetime = applicationLifetime;
 	}
 
-	[EndpointSummary("Fetches ASF log file, this works on assumption that the log file is in fact generated, as user could disable it through custom configuration")]
+	[EndpointDescription("This works on assumption that the log file is in fact generated, as user could disable it through custom configuration")]
+	[EndpointSummary("Fetches ASF log file")]
 	[HttpGet("File")]
 	[ProducesResponseType<GenericResponse<LogResponse>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
