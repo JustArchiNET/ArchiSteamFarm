@@ -23,11 +23,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
@@ -62,6 +67,48 @@ internal sealed class DocumentTransformer : IOpenApiDocumentTransformer {
 				Type = SecuritySchemeType.ApiKey
 			}
 		);
+
+		// Add limited info support for our NLog endpoint
+		ApiDescription? nlogEndpont = context.DescriptionGroups.SelectMany(static group => group.Items).FirstOrDefault(static endpoint => (endpoint.HttpMethod == null) && (endpoint.RelativePath == "Api/NLog"));
+
+		if (nlogEndpont != null) {
+			OpenApiOperation operation = new() {
+				Description = nlogEndpont.ActionDescriptor.EndpointMetadata.OfType<EndpointDescriptionAttribute>().FirstOrDefault()?.Description,
+
+				Responses = new OpenApiResponses {
+					{
+						StatusCodes.Status101SwitchingProtocols.ToString(),
+
+						new OpenApiResponse {
+							Description = nameof(HttpStatusCode.SwitchingProtocols)
+						}
+					},
+
+					{
+						StatusCodes.Status400BadRequest.ToString(),
+
+						new OpenApiResponse {
+							Description = nameof(HttpStatusCode.BadRequest)
+						}
+					}
+				},
+
+				Summary = nlogEndpont.ActionDescriptor.EndpointMetadata.OfType<EndpointSummaryAttribute>().FirstOrDefault()?.Summary,
+
+				Tags = new HashSet<OpenApiTagReference>(1) { new("NLog", document) }
+			};
+
+			document.Paths.Add(
+				$"/{nlogEndpont.RelativePath}", new OpenApiPathItem {
+					Operations = new Dictionary<HttpMethod, OpenApiOperation>(2) {
+						{ HttpMethod.Connect, operation },
+
+						// This is in fact incorrect, however, swagger ui does not display connect-only methods, so we'll add fake GET as well
+						{ HttpMethod.Get, operation }
+					}
+				}
+			);
+		}
 
 		return Task.CompletedTask;
 	}

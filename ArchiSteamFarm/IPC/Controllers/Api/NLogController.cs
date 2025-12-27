@@ -23,7 +23,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
@@ -87,7 +86,6 @@ public sealed class NLogController : ArchiController {
 
 	[EndpointDescription("This API endpoint requires a websocket connection")]
 	[EndpointSummary("Fetches ASF log in realtime")]
-	[ProducesResponseType<IEnumerable<GenericResponse<string>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult> Get() {
 		if (HttpContext == null) {
