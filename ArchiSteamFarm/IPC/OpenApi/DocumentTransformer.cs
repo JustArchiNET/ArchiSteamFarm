@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -77,7 +78,7 @@ internal sealed class DocumentTransformer : IOpenApiDocumentTransformer {
 
 				Responses = new OpenApiResponses {
 					{
-						StatusCodes.Status101SwitchingProtocols.ToString(),
+						StatusCodes.Status101SwitchingProtocols.ToString(CultureInfo.InvariantCulture),
 
 						new OpenApiResponse {
 							Description = nameof(HttpStatusCode.SwitchingProtocols)
@@ -85,7 +86,7 @@ internal sealed class DocumentTransformer : IOpenApiDocumentTransformer {
 					},
 
 					{
-						StatusCodes.Status400BadRequest.ToString(),
+						StatusCodes.Status400BadRequest.ToString(CultureInfo.InvariantCulture),
 
 						new OpenApiResponse {
 							Description = nameof(HttpStatusCode.BadRequest)
