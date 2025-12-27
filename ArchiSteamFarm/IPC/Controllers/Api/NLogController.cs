@@ -57,7 +57,7 @@ public sealed class NLogController : ArchiController {
 
 	[EndpointSummary("Fetches ASF log file, this works on assumption that the log file is in fact generated, as user could disable it through custom configuration")]
 	[HttpGet("File")]
-	[ProducesResponseType<GenericResponse<GenericResponse<LogResponse>>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse<LogResponse>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> FileGet([Description("Maximum amount of lines from the log file returned. The respone naturally might have less amount than specified, if you've read whole file already")] int count = 100, [Description("Ending index, used for pagination. Omit it for the first request, then initialize to TotalLines returned, and on every following request subtract count that you've used in the previous request from it until you hit 0 or less, which means you've read whole file already")] int lastAt = 0) {
