@@ -111,9 +111,10 @@ internal sealed class DocumentTransformer : IOpenApiDocumentTransformer {
 			document.Paths.Add(
 				$"/{nlogEndpont.RelativePath}", new OpenApiPathItem {
 					Operations = new Dictionary<HttpMethod, OpenApiOperation>(2) {
+						// HTTP/2 use CONNECT for that endpoint
 						{ HttpMethod.Connect, operation },
 
-						// This is in fact incorrect, however, swagger ui does not display connect-only methods, so we'll add fake GET as well
+						// But HTTP/1.1 use GET with upgrade, so this is also valid
 						{ HttpMethod.Get, operation }
 					}
 				}
