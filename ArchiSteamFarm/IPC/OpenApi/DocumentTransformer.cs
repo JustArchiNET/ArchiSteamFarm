@@ -94,6 +94,15 @@ internal sealed class DocumentTransformer : IOpenApiDocumentTransformer {
 					}
 				},
 
+				Security = new List<OpenApiSecurityRequirement>(1) {
+					new() {
+						{
+							new OpenApiSecuritySchemeReference(nameof(GlobalConfig.IPCPassword), document),
+							[]
+						}
+					}
+				},
+
 				Summary = nlogEndpont.ActionDescriptor.EndpointMetadata.OfType<EndpointSummaryAttribute>().FirstOrDefault()?.Summary,
 
 				Tags = new HashSet<OpenApiTagReference>(1) { new("NLog", document) }
