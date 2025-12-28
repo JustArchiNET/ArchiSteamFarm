@@ -86,6 +86,14 @@ internal sealed class DocumentTransformer : IOpenApiDocumentTransformer {
 					},
 
 					{
+						StatusCodes.Status200OK.ToString(CultureInfo.InvariantCulture),
+
+						new OpenApiResponse {
+							Description = nameof(HttpStatusCode.OK)
+						}
+					},
+
+					{
 						StatusCodes.Status400BadRequest.ToString(CultureInfo.InvariantCulture),
 
 						new OpenApiResponse {
