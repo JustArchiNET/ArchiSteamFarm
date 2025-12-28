@@ -116,8 +116,8 @@ public static class JsonUtilities {
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	private static JsonSerializerOptions CreateDefaultJsonSerializerOptions(bool writeIndented = false) =>
-		new(JsonSerializerDefaults.Strict) {
+	private static JsonSerializerOptions CreateDefaultJsonSerializerOptions(bool writeIndented = false) {
+		JsonSerializerOptions result = new(JsonSerializerDefaults.Strict) {
 			AllowTrailingCommas = true,
 			Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
 			IndentCharacter = '\t',
@@ -128,6 +128,11 @@ public static class JsonUtilities {
 			UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip,
 			WriteIndented = writeIndented
 		};
+
+		result.MakeReadOnly();
+
+		return result;
+	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2070", Justification = "We don't care about trimmed methods, it's not like we can make it work differently anyway")]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2075", Justification = "We don't care about trimmed properties, it's not like we can make it work differently anyway")]
