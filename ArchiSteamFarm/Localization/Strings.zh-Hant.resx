@@ -800,4 +800,11 @@
 		<value>輸入：{0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>您宣告了 --system-required，但您的作業系統缺少該功能所需的相依套件。請考慮安裝 dbus。如果您不需要此功能，則可以直接忽略這個警告。</value>
+	</data>
+	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
+		<value>無法解密資料庫 {0}。若您剛剛更改了 Bot 的 {1}，可能是正常現象，在下次執行時就不會再看到這則警告。否則您應檢查並找出失敗的確切原因。</value>
+		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
+	</data>
 </root>
