@@ -280,6 +280,7 @@ internal static class ArchiKestrel {
 			"/swagger", static options => {
 				options.DefaultFonts = false;
 				options.OpenApiRoutePattern = $"/swagger/{SharedInfo.ASF}/swagger.json";
+				options.Telemetry = false;
 				options.Theme = ScalarTheme.Kepler;
 				options.Title = $"{SharedInfo.AssemblyName} API";
 			}
