@@ -45,7 +45,7 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 	[HttpGet("Confirmations")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GenericResponse<IReadOnlyCollection<Confirmation>>>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> ConfirmationsGet(string botNames) {
+	public async Task<ActionResult<GenericResponse>> ConfirmationsGet([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -100,7 +100,7 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 	[HttpDelete]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> Delete(string botNames) {
+	public async Task<ActionResult<GenericResponse>> Delete([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -151,7 +151,7 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 	[HttpGet("Token")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> TokenGet(string botNames) {
+	public async Task<ActionResult<GenericResponse>> TokenGet([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
