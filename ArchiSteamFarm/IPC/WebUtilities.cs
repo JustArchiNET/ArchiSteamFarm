@@ -28,6 +28,8 @@ using System.Linq;
 namespace ArchiSteamFarm.IPC;
 
 internal static class WebUtilities {
+	internal const string BotNamesParameterDescription = "Plural argument accepting one or many bots, acts the same as [Bots] parameter in the commands - https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands#bots-argument";
+
 	internal static string? GetUnifiedName(this Type type) {
 		ArgumentNullException.ThrowIfNull(type);
 

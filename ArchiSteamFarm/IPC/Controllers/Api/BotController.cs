@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
@@ -48,7 +49,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/AddLicense")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, BotAddLicenseResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> AddLicensePost(string botNames, [FromBody] BotAddLicenseRequest request) {
+	public async Task<ActionResult<GenericResponse>> AddLicensePost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotAddLicenseRequest request) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -77,7 +78,7 @@ public sealed class BotController : ArchiController {
 	[HttpDelete("{botNames:required}")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> BotDelete(string botNames) {
+	public async Task<ActionResult<GenericResponse>> BotDelete([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -95,7 +96,7 @@ public sealed class BotController : ArchiController {
 	[HttpGet("{botNames:required}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, Bot>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public ActionResult<GenericResponse> BotGet(string botNames) {
+	public ActionResult<GenericResponse> BotGet([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -111,7 +112,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, bool>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> BotPost(string botNames, [FromBody] BotRequest request) {
+	public async Task<ActionResult<GenericResponse>> BotPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotRequest request) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -185,7 +186,7 @@ public sealed class BotController : ArchiController {
 	[HttpDelete("{botNames:required}/GamesToRedeemInBackground")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundDelete(string botNames) {
+	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundDelete([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -203,7 +204,7 @@ public sealed class BotController : ArchiController {
 	[HttpGet("{botNames:required}/GamesToRedeemInBackground")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundGet(string botNames) {
+	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundGet([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -228,7 +229,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/GamesToRedeemInBackground")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, OrderedDictionary<string, string>>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundPost(string botNames, [FromBody] BotGamesToRedeemInBackgroundRequest request) {
+	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotGamesToRedeemInBackgroundRequest request) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -263,7 +264,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/Input")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> InputPost(string botNames, [FromBody] BotInputRequest request) {
+	public async Task<ActionResult<GenericResponse>> InputPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotInputRequest request) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -286,7 +287,7 @@ public sealed class BotController : ArchiController {
 	[HttpGet("{botNames:required}/Inventory/{appID}/{contextID}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, BotInventoryResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> InventoryGet(string botNames, uint appID, ulong contextID, [FromQuery] string? language = null) {
+	public async Task<ActionResult<GenericResponse>> InventoryGet([Description(WebUtilities.BotNamesParameterDescription)] string botNames, uint appID, ulong contextID, [FromQuery] string? language = null) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		if (appID == 0) {
@@ -337,7 +338,7 @@ public sealed class BotController : ArchiController {
 	[HttpGet("{botNames:required}/Inventory")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, ImmutableDictionary<uint, InventoryAppData>>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> InventoryInfoGet(string botNames) {
+	public async Task<ActionResult<GenericResponse>> InventoryInfoGet([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -361,7 +362,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/Pause")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> PausePost(string botNames, [FromBody] BotPauseRequest request) {
+	public async Task<ActionResult<GenericResponse>> PausePost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotPauseRequest request) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -380,7 +381,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/RedeemPoints/{definitionID:required}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, EResult>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> RedeemPointsPost(string botNames, uint definitionID, [FromQuery] bool forced = false) {
+	public async Task<ActionResult<GenericResponse>> RedeemPointsPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, uint definitionID, [FromQuery] bool forced = false) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
 
@@ -406,7 +407,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/Redeem")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, CStore_RegisterCDKey_Response>>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> RedeemPost(string botNames, [FromBody] BotRedeemRequest request) {
+	public async Task<ActionResult<GenericResponse>> RedeemPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotRedeemRequest request) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -442,7 +443,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/RemoveLicense")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, BotRemoveLicenseResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> RemoveLicensePost(string botNames, [FromBody] BotRemoveLicenseRequest request) {
+	public async Task<ActionResult<GenericResponse>> RemoveLicensePost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotRemoveLicenseRequest request) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -471,7 +472,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botName:required}/Rename")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> RenamePost(string botName, [FromBody] BotRenameRequest request) {
+	public async Task<ActionResult<GenericResponse>> RenamePost([Description(WebUtilities.BotNamesParameterDescription)] string botName, [FromBody] BotRenameRequest request) {
 		ArgumentException.ThrowIfNullOrEmpty(botName);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -496,7 +497,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/Resume")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> ResumePost(string botNames) {
+	public async Task<ActionResult<GenericResponse>> ResumePost([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -514,7 +515,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/Start")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> StartPost(string botNames) {
+	public async Task<ActionResult<GenericResponse>> StartPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -532,7 +533,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/Stop")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> StopPost(string botNames) {
+	public async Task<ActionResult<GenericResponse>> StopPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);

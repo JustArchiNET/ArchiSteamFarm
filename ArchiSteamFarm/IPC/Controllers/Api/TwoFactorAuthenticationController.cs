@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -69,7 +70,7 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 	[HttpPost("Confirmations")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GenericResponse<IReadOnlyCollection<Confirmation>>>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> ConfirmationsPost(string botNames, [FromBody] TwoFactorAuthenticationConfirmationsRequest request) {
+	public async Task<ActionResult<GenericResponse>> ConfirmationsPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] TwoFactorAuthenticationConfirmationsRequest request) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -124,7 +125,7 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 	[HttpPost]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> Post(string botNames, [FromBody] MobileAuthenticator authenticator) {
+	public async Task<ActionResult<GenericResponse>> Post([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] MobileAuthenticator authenticator) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(authenticator);
 
