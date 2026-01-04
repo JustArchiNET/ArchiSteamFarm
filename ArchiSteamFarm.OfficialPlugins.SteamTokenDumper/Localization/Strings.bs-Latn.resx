@@ -68,26 +68,10 @@
 		<value>{0} je trenutno onemogućen po vašoj konfiguraciji. Ako želite pomoći SteamDB u dostavljanju podataka, molimo pogledajte naš wiki.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
 	<data name="BotRetrievingAppInfos" xml:space="preserve">
 		<value>Preuzimanje informacija o {0} aplikaciji...</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
 	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
 		<value>Nova aplikacija: {0}</value>
 		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
@@ -104,10 +88,4 @@
 		<value>Verifikovani paketi: {0}</value>
 		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
 	</data>
-	
-	
-	
-	
-	
-	
 </root>
