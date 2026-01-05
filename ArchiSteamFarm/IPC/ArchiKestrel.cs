@@ -456,7 +456,7 @@ internal static class ArchiKestrel {
 			}
 
 			// Set up custom config to be used
-			builder.WebHost.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(SharedInfo.IPCConfigFile, false, true).Build());
+			builder.WebHost.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(SharedInfo.IPCConfigFile, false, Program.ConfigWatch).Build());
 		}
 
 		builder.WebHost.ConfigureKestrel(options => {
