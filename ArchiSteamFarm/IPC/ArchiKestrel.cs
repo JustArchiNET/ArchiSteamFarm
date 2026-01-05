@@ -534,15 +534,19 @@ internal static class ArchiKestrel {
 		// Init history logger for /Api/Log usage
 		Logging.InitHistoryLogger();
 
-		WebApplication webApplication = await CreateWebApplication().ConfigureAwait(false);
+		WebApplication? webApplication = null;
 
 		try {
 			// Start the server
+			webApplication = await CreateWebApplication().ConfigureAwait(false);
+
 			await webApplication.StartAsync().ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
-			await webApplication.DisposeAsync().ConfigureAwait(false);
+			if (webApplication != null) {
+				await webApplication.DisposeAsync().ConfigureAwait(false);
+			}
 
 			return;
 		}
