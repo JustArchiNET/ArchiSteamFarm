@@ -64,6 +64,14 @@
 		<value>{0} buvo išjungtas, dėl trūkstamos dalies</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
+	<data name="PluginDisabledInConfig" xml:space="preserve">
+		<value>Pagal jūsų konfigūraciją {0} šiuo metu yra išjungtas. Jei norite padėti SteamDB pateikti duomenis, peržiūrėkite mūsų wiki.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} sėkmingai inicializuotas, iš anksto dėkojame už pagalbą. Pirmasis pateikimas bus atliktas maždaug po {1}.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} nepavyko užkrauti, bus įrašyta nauja instancija...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
@@ -87,6 +95,10 @@
 		<value>Iš viso baigta gauti {0} programos prieigos raktų.</value>
 		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
 	</data>
+	<data name="BotRetrievingTotalDepots" xml:space="preserve">
+		<value>Gaunami visų {0} programų saugyklos raktai...</value>
+		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
+	</data>
 	<data name="BotRetrievingAppInfos" xml:space="preserve">
 		<value>Gaunama {0} programos informacijos...</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
@@ -95,12 +107,32 @@
 		<value>Baigta gauti {0} programos informacijos.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Užbaigta {0} iš {1} saugyklos rakto užklausų.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot key requests that were successfully answered, {1} will be replaced by the number (count this batch) of depot key requests that were supposed to be sent</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
+		<value>Baigta gauti visų {0} programų saugyklos raktų paieška.</value>
+		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
+	</data>
 	<data name="SubmissionNoNewData" xml:space="preserve">
 		<value>Nėra jokių naujų duomenų, kuriuos būtų galima pateikti, viskas jau atnaujinta.</value>
+	</data>
+	<data name="SubmissionNoContributorSet" xml:space="preserve">
+		<value>Nepavyko pateikti duomenų, nes nėra nustatyto galiojančio SteamID, kurį galėtume klasifikuoti kaip bendraautorį. Apsvarstykite galimybę nustatyti {0} savybę.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
+	</data>
+	<data name="SubmissionInProgress" xml:space="preserve">
+		<value>Pateikiamas bendras užregistruotų programų / paketų / saugyklų skaičius: {0}/{1}/{2}...</value>
+		<comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
 	</data>
 	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
 		<value>Pateiktis nepavyko dėl per daug išsiustų prašymų, pradėsime iš naujo už maždaug {0} nuo dabar.</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="SubmissionSuccessful" xml:space="preserve">
+		<value>Duomenys sėkmingai pateikti. Serveris užregistravo iš viso naujų programų / paketų / saugyklų: {0} ({1} patvirtinta) / {2} ({3} patvirtinta) / {4} ({5} patvirtinta).</value>
+		<comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
 	</data>
 	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
 		<value>Naujos programos: {0}</value>
@@ -118,6 +150,14 @@
 		<value>Patvirtinti paketai: {0}</value>
 		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
 	</data>
+	<data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+		<value>Naujos programos: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+		<value>Patvirtintos programos: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="PluginSecretListInitialized" xml:space="preserve">
 		<value>{0} inicijuota, įskiepis neišspręs nė vieno iš šių dalykų: {1}.</value>
 		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
@@ -127,5 +167,8 @@
 	</data>
 	<data name="ValidatingGlobalCacheIntegrity" xml:space="preserve">
 		<value>Tvirtinamas STD global talpyklos vientisumas...</value>
+	</data>
+	<data name="GlobalCacheIntegrityValidationFailed" xml:space="preserve">
+		<value>Nepavyko patikrinti STD visuotinės talpyklos vientisumo. Tai rodo galimą failo / atminties sugadinimą, vietoj to bus inicijuota nauja instancija.</value>
 	</data>
 </root>
