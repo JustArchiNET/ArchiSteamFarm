@@ -1399,11 +1399,20 @@ public sealed class Commands {
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
-			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
-				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
-			}
+			switch (target.ToUpperInvariant()) {
+				case "ALL":
+					appIDs.UnionWith(Bot.BotDatabase.FarmingBlacklistAppIDs);
 
-			appIDs.Add(appID);
+					break;
+				default:
+					if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
+					}
+
+					appIDs.Add(appID);
+
+					break;
+			}
 		}
 
 		if (!Bot.BotDatabase.FarmingBlacklistAppIDs.RemoveRange(appIDs)) {
@@ -1556,11 +1565,20 @@ public sealed class Commands {
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
-			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
-				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
-			}
+			switch (target.ToUpperInvariant()) {
+				case "ALL":
+					appIDs.UnionWith(Bot.BotDatabase.FarmingPriorityQueueAppIDs);
 
-			appIDs.Add(appID);
+					break;
+				default:
+					if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
+					}
+
+					appIDs.Add(appID);
+
+					break;
+			}
 		}
 
 		if (!Bot.BotDatabase.FarmingPriorityQueueAppIDs.RemoveRange(appIDs)) {
@@ -1975,11 +1993,20 @@ public sealed class Commands {
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
-			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
-				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
-			}
+			switch (target.ToUpperInvariant()) {
+				case "ALL":
+					appIDs.UnionWith(Bot.BotDatabase.MatchActivelyBlacklistAppIDs);
 
-			appIDs.Add(appID);
+					break;
+				default:
+					if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
+					}
+
+					appIDs.Add(appID);
+
+					break;
+			}
 		}
 
 		return FormatBotResponse(Bot.BotDatabase.MatchActivelyBlacklistAppIDs.RemoveRange(appIDs) ? Strings.Done : Strings.NothingFound);
@@ -3416,11 +3443,20 @@ public sealed class Commands {
 		HashSet<ulong> targetIDs = [];
 
 		foreach (string target in targets) {
-			if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0) || !new SteamID(targetID).IsIndividualAccount) {
-				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(targetID)));
-			}
+			switch (target.ToUpperInvariant()) {
+				case "ALL":
+					targetIDs.UnionWith(Bot.BotDatabase.TradingBlacklistSteamIDs);
 
-			targetIDs.Add(targetID);
+					break;
+				default:
+					if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0) || !new SteamID(targetID).IsIndividualAccount) {
+						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(targetID)));
+					}
+
+					targetIDs.Add(targetID);
+
+					break;
+			}
 		}
 
 		return FormatBotResponse(Bot.BotDatabase.TradingBlacklistSteamIDs.RemoveRange(targetIDs) ? Strings.Done : Strings.NothingFound);
