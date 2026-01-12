@@ -16,7 +16,7 @@
 		<PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0" />
-		<PackageVersion Include="Scalar.AspNetCore" Version="2.12.4" />
+		<PackageVersion Include="Scalar.AspNetCore" Version="2.12.5" />
 		<PackageVersion Include="SteamKit2" Version="3.3.1" />
 		<PackageVersion Include="System.Composition" Version="10.0.1" />
 		<PackageVersion Include="System.Composition.AttributedModel" Version="10.0.1" />
