@@ -1426,7 +1426,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return null;
 		}
 
-		return ((ArchiHandler.EPrivacySetting) privacySettings.privacy_state == ArchiHandler.EPrivacySetting.Public) && ((ArchiHandler.EPrivacySetting) privacySettings.privacy_state_inventory == ArchiHandler.EPrivacySetting.Public);
+		return ((ECommunityPrivacy) privacySettings.privacy_state == ECommunityPrivacy.Public) && ((ECommunityPrivacy) privacySettings.privacy_state_inventory == ECommunityPrivacy.Public);
 	}
 
 	internal async Task IdleGame(Game game) {

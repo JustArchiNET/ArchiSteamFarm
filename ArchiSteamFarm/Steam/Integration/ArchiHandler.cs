@@ -1239,11 +1239,4 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 
 		Client.Send(request);
 	}
-
-	internal enum EPrivacySetting : byte {
-		Unknown,
-		Private,
-		FriendsOnly,
-		Public
-	}
 }

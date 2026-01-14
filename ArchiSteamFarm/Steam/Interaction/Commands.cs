@@ -2473,17 +2473,17 @@ public sealed class Commands {
 				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(privacySettingsArgs)));
 		}
 
-		ArchiHandler.EPrivacySetting profile = ArchiHandler.EPrivacySetting.Private;
-		ArchiHandler.EPrivacySetting ownedGames = ArchiHandler.EPrivacySetting.Private;
-		ArchiHandler.EPrivacySetting playtime = ArchiHandler.EPrivacySetting.Private;
-		ArchiHandler.EPrivacySetting friendsList = ArchiHandler.EPrivacySetting.Private;
-		ArchiHandler.EPrivacySetting inventory = ArchiHandler.EPrivacySetting.Private;
-		ArchiHandler.EPrivacySetting inventoryGifts = ArchiHandler.EPrivacySetting.Private;
+		ECommunityPrivacy profile = ECommunityPrivacy.Private;
+		ECommunityPrivacy ownedGames = ECommunityPrivacy.Private;
+		ECommunityPrivacy playtime = ECommunityPrivacy.Private;
+		ECommunityPrivacy friendsList = ECommunityPrivacy.Private;
+		ECommunityPrivacy inventory = ECommunityPrivacy.Private;
+		ECommunityPrivacy inventoryGifts = ECommunityPrivacy.Private;
 		UserPrivacy.ECommentPermission comments = UserPrivacy.ECommentPermission.Private;
 
 		// Converting digits to enum
 		for (byte index = 0; index < privacySettingsArgs.Length; index++) {
-			if (!Enum.TryParse(privacySettingsArgs[index], true, out ArchiHandler.EPrivacySetting privacySetting) || (privacySetting == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(privacySetting)) {
+			if (!Enum.TryParse(privacySettingsArgs[index], true, out ECommunityPrivacy privacySetting) || (privacySetting == ECommunityPrivacy.Invalid) || !Enum.IsDefined(privacySetting)) {
 				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(privacySettingsArgs)));
 			}
 
@@ -2547,15 +2547,15 @@ public sealed class Commands {
 
 					// Comments use different numbers than everything else, but we want to have this command consistent for end-user, so we'll map them
 					switch (privacySetting) {
-						case ArchiHandler.EPrivacySetting.FriendsOnly:
+						case ECommunityPrivacy.FriendsOnly:
 							comments = UserPrivacy.ECommentPermission.FriendsOnly;
 
 							break;
-						case ArchiHandler.EPrivacySetting.Private:
+						case ECommunityPrivacy.Private:
 							comments = UserPrivacy.ECommentPermission.Private;
 
 							break;
-						case ArchiHandler.EPrivacySetting.Public:
+						case ECommunityPrivacy.Public:
 							comments = UserPrivacy.ECommentPermission.Public;
 
 							break;

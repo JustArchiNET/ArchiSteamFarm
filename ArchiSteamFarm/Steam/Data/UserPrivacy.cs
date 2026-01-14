@@ -25,7 +25,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using ArchiSteamFarm.Steam.Integration;
+using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Data;
 
@@ -60,57 +60,57 @@ internal sealed class UserPrivacy {
 		[JsonInclude]
 		[JsonPropertyName("PrivacyFriendsList")]
 		[JsonRequired]
-		internal ArchiHandler.EPrivacySetting FriendsList { get; private init; }
+		internal ECommunityPrivacy FriendsList { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("PrivacyInventory")]
 		[JsonRequired]
-		internal ArchiHandler.EPrivacySetting Inventory { get; private init; }
+		internal ECommunityPrivacy Inventory { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("PrivacyInventoryGifts")]
 		[JsonRequired]
-		internal ArchiHandler.EPrivacySetting InventoryGifts { get; private init; }
+		internal ECommunityPrivacy InventoryGifts { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("PrivacyOwnedGames")]
 		[JsonRequired]
-		internal ArchiHandler.EPrivacySetting OwnedGames { get; private init; }
+		internal ECommunityPrivacy OwnedGames { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("PrivacyPlaytime")]
 		[JsonRequired]
-		internal ArchiHandler.EPrivacySetting Playtime { get; private init; }
+		internal ECommunityPrivacy Playtime { get; private init; }
 
 		[JsonInclude]
 		[JsonPropertyName("PrivacyProfile")]
 		[JsonRequired]
-		internal ArchiHandler.EPrivacySetting Profile { get; private init; }
+		internal ECommunityPrivacy Profile { get; private init; }
 
 		// Constructed from privacy change request
-		internal PrivacySettings(ArchiHandler.EPrivacySetting profile, ArchiHandler.EPrivacySetting ownedGames, ArchiHandler.EPrivacySetting playtime, ArchiHandler.EPrivacySetting friendsList, ArchiHandler.EPrivacySetting inventory, ArchiHandler.EPrivacySetting inventoryGifts) {
-			if ((profile == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(profile)) {
-				throw new InvalidEnumArgumentException(nameof(profile), (int) profile, typeof(ArchiHandler.EPrivacySetting));
+		internal PrivacySettings(ECommunityPrivacy profile, ECommunityPrivacy ownedGames, ECommunityPrivacy playtime, ECommunityPrivacy friendsList, ECommunityPrivacy inventory, ECommunityPrivacy inventoryGifts) {
+			if ((profile == ECommunityPrivacy.Invalid) || !Enum.IsDefined(profile)) {
+				throw new InvalidEnumArgumentException(nameof(profile), (int) profile, typeof(ECommunityPrivacy));
 			}
 
-			if ((ownedGames == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(ownedGames)) {
-				throw new InvalidEnumArgumentException(nameof(ownedGames), (int) ownedGames, typeof(ArchiHandler.EPrivacySetting));
+			if ((ownedGames == ECommunityPrivacy.Invalid) || !Enum.IsDefined(ownedGames)) {
+				throw new InvalidEnumArgumentException(nameof(ownedGames), (int) ownedGames, typeof(ECommunityPrivacy));
 			}
 
-			if ((playtime == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(playtime)) {
-				throw new InvalidEnumArgumentException(nameof(playtime), (int) playtime, typeof(ArchiHandler.EPrivacySetting));
+			if ((playtime == ECommunityPrivacy.Invalid) || !Enum.IsDefined(playtime)) {
+				throw new InvalidEnumArgumentException(nameof(playtime), (int) playtime, typeof(ECommunityPrivacy));
 			}
 
-			if ((friendsList == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(friendsList)) {
-				throw new InvalidEnumArgumentException(nameof(friendsList), (int) friendsList, typeof(ArchiHandler.EPrivacySetting));
+			if ((friendsList == ECommunityPrivacy.Invalid) || !Enum.IsDefined(friendsList)) {
+				throw new InvalidEnumArgumentException(nameof(friendsList), (int) friendsList, typeof(ECommunityPrivacy));
 			}
 
-			if ((inventory == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(inventory)) {
-				throw new InvalidEnumArgumentException(nameof(inventory), (int) inventory, typeof(ArchiHandler.EPrivacySetting));
+			if ((inventory == ECommunityPrivacy.Invalid) || !Enum.IsDefined(inventory)) {
+				throw new InvalidEnumArgumentException(nameof(inventory), (int) inventory, typeof(ECommunityPrivacy));
 			}
 
-			if ((inventoryGifts == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(inventoryGifts)) {
-				throw new InvalidEnumArgumentException(nameof(inventoryGifts), (int) inventoryGifts, typeof(ArchiHandler.EPrivacySetting));
+			if ((inventoryGifts == ECommunityPrivacy.Invalid) || !Enum.IsDefined(inventoryGifts)) {
+				throw new InvalidEnumArgumentException(nameof(inventoryGifts), (int) inventoryGifts, typeof(ECommunityPrivacy));
 			}
 
 			Profile = profile;
