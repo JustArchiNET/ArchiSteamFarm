@@ -45,7 +45,7 @@ internal sealed class UserPrivacy {
 	internal UserPrivacy(PrivacySettings settings, ECommentPermission commentPermission) {
 		ArgumentNullException.ThrowIfNull(settings);
 
-		if (!Enum.IsDefined(commentPermission)) {
+		if ((commentPermission == ECommentPermission.Invalid) || !Enum.IsDefined(commentPermission)) {
 			throw new InvalidEnumArgumentException(nameof(commentPermission), (int) commentPermission, typeof(ECommentPermission));
 		}
 
@@ -123,11 +123,5 @@ internal sealed class UserPrivacy {
 
 		[JsonConstructor]
 		private PrivacySettings() { }
-	}
-
-	internal enum ECommentPermission : byte {
-		FriendsOnly,
-		Public,
-		Private
 	}
 }

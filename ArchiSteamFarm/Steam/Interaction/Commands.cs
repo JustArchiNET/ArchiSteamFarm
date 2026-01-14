@@ -2479,7 +2479,7 @@ public sealed class Commands {
 		ECommunityPrivacy friendsList = ECommunityPrivacy.Private;
 		ECommunityPrivacy inventory = ECommunityPrivacy.Private;
 		ECommunityPrivacy inventoryGifts = ECommunityPrivacy.Private;
-		UserPrivacy.ECommentPermission comments = UserPrivacy.ECommentPermission.Private;
+		ECommentPermission comments = ECommentPermission.SelfOnly;
 
 		// Converting digits to enum
 		for (byte index = 0; index < privacySettingsArgs.Length; index++) {
@@ -2548,15 +2548,15 @@ public sealed class Commands {
 					// Comments use different numbers than everything else, but we want to have this command consistent for end-user, so we'll map them
 					switch (privacySetting) {
 						case ECommunityPrivacy.FriendsOnly:
-							comments = UserPrivacy.ECommentPermission.FriendsOnly;
+							comments = ECommentPermission.FriendsOnly;
 
 							break;
 						case ECommunityPrivacy.Private:
-							comments = UserPrivacy.ECommentPermission.Private;
+							comments = ECommentPermission.SelfOnly;
 
 							break;
 						case ECommunityPrivacy.Public:
-							comments = UserPrivacy.ECommentPermission.Public;
+							comments = ECommentPermission.Anyone;
 
 							break;
 						default:
@@ -2738,7 +2738,7 @@ public sealed class Commands {
 										// Next key
 										key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null;
 
-										if (purchaseResultDetail == EPurchaseResultDetail.NoDetail || (distribute && !keepMissingGames)) {
+										if ((purchaseResultDetail == EPurchaseResultDetail.NoDetail) || (distribute && !keepMissingGames)) {
 											// Next bot (if needed)
 											break;
 										}
