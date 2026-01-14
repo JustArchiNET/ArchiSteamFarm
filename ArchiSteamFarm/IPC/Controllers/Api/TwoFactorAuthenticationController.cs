@@ -36,6 +36,7 @@ using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SteamKit2;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
@@ -74,7 +75,7 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
-		if (request.AcceptedType.HasValue && ((request.AcceptedType.Value == Confirmation.EConfirmationType.Unknown) || !Enum.IsDefined(request.AcceptedType.Value))) {
+		if (request.AcceptedType.HasValue && ((request.AcceptedType.Value == EMobileConfirmationType.Invalid) || !Enum.IsDefined(request.AcceptedType.Value))) {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(request.AcceptedType))));
 		}
 

@@ -33,7 +33,7 @@ using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
-using ArchiSteamFarm.Steam.Data;
+using SteamKit2;
 
 namespace ArchiSteamFarm.IPC.Requests;
 
@@ -52,7 +52,7 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 
 	[Description("Specifies the type of confirmations to handle. If not provided, all confirmation types are considered for an action")]
 	[JsonInclude]
-	public Confirmation.EConfirmationType? AcceptedType { get; private init; }
+	public EMobileConfirmationType? AcceptedType { get; private init; }
 
 	[Description($"A helper property which works the same as {nameof(AcceptedCreatorIDs)} but with values written as strings - for javascript compatibility purposes. Use either this one, or {nameof(AcceptedCreatorIDs)}, not both")]
 	[JsonDisallowNull]

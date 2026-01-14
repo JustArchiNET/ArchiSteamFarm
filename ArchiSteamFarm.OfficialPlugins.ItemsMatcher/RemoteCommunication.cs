@@ -1467,7 +1467,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					pendingMobileTradeOfferIDs.UnionWith(mobileTradeOfferIDs);
 
 					if (pendingMobileTradeOfferIDs.Count >= MaxTradeOffersActive) {
-						(bool twoFactorSuccess, IReadOnlyCollection<Confirmation>? handledConfirmations, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false);
+						(bool twoFactorSuccess, IReadOnlyCollection<Confirmation>? handledConfirmations, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false);
 
 						if (!twoFactorSuccess) {
 							Bot.ArchiLogger.LogGenericWarning(Localization.Strings.FormatActivelyMatchingSomeConfirmationsFailed(handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));
@@ -1563,7 +1563,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		if (pendingMobileTradeOfferIDs.Count > 0) {
-			(bool twoFactorSuccess, IReadOnlyCollection<Confirmation>? handledConfirmations, _) = Bot.IsConnectedAndLoggedOn ? await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false) : (false, null, null);
+			(bool twoFactorSuccess, IReadOnlyCollection<Confirmation>? handledConfirmations, _) = Bot.IsConnectedAndLoggedOn ? await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, pendingMobileTradeOfferIDs, true).ConfigureAwait(false) : (false, null, null);
 
 			if (!twoFactorSuccess) {
 				Bot.ArchiLogger.LogGenericWarning(Localization.Strings.FormatActivelyMatchingSomeConfirmationsFailed(handledConfirmations?.Count ?? 0, pendingMobileTradeOfferIDs.Count));

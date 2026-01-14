@@ -24,6 +24,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using JetBrains.Annotations;
+using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Data;
 
@@ -33,7 +34,7 @@ public sealed class Confirmation {
 	[JsonInclude]
 	[JsonPropertyName("type")]
 	[JsonRequired]
-	public EConfirmationType ConfirmationType { get; private init; }
+	public EMobileConfirmationType ConfirmationType { get; private init; }
 
 	[JsonInclude]
 	[JsonPropertyName("type_name")]
@@ -62,18 +63,4 @@ public sealed class Confirmation {
 
 	[UsedImplicitly]
 	public static bool ShouldSerializeNonce() => false;
-
-	[PublicAPI]
-	public enum EConfirmationType : byte {
-		Unknown,
-		Generic,
-		Trade,
-		Market,
-		FeatureOptOut,
-		PhoneNumberChange,
-		AccountRecovery,
-		ApiKeyRegistration = 9,
-		FamilyJoin = 11,
-		AccountSecurity = 12
-	}
 }

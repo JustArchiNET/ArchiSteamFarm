@@ -303,7 +303,7 @@ public sealed class Trading : IDisposable {
 				if (mobileTradeResults.Count > 0) {
 					HashSet<ulong> mobileTradeOfferIDs = mobileTradeResults.Select(static tradeOffer => tradeOffer.TradeOfferID).ToHashSet();
 
-					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
 					if (twoFactorSuccess) {
 						foreach (ParseTradeResult mobileTradeResult in mobileTradeResults) {

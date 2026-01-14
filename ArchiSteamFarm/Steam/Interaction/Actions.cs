@@ -217,7 +217,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? HandledConfirmations, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, Confirmation.EConfirmationType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false) {
+	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? HandledConfirmations, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, EMobileConfirmationType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false) {
 		if (Bot.BotDatabase.MobileAuthenticator == null) {
 			return (false, null, Strings.BotNoASFAuthenticator);
 		}
@@ -468,7 +468,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		(bool success, _, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, customMessage: customMessage, itemsPerTrade: itemsPerTrade).ConfigureAwait(false);
 
 		if ((mobileTradeOfferIDs?.Count > 0) && Bot.HasMobileAuthenticator) {
-			(bool twoFactorSuccess, _, _) = await HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+			(bool twoFactorSuccess, _, _) = await HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
 			if (!twoFactorSuccess) {
 				return (false, Strings.BotLootingFailed);

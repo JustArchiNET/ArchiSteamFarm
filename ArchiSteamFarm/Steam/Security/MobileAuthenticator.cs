@@ -38,6 +38,7 @@ using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Storage;
+using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Security;
 
@@ -175,7 +176,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			return null;
 		}
 
-		foreach (Confirmation confirmation in response.Confirmations.Where(static confirmation => (confirmation.ConfirmationType == Confirmation.EConfirmationType.Unknown) || !Enum.IsDefined(confirmation.ConfirmationType))) {
+		foreach (Confirmation confirmation in response.Confirmations.Where(static confirmation => (confirmation.ConfirmationType == EMobileConfirmationType.Invalid) || !Enum.IsDefined(confirmation.ConfirmationType))) {
 			Bot.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(confirmation.ConfirmationType), $"{confirmation.ConfirmationType} ({confirmation.ConfirmationTypeName ?? "null"})"));
 		}
 
