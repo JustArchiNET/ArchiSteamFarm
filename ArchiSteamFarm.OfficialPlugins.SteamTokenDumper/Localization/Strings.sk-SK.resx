@@ -68,7 +68,6 @@
 		<value>{0} bol na základe vašej konfigurácie vypnutý. Ak máte záujem pomôcť so zberom údajov pre SteamDB, navštívte našu wiki.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
-	
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
 		<value>{0} sa nedokázal načítať, bude načítaný nanovo...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
@@ -104,7 +103,6 @@
 		<value>Dokončené získavanie informácií {0} aplikácií.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>Dokončené získanie všetkých kľúčov položiek {0} aplikácií.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
