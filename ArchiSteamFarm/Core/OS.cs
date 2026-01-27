@@ -314,7 +314,7 @@ internal static class OS {
 		);
 
 		// Colon-separated list of lock types
-		writer.WriteString("idle");
+		writer.WriteString("sleep");
 
 		// Human-readable, descriptive string of who is taking the lock
 		writer.WriteString(SharedInfo.PublicIdentifier);
