@@ -801,7 +801,7 @@ Process uptime: {1}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
 	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
-		<value>You've declared --system-required, although your OS is missing required dependencies for that feature to work. Consider installing dbus, although you can also safely ignore this warning if you do not require inhibition to work properly.</value>
+		<value>You've declared --system-required, but your OS is missing required dependencies for that feature to work. Consider installing dbus, although you can also safely ignore this warning if you do not require inhibition to work properly.</value>
 	</data>
 	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
 		<value>Decryption of {0} database component has failed. This can be OK if you've just changed your bot's {1}, you should no longer observe this warning on the next run then. Otherwise, you should investigate and find out the exact reason for failure.</value>
