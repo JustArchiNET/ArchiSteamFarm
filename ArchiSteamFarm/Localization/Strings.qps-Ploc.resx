@@ -800,9 +800,6 @@ PROCES UPTIME: {1}</value>
 		<value>INPUT: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
-	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
-		<value>UVE DECLARD --system-required, ALTHOUGH UR OS IZ MISIN REQUIRD DEPENDENCIEZ 4 DAT FEACHUR 2 WERK. CONSIDR INSTALLIN DBUS, ALTHOUGH U CAN ALSO SAFELY IGNORE DIS WARNIN IF U DO NOT REQUIRE INHIBISHUN 2 WERK PROPERLY.</value>
-	</data>
 	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
 		<value>DECRYPSHUN OV {0} DATABASE COMPONENT HAS FAILD. DIS CAN BE K IF UVE JUS CHANGD UR BOTS {1}, U SHUD NO LONGR OBSERVE DIS WARNIN ON TEH NEXT RUN DEN. OTHERWIZE, U SHUD INVESTIGATE AN FIND OUT TEH EGSAKT REASON 4 FAILURE.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>

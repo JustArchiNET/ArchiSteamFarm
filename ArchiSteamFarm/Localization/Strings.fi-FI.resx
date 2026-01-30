@@ -801,7 +801,7 @@ Prosessin käyttöaika: {1}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
 	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
-		<value>Olet julistanut --system-pakolliseksi, vaikka käyttöjärjestelmästäsi puuttuu vaaditut riippuvuudet, jotta toiminto toimisi. Harkitse dbusin asentamista, vaikka voit myös turvallisesti ohittaa tämän varoituksen, jos et vaadi estoa toimimaan kunnolla.</value>
+		<value>Olet julistanut --system-vaadituksi mutta käyttöjärjestelmäsi puuttuu vaaditut riippuvuudet, jotta toiminto toimisi. Harkitse dbusin asentamista, vaikka voit myös turvallisesti ohittaa tämän varoituksen, jos et vaadi estoa toimimaan kunnolla.</value>
 	</data>
 	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
 		<value>{0} tietokantakomponentin salauksen purku epäonnistui. Tämä voi olla OK, jos olet juuri muuttanut bottisi {1}, sinun ei pitäisi enää tarkkailla tätä varoitusta seuraavasta ajosta sitten. Muuten sinun pitäisi tutkia ja selvittää tarkka syy epäonnistumisen.</value>

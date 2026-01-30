@@ -800,7 +800,4 @@ Yığın Kaydı:
 		<value>Veri Girişi: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
-	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
-		<value>--system-required seçeneğini belirttiniz, ancak işletim sisteminizde bu özelliğin çalışması için gerekli bağımlılıklar eksik. dbus'u yüklemeyi düşünün, ancak engellemenin düzgün çalışması gerekmiyorsa bu uyarıyı güvenle görmezden gelebilirsiniz.</value>
-	</data>
 </root>

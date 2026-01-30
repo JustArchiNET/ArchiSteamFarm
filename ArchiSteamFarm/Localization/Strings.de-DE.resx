@@ -802,7 +802,7 @@ Prozesslaufzeit: {1}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
 	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
-		<value>Sie haben --system-required deklariert, obwohl Ihrem Betriebssystem die erforderlichen Abhängigkeiten fehlen, damit diese Funktion funktioniert. Erwägen Sie die Installation von dbus, obwohl Sie diese Warnung auch sicher ignorieren können, wenn Sie keine Hemmung benötigen, um ordnungsgemäß zu funktionieren.</value>
+		<value>Sie haben --system-required deklariert, aber Ihrem Betriebssystem fehlen erforderliche Abhängigkeiten damit diese Funktion funktioniert. Erwägen Sie die Installation von dbus, obwohl Sie diese Warnung auch sicher ignorieren können, wenn Sie keine Hemmung benötigen, um ordnungsgemäß zu funktionieren.</value>
 	</data>
 	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
 		<value>Entschlüsselung der {0} Datenbankkomponente ist fehlgeschlagen. Dies kann in Ordnung sein, wenn Sie gerade die {1}Ihres Bots geändert haben, sollten Sie diese Warnung dann nicht mehr beim nächsten Lauf beachten. Andernfalls sollten Sie den genauen Grund für das Scheitern ermitteln.</value>

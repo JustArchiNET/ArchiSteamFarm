@@ -801,7 +801,7 @@ StackTrace:
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
 	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
-		<value>Prohlásili jste --system-required i když na vašem OS chybí požadované závislosti, aby tato funkce fungovala. Zvažte instalaci dbus, i když můžete bezpečně ignorovat toto upozornění, pokud nepotřebujete inhibici pro správné fungování.</value>
+		<value>Prohlásili jste --system-required ale vašemu OS chybí požadované závislosti, aby tato funkce fungovala. Zvažte instalaci dbus, i když můžete bezpečně ignorovat toto upozornění, pokud nepotřebujete inhibici pro správné fungování.</value>
 	</data>
 	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
 		<value>Dešifrování databáze {0} se nezdařilo. To může být v pořádku, pokud jste právě změnili {1}svého bota, při příštím spuštění byste již neměli toto varování pozorovat. Jinak byste měli prošetřit a zjistit přesný důvod neúspěchu.</value>

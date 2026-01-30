@@ -801,7 +801,7 @@ Processens oppetid: {1}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
 	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
-		<value>Du har erklæret --system-krævet, selvom dit operativsystem mangler krævede afhængigheder for at denne funktion kan fungere. Overvej at installere dbus, selvom du også trygt kan ignorere denne advarsel, hvis du ikke behøver hæmning for at fungere korrekt.</value>
+		<value>Du har erklæret --system-påkrævet, men dit operativsystem mangler nødvendige afhængigheder for at denne funktion kan fungere. Overvej at installere dbus, selvom du også trygt kan ignorere denne advarsel, hvis du ikke behøver hæmning for at fungere korrekt.</value>
 	</data>
 	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
 		<value>Dekryptering af {0} databasekomponent mislykkedes. Dette kan være OK, hvis du lige har ændret din bot's {1}, du bør ikke længere observere denne advarsel på det næste løb dengang. Ellers bør du undersøge og finde ud af den nøjagtige årsag til fiasko.</value>

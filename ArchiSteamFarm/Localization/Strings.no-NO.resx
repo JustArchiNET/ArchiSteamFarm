@@ -773,7 +773,7 @@ prosess oppgang: {1}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
 	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
-		<value>Du har erklært --system-nødvendig, selv om OS mangler nødvendige avhengigheter for at den funksjonen skal fungere. Vurder å installere dbus, selv om du også trygt kan overse denne advarselen hvis du ikke trenger hemming av denne funksjonen.</value>
+		<value>Du har erklært --system-nødvendig, men ditt OS mangler nødvendige avhengigheter for at den funksjonen skal fungere. Vurder å installere dbus, selv om du også trygt kan overse denne advarselen hvis du ikke trenger hemming av denne funksjonen.</value>
 	</data>
 	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
 		<value>Dekryptering av {0} -databasekomponenten mislyktes. Dette kan være OK hvis du akkurat har endret din bot {1}, bør du ikke lenger observere dette varselet på neste kjøring da. Ellers bør du undersøke og finne den nøyaktige årsaken til svikten.</value>

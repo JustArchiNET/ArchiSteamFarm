@@ -802,7 +802,7 @@ Processens drifttid: {1}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
 	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
-		<value>Du har deklarerat --system-krävs, även om ditt operativsystem saknar nödvändiga beroenden för att den funktionen ska fungera. Överväg att installera dbus, men du kan också säkert ignorera denna varning om du inte behöver hämning för att fungera korrekt.</value>
+		<value>Du har deklarerat --system-krävs, men ditt operativsystem saknar nödvändiga beroenden för att den funktionen ska fungera. Överväg att installera dbus, men du kan också säkert ignorera denna varning om du inte behöver hämning för att fungera korrekt.</value>
 	</data>
 	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
 		<value>Dekryptering av {0} databaskomponent har misslyckats. Detta kan vara OK om du bara har ändrat din bots {1}, du bör inte längre observera denna varning på nästa körning då. Annars bör du undersöka och ta reda på den exakta orsaken till misslyckande.</value>
