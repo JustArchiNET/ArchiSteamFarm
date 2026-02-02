@@ -283,7 +283,7 @@ internal static class OS {
 		}
 
 		// Docs: https://systemd.io/INHIBITOR_LOCKS
-		string? systemAddress = Address.System;
+		string? systemAddress = DBusAddress.System;
 
 		if (string.IsNullOrEmpty(systemAddress)) {
 			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(systemAddress)));
@@ -291,11 +291,11 @@ internal static class OS {
 			return;
 		}
 
-		using Connection connection = new(systemAddress);
+		using DBusConnection connection = new(systemAddress);
 
 		try {
 			await connection.ConnectAsync().ConfigureAwait(false);
-		} catch (ConnectException e) {
+		} catch (DBusConnectionException e) {
 			// Possible if no DBus is available at all
 			ASF.ArchiLogger.LogGenericDebuggingException(e);
 			ASF.ArchiLogger.LogGenericWarning(Strings.WarningNoSystemRequiredLinuxDependencies);
@@ -336,16 +336,10 @@ internal static class OS {
 					return reader.ReadHandle<SafeFileHandle>();
 				}
 			).ConfigureAwait(false);
-		} catch (DBusException e) {
+		} catch (DBusMessageException e) {
 			// Possible if login manager does not support inhibit, although that should be super rare
 			ASF.ArchiLogger.LogGenericDebuggingException(e);
 			ASF.ArchiLogger.LogGenericWarning(Strings.WarningNoSystemRequiredLinuxDependencies);
-
-			return;
-		}
-
-		if (InhibitLock == null) {
-			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(InhibitLock)));
 		}
 	}
 
