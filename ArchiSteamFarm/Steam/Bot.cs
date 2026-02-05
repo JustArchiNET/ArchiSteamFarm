@@ -1490,17 +1490,21 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 			}
 
-			if (gamesToRedeemInBackground.Count > 0) {
-				FilterGamesToRedeemInBackground(gamesToRedeemInBackground);
-
-				if (gamesToRedeemInBackground.Count > 0) {
-					AddGamesToRedeemInBackground(gamesToRedeemInBackground);
-				} else {
-					ArchiLogger.LogGenericWarning(Strings.WarningNoValidKeysFound);
-				}
-			} else {
+			if (gamesToRedeemInBackground.Count == 0) {
 				ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(filePath));
+
+				return;
 			}
+
+			FilterGamesToRedeemInBackground(gamesToRedeemInBackground);
+
+			if (gamesToRedeemInBackground.Count == 0) {
+				ArchiLogger.LogGenericWarning(Strings.WarningNoValidKeysFound);
+
+				return;
+			}
+
+			AddGamesToRedeemInBackground(gamesToRedeemInBackground);
 
 			File.Delete(filePath);
 		} catch (Exception e) {
