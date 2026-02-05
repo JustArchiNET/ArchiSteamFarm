@@ -1465,7 +1465,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		try {
 			OrderedDictionary<string, string> gamesToRedeemInBackground = new(StringComparer.OrdinalIgnoreCase);
 
-			int lineCount = File.ReadAllLines(filePath).Length;
+			int lineCount = (await File.ReadAllLinesAsync(filePath).ConfigureAwait(false)).Length;
 
 			using (StreamReader reader = new(filePath)) {
 				while (await reader.ReadLineAsync().ConfigureAwait(false) is { } line) {
