@@ -1495,7 +1495,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				if (gamesToRedeemInBackground.Count > 0) {
 					AddGamesToRedeemInBackground(gamesToRedeemInBackground);
+				} else {
+					ArchiLogger.LogGenericWarning(Strings.WarningNoValidKeysFound);
 				}
+			} else {
+				ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(filePath));
 			}
 
 			File.Delete(filePath);
