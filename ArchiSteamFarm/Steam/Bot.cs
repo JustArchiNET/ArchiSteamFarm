@@ -1465,6 +1465,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		try {
 			OrderedDictionary<string, string> gamesToRedeemInBackground = new(StringComparer.OrdinalIgnoreCase);
 
+			int lineCount = File.ReadAllLines(filePath).Length;
+
 			using (StreamReader reader = new(filePath)) {
 				while (await reader.ReadLineAsync().ConfigureAwait(false) is { } line) {
 					if (line.Length == 0) {
@@ -1496,9 +1498,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			int keysSkipped = gamesToRedeemInBackground.Count;
 			FilterGamesToRedeemInBackground(gamesToRedeemInBackground);
-			keysSkipped = keysSkipped - gamesToRedeemInBackground.Count;
+			
+			int keysSkipped = lineCount - gamesToRedeemInBackground.Count;
 
 			if (gamesToRedeemInBackground.Count == 0) {
 				ArchiLogger.LogGenericWarning(Strings.WarningNoValidKeysFound);
@@ -1508,7 +1510,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			AddGamesToRedeemInBackground(gamesToRedeemInBackground);
 
-			ArchiLogger.LogGenericInfo(Strings.FormatInfoKeysImported(gamesToRedeemInBackground.Count, keysSkipped));
+			ArchiLogger.LogGenericInfo(keysSkipped > 0 ? Strings.FormatInfoKeysImportedSkipped(gamesToRedeemInBackground.Count, keysSkipped) : Strings.FormatInfoKeysImported(gamesToRedeemInBackground.Count));
 
 			File.Delete(filePath);
 		} catch (Exception e) {
