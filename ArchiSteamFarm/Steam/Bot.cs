@@ -1502,13 +1502,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			FilterGamesToRedeemInBackground(gamesToRedeemInBackground);
 
-			int linesSkipped = lineCount - gamesToRedeemInBackground.Count;
-
 			if (gamesToRedeemInBackground.Count == 0) {
 				ArchiLogger.LogGenericWarning(Strings.WarningNoValidKeysFound);
 
 				return;
 			}
+
+			int linesSkipped = lineCount - gamesToRedeemInBackground.Count;
 
 			AddGamesToRedeemInBackground(gamesToRedeemInBackground);
 
