@@ -810,4 +810,16 @@ Process uptime: {1}</value>
 	<data name="WarningNoValidKeysFound" xml:space="preserve">
 		<value>No valid keys were found in your .keys file for redemption. Please ensure your keys are in the correct format.</value>
 	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>Successfully imported {0} key(s) from your .keys file.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>Successfully imported {0} key(s) from your .keys file, {1} line(s) were skipped because they are not in the correct format, are comments or empty lines.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Loaded {0} key(s) from queue.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

@@ -1465,8 +1465,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		try {
 			OrderedDictionary<string, string> gamesToRedeemInBackground = new(StringComparer.OrdinalIgnoreCase);
 
+			int lineCount = 0;
+
 			using (StreamReader reader = new(filePath)) {
 				while (await reader.ReadLineAsync().ConfigureAwait(false) is { } line) {
+					lineCount++;
+
 					if (line.Length == 0) {
 						continue;
 					}
@@ -1504,7 +1508,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return;
 			}
 
+			int linesSkipped = lineCount - gamesToRedeemInBackground.Count;
+
 			AddGamesToRedeemInBackground(gamesToRedeemInBackground);
+
+			ArchiLogger.LogGenericInfo(linesSkipped > 0 ? Strings.FormatInfoKeysImportedSkipped(gamesToRedeemInBackground.Count, linesSkipped) : Strings.FormatInfoKeysImported(gamesToRedeemInBackground.Count));
 
 			File.Delete(filePath);
 		} catch (Exception e) {
@@ -3658,6 +3666,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.Starting);
+
+			ArchiLogger.LogGenericInfo(Strings.FormatInfoKeysLoaded(GamesToRedeemInBackgroundCount));
 
 			bool assumeWalletKeyOnBadActivationCode = BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.AssumeWalletKeyOnBadActivationCode);
 
