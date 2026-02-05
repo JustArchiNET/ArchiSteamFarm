@@ -811,7 +811,7 @@ Process uptime: {1}</value>
 		<value>No valid keys were found in your .keys file for redemption. Please ensure your keys are in the correct format.</value>
 	</data>
 	<data name="InfoKeysImported" xml:space="preserve">
-		<value>Successfully imported {0} key(s) from your .keys file, {1} Lines were skipped because they were already in the database.</value>
+		<value>Successfully imported {0} key(s) from your .keys file, {1} Lines were skipped because they are not in the correct format.</value>
 		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
 	</data>
 	<data name="InfoKeysLoaded" xml:space="preserve">
