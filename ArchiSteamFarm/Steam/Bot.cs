@@ -1496,7 +1496,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return;
 			}
 
+			int keysSkipped = gamesToRedeemInBackground.Count;
 			FilterGamesToRedeemInBackground(gamesToRedeemInBackground);
+			keysSkipped = keysSkipped - gamesToRedeemInBackground.Count;
 
 			if (gamesToRedeemInBackground.Count == 0) {
 				ArchiLogger.LogGenericWarning(Strings.WarningNoValidKeysFound);
@@ -1505,6 +1507,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			AddGamesToRedeemInBackground(gamesToRedeemInBackground);
+
+			ArchiLogger.LogGenericInfo(Strings.FormatInfoKeysImported(gamesToRedeemInBackground.Count, keysSkipped));
 
 			File.Delete(filePath);
 		} catch (Exception e) {
@@ -3658,6 +3662,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.Starting);
+
+			ArchiLogger.LogGenericInfo(Strings.FormatInfoKeysLoaded(GamesToRedeemInBackgroundCount));
 
 			bool assumeWalletKeyOnBadActivationCode = BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.AssumeWalletKeyOnBadActivationCode);
 
