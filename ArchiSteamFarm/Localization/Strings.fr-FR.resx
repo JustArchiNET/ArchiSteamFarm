@@ -807,4 +807,15 @@ Durée de fonctionnement : {1}</value>
 		<value>Le déchiffrement du composant de base de données {0} a échoué. Cela peut être OK si vous venez de changer le {1}de votre bot, vous ne devriez plus observer cet avertissement lors de la prochaine exécution alors. Sinon, vous devriez enquêter et trouver la raison exacte de l'échec.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Aucune clé valide n'a été trouvée dans votre fichier .keys à rédempter. Veuillez vous assurer que vos clés sont au format correct.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>Clef {0} importée avec succès depuis votre fichier .keys.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>Les clés {0} importées avec succès depuis votre fichier .keys, {1} ligne(s) ont été ignorées car elles ne sont pas dans le format correct, sont des commentaires ou des lignes vides.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
 </root>

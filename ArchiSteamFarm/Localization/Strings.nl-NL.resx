@@ -806,4 +806,19 @@ Proces uptime: {1}</value>
 		<value>Ontsleutelen van de {0} database-component is mislukt. Dit kan OK zijn als je net de {1}van de bot hebt veranderd, moet je deze waarschuwing bij de volgende keer niet meer observeren. Anders moet u onderzoeken wat precies de reden van een mislukking is.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Er zijn geen geldige sleutels gevonden in uw .key-bestand voor inwisseling. Zorg ervoor dat de sleutels in het juiste formaat zijn.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>{0} sleutel(s) succesvol geïmporteerd uit uw .keys bestand.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>{0} sleutel(s) succesvol geïmporteerd uit uw .keys bestand, {1} regel(s) zijn overgeslagen omdat ze niet in het juiste formaat staan, opmerkingen of lege regels.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>{0} sleutel(s) geladen uit wachtrij.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

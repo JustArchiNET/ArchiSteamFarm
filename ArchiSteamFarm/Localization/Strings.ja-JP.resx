@@ -800,4 +800,19 @@ Process uptime: {1}</value>
 	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
 		<value>--system-requiredと宣言しましたが、その機能を動作させるために必要な依存関係がOSにありません。 正常に動作するように阻害を必要としない場合は、この警告を無視することもできますが、dbusをインストールすることを検討してください。</value>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>返済のために有効なキーが.keysファイルに見つかりませんでした。キーが正しい形式であることを確認してください。</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>{0} キーを.keyファイルから正常にインポートしました。</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>.keys ファイルから {0} キーを正しくインポートしました。 {1} 行は正しい形式ではないためスキップされました。コメントまたは空の行です。</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>{0} キーをキューから読み込みました。</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

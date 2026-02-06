@@ -779,4 +779,15 @@ prosess oppgang: {1}</value>
 		<value>Dekryptering av {0} -databasekomponenten mislyktes. Dette kan være OK hvis du akkurat har endret din bot {1}, bør du ikke lenger observere dette varselet på neste kjøring da. Ellers bør du undersøke og finne den nøyaktige årsaken til svikten.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Ingen gyldige nøkler ble funnet i din .keys-fil for innløsning. Kontroller at nøklene dine er i riktig format.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>{0} nøkkel(er) ble importert fra din .keyfil.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Lastet {0} nøkkel(er) fra køen.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

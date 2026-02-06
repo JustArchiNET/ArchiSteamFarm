@@ -808,4 +808,19 @@ Prozesslaufzeit: {1}</value>
 		<value>Entschlüsselung der {0} Datenbankkomponente ist fehlgeschlagen. Dies kann in Ordnung sein, wenn Sie gerade die {1}Ihres Bots geändert haben, sollten Sie diese Warnung dann nicht mehr beim nächsten Lauf beachten. Andernfalls sollten Sie den genauen Grund für das Scheitern ermitteln.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Es wurden keine gültigen Schlüssel in Ihrer .keys Datei zum Einlösen gefunden. Bitte stellen Sie sicher, dass Ihre Schlüssel im richtigen Format sind.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>{0} Schlüssel(e) erfolgreich aus Ihrer .keys Datei importiert.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>Erfolgreich importiert {0} Schlüssel(e) aus Ihrer .keys Datei, {1} Zeile(n) wurden übersprungen, weil sie nicht im richtigen Format, sind Kommentare oder leere Zeilen.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Lade {0} Schlüssel(e) aus der Warteschlange.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

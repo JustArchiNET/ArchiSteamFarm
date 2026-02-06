@@ -807,4 +807,19 @@ Processens oppetid: {1}</value>
 		<value>Dekryptering af {0} databasekomponent mislykkedes. Dette kan være OK, hvis du lige har ændret din bot's {1}, du bør ikke længere observere denne advarsel på det næste løb dengang. Ellers bør du undersøge og finde ud af den nøjagtige årsag til fiasko.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Ingen gyldige nøgler blev fundet i din .keys fil til indløsning. Sørg for, at dine nøgler er i det korrekte format.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>Importerede {0} nøgler fra din .keys fil.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>Importerede {0} nøgler fra din .keys fil, {1} linje(r) blev sprunget over, fordi de ikke er i det korrekte format, er kommentarer eller tomme linjer.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Indlæste {0} nøgler fra kø.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

@@ -811,4 +811,19 @@
 		<value>Не удалось расшифровать {0} компонент базы данных. Это может быть нормой, если вы только что изменили {1} своего бота, и при следующем запуске это предупреждение больше не должно появиться. В ином случае вы должны выяснить точную причину сбоя.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>В файле .keys для выкупа не найдены правильные ключи. Пожалуйста, убедитесь, что ваши ключи в правильном формате.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>Успешно импортирован {0} ключ(ы) из файла .key.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>Успешно импортировано {0} ключ(ов) из вашего файла .key, {1} строки были пропущены, потому что они не в правильном формате, являются комментариями или пустыми строками.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Загружен ключ {0} из очереди.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

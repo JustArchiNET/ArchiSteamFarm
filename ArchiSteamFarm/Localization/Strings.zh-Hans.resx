@@ -807,4 +807,19 @@
 		<value>解密 {0} 数据库组件失败。如果您刚刚更改了机器人的 {1}，则可能是正常现象，并且下次运行时应该不会再看到这个警告。否则，您应该检查并找出失败的具体原因。</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>您的 .keys 文件中找不到可激活的有效序列号。请确保您的序列号格式正确。</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>成功从您的 .keys 文件导入了 {0} 个密钥。</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>成功从您的 .keys 文件导入了 {0} 个密钥，{1} 行被跳过，因为它们格式错误、是注释或空行。</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>从队列中加载了 {0} 个密钥。</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

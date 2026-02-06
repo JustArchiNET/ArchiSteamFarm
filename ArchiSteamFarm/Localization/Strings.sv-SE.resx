@@ -808,4 +808,19 @@ Processens drifttid: {1}</value>
 		<value>Dekryptering av {0} databaskomponent har misslyckats. Detta kan vara OK om du bara har ändrat din bots {1}, du bör inte längre observera denna varning på nästa körning då. Annars bör du undersöka och ta reda på den exakta orsaken till misslyckande.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Inga giltiga nycklar hittades i din .keys fil för inlösen. Kontrollera att dina nycklar är i rätt format.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>Importerade {0} nycklar från din .key-fil.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>Importerade {0} nycklar från din .key-fil, {1} rader hoppades över eftersom de inte är i rätt format, är kommentarer eller tomma rader.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Laddade {0} nycklar från kön.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

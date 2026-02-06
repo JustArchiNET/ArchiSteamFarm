@@ -807,4 +807,19 @@ Czas procesu: {1}</value>
 		<value>Odszyfrowanie komponentu bazy danych {0} nie powiodło się. To może być w porządku, jeśli właśnie zmieniłeś swojego bota {1}, nie powinieneś już obserwować tego ostrzeżenia przy następnym uruchomieniu. W przeciwnym razie należy zbadać i dowiedzieć się dokładnej przyczyny niepowodzenia.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Nie znaleziono prawidłowych kluczy w pliku .keys do redempation. Upewnij się, że klucze są w prawidłowym formacie.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>Pomyślnie zaimportowano klucze {0} z pliku .key.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>Pomyślnie zaimportowano klucze {0} z pliku .keys, wiersze {1} zostały pominięte, ponieważ nie są one we właściwym formacie, są komentarzami lub pustymi wierszami.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Załadowano klucze {0} z kolejki.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

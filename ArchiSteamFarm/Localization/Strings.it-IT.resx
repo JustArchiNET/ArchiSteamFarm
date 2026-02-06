@@ -805,4 +805,19 @@ Tempo di attività: {1}</value>
 		<value>Decifratura del componente del database {0} non riuscita. Questo può essere OK se hai appena cambiato {1}del tuo bot, non dovresti più osservare questo avviso alla prossima esecuzione allora. Altrimenti, si dovrebbe indagare e scoprire la ragione esatta del fallimento.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Non sono state trovate chiavi valide nel file .keys per il riscatto. Assicurarsi che le chiavi siano nel formato corretto.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>Chiave {0} importata con successo dal file .keys.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>Le chiavi {0} importate con successo dal tuo file .Keys, le righe {1} sono state saltate perché non sono nel formato corretto, sono commenti o righe vuote.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Chiavi caricate {0} dalla coda.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

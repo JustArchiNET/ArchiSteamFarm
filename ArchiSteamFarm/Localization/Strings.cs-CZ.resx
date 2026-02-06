@@ -807,4 +807,19 @@ StackTrace:
 		<value>Dešifrování databáze {0} se nezdařilo. To může být v pořádku, pokud jste právě změnili {1}svého bota, při příštím spuštění byste již neměli toto varování pozorovat. Jinak byste měli prošetřit a zjistit přesný důvod neúspěchu.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Nebyly nalezeny žádné platné klíče v souboru .keys pro vyplacení. Ujistěte se, že vaše klíče jsou ve správném formátu.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>Klíč {0} byl úspěšně importován ze souboru .Key.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>Úspěšně importovány klíče {0} ze souboru .klíče, {1} řádky byly přeskočeny, protože nejsou ve správném formátu, jsou komentáře nebo prázdné řádky.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Načteno klíč(y) {0} z fronty.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

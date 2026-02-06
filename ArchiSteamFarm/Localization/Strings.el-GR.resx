@@ -799,4 +799,19 @@ StackTrace:
 		<value>Η αποκρυπτογράφηση της εφαρμογής βάσης δεδομένων {0} απέτυχε. Αυτό μπορεί να είναι εντάξει αν έχετε μόλις αλλάξει {1}του bot σας, δεν θα πρέπει πλέον να παρατηρήσετε αυτή την προειδοποίηση στην επόμενη εκτέλεση τότε. Διαφορετικά, θα πρέπει να διερευνήσετε και να μάθετε τον ακριβή λόγο για την αποτυχία.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Δεν βρέθηκαν έγκυρα κλειδιά στο αρχείο .keys για εξαργύρωση. Παρακαλώ βεβαιωθείτε ότι τα κλειδιά σας είναι στη σωστή μορφή.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>Επιτυχής εισαγωγή κλειδιών {0} από το αρχείο .keys σας.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>Τα κλειδιά {0} εισήχθησαν με επιτυχία από το αρχείο .keys σας, η γραμμή {1} παραλείφθηκαν επειδή δεν είναι στη σωστή μορφή, είναι σχόλια ή κενές γραμμές.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Φορτώθηκε κλειδιά {0} από την ουρά.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>

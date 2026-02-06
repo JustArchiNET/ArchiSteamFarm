@@ -806,4 +806,7 @@ Tiempo de actividad del proceso: {1}</value>
 		<value>El descifrado del componente de la base de datos {0} ha fallado. Esto puede ser correcto si acabas de cambiar la {1} de tu bot, ya no deberías ver esta advertencia en la próxima ejecución. De lo contrario, deberías investigar y averiguar la razón exacta de la falla.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
 	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>No se encontraron claves válidas en el archivo .keys para activar. Asegúrate de que tus claves están en el formato correcto.</value>
+	</data>
 </root>
