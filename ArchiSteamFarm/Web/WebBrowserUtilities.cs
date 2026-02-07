@@ -26,12 +26,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm.Web;
 
 internal static class WebBrowserUtilities {
-	internal static async Task<StreamContent> CreateCompressedHttpContent(HttpContent content) {
+	internal static async Task<StreamContent> CreateCompressedHttpContent(HttpContent content, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(content);
 
 		// We're going to create compressed stream and copy original content to it
@@ -40,7 +41,7 @@ internal static class WebBrowserUtilities {
 		BrotliStream compressionInput = new(compressionOutput, CompressionLevel.SmallestSize, true);
 
 		await using (compressionInput.ConfigureAwait(false)) {
-			await content.CopyToAsync(compressionInput).ConfigureAwait(false);
+			await content.CopyToAsync(compressionInput, cancellationToken).ConfigureAwait(false);
 		}
 
 		// Reset the position back to 0, so HttpClient can read it again
