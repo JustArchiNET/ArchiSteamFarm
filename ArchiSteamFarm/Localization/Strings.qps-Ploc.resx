@@ -688,7 +688,7 @@ PROCES UPTIME: {1}</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>URE USIN {0} SETTIN OV {1} PROPERTY, BUT U DIDNT PROVIDE CUSTOM --CRYPTKEY. U CAN OPSHUNALLY PROVIDE CUSTOM --CRYPTKEY 4 INCREASD SECURITY IF UD LIEK 2.</value>
+		<value>URE USIN {0} SETTIN OV {1} PROPERTY, BUT U DIDNT PROVIDE CUSTOM --cryptkey. U CAN OPSHUNALLY PROVIDE CUSTOM --cryptkey 4 INCREASD SECURITY IF UD LIEK 2.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
@@ -800,8 +800,26 @@ PROCES UPTIME: {1}</value>
 		<value>INPUT: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>UVE DECLARD --system-required, BUT UR OS IZ MISIN REQUIRD DEPENDENCIEZ 4 DAT FEACHUR 2 WERK. CONSIDR INSTALLIN DBUS, ALTHOUGH U CAN ALSO SAFELY IGNORE DIS WARNIN IF U DO NOT REQUIRE INHIBISHUN 2 WERK PROPERLY.</value>
+	</data>
 	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
 		<value>DECRYPSHUN OV {0} DATABASE COMPONENT HAS FAILD. DIS CAN BE K IF UVE JUS CHANGD UR BOTS {1}, U SHUD NO LONGR OBSERVE DIS WARNIN ON TEH NEXT RUN DEN. OTHERWIZE, U SHUD INVESTIGATE AN FIND OUT TEH EGSAKT REASON 4 FAILURE.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
+	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>NO VALID KEYS WUZ FINDZ IN UR .keys FILE 4 REDEMPSHUN. PLZ ENSURE UR KEYS R IN DA CORRECT FORMAT.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>SUCCESFULLY IMPORTD {0} KEY(S) FRUM UR .keys FILE.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>SUCCESFULLY IMPORTD {0} KEY(S) FRUM UR .keys FILE, {1} LINE(S) WUZ SKIPPD CUZ THEY R NOT IN DA CORRECT FORMAT, R COMMENTS OR EMPTY LINEZ.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>LOADD {0} KEY(S) FRUM KEW.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
 	</data>
 </root>

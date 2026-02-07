@@ -809,4 +809,16 @@ Tiempo de actividad del proceso: {1}</value>
 	<data name="WarningNoValidKeysFound" xml:space="preserve">
 		<value>No se encontraron claves válidas en el archivo .keys para activar. Asegúrate de que tus claves están en el formato correcto.</value>
 	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>{0} clave(s) importadas exitosamente desde el archivo .keys.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>{0} clave(s) importadas exitosamente desde el archivo .keys, {1} línea(s) omitida(s) porque no están en el formato correcto, son comentarios o líneas vacías.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>{0} clave(s) cargada(s) desde la cola.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
+	</data>
 </root>
