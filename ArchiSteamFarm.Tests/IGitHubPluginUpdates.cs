@@ -6,7 +6,7 @@
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
 // ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2025 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2026 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@
 // limitations under the License.
 
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -38,20 +37,12 @@ namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class IGitHubPluginUpdates {
+internal sealed class IGitHubPluginUpdates : TestContextBase {
 	private const string PluginName = "ArchiSteamFarm.OfficialPlugins.Monitoring";
 	private const string Repository = "JustArchiNET/ArchiSteamFarm";
 
-	private readonly TestContext TestContext;
-
-	private CancellationToken CancellationToken => TestContext.CancellationToken;
-
 	[UsedImplicitly]
-	public IGitHubPluginUpdates(TestContext testContext) {
-		ArgumentNullException.ThrowIfNull(testContext);
-
-		TestContext = testContext;
-	}
+	public IGitHubPluginUpdates(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
 
 	[TestCategory("Manual")]
 	[TestMethod]

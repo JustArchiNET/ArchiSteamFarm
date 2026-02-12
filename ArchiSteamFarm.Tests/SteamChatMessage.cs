@@ -25,7 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -35,17 +34,9 @@ namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class SteamChatMessage {
-	private readonly TestContext TestContext;
-
-	private CancellationToken CancellationToken => TestContext.CancellationToken;
-
+internal sealed class SteamChatMessage : TestContextBase {
 	[UsedImplicitly]
-	public SteamChatMessage(TestContext testContext) {
-		ArgumentNullException.ThrowIfNull(testContext);
-
-		TestContext = testContext;
-	}
+	public SteamChatMessage(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
 
 	[TestMethod]
 	internal async Task CanSplitEvenWithStupidlyLongPrefix() {
