@@ -106,11 +106,7 @@ public abstract class SerializableFile : IDisposable {
 
 			await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-			if (File.Exists(serializableFile.FilePath)) {
-				File.Replace(newFilePath, serializableFile.FilePath, null);
-			} else {
-				File.Move(newFilePath, serializableFile.FilePath);
-			}
+			File.Move(newFilePath, serializableFile.FilePath, true);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		} finally {
@@ -149,11 +145,7 @@ public abstract class SerializableFile : IDisposable {
 #pragma warning disable CA3003 // Ignored due to caller's intent
 			await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-			if (File.Exists(filePath)) {
-				File.Replace(newFilePath, filePath, null);
-			} else {
-				File.Move(newFilePath, filePath);
-			}
+			File.Move(newFilePath, filePath, true);
 #pragma warning restore CA3003 // Ignored due to caller's intent
 
 			return true;
