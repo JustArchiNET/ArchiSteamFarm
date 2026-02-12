@@ -2152,9 +2152,7 @@ public sealed class Commands {
 					Regex regex;
 
 					try {
-#pragma warning disable CA3012 // We're aware of a potential denial of service here, this is why we limit maximum matching time to a sane value
 						regex = new Regex(game, RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
-#pragma warning restore CA3012 // We're aware of a potential denial of service here, this is why we limit maximum matching time to a sane value
 					} catch (ArgumentException e) {
 						Bot.ArchiLogger.LogGenericWarningException(e);
 						response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(regex))));

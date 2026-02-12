@@ -25,7 +25,6 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Steam.Data;
 
-#pragma warning disable CA1027 // Aliases are intentional, we don't plan to combine fields
 [PublicAPI]
 public enum EAssetRarity : byte {
 	Unknown,
@@ -43,4 +42,3 @@ public enum EAssetRarity : byte {
 	Arcana,
 	Unusual
 }
-#pragma warning restore CA1027 // Aliases are intentional, we don't plan to combine fields

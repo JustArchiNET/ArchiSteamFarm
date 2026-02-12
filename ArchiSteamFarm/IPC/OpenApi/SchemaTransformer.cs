@@ -33,7 +33,6 @@ using Microsoft.OpenApi;
 
 namespace ArchiSteamFarm.IPC.OpenApi;
 
-#pragma warning disable CA1812 // False positive, the class is used internally
 [UsedImplicitly]
 internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 	public Task TransformAsync(OpenApiSchema schema, OpenApiSchemaTransformerContext context, CancellationToken cancellationToken) {
@@ -116,4 +115,3 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 		schema.AddExtension("x-definition", new JsonNodeExtension(definition));
 	}
 }
-#pragma warning restore CA1812 // False positive, the class is used internally

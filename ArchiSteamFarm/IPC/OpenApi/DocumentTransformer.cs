@@ -39,7 +39,6 @@ using Microsoft.OpenApi;
 
 namespace ArchiSteamFarm.IPC.OpenApi;
 
-#pragma warning disable CA1812 // False positive, the class is used internally
 [UsedImplicitly]
 internal sealed class DocumentTransformer : IOpenApiDocumentTransformer {
 	public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken) {
@@ -132,4 +131,3 @@ internal sealed class DocumentTransformer : IOpenApiDocumentTransformer {
 		return Task.CompletedTask;
 	}
 }
-#pragma warning restore CA1812 // False positive, the class is used internally

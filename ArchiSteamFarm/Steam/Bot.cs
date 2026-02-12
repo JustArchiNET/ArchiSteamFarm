@@ -1832,9 +1832,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			try {
-#pragma warning disable CA3003 // New file path derived from bot's name that was validated above
 				File.Move(filePath, newFilePath);
-#pragma warning restore CA3003 // New file path derived from bot's name that was validated above
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
@@ -2657,14 +2655,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(paymentMethod));
 		}
 
-#pragma warning disable CA2248 // This is actually a fair warning, EPaymentMethod is not a flags enum on itself, but there is nothing we can do about Steam using it like that here
 		return paymentMethod switch {
 			EPaymentMethod.ActivationCode => false,
 			EPaymentMethod.Complimentary => false,
 			EPaymentMethod.HardwarePromo => false,
 			_ => !paymentMethod.HasFlag(EPaymentMethod.Complimentary) // Complimentary can also be a flag
 		};
-#pragma warning restore CA2248 // This is actually a fair warning, EPaymentMethod is not a flags enum on itself, but there is nothing we can do about Steam using it like that here
 	}
 
 	private async Task JoinMasterChatGroupID() {
