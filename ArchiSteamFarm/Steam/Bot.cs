@@ -3127,8 +3127,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (notification.Body.steamid_sender == 0) {
-			ArchiLogger.LogNullError(notification.Body.steamid_sender);
-
+			// Possible with server messages
 			return;
 		}
 
