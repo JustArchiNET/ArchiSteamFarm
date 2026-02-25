@@ -362,7 +362,7 @@ jobs:
 
     - name: Generate artifact attestation for ASF-${{ matrix.variant }}.zip
       if: ${{ github.event_name == 'push' }}
-      uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+      uses: actions/attest-build-provenance@e4d4f7c39adfa4c260fb5c147f0622000aa14b99 # v4.0.0
       with:
         subject-path: out/ASF-${{ matrix.variant }}.zip
 
@@ -410,7 +410,7 @@ jobs:
 
     - name: Generate artifact attestation for ArchiSteamFarm.OfficialPlugins.Monitoring
       if: ${{ github.event_name == 'push' && matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
-      uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+      uses: actions/attest-build-provenance@e4d4f7c39adfa4c260fb5c147f0622000aa14b99 # v4.0.0
       with:
         subject-path: out/ArchiSteamFarm.OfficialPlugins.Monitoring.zip
 
@@ -509,7 +509,7 @@ jobs:
         gpg -a -b -o SHA512SUMS.sign SHA512SUMS
 
     - name: Generate artifact attestation for SHA512SUMS
-      uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+      uses: actions/attest-build-provenance@e4d4f7c39adfa4c260fb5c147f0622000aa14b99 # v4.0.0
       with:
         subject-path: out/SHA512SUMS
 
@@ -522,7 +522,7 @@ jobs:
         path: out/SHA512SUMS
 
     - name: Generate artifact attestation for SHA512SUMS.sign
-      uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+      uses: actions/attest-build-provenance@e4d4f7c39adfa4c260fb5c147f0622000aa14b99 # v4.0.0
       with:
         subject-path: out/SHA512SUMS.sign
 
