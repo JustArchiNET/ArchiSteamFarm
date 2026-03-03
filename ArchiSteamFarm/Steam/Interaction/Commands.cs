@@ -659,7 +659,7 @@ public sealed class Commands {
 			}
 
 			switch (type.ToUpperInvariant()) {
-				case "A" or "APP": {
+				case "APP": {
 					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(gameID, Bot.OwnedPackages.Keys, 1);
 
 					if (packageIDs is { Count: > 0 }) {
@@ -684,7 +684,7 @@ public sealed class Commands {
 					break;
 				}
 
-				case "S" or "SUB": {
+				case "SUB": {
 					if (Bot.OwnedPackages.ContainsKey(gameID)) {
 						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
 
@@ -2097,7 +2097,7 @@ public sealed class Commands {
 			}
 
 			switch (type.ToUpperInvariant()) {
-				case "A" or "APP" when uint.TryParse(game, out uint appID) && (appID > 0):
+				case "APP" when uint.TryParse(game, out uint appID) && (appID > 0):
 					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(appID, Bot.OwnedPackages.Keys, 1);
 
 					if (packageIDs?.Count > 0) {
@@ -2128,7 +2128,7 @@ public sealed class Commands {
 					}
 
 					break;
-				case "R" or "REGEX":
+				case "REGEX":
 					Regex regex;
 
 					try {
@@ -2171,7 +2171,7 @@ public sealed class Commands {
 					}
 
 					continue;
-				case "S" or "SUB" when uint.TryParse(game, out uint packageID) && (packageID > 0):
+				case "SUB" when uint.TryParse(game, out uint packageID) && (packageID > 0):
 					if (Bot.OwnedPackages.ContainsKey(packageID)) {
 						result[$"sub/{packageID}"] = packageID.ToString(CultureInfo.InvariantCulture);
 						response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlready($"sub/{packageID}")));
@@ -3006,7 +3006,7 @@ public sealed class Commands {
 			}
 
 			switch (type.ToUpperInvariant()) {
-				case "A" or "APP": {
+				case "APP": {
 					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(gameID, Bot.OwnedPackages.Keys, 1);
 
 					if (packageIDs is { Count: 0 }) {
@@ -3022,7 +3022,7 @@ public sealed class Commands {
 					break;
 				}
 
-				case "S" or "SUB": {
+				case "SUB": {
 					if (!Bot.OwnedPackages.ContainsKey(gameID)) {
 						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", EResult.InvalidState)));
 
