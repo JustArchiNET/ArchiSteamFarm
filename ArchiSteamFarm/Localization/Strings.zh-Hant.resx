@@ -800,8 +800,26 @@
 		<value>輸入：{0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>您宣告了 --system-required，但您的作業系統缺少該功能所需的相依套件。請考慮安裝 dbus。如果您不需要此功能，則可以直接忽略這個警告。</value>
+	</data>
 	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
 		<value>無法解密資料庫 {0}。若您剛剛更改了 Bot 的 {1}，可能是正常現象，在下次執行時就不會再看到這則警告。否則您應檢查並找出失敗的確切原因。</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
+	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>在您的 .keys 檔案中沒有找到可以兌換的有效序號。請確保您的序號格式正確。</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>成功從您的 .keys 檔案中匯入了 {0} 個序號。</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>成功從您的 .keys 檔案中匯入了 {0} 個序號。{1} 行被跳過，因格式錯誤、為註解或空行。</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>從佇列載入了 {0} 個序號。</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
 	</data>
 </root>
