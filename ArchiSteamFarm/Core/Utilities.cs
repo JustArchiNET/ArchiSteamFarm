@@ -254,8 +254,10 @@ public static class Utilities {
 					_ => null
 				};
 
-				if (type != null) {
-					value = uri.Segments[2].TrimEnd('/');
+				string pathValue = uri.Segments[2].TrimEnd('/');
+
+				if ((type != null) && uint.TryParse(pathValue, out uint pathNumericValue) && (pathNumericValue > 0)) {
+					value = pathValue;
 
 					return true;
 				}
@@ -282,6 +284,15 @@ public static class Utilities {
 
 			if (type != null) {
 				value = input[(slashIndex + 1)..];
+
+				if (type is "APP" or "SUB") {
+					if (!uint.TryParse(value, out uint slashNumericValue) || (slashNumericValue == 0)) {
+						type = null;
+						value = null;
+
+						return false;
+					}
+				}
 
 				return true;
 			}
