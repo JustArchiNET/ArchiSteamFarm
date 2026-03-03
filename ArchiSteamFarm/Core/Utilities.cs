@@ -37,6 +37,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Storage;
 using Humanizer;
 using JetBrains.Annotations;
@@ -245,21 +246,21 @@ public static class Utilities {
 		ArgumentException.ThrowIfNullOrEmpty(defaultType);
 
 		if (input.StartsWith("http", StringComparison.OrdinalIgnoreCase)) {
-			if (Uri.TryCreate(input, UriKind.Absolute, out Uri? uri) && uri.Host.Equals("store.steampowered.com", StringComparison.OrdinalIgnoreCase) && (uri.Segments.Length >= 3)) {
-				string pathType = uri.Segments[1].TrimEnd('/');
+			if (Uri.TryCreate(input, UriKind.Absolute, out Uri? uri) && uri.Host.Equals(ArchiWebHandler.SteamStoreURL.Host, StringComparison.OrdinalIgnoreCase)) {
+				string[] segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
-				type = pathType.ToUpperInvariant() switch {
-					"APP" => "APP",
-					"SUB" => "SUB",
-					_ => null
-				};
+				if (segments.Length >= 2) {
+					type = segments[0].ToUpperInvariant() switch {
+						"APP" => "APP",
+						"SUB" => "SUB",
+						_ => null
+					};
 
-				string pathValue = uri.Segments[2].TrimEnd('/');
+					if ((type != null) && uint.TryParse(segments[1], out uint pathNumericValue) && (pathNumericValue > 0)) {
+						value = segments[1];
 
-				if ((type != null) && uint.TryParse(pathValue, out uint pathNumericValue) && (pathNumericValue > 0)) {
-					value = pathValue;
-
-					return true;
+						return true;
+					}
 				}
 			}
 
