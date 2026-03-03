@@ -652,22 +652,7 @@ public sealed class Commands {
 		string[] entries = query.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (string entry in entries) {
-			uint gameID;
-			string type;
-
-			int index = entry.IndexOf('/', StringComparison.Ordinal);
-
-			if ((index > 0) && (entry.Length > index + 1)) {
-				if (!uint.TryParse(entry[(index + 1)..], out gameID) || (gameID == 0)) {
-					response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
-
-					continue;
-				}
-
-				type = entry[..index];
-			} else if (uint.TryParse(entry, out gameID) && (gameID > 0)) {
-				type = "SUB";
-			} else {
+			if (!Utilities.TryParseGameIdentifier(entry, "SUB", out string? type, out uint gameID)) {
 				response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
 
 				continue;
@@ -1336,7 +1321,7 @@ public sealed class Commands {
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
-			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.OrdinalIgnoreCase)) {
 				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
@@ -1405,7 +1390,7 @@ public sealed class Commands {
 
 					break;
 				default:
-					if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+					if (!Utilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.OrdinalIgnoreCase)) {
 						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 					}
 
@@ -1495,7 +1480,7 @@ public sealed class Commands {
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
-			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.OrdinalIgnoreCase)) {
 				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
@@ -1571,7 +1556,7 @@ public sealed class Commands {
 
 					break;
 				default:
-					if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+					if (!Utilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.OrdinalIgnoreCase)) {
 						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 					}
 
@@ -1861,7 +1846,7 @@ public sealed class Commands {
 		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
-			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(appIDText, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.OrdinalIgnoreCase)) {
 				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 			}
 
@@ -1942,7 +1927,7 @@ public sealed class Commands {
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
-			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.OrdinalIgnoreCase)) {
 				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
@@ -1999,7 +1984,7 @@ public sealed class Commands {
 
 					break;
 				default:
-					if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+					if (!Utilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.OrdinalIgnoreCase)) {
 						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 					}
 
@@ -2103,14 +2088,9 @@ public sealed class Commands {
 			string game;
 			string type;
 
-			int index = entry.IndexOf('/', StringComparison.Ordinal);
-
-			if ((index > 0) && (entry.Length > index + 1)) {
-				game = entry[(index + 1)..];
-				type = entry[..index];
-			} else if (uint.TryParse(entry, out uint appID) && (appID > 0)) {
-				game = entry;
-				type = "APP";
+			if (Utilities.TryParseGameIdentifier(entry, "APP", out string? parsedType, out string? parsedValue)) {
+				game = parsedValue;
+				type = parsedType;
 			} else {
 				game = entry;
 				type = "NAME";
@@ -2365,7 +2345,7 @@ public sealed class Commands {
 		StringBuilder gameName = new();
 
 		foreach (string game in games) {
-			if (!uint.TryParse(game, out uint gameID) || (gameID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(game, "APP", out string? type, out uint gameID) || !type.Equals("APP", StringComparison.OrdinalIgnoreCase)) {
 				if (gameName.Length > 0) {
 					gameName.Append(' ');
 				}
@@ -3019,22 +2999,7 @@ public sealed class Commands {
 		string[] entries = query.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (string entry in entries) {
-			uint gameID;
-			string type;
-
-			int index = entry.IndexOf('/', StringComparison.Ordinal);
-
-			if ((index > 0) && (entry.Length > index + 1)) {
-				if (!uint.TryParse(entry[(index + 1)..], out gameID) || (gameID == 0)) {
-					response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
-
-					continue;
-				}
-
-				type = entry[..index];
-			} else if (uint.TryParse(entry, out gameID) && (gameID > 0)) {
-				type = "SUB";
-			} else {
+			if (!Utilities.TryParseGameIdentifier(entry, "SUB", out string? type, out uint gameID)) {
 				response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
 
 				continue;
@@ -3603,7 +3568,7 @@ public sealed class Commands {
 		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
-			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(appIDText, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.OrdinalIgnoreCase)) {
 				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 			}
 
@@ -3637,7 +3602,7 @@ public sealed class Commands {
 		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
-			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(appIDText, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.OrdinalIgnoreCase)) {
 				return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 			}
 

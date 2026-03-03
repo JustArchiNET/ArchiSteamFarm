@@ -226,6 +226,85 @@ public static class Utilities {
 		return true;
 	}
 
+	internal static bool TryParseGameIdentifier(string input, string defaultType, [NotNullWhen(true)] out string? type, out uint id) {
+		ArgumentException.ThrowIfNullOrEmpty(input);
+		ArgumentException.ThrowIfNullOrEmpty(defaultType);
+
+		if (TryParseGameIdentifier(input, defaultType, out type, out string? value) && uint.TryParse(value, out id) && (id > 0)) {
+			return true;
+		}
+
+		type = null;
+		id = 0;
+
+		return false;
+	}
+
+	internal static bool TryParseGameIdentifier(string input, string defaultType, [NotNullWhen(true)] out string? type, [NotNullWhen(true)] out string? value) {
+		ArgumentException.ThrowIfNullOrEmpty(input);
+		ArgumentException.ThrowIfNullOrEmpty(defaultType);
+
+		if (input.StartsWith("http", StringComparison.OrdinalIgnoreCase)) {
+			if (Uri.TryCreate(input, UriKind.Absolute, out Uri? uri) && uri.Host.Equals("store.steampowered.com", StringComparison.OrdinalIgnoreCase) && (uri.Segments.Length >= 3)) {
+				string pathType = uri.Segments[1].TrimEnd('/');
+
+				type = pathType.ToUpperInvariant() switch {
+					"APP" => "APP",
+					"SUB" => "SUB",
+					_ => null
+				};
+
+				if (type != null) {
+					value = uri.Segments[2].TrimEnd('/');
+
+					return true;
+				}
+			}
+
+			type = null;
+			value = null;
+
+			return false;
+		}
+
+		int slashIndex = input.IndexOf('/', StringComparison.Ordinal);
+
+		if ((slashIndex > 0) && (input.Length > slashIndex + 1)) {
+			string inputType = input[..slashIndex];
+
+			type = inputType.ToUpperInvariant() switch {
+				"A" or "APP" => "APP",
+				"S" or "SUB" => "SUB",
+				"R" or "REGEX" => "REGEX",
+				"N" or "NAME" => "NAME",
+				_ => null
+			};
+
+			if (type != null) {
+				value = input[(slashIndex + 1)..];
+
+				return true;
+			}
+
+			type = null;
+			value = null;
+
+			return false;
+		}
+
+		if (uint.TryParse(input, out uint numericValue) && (numericValue > 0)) {
+			type = defaultType;
+			value = input;
+
+			return true;
+		}
+
+		type = null;
+		value = null;
+
+		return false;
+	}
+
 	internal static ulong MathAdd(ulong first, int second) {
 		if (second >= 0) {
 			return first + (uint) second;
