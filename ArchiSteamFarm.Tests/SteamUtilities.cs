@@ -55,6 +55,8 @@ internal sealed class SteamUtilities {
 	[DataRow("unknown/123", EGameIdentifier.Application)]
 	[DataRow("https://store.steampowered.com/bundle/123", EGameIdentifier.Application)]
 	[DataRow("https://example.com/app/730", EGameIdentifier.Application)]
+	[DataRow("regex/pattern", EGameIdentifier.Application)]
+	[DataRow("name/Half-Life", EGameIdentifier.Application)]
 	[TestMethod]
 	internal void TryParseGameIdentifierReturnsFalseForInvalidInput(string input, EGameIdentifier defaultType) {
 		bool result = TryParseGameIdentifier(input, defaultType, out EGameIdentifier? type, out uint id);
@@ -68,6 +70,7 @@ internal sealed class SteamUtilities {
 	[DataRow("r/test.*", EGameIdentifier.Application, EGameIdentifier.Regex, "test.*")]
 	[DataRow("name/Half-Life", EGameIdentifier.Application, EGameIdentifier.Name, "Half-Life")]
 	[DataRow("n/Portal", EGameIdentifier.Application, EGameIdentifier.Name, "Portal")]
+	[DataRow("http:CS2", EGameIdentifier.Name, EGameIdentifier.Name, "http:CS2")]
 	[TestMethod]
 	internal void TryParseGameIdentifierStringReturnsExpectedValue(string input, EGameIdentifier defaultType, EGameIdentifier expectedType, string expectedValue) {
 		bool result = TryParseGameIdentifier(input, defaultType, out EGameIdentifier? type, out string? value);
@@ -75,17 +78,6 @@ internal sealed class SteamUtilities {
 		Assert.IsTrue(result);
 		Assert.AreEqual(expectedType, type);
 		Assert.AreEqual(expectedValue, value);
-	}
-
-	[DataRow("regex/pattern", EGameIdentifier.Application)]
-	[DataRow("name/Half-Life", EGameIdentifier.Application)]
-	[TestMethod]
-	internal void TryParseGameIdentifierUintReturnsFalseForNonNumericTypes(string input, EGameIdentifier defaultType) {
-		bool result = TryParseGameIdentifier(input, defaultType, out EGameIdentifier? type, out uint id);
-
-		Assert.IsFalse(result);
-		Assert.IsNull(type);
-		Assert.AreEqual(0U, id);
 	}
 }
 #pragma warning restore CA1812 // False positive, the class is used during MSTest

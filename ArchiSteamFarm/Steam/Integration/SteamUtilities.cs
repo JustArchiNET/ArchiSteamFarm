@@ -153,29 +153,22 @@ public static class SteamUtilities {
 			throw new InvalidEnumArgumentException(nameof(defaultType), (int) defaultType, typeof(EGameIdentifier));
 		}
 
-		if (input.StartsWith("http", StringComparison.OrdinalIgnoreCase)) {
-			if (Uri.TryCreate(input, UriKind.Absolute, out Uri? uri) && uri.Host.Equals(ArchiWebHandler.SteamStoreURL.Host, StringComparison.OrdinalIgnoreCase)) {
-				string[] segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+		if (input.StartsWith("http", StringComparison.OrdinalIgnoreCase) && Uri.TryCreate(input, UriKind.Absolute, out Uri? uri) && uri.Host.Equals(ArchiWebHandler.SteamStoreURL.Host, StringComparison.OrdinalIgnoreCase)) {
+			string[] segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
-				if (segments.Length >= 2) {
-					type = segments[0].ToUpperInvariant() switch {
-						"APP" => EGameIdentifier.Application,
-						"SUB" => EGameIdentifier.Package,
-						_ => null
-					};
+			if (segments.Length >= 2) {
+				type = segments[0].ToUpperInvariant() switch {
+					"APP" => EGameIdentifier.Application,
+					"SUB" => EGameIdentifier.Package,
+					_ => null
+				};
 
-					if ((type != null) && uint.TryParse(segments[1], out uint pathNumericValue) && (pathNumericValue > 0)) {
-						value = segments[1];
+				if ((type != null) && uint.TryParse(segments[1], out uint pathNumericValue) && (pathNumericValue > 0)) {
+					value = segments[1];
 
-						return true;
-					}
+					return true;
 				}
 			}
-
-			type = null;
-			value = null;
-
-			return false;
 		}
 
 		int slashIndex = input.IndexOf('/', StringComparison.Ordinal);
@@ -212,11 +205,27 @@ public static class SteamUtilities {
 			return false;
 		}
 
-		if (uint.TryParse(input, out uint numericValue) && (numericValue > 0)) {
-			type = defaultType;
-			value = input;
+		switch (defaultType) {
+			case EGameIdentifier.Application:
+			case EGameIdentifier.Package:
+				if (uint.TryParse(input, out uint numericValue) && (numericValue > 0)) {
+					type = defaultType;
+					value = input;
 
-			return true;
+					return true;
+				}
+
+				break;
+			case EGameIdentifier.Name:
+				type = EGameIdentifier.Name;
+				value = input;
+
+				return true;
+			case EGameIdentifier.Regex:
+				type = EGameIdentifier.Regex;
+				value = input;
+
+				return true;
 		}
 
 		type = null;
