@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using ArchiSteamFarm.Steam.Interaction;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ArchiSteamFarm.Steam.Integration.SteamUtilities;
 
@@ -29,58 +30,58 @@ namespace ArchiSteamFarm.Tests;
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
 internal sealed class SteamUtilities {
-	[DataRow("730", "APP", "APP", 730U)]
-	[DataRow("730", "SUB", "SUB", 730U)]
-	[DataRow("app/730", "SUB", "APP", 730U)]
-	[DataRow("a/730", "SUB", "APP", 730U)]
-	[DataRow("sub/123", "APP", "SUB", 123U)]
-	[DataRow("s/123", "APP", "SUB", 123U)]
-	[DataRow("https://store.steampowered.com/app/730", "SUB", "APP", 730U)]
-	[DataRow("https://store.steampowered.com/sub/123", "APP", "SUB", 123U)]
-	[DataRow("https://store.steampowered.com/app/730/SomeGameName/", "SUB", "APP", 730U)]
+	[DataRow("730", EGameIdentifier.Application, EGameIdentifier.Application, 730U)]
+	[DataRow("730", EGameIdentifier.Package, EGameIdentifier.Package, 730U)]
+	[DataRow("app/730", EGameIdentifier.Package, EGameIdentifier.Application, 730U)]
+	[DataRow("a/730", EGameIdentifier.Package, EGameIdentifier.Application, 730U)]
+	[DataRow("sub/123", EGameIdentifier.Application, EGameIdentifier.Package, 123U)]
+	[DataRow("s/123", EGameIdentifier.Application, EGameIdentifier.Package, 123U)]
+	[DataRow("https://store.steampowered.com/app/730", EGameIdentifier.Package, EGameIdentifier.Application, 730U)]
+	[DataRow("https://store.steampowered.com/sub/123", EGameIdentifier.Application, EGameIdentifier.Package, 123U)]
+	[DataRow("https://store.steampowered.com/app/730/SomeGameName/", EGameIdentifier.Package, EGameIdentifier.Application, 730U)]
 	[TestMethod]
-	internal void TryParseGameIdentifierReturnsExpectedId(string input, string defaultType, string expectedType, uint expectedId) {
-		bool result = TryParseGameIdentifier(input, defaultType, out string? type, out uint id);
+	internal void TryParseGameIdentifierReturnsExpectedId(string input, EGameIdentifier defaultType, EGameIdentifier expectedType, uint expectedId) {
+		bool result = TryParseGameIdentifier(input, defaultType, out EGameIdentifier? type, out uint id);
 
 		Assert.IsTrue(result);
 		Assert.AreEqual(expectedType, type);
 		Assert.AreEqual(expectedId, id);
 	}
 
-	[DataRow("0", "APP")]
-	[DataRow("abc", "APP")]
-	[DataRow("app/0", "SUB")]
-	[DataRow("sub/abc", "APP")]
-	[DataRow("unknown/123", "APP")]
-	[DataRow("https://store.steampowered.com/bundle/123", "APP")]
-	[DataRow("https://example.com/app/730", "APP")]
+	[DataRow("0", EGameIdentifier.Application)]
+	[DataRow("abc", EGameIdentifier.Application)]
+	[DataRow("app/0", EGameIdentifier.Package)]
+	[DataRow("sub/abc", EGameIdentifier.Application)]
+	[DataRow("unknown/123", EGameIdentifier.Application)]
+	[DataRow("https://store.steampowered.com/bundle/123", EGameIdentifier.Application)]
+	[DataRow("https://example.com/app/730", EGameIdentifier.Application)]
 	[TestMethod]
-	internal void TryParseGameIdentifierReturnsFalseForInvalidInput(string input, string defaultType) {
-		bool result = TryParseGameIdentifier(input, defaultType, out string? type, out uint id);
+	internal void TryParseGameIdentifierReturnsFalseForInvalidInput(string input, EGameIdentifier defaultType) {
+		bool result = TryParseGameIdentifier(input, defaultType, out EGameIdentifier? type, out uint id);
 
 		Assert.IsFalse(result);
 		Assert.IsNull(type);
 		Assert.AreEqual(0U, id);
 	}
 
-	[DataRow("regex/pattern", "APP", "REGEX", "pattern")]
-	[DataRow("r/test.*", "APP", "REGEX", "test.*")]
-	[DataRow("name/Half-Life", "APP", "NAME", "Half-Life")]
-	[DataRow("n/Portal", "APP", "NAME", "Portal")]
+	[DataRow("regex/pattern", EGameIdentifier.Application, EGameIdentifier.Regex, "pattern")]
+	[DataRow("r/test.*", EGameIdentifier.Application, EGameIdentifier.Regex, "test.*")]
+	[DataRow("name/Half-Life", EGameIdentifier.Application, EGameIdentifier.Name, "Half-Life")]
+	[DataRow("n/Portal", EGameIdentifier.Application, EGameIdentifier.Name, "Portal")]
 	[TestMethod]
-	internal void TryParseGameIdentifierStringReturnsExpectedValue(string input, string defaultType, string expectedType, string expectedValue) {
-		bool result = TryParseGameIdentifier(input, defaultType, out string? type, out string? value);
+	internal void TryParseGameIdentifierStringReturnsExpectedValue(string input, EGameIdentifier defaultType, EGameIdentifier expectedType, string expectedValue) {
+		bool result = TryParseGameIdentifier(input, defaultType, out EGameIdentifier? type, out string? value);
 
 		Assert.IsTrue(result);
 		Assert.AreEqual(expectedType, type);
 		Assert.AreEqual(expectedValue, value);
 	}
 
-	[DataRow("regex/pattern", "APP")]
-	[DataRow("name/Half-Life", "APP")]
+	[DataRow("regex/pattern", EGameIdentifier.Application)]
+	[DataRow("name/Half-Life", EGameIdentifier.Application)]
 	[TestMethod]
-	internal void TryParseGameIdentifierUintReturnsFalseForNonNumericTypes(string input, string defaultType) {
-		bool result = TryParseGameIdentifier(input, defaultType, out string? type, out uint id);
+	internal void TryParseGameIdentifierUintReturnsFalseForNonNumericTypes(string input, EGameIdentifier defaultType) {
+		bool result = TryParseGameIdentifier(input, defaultType, out EGameIdentifier? type, out uint id);
 
 		Assert.IsFalse(result);
 		Assert.IsNull(type);

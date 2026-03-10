@@ -22,11 +22,13 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Steam.Interaction;
 using JetBrains.Annotations;
 using SteamKit2;
 
@@ -127,9 +129,12 @@ public static class SteamUtilities {
 		return result;
 	}
 
-	internal static bool TryParseGameIdentifier(string input, string defaultType, [NotNullWhen(true)] out string? type, out uint id) {
+	internal static bool TryParseGameIdentifier(string input, EGameIdentifier defaultType, [NotNullWhen(true)] out EGameIdentifier? type, out uint id) {
 		ArgumentException.ThrowIfNullOrEmpty(input);
-		ArgumentException.ThrowIfNullOrEmpty(defaultType);
+
+		if (!Enum.IsDefined(defaultType)) {
+			throw new InvalidEnumArgumentException(nameof(defaultType), (int) defaultType, typeof(EGameIdentifier));
+		}
 
 		if (TryParseGameIdentifier(input, defaultType, out type, out string? value) && uint.TryParse(value, out id) && (id > 0)) {
 			return true;
@@ -141,9 +146,12 @@ public static class SteamUtilities {
 		return false;
 	}
 
-	internal static bool TryParseGameIdentifier(string input, string defaultType, [NotNullWhen(true)] out string? type, [NotNullWhen(true)] out string? value) {
+	internal static bool TryParseGameIdentifier(string input, EGameIdentifier defaultType, [NotNullWhen(true)] out EGameIdentifier? type, [NotNullWhen(true)] out string? value) {
 		ArgumentException.ThrowIfNullOrEmpty(input);
-		ArgumentException.ThrowIfNullOrEmpty(defaultType);
+
+		if (!Enum.IsDefined(defaultType)) {
+			throw new InvalidEnumArgumentException(nameof(defaultType), (int) defaultType, typeof(EGameIdentifier));
+		}
 
 		if (input.StartsWith("http", StringComparison.OrdinalIgnoreCase)) {
 			if (Uri.TryCreate(input, UriKind.Absolute, out Uri? uri) && uri.Host.Equals(ArchiWebHandler.SteamStoreURL.Host, StringComparison.OrdinalIgnoreCase)) {
@@ -151,8 +159,8 @@ public static class SteamUtilities {
 
 				if (segments.Length >= 2) {
 					type = segments[0].ToUpperInvariant() switch {
-						"APP" => "APP",
-						"SUB" => "SUB",
+						"APP" => EGameIdentifier.Application,
+						"SUB" => EGameIdentifier.Package,
 						_ => null
 					};
 
@@ -176,17 +184,17 @@ public static class SteamUtilities {
 			string inputType = input[..slashIndex];
 
 			type = inputType.ToUpperInvariant() switch {
-				"A" or "APP" => "APP",
-				"S" or "SUB" => "SUB",
-				"R" or "REGEX" => "REGEX",
-				"N" or "NAME" => "NAME",
+				"A" or "APP" => EGameIdentifier.Application,
+				"S" or "SUB" => EGameIdentifier.Package,
+				"R" or "REGEX" => EGameIdentifier.Regex,
+				"N" or "NAME" => EGameIdentifier.Name,
 				_ => null
 			};
 
 			if (type != null) {
 				value = input[(slashIndex + 1)..];
 
-				if (type is "APP" or "SUB") {
+				if (type is EGameIdentifier.Application or EGameIdentifier.Package) {
 					if (!uint.TryParse(value, out uint slashNumericValue) || (slashNumericValue == 0)) {
 						type = null;
 						value = null;

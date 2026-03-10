@@ -652,14 +652,14 @@ public sealed class Commands {
 		string[] entries = query.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (string entry in entries) {
-			if (!SteamUtilities.TryParseGameIdentifier(entry, "SUB", out string? type, out uint gameID)) {
+			if (!SteamUtilities.TryParseGameIdentifier(entry, EGameIdentifier.Package, out EGameIdentifier? type, out uint gameID)) {
 				response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
 
 				continue;
 			}
 
-			switch (type.ToUpperInvariant()) {
-				case "APP": {
+			switch (type) {
+				case EGameIdentifier.Application: {
 					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(gameID, Bot.OwnedPackages.Keys, 1);
 
 					if (packageIDs is { Count: > 0 }) {
@@ -684,7 +684,7 @@ public sealed class Commands {
 					break;
 				}
 
-				case "SUB": {
+				case EGameIdentifier.Package: {
 					if (Bot.OwnedPackages.ContainsKey(gameID)) {
 						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
 
@@ -1321,7 +1321,7 @@ public sealed class Commands {
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
-			if (!SteamUtilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
+			if (!SteamUtilities.TryParseGameIdentifier(target, EGameIdentifier.Application, out EGameIdentifier? type, out uint appID) || (type != EGameIdentifier.Application)) {
 				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
@@ -1390,7 +1390,7 @@ public sealed class Commands {
 
 					break;
 				default:
-					if (!SteamUtilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
+					if (!SteamUtilities.TryParseGameIdentifier(target, EGameIdentifier.Application, out EGameIdentifier? type, out uint appID) || (type != EGameIdentifier.Application)) {
 						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 					}
 
@@ -1480,7 +1480,7 @@ public sealed class Commands {
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
-			if (!SteamUtilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
+			if (!SteamUtilities.TryParseGameIdentifier(target, EGameIdentifier.Application, out EGameIdentifier? type, out uint appID) || (type != EGameIdentifier.Application)) {
 				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
@@ -1556,7 +1556,7 @@ public sealed class Commands {
 
 					break;
 				default:
-					if (!SteamUtilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
+					if (!SteamUtilities.TryParseGameIdentifier(target, EGameIdentifier.Application, out EGameIdentifier? type, out uint appID) || (type != EGameIdentifier.Application)) {
 						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 					}
 
@@ -1846,7 +1846,7 @@ public sealed class Commands {
 		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
-			if (!SteamUtilities.TryParseGameIdentifier(appIDText, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
+			if (!SteamUtilities.TryParseGameIdentifier(appIDText, EGameIdentifier.Application, out EGameIdentifier? type, out uint appID) || (type != EGameIdentifier.Application)) {
 				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 			}
 
@@ -1927,7 +1927,7 @@ public sealed class Commands {
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
-			if (!SteamUtilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
+			if (!SteamUtilities.TryParseGameIdentifier(target, EGameIdentifier.Application, out EGameIdentifier? type, out uint appID) || (type != EGameIdentifier.Application)) {
 				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
@@ -1984,7 +1984,7 @@ public sealed class Commands {
 
 					break;
 				default:
-					if (!SteamUtilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
+					if (!SteamUtilities.TryParseGameIdentifier(target, EGameIdentifier.Application, out EGameIdentifier? type, out uint appID) || (type != EGameIdentifier.Application)) {
 						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 					}
 
@@ -2086,18 +2086,18 @@ public sealed class Commands {
 
 		foreach (string entry in entries) {
 			string game;
-			string type;
+			EGameIdentifier type;
 
-			if (SteamUtilities.TryParseGameIdentifier(entry, "APP", out string? parsedType, out string? parsedValue)) {
+			if (SteamUtilities.TryParseGameIdentifier(entry, EGameIdentifier.Application, out EGameIdentifier? parsedType, out string? parsedValue)) {
 				game = parsedValue;
-				type = parsedType;
+				type = parsedType.Value;
 			} else {
 				game = entry;
-				type = "NAME";
+				type = EGameIdentifier.Name;
 			}
 
-			switch (type.ToUpperInvariant()) {
-				case "APP" when uint.TryParse(game, out uint appID) && (appID > 0):
+			switch (type) {
+				case EGameIdentifier.Application when uint.TryParse(game, out uint appID) && (appID > 0):
 					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(appID, Bot.OwnedPackages.Keys, 1);
 
 					if (packageIDs?.Count > 0) {
@@ -2128,7 +2128,7 @@ public sealed class Commands {
 					}
 
 					break;
-				case "REGEX":
+				case EGameIdentifier.Regex:
 					Regex regex;
 
 					try {
@@ -2171,7 +2171,7 @@ public sealed class Commands {
 					}
 
 					continue;
-				case "SUB" when uint.TryParse(game, out uint packageID) && (packageID > 0):
+				case EGameIdentifier.Package when uint.TryParse(game, out uint packageID) && (packageID > 0):
 					if (Bot.OwnedPackages.ContainsKey(packageID)) {
 						result[$"sub/{packageID}"] = packageID.ToString(CultureInfo.InvariantCulture);
 						response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlready($"sub/{packageID}")));
@@ -2345,7 +2345,7 @@ public sealed class Commands {
 		StringBuilder gameName = new();
 
 		foreach (string game in games) {
-			if (!SteamUtilities.TryParseGameIdentifier(game, "APP", out string? type, out uint gameID) || !type.Equals("APP", StringComparison.Ordinal)) {
+			if (!SteamUtilities.TryParseGameIdentifier(game, EGameIdentifier.Application, out EGameIdentifier? type, out uint gameID) || (type != EGameIdentifier.Application)) {
 				if (gameName.Length > 0) {
 					gameName.Append(' ');
 				}
@@ -2999,14 +2999,14 @@ public sealed class Commands {
 		string[] entries = query.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (string entry in entries) {
-			if (!SteamUtilities.TryParseGameIdentifier(entry, "SUB", out string? type, out uint gameID)) {
+			if (!SteamUtilities.TryParseGameIdentifier(entry, EGameIdentifier.Package, out EGameIdentifier? type, out uint gameID)) {
 				response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
 
 				continue;
 			}
 
-			switch (type.ToUpperInvariant()) {
-				case "APP": {
+			switch (type) {
+				case EGameIdentifier.Application: {
 					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(gameID, Bot.OwnedPackages.Keys, 1);
 
 					if (packageIDs is { Count: 0 }) {
@@ -3022,7 +3022,7 @@ public sealed class Commands {
 					break;
 				}
 
-				case "SUB": {
+				case EGameIdentifier.Package: {
 					if (!Bot.OwnedPackages.ContainsKey(gameID)) {
 						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", EResult.InvalidState)));
 
@@ -3568,7 +3568,7 @@ public sealed class Commands {
 		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
-			if (!SteamUtilities.TryParseGameIdentifier(appIDText, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
+			if (!SteamUtilities.TryParseGameIdentifier(appIDText, EGameIdentifier.Application, out EGameIdentifier? type, out uint appID) || (type != EGameIdentifier.Application)) {
 				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 			}
 
@@ -3602,7 +3602,7 @@ public sealed class Commands {
 		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
-			if (!SteamUtilities.TryParseGameIdentifier(appIDText, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
+			if (!SteamUtilities.TryParseGameIdentifier(appIDText, EGameIdentifier.Application, out EGameIdentifier? type, out uint appID) || (type != EGameIdentifier.Application)) {
 				return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 			}
 
