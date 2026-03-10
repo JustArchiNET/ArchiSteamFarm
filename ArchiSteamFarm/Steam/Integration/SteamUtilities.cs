@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using ArchiSteamFarm.Core;
@@ -124,5 +125,95 @@ public static class SteamUtilities {
 		}
 
 		return result;
+	}
+
+	internal static bool TryParseGameIdentifier(string input, string defaultType, [NotNullWhen(true)] out string? type, out uint id) {
+		ArgumentException.ThrowIfNullOrEmpty(input);
+		ArgumentException.ThrowIfNullOrEmpty(defaultType);
+
+		if (TryParseGameIdentifier(input, defaultType, out type, out string? value) && uint.TryParse(value, out id) && (id > 0)) {
+			return true;
+		}
+
+		type = null;
+		id = 0;
+
+		return false;
+	}
+
+	internal static bool TryParseGameIdentifier(string input, string defaultType, [NotNullWhen(true)] out string? type, [NotNullWhen(true)] out string? value) {
+		ArgumentException.ThrowIfNullOrEmpty(input);
+		ArgumentException.ThrowIfNullOrEmpty(defaultType);
+
+		if (input.StartsWith("http", StringComparison.OrdinalIgnoreCase)) {
+			if (Uri.TryCreate(input, UriKind.Absolute, out Uri? uri) && uri.Host.Equals(ArchiWebHandler.SteamStoreURL.Host, StringComparison.OrdinalIgnoreCase)) {
+				string[] segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+				if (segments.Length >= 2) {
+					type = segments[0].ToUpperInvariant() switch {
+						"APP" => "APP",
+						"SUB" => "SUB",
+						_ => null
+					};
+
+					if ((type != null) && uint.TryParse(segments[1], out uint pathNumericValue) && (pathNumericValue > 0)) {
+						value = segments[1];
+
+						return true;
+					}
+				}
+			}
+
+			type = null;
+			value = null;
+
+			return false;
+		}
+
+		int slashIndex = input.IndexOf('/', StringComparison.Ordinal);
+
+		if ((slashIndex > 0) && (input.Length > slashIndex + 1)) {
+			string inputType = input[..slashIndex];
+
+			type = inputType.ToUpperInvariant() switch {
+				"A" or "APP" => "APP",
+				"S" or "SUB" => "SUB",
+				"R" or "REGEX" => "REGEX",
+				"N" or "NAME" => "NAME",
+				_ => null
+			};
+
+			if (type != null) {
+				value = input[(slashIndex + 1)..];
+
+				if (type is "APP" or "SUB") {
+					if (!uint.TryParse(value, out uint slashNumericValue) || (slashNumericValue == 0)) {
+						type = null;
+						value = null;
+
+						return false;
+					}
+				}
+
+				return true;
+			}
+
+			type = null;
+			value = null;
+
+			return false;
+		}
+
+		if (uint.TryParse(input, out uint numericValue) && (numericValue > 0)) {
+			type = defaultType;
+			value = input;
+
+			return true;
+		}
+
+		type = null;
+		value = null;
+
+		return false;
 	}
 }

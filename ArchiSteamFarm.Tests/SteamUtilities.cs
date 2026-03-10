@@ -21,14 +21,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using ArchiSteamFarm.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static ArchiSteamFarm.Steam.Integration.SteamUtilities;
 
 namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class GameIdentifierParser {
+internal sealed class SteamUtilities {
 	[DataRow("730", "APP", "APP", 730U)]
 	[DataRow("730", "SUB", "SUB", 730U)]
 	[DataRow("app/730", "SUB", "APP", 730U)]
@@ -40,7 +40,7 @@ internal sealed class GameIdentifierParser {
 	[DataRow("https://store.steampowered.com/app/730/SomeGameName/", "SUB", "APP", 730U)]
 	[TestMethod]
 	internal void TryParseGameIdentifierReturnsExpectedId(string input, string defaultType, string expectedType, uint expectedId) {
-		bool result = Core.Utilities.TryParseGameIdentifier(input, defaultType, out string? type, out uint id);
+		bool result = TryParseGameIdentifier(input, defaultType, out string? type, out uint id);
 
 		Assert.IsTrue(result);
 		Assert.AreEqual(expectedType, type);
@@ -56,7 +56,7 @@ internal sealed class GameIdentifierParser {
 	[DataRow("https://example.com/app/730", "APP")]
 	[TestMethod]
 	internal void TryParseGameIdentifierReturnsFalseForInvalidInput(string input, string defaultType) {
-		bool result = Core.Utilities.TryParseGameIdentifier(input, defaultType, out string? type, out uint id);
+		bool result = TryParseGameIdentifier(input, defaultType, out string? type, out uint id);
 
 		Assert.IsFalse(result);
 		Assert.IsNull(type);
@@ -69,7 +69,7 @@ internal sealed class GameIdentifierParser {
 	[DataRow("n/Portal", "APP", "NAME", "Portal")]
 	[TestMethod]
 	internal void TryParseGameIdentifierStringReturnsExpectedValue(string input, string defaultType, string expectedType, string expectedValue) {
-		bool result = Core.Utilities.TryParseGameIdentifier(input, defaultType, out string? type, out string? value);
+		bool result = TryParseGameIdentifier(input, defaultType, out string? type, out string? value);
 
 		Assert.IsTrue(result);
 		Assert.AreEqual(expectedType, type);
@@ -80,7 +80,7 @@ internal sealed class GameIdentifierParser {
 	[DataRow("name/Half-Life", "APP")]
 	[TestMethod]
 	internal void TryParseGameIdentifierUintReturnsFalseForNonNumericTypes(string input, string defaultType) {
-		bool result = Core.Utilities.TryParseGameIdentifier(input, defaultType, out string? type, out uint id);
+		bool result = TryParseGameIdentifier(input, defaultType, out string? type, out uint id);
 
 		Assert.IsFalse(result);
 		Assert.IsNull(type);
