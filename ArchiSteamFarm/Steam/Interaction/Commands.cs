@@ -652,29 +652,14 @@ public sealed class Commands {
 		string[] entries = query.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (string entry in entries) {
-			uint gameID;
-			string type;
-
-			int index = entry.IndexOf('/', StringComparison.Ordinal);
-
-			if ((index > 0) && (entry.Length > index + 1)) {
-				if (!uint.TryParse(entry[(index + 1)..], out gameID) || (gameID == 0)) {
-					response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
-
-					continue;
-				}
-
-				type = entry[..index];
-			} else if (uint.TryParse(entry, out gameID) && (gameID > 0)) {
-				type = "SUB";
-			} else {
+			if (!Utilities.TryParseGameIdentifier(entry, "SUB", out string? type, out uint gameID)) {
 				response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
 
 				continue;
 			}
 
 			switch (type.ToUpperInvariant()) {
-				case "A" or "APP": {
+				case "APP": {
 					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(gameID, Bot.OwnedPackages.Keys, 1);
 
 					if (packageIDs is { Count: > 0 }) {
@@ -699,7 +684,7 @@ public sealed class Commands {
 					break;
 				}
 
-				case "S" or "SUB": {
+				case "SUB": {
 					if (Bot.OwnedPackages.ContainsKey(gameID)) {
 						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
 
@@ -1336,7 +1321,7 @@ public sealed class Commands {
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
-			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
 				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
@@ -1405,7 +1390,7 @@ public sealed class Commands {
 
 					break;
 				default:
-					if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+					if (!Utilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
 						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 					}
 
@@ -1495,7 +1480,7 @@ public sealed class Commands {
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
-			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
 				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
@@ -1571,7 +1556,7 @@ public sealed class Commands {
 
 					break;
 				default:
-					if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+					if (!Utilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
 						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 					}
 
@@ -1861,7 +1846,7 @@ public sealed class Commands {
 		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
-			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(appIDText, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
 				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 			}
 
@@ -1942,7 +1927,7 @@ public sealed class Commands {
 		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
-			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
 				return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 			}
 
@@ -1999,7 +1984,7 @@ public sealed class Commands {
 
 					break;
 				default:
-					if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+					if (!Utilities.TryParseGameIdentifier(target, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
 						return FormatBotResponse(Strings.FormatErrorParsingObject(nameof(appID)));
 					}
 
@@ -2103,21 +2088,16 @@ public sealed class Commands {
 			string game;
 			string type;
 
-			int index = entry.IndexOf('/', StringComparison.Ordinal);
-
-			if ((index > 0) && (entry.Length > index + 1)) {
-				game = entry[(index + 1)..];
-				type = entry[..index];
-			} else if (uint.TryParse(entry, out uint appID) && (appID > 0)) {
-				game = entry;
-				type = "APP";
+			if (Utilities.TryParseGameIdentifier(entry, "APP", out string? parsedType, out string? parsedValue)) {
+				game = parsedValue;
+				type = parsedType;
 			} else {
 				game = entry;
 				type = "NAME";
 			}
 
 			switch (type.ToUpperInvariant()) {
-				case "A" or "APP" when uint.TryParse(game, out uint appID) && (appID > 0):
+				case "APP" when uint.TryParse(game, out uint appID) && (appID > 0):
 					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(appID, Bot.OwnedPackages.Keys, 1);
 
 					if (packageIDs?.Count > 0) {
@@ -2148,7 +2128,7 @@ public sealed class Commands {
 					}
 
 					break;
-				case "R" or "REGEX":
+				case "REGEX":
 					Regex regex;
 
 					try {
@@ -2191,7 +2171,7 @@ public sealed class Commands {
 					}
 
 					continue;
-				case "S" or "SUB" when uint.TryParse(game, out uint packageID) && (packageID > 0):
+				case "SUB" when uint.TryParse(game, out uint packageID) && (packageID > 0):
 					if (Bot.OwnedPackages.ContainsKey(packageID)) {
 						result[$"sub/{packageID}"] = packageID.ToString(CultureInfo.InvariantCulture);
 						response.AppendLine(FormatBotResponse(Strings.FormatBotOwnedAlready($"sub/{packageID}")));
@@ -2365,7 +2345,7 @@ public sealed class Commands {
 		StringBuilder gameName = new();
 
 		foreach (string game in games) {
-			if (!uint.TryParse(game, out uint gameID) || (gameID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(game, "APP", out string? type, out uint gameID) || !type.Equals("APP", StringComparison.Ordinal)) {
 				if (gameName.Length > 0) {
 					gameName.Append(' ');
 				}
@@ -3019,29 +2999,14 @@ public sealed class Commands {
 		string[] entries = query.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (string entry in entries) {
-			uint gameID;
-			string type;
-
-			int index = entry.IndexOf('/', StringComparison.Ordinal);
-
-			if ((index > 0) && (entry.Length > index + 1)) {
-				if (!uint.TryParse(entry[(index + 1)..], out gameID) || (gameID == 0)) {
-					response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
-
-					continue;
-				}
-
-				type = entry[..index];
-			} else if (uint.TryParse(entry, out gameID) && (gameID > 0)) {
-				type = "SUB";
-			} else {
+			if (!Utilities.TryParseGameIdentifier(entry, "SUB", out string? type, out uint gameID)) {
 				response.AppendLine(FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(gameID))));
 
 				continue;
 			}
 
 			switch (type.ToUpperInvariant()) {
-				case "A" or "APP": {
+				case "APP": {
 					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(gameID, Bot.OwnedPackages.Keys, 1);
 
 					if (packageIDs is { Count: 0 }) {
@@ -3057,7 +3022,7 @@ public sealed class Commands {
 					break;
 				}
 
-				case "S" or "SUB": {
+				case "SUB": {
 					if (!Bot.OwnedPackages.ContainsKey(gameID)) {
 						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"sub/{gameID}", EResult.InvalidState)));
 
@@ -3603,7 +3568,7 @@ public sealed class Commands {
 		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
-			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(appIDText, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
 				return FormatBotResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 			}
 
@@ -3637,7 +3602,7 @@ public sealed class Commands {
 		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
-			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+			if (!Utilities.TryParseGameIdentifier(appIDText, "APP", out string? type, out uint appID) || !type.Equals("APP", StringComparison.Ordinal)) {
 				return FormatStaticResponse(Strings.FormatErrorIsInvalid(nameof(appID)));
 			}
 
