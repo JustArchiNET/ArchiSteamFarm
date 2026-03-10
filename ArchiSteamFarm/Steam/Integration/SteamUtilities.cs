@@ -217,12 +217,8 @@ public static class SteamUtilities {
 
 				break;
 			case EGameIdentifier.Name:
-				type = EGameIdentifier.Name;
-				value = input;
-
-				return true;
 			case EGameIdentifier.Regex:
-				type = EGameIdentifier.Regex;
+				type = defaultType;
 				value = input;
 
 				return true;
