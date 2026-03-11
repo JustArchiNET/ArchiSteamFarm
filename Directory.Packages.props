@@ -13,7 +13,7 @@
 		<PackageVersion Include="NLog.Web.AspNetCore" Version="6.1.2" />
 		<PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.15.0-beta.1" />
 		<PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0" />
-		<PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.0" />
+		<PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.1" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
 		<PackageVersion Include="Scalar.AspNetCore" Version="2.13.5" />
