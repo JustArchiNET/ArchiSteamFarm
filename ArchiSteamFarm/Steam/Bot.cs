@@ -2786,8 +2786,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		string machineNameFormat = !string.IsNullOrEmpty(BotConfig.MachineName) ? BotConfig.MachineName : "{0} ({1}/{2})";
-		string machineName = string.Format(CultureInfo.CurrentCulture, machineNameFormat, Environment.MachineName, SharedInfo.PublicIdentifier, SharedInfo.Version);
+		string machineName = !string.IsNullOrEmpty(BotConfig.MachineName) ? string.Format(CultureInfo.CurrentCulture, BotConfig.MachineName, Environment.MachineName, SharedInfo.PublicIdentifier, SharedInfo.Version) : "DESKTOP-N7K4P8X (Windows 11)";
 
 		ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
 
