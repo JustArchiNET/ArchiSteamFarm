@@ -3989,6 +3989,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 
 				switch (result) {
+					case EResult.AccessDenied:
 					case EResult.Blocked:
 						// No point in retrying, those failures are permanent
 						ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(result));
