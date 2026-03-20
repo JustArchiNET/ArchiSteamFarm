@@ -56,6 +56,7 @@ public static class SharedInfo {
 	internal const string IPCConfigFile = $"{nameof(IPC)}{IPCConfigExtension}";
 	internal const string JsonConfigExtension = ".json";
 	internal const string KeysExtension = ".keys";
+	internal const string KeysInvalidExtension = ".invalid";
 	internal const string KeysUnusedExtension = ".unused";
 	internal const string KeysUsedExtension = ".used";
 	internal const string LicenseName = "Apache 2.0";

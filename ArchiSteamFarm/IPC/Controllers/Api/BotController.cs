@@ -171,9 +171,7 @@ public sealed class BotController : ArchiController {
 			string filePath = Bot.GetFilePath(botName, Bot.EFileType.Config);
 
 			if (string.IsNullOrEmpty(filePath)) {
-				ASF.ArchiLogger.LogNullError(filePath);
-
-				return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(filePath))));
+				throw new InvalidOperationException(nameof(filePath));
 			}
 
 			result[botName] = await BotConfig.Write(filePath, request.BotConfig).ConfigureAwait(false);
@@ -243,7 +241,11 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		Bot.FilterGamesToRedeemInBackground(request.GamesToRedeemInBackground);
+		HashSet<string> invalidKeys = request.GamesToRedeemInBackground.Where(static entry => !BotDatabase.IsValidGameToRedeemInBackground(entry.Key, entry.Value)).Select(static game => game.Key).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+		foreach (string invalidKey in invalidKeys) {
+			request.GamesToRedeemInBackground.Remove(invalidKey);
+		}
 
 		if (request.GamesToRedeemInBackground.Count == 0) {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(request.GamesToRedeemInBackground))));

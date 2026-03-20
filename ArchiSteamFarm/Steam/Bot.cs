@@ -189,9 +189,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				string filePath = GetFilePath(fileType);
 
 				if (string.IsNullOrEmpty(filePath)) {
-					ArchiLogger.LogNullError(filePath);
-
-					yield break;
+					throw new InvalidOperationException(nameof(filePath));
 				}
 
 				yield return (filePath, fileType);
@@ -660,6 +658,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			EFileType.Config => $"{botPath}{SharedInfo.JsonConfigExtension}",
 			EFileType.Database => $"{botPath}{SharedInfo.DatabaseExtension}",
 			EFileType.KeysToRedeem => $"{botPath}{SharedInfo.KeysExtension}",
+			EFileType.KeysToRedeemInvalid => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysInvalidExtension}",
 			EFileType.KeysToRedeemUnused => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUnusedExtension}",
 			EFileType.KeysToRedeemUsed => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUsedExtension}",
 			EFileType.MobileAuthenticator => $"{botPath}{SharedInfo.MobileAuthenticatorExtension}",
@@ -1046,12 +1045,26 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal bool DeleteRedeemedKeysFiles() {
+		string invalidKeysFilePath = GetFilePath(EFileType.KeysToRedeemInvalid);
+
+		if (string.IsNullOrEmpty(invalidKeysFilePath)) {
+			throw new InvalidOperationException(nameof(invalidKeysFilePath));
+		}
+
+		if (File.Exists(invalidKeysFilePath)) {
+			try {
+				File.Delete(invalidKeysFilePath);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+
+				return false;
+			}
+		}
+
 		string unusedKeysFilePath = GetFilePath(EFileType.KeysToRedeemUnused);
 
 		if (string.IsNullOrEmpty(unusedKeysFilePath)) {
-			ASF.ArchiLogger.LogNullError(unusedKeysFilePath);
-
-			return false;
+			throw new InvalidOperationException(nameof(unusedKeysFilePath));
 		}
 
 		if (File.Exists(unusedKeysFilePath)) {
@@ -1067,9 +1080,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		string usedKeysFilePath = GetFilePath(EFileType.KeysToRedeemUsed);
 
 		if (string.IsNullOrEmpty(usedKeysFilePath)) {
-			ASF.ArchiLogger.LogNullError(usedKeysFilePath);
-
-			return false;
+			throw new InvalidOperationException(nameof(usedKeysFilePath));
 		}
 
 		if (File.Exists(usedKeysFilePath)) {
@@ -1083,18 +1094,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		return true;
-	}
-
-	internal static void FilterGamesToRedeemInBackground(IDictionary<string, string> gamesToRedeemInBackground) {
-		if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
-			throw new ArgumentNullException(nameof(gamesToRedeemInBackground));
-		}
-
-		HashSet<string> invalidKeys = gamesToRedeemInBackground.Where(static entry => !BotDatabase.IsValidGameToRedeemInBackground(entry.Key, entry.Value)).Select(static game => game.Key).ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-		foreach (string invalidKey in invalidKeys) {
-			gamesToRedeemInBackground.Remove(invalidKey);
-		}
 	}
 
 	internal static string FormatBotResponse(string response, string botName) {
@@ -1462,6 +1461,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new FileNotFoundException(nameof(filePath), filePath);
 		}
 
+		string keysToRedeemInvalidFilePath = GetFilePath(EFileType.KeysToRedeemInvalid);
+
+		if (string.IsNullOrEmpty(keysToRedeemInvalidFilePath)) {
+			throw new InvalidOperationException(nameof(keysToRedeemInvalidFilePath));
+		}
+
 		try {
 			OrderedDictionary<string, string> gamesToRedeemInBackground = new(StringComparer.OrdinalIgnoreCase);
 
@@ -1484,23 +1489,27 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					if (parsedArgs.Length < 1) {
 						ArchiLogger.LogGenericWarning(Strings.FormatErrorIsInvalid(line));
 
+						await File.AppendAllTextAsync(keysToRedeemInvalidFilePath, $"{line}{Environment.NewLine}").ConfigureAwait(false);
+
 						continue;
 					}
 
 					string name = parsedArgs[0];
 					string key = parsedArgs[^1];
 
+					if (!BotDatabase.IsValidGameToRedeemInBackground(key, name)) {
+						ArchiLogger.LogGenericWarning(Strings.FormatErrorIsInvalid(line));
+
+						await File.AppendAllTextAsync(keysToRedeemInvalidFilePath, $"{line}{Environment.NewLine}").ConfigureAwait(false);
+
+						continue;
+					}
+
 					gamesToRedeemInBackground[key] = name;
 				}
 			}
 
-			if (gamesToRedeemInBackground.Count == 0) {
-				ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(filePath));
-
-				return;
-			}
-
-			FilterGamesToRedeemInBackground(gamesToRedeemInBackground);
+			File.Delete(filePath);
 
 			if (gamesToRedeemInBackground.Count == 0) {
 				ArchiLogger.LogGenericWarning(Strings.WarningNoValidKeysFound);
@@ -1513,8 +1522,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			AddGamesToRedeemInBackground(gamesToRedeemInBackground);
 
 			ArchiLogger.LogGenericInfo(linesSkipped > 0 ? Strings.FormatInfoKeysImportedSkipped(gamesToRedeemInBackground.Count, linesSkipped) : Strings.FormatInfoKeysImported(gamesToRedeemInBackground.Count));
-
-			File.Delete(filePath);
 		} catch (Exception e) {
 			ArchiLogger.LogGenericException(e);
 		}
@@ -1707,9 +1714,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		string configFilePath = GetFilePath(botName, EFileType.Config);
 
 		if (string.IsNullOrEmpty(configFilePath)) {
-			ASF.ArchiLogger.LogNullError(configFilePath);
-
-			return;
+			throw new InvalidOperationException(nameof(configFilePath));
 		}
 
 		(BotConfig? botConfig, string? latestJson) = await BotConfig.Load(configFilePath).ConfigureAwait(false);
@@ -1735,9 +1740,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		string databaseFilePath = GetFilePath(botName, EFileType.Database);
 
 		if (string.IsNullOrEmpty(databaseFilePath)) {
-			ASF.ArchiLogger.LogNullError(databaseFilePath);
-
-			return;
+			throw new InvalidOperationException(nameof(databaseFilePath));
 		}
 
 		BotDatabase? botDatabase = await BotDatabase.CreateOrLoad(databaseFilePath).ConfigureAwait(false);
@@ -1946,9 +1949,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				string mobileAuthenticatorFilePath = GetFilePath(EFileType.MobileAuthenticator);
 
 				if (string.IsNullOrEmpty(mobileAuthenticatorFilePath)) {
-					ArchiLogger.LogNullError(mobileAuthenticatorFilePath);
-
-					return;
+					throw new InvalidOperationException(nameof(mobileAuthenticatorFilePath));
 				}
 
 				if (File.Exists(mobileAuthenticatorFilePath)) {
@@ -1959,9 +1960,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			string keysToRedeemFilePath = GetFilePath(EFileType.KeysToRedeem);
 
 			if (string.IsNullOrEmpty(keysToRedeemFilePath)) {
-				ArchiLogger.LogNullError(keysToRedeemFilePath);
-
-				return;
+				throw new InvalidOperationException(nameof(keysToRedeemFilePath));
 			}
 
 			if (File.Exists(keysToRedeemFilePath)) {
@@ -3753,9 +3752,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				string filePath = GetFilePath(redeemed ? EFileType.KeysToRedeemUsed : EFileType.KeysToRedeemUnused);
 
 				if (string.IsNullOrEmpty(filePath)) {
-					ArchiLogger.LogNullError(filePath);
-
-					return;
+					throw new InvalidOperationException(nameof(filePath));
 				}
 
 				try {
@@ -4216,6 +4213,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		KeysToRedeem,
 		KeysToRedeemUnused,
 		KeysToRedeemUsed,
-		MobileAuthenticator
+		MobileAuthenticator,
+		KeysToRedeemInvalid
 	}
 }
