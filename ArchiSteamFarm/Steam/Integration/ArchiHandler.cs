@@ -978,8 +978,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 				new CMsgClientGamesPlayed.GamePlayed {
 					game_extra_info = gameName,
 					game_id = new GameID {
-						AppID = Asset.SteamAppID,
-						AppType = GameID.GameType.GameMod,
+						AppType = GameID.GameType.Shortcut,
 						ModID = uint.MaxValue
 					}
 				}
