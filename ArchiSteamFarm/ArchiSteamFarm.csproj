@@ -20,11 +20,17 @@
 		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
 		<PackageReference Include="Nito.AsyncEx.Coordination" />
 		<PackageReference Include="NLog.Web.AspNetCore" />
+		<PackageReference Include="protobuf-net" />
 		<PackageReference Include="Scalar.AspNetCore" />
-		<PackageReference Include="SteamKit2" />
 		<PackageReference Include="System.Composition" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" />
 		<PackageReference Include="Tmds.DBus.Protocol" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="SteamKit2">
+	    <HintPath>lib\SteamKit2.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 	<ItemGroup>

@@ -16,6 +16,7 @@
 		<PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.1" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
 		<PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
+		<PackageVersion Include="protobuf-net" Version="3.2.56" />
 		<PackageVersion Include="Scalar.AspNetCore" Version="2.13.11" />
 		<PackageVersion Include="SteamKit2" Version="3.4.0" />
 		<PackageVersion Include="System.Composition" Version="10.0.5" />
