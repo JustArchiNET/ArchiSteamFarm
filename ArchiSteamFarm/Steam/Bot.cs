@@ -2898,7 +2898,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			OSType = logOnDetails.ClientOSType;
 		}
 
-		SteamUser.LogOn(logOnDetails);
+		try {
+			// Avoid handling callback result here, it's already being subscribed to
+			await SteamUser.LogOn(logOnDetails);
+		} catch (Exception e) {
+			ArchiLogger.LogGenericWarningException(e);
+		}
 	}
 
 	private async Task OnDisconnected(SteamClient.DisconnectedCallback callback) {
