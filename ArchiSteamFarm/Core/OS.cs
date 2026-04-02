@@ -182,14 +182,12 @@ internal static class OS {
 	}
 
 	internal static void UnregisterProcess() {
-		if (SingleInstance == null) {
-			return;
-		}
-
 		// We should release the mutex here, but that can be done only from the same thread due to thread affinity
 		// Instead, we'll dispose the mutex which should automatically release it by the CLR
-		SingleInstance.Dispose();
-		SingleInstance = null;
+		if (SingleInstance != null) {
+			SingleInstance.Dispose();
+			SingleInstance = null;
+		}
 
 		// Release the inhibit lock as well, if needed
 		if (InhibitLock != null) {
