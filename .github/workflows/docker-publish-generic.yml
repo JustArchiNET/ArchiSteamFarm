@@ -1,4 +1,4 @@
-name: ASF-docker-publish-latest
+name: ASF-docker-publish-generic
 
 on:
   release:
@@ -64,7 +64,7 @@ jobs:
           type=match,pattern=^(\d+)\.\d+\.\d+\.\d+$,group=1
           type=raw,value=${{ env.TAG }}
         flavor: |
-          latest=off
+          latest=false
 
     - name: Build and publish Docker image from Dockerfile
       uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
