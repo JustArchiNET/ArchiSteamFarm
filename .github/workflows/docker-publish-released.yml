@@ -4,6 +4,7 @@ on:
   push:
     tags:
     - '*'
+  workflow_dispatch:
 
 env:
   PLATFORMS: linux/amd64,linux/arm,linux/arm64

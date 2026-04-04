@@ -3,6 +3,7 @@ name: ASF-docker-publish-latest
 on:
   release:
     types: [released]
+  workflow_dispatch:
 
 env:
   PLATFORMS: linux/amd64,linux/arm,linux/arm64

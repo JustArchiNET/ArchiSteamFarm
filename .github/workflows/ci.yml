@@ -1,6 +1,6 @@
 name: ASF-ci
 
-on: [push, pull_request]
+on: [pull_request, push, workflow_dispatch]
 
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true

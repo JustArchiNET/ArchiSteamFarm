@@ -1,6 +1,6 @@
 name: ASF-publish
 
-on: [push, pull_request]
+on: [pull_request, push, workflow_dispatch]
 
 env:
   CONFIGURATION: Release
