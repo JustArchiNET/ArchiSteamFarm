@@ -1,0 +1,69 @@
+name: ASF-docker-publish-generic
+
+on:
+  release:
+    types: [released]
+
+env:
+  PLATFORMS: linux/amd64,linux/arm,linux/arm64
+  TAG: generic
+
+permissions:
+  packages: write
+
+jobs:
+  main:
+    environment: release-docker
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        show-progress: false
+        submodules: recursive
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+    - name: Login to ghcr.io
+      uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Login to DockerHub
+      uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Prepare environment outputs
+      shell: sh
+      run: |
+        set -eu
+
+        echo "FIXED_TAG=$(echo ${{ github.ref }} | cut -d '/' -f 3)" >> "$GITHUB_ENV"
+        echo "DATE_ISO8601=$(date --iso-8601=seconds --utc)" >> "$GITHUB_ENV"
+        echo "GHCR_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+        echo "DH_REPOSITORY=$(echo ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+
+    - name: Build and publish Docker image from Dockerfile
+      uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+      with:
+        context: .
+        platforms: ${{ env.PLATFORMS }}
+        provenance: true
+        sbom: true
+        secrets: |
+          ASF_PRIVATE_SNK=${{ secrets.ASF_PRIVATE_SNK }}
+          STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
+        labels: |
+          org.opencontainers.image.created=${{ env.DATE_ISO8601 }}
+          org.opencontainers.image.version=${{ env.FIXED_TAG }}
+          org.opencontainers.image.revision=${{ github.sha }}
+        tags: |
+          ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.TAG }}
+          ${{ env.DH_REPOSITORY }}:${{ env.TAG }}
+        push: true
