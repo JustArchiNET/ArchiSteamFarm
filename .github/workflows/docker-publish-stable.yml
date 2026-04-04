@@ -1,4 +1,4 @@
-name: ASF-docker-publish-generic
+name: ASF-docker-publish-stable
 
 on:
   release:
@@ -7,7 +7,7 @@ on:
 
 env:
   PLATFORMS: linux/amd64,linux/arm,linux/arm64
-  TAG: generic
+  TAG: stable
 
 permissions:
   packages: write
