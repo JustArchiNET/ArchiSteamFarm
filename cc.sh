@@ -4,7 +4,7 @@ set -eu
 MAIN_PROJECT="ArchiSteamFarm"
 STEAM_TOKEN_DUMPER_NAME="${MAIN_PROJECT}.OfficialPlugins.SteamTokenDumper"
 TESTS_PROJECT="${MAIN_PROJECT}.Tests"
-SOLUTION="${MAIN_PROJECT}.sln"
+SOLUTION="${MAIN_PROJECT}.slnx"
 CONFIGURATION="Release"
 OUT="out"
 OUT_ASF="${OUT}/result"

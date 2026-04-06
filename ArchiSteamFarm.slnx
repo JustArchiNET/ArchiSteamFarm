@@ -1,0 +1,20 @@
+<Solution>
+	<Configurations>
+		<BuildType Name="Debug" />
+		<BuildType Name="DebugFast" />
+		<BuildType Name="Release" />
+	</Configurations>
+
+	<Project Path="ArchiSteamFarm/ArchiSteamFarm.csproj" />
+
+	<Project Path="ArchiSteamFarm.CustomPlugins.ExamplePlugin/ArchiSteamFarm.CustomPlugins.ExamplePlugin.csproj" />
+	<Project Path="ArchiSteamFarm.CustomPlugins.PeriodicGC/ArchiSteamFarm.CustomPlugins.PeriodicGC.csproj" />
+	<Project Path="ArchiSteamFarm.CustomPlugins.SignInWithSteam/ArchiSteamFarm.CustomPlugins.SignInWithSteam.csproj" />
+
+	<Project Path="ArchiSteamFarm.OfficialPlugins.ItemsMatcher/ArchiSteamFarm.OfficialPlugins.ItemsMatcher.csproj" />
+	<Project Path="ArchiSteamFarm.OfficialPlugins.MobileAuthenticator/ArchiSteamFarm.OfficialPlugins.MobileAuthenticator.csproj" />
+	<Project Path="ArchiSteamFarm.OfficialPlugins.Monitoring/ArchiSteamFarm.OfficialPlugins.Monitoring.csproj" />
+	<Project Path="ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.csproj" />
+
+	<Project Path="ArchiSteamFarm.Tests/ArchiSteamFarm.Tests.csproj" />
+</Solution>
