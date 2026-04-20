@@ -39,6 +39,8 @@ internal sealed class SteamUtilities {
 	[DataRow("https://store.steampowered.com/app/730", EGameIdentifier.Package, EGameIdentifier.Application, 730U)]
 	[DataRow("https://store.steampowered.com/sub/123", EGameIdentifier.Application, EGameIdentifier.Package, 123U)]
 	[DataRow("https://store.steampowered.com/app/730/SomeGameName/", EGameIdentifier.Package, EGameIdentifier.Application, 730U)]
+	[DataRow("steam://launch/730/Dialog", EGameIdentifier.Package, EGameIdentifier.Application, 730U)]
+	[DataRow("steam://launch/730/", EGameIdentifier.Package, EGameIdentifier.Application, 730U)]
 	[TestMethod]
 	internal void TryParseGameIdentifierReturnsExpectedId(string input, EGameIdentifier defaultType, EGameIdentifier expectedType, uint expectedId) {
 		bool result = TryParseGameIdentifier(input, defaultType, out EGameIdentifier? type, out uint id);
