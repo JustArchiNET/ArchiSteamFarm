@@ -171,6 +171,19 @@ public static class SteamUtilities {
 			}
 		}
 
+		// Handle steam://launch/APPID/ and steam://launch/APPID/Dialog formats
+		if (input.StartsWith("steam://launch/", StringComparison.OrdinalIgnoreCase)) {
+			string launchPath = input["steam://launch/".Length..];
+			string[] launchSegments = launchPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+			if ((launchSegments.Length >= 1) && uint.TryParse(launchSegments[0], out uint launchAppId) && (launchAppId > 0)) {
+				type = EGameIdentifier.Application;
+				value = launchSegments[0];
+
+				return true;
+			}
+		}
+
 		int slashIndex = input.IndexOf('/', StringComparison.Ordinal);
 
 		if ((slashIndex > 0) && (input.Length > slashIndex + 1)) {
