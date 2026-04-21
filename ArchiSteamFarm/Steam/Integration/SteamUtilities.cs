@@ -153,37 +153,51 @@ public static class SteamUtilities {
 			throw new InvalidEnumArgumentException(nameof(defaultType), (int) defaultType, typeof(EGameIdentifier));
 		}
 
-		if (input.StartsWith("http", StringComparison.OrdinalIgnoreCase) && Uri.TryCreate(input, UriKind.Absolute, out Uri? uri) && uri.Host.Equals(ArchiWebHandler.SteamStoreURL.Host, StringComparison.OrdinalIgnoreCase)) {
-			string[] segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+		if (Uri.TryCreate(input, UriKind.Absolute, out Uri? uri)) {
+			switch (uri.Scheme) {
+				case "http" or "https" when uri.Host.Equals(ArchiWebHandler.SteamStoreURL.Host, StringComparison.OrdinalIgnoreCase):
+					// Handle https://store.steampowered.com/<type>/<appID>
+					string[] httpSegments = uri.AbsolutePath.Split('/', 3, StringSplitOptions.RemoveEmptyEntries);
 
-			if (segments.Length >= 2) {
-				type = segments[0].ToUpperInvariant() switch {
-					"APP" => EGameIdentifier.Application,
-					"SUB" => EGameIdentifier.Package,
-					_ => null
-				};
+					if (httpSegments.Length < 2) {
+						break;
+					}
 
-				if ((type != null) && uint.TryParse(segments[1], out uint pathNumericValue) && (pathNumericValue > 0)) {
-					value = segments[1];
+					type = httpSegments[0].ToUpperInvariant() switch {
+						"APP" => EGameIdentifier.Application,
+						"SUB" => EGameIdentifier.Package,
+						_ => null
+					};
+
+					if (type == null) {
+						break;
+					}
+
+					if (!uint.TryParse(httpSegments[1], out uint pathNumericValue) || (pathNumericValue == 0)) {
+						type = null;
+
+						break;
+					}
+
+					value = httpSegments[1];
 
 					return true;
-				}
+				case "steam" when uri.Host.Equals("launch", StringComparison.OrdinalIgnoreCase):
+					// Handle steam://launch/<appID>/ and steam://launch/<appID>/Dialog formats
+					string[] steamSegments = uri.AbsolutePath.Split('/', 2, StringSplitOptions.RemoveEmptyEntries);
+
+					if ((steamSegments.Length < 1) || !uint.TryParse(steamSegments[0], out uint launchAppId) || (launchAppId == 0)) {
+						break;
+					}
+
+					type = EGameIdentifier.Application;
+					value = steamSegments[0];
+
+					return true;
 			}
 		}
 
-		// Handle steam://launch/APPID/ and steam://launch/APPID/Dialog formats
-		if (input.StartsWith("steam://launch/", StringComparison.OrdinalIgnoreCase)) {
-			string launchPath = input["steam://launch/".Length..];
-			string[] launchSegments = launchPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
-
-			if ((launchSegments.Length >= 1) && uint.TryParse(launchSegments[0], out uint launchAppId) && (launchAppId > 0)) {
-				type = EGameIdentifier.Application;
-				value = launchSegments[0];
-
-				return true;
-			}
-		}
-
+		// Handle common ASF-specific format of <format>/<input>
 		int slashIndex = input.IndexOf('/', StringComparison.Ordinal);
 
 		if ((slashIndex > 0) && (input.Length > slashIndex + 1)) {

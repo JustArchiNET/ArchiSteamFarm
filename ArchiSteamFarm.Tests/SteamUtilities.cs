@@ -56,9 +56,10 @@ internal sealed class SteamUtilities {
 	[DataRow("sub/abc", EGameIdentifier.Application)]
 	[DataRow("unknown/123", EGameIdentifier.Application)]
 	[DataRow("https://store.steampowered.com/bundle/123", EGameIdentifier.Application)]
-	[DataRow("https://example.com/app/730", EGameIdentifier.Application)]
+	[DataRow("https://example.com/app/730", EGameIdentifier.Package)]
 	[DataRow("regex/pattern", EGameIdentifier.Application)]
 	[DataRow("name/Half-Life", EGameIdentifier.Application)]
+	[DataRow("steam://launch/Half-Life/", EGameIdentifier.Package)]
 	[TestMethod]
 	internal void TryParseGameIdentifierReturnsFalseForInvalidInput(string input, EGameIdentifier defaultType) {
 		bool result = TryParseGameIdentifier(input, defaultType, out EGameIdentifier? type, out uint id);
@@ -73,6 +74,7 @@ internal sealed class SteamUtilities {
 	[DataRow("name/Half-Life", EGameIdentifier.Application, EGameIdentifier.Name, "Half-Life")]
 	[DataRow("n/Portal", EGameIdentifier.Application, EGameIdentifier.Name, "Portal")]
 	[DataRow("http:CS2", EGameIdentifier.Name, EGameIdentifier.Name, "http:CS2")]
+	[DataRow("steam:CS2", EGameIdentifier.Name, EGameIdentifier.Name, "steam:CS2")]
 	[TestMethod]
 	internal void TryParseGameIdentifierStringReturnsExpectedValue(string input, EGameIdentifier defaultType, EGameIdentifier expectedType, string expectedValue) {
 		bool result = TryParseGameIdentifier(input, defaultType, out EGameIdentifier? type, out string? value);
