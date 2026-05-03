@@ -1,6 +1,6 @@
 # Contributing
 
-Before making an issue or pull request, you should carefully read **[ASF wiki](https://github.com/JustArchiNET/ArchiSteamFarm/wiki)** first. At least reading **[FAQ](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ)** is mandatory for understanding core ASF concepts and avoiding invalid questions, expected issues and misunderstandings.
+Before making an issue or pull request, you should carefully read **[ASF wiki](https://github.com/JustArchiNET/ArchiSteamFarm/wiki)** first. At least reading **[FAQ](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ)** is mandatory for understanding the core ASF concepts, avoiding invalid questions, reporting expected issues and other misunderstandings.
 
 ## Issues
 
