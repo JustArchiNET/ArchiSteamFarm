@@ -76,6 +76,19 @@ body:
     attributes:
       label: Additional info
       description: Everything else you consider worthy that we didn't ask for.
+  - type: dropdown
+    id: ai
+    attributes:
+      label: Was AI involved in this issue?
+      description: |
+        AI involvement does not include only filling out this form, but especially using AI-generated ASF configs, guidelines or likewise.
+        For more info, check our AI disclosure guidelines, which you can find in the contributing section.
+      options:
+        - Yes, AI was involved in at least major part, if not fully, in generating this content
+        - Partially, AI was involved in minor part of generating this content, and was appropriately verified afterwards
+        - No, AI was not used for this content, or was used exclusively for cosmetic assistance, e.g. spell-checkers, grammar tools
+    validations:
+      required: true
   - type: markdown
     attributes:
       value: |

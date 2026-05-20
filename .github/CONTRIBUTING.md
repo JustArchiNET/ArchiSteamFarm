@@ -2,6 +2,27 @@
 
 Before making an issue or pull request, you should carefully read **[ASF wiki](https://github.com/JustArchiNET/ArchiSteamFarm/wiki)** first. At least reading **[FAQ](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ)** is mandatory for understanding the core ASF concepts, avoiding invalid questions, reporting expected issues and other misunderstandings.
 
+---
+
+## AI Disclosure Guidelines
+
+We welcome contributions assisted by AI tools. To maintain transparency, trust, and code quality across this project, all AI-assisted activity **must be disclosed** by leaving appropriate, clearly visible annotation, whether in issue, discussion, pull request, or any (and all) other places where direct community interaction is involved. Disclosure is not a barrier to contribution - it helps maintainers understand context, review more effectively, and make informed decisions.
+
+1. **Disclose any meaningful AI involvement.** If an AI tool generated, rewrote, or significantly shaped your contribution, say so.
+2. **You are accountable.** Submitting AI-generated content means you have reviewed it, understand it, and vouch for its correctness.
+3. **Partial use still counts.** If only a section of your message, code, or comment was AI-assisted, disclose which part.
+4. **Cosmetic assistance is exempt.** Spell-checkers, grammar tools and basic autocomplete do not require disclosure.
+5. **Name the tool when possible.** e.g. "GitHub Copilot", "ChatGPT", "Claude", "Gemini", "Cursor".
+
+The above **especially** applies to:
+- **AI-generated ASF configs**, which are usually incorrect. Using AI-generated ASF configs requires mandatory disclosure in issues and discussions, especially when you ask for support.
+- **AI-generated code**, which tends to be more verbose than needed, very often solving issues that do not exist in reality. Using AI does not exempt you from maintaining the highest quality of the code you're asking us to include, and may require many follow-ups to be accepted.
+- **AI-generated messages**, e.g. in discussions, issues or comments, which tend to suggest false solutions that in fact do not exist in reality, or do not apply to ASF.
+
+Undisclosed AI contributions undermine the community's trust, and may result in appropriate action, including being permanently blocked from the project if we determine that user's (agent's) actions bring more harm than good to the community. Use AI responsibly, you're fully accountable for any (and all) content produced under your name.
+
+---
+
 ## Issues
 
 **[GitHub issues](https://github.com/JustArchiNET/ArchiSteamFarm/issues)** page is being used for ASF "todo" list, regarding both features and bugs. It has **strict policy** that applies to everybody - GitHub issues is **NOT** technical support, it's a place dedicated **only** to ASF bugs and suggestions. It's **not** proper place for technical issues, general discussion or questions that are unrelated to development. In short, GitHub is for the **development** part of the ASF, and all issues should be **development-oriented**. You have **[GitHub discussions](https://github.com/JustArchiNET/ArchiSteamFarm/discussions/categories/support)**, **[Steam group](https://steamcommunity.com/groups/archiasf/discussions/1)** and **[Discord server](https://discord.gg/hSQgt8j)** for general discussion, questions, technical issues and everything else that is not related to ASF development. If you decide to use GitHub issues, please make sure that you're in fact dealing with a bug, or your suggestion makes sense, preferably by asking on one of our support channels first. Invalid issues will be closed immediately and won't be answered - if you're not sure if your issue is valid, then most likely it's not, and you shouldn't post it here. Valid bugs/suggestions will be forwarded and added as GitHub issues by us, if needed.
