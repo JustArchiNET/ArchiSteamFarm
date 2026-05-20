@@ -95,7 +95,7 @@ body:
         AI involvement does not include only filling out this form, but especially using AI-generated ASF configs, guidelines or likewise.
         For more info, check our AI disclosure guidelines, which you can find in the contributing section.
       options:
-        - Yes, AI was involved in at least major part, if not fully, in generating this content
+        - Yes, AI was involved in at least a major part, if not fully, during generating this content
         - Partially, AI was involved in minor part of generating this content, and was appropriately verified afterwards
         - No, AI was not used for this content, or was used exclusively for cosmetic assistance, e.g. spell-checkers, grammar tools
     validations:
