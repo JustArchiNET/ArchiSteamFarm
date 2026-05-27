@@ -800,6 +800,10 @@ Process uptime: {1}</value>
 	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
 		<value>--system-requiredと宣言しましたが、その機能を動作させるために必要な依存関係がOSにありません。 正常に動作するように阻害を必要としない場合は、この警告を無視することもできますが、dbusをインストールすることを検討してください。</value>
 	</data>
+	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
+		<value>{0} データベースコンポーネントの復号に失敗しました。ボットの {1} を変更した直後であれば、これは問題ない場合があります。その場合、次回起動時にはこの警告は表示されなくなるはずです。そうでない場合は、失敗した正確な原因を調査してください。</value>
+		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
+	</data>
 	<data name="WarningNoValidKeysFound" xml:space="preserve">
 		<value>返済のために有効なキーが.keysファイルに見つかりませんでした。キーが正しい形式であることを確認してください。</value>
 	</data>
