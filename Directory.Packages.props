@@ -5,7 +5,7 @@
 		<PackageVersion Include="Humanizer" Version="3.0.10" />
 		<PackageVersion Include="JetBrains.Annotations.Sources" Version="2025.2.4" />
 		<PackageVersion Include="Markdig.Signed" Version="1.2.0" />
-		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.ResxSourceGenerator" Version="5.0.0-1.25277.114" />
 		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.19.0" />
 		<PackageVersion Include="MSTest" Version="4.2.3" />
@@ -18,9 +18,9 @@
 		<PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.1" />
 		<PackageVersion Include="Scalar.AspNetCore" Version="2.14.14" />
 		<PackageVersion Include="SteamKit2" Version="3.4.0" />
-		<PackageVersion Include="System.Composition" Version="10.0.8" />
-		<PackageVersion Include="System.Composition.AttributedModel" Version="10.0.8" />
-		<PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="10.0.8" />
+		<PackageVersion Include="System.Composition" Version="10.0.9" />
+		<PackageVersion Include="System.Composition.AttributedModel" Version="10.0.9" />
+		<PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="10.0.9" />
 		<PackageVersion Include="Tmds.DBus.Protocol" Version="0.94.1" />
 	</ItemGroup>
 </Project>
