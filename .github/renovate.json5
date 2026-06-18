@@ -3,13 +3,13 @@
 
 	"extends": [
 		"config:best-practices",
-		":assignee(JustArchi)",
 		":automergeBranch",
 		":automergeDigest",
 		":automergeMinor",
 		":disableDependencyDashboard",
 		":disableRateLimiting",
-		":label(🤖 Automatic)"
+		":label(🤖 Automatic)",
+		":reviewer(JustArchi)"
 	],
 
 	"git-submodules": {
