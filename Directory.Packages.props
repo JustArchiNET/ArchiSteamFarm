@@ -1,6 +1,6 @@
 <Project>
 	<ItemGroup>
-		<PackageVersion Include="AngleSharp" Version="1.5.1" />
+		<PackageVersion Include="AngleSharp" Version="1.5.2" />
 		<PackageVersion Include="CryptSharpStandard" Version="1.0.0" />
 		<PackageVersion Include="Humanizer" Version="3.0.10" />
 		<PackageVersion Include="JetBrains.Annotations.Sources" Version="2026.2.0" />
