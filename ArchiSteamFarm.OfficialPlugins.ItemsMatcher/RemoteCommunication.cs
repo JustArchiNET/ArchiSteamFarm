@@ -1337,13 +1337,18 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 									continue;
 								}
 
+								uint fairGivenAmount = 0;
+								uint fairReceivedAmount = 0;
+								bool fairStateApplied = false;
+
 								if (!listedUser.MatchEverything) {
 									// We have a potential match, let's check fairness for them
-									uint fairGivenAmount = fairClassIDsToGive.GetValueOrDefault(ourItem);
-									uint fairReceivedAmount = fairClassIDsToReceive.GetValueOrDefault(theirItem);
+									fairGivenAmount = fairClassIDsToGive.GetValueOrDefault(ourItem);
+									fairReceivedAmount = fairClassIDsToReceive.GetValueOrDefault(theirItem);
 
-									fairClassIDsToGive[ourItem] = ++fairGivenAmount;
-									fairClassIDsToReceive[theirItem] = ++fairReceivedAmount;
+									fairClassIDsToGive[ourItem] = fairGivenAmount + 1;
+									fairClassIDsToReceive[theirItem] = fairReceivedAmount + 1;
+									fairStateApplied = true;
 
 									// Filter their inventory for the sets we're trading or have traded with this user
 									HashSet<Asset> fairFiltered = theirInventory.Where(item => ((item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSet();
@@ -1355,14 +1360,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 									// Actual check, since we do this against remote user, we flip places for items
 									if (!Trading.IsTradeNeutralOrBetter(fairFiltered, fairItemsToReceive, fairItemsToGive)) {
 										// Revert the changes
-										if (fairGivenAmount > 1) {
-											fairClassIDsToGive[ourItem] = fairGivenAmount - 1;
+										if (fairGivenAmount > 0) {
+											fairClassIDsToGive[ourItem] = fairGivenAmount;
 										} else {
 											fairClassIDsToGive.Remove(ourItem);
 										}
 
-										if (fairReceivedAmount > 1) {
-											fairClassIDsToReceive[theirItem] = fairReceivedAmount - 1;
+										if (fairReceivedAmount > 0) {
+											fairClassIDsToReceive[theirItem] = fairReceivedAmount;
 										} else {
 											fairClassIDsToReceive.Remove(theirItem);
 										}
@@ -1377,12 +1382,42 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 									tradeHoldDuration = await Bot.ArchiWebHandler.GetCombinedTradeHoldDurationAgainstUser(listedUser.SteamID, listedUser.TradeToken).ConfigureAwait(false);
 
 									if (tradeHoldDuration == null) {
+										if (fairStateApplied) {
+											// Revert the changes
+											if (fairGivenAmount > 0) {
+												fairClassIDsToGive[ourItem] = fairGivenAmount;
+											} else {
+												fairClassIDsToGive.Remove(ourItem);
+											}
+
+											if (fairReceivedAmount > 0) {
+												fairClassIDsToReceive[theirItem] = fairReceivedAmount;
+											} else {
+												fairClassIDsToReceive.Remove(theirItem);
+											}
+										}
+
 										Bot.ArchiLogger.LogGenericTrace(Strings.FormatErrorIsEmpty(nameof(tradeHoldDuration)));
 
 										break;
 									}
 
 									if ((tradeHoldDuration.Value > maxTradeHoldDuration) || (tradeHoldDuration.Value > listedUser.MaxTradeHoldDuration)) {
+										if (fairStateApplied) {
+											// Revert the changes
+											if (fairGivenAmount > 0) {
+												fairClassIDsToGive[ourItem] = fairGivenAmount;
+											} else {
+												fairClassIDsToGive.Remove(ourItem);
+											}
+
+											if (fairReceivedAmount > 0) {
+												fairClassIDsToReceive[theirItem] = fairReceivedAmount;
+											} else {
+												fairClassIDsToReceive.Remove(theirItem);
+											}
+										}
+
 										Bot.ArchiLogger.LogGenericTrace($"{tradeHoldDuration.Value} > {maxTradeHoldDuration} || {listedUser.MaxTradeHoldDuration}");
 
 										break;
@@ -1390,6 +1425,21 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 								}
 
 								if ((tradeHoldDuration.Value > 0) && set.Type is EAssetType.FoilTradingCard or EAssetType.TradingCard && CardsFarmer.SalesBlacklist.Contains(set.RealAppID)) {
+									if (fairStateApplied) {
+										// Revert the changes
+										if (fairGivenAmount > 0) {
+											fairClassIDsToGive[ourItem] = fairGivenAmount;
+										} else {
+											fairClassIDsToGive.Remove(ourItem);
+										}
+
+										if (fairReceivedAmount > 0) {
+											fairClassIDsToReceive[theirItem] = fairReceivedAmount;
+										} else {
+											fairClassIDsToReceive.Remove(theirItem);
+										}
+									}
+
 									// We're not considering this set for matching due to trade hold
 									continue;
 								}
