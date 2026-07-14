@@ -2196,12 +2196,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	internal async Task<bool> MarkSentTrades() {
-		Uri request = new(SteamCommunityURL, "/my/tradeoffers/sent");
-
-		return await UrlHeadWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
-	}
-
 	internal void OnDisconnected() => Initialized = false;
 
 	internal void OnVanityURLChanged(string? vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
