@@ -100,7 +100,7 @@ public sealed class GlobalConfig {
 	public const byte DefaultMaxFarmingTime = 10;
 
 	[PublicAPI]
-	public const byte DefaultMaxTradeHoldDuration = 15;
+	public const byte DefaultMaxTradeHoldDuration = ArchiHandler.MaxTradeHoldDuration;
 
 	[PublicAPI]
 	public const byte DefaultMinFarmingDelayAfterBlock = 60;

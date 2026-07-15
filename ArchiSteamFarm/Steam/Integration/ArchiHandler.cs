@@ -54,6 +54,7 @@ namespace ArchiSteamFarm.Steam.Integration;
 
 public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
+	internal const byte MaxTradeHoldDuration = 15; // This is assumption based on existing observations
 
 	private readonly ArchiLogger ArchiLogger;
 	private readonly SemaphoreSlim InventorySemaphore = new(1, 1);

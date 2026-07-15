@@ -32,6 +32,7 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Steam.Cards;
 using ArchiSteamFarm.Steam.Data;
+using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
@@ -508,23 +509,25 @@ public sealed class Trading : IDisposable {
 		}
 
 		// At this point we're sure that STM trade is valid
+		bool hasBlacklistedCards = tradeOffer.ItemsToGive.Any(static item => item.Type is EAssetType.FoilTradingCard or EAssetType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID));
+		byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
 
-		// Fetch trade hold duration
-		byte? holdDuration = await Bot.GetTradeHoldDuration(tradeOffer.OtherSteamID64, tradeOffer.TradeOfferID).ConfigureAwait(false);
+		// We assume that steam trade hold duration can't exceed the max, so skip the fetch unless we need it for blacklist handling or a lower configured limit
+		if (hasBlacklistedCards || (maxTradeHoldDuration < ArchiHandler.MaxTradeHoldDuration)) {
+			byte? holdDuration = await Bot.GetTradeHoldDuration(tradeOffer.OtherSteamID64, tradeOffer.TradeOfferID).ConfigureAwait(false);
 
-		switch (holdDuration) {
-			case null:
-				// If we can't get trade hold duration, try again later
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(holdDuration)));
+			switch (holdDuration) {
+				case null:
+					// If we can't get trade hold duration, try again later
+					Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(holdDuration)));
 
-				return ParseTradeResult.EResult.TryAgain;
+					return ParseTradeResult.EResult.TryAgain;
+				case > 0 when hasBlacklistedCards || (holdDuration.Value > maxTradeHoldDuration):
+					// If any trade hold is present, and user asks for cards with short lifespan or duration exceeds our max, reject the trade
+					Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(holdDuration)} > 0: {holdDuration.Value}"));
 
-			// If user has a trade hold, we add extra logic
-			// If trade hold duration exceeds our max, or user asks for cards with short lifespan, reject the trade
-			case > 0 when (holdDuration.Value > (ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration)) || tradeOffer.ItemsToGive.Any(static item => item.Type is EAssetType.FoilTradingCard or EAssetType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)):
-				Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(holdDuration)} > 0: {holdDuration.Value}"));
-
-				return ParseTradeResult.EResult.Rejected;
+					return ParseTradeResult.EResult.Rejected;
+			}
 		}
 
 		// If we're matching everything, this is enough for us
