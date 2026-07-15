@@ -452,12 +452,10 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		// Marking sent trades is crucial in regards to refreshing current state on Steam side
-		// Steam might not always realize e.g. "items no longer available" trades without it, and prevent us from sending further ones
-		// A simple visit to sent trade offers page will suffice
-		if (!await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
-			return (false, Strings.BotLootingFailed);
-		}
+		// Steam might not always realize e.g. "items no longer available" trades and prevent us from sending further ones
+		// A simple visit to sent trade offers page will usually suffice
+		// We proceed with the rest of this logic even if this call fails, as it's almost never needed for the whole process to succeed
+		await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false);
 
 		// In similar way we might need to accept popup on Steam side, we limit it only to cases that we're aware of, as sending this request otherwise is additional overhead for no reason
 		if (!Bot.BotDatabase.TradeRestrictionsAcknowledged && items.Any(static item => item.AppID != Asset.SteamAppID)) {

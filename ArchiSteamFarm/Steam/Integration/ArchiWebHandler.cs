@@ -2196,10 +2196,10 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	internal async Task<bool> MarkSentTrades() {
+	internal async Task MarkSentTrades() {
 		Uri request = new(SteamCommunityURL, "/my/tradeoffers/sent");
 
-		return await UrlHeadWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+		await UrlHeadWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false).ConfigureAwait(false);
 	}
 
 	internal void OnDisconnected() => Initialized = false;
