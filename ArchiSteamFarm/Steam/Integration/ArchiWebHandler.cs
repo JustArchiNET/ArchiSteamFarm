@@ -1971,7 +1971,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false).ConfigureAwait(false);
 
 		IElement? htmlNode = response?.Content?.QuerySelector("div[class='pagecontent'] > script");
 

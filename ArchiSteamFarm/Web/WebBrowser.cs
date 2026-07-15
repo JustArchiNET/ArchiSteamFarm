@@ -51,6 +51,7 @@ public sealed class WebBrowser : IDisposable {
 	internal const byte MaxConnections = 10; // Defines maximum number of connections per server. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 
 	private const ushort ExtendedTimeout = 600; // Defines timeout for WebBrowsers dealing with huge data (ASF update)
+	private const string FakeUserAgent = "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0";
 	private const byte MaxIdleTime = 15; // Defines in seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 
 	[PublicAPI]
@@ -781,6 +782,11 @@ public sealed class WebBrowser : IDisposable {
 					requestMessage.Headers.Referrer = referer;
 				}
 
+				if (requestOptions.HasFlag(ERequestOptions.SteamWafWorkarounds)) {
+					requestMessage.Headers.UserAgent.Clear();
+					requestMessage.Headers.UserAgent.ParseAdd(FakeUserAgent);
+				}
+
 				if (Debugging.IsUserDebugging) {
 					ArchiLogger.LogGenericDebug($"{httpMethod} {request}");
 				}
@@ -910,6 +916,7 @@ public sealed class WebBrowser : IDisposable {
 		ReturnRedirections = 4,
 		AllowInvalidBodyOnSuccess = 8,
 		AllowInvalidBodyOnErrors = 16,
-		CompressRequest = 32
+		CompressRequest = 32,
+		SteamWafWorkarounds = 64
 	}
 }
