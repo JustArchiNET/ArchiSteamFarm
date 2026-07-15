@@ -37,6 +37,7 @@ using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration;
 using JetBrains.Annotations;
 using SteamKit2;
@@ -100,7 +101,7 @@ public sealed class GlobalConfig {
 	public const byte DefaultMaxFarmingTime = 10;
 
 	[PublicAPI]
-	public const byte DefaultMaxTradeHoldDuration = ArchiHandler.MaxTradeHoldDuration;
+	public const byte DefaultMaxTradeHoldDuration = Trading.MaxTradeHoldDuration;
 
 	[PublicAPI]
 	public const byte DefaultMinFarmingDelayAfterBlock = 60;

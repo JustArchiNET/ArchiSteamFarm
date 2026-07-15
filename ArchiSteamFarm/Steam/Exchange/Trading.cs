@@ -32,7 +32,6 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Steam.Cards;
 using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
@@ -43,6 +42,7 @@ namespace ArchiSteamFarm.Steam.Exchange;
 
 public sealed class Trading : IDisposable {
 	internal const byte MaxItemsPerTrade = byte.MaxValue; // This is decided upon various factors, mainly stability of Steam servers when dealing with huge trade offers
+	internal const byte MaxTradeHoldDuration = 15; // This is assumption based on existing observations
 	internal const byte MaxTradesPerAccount = 5; // This is limit introduced by Valve
 
 	private readonly Bot Bot;
@@ -513,7 +513,7 @@ public sealed class Trading : IDisposable {
 		byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
 
 		// We assume that steam trade hold duration can't exceed the max, so skip the fetch unless we need it for blacklist handling or a lower configured limit
-		if (hasBlacklistedCards || (maxTradeHoldDuration < ArchiHandler.MaxTradeHoldDuration)) {
+		if (hasBlacklistedCards || (maxTradeHoldDuration < MaxTradeHoldDuration)) {
 			byte? holdDuration = await Bot.GetTradeHoldDuration(tradeOffer.OtherSteamID64, tradeOffer.TradeOfferID).ConfigureAwait(false);
 
 			switch (holdDuration) {
