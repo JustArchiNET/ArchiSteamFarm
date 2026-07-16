@@ -1,51 +1,51 @@
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-	<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns="" id="root">
-		<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="metadata">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0"/>
-							</xsd:sequence>
-							<xsd:attribute name="name" use="required" type="xsd:string"/>
-							<xsd:attribute name="type" type="xsd:string"/>
-							<xsd:attribute name="mimetype" type="xsd:string"/>
-							<xsd:attribute ref="xml:space"/>
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="assembly">
-						<xsd:complexType>
-							<xsd:attribute name="alias" type="xsd:string"/>
-							<xsd:attribute name="name" type="xsd:string"/>
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-							<xsd:attribute ref="xml:space"/>
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required"/>
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:schema id="root">
+		<xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xs:element name="root" ns1:IsDataSet="true">
+			<xs:complexType>
+				<xs:choice maxOccurs="unbounded">
+					<xs:element name="metadata">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="value" type="xsd:string" minOccurs="0" />
+							</xs:sequence>
+							<xs:attribute name="name" use="required" type="xsd:string" />
+							<xs:attribute name="type" type="xsd:string" />
+							<xs:attribute name="mimetype" type="xsd:string" />
+							<xs:attribute ref="xml:space" />
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assembly">
+						<xs:complexType>
+							<xs:attribute name="alias" type="xsd:string" />
+							<xs:attribute name="name" type="xsd:string" />
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="data">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+								<xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+							</xs:sequence>
+							<xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+							<xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+							<xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+							<xs:attribute ref="xml:space" />
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="resheader">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+							</xs:sequence>
+							<xs:attribute name="name" type="xsd:string" use="required" />
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:complexType>
+		</xs:element>
+	</xs:schema>
 	<resheader name="resmimetype">
 		<value>text/microsoft-resx</value>
 	</resheader>
@@ -65,25 +65,25 @@
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="AutoUpdateCheckInfo" xml:space="preserve">
-		<value>ASF, her {0} aralıkla yeni sürümleri kontrol edecektir.</value>
+		<value>ASF, yeni sürümleri her {0} aralıkla otomatik olarak kontrol edecektir.</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
 	</data>
 	<data name="Content" xml:space="preserve">
-		<value>İçerik: 
+		<value>İçerik:
 {0}</value>
 		<comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
 	</data>
 	<data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-		<value>Yapılandırılmış {0} özelliği geçersiz: {1}</value>
+		<value>Yapılandırılan {0} özelliği geçersiz: {1}</value>
 		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-		<value>ASF V{0}, çekirdek günlük modülü başlatılmadan önce kritik bir hatayla karşılaştı!</value>
+		<value>ASF V{0}, çekirdek log modülü bile başlatılamadan kritik bir istisna ile karşılaştı!</value>
 		<comment>{0} will be replaced by version number</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
 		<value>İstisna: {0}() {1}
-Yığın Kaydı:
+Yığın Kaydı (StackTrace):
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
@@ -92,11 +92,11 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by error code (number)</comment>
 	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
-		<value>İstek başarısız: {0}</value>
+		<value>İstek başarısız oldu: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
 	</data>
 	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-		<value>Genel yapılandırma yüklenemedi. Lütfen {0} dosyasının mevcut ve geçerli olduğundan emin olun! Emin değilseniz Wiki'deki 'Kurulum' rehberini takip edebilirsiniz.</value>
+		<value>Genel yapılandırma yüklenemedi. {0} dosyasının mevcut ve geçerli olduğundan emin olun! Emin değilseniz Wiki'deki 'Kurulum' rehberini inceleyin.</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="ErrorIsInvalid" xml:space="preserve">
@@ -104,37 +104,37 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Hiçbir bot tanımlanmamış. ASF'yi yapılandırmayı unuttunuz mu? Emin değilseniz Wiki'deki 'Kurulum' rehberini takip edebilirsiniz.</value>
+		<value>Hiçbir bot tanımlanmadı. ASF'yi yapılandırmayı unuttunuz mu? Emin değilseniz Wiki'deki 'Kurulum' rehberini inceleyebilirsiniz.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
-		<value>{0} boş!</value>
+		<value>{0} null değerinde!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorParsingObject" xml:space="preserve">
-		<value>Ayrıştırma {0} başarısız oldu!</value>
+		<value>{0} ayrıştırılamadı!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-		<value>{0} denemeden sonra istek başarısız oldu!</value>
+		<value>{0} denemenin ardından istek başarısız oldu!</value>
 		<comment>{0} will be replaced by maximum number of tries</comment>
 	</data>
 	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
 		<value>En son sürüm kontrol edilemedi!</value>
 	</data>
 	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-		<value>Şu anda çalışan sürüme ait hiçbir dosya olmadığı için güncelleme işlemine devam edilemedi! Bu sürüme otomatik güncelleme yapmak mümkün değil.</value>
+		<value>Çalışan mevcut sürüme ait hiçbir dosya bulunamadığı için güncelleme işlemine devam edilemedi! Bu sürüme otomatik güncelleme yapılamaz.</value>
 	</data>
 	<data name="ErrorUpdateNoAssets" xml:space="preserve">
-		<value>Bu sürüm herhangi bir varlık içermediği için güncellemeye devam edilemiyor!</value>
+		<value>Bu sürüm herhangi bir dosya içermediği için güncelleme işlemine devam edilemiyor!</value>
 	</data>
 	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-		<value>Kullanıcı girişi talep edildi ancak ASF arayüzsüz modda çalışıyor!</value>
+		<value>Kullanıcı girişi talep edildi ancak işlem arayüzsüz (headless) modda çalışıyor!</value>
 	</data>
 	<data name="Exiting" xml:space="preserve">
 		<value>Çıkılıyor...</value>
 	</data>
 	<data name="WarningFailed" xml:space="preserve">
-		<value>Başarısız Oldu!</value>
+		<value>Başarısız oldu!</value>
 	</data>
 	<data name="GlobalConfigChanged" xml:space="preserve">
 		<value>Genel yapılandırma dosyası değiştirildi!</value>
@@ -147,11 +147,11 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="LoggingIn" xml:space="preserve">
-		<value>{0}'e giriş yapılıyor...</value>
+		<value>{0} sistemine oturum açılıyor...</value>
 		<comment>{0} will be replaced by service's name</comment>
 	</data>
 	<data name="NoBotsAreRunning" xml:space="preserve">
-		<value>Hiçbir bot çalışmıyor, çıkış yapılıyor...</value>
+		<value>Hiçbir bot çalışmıyor, çıkılıyor...</value>
 	</data>
 	<data name="RefreshingOurSession" xml:space="preserve">
 		<value>Oturumumuz yenileniyor!</value>
@@ -161,7 +161,7 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="Restarting" xml:space="preserve">
-		<value>Yeniden Başlatılıyor...</value>
+		<value>Yeniden başlatılıyor...</value>
 	</data>
 	<data name="Starting" xml:space="preserve">
 		<value>Başlatılıyor...</value>
@@ -170,35 +170,35 @@ Yığın Kaydı:
 		<value>Başarılı!</value>
 	</data>
 	<data name="UnlockingParentalAccount" xml:space="preserve">
-		<value>Aile görünümünün kilidi açılıyor...</value>
+		<value>Steam Aile Görünümünün kilidi açılıyor...</value>
 	</data>
 	<data name="UpdateCheckingNewVersion" xml:space="preserve">
 		<value>Yeni sürüm kontrol ediliyor...</value>
 	</data>
 	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
-		<value>Yeni sürüm indiriliyor: {0} ({1} MB)... Beklerken, emeğimize saygı duyuyorsanız bize bağış yapmayı düşünebilirsiniz! :)</value>
+		<value>Yeni sürüm indiriliyor: {0} ({1} MB)... Beklerken, yapılan işi takdir ediyorsanız bağış yapmayı düşünebilirsiniz! :)</value>
 		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
 	</data>
 	<data name="UpdateFinished" xml:space="preserve">
 		<value>Güncelleme işlemi tamamlandı!</value>
 	</data>
 	<data name="UpdateNewVersionAvailable" xml:space="preserve">
-		<value>Yeni ASF sürümü mevcut! Güncellemeyi düşünün!</value>
+		<value>ASF'nin yeni bir sürümü mevcut! Güncellemeyi düşünebilirsiniz!</value>
 	</data>
 	<data name="UpdateVersionInfo" xml:space="preserve">
 		<value>Yerel sürüm: {0} | Uzak sürüm: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
 	<data name="UserInputDeviceConfirmation" xml:space="preserve">
-		<value>Lütfen Steam mobil uygulamanızı kontrol edin, bir giriş onay bildirimi almış olmalısınız. Bildirimi aldıysanız ve onayladıysanız Y yazın, bunun yerine kod girmek istiyorsanız N yazın: </value>
+		<value>Lütfen Steam mobil uygulamanızı kontrol edin, bir giriş onayı bildirimi almış olmalısınız. Bildirimi alıp onayladıysanız Y, bunun yerine 2FA kodu girmek istiyorsanız N yazın: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
-		<value>Lütfen Steam kimlik doğrulama uygulamanızdan İki Faktörlü Doğrulama kodunuzu girin: </value>
+		<value>Lütfen Steam kimlik doğrulayıcı uygulamanızdan 2FA kodunuzu girin: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Lütfen e-postanıza gönderilen SteamGuard kimlik doğrulayıcı kodunu girin: </value>
+		<value>Lütfen e-postanıza gönderilen Steam Guard doğrulama kodunu girin: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
@@ -206,7 +206,7 @@ Yığın Kaydı:
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamParentalCode" xml:space="preserve">
-		<value>Lütfen Steam Aile pini kodunuzu girin: </value>
+		<value>Lütfen Steam Aile Görünümü PIN kodunuzu girin: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamPassword" xml:space="preserve">
@@ -227,19 +227,19 @@ Yığın Kaydı:
 		<value>Bu bot zaten durdurulmuş!</value>
 	</data>
 	<data name="BotNotFound" xml:space="preserve">
-		<value>{0} adlı bot bulunamadı!</value>
+		<value>'{0}' adında bir bot bulunamadı!</value>
 		<comment>{0} will be replaced by bot's name query (string)</comment>
 	</data>
 	<data name="BotStatusOverview" xml:space="preserve">
-		<value>{0}/{1} bot çalışıyor, çalıştırılacak toplam {2} oyun ({3} kart) kaldı.</value>
+		<value>{0}/{1} bot çalışıyor; kart düşürülecek toplam {2} oyun ({3} kart) kaldı.</value>
 		<comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
 	</data>
 	<data name="BotStatusIdling" xml:space="preserve">
-		<value>Bot oyunu çalıştırıyor: {0} ({1}, {2} kart kaldı). Toplam {3} oyun ({4} kart) var (kalan süre yaklaşık {5}).</value>
+		<value>Bot, şu oyunda kart düşürüyor: {0} ({1}, kalan kart hakkı: {2}). Toplam {3} oyun ({4} kart) kaldı (~{5} süre kaldı).</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
 	<data name="BotStatusIdlingList" xml:space="preserve">
-		<value>Bot, oyunları çalıştırıyor: {0}. Toplam {1} oyundan ({2} kart) kaldı (kalan süre yaklaşık {3}).</value>
+		<value>Bot, şu oyunlarda kart düşürüyor: {0}. Toplam {1} oyun ({2} kart) kaldı (~{3} süre kaldı).</value>
 		<comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
 	<data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -253,17 +253,17 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
 	</data>
 	<data name="Done" xml:space="preserve">
-		<value>Bitti!</value>
+		<value>Tamamlandı!</value>
 	</data>
 	<data name="GamesToIdle" xml:space="preserve">
-		<value>Kart düşürülecek {0} oyun ({1} kart) kaldı (kalan süre: ~{2})...</value>
+		<value>Kart düşürülecek toplam {0} oyun ({1} kart) kaldı (kalan süre: ~{2})...</value>
 		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
 	<data name="IdlingFinished" xml:space="preserve">
-		<value>Çalıştırma bitti!</value>
+		<value>Kart düşürme işlemi tamamlandı!</value>
 	</data>
 	<data name="IdlingFinishedForGame" xml:space="preserve">
-		<value>Çalıştırma {0} ({1}), {2} oynama süresinden sonra bitti!</value>
+		<value>{0} ({1}) için kart düşürme işlemi, {2} oynama süresinin ardından tamamlandı!</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
 	</data>
 	<data name="IdlingFinishedForGames" xml:space="preserve">
@@ -271,43 +271,43 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="IdlingStatusForGame" xml:space="preserve">
-		<value>{0} ({1}) için çalıştırma durumu: {2} kart kaldı</value>
+		<value>{0} ({1}) için kart düşürme durumu: {2} kart kaldı</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm</comment>
 	</data>
 	<data name="IdlingStopped" xml:space="preserve">
-		<value>Çalıştırma durdu!</value>
+		<value>Kart düşürme durduruldu!</value>
 	</data>
 	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
-		<value>Kalıcı duraklatma etkin olduğundan bu talep göz ardı edildi!</value>
+		<value>Kalıcı duraklatma etkin olduğu için bu talep göz ardı edildi!</value>
 	</data>
 	<data name="NothingToIdle" xml:space="preserve">
-		<value>Bu hesapta çalıştırılacak hiçbir şey bulamadık!</value>
+		<value>Bu hesapta kart düşürülecek hiçbir oyun bulunmuyor!</value>
 	</data>
 	<data name="NowIdling" xml:space="preserve">
-		<value>Şu anda oynanıyor: {0} ({1})</value>
+		<value>Şu anda çalıştırılan: {0} ({1})</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="NowIdlingList" xml:space="preserve">
-		<value>Şu anda oynanıyor: {0}</value>
+		<value>Şu anda çalıştırılan oyunlar: {0}</value>
 		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="PlayingNotAvailable" xml:space="preserve">
-		<value>Şu anda oyun çalıştırılamıyor, daha sonra tekrar deneyelim!</value>
+		<value>Şu anda oyun çalıştırılamıyor, daha sonra tekrar denenecek!</value>
 	</data>
 	<data name="StillIdling" xml:space="preserve">
-		<value>Hala çalıştırılan: {0} ({1})</value>
+		<value>Hâlâ çalıştırılan: {0} ({1})</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="StillIdlingList" xml:space="preserve">
-		<value>Hala çalıştırılan: {0}</value>
+		<value>Hâlâ çalıştırılan oyunlar: {0}</value>
 		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="StoppedIdling" xml:space="preserve">
-		<value>Çalıştırma durdu: {0} ({1})</value>
+		<value>Kart düşürme durduruldu: {0} ({1})</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="StoppedIdlingList" xml:space="preserve">
-		<value>Çalıştırma durdu: {0}</value>
+		<value>Kart düşürme durduruldu: {0}</value>
 		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
 	</data>
 	<data name="UnknownCommand" xml:space="preserve">
@@ -325,7 +325,7 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
 	<data name="BotAccountLimited" xml:space="preserve">
-		<value>Bu hesap kısıtlıdır, kısıtlama kaldırılana kadar kart düşürmek mümkün değil!</value>
+		<value>Bu hesap kısıtlı olduğundan, kısıtlama kaldırılana kadar kart düşürme işlemi yapılamaz!</value>
 	</data>
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID: {0} | Durum: {1}</value>
@@ -339,20 +339,20 @@ Yığın Kaydı:
 		<value>Bu bot zaten çalışıyor!</value>
 	</data>
 	<data name="BotAuthenticatorConverting" xml:space="preserve">
-		<value>.maFile dosyası ASF'nin formatına dönüştürülüyor...</value>
+		<value>.maFile dosyası ASF biçimine dönüştürülüyor...</value>
 	</data>
 	<data name="BotAuthenticatorImportFinished" xml:space="preserve">
-		<value>Mobil kimlik doğrulayıcısının aktarılması başarıyla tamamlandı!</value>
+		<value>Mobil kimlik doğrulayıcısının içe aktarılması başarıyla tamamlandı!</value>
 	</data>
 	<data name="BotAuthenticatorToken" xml:space="preserve">
-		<value>2AD Kodu: {0}</value>
+		<value>2FA (İki Adımlı Doğrulama) Kodu: {0}</value>
 		<comment>{0} will be replaced by generated 2FA token (string)</comment>
 	</data>
 	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-		<value>Otomatik çalıştırma duraklatıldı!</value>
+		<value>Otomatik kart düşürme duraklatıldı!</value>
 	</data>
 	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-		<value>Otomatik çalıştırma sürdürülüyor!</value>
+		<value>Otomatik kart düşürme sürdürülüyor!</value>
 	</data>
 	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
 		<value>Otomatik kart düşürme zaten duraklatılmış!</value>
@@ -361,23 +361,23 @@ Yığın Kaydı:
 		<value>Otomatik kart düşürme zaten devam ediyor!</value>
 	</data>
 	<data name="BotConnected" xml:space="preserve">
-		<value>Steam'e bağlandı!</value>
+		<value>Steam ağına bağlanıldı!</value>
 	</data>
 	<data name="BotDisconnected" xml:space="preserve">
-		<value>Steam ile bağlantı kesildi!</value>
+		<value>Steam ağından bağlantı kesildi!</value>
 	</data>
 	<data name="BotDisconnecting" xml:space="preserve">
-		<value>Bağlantı Kesiliyor...</value>
+		<value>Bağlantı kesiliyor...</value>
 	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-		<value>Bu bot örneği, yapılandırma dosyasında devre dışı bırakıldığından başlatılmıyor!</value>
+		<value>Bu bot örneği yapılandırma dosyasında devre dışı bırakıldığı için başlatılmıyor!</value>
 	</data>
 	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-		<value>Giriş sırasında {0} kez 'TwoFactorCodeMismatch' hatası alındı. Ya 2AD kodlarınız geçersiz ya da cihazınızın saati yanlış. İşlem iptal ediliyor!</value>
+		<value>Giriş sırasında üst üste {0} kez 'TwoFactorCodeMismatch' (Geçersiz 2FA Kodu) hatası alındı. Ya 2FA kodlarınız geçersiz ya da cihazınızın saati senkronize değil. İşlem iptal ediliyor!</value>
 		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
 	</data>
 	<data name="BotLoggedOff" xml:space="preserve">
-		<value>Steam'den çıkış yapıldı: {0}</value>
+		<value>Steam oturumu kapatıldı: {0}</value>
 		<comment>{0} will be replaced by logging off reason (string)</comment>
 	</data>
 	<data name="BotLoggedOn" xml:space="preserve">
@@ -385,43 +385,43 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by steam ID (number)</comment>
 	</data>
 	<data name="BotLoggingIn" xml:space="preserve">
-		<value>Giriş yapılıyor...</value>
+		<value>Oturum açılıyor...</value>
 	</data>
 	<data name="BotLogonSessionReplaced" xml:space="preserve">
-		<value>Bu oturum başka bir konumdan değiştirildi. Büyük ihtimalle bu bot, başka bir ASF örneğinde de çalışıyor. ASF bu durumda kararsız çalışabileceğinden durduruluyor.</value>
+		<value>Bu hesabın oturumu başka bir konumdan açıldığı için sonlandırıldı. Bu durum botun aynı anda başka bir yerde veya başka bir ASF örneğinde çalıştığını gösterir; kararsızlıkları önlemek için bot durduruluyor!</value>
 	</data>
 	<data name="BotLootingFailed" xml:space="preserve">
 		<value>Takas teklifi başarısız oldu!</value>
 	</data>
 	<data name="BotLootingMasterNotDefined" xml:space="preserve">
-		<value>Ana hesabınız tanımlanmadığı için takas teklifi gönderilemedi!</value>
+		<value>Ana hesap (master) yetkisine sahip bir kullanıcı tanımlanmadığı için takas teklifi gönderilemedi!</value>
 	</data>
 	<data name="BotLootingSuccess" xml:space="preserve">
 		<value>Takas teklifi başarıyla gönderildi!</value>
 	</data>
 	<data name="BotSendingTradeToYourself" xml:space="preserve">
-		<value>Kendine takas teklifi gönderemezsin!</value>
+		<value>Kendinize takas teklifi gönderemezsiniz!</value>
 	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
-		<value>Bu botta ASF 2-Adımlı-Doğrulama (2AD) etkin değil! Doğrulayıcınızı ASF 2AD olarak içe aktarmayı unuttunuz mu?</value>
+		<value>Bu botta ASF 2FA etkin değil! Doğrulayıcınızı ASF 2FA olarak içe aktarmayı unuttunuz mu?</value>
 	</data>
 	<data name="BotNotConnected" xml:space="preserve">
-		<value>Bu bot bağlı değil!</value>
+		<value>Bu bot örneği bağlı değil!</value>
 	</data>
 	<data name="BotNotOwnedYet" xml:space="preserve">
-		<value>Henüz buna sahip değil: {0}</value>
+		<value>Henüz kütüphanede bulunmuyor: {0}</value>
 		<comment>{0} will be replaced by query (string)</comment>
 	</data>
 	<data name="BotOwnedAlreadyWithName" xml:space="preserve">
-		<value>Zaten şuna sahip: {0} | {1}</value>
+		<value>Zaten kütüphanede mevcut: {0} | {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="BotPointsBalance" xml:space="preserve">
-		<value>Puan bakiyesi: {0}</value>
+		<value>Steam Puanı bakiyesi: {0}</value>
 		<comment>{0} will be replaced by the points balance value (integer)</comment>
 	</data>
 	<data name="BotRateLimitExceeded" xml:space="preserve">
-		<value>İstek sınırı aşıldı, {0} sonra yeniden denenecek...</value>
+		<value>İstek sınırı aşıldı, {0} bekleme süresinden sonra yeniden denenecek...</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
 	</data>
 	<data name="BotReconnecting" xml:space="preserve">
@@ -439,19 +439,19 @@ Yığın Kaydı:
 		<value>Süresi dolmuş giriş anahtarı kaldırıldı!</value>
 	</data>
 	<data name="BotStatusNotIdling" xml:space="preserve">
-		<value>Bot herhangi bir oyun oynamıyor.</value>
+		<value>Bot şu anda hiçbir oyun çalıştırmıyor.</value>
 	</data>
 	<data name="BotStatusLimited" xml:space="preserve">
-		<value>Bot sınırlı durumda ve çalışarak kart düşüremez.</value>
+		<value>Bot kısıtlı bir hesaba sahip ve kart düşüremez.</value>
 	</data>
 	<data name="BotStatusConnecting" xml:space="preserve">
-		<value>Bot Steam ağına bağlanıyor.</value>
+		<value>Bot, Steam ağına bağlanıyor.</value>
 	</data>
 	<data name="BotStatusNotRunning" xml:space="preserve">
 		<value>Bot çalışmıyor.</value>
 	</data>
 	<data name="BotStatusPaused" xml:space="preserve">
-		<value>Bot duraklatılmış veya manuel çalışıyor.</value>
+		<value>Bot duraklatıldı veya manuel modda çalışıyor.</value>
 	</data>
 	<data name="BotStatusPlayingNotAvailable" xml:space="preserve">
 		<value>Bot şu anda kullanılıyor.</value>
@@ -469,29 +469,29 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
 	</data>
 	<data name="WarningFailedWithError" xml:space="preserve">
-		<value>Şu hata yüzünden başarısız: {0}</value>
+		<value>Hata nedeniyle başarısız oldu: {0}</value>
 		<comment>{0} will be replaced by failure reason (string)</comment>
 	</data>
 	<data name="BotConnectionLost" xml:space="preserve">
-		<value>Steam Ağı bağlantısı kaybedildi. Yeniden bağlanıyor...</value>
+		<value>Steam ağıyla bağlantı kesildi. Yeniden bağlanılıyor...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Hesap artık meşgul değil, kart düşürmeye devam ediliyor!</value>
+		<value>Hesap artık meşgul değil; kart düşürme işlemine devam ediliyor!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
-		<value>Hesap şu anda kullanılıyor. ASF, hesap boşa çıktığında devam edecek...</value>
+		<value>Hesap şu anda kullanılıyor; ASF, hesap boşa çıktığında kart düşürmeye devam edecek...</value>
 	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Bağlanılıyor...</value>
 	</data>
 	<data name="BotHeartBeatFailed" xml:space="preserve">
-		<value>İstemci bağlantısı sağlıklı bir şekilde sonlandırılamadı. Bu bot örneği terk ediliyor!</value>
+		<value>İstemcinin bağlantısı sağlıklı bir şekilde sonlandırılamadı. Bu bot örneği terk ediliyor!</value>
 	</data>
 	<data name="BotStopping" xml:space="preserve">
 		<value>Durduruluyor...</value>
 	</data>
 	<data name="ErrorBotConfigInvalid" xml:space="preserve">
-		<value>Bot yapılandırmanız geçersiz. Lütfen {0} içeriğini kontrol edip tekrar deneyin!</value>
+		<value>Bot yapılandırmanız geçersiz. Lütfen {0} dosyasının içeriğini kontrol edip tekrar deneyin!</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="ErrorDatabaseInvalid" xml:space="preserve">
@@ -503,24 +503,24 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by service name that is being initialized</comment>
 	</data>
 	<data name="WarningPrivacyPolicy" xml:space="preserve">
-		<value>ASF'nin arka planda ne yaptığı konusunda endişeleriniz varsa, lütfen Wiki'deki Gizlilik Politikası bölümümüzü inceleyin!</value>
+		<value>ASF'nin arka planda tam olarak ne yaptığı konusunda endişeleriniz varsa lütfen Wiki'deki Gizlilik Politikası bölümümüzü inceleyin!</value>
 	</data>
 	<data name="Welcome" xml:space="preserve">
 		<value>Görünüşe göre programı ilk kez çalıştırıyorsunuz, hoş geldiniz!</value>
 	</data>
 	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-		<value>Belirtilen 'CurrentCulture' geçersiz, ASF varsayılan dille devam edecek!</value>
+		<value>Belirtilen CurrentCulture dil kodu geçersiz; ASF varsayılan dille çalışmaya devam edecek!</value>
 	</data>
 	<data name="TranslationIncomplete" xml:space="preserve">
-		<value>ASF, tercih ettiğiniz {0} dilini kullanmaya çalışacak, ancak bu dildeki çeviri yalnızca %{1} oranında tamamlanmış. Belki ASF'nin dilinize çevrilmesine yardımcı olmak istersiniz?</value>
+		<value>ASF, tercih ettiğiniz {0} dilini kullanmaya çalışacak, ancak bu dilin çevirisi yalnızca %{1} oranında tamamlanmış. Dilinizin ASF çevirisini geliştirmemize yardımcı olmak ister misiniz?</value>
 		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
 	</data>
 	<data name="IdlingGameNotPossible" xml:space="preserve">
-		<value>{0} ({1}) oyunu şu anda oynanamadığı için kart düşürme geçici olarak devre dışı bırakıldı.</value>
+		<value>{0} ({1}) oyunu şu anda oynanamadığı için kart düşürme işlemi geçici olarak devre dışı bırakıldı.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="WarningIdlingGameMismatch" xml:space="preserve">
-		<value>ASF, {0} ({1}) için bir uyuşmazlık tespit etti ve bunun yerine {2} kimliğini kullanacak.</value>
+		<value>ASF, {0} ({1}) için kimlik uyuşmazlığı tespit etti ve bunun yerine {2} kimliğini kullanacak.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
 	</data>
 	<data name="BotVersion" xml:space="preserve">
@@ -528,23 +528,23 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
 	</data>
 	<data name="BotAccountLocked" xml:space="preserve">
-		<value>Bu hesap kilitli, kart düşürme işlemi kalıcı olarak devre dışı!</value>
+		<value>Bu hesap kilitli olduğundan, kart düşürme işlemi kalıcı olarak devre dışı bırakıldı!</value>
 	</data>
 	<data name="BotStatusLocked" xml:space="preserve">
 		<value>Bot kilitli ve kart düşüremez.</value>
 	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
-		<value>Bu işlev yalnızca arayüzsüz modda kullanılabilir!</value>
+		<value>Bu işlev yalnızca arayüzsüz (headless) modda kullanılabilir!</value>
 	</data>
 	<data name="BotOwnedAlready" xml:space="preserve">
-		<value>Zaten şuna sahip: {0}</value>
+		<value>Zaten kütüphanede mevcut: {0}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="ErrorAccessDenied" xml:space="preserve">
 		<value>Erişim reddedildi!</value>
 	</data>
 	<data name="WarningPreReleaseVersion" xml:space="preserve">
-		<value>Güncelleme kanalınız için yayınlanan son kararlı sürümden daha yeni bir sürüm kullanıyorsunuz. Lütfen ön sürüm derlemelerinin, hata bildirmeyi, sorunları çözmeyi ve geri bildirimde bulunmayı bilen deneyimli kullanıcılar için olduğunu unutmayın - bu sürümler için teknik destek sağlanmayacaktır.</value>
+		<value>Güncelleme kanalınız için yayınlanan son kararlı sürümden daha yeni bir sürüm kullanıyorsunuz. Lütfen ön sürüm (pre-release) derlemelerinin hata bildirmeyi, sorunları çözmeyi ve geri bildirimde bulunmayı bilen deneyimli kullanıcılar için olduğunu unutmayın; bu sürümler için teknik destek sağlanmaz.</value>
 	</data>
 	<data name="BotStats" xml:space="preserve">
 		<value>Mevcut bellek kullanımı: {0} MB.
@@ -552,33 +552,33 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
 	</data>
 	<data name="BotOwnsOverviewPerGame" xml:space="preserve">
-		<value>{0}/{1} bot zaten {2} oyununa sahip.</value>
+		<value>{0}/{1} bot zaten {2} kimlikli oyuna sahip.</value>
 		<comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
 	</data>
 	<data name="BotRefreshingPackagesData" xml:space="preserve">
 		<value>Paket verileri yenileniyor...</value>
 	</data>
 	<data name="WarningDeprecated" xml:space="preserve">
-		<value>{0} kullanımı eskimiştir ve gelecekteki sürümlerde kaldırılacaktır. Lütfen bunun yerine {1} kullanın.</value>
+		<value>{0} kullanımı eskimiştir ve programın gelecek sürümlerinde kaldırılacaktır. Lütfen bunun yerine {1} kullanın.</value>
 		<comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
 	</data>
 	<data name="BotAcceptedDonationTrade" xml:space="preserve">
-		<value>Karşılıksız takas kabul edildi: {0}</value>
+		<value>Karşılıksız takas (bağış) kabul edildi: {0}</value>
 		<comment>{0} will be replaced by trade's ID (number)</comment>
 	</data>
 	<data name="WarningWorkaroundTriggered" xml:space="preserve">
-		<value>{0} hatası için geçici bir çözüm tetiklendi.</value>
+		<value>{0} hatası için geçici çözüm tetiklendi.</value>
 		<comment>{0} will be replaced by the bug's name provided by ASF</comment>
 	</data>
 	<data name="TargetBotNotConnected" xml:space="preserve">
-		<value>Hedef bot bağlı değil!</value>
+		<value>Hedef bot örneği bağlı değil!</value>
 	</data>
 	<data name="BotWalletBalance" xml:space="preserve">
 		<value>Cüzdan bakiyesi: {0} {1}</value>
 		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
 	</data>
 	<data name="BotHasNoWallet" xml:space="preserve">
-		<value>Botun cüzdanı yok.</value>
+		<value>Botun Steam cüzdanı bulunmuyor.</value>
 	</data>
 	<data name="BotLevel" xml:space="preserve">
 		<value>Bot seviyesi: {0}.</value>
@@ -589,22 +589,22 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by appID (number), {1} will be replaced by contextID (number), {2} will be replaced by app's name (string), {3} will be replaced by name of the context (string), {4} will be replaced by number of assets in the specified inventory (number).</comment>
 	</data>
 	<data name="ActivelyMatchingItems" xml:space="preserve">
-		<value>Steam eşyaları eşleştiriliyor, tur #{0}...</value>
+		<value>Steam öğeleri eşleştiriliyor, tur #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>
 	</data>
 	<data name="DoneActivelyMatchingItems" xml:space="preserve">
-		<value>Steam eşyalarını eşleştirme tamamlandı, tur #{0}.</value>
+		<value>Steam öğeleri eşleştirme işlemi tamamlandı, tur #{0}.</value>
 		<comment>{0} will be replaced by round number</comment>
 	</data>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>İptal edildi!</value>
 	</data>
 	<data name="WarningExcessiveBotsCount" xml:space="preserve">
-		<value>Önerilen sınırın ({0}) üzerinde kişisel bot hesabı kullanıyorsunuz. Bu yapılandırma desteklenmemektedir ve hesap askıya alınması dahil olmak üzere Steam ile ilgili sorunlara neden olabilir. Daha fazla bilgi için SSS bölümüne bakın.</value>
+		<value>Önerilen üst sınırın ({0}) üzerinde kişisel bot hesabı çalıştırıyorsunuz. Bu kurulumun desteklenmediğini ve hesap askıya alınması dâhil olmak üzere çeşitli Steam sorunlarına yol açabileceğini unutmayın. Detaylı bilgi için SSS bölümünü inceleyin.</value>
 		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
 	</data>
 	<data name="PluginLoaded" xml:space="preserve">
-		<value>{0} başarıyla yüklendi!</value>
+		<value>{0} eklentisi başarıyla yüklendi!</value>
 		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
 	</data>
 	<data name="PluginLoading" xml:space="preserve">
@@ -615,40 +615,40 @@ Yığın Kaydı:
 		<value>Hiçbir şey bulunamadı!</value>
 	</data>
 	<data name="PluginsWarning" xml:space="preserve">
-		<value>ASF'ye bir veya daha fazla özel eklenti yüklediniz. Değiştirilmiş kurulumlara destek sunamayacağımızı, bu nedenle bir sorunla karşılaşırsanız lütfen ilgili geliştiricilerle iletişime geçmeniz gerektiğini unutmayın.</value>
+		<value>ASF üzerine bir veya daha fazla özel eklenti yüklediniz. Modifiye edilmiş kurulumlara resmî destek verilemediğinden, herhangi bir sorun yaşamanız durumunda lütfen ilgili eklenti geliştiricileriyle iletişime geçin.</value>
 	</data>
 	<data name="PleaseWait" xml:space="preserve">
 		<value>Lütfen bekleyin...</value>
 	</data>
 	<data name="EnterCommand" xml:space="preserve">
-		<value>Komut girin: </value>
+		<value>Komut girin:</value>
 	</data>
 	<data name="Executing" xml:space="preserve">
 		<value>Yürütülüyor...</value>
 	</data>
 	<data name="InteractiveConsoleEnabled" xml:space="preserve">
-		<value>Etkileşimli konsol etkinleştirildi. Komut girme moduna geçmek için 'c' tuşuna basın.</value>
+		<value>Etkileşimli konsol etkinleştirildi; komut moduna geçmek için 'c' tuşuna basın.</value>
 	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Botun arka plan kuyruğunda {0} oyun kaldı.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
 	</data>
 	<data name="ErrorSingleInstanceRequired" xml:space="preserve">
-		<value>Bu dizinde zaten bir ASF işlemi çalışıyor, işlem iptal ediliyor!</value>
+		<value>Bu çalışma dizini için zaten bir ASF işlemi çalışıyor, işlem iptal ediliyor!</value>
 	</data>
 	<data name="BotHandledConfirmations" xml:space="preserve">
 		<value>{0} onay başarıyla işlendi!</value>
 		<comment>{0} will be replaced by number of confirmations</comment>
 	</data>
 	<data name="BotExtraIdlingCooldown" xml:space="preserve">
-		<value>Kart düşürmeye hazır olduğundan emin olmak için {0} bekleniyor...</value>
+		<value>Kart düşürmeye başlamaya hazır olduğumuzdan emin olmak için {0} bekleniyor...</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
 	</data>
 	<data name="UpdateCleanup" xml:space="preserve">
-		<value>Güncelleme sonrası eski dosyalar temizleniyor...</value>
+		<value>Güncelleme sonrasında eski dosyalar temizleniyor...</value>
 	</data>
 	<data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-		<value>Steam Aile pini oluşturuluyor. Bu işlem uzun sürebileceğinden, pini yapılandırma dosyanıza eklemeniz önerilir...</value>
+		<value>Steam Aile Görünümü PIN kodu oluşturuluyor; bu işlem uzun sürebileceğinden kodu yapılandırma dosyasına eklemeniz önerilir...</value>
 	</data>
 	<data name="IPCConfigChanged" xml:space="preserve">
 		<value>IPC yapılandırması değiştirildi!</value>
@@ -658,7 +658,7 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
 	</data>
 	<data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
-		<value>{0} kez üst üste 'InvalidPassword' hatası alındı. Bu hesap için şifreniz büyük olasılıkla yanlış. İşlem iptal ediliyor!</value>
+		<value>Giriş sırasında üst üste {0} kez 'InvalidPassword' (Geçersiz Parola) hatası alındı. Bu hesap için parolanız büyük olasılıkla yanlış. İşlem iptal ediliyor!</value>
 		<comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
 	</data>
 	<data name="Result" xml:space="preserve">
@@ -666,84 +666,84 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
 	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
-		<value>Desteklenmeyen bir ortamda ({1}) bir ASF varyantı ({0}) çalıştırmaya çalışıyorsunuz. Ne yaptığınızı gerçekten biliyorsanız, --ignore-unsupported-environment argümanını kullanın.</value>
+		<value>ASF'nin {0} varyantını desteklenmeyen bir ortamda ({1}) çalıştırmaya çalışıyorsunuz. Ne yaptığınızı gerçekten biliyorsanız --ignore-unsupported-environment argümanını kullanın.</value>
 	</data>
 	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
 		<value>Bilinmeyen komut satırı argümanı: {0}</value>
 		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
 	</data>
 	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-		<value>Yapılandırma dizini bulunamadı, çıkılıyor!</value>
+		<value>Yapılandırma dizini bulunamadı, işlem sonlandırılıyor!</value>
 	</data>
 	<data name="BotIdlingSelectedGames" xml:space="preserve">
-		<value>Seçilen oynanıyor {0}: {1}</value>
+		<value>Seçilen {0} oynanıyor: {1}</value>
 		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
 	</data>
 	<data name="AutomaticFileMigration" xml:space="preserve">
-		<value>{0} yapılandırma dosyası en son sürüm söz dizimine aktarılacak...</value>
+		<value>{0} yapılandırma dosyası en son söz dizimine aktarılacak...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
-		<value>Şifreleme anahtarınız çok kısa. En az {0} bayt (karakter) uzunluğunda bir anahtar kullanmanız önerilir.</value>
+		<value>Şifreleme anahtarınız çok kısa. En az {0} bayt (karakter) uzunluğunda bir anahtar kullanmanızı öneririz.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>{1} özelliğinin {0} ayarını kullanıyorsunuz, ancak özel bir --cryptkey sağlamadınız. Artırılmış güvenlik için özel bir --cryptkey sağlayabilirsiniz.</value>
+		<value>{1} özelliği için {0} ayarını kullanıyorsunuz ancak özel bir --cryptkey belirtmediniz. İsterseniz güvenliği artırmak için özel bir --cryptkey belirleyebilirsiniz.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
-		<value>{1} özelliği için {0} ayarını kullanıyorsunuz, ancak özel bir --cryptkey belirtmediniz. Bu, korumayı tamamen etkisiz hale getirir çünkü ASF kendi (bilinen) anahtarını kullanmak zorunda kalır. Bu ayarın sunduğu güvenlikten yararlanmak için özel bir --cryptkey sağlamalısınız.</value>
+		<value>{1} özelliği için {0} ayarını kullanıyorsunuz ancak özel bir --cryptkey belirtmediniz. Bu durum korumayı tamamen etkisiz hâle getirir, çünkü ASF kendi (herkesçe bilinen) anahtarını kullanmak zorunda kalır. Bu ayarın sunduğu güvenlik avantajından yararlanmak için özel bir --cryptkey sağlamalısınız.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
 	<data name="WarningRunningAsRoot" xml:space="preserve">
-		<value>ASF'yi yönetici (root) olarak çalıştırmaya çalışıyorsunuz. Bu, makineniz için önemli bir güvenlik riski oluşturur ve ASF'nin çalışması için yönetici izni gerekmediğinden, mümkünse yönetici olmadan çalıştırmanız şiddetle önerilir.</value>
+		<value>ASF'yi yönetici (root) olarak çalıştırmaya çalışıyorsunuz. Bu durum sisteminiz için ciddi bir güvenlik riski oluşturur; ASF'nin çalışması için yönetici izni gerekmediğinden, mümkünse normal kullanıcı olarak çalıştırmanızı öneririz.</value>
 	</data>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
-		<value>ASF'yi desteklenmeyen bir ortamda --ignore-unsupported-environment argümanı ile çalıştırıyorsunuz. Lütfen bu senaryo için herhangi bir destek sunmadığımızı ve bunu tamamen kendi sorumluluğunuzda yaptığınızı unutmayın. Uyarıldınız.</value>
+		<value>ASF'yi --ignore-unsupported-environment argümanı ile desteklenmeyen bir ortamda çalıştırıyorsunuz. Lütfen bu senaryo için hiçbir şekilde destek sunmadığımızı ve tüm sorumluluğun size ait olduğunu unutmayın.</value>
 	</data>
 	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
-		<value>Uzak sunucudan sağlama toplamı alınıyor...</value>
+		<value>Uzak sunucudan sağlama toplamı (checksum) alınıyor...</value>
 	</data>
 	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
-		<value>İndirilen ikili dosyanın sağlama toplamı uzak sunucu ile doğrulanıyor...</value>
+		<value>İndirilen ikili dosyanın sağlama toplamı uzak sunucudaki değer ile doğrulanıyor...</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>Uzak sunucu, güncellediğimiz sürüm hakkında bilgiye sahip değil. Bu durum, sürüm yeni yayınlandıysa oluşabilir. Ek bir güvenlik önlemi olarak, güncelleme işlemi hemen devam etmeyecektir.</value>
+		<value>Uzak sunucu güncelleyeceğimiz sürüm hakkında bilgiye sahip değil. Sürüm çok yeni yayınlandıysa bu durum meydana gelebilir; ek bir güvenlik önlemi olarak güncelleme işlemi durduruluyor.</value>
 	</data>
 	<data name="ChecksumTimeout" xml:space="preserve">
-		<value>İndirilen ikili dosyanın sağlama toplamı alınamadı; ek bir güvenlik önlemi olarak şu anda güncelleme prosedürüne devam etmeyi reddediyoruz.</value>
+		<value>İndirilen ikili dosyanın sağlama toplamı (checksum) alınamadı; ek bir güvenlik önlemi olarak şu anda güncelleme işlemine devam edilmiyor.</value>
 	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
-		<value>Uzak sunucu farklı bir sağlama toplamı döndürdü. Bu, güncelleme dosyalarının bozulmuş olabileceğine veya bir MITM saldırısına işaret edebilir. Güncelleme durduruluyor!</value>
+		<value>Uzak sunucu farklı bir sağlama toplamı (checksum) döndürdü! Bu durum indirme işleminin bozulduğunu veya bir MITM saldırısını gösterebilir; güncelleme işlemi durduruluyor!</value>
 	</data>
 	<data name="PatchingFiles" xml:space="preserve">
 		<value>ASF dosyaları yamalanıyor...</value>
 	</data>
 	<data name="UserInputCryptkey" xml:space="preserve">
-		<value>Lütfen şifreleme anahtarınızı girin: </value>
+		<value>Lütfen şifreleme anahtarınızı (cryptkey) girin: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="ErrorIPNotBanned" xml:space="preserve">
-		<value>IP adresi {0} is yasaklı değil!</value>
+		<value>{0} IP adresi yasaklı değil!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
 	<data name="WarningNoLicense" xml:space="preserve">
-		<value>{0} ücretli özelliğini kullanmayı denediniz, ancak ASF genel yapılandırmasında ayarlanmış geçerli bir Lisans Kimliğiniz yok. Ek ayrıntılar olmadan işlevsellik çalışmayacağından lütfen yapılandırmanızı gözden geçirin.</value>
+		<value>Ücretli {0} özelliğini kullanmaya çalıştınız, ancak ASF genel yapılandırmasında tanımlı geçerli bir LicenseID bulunmuyor. Ek bilgiler olmadan bu işlev çalışmayacağı için lütfen yapılandırmanızı kontrol edin.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
 	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
-		<value>ASF, {1} ülkesi için {2} tarihine kadar sürecek, bölgeyle ilgili kısıtlamaya sahip olduğundan {0} uygulamasını açamıyor.</value>
+		<value>ASF, {1} ülkesi için {2} tarihine kadar geçerli bölge kısıtlamasına sahip olduğu için {0} uygulamasını çalıştıramıyor.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
 	</data>
 	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
-		<value>Bir {0} eklentisini çalıştırmaya çalışıyor gibi görünüyorsunuz, ancak bu eklenti ASF sürümünüzle ({1}, beklenen {2}) uyumlu değil. Bu durum, ya kurulumunuzda ciddi bir hata olduğunu gösterir ya da ne yaptığınızı gerçekten biliyorsanız --ignore-unsupported-environment argümanını kullanarak sorunu çözebilirsiniz.</value>
+		<value>Resmî {0} eklentisini, ASF sürümüyle ({1}, beklenen {2}) uyumsuz bir sürümde çalıştırmaya çalışıyorsunuz. Bu durum kurulumunuzda ciddi bir hata yaptığınızı gösterir. Lütfen kurulumunuzu düzeltin veya ne yaptığınızı gerçekten biliyorsanız --ignore-unsupported-environment argümanını ekleyin.</value>
 		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
 	</data>
 	<data name="ErrorTooManyCrashes" xml:space="preserve">
-		<value>ASF'niz yakın zamanda çok fazla kilitlendi ve bu nedenle süreç başlatma devre dışı bırakıldı. Ya araştırın, kurulumunuzu düzeltin, ardından ASF.crash dosyasını config dizininizden kaldırın ya da ne yaptığınızı gerçekten biliyorsanız --ignore-unsupported-environment argümanını sağlayın.</value>
+		<value>ASF yakın zamanda çok fazla çöktü ve bu nedenle başlangıç işlemleri devre dışı bırakıldı. Kurulumunuzu inceleyip düzelttikten sonra yapılandırma dizininden ASF.crash dosyasını silin veya ne yaptığınızı gerçekten biliyorsanız --ignore-unsupported-environment argümanını ekleyin.</value>
 	</data>
 	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
-		<value>{0} ({1}) kart düşürmesi, oyun şu anda özel olarak işaretlendiğinden devre dışı bırakıldı. ASF'den bu oyunu kart düşürmesini düşünüyorsanız gizlilik ayarlarını değiştirmeyi düşünün.</value>
+		<value>{0} ({1}) oyunu şu anda gizli (private) olarak işaretlendiğinden kart düşürme işlemi devre dışı bırakıldı. ASF'nin bu oyunda kart düşürmesini istiyorsanız gizlilik ayarlarını değiştirmeyi düşünün.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
 	<data name="WarningSkipping" xml:space="preserve">
@@ -758,23 +758,23 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by plugin name (string).</comment>
 	</data>
 	<data name="PluginUpdateNotFound" xml:space="preserve">
-		<value>{0} eklentisi için güncelleme mevcut değil: {1} ≥ {2}.</value>
+		<value>{0} eklentisi için yeni bir güncelleme bulunmuyor: {1} ≥ {2}.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
 	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
-		<value>{0} eklentisinin yeni sürümü mevcut! Güncellemeyi düşünün!</value>
+		<value>{0} eklentisinin yeni bir sürümü mevcut! Güncellemeyi düşünebilirsiniz!</value>
 		<comment>{0} will be replaced by plugin name (string).</comment>
 	</data>
 	<data name="PluginUpdateFound" xml:space="preserve">
-		<value>{1} sürümünden {2} sürümüne {0} eklentisinin güncellemesi bulundu...</value>
+		<value>{0} eklentisi için {1} sürümünden {2} sürümüne güncelleme bulundu...</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
 	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
-		<value>{1} sürümünden {2} sürümüne {0} eklentisinin güncellemesi için öğe mevcut değil; bu genellikle güncellemenin daha sonra mevcut olacağı anlamına gelir.</value>
+		<value>{0} eklentisinin {1} sürümünden {2} sürümüne güncellemesi için uygun dosya bulunamadı; bu durum genellikle güncelleme dosyasının daha sonra yayınlanacağı anlamına gelir.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
 	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
-		<value>{0} eklentisinin {1} sürümünden {2} sürümüne güncellemesi için hiçbir öğe belirlenemedi. Sürüm henüz tamamlanmadıysa bu durum meydana gelebilir; bu durum devam ederse eklentiyi oluşturan kişiye bu konuda bilgi vermelisiniz.</value>
+		<value>{0} eklentisinin {1} sürümünden {2} sürümüne güncellemesi için uygun dosya belirlenemedi. Sürüm henüz tamamlanmadıysa bu durum yaşanabilir; devam etmesi halinde eklenti geliştiricisini bilgilendirebilirsiniz.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
 	</data>
 	<data name="PluginUpdateInProgress" xml:space="preserve">
@@ -782,7 +782,7 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by plugin name (string).</comment>
 	</data>
 	<data name="PluginUpdateFinished" xml:space="preserve">
-		<value>{0} eklentisinin güncellenmesi başarılı oldu, değişiklikler bir sonraki ASF açılışında yüklenecek.</value>
+		<value>{0} eklentisinin güncellenmesi başarıyla tamamlandı; değişiklikler bir sonraki ASF açılışında yüklenecektir.</value>
 		<comment>{0} will be replaced by plugin name (string).</comment>
 	</data>
 	<data name="PluginUpdateEnabled" xml:space="preserve">
@@ -790,14 +790,36 @@ Yığın Kaydı:
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
 	</data>
 	<data name="PluginUpdateDisabled" xml:space="preserve">
-		<value>{0} ({1}) eklentisi, bu özelliği desteklemesine rağmen otomatik güncellemelerden devre dışı bırakıldı.</value>
+		<value>{0} ({1}) eklentisi otomatik güncellemeleri desteklemesine rağmen bu özellikten devre dışı bırakıldı.</value>
 		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
 	</data>
 	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
-		<value>Otomatik güncellemeler için özel eklentiler kaydedildi. ASF ekibi, kendi güvenliğiniz için yalnızca güvenilir taraflardan gelen otomatik güncellemeleri etkinleştirmeniz gerektiğini hatırlatmak ister. Bunu yapmayı planlamadıysanız ASF global yapılandırmasında eklenti güncellemelerini devre dışı bırakabilirsiniz.</value>
+		<value>Özel eklentiler otomatik güncelleme için kaydedildi. ASF ekibi, kendi güvenliğiniz için yalnızca güvenilir kaynaklardan gelen otomatik güncellemeleri etkinleştirmeniz gerektiğini hatırlatır. Bunu istemiyorsanız ASF genel yapılandırmasından eklenti güncellemelerini devre dışı bırakabilirsiniz.</value>
 	</data>
 	<data name="Input" xml:space="preserve">
 		<value>Veri Girişi: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>--system-required parametresini belirttiniz ancak işletim sisteminizde bu özelliğin çalışması için gereken bağımlılıklar eksik. 'dbus' kurmayı düşünebilirsiniz; yine de uyku engelleme özelliğinin çalışmasını istemiyorsanız bu uyarıyı güvenle göz ardı edebilirsiniz.</value>
+	</data>
+	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
+		<value>{0} veritabanı bileşeninin şifresi çözülemedi. Eğer botunuzun {1} ayarını yeni değiştirdiyseniz bu normaldir ve bir sonraki çalıştırmada bu uyarıyı tekrar görmezsiniz. Aksi takdirde sorunu araştırıp şifre çözme işleminin neden başarısız olduğunu bulmalısınız.</value>
+		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
+	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Etkinleştirme (.keys) dosyanızda geçerli hiçbir anahtar bulunamadı. Lütfen anahtarlarınızın doğru biçimde olduğundan emin olun.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>Anahtar (.keys) dosyanızdan {0} anahtar başarıyla içe aktarıldı.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>Anahtar (.keys) dosyanızdan {0} anahtar başarıyla içe aktarıldı; {1} satır geçersiz biçimde olduğu, yorum satırı veya boş satır olduğu için atlandı.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Kuyruktan {0} anahtar yüklendi.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
 	</data>
 </root>
