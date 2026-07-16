@@ -52,15 +52,9 @@ internal sealed class ArchiCryptoHelper {
 		Assert.AreEqual(TestPassword, decrypted);
 	}
 
+	[OSCondition(OperatingSystems.Windows)]
 	[TestMethod]
-	internal async Task CanEncryptDecryptProtectedDataForCurrentUser() {
-		// Not supported on other platforms than Windows
-		if (!OperatingSystem.IsWindows()) {
-			Assert.Inconclusive($"!{nameof(OperatingSystem.IsWindows)}");
-		}
-
-		await CanEncryptDecrypt(ECryptoMethod.ProtectedDataForCurrentUser).ConfigureAwait(false);
-	}
+	internal async Task CanEncryptDecryptProtectedDataForCurrentUser() => await CanEncryptDecrypt(ECryptoMethod.ProtectedDataForCurrentUser).ConfigureAwait(false);
 
 	[DataRow(EHashingMethod.PlainText, TestPassword)]
 	[DataRow(EHashingMethod.Pbkdf2, "WlS48GNrs1hAhcNHPfV09TPTLhf03gExb6zpaKiwX5A=")]
