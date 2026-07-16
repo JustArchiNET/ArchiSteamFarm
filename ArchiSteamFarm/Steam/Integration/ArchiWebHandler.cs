@@ -1867,7 +1867,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Uri request = new(SteamCommunityURL, $"/mobileconf/getlist?a={Bot.SteamID}&k={Uri.EscapeDataString(confirmationHash)}&l=english&m=react&p={Uri.EscapeDataString(deviceID)}&t={time}&tag=conf");
 
-		ObjectResponse<ConfirmationsResponse>? response = await UrlGetToJsonObjectWithSession<ConfirmationsResponse>(request, checkSessionPreemptively: false).ConfigureAwait(false);
+		ObjectResponse<ConfirmationsResponse>? response = await UrlGetToJsonObjectWithSession<ConfirmationsResponse>(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false).ConfigureAwait(false);
 
 		return response?.Content;
 	}

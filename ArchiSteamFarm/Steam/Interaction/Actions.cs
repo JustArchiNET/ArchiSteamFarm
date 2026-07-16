@@ -228,6 +228,8 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 		Dictionary<ulong, Confirmation>? handledConfirmations = null;
 
+		bool success = false;
+
 		for (byte i = 0; (i == 0) || ((i < WebBrowser.MaxTries) && waitIfNeeded); i++) {
 			if (i > 0) {
 				await Task.Delay(1000).ConfigureAwait(false);
@@ -235,7 +237,13 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 			ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
 
-			if ((confirmations == null) || (confirmations.Count == 0)) {
+			if (confirmations == null) {
+				continue;
+			}
+
+			success = true;
+
+			if (confirmations.Count == 0) {
 				continue;
 			}
 
@@ -279,7 +287,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		}
 
 		// If we've reached this point, then it's a failure for waitIfNeeded, and success otherwise
-		return (!waitIfNeeded, handledConfirmations?.Values, !waitIfNeeded ? Strings.FormatBotHandledConfirmations(handledConfirmations?.Count ?? 0) : Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
+		return (success && !waitIfNeeded, handledConfirmations?.Values, (success && !waitIfNeeded) || (handledConfirmations?.Count > 0) ? Strings.FormatBotHandledConfirmations(handledConfirmations?.Count ?? 0) : Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries));
 	}
 
 	[PublicAPI]
