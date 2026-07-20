@@ -783,6 +783,24 @@ public sealed class WebBrowser : IDisposable {
 				}
 
 				if (requestOptions.HasFlag(ERequestOptions.SteamWafWorkarounds)) {
+					requestMessage.Headers.Accept.Clear();
+					requestMessage.Headers.Accept.ParseAdd("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+
+					requestMessage.Headers.AcceptEncoding.Clear();
+					requestMessage.Headers.AcceptEncoding.ParseAdd("gzip, deflate, br, zstd");
+
+					requestMessage.Headers.AcceptLanguage.Clear();
+					requestMessage.Headers.AcceptLanguage.ParseAdd("en-US,en;q=0.9");
+
+					requestMessage.Headers.Add("DNT", "1");
+					requestMessage.Headers.Add("Priority", "u=0, i");
+					requestMessage.Headers.Add("Sec-Fetch-Dest", "document");
+					requestMessage.Headers.Add("Sec-Fetch-Mode", "navigate");
+					requestMessage.Headers.Add("Sec-Fetch-Site", "none");
+					requestMessage.Headers.Add("Sec-Fetch-User", "?1");
+					requestMessage.Headers.Add("Sec-GPC", "1");
+					requestMessage.Headers.Add("Upgrade-Insecure-Requests", "1");
+
 					requestMessage.Headers.UserAgent.Clear();
 					requestMessage.Headers.UserAgent.ParseAdd(FakeUserAgent);
 				}
