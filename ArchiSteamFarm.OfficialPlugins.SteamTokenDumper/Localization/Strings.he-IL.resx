@@ -68,6 +68,21 @@
 		<value>{0} מושבת כעת בהתאם לתצורה שלך. אם תרצה לעזור ל-SteamDB בהגשת נתונים, בדוק את המדריך שלנו.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} הופעל בהצלחה. תודה מראש על עזרתך. השליחה הראשונה תתבצע בעוד כ־{1}.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+		<value>טעינת {0} נכשלה, יאותחל מופע חדש...</value>
+		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+	</data>
+	<data name="BotNoAppsToRefresh" xml:space="preserve">
+		<value>אין יישומים במופע הבוט הזה שדורשים רענון.</value>
+	</data>
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>מאחזר {0} אסימוני גישה ליישומים בסך הכול...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
 	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
 		<value>מאחזר {0} אסימוני גישה לאפליקציה...</value>
 		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
@@ -76,12 +91,44 @@
 		<value>סיים לאחזר {0} אסימוני גישה לאפליקציה.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
 	</data>
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>הסתיים אחזור {0} אסימוני גישה ליישומים בסך הכול.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotRetrievingTotalDepots" xml:space="preserve">
+		<value>מאחזר את כל ה־Depots עבור {0} יישומים בסך הכול...</value>
+		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppInfos" xml:space="preserve">
+		<value>מאחזר מידע עבור {0} יישומים...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
+		<value>הסתיים אחזור פרטי {0} יישומים.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>הושלמו {0} מתוך {1} בקשות לקבלת מפתחות Depot.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot key requests that were successfully answered, {1} will be replaced by the number (count this batch) of depot key requests that were supposed to be sent</comment>
+	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
 		<value>סיים לאחזר את כל מפתחות המחסן עבור סך של {0} אפליקציות.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
 	</data>
 	<data name="SubmissionNoNewData" xml:space="preserve">
 		<value>אין נתונים חדשים להגיש, הכל מעודכן.</value>
+	</data>
+	<data name="SubmissionNoContributorSet" xml:space="preserve">
+		<value>לא ניתן לשלוח את הנתונים מכיוון שלא נמצא SteamID תקין שניתן לזהות כתורם. שקול להגדיר את המאפיין {0}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
+	</data>
+	<data name="SubmissionInProgress" xml:space="preserve">
+		<value>שולח נתונים עבור סך הכול יישומים/חבילות/מחסני תוכן (Depots) רשומים: {0}/{1}/{2}...</value>
+		<comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
+	</data>
+	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+		<value>השליחה נכשלה בגלל שנשלחו יותר מדי בקשות. ננסה שוב בעוד כ־{0}.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
 	</data>
 	<data name="SubmissionSuccessful" xml:space="preserve">
 		<value>הנתונים נשלחו בהצלחה. השרת רשם סך של יישומים/חבילות/מחסנים חדשים: {0} ({1} מאומת)/{2} ({3} מאומת)/{4} ({5} מאומת).</value>

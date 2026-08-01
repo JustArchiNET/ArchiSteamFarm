@@ -87,6 +87,10 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>היציאה בוצעה עם קוד שגיאה {0}!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
+	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>בקשה נכשלה: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -580,6 +584,10 @@ StackTrace:
 		<value>לבוט יש רמה {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
+	<data name="BotInventory" xml:space="preserve">
+		<value>{0}/{1} ({2}/{3}): {4} פריטים</value>
+		<comment>{0} will be replaced by appID (number), {1} will be replaced by contextID (number), {2} will be replaced by app's name (string), {3} will be replaced by name of the context (string), {4} will be replaced by number of assets in the specified inventory (number).</comment>
+	</data>
 	<data name="ActivelyMatchingItems" xml:space="preserve">
 		<value>מתאים פריטי Steam, שלב #{0}...</value>
 		<comment>{0} will be replaced by round number</comment>
@@ -679,6 +687,10 @@ StackTrace:
 		<value>מפתח ההצפנה שלך קצר מדי. אנו ממליצים להשתמש באחד שאורכו לפחות {0} בייטים (תווים).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>אתה משתמש בהגדרה {0} של המאפיין {1}, אך לא סיפקת --cryptkey מותאם אישית. באפשרותך לספק --cryptkey מותאם אישית לצורך אבטחה מוגברת, אם תרצה בכך.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>אתה משתמש בהגדרה {0} של המאפיין {1}, אך לא סיפקת --cryptkey מותאם אישית. זה מביס לחלוטין את ההגנה, מכיוון ש-ASF נאלץ להשתמש במפתח (ידוע) משלו. עליך לספק --cryptkey מותאם אישית כדי לעשות שימוש בהטבת האבטחה שמציעה הגדרה זו.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -698,6 +710,9 @@ StackTrace:
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>השרת המרוחק לא יודע כלום על המהדורה שאליה אנחנו מעדכנים. מצב זה אפשרי אם המהדורה פורסמה לאחרונה - מסרב להמשיך בהליך העדכון באופן מיידי כאמצעי אבטחה נוסף.</value>
 	</data>
+	<data name="ChecksumTimeout" xml:space="preserve">
+		<value>אימות ה־Checksum של הקובץ שהורד נכשל. כאמצעי אבטחה נוסף, תהליך העדכון הופסק ולא יימשך בשלב זה.</value>
+	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>שרת מרוחק השיב עם סכום ביקורת אחר, זה עשוי להצביע על הורדה פגומה או התקפת MITM, מסרב להמשיך בהליך העדכון!</value>
 	</data>
@@ -715,5 +730,96 @@ StackTrace:
 	<data name="WarningNoLicense" xml:space="preserve">
 		<value>ניסית להשתמש בתכונה בתשלום {0} אך אין לך מזהה רישיון חוקי שהוגדר בתצורה הגלובלית של ASF. אנא בדוק את התצורה שלך, מכיוון שהפונקציונליות לא תעבוד ללא פרטים נוספים.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
+	</data>
+	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
+		<value>ASF אינו יכול להפעיל את יישום {0} עקב הגבלה אזורית החלה עבור המדינה {1} עד לתאריך {2}.</value>
+		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>אתה מנסה להפעיל את התוסף הרשמי {0} עם גרסת ASF שאינה תואמת: {1} (הצפוי: {2}). הדבר מצביע על כך שמשהו שגוי מאוד בהגדרה שלך. תקן את ההתקנה שלך או ספק את הארגומנט --ignore-unsupported-environment אם אתה באמת יודע מה אתה עושה.</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>ה־ASF שלך קרס יותר מדי פעמים לאחרונה, ולכן אתחול התהליך הושבת. בדוק את סיבת הקריסות ותקן את ההגדרות שלך, לאחר מכן מחק את הקובץ ASF.crash מתיקיית ההגדרות שלך, או ספק את הארגומנט --ignore-unsupported-environment אם אתה באמת יודע מה אתה עושה.</value>
+	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>איסוף הקלפים עבור {0} ({1}) אינו זמין, משום שהמשחק מוגדר כפרטי. אם ברצונך ש־ASF יאסוף קלפים עבורו, יש לשנות את הגדרות הפרטיות של המשחק.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>דילוג על: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>בודק אם קיימים עדכונים לתוספים...</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>בודק אם קיים עדכון לתוסף {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>לא נמצא עדכון זמין עבור התוסף {0}: {1} כבר מעודכן (גדול או שווה ל־{2}).</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNewVersionAvailable" xml:space="preserve">
+		<value>זמינה גרסה חדשה של התוסף {0}! מומלץ לעדכן באופן עצמאי!</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>נמצא עדכון עבור התוסף {0}: מגרסה {1} לגרסה {2}...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>אין קובץ עדכון זמין עבור התוסף {0} מגרסה {1} לגרסה {2}. בדרך כלל העדכון יהיה זמין בהמשך.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>לא נמצא קובץ עדכון מתאים עבור התוסף {0} מגרסה {1} לגרסה {2}. ייתכן שההפצה עדיין לא הושלמה. אם הבעיה נמשכת, מומלץ לפנות ליוצר התוסף ולדווח על כך.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>מעדכן {0} תוסף...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>עדכון התוסף {0} הושלם בהצלחה. השינויים ייכנסו לתוקף בהפעלה הבאה של ASF.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>התוסף {0}/{1} נרשם והופעלה עבורו האפשרות לעדכונים אוטומטיים.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>העדכונים האוטומטיים עבור התוסף {0} ({1}) הושבתו, אף שהתוסף תומך באפשרות זו.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>תוספים מותאמים אישית נרשמו עבור עדכונים אוטומטיים. צוות ASF מזכיר כי למען אבטחתך מומלץ לאפשר עדכונים אוטומטיים רק מגורמים שאתה סומך עליהם. אם לא התכוונת לאפשר זאת, ניתן להשבית עדכוני תוספים בהגדרות הכלליות של ASF.</value>
+	</data>
+	<data name="Input" xml:space="preserve">
+		<value>הזנה: {0}</value>
+		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>הפעלת את --system-required, אך במערכת ההפעלה חסרות תלויות נדרשות להפעלת תכונה זו. מומלץ להתקין את dbus, אך ניתן להתעלם מאזהרה זו אם אין לך צורך בפעולת מניעת השינה כראוי.</value>
+	</data>
+	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
+		<value>פענוח רכיב מסד הנתונים {0} נכשל. הדבר עשוי להיות תקין אם שינית לאחרונה את {1} של הבוט. במקרה כזה האזהרה לא אמורה להופיע בהרצה הבאה. אם לא, מומלץ לבדוק ולברר את הסיבה המדויקת לכשל.</value>
+		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
+	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>לא נמצאו מפתחות תקינים להפעלה בקובץ .keys שלך. ודא שהמפתחות מוגדרים בפורמט הנכון.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>{0} מפתחות יובאו בהצלחה מקובץ .keys שלך.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>{0} מפתחות יובאו בהצלחה מקובץ .keys שלך. {1} שורות דולגו מכיוון שאינן בפורמט תקין, מכילות הערות או ריקות.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>נטענו {0} מפתחות מתור ההמתנה.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
 	</data>
 </root>
