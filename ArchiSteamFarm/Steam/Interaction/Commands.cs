@@ -521,7 +521,7 @@ public sealed class Commands {
 		Dictionary<uint, string>? gamesOwned = await Bot.ArchiHandler.GetOwnedGames(Bot.SteamID).ConfigureAwait(false);
 
 		if ((gamesOwned?.Count > 0) && (CachedGamesOwned.Count == 0)) {
-			CachedGamesOwned = gamesOwned.ToFrozenDictionary();
+			return CachedGamesOwned = gamesOwned.ToFrozenDictionary();
 		}
 
 		return gamesOwned;
