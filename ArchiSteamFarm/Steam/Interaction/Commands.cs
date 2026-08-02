@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
@@ -50,7 +51,8 @@ public sealed class Commands {
 	private const ushort SteamTypingStatusDelay = 10 * 1000; // Steam client broadcasts typing status each 10 seconds
 
 	private readonly Bot Bot;
-	private readonly Dictionary<uint, string> CachedGamesOwned = new();
+
+	private FrozenDictionary<uint, string> CachedGamesOwned = FrozenDictionary<uint, string>.Empty;
 
 	internal Commands(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
@@ -503,18 +505,13 @@ public sealed class Commands {
 		}
 	}
 
-	internal void OnNewLicenseList() {
-		lock (CachedGamesOwned) {
-			CachedGamesOwned.Clear();
-			CachedGamesOwned.TrimExcess();
-		}
-	}
+	internal void OnNewLicenseList() => CachedGamesOwned = FrozenDictionary<uint, string>.Empty;
 
-	private async Task<Dictionary<uint, string>?> FetchGamesOwned(bool cachedOnly = false) {
-		lock (CachedGamesOwned) {
-			if (CachedGamesOwned.Count > 0) {
-				return new Dictionary<uint, string>(CachedGamesOwned);
-			}
+	private async Task<IReadOnlyDictionary<uint, string>?> FetchGamesOwned(bool cachedOnly = false) {
+		FrozenDictionary<uint, string> cachedGamesOwned = CachedGamesOwned;
+
+		if (cachedGamesOwned.Count > 0) {
+			return cachedGamesOwned;
 		}
 
 		if (cachedOnly) {
@@ -523,16 +520,8 @@ public sealed class Commands {
 
 		Dictionary<uint, string>? gamesOwned = await Bot.ArchiHandler.GetOwnedGames(Bot.SteamID).ConfigureAwait(false);
 
-		if (gamesOwned?.Count > 0) {
-			lock (CachedGamesOwned) {
-				if (CachedGamesOwned.Count == 0) {
-					foreach ((uint appID, string gameName) in gamesOwned) {
-						CachedGamesOwned[appID] = gameName;
-					}
-
-					CachedGamesOwned.TrimExcess();
-				}
-			}
+		if ((gamesOwned?.Count > 0) && (CachedGamesOwned.Count == 0)) {
+			CachedGamesOwned = gamesOwned.ToFrozenDictionary();
 		}
 
 		return gamesOwned;
@@ -2077,7 +2066,7 @@ public sealed class Commands {
 			return (FormatBotResponse(Strings.BotNotConnected), null);
 		}
 
-		Dictionary<uint, string>? gamesOwned = await FetchGamesOwned(true).ConfigureAwait(false);
+		IReadOnlyDictionary<uint, string>? gamesOwned = await FetchGamesOwned(true).ConfigureAwait(false);
 
 		StringBuilder response = new();
 		Dictionary<string, string> result = new(StringComparer.Ordinal);
