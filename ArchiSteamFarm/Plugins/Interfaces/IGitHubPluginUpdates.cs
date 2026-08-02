@@ -188,7 +188,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			}
 		}
 
-		if (releaseResponse.Assets.Count == 0) {
+		if (releaseResponse.Assets.IsEmpty) {
 			ASF.ArchiLogger.LogGenericWarning(Strings.FormatPluginUpdateNoAssetFound(Name, Version, newVersion));
 
 			return null;

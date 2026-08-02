@@ -413,7 +413,7 @@ public sealed class BotController : ArchiController {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
-		if (request.KeysToRedeem.Count == 0) {
+		if (request.KeysToRedeem.IsEmpty) {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(request.KeysToRedeem))));
 		}
 

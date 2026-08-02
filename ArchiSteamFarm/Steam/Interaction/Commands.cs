@@ -1688,7 +1688,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.WarningFailed);
 		}
 
-		if (inventory.Count == 0) {
+		if (inventory.IsEmpty) {
 			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(inventory)));
 		}
 
@@ -1778,7 +1778,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		if (Bot.BotConfig.LootableTypes.Count == 0) {
+		if (Bot.BotConfig.LootableTypes.IsEmpty) {
 			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(Bot.BotConfig.LootableTypes)));
 		}
 
@@ -1822,7 +1822,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		if (Bot.BotConfig.LootableTypes.Count == 0) {
+		if (Bot.BotConfig.LootableTypes.IsEmpty) {
 			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(Bot.BotConfig.LootableTypes)));
 		}
 
@@ -3450,7 +3450,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		if (Bot.BotConfig.TransferableTypes.Count == 0) {
+		if (Bot.BotConfig.TransferableTypes.IsEmpty) {
 			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(Bot.BotConfig.TransferableTypes)));
 		}
 
@@ -3513,7 +3513,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		if (Bot.BotConfig.TransferableTypes.Count == 0) {
+		if (Bot.BotConfig.TransferableTypes.IsEmpty) {
 			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(Bot.BotConfig.TransferableTypes)));
 		}
 

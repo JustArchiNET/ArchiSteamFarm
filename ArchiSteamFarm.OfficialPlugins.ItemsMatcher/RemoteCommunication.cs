@@ -833,7 +833,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		// Bot must have at least one accepted matchable type set
-		if ((Bot.BotConfig.MatchableTypes.Count == 0) || Bot.BotConfig.MatchableTypes.All(static type => !AcceptedMatchableTypes.Contains(type))) {
+		if (Bot.BotConfig.MatchableTypes.IsEmpty || Bot.BotConfig.MatchableTypes.All(static type => !AcceptedMatchableTypes.Contains(type))) {
 			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(Bot.BotConfig.MatchableTypes)}: {string.Join(", ", Bot.BotConfig.MatchableTypes)}"));
 
 			return false;
@@ -1165,7 +1165,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task<bool> MatchActively(ImmutableHashSet<ListedUser> listedUsers, HashSet<Asset> ourAssets, HashSet<EAssetType> acceptedMatchableTypes) {
-		if ((listedUsers == null) || (listedUsers.Count == 0)) {
+		if ((listedUsers == null) || listedUsers.IsEmpty) {
 			throw new ArgumentNullException(nameof(listedUsers));
 		}
 

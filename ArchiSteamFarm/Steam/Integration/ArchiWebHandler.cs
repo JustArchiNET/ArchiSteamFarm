@@ -395,12 +395,12 @@ public sealed class ArchiWebHandler : IDisposable {
 				throw new HttpRequestException(Strings.FormatWarningFailedWithError(response.Content?.ErrorText ?? response.Content?.Result?.ToString() ?? response.StatusCode.ToString()));
 			}
 
-			if ((response.Content.TotalInventoryCount == 0) || (response.Content.Assets.Count == 0)) {
+			if ((response.Content.TotalInventoryCount == 0) || response.Content.Assets.IsEmpty) {
 				// Empty inventory
 				yield break;
 			}
 
-			if (response.Content.Descriptions.Count == 0) {
+			if (response.Content.Descriptions.IsEmpty) {
 				throw new InvalidOperationException(nameof(response.Content.Descriptions));
 			}
 
@@ -586,7 +586,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		HashSet<TradeOffer> result = [.. trades.Where(tradeOffer => !activeOffers.HasValue || ((!activeOffers.Value || (tradeOffer.State == ETradeOfferState.Active)) && (activeOffers.Value || (tradeOffer.State != ETradeOfferState.Active))))];
 
-		if ((result.Count == 0) || (tradeOffersResponse.Descriptions.Count == 0)) {
+		if ((result.Count == 0) || tradeOffersResponse.Descriptions.IsEmpty) {
 			return result;
 		}
 

@@ -243,7 +243,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 			success = true;
 
-			if (confirmations.Count == 0) {
+			if (confirmations.IsEmpty) {
 				continue;
 			}
 
