@@ -80,7 +80,7 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 	public ConcurrentList(IEnumerable<T> collection) {
 		ArgumentNullException.ThrowIfNull(collection);
 
-		BackingCollection = [..collection];
+		BackingCollection = [.. collection];
 	}
 
 	public void Add(T item) {
@@ -166,7 +166,7 @@ public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 	public void ReplaceWith(IEnumerable<T> collection) {
 		ArgumentNullException.ThrowIfNull(collection);
 
-		ICollection<T> newCollection = collection as ICollection<T> ?? collection.ToList();
+		ICollection<T> newCollection = collection as ICollection<T> ?? [.. collection];
 
 		using (Lock.WriterLock()) {
 			if (BackingCollection.SequenceEqual(newCollection)) {

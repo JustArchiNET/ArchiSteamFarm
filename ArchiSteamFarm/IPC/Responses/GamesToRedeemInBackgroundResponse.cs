@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
@@ -38,7 +39,7 @@ public sealed class GamesToRedeemInBackgroundResponse {
 	public ImmutableDictionary<string, string>? UsedKeys { get; private init; }
 
 	internal GamesToRedeemInBackgroundResponse(IReadOnlyDictionary<string, string>? unusedKeys = null, IReadOnlyDictionary<string, string>? usedKeys = null) {
-		UnusedKeys = unusedKeys?.ToImmutableDictionary();
-		UsedKeys = usedKeys?.ToImmutableDictionary();
+		UnusedKeys = unusedKeys?.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
+		UsedKeys = usedKeys?.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
 	}
 }

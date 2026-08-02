@@ -76,7 +76,7 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 				acceptedCreatorIDs.Add(creatorID);
 			}
 
-			AcceptedCreatorIDs = acceptedCreatorIDs.ToImmutableHashSet();
+			AcceptedCreatorIDs = [.. acceptedCreatorIDs];
 		}
 	}
 

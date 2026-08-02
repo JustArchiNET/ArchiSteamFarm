@@ -44,7 +44,7 @@ public sealed class TypeProperties {
 
 	internal TypeProperties(string? baseType = null, IEnumerable<string>? customAttributes = null, string? underlyingType = null) {
 		BaseType = baseType;
-		CustomAttributes = customAttributes?.ToImmutableHashSet();
+		CustomAttributes = customAttributes?.ToImmutableHashSet(StringComparer.Ordinal);
 		UnderlyingType = underlyingType;
 	}
 }

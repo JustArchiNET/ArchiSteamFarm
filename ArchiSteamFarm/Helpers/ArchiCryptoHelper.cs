@@ -50,7 +50,7 @@ public static class ArchiCryptoHelper {
 
 	private static IEnumerable<byte[]> SteamParentalCodes {
 		get {
-			HashSet<byte> steamParentalCharacters = SteamParentalCharacters.ToHashSet();
+			HashSet<byte> steamParentalCharacters = [.. SteamParentalCharacters];
 
 			return from a in steamParentalCharacters from b in steamParentalCharacters from c in steamParentalCharacters from d in steamParentalCharacters select new[] { a, b, c, d };
 		}

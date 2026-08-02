@@ -513,7 +513,7 @@ public sealed class BotConfig {
 					throw new InvalidOperationException(nameof(completeTypesToSendValidValues));
 				}
 
-				completeTypesToSendValidTypes = completeTypesToSendValidValues.ValidIntValues.Select(static value => (EAssetType) value).ToHashSet();
+				completeTypesToSendValidTypes = [.. completeTypesToSendValidValues.ValidIntValues.Select(static value => (EAssetType) value)];
 			}
 
 			if (!completeTypesToSendValidTypes.Contains(completableType)) {

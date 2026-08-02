@@ -230,7 +230,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			HashSet<EAssetType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
+			HashSet<EAssetType> acceptedMatchableTypes = [.. Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains)];
 
 			if (acceptedMatchableTypes.Count == 0) {
 				// Should never happen, since IsEligibleForListing() check above ensured we have at least one matchable type
@@ -510,7 +510,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					assetsForListingFiltered.Add(asset);
 				}
 
-				assetsForListing = assetsForListingFiltered.OrderBy(static asset => asset.Index).ToList();
+				assetsForListing = [.. assetsForListingFiltered.OrderBy(static asset => asset.Index)];
 
 				if (assetsForListing.Count == 0) {
 					// We're not eligible, record this as a valid check
@@ -561,7 +561,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			if (BotCache.LastAnnouncedAssetsForListing.Count > 0) {
 				Dictionary<ulong, AssetForListing> previousInventoryState = BotCache.LastAnnouncedAssetsForListing.ToDictionary(static asset => asset.AssetID);
 
-				HashSet<AssetForListing> inventoryAddedChanged = assetsForListing.Where(asset => !previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset) || (asset.BackendHashCode != previousAsset.BackendHashCode)).ToHashSet();
+				HashSet<AssetForListing> inventoryAddedChanged = [.. assetsForListing.Where(asset => !previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset) || (asset.BackendHashCode != previousAsset.BackendHashCode))];
 
 				Bot.ArchiLogger.LogGenericInfo(Localization.Strings.FormatListingAnnouncing(Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
@@ -903,7 +903,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		HashSet<EAssetType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
+		HashSet<EAssetType> acceptedMatchableTypes = [.. Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains)];
 
 		if (acceptedMatchableTypes.Count == 0) {
 			// Should never happen, since IsEligibleForMatching() check above ensured we have at least one matchable type
@@ -958,7 +958,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			// Remove from our inventory items that can't be possibly matched due to no dupes to offer available
-			HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> setsToKeep = Trading.GetInventorySets(assetsForMatching).Where(static set => set.Value.Any(static amount => amount > 1)).Select(static set => set.Key).ToHashSet();
+			HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> setsToKeep = [.. Trading.GetInventorySets(assetsForMatching).Where(static set => set.Value.Any(static amount => amount > 1)).Select(static set => set.Key)];
 
 			if (assetsForMatching.RemoveWhere(item => !setsToKeep.Contains((item.RealAppID, item.Type, item.Rarity))) > 0) {
 				if (assetsForMatching.Count == 0) {
@@ -1193,7 +1193,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		if (matchActivelyTradeOfferIDsToken.ValueKind == JsonValueKind.Array) {
 			try {
-				matchActivelyTradeOfferIDs = new HashSet<ulong>(matchActivelyTradeOfferIDsToken.GetArrayLength());
+				matchActivelyTradeOfferIDs = [with(matchActivelyTradeOfferIDsToken.GetArrayLength())];
 
 				foreach (JsonElement tradeIDElement in matchActivelyTradeOfferIDsToken.EnumerateArray()) {
 					if (!tradeIDElement.TryGetUInt64(out ulong tradeID)) {
@@ -1268,7 +1268,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				break;
 			}
 
-			HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
+			HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> wantedSets = [.. ourTradableState.Keys.Where(set => listedUser.MatchableTypes.Contains(set.Type))];
 
 			if (wantedSets.Count == 0) {
 				continue;
@@ -1276,7 +1276,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			Bot.ArchiLogger.LogGenericTrace($"{listedUser.SteamID}...");
 
-			HashSet<Asset> theirInventory = listedUser.Assets.Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).Select(static asset => asset.ToAsset()).ToHashSet();
+			HashSet<Asset> theirInventory = [.. listedUser.Assets.Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).Select(static asset => asset.ToAsset())];
 
 			if (theirInventory.Count == 0) {
 				continue;
@@ -1351,10 +1351,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 									fairStateApplied = true;
 
 									// Filter their inventory for the sets we're trading or have traded with this user
-									HashSet<Asset> fairFiltered = theirInventory.Where(item => ((item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSet();
+									HashSet<Asset> fairFiltered = [.. theirInventory.Where(item => ((item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.RealAppID, item.Type, item.Rarity)))];
 
 									// Get tradable items from our and their inventory
-									HashSet<Asset> fairItemsToGive = MatchingUtilities.GetTradableItemsFromInventory(ourInventory.Values.Where(item => ((item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSet(), fairClassIDsToGive);
+									HashSet<Asset> fairItemsToGive = MatchingUtilities.GetTradableItemsFromInventory([.. ourInventory.Values.Where(item => ((item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.RealAppID, item.Type, item.Rarity)))], fairClassIDsToGive);
 									HashSet<Asset> fairItemsToReceive = MatchingUtilities.GetTradableItemsFromInventory(fairFiltered, fairClassIDsToReceive);
 
 									// Actual check, since we do this against remote user, we flip places for items

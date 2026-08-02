@@ -187,7 +187,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 
 		IReadOnlySet<T> otherSet = other as IReadOnlySet<T> ?? other.ToHashSet();
 
-		HashSet<T> removed = otherSet.Where(item => BackingCollection.TryRemove(item, out _)).ToHashSet();
+		HashSet<T> removed = [.. otherSet.Where(item => BackingCollection.TryRemove(item, out _))];
 
 		bool modified = removed.Count > 0;
 
@@ -266,7 +266,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlySet<T>, ISet<T> where T : no
 	public bool ReplaceIfNeededWith(IEnumerable<T> other) {
 		ArgumentNullException.ThrowIfNull(other);
 
-		ICollection<T> otherCollection = other as ICollection<T> ?? other.ToHashSet();
+		ICollection<T> otherCollection = other as ICollection<T> ?? [.. other];
 
 		if (SetEquals(otherCollection)) {
 			return false;

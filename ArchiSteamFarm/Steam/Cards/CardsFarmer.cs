@@ -239,7 +239,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			// We should restart the farming if the order or efficiency of the farming could be affected by the newly-activated product
 			// The order is affected when user uses farming order that isn't independent of the game data (it could alter the order in deterministic way if the game was considered in current queue)
 			// The efficiency is affected only in complex algorithm (entirely), as it depends on hours order that is not independent (as specified above)
-			if (!ShouldSkipNewGamesIfPossible && ((Bot.BotConfig.HoursUntilCardDrops > 0) || ((Bot.BotConfig.FarmingOrders.Count > 0) && Bot.BotConfig.FarmingOrders.Any(static farmingOrder => farmingOrder is not BotConfig.EFarmingOrder.Unordered and not BotConfig.EFarmingOrder.Random)))) {
+			if (!ShouldSkipNewGamesIfPossible && ((Bot.BotConfig.HoursUntilCardDrops > 0) || (!Bot.BotConfig.FarmingOrders.IsEmpty && Bot.BotConfig.FarmingOrders.Any(static farmingOrder => farmingOrder is not BotConfig.EFarmingOrder.Unordered and not BotConfig.EFarmingOrder.Random)))) {
 				await StopFarming().ConfigureAwait(false);
 				await StartFarming().ConfigureAwait(false);
 			}
@@ -265,7 +265,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		// If we're not farming, and we got new items, it's likely to be a booster pack or likewise
 		// In this case, perform a loot if user wants to do so
-		if (Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && (Bot.BotConfig.LootableTypes.Count > 0)) {
+		if (Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && !Bot.BotConfig.LootableTypes.IsEmpty) {
 			await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 		}
 	}
@@ -792,7 +792,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				while (GamesToFarm.Count > 0) {
 					// Initially we're going to farm games that passed our HoursUntilCardDrops
 					// This block is almost identical to Simple algorithm, we just copy appropriate items from GamesToFarm into innerGamesToFarm
-					HashSet<Game> innerGamesToFarm = GamesToFarm.Where(game => game.HoursPlayed >= Bot.BotConfig.HoursUntilCardDrops).ToHashSet();
+					HashSet<Game> innerGamesToFarm = [.. GamesToFarm.Where(game => game.HoursPlayed >= Bot.BotConfig.HoursUntilCardDrops)];
 
 					while (innerGamesToFarm.Count > 0) {
 						Game game = innerGamesToFarm.First();
@@ -1225,7 +1225,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				if (maxPages > 1) {
 					Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
 
-					HashSet<Task<bool>> tasks = new(maxPages - 1);
+					HashSet<Task<bool>> tasks = [with(maxPages - 1)];
 
 					for (byte page = 2; page <= maxPages; page++) {
 						// ReSharper disable once InlineTemporaryVariable - we need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
@@ -1561,7 +1561,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		}
 
 		// We must call ToList() here as we can't do in-place replace
-		List<Game> gamesToFarm = orderedGamesToFarm.ToList();
+		List<Game> gamesToFarm = [.. orderedGamesToFarm];
 		GamesToFarm.ReplaceWith(gamesToFarm);
 	}
 }

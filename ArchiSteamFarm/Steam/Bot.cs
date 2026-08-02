@@ -542,7 +542,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				case "@ALL":
 				case SharedInfo.ASF:
 					// We can return the result right away, as all bots have been matched already
-					return Bots.AsLinqThreadSafeEnumerable().OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).ToHashSet();
+					return [.. Bots.AsLinqThreadSafeEnumerable().OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value)];
 				case "@FARMING":
 					IEnumerable<Bot> farmingBots = Bots.Where(static bot => bot.Value.CardsFarmer.NowFarming).OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value);
 					result.UnionWith(farmingBots);
@@ -791,7 +791,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				return firstPageResult;
 			default:
-				HashSet<Task<HashSet<uint>?>> tasks = new(maxPages - 1);
+				HashSet<Task<HashSet<uint>?>> tasks = [with(maxPages - 1)];
 
 				for (byte page = 2; page <= maxPages; page++) {
 					// ReSharper disable once InlineTemporaryVariable - we need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
@@ -1369,7 +1369,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			KeyValue appIDsKv = productInfo.KeyValues["appids"];
 
 			if (appIDsKv != KeyValue.Invalid) {
-				appIDs = new HashSet<uint>(appIDsKv.Children.Count);
+				appIDs = [with(appIDsKv.Children.Count)];
 
 				foreach (string? appIDText in appIDsKv.Children.Select(static app => app.Value)) {
 					if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
@@ -1451,7 +1451,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming, string.Join(", ", games.Select(static game => game.AppID)), string.Join(", ", games.Select(static game => game.GameName)));
 		}
 
-		await ArchiHandler.PlayGames(games.Select(static game => game.PlayableAppID).ToHashSet(), gameName).ConfigureAwait(false);
+		await ArchiHandler.PlayGames([.. games.Select(static game => game.PlayableAppID)], gameName).ConfigureAwait(false);
 	}
 
 	internal async Task ImportKeysToRedeem(string filePath) {
@@ -1604,7 +1604,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal async Task OnFarmingFinished(bool farmedSomething) {
 		await OnFarmingStopped().ConfigureAwait(false);
 
-		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && (BotConfig.LootableTypes.Count > 0) && (farmedSomething || !FirstTradeSent)) {
+		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && !BotConfig.LootableTypes.IsEmpty && (farmedSomething || !FirstTradeSent)) {
 			FirstTradeSent = true;
 
 			await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
@@ -3101,7 +3101,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		HashSet<ulong> guestPassIDs = callback.GuestPasses.Select(static guestPass => guestPass["gid"].AsUnsignedLong()).Where(static gid => gid != 0).ToHashSet();
+		HashSet<ulong> guestPassIDs = [.. callback.GuestPasses.Select(static guestPass => guestPass["gid"].AsUnsignedLong()).Where(static gid => gid != 0)];
 
 		if (guestPassIDs.Count == 0) {
 			return;
@@ -3224,12 +3224,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						return;
 					}
 
-					if (BotConfig.CompleteTypesToSend.Count > 0) {
+					if (!BotConfig.CompleteTypesToSend.IsEmpty) {
 						await SendCompletedSets().ConfigureAwait(false);
 					}
 				}
 			);
-		} else if (BotConfig.CompleteTypesToSend.Count > 0) {
+		} else if (!BotConfig.CompleteTypesToSend.IsEmpty) {
 			Utilities.InBackground(SendCompletedSets);
 		}
 	}
@@ -3826,7 +3826,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		if (BotConfig.GamesPlayedWhileIdle.Count > 0) {
+		if (!BotConfig.GamesPlayedWhileIdle.IsEmpty) {
 			if (!IsPlayingPossible) {
 				return;
 			}

@@ -64,7 +64,7 @@ internal sealed class AnnouncementDiffRequest : AnnouncementRequest {
 		ArgumentNullException.ThrowIfNull(inventoryRemoved);
 		ArgumentException.ThrowIfNullOrEmpty(previousInventoryChecksum);
 
-		InventoryRemoved = inventoryRemoved.ToImmutableHashSet();
+		InventoryRemoved = [.. inventoryRemoved];
 		PreviousInventoryChecksum = previousInventoryChecksum;
 	}
 }

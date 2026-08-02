@@ -247,7 +247,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				continue;
 			}
 
-			HashSet<Confirmation> remainingConfirmations = confirmations.ToHashSet();
+			HashSet<Confirmation> remainingConfirmations = [.. confirmations];
 
 			if (acceptedType.HasValue) {
 				if (remainingConfirmations.RemoveWhere(confirmation => confirmation.ConfirmationType != acceptedType.Value) > 0) {
@@ -309,7 +309,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 		await Bot.CardsFarmer.Pause(permanent).ConfigureAwait(false);
 
-		if (!permanent && (Bot.BotConfig.GamesPlayedWhileIdle.Count > 0)) {
+		if (!permanent && !Bot.BotConfig.GamesPlayedWhileIdle.IsEmpty) {
 			// We want to let family sharing users access our library, and in this case we must also stop GamesPlayedWhileIdle
 			// We add extra delay because OnFarmingStopped() also executes PlayGames()
 			// Despite of proper order on our end, Steam network might not respect it

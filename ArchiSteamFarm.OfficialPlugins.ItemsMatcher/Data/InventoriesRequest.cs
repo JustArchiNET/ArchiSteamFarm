@@ -65,7 +65,7 @@ internal sealed class InventoriesRequest {
 
 		Guid = guid;
 		SteamID = steamID;
-		Inventory = inventory.Select(static asset => new AssetForMatching(asset)).ToImmutableHashSet();
-		MatchableTypes = matchableTypes.ToImmutableHashSet();
+		Inventory = [.. inventory.Select(static asset => new AssetForMatching(asset))];
+		MatchableTypes = [.. matchableTypes];
 	}
 }

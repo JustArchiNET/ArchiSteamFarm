@@ -83,7 +83,7 @@ public sealed class InventoryDescription {
 	[JsonInclude]
 	[JsonPropertyName("descriptions")]
 	public ImmutableHashSet<ItemDescription> Descriptions {
-		get => Body.descriptions.Select(static description => new ItemDescription(description.type, description.value, description.color, description.label)).ToImmutableHashSet();
+		get => [.. Body.descriptions.Select(static description => new ItemDescription(description.type, description.value, description.color, description.label))];
 
 		private init {
 			Body.descriptions.Clear();
@@ -166,7 +166,7 @@ public sealed class InventoryDescription {
 	[JsonInclude]
 	[JsonPropertyName("owner_actions")]
 	public ImmutableHashSet<ItemAction> OwnerActions {
-		get => Body.owner_actions.Select(static action => new ItemAction(action.link, action.name)).ToImmutableHashSet();
+		get => [.. Body.owner_actions.Select(static action => new ItemAction(action.link, action.name))];
 
 		private init {
 			Body.owner_actions.Clear();
@@ -318,7 +318,7 @@ public sealed class InventoryDescription {
 	[JsonInclude]
 	[JsonPropertyName("tags")]
 	public ImmutableHashSet<Tag> Tags {
-		get => Body.tags.Select(static tag => new Tag(tag.category, tag.internal_name, tag.localized_category_name, tag.localized_tag_name, tag.color)).ToImmutableHashSet();
+		get => [.. Body.tags.Select(static tag => new Tag(tag.category, tag.internal_name, tag.localized_category_name, tag.localized_tag_name, tag.color))];
 
 		private init {
 			Body.tags.Clear();

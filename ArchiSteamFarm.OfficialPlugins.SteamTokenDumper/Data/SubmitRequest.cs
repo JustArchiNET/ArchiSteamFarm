@@ -82,8 +82,8 @@ internal sealed class SubmitRequest {
 
 		SteamID = steamID;
 
-		Apps = apps.ToImmutableDictionary(static app => app.Key.ToString(CultureInfo.InvariantCulture), static app => app.Value.ToString(CultureInfo.InvariantCulture));
-		Subs = accessTokens.ToImmutableDictionary(static package => package.Key.ToString(CultureInfo.InvariantCulture), static package => package.Value.ToString(CultureInfo.InvariantCulture));
-		Depots = depots.ToImmutableDictionary(static depot => depot.Key.ToString(CultureInfo.InvariantCulture), static depot => depot.Value);
+		Apps = apps.ToImmutableDictionary(static app => app.Key.ToString(CultureInfo.InvariantCulture), static app => app.Value.ToString(CultureInfo.InvariantCulture), StringComparer.Ordinal);
+		Subs = accessTokens.ToImmutableDictionary(static package => package.Key.ToString(CultureInfo.InvariantCulture), static package => package.Value.ToString(CultureInfo.InvariantCulture), StringComparer.Ordinal);
+		Depots = depots.ToImmutableDictionary(static depot => depot.Key.ToString(CultureInfo.InvariantCulture), static depot => depot.Value, StringComparer.Ordinal);
 	}
 }

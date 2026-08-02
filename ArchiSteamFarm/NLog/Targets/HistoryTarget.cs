@@ -37,7 +37,7 @@ internal sealed class HistoryTarget : TargetWithLayout {
 
 	internal IEnumerable<string> ArchivedMessages => HistoryQueue;
 
-	private readonly FixedSizeConcurrentQueue<string> HistoryQueue = new(DefaultMaxCount);
+	private readonly FixedSizeConcurrentQueue<string> HistoryQueue = [with(DefaultMaxCount)];
 
 	// This is NLog config property, it must have public get() and set() capabilities
 	[UsedImplicitly]

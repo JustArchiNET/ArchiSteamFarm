@@ -854,7 +854,7 @@ public static class ASF {
 
 			ArchiLogger.LogGenericInfo(Strings.VerifyingChecksumWithRemoteServer);
 
-			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
+			byte[] responseBytes = response.Content as byte[] ?? [.. response.Content];
 
 			string checksum = Utilities.GenerateChecksumFor(responseBytes);
 

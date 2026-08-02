@@ -89,7 +89,7 @@ public static class GitHubService {
 
 		if (response?.StatusCode.IsClientErrorCode() == true) {
 			return response.StatusCode switch {
-				HttpStatusCode.NotFound => new Dictionary<string, DateTime>(0),
+				HttpStatusCode.NotFound => new Dictionary<string, DateTime>(0, StringComparer.Ordinal),
 				_ => null
 			};
 		}
@@ -100,7 +100,7 @@ public static class GitHubService {
 
 		IHtmlCollection<IElement> revisionNodes = response.Content.QuerySelectorAll("li[class*='wiki-history-revision']");
 
-		Dictionary<string, DateTime> result = new();
+		Dictionary<string, DateTime> result = new(StringComparer.Ordinal);
 
 		foreach (IElement revisionNode in revisionNodes) {
 			IElement? versionNode = revisionNode.QuerySelector("input[value]");

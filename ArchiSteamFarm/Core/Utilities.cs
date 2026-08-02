@@ -338,7 +338,7 @@ public static class Utilities {
 			return;
 		}
 
-		HashSet<DictionaryEntry> defaultStringObjects = defaultResourceSet.Cast<DictionaryEntry>().ToHashSet();
+		HashSet<DictionaryEntry> defaultStringObjects = [.. defaultResourceSet.Cast<DictionaryEntry>()];
 
 		if (defaultStringObjects.Count == 0) {
 			// This means we don't have entries for English, so there is nothing to check against
@@ -355,11 +355,11 @@ public static class Utilities {
 			return;
 		}
 
-		HashSet<DictionaryEntry> currentStringObjects = currentResourceSet.Cast<DictionaryEntry>().ToHashSet();
+		HashSet<DictionaryEntry> currentStringObjects = [.. currentResourceSet.Cast<DictionaryEntry>()];
 
 		if (currentStringObjects.Count >= defaultStringObjects.Count) {
 			// Either we have 100% finished translation, or we're missing it entirely and using en-US
-			HashSet<DictionaryEntry> testStringObjects = currentStringObjects.ToHashSet();
+			HashSet<DictionaryEntry> testStringObjects = [.. currentStringObjects];
 			testStringObjects.ExceptWith(defaultStringObjects);
 
 			// If we got 0 as final result, this is the missing language

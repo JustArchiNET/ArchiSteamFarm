@@ -48,6 +48,6 @@ public sealed class LogResponse {
 		ArgumentNullException.ThrowIfNull(content);
 
 		TotalLines = totalLines;
-		Content = content.ToImmutableList();
+		Content = [.. content];
 	}
 }

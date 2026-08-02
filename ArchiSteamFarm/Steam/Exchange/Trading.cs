@@ -133,7 +133,7 @@ public sealed class Trading : IDisposable {
 		// All of those cases should be verified by our unit tests to ensure that the logic here matches all possible cases, especially those that were incorrectly handled previously
 
 		// We start from a deep copy of the inventory, along with its assets, since we'll be manipulating amounts in them
-		HashSet<Asset> inventoryState = inventory.Select(static item => item.DeepClone()).ToHashSet();
+		HashSet<Asset> inventoryState = [.. inventory.Select(static item => item.DeepClone())];
 
 		// Firstly we get initial sets state of our inventory
 		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> initialSets = GetInventorySets(inventoryState);
@@ -245,7 +245,7 @@ public sealed class Trading : IDisposable {
 				lootableTypesReceived = await ParseActiveTrades().ConfigureAwait(false);
 			}
 
-			if (lootableTypesReceived && Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && (Bot.BotConfig.LootableTypes.Count > 0)) {
+			if (lootableTypesReceived && Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && !Bot.BotConfig.LootableTypes.IsEmpty) {
 				await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 			}
 		} finally {
@@ -299,10 +299,10 @@ public sealed class Trading : IDisposable {
 			}
 
 			if (Bot.HasMobileAuthenticator) {
-				HashSet<ParseTradeResult> mobileTradeResults = tradeResults.Where(static result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: false }).ToHashSet();
+				HashSet<ParseTradeResult> mobileTradeResults = [.. tradeResults.Where(static result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: false })];
 
 				if (mobileTradeResults.Count > 0) {
-					HashSet<ulong> mobileTradeOfferIDs = mobileTradeResults.Select(static tradeOffer => tradeOffer.TradeOfferID).ToHashSet();
+					HashSet<ulong> mobileTradeOfferIDs = [.. mobileTradeResults.Select(static tradeOffer => tradeOffer.TradeOfferID)];
 
 					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
@@ -317,7 +317,7 @@ public sealed class Trading : IDisposable {
 			}
 
 			if (tradeResults.Count > 0) {
-				await PluginsCore.OnBotTradeOfferResults(Bot, tradeResults as IReadOnlyCollection<ParseTradeResult> ?? tradeResults.ToHashSet()).ConfigureAwait(false);
+				await PluginsCore.OnBotTradeOfferResults(Bot, tradeResults as IReadOnlyCollection<ParseTradeResult> ?? [.. tradeResults]).ConfigureAwait(false);
 			}
 
 			if (!lootableTypesReceived && tradeResults.Any(tradeResult => tradeResult is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && (tradeResult.ItemsToReceive?.Any(receivedItem => Bot.BotConfig.LootableTypes.Contains(receivedItem.Type)) == true))) {
@@ -538,7 +538,7 @@ public sealed class Trading : IDisposable {
 		}
 
 		// Get sets we're interested in
-		HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> wantedSets = tradeOffer.ItemsToGive.Select(static item => (item.RealAppID, item.Type, item.Rarity)).ToHashSet();
+		HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> wantedSets = [.. tradeOffer.ItemsToGive.Select(static item => (item.RealAppID, item.Type, item.Rarity))];
 
 		// Now check if it's worth for us to do the trade
 		HashSet<Asset> inventory;

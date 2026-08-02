@@ -408,7 +408,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				throw new InvalidOperationException(nameof(response.Content.TotalInventoryCount));
 			}
 
-			assetIDs ??= new HashSet<ulong>((int) response.Content.TotalInventoryCount);
+			assetIDs ??= [with((int) response.Content.TotalInventoryCount)];
 
 			if (descriptions == null) {
 				descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>();
@@ -584,7 +584,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			trades = trades.Concat(tradeOffersResponse.TradeOffersSent);
 		}
 
-		HashSet<TradeOffer> result = trades.Where(tradeOffer => !activeOffers.HasValue || ((!activeOffers.Value || (tradeOffer.State == ETradeOfferState.Active)) && (activeOffers.Value || (tradeOffer.State != ETradeOfferState.Active)))).ToHashSet();
+		HashSet<TradeOffer> result = [.. trades.Where(tradeOffer => !activeOffers.HasValue || ((!activeOffers.Value || (tradeOffer.State == ETradeOfferState.Active)) && (activeOffers.Value || (tradeOffer.State != ETradeOfferState.Active))))];
 
 		if ((result.Count == 0) || (tradeOffersResponse.Descriptions.Count == 0)) {
 			return result;
@@ -746,7 +746,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				return (false, tradeOfferIDs, mobileTradeOfferIDs);
 			}
 
-			tradeOfferIDs ??= new HashSet<ulong>(trades.Count);
+			tradeOfferIDs ??= [with(trades.Count)];
 
 			tradeOfferIDs.Add(response.Content.TradeOfferID);
 
@@ -1703,7 +1703,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			result ??= new HashSet<uint>(apps.Count);
+			result ??= [with(apps.Count)];
 
 			foreach (uint appID in apps.Select(static app => app["appid"].AsUnsignedInteger())) {
 				if (appID == 0) {
@@ -2073,15 +2073,17 @@ public sealed class ArchiWebHandler : IDisposable {
 		Uri request = new(SteamCommunityURL, "/mobileconf/multiajaxop");
 
 		// Extra entry for sessionID
-		List<KeyValuePair<string, string>> data = new(8 + (confirmations.Count * 2)) {
-			new KeyValuePair<string, string>("a", Bot.SteamID.ToString(CultureInfo.InvariantCulture)),
-			new KeyValuePair<string, string>("k", confirmationHash),
-			new KeyValuePair<string, string>("m", "react"),
-			new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"),
-			new KeyValuePair<string, string>("p", deviceID),
-			new KeyValuePair<string, string>("t", time.ToString(CultureInfo.InvariantCulture)),
-			new KeyValuePair<string, string>("tag", "conf")
-		};
+		List<KeyValuePair<string, string>> data = [
+			with(8 + (confirmations.Count * 2)),
+
+			new("a", Bot.SteamID.ToString(CultureInfo.InvariantCulture)),
+			new("k", confirmationHash),
+			new("m", "react"),
+			new("op", accept ? "allow" : "cancel"),
+			new("p", deviceID),
+			new("t", time.ToString(CultureInfo.InvariantCulture)),
+			new("tag", "conf")
+		];
 
 		foreach (Confirmation confirmation in confirmations) {
 			data.Add(new KeyValuePair<string, string>("cid[]", confirmation.ID.ToString(CultureInfo.InvariantCulture)));

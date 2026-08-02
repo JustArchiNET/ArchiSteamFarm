@@ -319,7 +319,7 @@ public sealed class BotController : ArchiController {
 				continue;
 			}
 
-			HashSet<CEcon_Asset> assets = new(inventory.Count);
+			HashSet<CEcon_Asset> assets = [with(inventory.Count)];
 			HashSet<CEconItem_Description> descriptions = [];
 
 			foreach (Asset asset in inventory) {

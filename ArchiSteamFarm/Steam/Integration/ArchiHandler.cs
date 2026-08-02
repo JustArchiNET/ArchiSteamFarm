@@ -286,7 +286,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 					throw new InvalidOperationException(nameof(response.Body.total_inventory_count));
 				}
 
-				assetIDs ??= new HashSet<ulong>((int) response.Body.total_inventory_count);
+				assetIDs ??= [with((int) response.Body.total_inventory_count)];
 
 				if (descriptions == null) {
 					descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>();
@@ -844,7 +844,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			return null;
 		}
 
-		return response.Result == EResult.OK ? response.Body.chat_room_groups.Select(static chatRoom => chatRoom.group_summary.chat_group_id).ToHashSet() : null;
+		return response.Result == EResult.OK ? [.. response.Body.chat_room_groups.Select(static chatRoom => chatRoom.group_summary.chat_group_id)] : null;
 	}
 
 	internal async Task<CPrivacySettings?> GetPrivacySettings() {
@@ -892,7 +892,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			return null;
 		}
 
-		return response.Result == EResult.OK ? response.Body.private_apps.appids.Select(static appID => (uint) appID).ToHashSet() : null;
+		return response.Result == EResult.OK ? [.. response.Body.private_apps.appids.Select(static appID => (uint) appID)] : null;
 	}
 
 	internal async Task<ulong> GetServerTime() {

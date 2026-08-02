@@ -537,7 +537,7 @@ internal sealed class Bot {
 	private static HashSet<Asset> GetItemsForFullBadge(IReadOnlyCollection<Asset> inventory, [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<uint, byte> cardsPerSet, ushort maxItems = Steam.Exchange.Trading.MaxItemsPerTrade) {
 		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> inventorySets = Steam.Exchange.Trading.GetInventorySets(inventory);
 
-		return GetItemsForFullSets(inventory, inventorySets.ToDictionary(static kv => kv.Key, kv => (SetsToExtract: inventorySets[kv.Key][0], cardsPerSet[kv.Key.RealAppID])), maxItems).ToHashSet();
+		return [.. GetItemsForFullSets(inventory, inventorySets.ToDictionary(static kv => kv.Key, kv => (SetsToExtract: inventorySets[kv.Key][0], cardsPerSet[kv.Key.RealAppID])), maxItems)];
 	}
 }
 #pragma warning restore CA1812 // False positive, the class is used during MSTest

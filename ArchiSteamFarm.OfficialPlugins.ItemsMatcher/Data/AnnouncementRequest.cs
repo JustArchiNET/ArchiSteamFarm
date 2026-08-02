@@ -99,9 +99,9 @@ internal class AnnouncementRequest {
 		Guid = guid;
 		SteamID = steamID;
 		TradeToken = tradeToken;
-		Inventory = inventory.ToImmutableHashSet();
+		Inventory = [.. inventory];
 		InventoryChecksum = inventoryChecksum;
-		MatchableTypes = matchableTypes.ToImmutableHashSet();
+		MatchableTypes = [.. matchableTypes];
 		MatchEverything = matchEverything;
 		MaxTradeHoldDuration = maxTradeHoldDuration;
 		TotalInventoryCount = totalInventoryCount;

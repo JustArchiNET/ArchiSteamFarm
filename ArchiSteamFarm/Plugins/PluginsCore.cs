@@ -168,7 +168,7 @@ public static class PluginsCore {
 		}
 
 		// We use ActivePlugins here, since we want to pick up also plugins removed from automatic updates
-		return ActivePlugins.OfType<IPluginUpdates>().Where(plugin => pluginAssemblyNames.Contains(plugin.GetType().Assembly.GetName().Name)).ToHashSet();
+		return [.. ActivePlugins.OfType<IPluginUpdates>().Where(plugin => pluginAssemblyNames.Contains(plugin.GetType().Assembly.GetName().Name))];
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
@@ -215,7 +215,7 @@ public static class PluginsCore {
 		try {
 			using CompositionHost container = configuration.CreateContainer();
 
-			activePlugins = container.GetExports<IPlugin>().ToHashSet();
+			activePlugins = [.. container.GetExports<IPlugin>()];
 		} catch (TypeLoadException e) {
 			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(e.TypeName));
 			ASF.ArchiLogger.LogGenericException(e);
@@ -584,7 +584,7 @@ public static class PluginsCore {
 			return null;
 		}
 
-		return responses.Where(static response => response != null).SelectMany(static handlers => handlers ?? []).ToHashSet();
+		return [.. responses.Where(static response => response != null).SelectMany(static handlers => handlers ?? [])];
 	}
 
 	internal static async Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ParseTradeResult.EResult asfResult) {

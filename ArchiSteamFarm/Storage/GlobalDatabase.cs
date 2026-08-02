@@ -305,7 +305,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 		try {
 			DateTime now = DateTime.UtcNow;
 
-			HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out PackageData? previousData) || (previousData.ChangeNumber < package.Value) || (previousData.ValidUntil < now))).Select(static package => package.Key).ToHashSet();
+			HashSet<uint> packageIDs = [.. packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out PackageData? previousData) || (previousData.ChangeNumber < package.Value) || (previousData.ValidUntil < now))).Select(static package => package.Key)];
 
 			if (packageIDs.Count == 0) {
 				return;

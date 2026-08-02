@@ -47,7 +47,7 @@ public sealed class TypeResponse {
 		ArgumentNullException.ThrowIfNull(body);
 		ArgumentNullException.ThrowIfNull(properties);
 
-		Body = body.ToImmutableDictionary();
+		Body = body.ToImmutableDictionary(StringComparer.Ordinal);
 		Properties = properties;
 	}
 }

@@ -57,7 +57,7 @@ internal sealed class DocumentTransformer : IOpenApiDocumentTransformer {
 		document.Info.License.Url = new Uri(SharedInfo.LicenseURL);
 
 		document.Components ??= new OpenApiComponents();
-		document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>(1);
+		document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>(1, StringComparer.Ordinal);
 
 		document.Components.SecuritySchemes.Add(
 			nameof(GlobalConfig.IPCPassword), new OpenApiSecurityScheme {

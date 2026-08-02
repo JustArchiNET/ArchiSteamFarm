@@ -64,7 +64,7 @@ internal sealed class SetPartsRequest {
 
 		Guid = guid;
 		SteamID = steamID;
-		MatchableTypes = matchableTypes.ToImmutableHashSet();
-		RealAppIDs = realAppIDs.ToImmutableHashSet();
+		MatchableTypes = [.. matchableTypes];
+		RealAppIDs = [.. realAppIDs];
 	}
 }
