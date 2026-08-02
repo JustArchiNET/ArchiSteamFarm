@@ -43,7 +43,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal static class Backend {
-	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> AnnounceDiffForListing(WebBrowser webBrowser, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, IReadOnlyCollection<AssetForListing> inventoryRemoved, string? previousInventoryChecksum, string? nickname = null, string? avatarHash = null) {
+	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> AnnounceDiffForListing(WebBrowser webBrowser, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, IReadOnlyCollection<AssetForListing> inventoryRemoved, string previousInventoryChecksum, string? nickname = null, string? avatarHash = null) {
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -103,6 +103,22 @@ internal static class Backend {
 		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, inventory, inventoryChecksum, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, tradeToken, nickname, avatarHash);
 
 		return await webBrowser.UrlPostToJsonObject<GenericResponse<BackgroundTaskResponse>, AnnouncementRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
+	}
+
+	internal static async Task<ObjectResponse<GenericResponse<bool>>?> CheckAnnounceDiffForListing(WebBrowser webBrowser, ulong steamID, string previousInventoryChecksum) {
+		ArgumentNullException.ThrowIfNull(webBrowser);
+
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(previousInventoryChecksum);
+
+		Uri request = new(ArchiNet.URL, "/Api/Listing/AnnounceDiffCheck/v1");
+
+		AnnouncementDiffCheckRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, previousInventoryChecksum);
+
+		return await webBrowser.UrlPostToJsonObject<GenericResponse<bool>, AnnouncementDiffCheckRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
 	}
 
 	internal static string GenerateChecksumFor(IList<AssetForListing> assetsForListings) {
