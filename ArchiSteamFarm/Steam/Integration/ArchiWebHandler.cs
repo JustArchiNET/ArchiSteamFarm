@@ -336,7 +336,7 @@ public sealed class ArchiWebHandler : IDisposable {
 						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
 					}
 
-					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
+					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.SteamWafWorkarounds, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
 
 					if (response == null) {
 						throw new HttpRequestException(Strings.FormatErrorObjectIsNull(nameof(response)));
@@ -451,7 +451,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	public async Task<ImmutableDictionary<uint, InventoryAppData>?> GetInventoryContextData() {
 		Uri request = new(SteamCommunityURL, "/my/inventory?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false).ConfigureAwait(false);
 
 		IElement? htmlNode = response?.Content?.QuerySelectorAll("div[role='main'] > script").FirstOrDefault(static scriptNode => scriptNode.TextContent.Contains("g_rgAppContextData = {", StringComparison.Ordinal));
 
@@ -2184,7 +2184,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				MarkingInventoryScheduled = false;
 			}
 
-			await UrlHeadWithSession(request, checkSessionPreemptively: false, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
+			await UrlHeadWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
 		} finally {
 			if (rateLimitingDelay == 0) {
 				ASF.InventorySemaphore.Release();
