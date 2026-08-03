@@ -31,7 +31,11 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
-internal sealed class AnnouncementDiffRequest : AnnouncementRequest {
+internal sealed class AnnouncementDiffRequest : AnnouncementRequestBase {
+	[JsonInclude]
+	[JsonRequired]
+	private ImmutableHashSet<AssetForListing> Inventory { get; init; }
+
 	[JsonInclude]
 	[JsonRequired]
 	private ImmutableHashSet<AssetForListing> InventoryRemoved { get; init; }
@@ -40,7 +44,7 @@ internal sealed class AnnouncementDiffRequest : AnnouncementRequest {
 	[JsonRequired]
 	private string PreviousInventoryChecksum { get; init; }
 
-	internal AnnouncementDiffRequest(Guid guid, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, IReadOnlyCollection<AssetForListing> inventoryRemoved, string previousInventoryChecksum, string? nickname = null, string? avatarHash = null) : base(guid, steamID, inventory, inventoryChecksum, matchableTypes, totalInventoryCount, matchEverything, maxTradeHoldDuration, tradeToken, nickname, avatarHash) {
+	internal AnnouncementDiffRequest(Guid guid, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, IReadOnlyCollection<AssetForListing> inventoryRemoved, string previousInventoryChecksum, string? nickname = null, string? avatarHash = null) : base(guid, steamID, inventoryChecksum, matchableTypes, totalInventoryCount, matchEverything, maxTradeHoldDuration, tradeToken, nickname, avatarHash) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -64,6 +68,7 @@ internal sealed class AnnouncementDiffRequest : AnnouncementRequest {
 		ArgumentNullException.ThrowIfNull(inventoryRemoved);
 		ArgumentException.ThrowIfNullOrEmpty(previousInventoryChecksum);
 
+		Inventory = [.. inventory];
 		InventoryRemoved = [.. inventoryRemoved];
 		PreviousInventoryChecksum = previousInventoryChecksum;
 	}

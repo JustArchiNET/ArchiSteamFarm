@@ -27,23 +27,57 @@ using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
+using JetBrains.Annotations;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
-internal sealed class AnnouncementRequest : AnnouncementRequestBase {
+internal abstract class AnnouncementRequestBase {
+	[JsonInclude]
+	private string? AvatarHash { get; init; }
+
 	[JsonInclude]
 	[JsonRequired]
-	private ImmutableList<AssetForListing> Inventory { get; init; }
+	private Guid Guid { get; init; }
 
-	internal AnnouncementRequest(Guid guid, ulong steamID, IReadOnlyList<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, string? nickname = null, string? avatarHash = null) : base(guid, steamID, inventoryChecksum, matchableTypes, totalInventoryCount, matchEverything, maxTradeHoldDuration, tradeToken, nickname, avatarHash) {
+	[JsonInclude]
+	[JsonRequired]
+	private string InventoryChecksum { get; init; }
+
+	[JsonInclude]
+	[JsonRequired]
+	private ImmutableHashSet<EAssetType> MatchableTypes { get; init; }
+
+	[JsonInclude]
+	[JsonRequired]
+	private bool MatchEverything { get; init; }
+
+	[JsonInclude]
+	[JsonRequired]
+	private byte MaxTradeHoldDuration { get; init; }
+
+	[JsonInclude]
+	private string? Nickname { get; init; }
+
+	[JsonInclude]
+	[JsonRequired]
+	private ulong SteamID { get; init; }
+
+	[JsonInclude]
+	[JsonRequired]
+	private uint TotalInventoryCount { get; init; }
+
+	[JsonInclude]
+	[JsonRequired]
+	private string TradeToken { get; init; }
+
+	internal AnnouncementRequestBase(Guid guid, ulong steamID, string inventoryChecksum, IReadOnlyCollection<EAssetType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, string? nickname = null, string? avatarHash = null) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		ArgumentNullException.ThrowIfNull(inventory);
 		ArgumentException.ThrowIfNullOrEmpty(inventoryChecksum);
 
 		if ((matchableTypes == null) || (matchableTypes.Count == 0)) {
@@ -57,6 +91,22 @@ internal sealed class AnnouncementRequest : AnnouncementRequestBase {
 			throw new ArgumentOutOfRangeException(nameof(tradeToken));
 		}
 
-		Inventory = [.. inventory];
+		Guid = guid;
+		SteamID = steamID;
+		TradeToken = tradeToken;
+		InventoryChecksum = inventoryChecksum;
+		MatchableTypes = [.. matchableTypes];
+		MatchEverything = matchEverything;
+		MaxTradeHoldDuration = maxTradeHoldDuration;
+		TotalInventoryCount = totalInventoryCount;
+
+		Nickname = nickname;
+		AvatarHash = avatarHash;
 	}
+
+	[UsedImplicitly]
+	public bool ShouldSerializeAvatarHash() => !string.IsNullOrEmpty(AvatarHash);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeNickname() => !string.IsNullOrEmpty(Nickname);
 }
