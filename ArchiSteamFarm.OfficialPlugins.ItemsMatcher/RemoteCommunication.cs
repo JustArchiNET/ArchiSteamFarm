@@ -332,6 +332,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 			}
 
+			assetsForListing.Sort(static (x, y) => x.Index.CompareTo(y.Index));
+
 			BotCache ??= await BotCache.CreateOrLoad(BotCacheFilePath).ConfigureAwait(false);
 
 			string inventoryChecksumBeforeDeduplication = Backend.GenerateChecksumFor(assetsForListing);
@@ -510,7 +512,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					assetsForListingFiltered.Add(asset);
 				}
 
-				assetsForListing = [.. assetsForListingFiltered.OrderBy(static asset => asset.Index)];
+				assetsForListing.RemoveAll(asset => !assetsForListingFiltered.Contains(asset));
 
 				if (assetsForListing.Count == 0) {
 					// We're not eligible, record this as a valid check
