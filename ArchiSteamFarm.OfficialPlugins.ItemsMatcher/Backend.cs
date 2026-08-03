@@ -22,11 +22,11 @@
 // limitations under the License.
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Net;
-using System.Text;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -67,7 +67,7 @@ internal static class Backend {
 		ArgumentNullException.ThrowIfNull(inventoryRemoved);
 		ArgumentException.ThrowIfNullOrEmpty(previousInventoryChecksum);
 
-		Uri request = new(ArchiNet.URL, "/Api/Listing/AnnounceDiff/v2");
+		Uri request = new(ArchiNet.URL, "/Api/Listing/AnnounceDiff/v3");
 
 		AnnouncementDiffRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, inventory, inventoryChecksum, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, tradeToken, inventoryRemoved, previousInventoryChecksum, nickname, avatarHash);
 
@@ -98,7 +98,7 @@ internal static class Backend {
 			throw new ArgumentOutOfRangeException(nameof(tradeToken));
 		}
 
-		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce/v5");
+		Uri request = new(ArchiNet.URL, "/Api/Listing/Announce/v6");
 
 		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, inventory, inventoryChecksum, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, tradeToken, nickname, avatarHash);
 
@@ -121,15 +121,43 @@ internal static class Backend {
 		return await webBrowser.UrlPostToJsonObject<GenericResponse<bool>, AnnouncementDiffCheckRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
 	}
 
-	internal static string GenerateChecksumFor(IList<AssetForListing> assetsForListings) {
-		if ((assetsForListings == null) || (assetsForListings.Count == 0)) {
-			throw new ArgumentNullException(nameof(assetsForListings));
+	internal static string GenerateChecksumFor(IEnumerable<AssetForListing> assetsForListings) {
+		ArgumentNullException.ThrowIfNull(assetsForListings);
+
+		using IncrementalHash incrementalHash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512);
+
+		Span<byte> buffer = stackalloc byte[sizeof(ulong)];
+
+		foreach (AssetForListing asset in assetsForListings) {
+			BinaryPrimitives.WriteUInt32LittleEndian(buffer[..sizeof(uint)], asset.Index);
+			incrementalHash.AppendData(buffer[..sizeof(uint)]);
+
+			BinaryPrimitives.WriteUInt64LittleEndian(buffer, asset.PreviousAssetID);
+			incrementalHash.AppendData(buffer);
+
+			BinaryPrimitives.WriteUInt64LittleEndian(buffer, asset.AssetID);
+			incrementalHash.AppendData(buffer);
+
+			BinaryPrimitives.WriteUInt64LittleEndian(buffer, asset.ClassID);
+			incrementalHash.AppendData(buffer);
+
+			BinaryPrimitives.WriteInt32LittleEndian(buffer[..sizeof(int)], (int) asset.Rarity);
+			incrementalHash.AppendData(buffer[..sizeof(int)]);
+
+			BinaryPrimitives.WriteUInt32LittleEndian(buffer[..sizeof(uint)], asset.RealAppID);
+			incrementalHash.AppendData(buffer[..sizeof(uint)]);
+
+			buffer[0] = asset.Tradable ? (byte) 1 : (byte) 0;
+			incrementalHash.AppendData(buffer[..1]);
+
+			BinaryPrimitives.WriteInt32LittleEndian(buffer[..sizeof(int)], (int) asset.Type);
+			incrementalHash.AppendData(buffer[..sizeof(int)]);
+
+			BinaryPrimitives.WriteUInt32LittleEndian(buffer[..sizeof(uint)], asset.Amount);
+			incrementalHash.AppendData(buffer[..sizeof(uint)]);
 		}
 
-		string text = string.Join('|', assetsForListings.Select(static asset => asset.BackendHashCode));
-		byte[] bytes = Encoding.UTF8.GetBytes(text);
-
-		return Utilities.GenerateChecksumFor(bytes);
+		return Convert.ToHexString(incrementalHash.GetHashAndReset());
 	}
 
 	internal static async Task<HttpStatusCode?> GetLicenseStatus(Guid licenseID, WebBrowser webBrowser) {

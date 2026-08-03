@@ -28,8 +28,6 @@ using ArchiSteamFarm.Steam.Data;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class AssetForListing : AssetInInventory {
-	internal string BackendHashCode => $"{Index}-{PreviousAssetID}-{AssetID}-{ClassID}-{Rarity}-{RealAppID}-{Tradable}-{Type}-{Amount}";
-
 	[JsonInclude]
 	[JsonPropertyName("i")]
 	[JsonRequired]
@@ -49,4 +47,18 @@ internal sealed class AssetForListing : AssetInInventory {
 
 	[JsonConstructor]
 	private AssetForListing() { }
+
+	internal bool IsSameBackendEntry(AssetForListing other) {
+		ArgumentNullException.ThrowIfNull(other);
+
+		return (Index == other.Index) &&
+			(PreviousAssetID == other.PreviousAssetID) &&
+			(AssetID == other.AssetID) &&
+			(ClassID == other.ClassID) &&
+			(Rarity == other.Rarity) &&
+			(RealAppID == other.RealAppID) &&
+			(Tradable == other.Tradable) &&
+			(Type == other.Type) &&
+			(Amount == other.Amount);
+	}
 }

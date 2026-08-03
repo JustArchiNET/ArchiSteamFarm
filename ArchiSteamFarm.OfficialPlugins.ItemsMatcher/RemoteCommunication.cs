@@ -618,7 +618,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					case true: {
 						Dictionary<ulong, AssetForListing> previousInventoryState = BotCache.LastAnnouncedAssetsForListing.ToDictionary(static asset => asset.AssetID);
 
-						HashSet<AssetForListing> inventoryAddedChanged = [.. assetsForListing.Where(asset => !previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset) || (asset.BackendHashCode != previousAsset.BackendHashCode))];
+						HashSet<AssetForListing> inventoryAddedChanged = [.. assetsForListing.Where(asset => !previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset) || !asset.IsSameBackendEntry(previousAsset))];
 
 						Bot.ArchiLogger.LogGenericInfo(Localization.Strings.FormatListingAnnouncing(Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
