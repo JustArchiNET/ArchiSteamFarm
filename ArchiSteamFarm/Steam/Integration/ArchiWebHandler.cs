@@ -453,7 +453,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false).ConfigureAwait(false);
 
-		IElement? htmlNode = response?.Content?.QuerySelectorAll("div[role='main'] > script").FirstOrDefault(static scriptNode => scriptNode.TextContent.Contains("g_rgAppContextData = {", StringComparison.Ordinal));
+		IElement? htmlNode = response?.Content?.QuerySelectorAll("script[type='text/javascript']").FirstOrDefault(static scriptNode => scriptNode.TextContent.Contains("g_rgAppContextData = {", StringComparison.Ordinal));
 
 		if (htmlNode == null) {
 			return null;
