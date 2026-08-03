@@ -126,35 +126,20 @@ internal static class Backend {
 
 		using IncrementalHash incrementalHash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512);
 
-		Span<byte> buffer = stackalloc byte[sizeof(ulong)];
+		Span<byte> buffer = stackalloc byte[39];
 
 		foreach (AssetForListing asset in assetsForListings) {
-			BinaryPrimitives.WriteUInt32LittleEndian(buffer[..sizeof(uint)], asset.Index);
-			incrementalHash.AppendData(buffer[..sizeof(uint)]);
+			BinaryPrimitives.WriteUInt32LittleEndian(buffer, asset.Index);
+			BinaryPrimitives.WriteUInt64LittleEndian(buffer[4..], asset.PreviousAssetID);
+			BinaryPrimitives.WriteUInt64LittleEndian(buffer[12..], asset.AssetID);
+			BinaryPrimitives.WriteUInt64LittleEndian(buffer[20..], asset.ClassID);
+			buffer[28] = (byte) asset.Rarity;
+			BinaryPrimitives.WriteUInt32LittleEndian(buffer[29..], asset.RealAppID);
+			buffer[33] = asset.Tradable ? (byte) 1 : (byte) 0;
+			buffer[34] = (byte) asset.Type;
+			BinaryPrimitives.WriteUInt32LittleEndian(buffer[35..], asset.Amount);
 
-			BinaryPrimitives.WriteUInt64LittleEndian(buffer, asset.PreviousAssetID);
 			incrementalHash.AppendData(buffer);
-
-			BinaryPrimitives.WriteUInt64LittleEndian(buffer, asset.AssetID);
-			incrementalHash.AppendData(buffer);
-
-			BinaryPrimitives.WriteUInt64LittleEndian(buffer, asset.ClassID);
-			incrementalHash.AppendData(buffer);
-
-			BinaryPrimitives.WriteInt32LittleEndian(buffer[..sizeof(int)], (int) asset.Rarity);
-			incrementalHash.AppendData(buffer[..sizeof(int)]);
-
-			BinaryPrimitives.WriteUInt32LittleEndian(buffer[..sizeof(uint)], asset.RealAppID);
-			incrementalHash.AppendData(buffer[..sizeof(uint)]);
-
-			buffer[0] = asset.Tradable ? (byte) 1 : (byte) 0;
-			incrementalHash.AppendData(buffer[..1]);
-
-			BinaryPrimitives.WriteInt32LittleEndian(buffer[..sizeof(int)], (int) asset.Type);
-			incrementalHash.AppendData(buffer[..sizeof(int)]);
-
-			BinaryPrimitives.WriteUInt32LittleEndian(buffer[..sizeof(uint)], asset.Amount);
-			incrementalHash.AppendData(buffer[..sizeof(uint)]);
 		}
 
 		return Convert.ToHexString(incrementalHash.GetHashAndReset());
