@@ -104,7 +104,7 @@ StackTrace:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>봇이 정의되지 않았습니다. 혹시 ASF 설정하는 것을 잊으신건 아닌가요? 무슨 말인지 잘 모르겠으면, wiki의 'setting up' 설명을 따라해 보세요.</value>
+		<value>봇이 정의되지 않았습니다. 혹시 ASF 설정하는 것을 잊으신건 아닌가요? 무슨 말인지 잘 모르겠으면, 위키의 'setting up' 설명을 따라해 보세요.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} 값이 없습니다!</value>

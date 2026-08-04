@@ -65,7 +65,7 @@
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
 	<data name="PluginDisabledInConfig" xml:space="preserve">
-		<value>설정에 따라 {0} (이)가 현재 비활성화 되어 있습니다. SteamDB에 데이터 제공을 원하신다면, wiki를 참고하세요.</value>
+		<value>설정에 따라 {0} (이)가 현재 비활성화 되어 있습니다. SteamDB에 데이터 제공을 원하신다면, 위키를 참고하세요.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
 	<data name="PluginInitializedAndEnabled" xml:space="preserve">
