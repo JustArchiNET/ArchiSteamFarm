@@ -161,31 +161,31 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 		Meter = new Meter(MeterName, Version.ToString());
 
 		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_build_info",
+			$"{MetricNamePrefix}.build.info",
 			static () => BuildInfo,
 			description: "Build information about ASF in form of label values"
 		);
 
 		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_runtime_info",
+			$"{MetricNamePrefix}.runtime.info",
 			static () => RuntimeInfo,
 			description: "Runtime information about ASF in form of label values"
 		);
 
 		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_ipc_banned_ips",
+			$"{MetricNamePrefix}.ipc.banned.ips",
 			static () => ApiAuthenticationMiddleware.GetCurrentlyBannedIPs().Count(),
 			description: "Number of IP addresses currently banned by ASFs IPC module"
 		);
 
 		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_active_plugins",
+			$"{MetricNamePrefix}.active.plugins",
 			static () => PluginMeasurements,
 			description: "Number of plugins currently loaded in ASF"
 		);
 
 		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_bots", static () => {
+			$"{MetricNamePrefix}.bots", static () => {
 				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				int onlineCount = 0;
@@ -215,7 +215,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 		);
 
 		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_bot_friends", static () => {
+			$"{MetricNamePrefix}.bot.friends", static () => {
 				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				return bots.Where(static bot => bot.IsConnectedAndLoggedOn).Select(static bot => new Measurement<int>(bot.SteamFriends.GetFriendCount(), new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
@@ -224,7 +224,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 		);
 
 		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_bot_clans", static () => {
+			$"{MetricNamePrefix}.bot.clans", static () => {
 				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				return bots.Where(static bot => bot.IsConnectedAndLoggedOn).Select(static bot => new Measurement<int>(bot.SteamFriends.GetClanCount(), new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
@@ -234,7 +234,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 
 		// Keep in mind that we use a unit here and the unit needs to be a suffix to the name
 		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_bot_farming_time_remaining_{Units.Minutes}", static () => {
+			$"{MetricNamePrefix}.bot.farming.time.remaining.{Units.Minutes}", static () => {
 				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				return bots.Where(static bot => bot.IsConnectedAndLoggedOn).Select(static bot => new Measurement<double>(bot.CardsFarmer.TimeRemaining.TotalMinutes, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
@@ -244,7 +244,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 		);
 
 		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_bot_heartbeat_failures", static () => {
+			$"{MetricNamePrefix}.bot.heartbeat.failures", static () => {
 				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				return bots.Select(static bot => new Measurement<byte>(bot.HeartBeatFailures, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
@@ -253,7 +253,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 		);
 
 		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_bot_wallet_balance", static () => {
+			$"{MetricNamePrefix}.bot.wallet.balance", static () => {
 				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				return bots.Where(static bot => bot.WalletCurrency != ECurrencyCode.Invalid).Select(static bot => new Measurement<long>(bot.WalletBalance, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID), new KeyValuePair<string, object?>(TagNames.CurrencyCode, bot.WalletCurrency.ToString())));
@@ -262,7 +262,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 		);
 
 		Meter.CreateObservableGauge(
-			$"{MetricNamePrefix}_bot_bgr_keys_remaining", static () => {
+			$"{MetricNamePrefix}.bot.bgr.keys.remaining", static () => {
 				IEnumerable<Bot> bots = Bot.Bots?.Values ?? [];
 
 				return bots.Select(static bot => new Measurement<int>((int) bot.GamesToRedeemInBackgroundCount, new KeyValuePair<string, object?>(TagNames.BotName, bot.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, bot.SteamID)));
@@ -271,7 +271,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 		);
 
 		Meter.CreateObservableCounter(
-			$"{MetricNamePrefix}_bot_trades", () => TradeStatistics.SelectMany<KeyValuePair<Bot, TradeStatistics>, Measurement<int>>(static kv => [
+			$"{MetricNamePrefix}.bot.trades", () => TradeStatistics.SelectMany<KeyValuePair<Bot, TradeStatistics>, Measurement<int>>(static kv => [
 					new Measurement<int>(
 						kv.Value.AcceptedOffers,
 						new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName),
@@ -308,12 +308,12 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 		);
 
 		Meter.CreateObservableCounter(
-			$"{MetricNamePrefix}_bot_items_given", () => TradeStatistics.Select(static kv => new Measurement<int>(kv.Value.ItemsGiven, new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID))),
+			$"{MetricNamePrefix}.bot.items.given", () => TradeStatistics.Select(static kv => new Measurement<int>(kv.Value.ItemsGiven, new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID))),
 			description: "Items given per bot"
 		);
 
 		Meter.CreateObservableCounter(
-			$"{MetricNamePrefix}_bot_items_received", () => TradeStatistics.Select(static kv => new Measurement<int>(kv.Value.ItemsReceived, new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID))),
+			$"{MetricNamePrefix}.bot.items.received", () => TradeStatistics.Select(static kv => new Measurement<int>(kv.Value.ItemsReceived, new KeyValuePair<string, object?>(TagNames.BotName, kv.Key.BotName), new KeyValuePair<string, object?>(TagNames.SteamID, kv.Key.SteamID))),
 			description: "Items received per bot"
 		);
 	}
