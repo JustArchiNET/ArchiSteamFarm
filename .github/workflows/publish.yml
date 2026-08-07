@@ -361,7 +361,7 @@ jobs:
         }
 
     - name: Generate artifact attestation for ASF-${{ matrix.variant }}.zip
-      if: ${{ github.event_name == 'push' }}
+      if: ${{ github.event_name != 'pull_request' }}
       uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
       with:
         subject-path: out/ASF-${{ matrix.variant }}.zip
@@ -409,7 +409,7 @@ jobs:
         done
 
     - name: Generate artifact attestation for ArchiSteamFarm.OfficialPlugins.Monitoring
-      if: ${{ github.event_name == 'push' && matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
+      if: ${{ github.event_name != 'pull_request' && matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
       uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
       with:
         subject-path: out/ArchiSteamFarm.OfficialPlugins.Monitoring.zip
@@ -424,7 +424,7 @@ jobs:
         path: out/ArchiSteamFarm.OfficialPlugins.Monitoring.zip
 
   release:
-    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') }}
+    if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
     needs: publish-asf
     environment: release-github
     runs-on: ubuntu-latest
