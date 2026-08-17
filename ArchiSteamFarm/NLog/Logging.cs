@@ -267,7 +267,10 @@ internal static class Logging {
 		}
 
 		// This is a temporary, bare, file-less configuration that must work until we're able to initialize it properly
-		ConfigurationItemFactory.Default.ParseMessageTemplates = false;
+		LogManager.Setup().SetupSerialization(static serialization => {
+				serialization.ParseMessageTemplates(false);
+			}
+		);
 
 		LoggingConfiguration config = new();
 
