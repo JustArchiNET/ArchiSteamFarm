@@ -800,8 +800,26 @@ Proceso veikimo laikas: {1}</value>
 		<value>Įvestis: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
 	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>Jūs deklaravote --system-required, bet jūsų OS trūksta priklausomybių, reikalingų šiai funkcijai veikti. Apsvarstykite galimybę įdiegti dbus, nors taip pat galite saugiai ignoruoti šį įspėjimą, jei jums nereikia, kad inhibition veiktų tinkamai.</value>
+	</data>
 	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
 		<value>Duomenų bazės komponento {0} iššifravimas nepavyko. Tai gali būti gerai, jei ką tik pakeitėte savo roboto {1}, kito paleidimo metu šio įspėjimo nebeturėtumėte matyti. Priešingu atveju turėtumėte ištirti ir išsiaiškinti tikslią nesėkmės priežastį.</value>
 		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
+	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Jūsų .keys faile nerasta galiojančių išpirkimo raktų. Įsitikinkite, kad jūsų raktai yra tinkamo formato.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>Sėkmingai importuota {0} raktas(-ų) iš jūsų .keys failo.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>Sėkmingai importuota {0} raktas(-ų) iš jūsų .keys failo, {1} eilutė(-čių) praleista, nes jos nėra tinkamo formato, yra komentarai arba tuščios eilutės.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Įkelta {0} raktas(-ų) iš eilės.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
 	</data>
 </root>
