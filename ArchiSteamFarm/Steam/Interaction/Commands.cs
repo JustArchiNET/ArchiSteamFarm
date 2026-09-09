@@ -412,9 +412,15 @@ public sealed class Commands {
 				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendTypingMessage)));
 			}
 
-			while (!responseTask.IsCompleted && (await Task.WhenAny(responseTask, Task.Delay(SteamTypingStatusDelay)).ConfigureAwait(false) != responseTask)) {
-				if (!await Bot.SendTypingMessage(steamID).ConfigureAwait(false)) {
-					Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendTypingMessage)));
+			while (!responseTask.IsCompleted) {
+				try {
+					await responseTask.WaitAsync(TimeSpan.FromMilliseconds(SteamTypingStatusDelay)).ConfigureAwait(false);
+
+					break;
+				} catch (TimeoutException) {
+					if (!await Bot.SendTypingMessage(steamID).ConfigureAwait(false)) {
+						Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendTypingMessage)));
+					}
 				}
 			}
 		}
@@ -482,9 +488,15 @@ public sealed class Commands {
 				Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
 			}
 
-			while (!responseTask.IsCompleted && (await Task.WhenAny(responseTask, Task.Delay(SteamTypingStatusDelay)).ConfigureAwait(false) != responseTask)) {
-				if (!await Bot.SendMessage(chatGroupID, chatID, pleaseWaitMessage).ConfigureAwait(false)) {
-					Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
+			while (!responseTask.IsCompleted) {
+				try {
+					await responseTask.WaitAsync(TimeSpan.FromMilliseconds(SteamTypingStatusDelay)).ConfigureAwait(false);
+
+					break;
+				} catch (TimeoutException) {
+					if (!await Bot.SendMessage(chatGroupID, chatID, pleaseWaitMessage).ConfigureAwait(false)) {
+						Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
+					}
 				}
 			}
 		}
