@@ -3313,15 +3313,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
 
 				displayFinish = true;
+
+				await refreshTask.ConfigureAwait(false);
 			}
-
-			if (await Task.WhenAny(refreshTask, Task.Delay(5000)).ConfigureAwait(false) != refreshTask) {
-				ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
-
-				displayFinish = true;
-			}
-
-			await refreshTask.ConfigureAwait(false);
 
 			if (displayFinish) {
 				ArchiLogger.LogGenericInfo(Strings.Done);
