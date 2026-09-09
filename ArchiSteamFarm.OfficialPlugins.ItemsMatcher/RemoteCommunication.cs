@@ -347,6 +347,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					ShouldSendAnnouncementEarlier = false;
 					ShouldSendHeartBeats = true;
 
+					// Keep informational logging for the user though, even if the real request is not sent
+					Bot.ArchiLogger.LogGenericInfo(Localization.Strings.FormatListingAnnouncing(Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
+					Bot.ArchiLogger.LogGenericInfo(Strings.Success);
+
 					if (triggerImmediately) {
 						Utilities.InBackground(() => OnHeartBeatTimer());
 					}
