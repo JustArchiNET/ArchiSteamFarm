@@ -32,7 +32,7 @@
 		<RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
 		<RollForward>LatestMajor</RollForward>
 		<RuntimeIdentifiers>linux-arm;linux-arm64;linux-x64;osx-arm64;osx-x64;win-arm64;win-x64</RuntimeIdentifiers>
-		<TargetFramework>net10.0</TargetFramework>
+		<TargetFramework>net11.0</TargetFramework>
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 	</PropertyGroup>
 
@@ -45,9 +45,6 @@
 
 		<!-- Required for protobuf-net -->
 		<_DefaultValueAttributeSupport>true</_DefaultValueAttributeSupport>
-
-		<!-- TODO: Workaround for https://github.com/dotnet/runtime/issues/118630, evaluate if possible to remove later -->
-		<EnableConfigurationBindingGenerator>false</EnableConfigurationBindingGenerator>
 	</PropertyGroup>
 
 	<!-- Default configuration for fast-debugging builds -->
@@ -63,7 +60,7 @@
 		<DebugType>none</DebugType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
-		<WarningsNotAsErrors>CS8002,IL2026,IL2104,NU1901,NU1902,NU1903,NU1904</WarningsNotAsErrors>
+		<WarningsNotAsErrors>IL2026,IL2101,IL2104,NU1901,NU1902,NU1903,NU1904</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<!-- Enable public signing -->
