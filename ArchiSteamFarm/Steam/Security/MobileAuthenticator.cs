@@ -356,6 +356,12 @@ public sealed class MobileAuthenticator : IDisposable {
 			length--;
 		}
 
+		int paddingLength = input.Length - length;
+
+		if ((input.Length % 4 != 0) || (paddingLength > 2)) {
+			return false;
+		}
+
 		if (length == 0) {
 			return true;
 		}
