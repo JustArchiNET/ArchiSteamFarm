@@ -346,6 +346,42 @@ public sealed class MobileAuthenticator : IDisposable {
 		return Convert.ToBase64String(hash);
 	}
 
+	private static async Task LimitConfirmationsRequestsAsync() {
+		if (ASF.ConfirmationsSemaphore == null) {
+			throw new InvalidOperationException(nameof(ASF.ConfirmationsSemaphore));
+		}
+
+		byte confirmationsLimiterDelay = ASF.GlobalConfig?.ConfirmationsLimiterDelay ?? GlobalConfig.DefaultConfirmationsLimiterDelay;
+
+		if (confirmationsLimiterDelay == 0) {
+			return;
+		}
+
+		await ASF.ConfirmationsSemaphore.WaitAsync().ConfigureAwait(false);
+
+		Utilities.InBackground(async () => {
+				await Task.Delay(confirmationsLimiterDelay * 1000).ConfigureAwait(false);
+				ASF.ConfirmationsSemaphore.Release();
+			}
+		);
+	}
+
+	private async Task<(bool Success, string? Result)> ResolveDeviceID(CancellationToken cancellationToken = default) {
+		if (Bot == null) {
+			throw new InvalidOperationException(nameof(Bot));
+		}
+
+		string? deviceID = await Bot.ArchiHandler.GetTwoFactorDeviceIdentifier(Bot.SteamID).ConfigureAwait(false);
+
+		if (string.IsNullOrEmpty(deviceID)) {
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+
+			return (false, null);
+		}
+
+		return (true, deviceID);
+	}
+
 	private static bool TryFromBase64StringLenient(ReadOnlySpan<char> input, Span<byte> destination, out int bytesWritten) {
 		// Some real-world secrets are encoded in a non-canonical way (e.g. with non-zero bits discarded by the padding of the last base64 group), which the standard, strict base64 decoder refuses to decode. This is a lenient fallback decoder that tolerates such input
 		bytesWritten = 0;
@@ -407,41 +443,5 @@ public sealed class MobileAuthenticator : IDisposable {
 		bytesWritten = outputIndex;
 
 		return true;
-	}
-
-	private static async Task LimitConfirmationsRequestsAsync() {
-		if (ASF.ConfirmationsSemaphore == null) {
-			throw new InvalidOperationException(nameof(ASF.ConfirmationsSemaphore));
-		}
-
-		byte confirmationsLimiterDelay = ASF.GlobalConfig?.ConfirmationsLimiterDelay ?? GlobalConfig.DefaultConfirmationsLimiterDelay;
-
-		if (confirmationsLimiterDelay == 0) {
-			return;
-		}
-
-		await ASF.ConfirmationsSemaphore.WaitAsync().ConfigureAwait(false);
-
-		Utilities.InBackground(async () => {
-				await Task.Delay(confirmationsLimiterDelay * 1000).ConfigureAwait(false);
-				ASF.ConfirmationsSemaphore.Release();
-			}
-		);
-	}
-
-	private async Task<(bool Success, string? Result)> ResolveDeviceID(CancellationToken cancellationToken = default) {
-		if (Bot == null) {
-			throw new InvalidOperationException(nameof(Bot));
-		}
-
-		string? deviceID = await Bot.ArchiHandler.GetTwoFactorDeviceIdentifier(Bot.SteamID).ConfigureAwait(false);
-
-		if (string.IsNullOrEmpty(deviceID)) {
-			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-			return (false, null);
-		}
-
-		return (true, deviceID);
 	}
 }
