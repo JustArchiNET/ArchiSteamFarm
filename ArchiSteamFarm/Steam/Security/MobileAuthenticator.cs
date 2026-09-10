@@ -22,7 +22,6 @@
 // limitations under the License.
 
 using System;
-using System.Buffers;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -319,52 +318,33 @@ public sealed class MobileAuthenticator : IDisposable {
 			throw new InvalidOperationException(nameof(IdentitySecret));
 		}
 
-		byte[] identitySecret;
+		Span<byte> identitySecret = stackalloc byte[32];
 
-		try {
-			identitySecret = Convert.FromBase64String(IdentitySecret);
-		} catch (FormatException) {
-			// The regular decoder above rejects secrets encoded in a non-canonical way (e.g. with non-zero discarded bits in the last base64 group), fall back to a lenient decoder in that case
-			byte[] lenientBuffer = new byte[(IdentitySecret.Length * 6) / 8];
-
-			if (!TryFromBase64StringLenient(IdentitySecret, lenientBuffer, out int bytesWritten)) {
-				Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(IdentitySecret)));
+		if (!Convert.TryFromBase64String(IdentitySecret, identitySecret, out int bytesWritten)) {
+			Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(IdentitySecret)));
 
 				return null;
 			}
 
-			identitySecret = bytesWritten == lenientBuffer.Length ? lenientBuffer : lenientBuffer[..bytesWritten];
+		identitySecret = identitySecret[..bytesWritten];
+
+		byte tagLength = string.IsNullOrEmpty(tag) ? (byte) 0 : (byte) Math.Min(32, tag.Length);
+
+		Span<byte> buffer = stackalloc byte[sizeof(ulong) + tagLength];
+		BinaryPrimitives.WriteUInt64BigEndian(buffer, time);
+
+		if (tagLength > 0) {
+			Span<byte> tagBytes = stackalloc byte[Encoding.UTF8.GetMaxByteCount(tagLength)];
+			Encoding.UTF8.GetBytes(tag.AsSpan(0, tagLength), tagBytes);
+
+			tagBytes[..tagLength].CopyTo(buffer[sizeof(ulong)..]);
 		}
 
-		byte bufferSize = 8;
-
-		if (!string.IsNullOrEmpty(tag)) {
-			bufferSize += (byte) Math.Min(32, tag.Length);
-		}
-
-		byte[] timeArray = BitConverter.GetBytes(time);
-
-		if (BitConverter.IsLittleEndian) {
-			Array.Reverse(timeArray);
-		}
-
-		byte[] hash;
-
-		byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
-
-		try {
-			Array.Copy(timeArray, buffer, timeArray.Length);
-
-			if (!string.IsNullOrEmpty(tag)) {
-				Array.Copy(Encoding.UTF8.GetBytes(tag), 0, buffer, timeArray.Length, bufferSize - timeArray.Length);
-			}
+		Span<byte> hash = stackalloc byte[HMACSHA1.HashSizeInBytes];
 
 #pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-			hash = HMACSHA1.HashData(identitySecret, buffer.AsSpan()[..bufferSize]);
+		HMACSHA1.HashData(identitySecret, buffer, hash);
 #pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-		} finally {
-			ArrayPool<byte>.Shared.Return(buffer);
-		}
 
 		return Convert.ToBase64String(hash);
 	}
