@@ -1,52 +1,57 @@
 <linker>
-	<!-- This is needed for ASF API controllers that use HttpContext -->
+	<!-- Required for ASF API controllers that use HttpContext -->
 	<assembly fullname="Microsoft.AspNetCore.Mvc.Core">
 		<type fullname="Microsoft.AspNetCore.Mvc.ControllerBase">
 			<property name="ControllerContext" />
 		</type>
 	</assembly>
 
-	<!-- This is needed for ASF (JSON deserialization) -->
+	<!-- Required for ASF (JSON deserialization) -->
 	<assembly fullname="System.Collections.Immutable">
 		<type fullname="System.Collections.Immutable.ImmutableDictionary" />
 		<type fullname="System.Collections.Immutable.ImmutableHashSet" />
 		<type fullname="System.Collections.Immutable.ImmutableList" />
 	</assembly>
 
-	<!-- This is needed for basic plugins usage, the attribute is trimmed otherwise -->
+	<!-- Required for basic plugins usage, the attribute is trimmed otherwise -->
 	<assembly fullname="System.Composition.AttributedModel">
 		<type fullname="System.Composition.ExportAttribute" />
 	</assembly>
 
-	<!-- Entries below are needed for our official plugins -->
+	<!-- Required for SteamTokenDumper plugin -->
 	<assembly fullname="Microsoft.AspNetCore.Http.Extensions">
 		<type fullname="Microsoft.AspNetCore.Http.TagsAttribute" />
 	</assembly>
 
+	<!-- Required for ItemsMatcher plugin -->
 	<assembly fullname="System.Collections">
 		<type fullname="System.Collections.Generic.HashSet`1">
 			<method name="SetEquals" />
 		</type>
 	</assembly>
 
+	<!-- Required for SteamTokenDumper plugin -->
 	<assembly fullname="System.Linq">
 		<type fullname="System.Linq.Enumerable">
 			<method name="MaxBy" />
 		</type>
 	</assembly>
 
+	<!-- Required for ItemsMatcher plugin -->
 	<assembly fullname="System.Linq.AsyncEnumerable">
 		<type fullname="System.Linq.AsyncEnumerable">
 			<method name="ToListAsync" />
 		</type>
 	</assembly>
 
+	<!-- Required for SteamTokenDumper plugin -->
 	<assembly fullname="System.Runtime">
 		<type fullname="System.Random">
 			<method name="NextInteger" />
 		</type>
 	</assembly>
 
+	<!-- Required for ItemsMatcher plugin -->
 	<assembly fullname="System.Threading">
 		<type fullname="System.Threading.SemaphoreSlim">
 			<property name="CurrentCount" />
