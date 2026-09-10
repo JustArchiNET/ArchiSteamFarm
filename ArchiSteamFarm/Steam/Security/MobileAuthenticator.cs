@@ -105,7 +105,7 @@ public sealed class MobileAuthenticator : IDisposable {
 
 		Span<byte> sharedSecret = stackalloc byte[32];
 
-		if (!Convert.TryFromBase64String(SharedSecret, sharedSecret, out int bytesWritten)) {
+		if (!Convert.TryFromBase64String(SharedSecret, sharedSecret, out int bytesWritten) && !TryFromBase64StringLenient(SharedSecret, sharedSecret, out bytesWritten)) {
 			Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(SharedSecret)));
 
 			return null;
@@ -323,11 +323,17 @@ public sealed class MobileAuthenticator : IDisposable {
 
 		try {
 			identitySecret = Convert.FromBase64String(IdentitySecret);
-		} catch (FormatException e) {
-			Bot.ArchiLogger.LogGenericException(e);
-			Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(IdentitySecret)));
+		} catch (FormatException) {
+			// The regular decoder above rejects secrets encoded in a non-canonical way (e.g. with non-zero discarded bits in the last base64 group), fall back to a lenient decoder in that case
+			byte[] lenientBuffer = new byte[(IdentitySecret.Length * 6) / 8];
 
-			return null;
+			if (!TryFromBase64StringLenient(IdentitySecret, lenientBuffer, out int bytesWritten)) {
+				Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(IdentitySecret)));
+
+				return null;
+			}
+
+			identitySecret = bytesWritten == lenientBuffer.Length ? lenientBuffer : lenientBuffer[..bytesWritten];
 		}
 
 		byte bufferSize = 8;
@@ -361,6 +367,63 @@ public sealed class MobileAuthenticator : IDisposable {
 		}
 
 		return Convert.ToBase64String(hash);
+	}
+
+	private static bool TryFromBase64StringLenient(ReadOnlySpan<char> input, Span<byte> destination, out int bytesWritten) {
+		// Some real-world secrets are encoded in a non-canonical way (e.g. with non-zero bits discarded by the padding of the last base64 group), which the standard, strict base64 decoder refuses to decode. This is a lenient fallback decoder that tolerates such input
+		bytesWritten = 0;
+
+		int length = input.Length;
+
+		while ((length > 0) && (input[length - 1] == '=')) {
+			length--;
+		}
+
+		if (length == 0) {
+			return true;
+		}
+
+		// A single leftover base64 character can't represent a full byte, so it's invalid regardless of the canonical form
+		if (length % 4 == 1) {
+			return false;
+		}
+
+		int requiredBytes = (length * 6) / 8;
+
+		if (destination.Length < requiredBytes) {
+			return false;
+		}
+
+		int bitBuffer = 0;
+		int bitCount = 0;
+		int outputIndex = 0;
+
+		foreach (char character in input[..length]) {
+			int value = character switch {
+				>= 'A' and <= 'Z' => character - 'A',
+				>= 'a' and <= 'z' => (character - 'a') + 26,
+				>= '0' and <= '9' => (character - '0') + 52,
+				'+' => 62,
+				'/' => 63,
+				_ => -1
+			};
+
+			if (value < 0) {
+				return false;
+			}
+
+			bitBuffer = (bitBuffer << 6) | value;
+			bitCount += 6;
+
+			if (bitCount >= 8) {
+				bitCount -= 8;
+				destination[outputIndex++] = (byte) ((bitBuffer >> bitCount) & 0xFF);
+			}
+		}
+
+		bytesWritten = outputIndex;
+
+		return true;
 	}
 
 	private static async Task LimitConfirmationsRequestsAsync() {
