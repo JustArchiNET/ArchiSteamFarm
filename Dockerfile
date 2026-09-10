@@ -106,7 +106,7 @@ RUN <<EOF
         useradd -r -d "$ASF_PATH" -g "$ASF_UID" -u "$ASF_UID" "asf"
     fi
 
-    chown -hR "${ASF_UID}:${ASF_UID}" "$ASF_PATH"
+    chown -h "${ASF_UID}:${ASF_UID}" "$ASF_PATH"
 	chown -hR "${ASF_UID}:${ASF_UID}" /asf
 
     ln -s /asf/ArchiSteamFarm.sh /usr/bin/ArchiSteamFarm
