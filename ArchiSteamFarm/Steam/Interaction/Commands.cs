@@ -2944,7 +2944,7 @@ public sealed class Commands {
 			bool forced = false;
 			string definitionToParse = definition;
 
-			if (definitionToParse.EndsWith('!')) {
+			if (definitionToParse.EndsWith('!', StringComparison.Ordinal)) {
 				forced = true;
 				definitionToParse = definitionToParse[..^1];
 			}
@@ -3682,7 +3682,7 @@ public sealed class Commands {
 		GlobalConfig.EUpdateChannel channel = ASF.GlobalConfig?.UpdateChannel ?? GlobalConfig.DefaultUpdateChannel;
 
 		if (!string.IsNullOrEmpty(channelText)) {
-			if (channelText.EndsWith('!')) {
+			if (channelText.EndsWith('!', StringComparison.Ordinal)) {
 				forced = true;
 				channelText = channelText[..^1];
 			}
@@ -3710,7 +3710,7 @@ public sealed class Commands {
 		GlobalConfig.EUpdateChannel? channel = null;
 
 		if (!string.IsNullOrEmpty(channelText)) {
-			if (channelText.EndsWith('!')) {
+			if (channelText.EndsWith('!', StringComparison.Ordinal)) {
 				forced = true;
 				channelText = channelText[..^1];
 			}
