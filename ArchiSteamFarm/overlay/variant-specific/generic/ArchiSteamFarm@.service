@@ -2,6 +2,9 @@
 WantedBy=multi-user.target
 
 [Service]
+Environment="DOTNET_CLI_TELEMETRY_OPTOUT=true"
+Environment="DOTNET_EnableDiagnostics=0"
+Environment="DOTNET_NOLOGO=true"
 EnvironmentFile=-/etc/asf/%i
 ExecStart=dotnet /home/%i/ArchiSteamFarm/ArchiSteamFarm.dll --no-restart --service --system-required
 Restart=on-success

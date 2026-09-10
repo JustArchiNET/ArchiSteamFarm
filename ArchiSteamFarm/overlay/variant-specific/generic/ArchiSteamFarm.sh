@@ -1,6 +1,10 @@
 #!/usr/bin/env sh
 set -eu
 
+export DOTNET_CLI_TELEMETRY_OPTOUT=true
+export DOTNET_EnableDiagnostics=0
+export DOTNET_NOLOGO=true
+
 CONFIG_PATH="config/ASF.json"
 OS_TYPE="$(uname -s)"
 

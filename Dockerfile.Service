@@ -81,6 +81,7 @@ ENV ASF_PATH=/app
 ENV ASF_UID=1000
 ENV ASPNETCORE_URLS=
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
+ENV DOTNET_EnableDiagnostics=0
 ENV DOTNET_NOLOGO=true
 
 LABEL maintainer="JustArchi <JustArchi@JustArchi.net>" \
