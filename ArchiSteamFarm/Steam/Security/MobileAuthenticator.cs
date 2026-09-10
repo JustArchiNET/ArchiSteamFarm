@@ -320,11 +320,11 @@ public sealed class MobileAuthenticator : IDisposable {
 
 		Span<byte> identitySecret = stackalloc byte[32];
 
-		if (!Convert.TryFromBase64String(IdentitySecret, identitySecret, out int bytesWritten)) {
+		if (!Convert.TryFromBase64String(IdentitySecret, identitySecret, out int bytesWritten) && !TryFromBase64StringLenient(SharedSecret, identitySecret, out bytesWritten)) {
 			Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(IdentitySecret)));
 
-				return null;
-			}
+			return null;
+		}
 
 		identitySecret = identitySecret[..bytesWritten];
 
