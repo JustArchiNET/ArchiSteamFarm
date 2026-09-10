@@ -334,10 +334,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		BinaryPrimitives.WriteUInt64BigEndian(buffer, time);
 
 		if (tagLength > 0) {
-			Span<byte> tagBytes = stackalloc byte[Encoding.UTF8.GetMaxByteCount(tagLength)];
-			Encoding.UTF8.GetBytes(tag.AsSpan(0, tagLength), tagBytes);
-
-			tagBytes[..tagLength].CopyTo(buffer[sizeof(ulong)..]);
+			Encoding.UTF8.GetBytes(tag.AsSpan(0, tagLength), buffer[sizeof(ulong)..]);
 		}
 
 		Span<byte> hash = stackalloc byte[HMACSHA1.HashSizeInBytes];
