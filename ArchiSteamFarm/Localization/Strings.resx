@@ -198,7 +198,7 @@ StackTrace:
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="QrCodeLoginUrl" xml:space="preserve">
-		<value>Scan this login URL with the Steam mobile app (a new one will be printed if Steam refreshes it): {0}</value>
+		<value>Scan this QR code with the Steam mobile app (a new one will be printed if Steam refreshes it): {0}</value>
 		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
 	</data>
 	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
