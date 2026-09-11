@@ -109,29 +109,13 @@ internal static class Logging {
 
 						break;
 					case ASF.EUserInputType.DeviceConfirmation:
-						string deviceConfirmationText = Bot.FormatBotResponse(Strings.UserInputDeviceConfirmation, botName);
-
-						while (true) {
-							ASF.ArchiLogger.LogGenericWarning(deviceConfirmationText);
-
-							Console.Write(deviceConfirmationText);
-							result = ConsoleReadLine();
-
-							ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result));
-
-							if (string.IsNullOrEmpty(result) || result.Equals("Y", StringComparison.OrdinalIgnoreCase) || result.Equals("N", StringComparison.OrdinalIgnoreCase)) {
-								break;
-							}
-						}
-
-						break;
 					case ASF.EUserInputType.QrCodeLogin:
-						string qrCodeLoginText = Bot.FormatBotResponse(Strings.UserInputQrCodeLogin, botName);
+						string confirmationText = Bot.FormatBotResponse(userInputType == ASF.EUserInputType.QrCodeLogin ? Strings.UserInputQrCodeLogin : Strings.UserInputDeviceConfirmation, botName);
 
 						while (true) {
-							ASF.ArchiLogger.LogGenericWarning(qrCodeLoginText);
+							ASF.ArchiLogger.LogGenericWarning(confirmationText);
 
-							Console.Write(qrCodeLoginText);
+							Console.Write(confirmationText);
 							result = ConsoleReadLine();
 
 							ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result));
@@ -219,22 +203,6 @@ internal static class Logging {
 		}
 
 		return !string.IsNullOrEmpty(result) ? result.Trim() : null;
-	}
-
-	internal static void WriteToConsole(string message) {
-		ArgumentException.ThrowIfNullOrEmpty(message);
-
-		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
-			return;
-		}
-
-		ConsoleSemaphore.Wait();
-
-		try {
-			Console.WriteLine(message);
-		} finally {
-			ConsoleSemaphore.Release();
-		}
 	}
 
 	internal static void InitCoreLoggers(bool uniqueInstance) {

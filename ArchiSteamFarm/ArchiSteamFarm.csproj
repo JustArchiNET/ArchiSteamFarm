@@ -18,7 +18,6 @@
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 		<PackageReference Include="Microsoft.CodeAnalysis.ResxSourceGenerator" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
-		<PackageReference Include="Net.Codecrete.QrCodeGenerator" />
 		<PackageReference Include="Nito.AsyncEx.Coordination" />
 		<PackageReference Include="NLog.Web.AspNetCore" />
 		<PackageReference Include="Scalar.AspNetCore" />
