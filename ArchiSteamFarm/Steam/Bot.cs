@@ -2528,6 +2528,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			void PublishQrChallengeUrl() {
 				QrChallengeURL = Uri.TryCreate(authSession.ChallengeURL, UriKind.Absolute, out Uri? challengeUrl) ? challengeUrl : null;
 				ArchiLogger.LogGenericWarning(Strings.FormatQrCodeLoginUrl(authSession.ChallengeURL));
+				Logging.WriteToConsole(QrCodeHelper.GenerateAscii(authSession.ChallengeURL));
 			}
 
 			RequiredInput = ASF.EUserInputType.QrCodeLogin;

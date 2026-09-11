@@ -205,6 +205,22 @@ internal static class Logging {
 		return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 	}
 
+	internal static void WriteToConsole(string message) {
+		ArgumentException.ThrowIfNullOrEmpty(message);
+
+		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
+			return;
+		}
+
+		ConsoleSemaphore.Wait();
+
+		try {
+			Console.WriteLine(message);
+		} finally {
+			ConsoleSemaphore.Release();
+		}
+	}
+
 	internal static void InitCoreLoggers(bool uniqueInstance) {
 		try {
 			// Handle edge case of user using NLog.config in non-standard directory (current directory)
