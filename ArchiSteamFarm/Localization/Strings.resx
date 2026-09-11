@@ -193,6 +193,21 @@ StackTrace:
 		<value>Please check your Steam mobile app, you should have received a login approval notification. Type Y if you received and approved the notification, N if you want to provide code instead: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Type Y to log in by scanning a QR code with the Steam mobile app, N to log in with credentials: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="WarningQrCodeLogin" xml:space="preserve">
+		<value>Scan the QR code with the Steam mobile app to log in. A new code will be printed if Steam refreshes it.</value>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>QR code login URL: {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>QR code login authenticated as {0}, which does not match configured Steam login: {1}</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Please enter your 2FA code from your Steam authenticator app: </value>
 		<comment>Please note that this translation should end with space</comment>
