@@ -23,6 +23,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -101,12 +102,7 @@ public abstract class SerializableFile : IDisposable {
 				throw new InvalidOperationException(nameof(json));
 			}
 
-			// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-			string newFilePath = $"{serializableFile.FilePath}.new";
-
-			await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
-			File.Move(newFilePath, serializableFile.FilePath, true);
+			await WriteContentSafely(serializableFile.FilePath, json).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		} finally {
@@ -136,15 +132,10 @@ public abstract class SerializableFile : IDisposable {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 		ArgumentException.ThrowIfNullOrEmpty(json);
 
-		string newFilePath = $"{filePath}.new";
-
 		await GlobalFileSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
-			// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-			await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
-			File.Move(newFilePath, filePath, true);
+			await WriteContentSafely(filePath, json).ConfigureAwait(false);
 
 			return true;
 		} catch (Exception e) {
@@ -154,5 +145,37 @@ public abstract class SerializableFile : IDisposable {
 		} finally {
 			GlobalFileSemaphore.Release();
 		}
+	}
+
+	private static async Task WriteContentSafely(string filePath, string json) {
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
+		ArgumentException.ThrowIfNullOrEmpty(json);
+
+		// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
+		string newFilePath = $"{filePath}.new";
+
+		FileStream fileStream = new(
+			newFilePath, new FileStreamOptions {
+				Access = FileAccess.Write,
+				Mode = FileMode.Create,
+				Options = FileOptions.Asynchronous,
+				Share = FileShare.None
+			}
+		);
+
+		await using (fileStream.ConfigureAwait(false)) {
+			StreamWriter streamWriter = new(fileStream, new UTF8Encoding(false), leaveOpen: true);
+
+			await using (streamWriter.ConfigureAwait(false)) {
+				await streamWriter.WriteAsync(json).ConfigureAwait(false);
+				await streamWriter.FlushAsync().ConfigureAwait(false);
+			}
+
+#pragma warning disable CA1849 // Asynchronous variant does not allow flushing OS buffers, so we need to use synchronous variant here
+			fileStream.Flush(true);
+#pragma warning restore CA1849 // Asynchronous variant does not allow flushing OS buffers, so we need to use synchronous variant here
+		}
+
+		File.Move(newFilePath, filePath, true);
 	}
 }
