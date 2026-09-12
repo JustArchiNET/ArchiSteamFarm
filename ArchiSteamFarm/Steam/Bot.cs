@@ -256,6 +256,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	public FrozenDictionary<uint, LicenseData> OwnedPackages { get; private set; } = FrozenDictionary<uint, LicenseData>.Empty;
 
 	[JsonInclude]
+	[PublicAPI]
+	public Uri? QrChallengeURL { get; private set; }
+
+	[JsonInclude]
 	[JsonRequired]
 	[PublicAPI]
 	[Required]
@@ -292,6 +296,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private DateTime? AccessTokenValidUntil;
 	private string? AuthCode;
 	private CancellationTokenSource? CallbacksAborted;
+	private string? QrCodeLoginInput;
+	private CancellationTokenSource? QrLoginCancellation;
 	private Timer? ConnectionFailureTimer;
 	private bool FirstTradeSent;
 	private Timer? GamesRedeemerInBackgroundTimer;
@@ -945,6 +951,18 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		switch (inputType) {
 			case ASF.EUserInputType.DeviceConfirmation:
 				// Nothing to do for us
+				break;
+			case ASF.EUserInputType.QrCodeLogin:
+				if (!inputValue.Equals("Y", StringComparison.OrdinalIgnoreCase) && !inputValue.Equals("N", StringComparison.OrdinalIgnoreCase)) {
+					return false;
+				}
+
+				QrCodeLoginInput = inputValue;
+
+				if (inputValue.Equals("N", StringComparison.OrdinalIgnoreCase) && (QrChallengeURL != null)) {
+					QrLoginCancellation?.Cancel();
+				}
+
 				break;
 			case ASF.EUserInputType.Login:
 				BotConfig.SteamLogin = inputValue;
@@ -1852,6 +1870,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		switch (inputType) {
+			case ASF.EUserInputType.QrCodeLogin when !string.IsNullOrEmpty(QrCodeLoginInput):
+				string? savedQrCodeLoginInput = QrCodeLoginInput;
+
+				QrCodeLoginInput = null;
+
+				return savedQrCodeLoginInput;
 			case ASF.EUserInputType.SteamGuard when !string.IsNullOrEmpty(AuthCode):
 				string? savedAuthCode = AuthCode;
 
@@ -2079,6 +2103,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private void Disconnect(bool reconnect = false) {
 		StopConnectionFailureTimer();
+		QrLoginCancellation?.Cancel();
 
 		LastLogOnResult = EResult.OK;
 		ReconnectOnUserInitiated = reconnect;
@@ -2091,6 +2116,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ArchiWebHandler.Dispose();
 		BotDatabase.Dispose();
 		ConnectionSemaphore.Dispose();
+		QrLoginCancellation?.Dispose();
 		GamesRedeemerInBackgroundSemaphore.Dispose();
 		InitializationSemaphore.Dispose();
 		MessagingSemaphore.Dispose();
@@ -2485,6 +2511,132 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
+	private async Task<bool> LoginWithQrCode(string machineName) {
+		ArgumentException.ThrowIfNullOrEmpty(machineName);
+
+		QrLoginCancellation?.Dispose();
+		QrLoginCancellation = new CancellationTokenSource();
+
+		try {
+			QrAuthSession authSession = await SteamClient.Authentication.BeginAuthSessionViaQRAsync(
+				new AuthSessionDetails {
+					DeviceFriendlyName = machineName,
+					IsPersistentSession = true
+				}
+			).ConfigureAwait(false);
+
+			void PublishQrChallengeUrl() {
+				QrChallengeURL = Uri.TryCreate(authSession.ChallengeURL, UriKind.Absolute, out Uri? challengeUrl) ? challengeUrl : null;
+				ArchiLogger.LogGenericWarning(Strings.FormatQrCodeLoginUrl(authSession.ChallengeURL));
+				Logging.WriteToConsole(QrCodeHelper.GenerateAscii(authSession.ChallengeURL));
+			}
+
+			RequiredInput = ASF.EUserInputType.QrCodeLogin;
+			PublishQrChallengeUrl();
+			authSession.ChallengeURLChanged = PublishQrChallengeUrl;
+
+			AuthPollResult pollResult = await authSession.PollingWaitForResultAsync(QrLoginCancellation.Token).ConfigureAwait(false);
+
+			if (!string.IsNullOrEmpty(BotConfig.SteamLogin)) {
+				string expectedUsername = GeneratedRegexes.NonAscii().Replace(BotConfig.SteamLogin, "");
+
+				if (!pollResult.AccountName.Equals(expectedUsername, StringComparison.OrdinalIgnoreCase)) {
+					ArchiLogger.LogGenericError(Strings.FormatErrorQrCodeLoginAccountMismatch(pollResult.AccountName, expectedUsername));
+
+					ReconnectOnUserInitiated = true;
+					SteamClient.Disconnect();
+
+					return false;
+				}
+			} else if (!SetUserInput(ASF.EUserInputType.Login, pollResult.AccountName)) {
+				ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(pollResult.AccountName)));
+
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
+
+				return false;
+			}
+
+			if (!TryApplyAuthPollResult(pollResult)) {
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
+
+				return false;
+			}
+
+			return true;
+		} catch (AsyncJobFailedException e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			await HandleLoginResult(EResult.Timeout, EResult.Timeout).ConfigureAwait(false);
+
+			ReconnectOnUserInitiated = true;
+			SteamClient.Disconnect();
+
+			return false;
+		} catch (AuthenticationException e) {
+			ArchiLogger.LogGenericWarningException(e);
+
+			await HandleLoginResult(e.Result, e.Result).ConfigureAwait(false);
+
+			ReconnectOnUserInitiated = true;
+			SteamClient.Disconnect();
+
+			return false;
+		} catch (OperationCanceledException) {
+			if (KeepRunning) {
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
+			}
+
+			return false;
+		} finally {
+			QrChallengeURL = null;
+
+			if (RequiredInput == ASF.EUserInputType.QrCodeLogin) {
+				RequiredInput = ASF.EUserInputType.None;
+			}
+		}
+	}
+
+	private bool TryApplyAuthPollResult(AuthPollResult pollResult) {
+		ArgumentNullException.ThrowIfNull(pollResult);
+
+		if (string.IsNullOrEmpty(pollResult.AccessToken)) {
+			ArchiLogger.LogNullError(pollResult.AccessToken);
+
+			return false;
+		}
+
+		if (string.IsNullOrEmpty(pollResult.RefreshToken)) {
+			ArchiLogger.LogNullError(pollResult.RefreshToken);
+
+			return false;
+		}
+
+		if (!string.IsNullOrEmpty(pollResult.NewGuardData) && BotConfig.UseLoginKeys) {
+			BotDatabase.SteamGuardData = pollResult.NewGuardData;
+		}
+
+		UpdateTokens(pollResult.AccessToken, pollResult.RefreshToken);
+
+		return true;
+	}
+
+	private async Task<bool> WantsQrCodeLogin() {
+		if (string.IsNullOrEmpty(QrCodeLoginInput)) {
+			string? decryptedSteamPassword = await BotConfig.GetDecryptedSteamPassword().ConfigureAwait(false);
+
+			if (!string.IsNullOrEmpty(BotConfig.SteamLogin) && !string.IsNullOrEmpty(decryptedSteamPassword)) {
+				return false;
+			}
+		}
+
+		string? input = await RequestInput(ASF.EUserInputType.QrCodeLogin, false).ConfigureAwait(false);
+
+		return input?.Equals("Y", StringComparison.OrdinalIgnoreCase) == true;
+	}
+
 	private async Task InitModules() {
 		if (Bots == null) {
 			throw new InvalidOperationException(nameof(Bots));
@@ -2740,6 +2892,23 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
+		string machineNameFormat = !string.IsNullOrEmpty(BotConfig.MachineName) ? BotConfig.MachineName : "{0} ({1}/{2})";
+		string machineName = string.Format(CultureInfo.CurrentCulture, machineNameFormat, Environment.MachineName, SharedInfo.PublicIdentifier, SharedInfo.Version);
+
+		if (string.IsNullOrEmpty(RefreshToken) && await WantsQrCodeLogin().ConfigureAwait(false)) {
+			if (!KeepRunning || !SteamClient.IsConnected) {
+				return;
+			}
+
+			if (!await LoginWithQrCode(machineName).ConfigureAwait(false)) {
+				return;
+			}
+		}
+
+		if (!KeepRunning) {
+			return;
+		}
+
 		if (!await InitLoginAndPassword(string.IsNullOrEmpty(RefreshToken)).ConfigureAwait(false)) {
 			await Stop().ConfigureAwait(false);
 
@@ -2784,9 +2953,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			// Possible if user spent too much time entering password, try again after reconnect
 			return;
 		}
-
-		string machineNameFormat = !string.IsNullOrEmpty(BotConfig.MachineName) ? BotConfig.MachineName : "{0} ({1}/{2})";
-		string machineName = string.Format(CultureInfo.CurrentCulture, machineNameFormat, Environment.MachineName, SharedInfo.PublicIdentifier, SharedInfo.Version);
 
 		ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
 
@@ -2854,31 +3020,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			LoginFailures += botCredentialsProvider.LoginFailures;
 
-			if (!string.IsNullOrEmpty(pollResult.NewGuardData) && BotConfig.UseLoginKeys) {
-				BotDatabase.SteamGuardData = pollResult.NewGuardData;
-			}
-
-			if (string.IsNullOrEmpty(pollResult.AccessToken)) {
-				// The fuck is this?
-				ArchiLogger.LogNullError(pollResult.AccessToken);
-
+			if (!TryApplyAuthPollResult(pollResult)) {
 				ReconnectOnUserInitiated = true;
 				SteamClient.Disconnect();
 
 				return;
 			}
-
-			if (string.IsNullOrEmpty(pollResult.RefreshToken)) {
-				// The fuck is that?
-				ArchiLogger.LogNullError(pollResult.RefreshToken);
-
-				ReconnectOnUserInitiated = true;
-				SteamClient.Disconnect();
-
-				return;
-			}
-
-			UpdateTokens(pollResult.AccessToken, pollResult.RefreshToken);
 		}
 
 		SteamUser.LogOnDetails logOnDetails = new() {
@@ -3367,7 +3514,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		// Always reset one-time-only access tokens when we get OnLoggedOn() response
-		AuthCode = TwoFactorCode = null;
+		AuthCode = QrCodeLoginInput = TwoFactorCode = null;
 
 		await HandleLoginResult(callback.Result, callback.ExtendedResult).ConfigureAwait(false);
 

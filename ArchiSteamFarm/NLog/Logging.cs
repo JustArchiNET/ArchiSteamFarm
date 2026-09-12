@@ -109,12 +109,13 @@ internal static class Logging {
 
 						break;
 					case ASF.EUserInputType.DeviceConfirmation:
-						string deviceConfirmationText = Bot.FormatBotResponse(Strings.UserInputDeviceConfirmation, botName);
+					case ASF.EUserInputType.QrCodeLogin:
+						string confirmationText = Bot.FormatBotResponse(userInputType == ASF.EUserInputType.QrCodeLogin ? Strings.UserInputQrCodeLogin : Strings.UserInputDeviceConfirmation, botName);
 
 						while (true) {
-							ASF.ArchiLogger.LogGenericWarning(deviceConfirmationText);
+							ASF.ArchiLogger.LogGenericWarning(confirmationText);
 
-							Console.Write(deviceConfirmationText);
+							Console.Write(confirmationText);
 							result = ConsoleReadLine();
 
 							ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result));
@@ -202,6 +203,22 @@ internal static class Logging {
 		}
 
 		return !string.IsNullOrEmpty(result) ? result.Trim() : null;
+	}
+
+	internal static void WriteToConsole(string message) {
+		ArgumentException.ThrowIfNullOrEmpty(message);
+
+		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
+			return;
+		}
+
+		ConsoleSemaphore.Wait();
+
+		try {
+			Console.WriteLine(message);
+		} finally {
+			ConsoleSemaphore.Release();
+		}
 	}
 
 	internal static void InitCoreLoggers(bool uniqueInstance) {

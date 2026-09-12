@@ -962,7 +962,8 @@ public static class ASF {
 		SteamParentalCode,
 		TwoFactorAuthentication,
 		Cryptkey,
-		DeviceConfirmation
+		DeviceConfirmation,
+		QrCodeLogin
 	}
 
 	internal enum EFileType : byte {
