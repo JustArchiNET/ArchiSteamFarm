@@ -2648,6 +2648,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task<bool> WantsQrCodeLogin() {
+		// Headless/service cannot show a console QR. Do not auto-prompt (RequestInput fails
+		// and stops the bot). A future ASF-ui can still choose QR by sending IPC Input
+		// QrCodeLogin=Y first; we then expose QrChallengeURL for that UI to render.
+		// Otherwise headless falls through to refresh-token reuse or login/password IPC,
+		// matching normal Archi operation (JustArchi #2918).
+		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
+			return QrCodeLoginInput?.Equals("Y", StringComparison.OrdinalIgnoreCase) == true;
+		}
+
 		if (string.IsNullOrEmpty(QrCodeLoginInput)) {
 			string? decryptedSteamPassword = await BotConfig.GetDecryptedSteamPassword().ConfigureAwait(false);
 
