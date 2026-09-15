@@ -2528,7 +2528,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			void PublishQrChallengeUrl() {
 				QrChallengeURL = Uri.TryCreate(authSession.ChallengeURL, UriKind.Absolute, out Uri? challengeUrl) ? challengeUrl : null;
 				ArchiLogger.LogGenericWarning(Strings.FormatQrCodeLoginUrl(authSession.ChallengeURL));
-				Logging.WriteToConsole(QrCodeHelper.GenerateAscii(authSession.ChallengeURL));
+				Utilities.InBackground(() => Logging.WriteToConsole(QrCodeHelper.GenerateAscii(authSession.ChallengeURL)));
 			}
 
 			RequiredInput = ASF.EUserInputType.QrCodeLogin;
@@ -2548,37 +2548,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 					return false;
 				}
-			} else {
-				if (!SetUserInput(ASF.EUserInputType.Login, pollResult.AccountName)) {
-					ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(pollResult.AccountName)));
+			} else if (!SetUserInput(ASF.EUserInputType.Login, pollResult.AccountName)) {
+				ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(pollResult.AccountName)));
 
-					ReconnectOnUserInitiated = true;
-					SteamClient.Disconnect();
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
 
-					return false;
-				}
-
-				// SetUserInput(Login) intentionally leaves IsSteamLoginSet=false so interactive
-				// password prompts do not write credentials. QR auth only learns the account
-				// name (not a password); persist it so a restart can reuse RefreshToken without
-				// re-prompting for Steam login.
-				BotConfig.IsSteamLoginSet = true;
-
-				string configFilePath = GetFilePath(EFileType.Config);
-
-				if (string.IsNullOrEmpty(configFilePath)) {
-					ArchiLogger.LogNullError(configFilePath);
-				} else {
-					BotConfig.Saving = true;
-
-					try {
-						if (!await BotConfig.Write(configFilePath, BotConfig).ConfigureAwait(false)) {
-							ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(BotConfig.Write)));
-						}
-					} finally {
-						BotConfig.Saving = false;
-					}
-				}
+				return false;
 			}
 
 			if (!TryApplyAuthPollResult(pollResult)) {

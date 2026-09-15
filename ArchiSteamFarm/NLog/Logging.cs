@@ -205,14 +205,14 @@ internal static class Logging {
 		return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 	}
 
-	internal static void WriteToConsole(string message) {
+	internal static async Task WriteToConsole(string message) {
 		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
 			return;
 		}
 
-		ConsoleSemaphore.Wait();
+		await ConsoleSemaphore.WaitAsync().ConfigureAwait(false);
 
 		try {
 			Console.WriteLine(message);
