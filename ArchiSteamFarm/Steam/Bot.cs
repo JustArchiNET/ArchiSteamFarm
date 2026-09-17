@@ -2525,15 +2525,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 			).ConfigureAwait(false);
 
-			void PublishQrChallengeUrl() {
+			async Task PublishQrChallengeUrl() {
 				QrChallengeURL = Uri.TryCreate(authSession.ChallengeURL, UriKind.Absolute, out Uri? challengeUrl) ? challengeUrl : null;
 				ArchiLogger.LogGenericWarning(Strings.FormatQrCodeLoginUrl(authSession.ChallengeURL));
-				Utilities.InBackground(() => Logging.WriteToConsole(QrCodeHelper.GenerateAscii(authSession.ChallengeURL)));
+				await Logging.WriteToConsole(QrCodeHelper.GenerateAscii(authSession.ChallengeURL)).ConfigureAwait(false);
 			}
 
 			RequiredInput = ASF.EUserInputType.QrCodeLogin;
-			PublishQrChallengeUrl();
-			authSession.ChallengeURLChanged = PublishQrChallengeUrl;
+			await PublishQrChallengeUrl().ConfigureAwait(false);
+			authSession.ChallengeURLChanged = () => _ = PublishQrChallengeUrl();
 
 			AuthPollResult pollResult = await authSession.PollingWaitForResultAsync(QrLoginCancellation.Token).ConfigureAwait(false);
 
