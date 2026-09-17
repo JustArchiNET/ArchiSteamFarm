@@ -2533,7 +2533,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			RequiredInput = ASF.EUserInputType.QrCodeLogin;
 			await PublishQrChallengeUrl().ConfigureAwait(false);
-			authSession.ChallengeURLChanged = () => _ = PublishQrChallengeUrl();
+			authSession.ChallengeURLChanged = async () => await PublishQrChallengeUrl().ConfigureAwait(false);
 
 			AuthPollResult pollResult = await authSession.PollingWaitForResultAsync(QrLoginCancellation.Token).ConfigureAwait(false);
 
