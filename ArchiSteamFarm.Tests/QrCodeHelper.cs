@@ -33,8 +33,8 @@ internal sealed class QrCodeHelper {
 	internal void GenerateAsciiContainsQrModules() {
 		string result = Helpers.QrCodeHelper.GenerateAscii("https://s.team/q/l/test");
 
-		Assert.IsFalse(string.IsNullOrEmpty(result));
-		Assert.IsTrue(result.Contains('█', StringComparison.Ordinal) || result.Contains('▀', StringComparison.Ordinal) || result.Contains('▄', StringComparison.Ordinal));
+		Assert.IsFalse(string.IsNullOrWhiteSpace(result));
+		Assert.IsFalse(result.AsSpan().ContainsAnyExcept("█▀▄ \r\n"));
 	}
 }
 #pragma warning restore CA1812
