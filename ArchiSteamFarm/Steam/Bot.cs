@@ -2600,6 +2600,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private bool TryApplyAuthPollResult(AuthPollResult pollResult) {
 		ArgumentNullException.ThrowIfNull(pollResult);
 
+		if (!string.IsNullOrEmpty(pollResult.NewGuardData) && BotConfig.UseLoginKeys) {
+			BotDatabase.SteamGuardData = pollResult.NewGuardData;
+		}
+
 		if (string.IsNullOrEmpty(pollResult.AccessToken)) {
 			ArchiLogger.LogNullError(pollResult.AccessToken);
 
@@ -2610,10 +2614,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			ArchiLogger.LogNullError(pollResult.RefreshToken);
 
 			return false;
-		}
-
-		if (!string.IsNullOrEmpty(pollResult.NewGuardData) && BotConfig.UseLoginKeys) {
-			BotDatabase.SteamGuardData = pollResult.NewGuardData;
 		}
 
 		UpdateTokens(pollResult.AccessToken, pollResult.RefreshToken);
