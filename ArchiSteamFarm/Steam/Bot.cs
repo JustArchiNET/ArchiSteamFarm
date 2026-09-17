@@ -2584,10 +2584,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			return false;
 		} catch (OperationCanceledException) {
-			if (KeepRunning) {
-				ReconnectOnUserInitiated = true;
-				SteamClient.Disconnect();
-			}
+			ReconnectOnUserInitiated = true;
+			SteamClient.Disconnect();
 
 			return false;
 		} finally {
