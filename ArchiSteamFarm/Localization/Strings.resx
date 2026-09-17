@@ -202,7 +202,7 @@ StackTrace:
 		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
 	</data>
 	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
-		<value>QR code login authenticated as {0}, which does not match configured Steam login: {1}</value>
+		<value>QR code login authenticated as {0}, which does not match configured Steam login: {1}. Scan with the same Steam account as SteamLogin in the bot config, or remove SteamLogin from the config if you want to use the scanned account.</value>
 		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
