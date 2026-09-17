@@ -8,8 +8,8 @@
 		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.ResxSourceGenerator" Version="5.0.0-1.25277.114" />
 		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.22.0" />
-		<PackageVersion Include="Net.Codecrete.QrCodeGenerator" Version="3.2.1" />
 		<PackageVersion Include="MSTest" Version="4.4.1" />
+		<PackageVersion Include="Net.Codecrete.QrCodeGenerator" Version="3.2.1" />
 		<PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
 		<PackageVersion Include="NLog.Web.AspNetCore" Version="6.2.1" />
 		<PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.18.0-beta.1" />
