@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.Buffers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ArchiSteamFarm.Tests;
@@ -29,12 +30,14 @@ namespace ArchiSteamFarm.Tests;
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
 internal sealed class QrCodeHelper {
+	private static readonly SearchValues<char> AllowedQrAscii = SearchValues.Create("█▀▄ \r\n");
+
 	[TestMethod]
 	internal void GenerateAsciiContainsQrModules() {
 		string result = Helpers.QrCodeHelper.GenerateAscii("https://s.team/q/l/test");
 
 		Assert.IsFalse(string.IsNullOrWhiteSpace(result));
-		Assert.IsFalse(result.AsSpan().ContainsAnyExcept("█▀▄ \r\n"));
+		Assert.IsFalse(result.AsSpan().ContainsAnyExcept(AllowedQrAscii));
 	}
 }
 #pragma warning restore CA1812
