@@ -2543,35 +2543,19 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				if (!pollResult.AccountName.Equals(expectedUsername, StringComparison.OrdinalIgnoreCase)) {
 					ArchiLogger.LogGenericError(Strings.FormatErrorQrCodeLoginAccountMismatch(pollResult.AccountName, expectedUsername));
 
-					ReconnectOnUserInitiated = true;
-					SteamClient.Disconnect();
-
 					return false;
 				}
 			} else if (!SetUserInput(ASF.EUserInputType.Login, pollResult.AccountName)) {
 				ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(pollResult.AccountName)));
 
-				ReconnectOnUserInitiated = true;
-				SteamClient.Disconnect();
-
 				return false;
 			}
 
-			if (!TryApplyAuthPollResult(pollResult)) {
-				ReconnectOnUserInitiated = true;
-				SteamClient.Disconnect();
-
-				return false;
-			}
-
-			return true;
+			return TryApplyAuthPollResult(pollResult);
 		} catch (AsyncJobFailedException e) {
 			ArchiLogger.LogGenericWarningException(e);
 
 			await HandleLoginResult(EResult.Timeout, EResult.Timeout).ConfigureAwait(false);
-
-			ReconnectOnUserInitiated = true;
-			SteamClient.Disconnect();
 
 			return false;
 		} catch (AuthenticationException e) {
@@ -2579,14 +2563,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			await HandleLoginResult(e.Result, e.Result).ConfigureAwait(false);
 
-			ReconnectOnUserInitiated = true;
-			SteamClient.Disconnect();
-
 			return false;
 		} catch (OperationCanceledException) {
-			ReconnectOnUserInitiated = true;
-			SteamClient.Disconnect();
-
 			return false;
 		} finally {
 			QrChallengeURL = null;
@@ -2903,6 +2881,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			if (!await LoginWithQrCode(machineName).ConfigureAwait(false)) {
+				ReconnectOnUserInitiated = true;
+				SteamClient.Disconnect();
+
 				return;
 			}
 		}
