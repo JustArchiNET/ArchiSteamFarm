@@ -2601,7 +2601,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private async Task<bool> WantsQrCodeLogin() {
 		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
-			return QrCodeLoginInput?.Equals("Y", StringComparison.OrdinalIgnoreCase) == true;
+			return false;
 		}
 
 		if (string.IsNullOrEmpty(QrCodeLoginInput)) {
