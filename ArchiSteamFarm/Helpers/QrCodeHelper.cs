@@ -41,7 +41,7 @@ internal static class QrCodeHelper {
 		for (int y = 0; y < size; y += 2) {
 			for (int x = 0; x < size; x++) {
 				bool top = IsDark(qrCode, x, y);
-				bool bottom = ((y + 1) < size) && IsDark(qrCode, x, y + 1);
+				bool bottom = IsDark(qrCode, x, y + 1);
 
 				result.Append(
 					(top, bottom) switch {
