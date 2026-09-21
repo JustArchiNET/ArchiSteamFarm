@@ -953,13 +953,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				// Nothing to do for us
 				break;
 			case ASF.EUserInputType.QrCodeLogin:
-				if (!inputValue.Equals("Y", StringComparison.OrdinalIgnoreCase) && !inputValue.Equals("N", StringComparison.OrdinalIgnoreCase)) {
+				inputValue = inputValue.Trim().ToUpperInvariant();
+
+				if (inputValue is not "Y" and not "N") {
 					return false;
 				}
 
 				QrCodeLoginInput = inputValue;
 
-				if (inputValue.Equals("N", StringComparison.OrdinalIgnoreCase) && (QrChallengeURL != null)) {
+				if ((inputValue == "N") && (QrChallengeURL != null)) {
 					QrLoginCancellation?.Cancel();
 				}
 
