@@ -332,7 +332,7 @@
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
 	</data>
 	<data name="BotAddLicenseNoItems" xml:space="preserve">
-		<value>没有被批准的应用或软件包</value>
+		<value>未授予 App 或 Package</value>
 		<comment>Used in place of the list of granted IDs when Steam reports no granted apps or packages. This does not indicate why no grants were reported.</comment>
 	</data>
 	<data name="BotAddLicenseWithItems" xml:space="preserve">
