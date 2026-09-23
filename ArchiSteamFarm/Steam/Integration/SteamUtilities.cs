@@ -182,8 +182,8 @@ public static class SteamUtilities {
 					value = httpSegments[1];
 
 					return true;
-				case "steam" when uri.Host.Equals("launch", StringComparison.OrdinalIgnoreCase):
-					// Handle steam://launch/<appID>/ and steam://launch/<appID>/Dialog formats
+				case "steam" when uri.Host.Equals("launch", StringComparison.OrdinalIgnoreCase) || uri.Host.Equals("install", StringComparison.OrdinalIgnoreCase):
+					// Handle steam://launch/<appID>/, steam://launch/<appID>/Dialog, and steam://install<appID> formats
 					string[] steamSegments = uri.AbsolutePath.Split('/', 2, StringSplitOptions.RemoveEmptyEntries);
 
 					if ((steamSegments.Length < 1) || !uint.TryParse(steamSegments[0], out uint launchAppId) || (launchAppId == 0)) {
