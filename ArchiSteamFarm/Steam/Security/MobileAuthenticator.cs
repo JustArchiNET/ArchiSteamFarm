@@ -384,11 +384,21 @@ public sealed class MobileAuthenticator : IDisposable {
 
 	private static bool TryFromBase64StringRelaxed(string input, Span<byte> destination, out int bytesWritten) {
 		// Some real-world secrets are encoded in a non-canonical way (e.g. with non-zero bits discarded by the padding of the last base64 group), which the standard, strict base64 decoder refuses to decode. This is a lenient fallback decoder that tolerates such input
-		int length = (input.AsSpan().TrimEnd('=').Length * 6) / 8;
+		ReadOnlySpan<char> inputSpan = input;
+		int length = inputSpan.TrimEnd('=').Length;
+		int paddingLength = inputSpan.Length - length;
+		int firstPadding = inputSpan.IndexOf('=');
+		int requiredBytes = ((length / 4) * 3) + (((length % 4) * 6) / 8);
+
+		if ((inputSpan.Length == 0) || (inputSpan.Length % 4 != 0) || (paddingLength > 2) || (length % 4 == 1) || ((firstPadding >= 0) && (firstPadding != length)) || (destination.Length < requiredBytes)) {
+			bytesWritten = 0;
+
+			return false;
+		}
 
 		bool result = Convert.TryFromBase64String(input.Replace('=', 'A'), destination, out _);
 
-		bytesWritten = length;
+		bytesWritten = requiredBytes;
 
 		return result;
 	}
