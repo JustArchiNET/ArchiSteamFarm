@@ -186,7 +186,7 @@ public static class SteamUtilities {
 					// Handle steam://launch/<appID>/, steam://launch/<appID>/Dialog, and steam://install/<appID> formats
 					string[] steamSegments = uri.AbsolutePath.Split('/', 2, StringSplitOptions.RemoveEmptyEntries);
 
-					if ((steamSegments.Length < 1) || !uint.TryParse(steamSegments[0], out uint launchAppId) || (launchAppId == 0)) {
+					if ((steamSegments.Length < 1) || !uint.TryParse(steamSegments[0], out uint steamAppID) || (steamAppID == 0)) {
 						break;
 					}
 
