@@ -2762,6 +2762,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			QrAuthSession authSession = await SteamClient.Authentication.BeginAuthSessionViaQRAsync(
 				new AuthSessionDetails {
 					DeviceFriendlyName = machineName,
+					GuardData = BotConfig.UseLoginKeys ? BotDatabase.SteamGuardData : null,
 					IsPersistentSession = true
 				}
 			).ConfigureAwait(false);
@@ -4317,15 +4318,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private async Task<bool> WantsQrCodeLogin() {
 		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
+			// In headless/service mode, we always fallback to the other inputs instead, as we never want to wait in blocked call
 			return false;
 		}
 
-		if (string.IsNullOrEmpty(QrCodeLoginInput)) {
-			string? decryptedSteamPassword = await BotConfig.GetDecryptedSteamPassword().ConfigureAwait(false);
-
-			if (!string.IsNullOrEmpty(BotConfig.SteamLogin) && !string.IsNullOrEmpty(decryptedSteamPassword)) {
-				return false;
-			}
+		if (HasMobileAuthenticator || HasLoginCodeReady) {
+			// We don't want qr login under any circumstance, we can provide the code on our own
+			return false;
 		}
 
 		string? input = await RequestInput(ASF.EUserInputType.QrCodeLogin, false).ConfigureAwait(false);
