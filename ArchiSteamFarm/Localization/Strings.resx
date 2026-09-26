@@ -193,6 +193,18 @@ StackTrace:
 		<value>Please check your Steam mobile app, you should have received a login approval notification. Type Y if you received and approved the notification, N if you want to provide code instead: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Type Y to log in by scanning a QR code with the Steam mobile app, N to log in with credentials: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>Scan this QR code with the Steam mobile app (a new one will be printed if Steam refreshes it): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>QR code login authenticated as {0}, which does not match configured Steam login: {1}. Scan with the same Steam account as SteamLogin in the bot config, or remove SteamLogin from the config if you want to use the scanned account.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Please enter your 2FA code from your Steam authenticator app: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -331,9 +343,13 @@ StackTrace:
 		<value>ID: {0} | Status: {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
 	</data>
+	<data name="BotAddLicenseNoItems" xml:space="preserve">
+		<value>No apps or packages granted</value>
+		<comment>Used in place of the list of granted IDs when Steam reports no granted apps or packages. This does not indicate why no grants were reported.</comment>
+	</data>
 	<data name="BotAddLicenseWithItems" xml:space="preserve">
 		<value>ID: {0} | Status: {1} | Items: {2}</value>
-		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma, or a localized message indicating that no apps or packages were granted</comment>
 	</data>
 	<data name="BotAlreadyRunning" xml:space="preserve">
 		<value>This bot is already running!</value>

@@ -672,7 +672,7 @@ public sealed class Commands {
 					(EResult result, IReadOnlyCollection<uint>? grantedApps, IReadOnlyCollection<uint>? grantedPackages) = await Bot.Actions.AddFreeLicenseApp(gameID).ConfigureAwait(false);
 
 					if (((grantedApps == null) || (grantedApps.Count == 0)) && ((grantedPackages == null) || (grantedPackages.Count == 0))) {
-						response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"app/{gameID}", result)));
+						response.AppendLine(FormatBotResponse(result == EResult.OK ? Strings.FormatBotAddLicenseWithItems($"app/{gameID}", result, Strings.BotAddLicenseNoItems) : Strings.FormatBotAddLicense($"app/{gameID}", result)));
 
 						break;
 					}
