@@ -37,11 +37,11 @@ internal sealed class ListedUser {
 
 	[JsonInclude]
 	[JsonRequired]
-	internal ImmutableHashSet<EAssetType> MatchableTypes { get; private init; } = [];
+	internal bool MatchEverything { get; private init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	internal bool MatchEverything { get; private init; }
+	internal ImmutableHashSet<EAssetType> MatchableTypes { get; private init; } = [];
 
 	[JsonInclude]
 	[JsonRequired]

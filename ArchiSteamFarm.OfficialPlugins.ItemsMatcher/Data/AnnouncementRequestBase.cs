@@ -46,11 +46,11 @@ internal abstract class AnnouncementRequestBase {
 
 	[JsonInclude]
 	[JsonRequired]
-	private ImmutableHashSet<EAssetType> MatchableTypes { get; init; }
+	private bool MatchEverything { get; init; }
 
 	[JsonInclude]
 	[JsonRequired]
-	private bool MatchEverything { get; init; }
+	private ImmutableHashSet<EAssetType> MatchableTypes { get; init; }
 
 	[JsonInclude]
 	[JsonRequired]

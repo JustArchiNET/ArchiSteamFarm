@@ -92,6 +92,13 @@ public static class ArchiCryptoHelper {
 		};
 	}
 
+	internal static bool HasTransformation(this ECryptoMethod cryptoMethod) =>
+		cryptoMethod switch {
+			ECryptoMethod.AES => true,
+			ECryptoMethod.ProtectedDataForCurrentUser => true,
+			_ => false
+		};
+
 	internal static string Hash(EHashingMethod hashingMethod, string text) {
 		if (!Enum.IsDefined(hashingMethod)) {
 			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
@@ -131,13 +138,6 @@ public static class ArchiCryptoHelper {
 			_ => throw new InvalidOperationException(nameof(hashingMethod))
 		};
 	}
-
-	internal static bool HasTransformation(this ECryptoMethod cryptoMethod) =>
-		cryptoMethod switch {
-			ECryptoMethod.AES => true,
-			ECryptoMethod.ProtectedDataForCurrentUser => true,
-			_ => false
-		};
 
 	internal static string? RecoverSteamParentalCode(byte[] passwordHash, byte[] salt, EHashingMethod hashingMethod) {
 		if ((passwordHash == null) || (passwordHash.Length == 0)) {

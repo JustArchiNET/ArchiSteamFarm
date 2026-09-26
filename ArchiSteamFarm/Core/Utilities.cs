@@ -53,6 +53,22 @@ public static class Utilities {
 
 	private static readonly FrozenSet<char> DirectorySeparators = [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar];
 
+#pragma warning disable CA1034 // False positive, there's no other way we can declare this block
+	extension(HttpStatusCode statusCode) {
+		[PublicAPI]
+		public bool IsClientErrorCode() => statusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError;
+
+		[PublicAPI]
+		public bool IsRedirectionCode() => statusCode is >= HttpStatusCode.Ambiguous and < HttpStatusCode.BadRequest;
+
+		[PublicAPI]
+		public bool IsServerErrorCode() => statusCode is >= HttpStatusCode.InternalServerError and < (HttpStatusCode) 600;
+
+		[PublicAPI]
+		public bool IsSuccessCode() => statusCode is >= HttpStatusCode.OK and < HttpStatusCode.Ambiguous;
+	}
+#pragma warning restore CA1034 // False positive, there's no other way we can declare this block
+
 	[PublicAPI]
 	public static IEnumerable<T> AsLinqThreadSafeEnumerable<T>(this ICollection<T> collection) {
 		ArgumentNullException.ThrowIfNull(collection);
@@ -513,20 +529,4 @@ public static class Utilities {
 
 		return prefixes.Any(prefix => !string.IsNullOrEmpty(prefix) && (directory.Length > prefix.Length) && DirectorySeparators.Contains(directory[prefix.Length]) && directory.StartsWith(prefix, StringComparison.Ordinal));
 	}
-
-#pragma warning disable CA1034 // False positive, there's no other way we can declare this block
-	extension(HttpStatusCode statusCode) {
-		[PublicAPI]
-		public bool IsClientErrorCode() => statusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError;
-
-		[PublicAPI]
-		public bool IsRedirectionCode() => statusCode is >= HttpStatusCode.Ambiguous and < HttpStatusCode.BadRequest;
-
-		[PublicAPI]
-		public bool IsServerErrorCode() => statusCode is >= HttpStatusCode.InternalServerError and < (HttpStatusCode) 600;
-
-		[PublicAPI]
-		public bool IsSuccessCode() => statusCode is >= HttpStatusCode.OK and < HttpStatusCode.Ambiguous;
-	}
-#pragma warning restore CA1034 // False positive, there's no other way we can declare this block
 }

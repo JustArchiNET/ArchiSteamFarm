@@ -68,7 +68,9 @@ public sealed class TradeOffer {
 	[JsonInclude]
 	[JsonPropertyName("accountid_other")]
 	[JsonRequired]
-	private uint OtherSteamID3 { init => OtherSteamID64 = new SteamID(value, EUniverse.Public, EAccountType.Individual); }
+	private uint OtherSteamID3 {
+		init => OtherSteamID64 = new SteamID(value, EUniverse.Public, EAccountType.Individual);
+	}
 
 	[JsonConstructor]
 	private TradeOffer() { }

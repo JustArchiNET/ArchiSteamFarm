@@ -37,12 +37,12 @@ namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class IGitHubPluginUpdates : TestContextBase {
+internal sealed class GitHubPluginUpdates : TestContextBase {
 	private const string PluginName = "ArchiSteamFarm.OfficialPlugins.Monitoring";
 	private const string Repository = "JustArchiNET/ArchiSteamFarm";
 
 	[UsedImplicitly]
-	public IGitHubPluginUpdates(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
+	public GitHubPluginUpdates(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
 
 	[TestCategory("Manual")]
 	[TestMethod]

@@ -700,46 +700,6 @@ public static class ASF {
 		await Utilities.InParallel(botNames.OrderBy(static botName => botName, Bot.BotsComparer).Select(Bot.RegisterBot)).ConfigureAwait(false);
 	}
 
-	private static async Task UpdateAndRestart() {
-		if (GlobalConfig == null) {
-			throw new InvalidOperationException(nameof(GlobalConfig));
-		}
-
-		if (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None) {
-			return;
-		}
-
-		if ((AutoUpdatesTimer == null) && (GlobalConfig.UpdatePeriod > 0)) {
-			TimeSpan autoUpdatePeriod = TimeSpan.FromHours(GlobalConfig.UpdatePeriod);
-
-			AutoUpdatesTimer = new Timer(
-				OnAutoUpdatesTimer,
-				null,
-				autoUpdatePeriod, // Delay
-				autoUpdatePeriod // Period
-			);
-
-			ArchiLogger.LogGenericInfo(Strings.FormatAutoUpdateCheckInfo(autoUpdatePeriod.ToHumanReadable()));
-		}
-
-		(bool updated, Version? newVersion) = await Update().ConfigureAwait(false);
-
-		if (!updated) {
-			if ((newVersion != null) && (SharedInfo.Version > newVersion)) {
-				// User is running version newer than their channel allows
-				ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
-				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
-			}
-
-			return;
-		}
-
-		// Allow crash file recovery, if needed
-		Program.AllowCrashFileRemoval = true;
-
-		await RestartOrExit().ConfigureAwait(false);
-	}
-
 	private static async Task<(bool Updated, Version? NewVersion)> UpdateASF(GlobalConfig.EUpdateChannel? channel = null, bool updateOverride = false, bool forced = false) {
 		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
 			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
@@ -925,6 +885,46 @@ public static class ASF {
 
 			Utilities.OnProgressChanged(targetFile, progressPercentage);
 		}
+	}
+
+	private static async Task UpdateAndRestart() {
+		if (GlobalConfig == null) {
+			throw new InvalidOperationException(nameof(GlobalConfig));
+		}
+
+		if (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None) {
+			return;
+		}
+
+		if ((AutoUpdatesTimer == null) && (GlobalConfig.UpdatePeriod > 0)) {
+			TimeSpan autoUpdatePeriod = TimeSpan.FromHours(GlobalConfig.UpdatePeriod);
+
+			AutoUpdatesTimer = new Timer(
+				OnAutoUpdatesTimer,
+				null,
+				autoUpdatePeriod, // Delay
+				autoUpdatePeriod // Period
+			);
+
+			ArchiLogger.LogGenericInfo(Strings.FormatAutoUpdateCheckInfo(autoUpdatePeriod.ToHumanReadable()));
+		}
+
+		(bool updated, Version? newVersion) = await Update().ConfigureAwait(false);
+
+		if (!updated) {
+			if ((newVersion != null) && (SharedInfo.Version > newVersion)) {
+				// User is running version newer than their channel allows
+				ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+			}
+
+			return;
+		}
+
+		// Allow crash file recovery, if needed
+		Program.AllowCrashFileRemoval = true;
+
+		await RestartOrExit().ConfigureAwait(false);
 	}
 
 	private static async Task<bool> UpdateFromArchive(Version newVersion, GlobalConfig.EUpdateChannel updateChannel, bool updateOverride, bool forced, ZipArchive zipArchive) {

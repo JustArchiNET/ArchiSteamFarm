@@ -126,15 +126,6 @@ public sealed class InventoryDescription {
 		private init => Body.instanceid = value;
 	}
 
-	[JsonConverter(typeof(BooleanNormalizationConverter))]
-	[JsonInclude]
-	[JsonPropertyName("marketable")]
-	[JsonRequired]
-	public bool Marketable {
-		get => Body.marketable;
-		private init => Body.marketable = value;
-	}
-
 	[JsonInclude]
 	[JsonPropertyName("market_fee_app")]
 	public uint MarketFeeApp {
@@ -154,6 +145,15 @@ public sealed class InventoryDescription {
 	public string MarketName {
 		get => Body.market_name;
 		private init => Body.market_name = value;
+	}
+
+	[JsonConverter(typeof(BooleanNormalizationConverter))]
+	[JsonInclude]
+	[JsonPropertyName("marketable")]
+	[JsonRequired]
+	public bool Marketable {
+		get => Body.marketable;
+		private init => Body.marketable = value;
 	}
 
 	[JsonInclude]
