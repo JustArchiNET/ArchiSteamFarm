@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.GitHub;
@@ -59,7 +60,7 @@ internal sealed class GitHubPluginUpdates : TestContextBase {
 
 		Version version = Version.Parse(response.Tag);
 
-		Plugins.Interfaces.IGitHubPluginUpdates plugin = new TestGitHubPluginUpdates(version);
+		IGitHubPluginUpdates plugin = new TestGitHubPluginUpdates(version);
 
 		Uri? releaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, GlobalConfig.EUpdateChannel.Stable, false).ConfigureAwait(false);
 
@@ -70,7 +71,7 @@ internal sealed class GitHubPluginUpdates : TestContextBase {
 		Assert.IsNotNull(forcedReleaseURL);
 	}
 
-	private sealed class TestGitHubPluginUpdates : Plugins.Interfaces.IGitHubPluginUpdates {
+	private sealed class TestGitHubPluginUpdates : IGitHubPluginUpdates {
 		public string Name => PluginName;
 		public string RepositoryName => Repository;
 		public Version Version { get; }

@@ -870,14 +870,14 @@ public static class PluginsCore {
 
 			Progress<byte> progressReporter = new();
 
-			progressReporter.ProgressChanged += onProgressChanged;
+			progressReporter.ProgressChanged += OnProgressChanged;
 
 			BinaryResponse? response;
 
 			try {
 				response = await ASF.WebBrowser.UrlGetToBinary(releaseURL, progressReporter: progressReporter).ConfigureAwait(false);
 			} finally {
-				progressReporter.ProgressChanged -= onProgressChanged;
+				progressReporter.ProgressChanged -= OnProgressChanged;
 			}
 
 			if (response?.Content == null) {
@@ -919,7 +919,7 @@ public static class PluginsCore {
 
 		return true;
 
-		void onProgressChanged(object? sender, byte progressPercentage) {
+		void OnProgressChanged(object? sender, byte progressPercentage) {
 			ArgumentOutOfRangeException.ThrowIfGreaterThan(progressPercentage, 100);
 
 			Utilities.OnProgressChanged(pluginName, progressPercentage);

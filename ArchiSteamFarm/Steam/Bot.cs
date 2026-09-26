@@ -2766,15 +2766,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 			).ConfigureAwait(false);
 
-			async Task PublishQrChallengeUrl() {
-				QrChallengeURL = Uri.TryCreate(authSession.ChallengeURL, UriKind.Absolute, out Uri? challengeUrl) ? challengeUrl : null;
-				ArchiLogger.LogGenericWarning(Strings.FormatQrCodeLoginUrl(authSession.ChallengeURL));
-				await Logging.WriteToConsole(QrCodeHelper.GenerateAscii(authSession.ChallengeURL)).ConfigureAwait(false);
-			}
-
 			RequiredInput = ASF.EUserInputType.QrCodeLogin;
 			await PublishQrChallengeUrl().ConfigureAwait(false);
-			authSession.ChallengeURLChanged = async () => await PublishQrChallengeUrl().ConfigureAwait(false);
+			authSession.ChallengeURLChanged = async void () => await PublishQrChallengeUrl().ConfigureAwait(false);
 
 			AuthPollResult pollResult = await authSession.PollingWaitForResultAsync(QrLoginCancellation.Token).ConfigureAwait(false);
 
@@ -2793,6 +2787,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			return TryApplyAuthPollResult(pollResult);
+
+			async Task PublishQrChallengeUrl() {
+				QrChallengeURL = Uri.TryCreate(authSession.ChallengeURL, UriKind.Absolute, out Uri? challengeUrl) ? challengeUrl : null;
+				ArchiLogger.LogGenericWarning(Strings.FormatQrCodeLoginUrl(authSession.ChallengeURL));
+				await Logging.WriteToConsole(QrCodeHelper.GenerateAscii(authSession.ChallengeURL)).ConfigureAwait(false);
+			}
 		} catch (AsyncJobFailedException e) {
 			ArchiLogger.LogGenericWarningException(e);
 
