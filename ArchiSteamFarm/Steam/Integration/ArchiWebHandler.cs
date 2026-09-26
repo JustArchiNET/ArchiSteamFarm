@@ -256,7 +256,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			int index = hrefText.LastIndexOf('/');
+			int index = hrefText.LastIndexOf('/', StringComparison.Ordinal);
 
 			if ((index <= 0) || (hrefText.Length <= index + 2)) {
 				Bot.ArchiLogger.LogNullError(index);
