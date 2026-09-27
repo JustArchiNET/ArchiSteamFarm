@@ -193,6 +193,18 @@
 		<value>Перевірте свій мобільний додаток Steam, ви повинні були отримати сповіщення про підтвердження входу. Введіть Y, якщо ви отримали та схвалили сповіщення, або N, якщо хочете ввести код: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Введіть Y, щоб увійти в систему, сканувавши QR-код за допомогою мобільного додатку Steam, N для входу з обліковими даними: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>Скануйте цей QR-код за допомогою мобільного додатку Steam (буде надруковано новий, якщо Steam оновить його): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>Логін через QR-код автентифікований як {0}, який не відповідає налаштованому парольному логіну: {1}. Сканувати з тим же акаунтом Steam, що і SteamLogin в конфігурації бота, або видаліть SteamLogin з конфігурації, якщо ви бажаєте використовувати відсканований обліковий запис.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Будь ласка, введіть ваш код 2FA з додатку для автентифікації у Steam: </value>
 		<comment>Please note that this translation should end with space</comment>

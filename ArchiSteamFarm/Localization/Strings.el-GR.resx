@@ -193,6 +193,18 @@ StackTrace:
 		<value>Παρακαλώ ελέγξτε την εφαρμογή Steam για κινητά, θα πρέπει να έχετε λάβει μια ειδοποίηση έγκρισης σύνδεσης. Πληκτρολογήστε το Y εάν λάβατε και εγκρίνατε την ειδοποίηση, Ν αν θέλετε να παρέχετε τον κωδικό: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Πληκτρολογήστε Y για να συνδεθείτε σαρώνοντας έναν κωδικό QR με την εφαρμογή Steam, N για να συνδεθείτε με διαπιστευτήρια: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>Σαρώστε αυτόν τον κωδικό QR με την εφαρμογή Steam για κινητά (ένα νέο θα εκτυπωθεί αν ανανεωθεί το Steam): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>Ο κωδικός QR συνδέθηκε ως {0}, το οποίο δεν ταιριάζει με τη ρυθμισμένη σύνδεση Steam: {1}. Σάρωση με τον ίδιο λογαριασμό Steam με το SteamLogin στο bot config, ή αφαιρέστε το SteamLogin από το config αν θέλετε να χρησιμοποιήσετε τον σαρωμένο λογαριασμό.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Εισάγετε τον κωδικό από την εφαρμογή επαληθευτή Steam σας: </value>
 		<comment>Please note that this translation should end with space</comment>

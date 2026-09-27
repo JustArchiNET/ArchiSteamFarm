@@ -193,6 +193,18 @@ StackTrace:
 		<value>Sprawdź swoją aplikację mobilną Steam, otrzymasz powiadomienie o zatwierdzeniu logowania. Wpisz Y, jeśli otrzymano i zatwierdzono powiadomienie, N, jeśli zamiast tego chcesz podać kod: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Wpisz Y aby zalogować się przez skanowanie kodu QR za pomocą aplikacji mobilnej Steam, N aby zalogować się za pomocą poświadczeń: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>Zeskanuj ten kod QR za pomocą aplikacji mobilnej Steam (nowy zostanie wydrukowany jeśli Steam odświeży go): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>Logowanie kodu QR uwierzytelnione jako {0}, które nie pasuje do skonfigurowanego logowania Steam: {1}. Skanuj z tym samym kontem Steam co SteamLogin w konfiguracji bota, lub usuń SteamLogin z konfiguracji, jeśli chcesz użyć zeskanowanego konta.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Wprowadź kod uwierzytelnienia dwuskładnikowego z twojego mobilnego tokena Steam: </value>
 		<comment>Please note that this translation should end with space</comment>

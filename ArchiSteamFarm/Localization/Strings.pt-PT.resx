@@ -193,6 +193,18 @@ StackTrace:
 		<value>Por favor, verifique a aplicação móvel Steam, deve ter recebido uma notificação de aprovação de login. Digite Y se recebeu e aprovou a notificação, N se quiser fornecer o código: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Digite Y para entrar digitalizando o código QR com o aplicativo móvel Steam, N para entrar com as credenciais: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>Digitalize este código QR com o aplicativo móvel Steam (um novo será impresso se o Steam o atualizar): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>Login do código QR autenticado como {0}, que não corresponde ao usuário do Steam: {1}configurado. Digitalize com a mesma conta Steam que o SteamLogin na configuração do bot, ou remova o SteamLogin da configuração se você quiser usar a conta escaneada.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Por favor, insere to teu código de autenticação de dois fatores (2FA) da tua app de autenticador da Steam: </value>
 		<comment>Please note that this translation should end with space</comment>

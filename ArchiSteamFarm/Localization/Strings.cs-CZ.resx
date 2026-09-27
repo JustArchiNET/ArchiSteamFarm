@@ -193,6 +193,18 @@ StackTrace:
 		<value>Prosím zkontrolujte svou mobilní aplikaci Steam, měli byste dostat oznámení o schválení přihlášení. Napiště Y pokud jste dostali a potvrdili oznámení, N pokud místo toho chcete vypsat přihlašovací kód: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Napište Y pro přihlášení naskenováním QR kódu pomocí Steam mobilní aplikace, N pro přihlášení s údaji: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>Naskenujte tento QR kód pomocí mobilní aplikace Steam (nová aplikace bude vytištěna, pokud jej Steam obnoví): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>Přihlášení do QR kódu ověřeno jako {0}, které neodpovídá nakonfigurovanému Steam přihlášení: {1}. Skenujte stejným Steam účtem jako SteamLogin v konfiguraci bota, nebo odeberte SteamLogin z konfigurace, pokud chcete použít naskenovaný účet.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Zadejte váš 2FA kód z aplikace Steam: </value>
 		<comment>Please note that this translation should end with space</comment>

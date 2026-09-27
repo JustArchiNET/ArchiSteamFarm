@@ -193,6 +193,18 @@ StackTrace:
 		<value>Bitte überprüfen Sie Ihre mobilen Steam App, Sie sollten eine Benachrichtigung zur Genehmigung der Anmeldung erhalten haben. Geben Sie „Y“ ein, wenn Sie die Benachrichtigung erhalten und genehmigt haben, „N“ wenn Sie stattdessen den Code eingeben möchten: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Geben Sie Y ein, um sich einzuloggen, indem Sie einen QR-Code mit der Steam Mobile App scannen, N um sich mit Zugangsdaten anzumelden: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>Scanne diesen QR-Code mit der Steam Mobile App (eine neue wird gedruckt, wenn Steam es aktualisiert): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>QR-Code-Login mit {0}authentifiziert, was nicht mit dem konfigurierten Steam Login übereinstimmt: {1}. Scanne mit demselben Steam-Konto wie SteamLogin in der Bot-Konfiguration, oder entfernen Sie SteamLogin aus der Konfiguration, wenn Sie das gescannte Konto verwenden möchten.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Bitte geben Sie Ihren 2FA-Code aus Ihrer Steam-Authentifizierungsapp ein: </value>
 		<comment>Please note that this translation should end with space</comment>
