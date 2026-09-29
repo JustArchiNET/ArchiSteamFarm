@@ -193,15 +193,15 @@ StackTrace:
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputQrCodeLogin" xml:space="preserve">
-		<value>Escribe Y para iniciar sesión escaneando un código QR con la aplicación móvil de Steam, N para iniciar sesión con credenciales: </value>
+		<value>Escribe Y para iniciar sesión escaneando un código QR con la aplicación de Steam, N para iniciar sesión con credenciales: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="QrCodeLoginUrl" xml:space="preserve">
-		<value>Escanea este código QR con la aplicación móvil de Steam (se imprimirá una nueva si Steam la actualiza): {0}</value>
+		<value>Escanea este código QR con la aplicación de Steam (se mostrará uno nuevo si Steam lo actualiza): {0}</value>
 		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
 	</data>
 	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
-		<value>Inicio de sesión del código QR autenticado como {0}, que no coincide con el inicio de sesión de Steam configurado: {1}. Escanea con la misma cuenta de Steam que SteamLogin en la configuración del bot, o elimina SteamLogin de la configuración si quieres usar la cuenta escaneada.</value>
+		<value>Inicio de sesión con código QR autenticado como {0}, lo cual no coincide con el inicio de sesión configurado: {1}. Escanea con la misma cuenta de Steam que el SteamLogin establecido en la configuración del bot, o elimina SteamLogin de la configuración si deseas usar la cuenta escaneada.</value>
 		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">

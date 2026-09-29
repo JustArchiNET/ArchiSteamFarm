@@ -193,6 +193,18 @@ STACKTRACE:
 		<value>PLZ CHECK UR STEAM MOBILE APP, U SHUD HAS RECEIVD LOGIN APPROVAL NOTIFICASHUN. TYPE Y IF U RECEIVD AN APPROVD TEH NOTIFICASHUN, N IF U WANTS 2 PROVIDE CODE INSTEAD: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>TYPE Y 2 LOG IN BY SCANNIN QR CODE WIF TEH STEAM MOBILE APP, N 2 LOG IN WIF CREDENTIALS: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>SKAN DIS QR CODE WIF TEH STEAM MOBILE APP (A NEW WAN WILL BE PRINTD IF STEAM REFRESHEZ IT): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>QR CODE LOGIN AUTHENTICATD AS {0}, WHICH DOEZ NOT MATCH CONFIGURD STEAM LOGIN: {1}. SKAN WIF TEH SAME STEAM AKOWNT AS STEAMLOGIN IN DA BOT CONFIG, OR REMOOV STEAMLOGIN FRUM TEH CONFIG IF U WANTS 2 USE TEH SCANND AKOWNT.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>PLZ ENTR UR 2FA CODE FRUM UR STEAM AUTHENTICATOR APP: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -330,6 +342,10 @@ STACKTRACE:
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID: {0} | STATUS: {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotAddLicenseNoItems" xml:space="preserve">
+		<value>NO APPS OR PACKAGEZ GRANTD</value>
+		<comment>Used in place of the list of granted IDs when Steam reports no granted apps or packages. This does not indicate why no grants were reported.</comment>
 	</data>
 	<data name="BotAddLicenseWithItems" xml:space="preserve">
 		<value>ID: {0} | STATUS: {1} | ITEMS: {2}</value>
