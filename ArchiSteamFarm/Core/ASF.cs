@@ -798,14 +798,14 @@ public static class ASF {
 
 			Progress<byte> progressReporter = new();
 
-			progressReporter.ProgressChanged += OnProgressChanged;
+			progressReporter.ProgressChanged += onProgressChanged;
 
 			BinaryResponse? response;
 
 			try {
 				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL, progressReporter: progressReporter, cancellationToken: CancellationToken.None).ConfigureAwait(false);
 			} finally {
-				progressReporter.ProgressChanged -= OnProgressChanged;
+				progressReporter.ProgressChanged -= onProgressChanged;
 			}
 
 			if (response?.Content == null) {
@@ -880,7 +880,7 @@ public static class ASF {
 			UpdateSemaphore.Release();
 		}
 
-		void OnProgressChanged(object? sender, byte progressPercentage) {
+		void onProgressChanged(object? sender, byte progressPercentage) {
 			ArgumentOutOfRangeException.ThrowIfGreaterThan(progressPercentage, 100);
 
 			Utilities.OnProgressChanged(targetFile, progressPercentage);

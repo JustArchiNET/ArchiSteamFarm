@@ -243,7 +243,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			return Task.CompletedTask;
 		}
 
-		subscription = callbackManager.Subscribe<SteamApps.LicenseListCallback>(callback => OnLicenseList(bot, callback));
+		subscription = callbackManager.Subscribe<SteamApps.LicenseListCallback>(_ => OnLicenseList(bot));
 
 		if (!BotSubscriptions.TryAdd(bot, subscription)) {
 			subscription.Dispose();
@@ -286,9 +286,8 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		await Refresh(bot).ConfigureAwait(false);
 	}
 
-	private static async void OnLicenseList(Bot bot, SteamApps.LicenseListCallback callback) {
+	private static async void OnLicenseList(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
-		ArgumentNullException.ThrowIfNull(callback);
 
 		if (Config is not { Enabled: true }) {
 			return;

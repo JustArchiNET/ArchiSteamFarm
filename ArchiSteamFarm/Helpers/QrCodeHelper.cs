@@ -34,14 +34,15 @@ internal static class QrCodeHelper {
 		ArgumentException.ThrowIfNullOrEmpty(payload);
 
 		QrCode qrCode = QrCode.EncodeText(payload, QrCode.Ecc.Low);
-		int size = qrCode.Size + (QuietZoneModules * 2);
+
+		byte size = (byte) (qrCode.Size + (QuietZoneModules * 2));
 
 		StringBuilder result = new((size + Environment.NewLine.Length) * ((size + 1) / 2));
 
-		for (int y = 0; y < size; y += 2) {
-			for (int x = 0; x < size; x++) {
+		for (byte y = 0; y < size; y += 2) {
+			for (byte x = 0; x < size; x++) {
 				bool top = IsDark(qrCode, x, y);
-				bool bottom = IsDark(qrCode, x, y + 1);
+				bool bottom = IsDark(qrCode, x, (byte) (y + 1));
 
 				result.Append(
 					(top, bottom) switch {
@@ -59,10 +60,13 @@ internal static class QrCodeHelper {
 		return result.ToString();
 	}
 
-	private static bool IsDark(QrCode qrCode, int x, int y) {
-		x -= QuietZoneModules;
-		y -= QuietZoneModules;
+	private static bool IsDark(QrCode qrCode, byte x, byte y) {
+		ArgumentNullException.ThrowIfNull(qrCode);
 
-		return (x >= 0) && (y >= 0) && (x < qrCode.Size) && (y < qrCode.Size) && qrCode.GetModule(x, y);
+		if ((x < QuietZoneModules) || (y < QuietZoneModules) || (x >= qrCode.Size + QuietZoneModules) || (y >= qrCode.Size + QuietZoneModules)) {
+			return false;
+		}
+
+		return qrCode.GetModule(x - QuietZoneModules, y - QuietZoneModules);
 	}
 }

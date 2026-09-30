@@ -555,55 +555,55 @@ internal static class Program {
 
 		foreach (string arg in args) {
 			switch (arg.ToUpperInvariant()) {
-				case "--CRYPTKEY" when NoArgumentValueNext():
+				case "--CRYPTKEY" when noArgumentValueNext():
 					cryptKeyNext = true;
 
 					break;
-				case "--CRYPTKEY-FILE" when NoArgumentValueNext():
+				case "--CRYPTKEY-FILE" when noArgumentValueNext():
 					cryptKeyFileNext = true;
 
 					break;
-				case "--IGNORE-UNSUPPORTED-ENVIRONMENT" when NoArgumentValueNext():
+				case "--IGNORE-UNSUPPORTED-ENVIRONMENT" when noArgumentValueNext():
 					IgnoreUnsupportedEnvironment = true;
 
 					break;
-				case "--INPUT-CRYPTKEY" when NoArgumentValueNext():
+				case "--INPUT-CRYPTKEY" when noArgumentValueNext():
 					InputCryptkeyManually = true;
 
 					break;
-				case "--MINIMIZED" when NoArgumentValueNext():
+				case "--MINIMIZED" when noArgumentValueNext():
 					Minimized = true;
 
 					break;
-				case "--NETWORK-GROUP" when NoArgumentValueNext():
+				case "--NETWORK-GROUP" when noArgumentValueNext():
 					networkGroupNext = true;
 
 					break;
-				case "--NO-CONFIG-MIGRATE" when NoArgumentValueNext():
+				case "--NO-CONFIG-MIGRATE" when noArgumentValueNext():
 					ConfigMigrate = false;
 
 					break;
-				case "--NO-CONFIG-WATCH" when NoArgumentValueNext():
+				case "--NO-CONFIG-WATCH" when noArgumentValueNext():
 					ConfigWatch = false;
 
 					break;
-				case "--NO-RESTART" when NoArgumentValueNext():
+				case "--NO-RESTART" when noArgumentValueNext():
 					RestartAllowed = false;
 
 					break;
-				case "--NO-STEAM-PARENTAL-GENERATION" when NoArgumentValueNext():
+				case "--NO-STEAM-PARENTAL-GENERATION" when noArgumentValueNext():
 					SteamParentalGeneration = false;
 
 					break;
-				case "--PATH" when NoArgumentValueNext():
+				case "--PATH" when noArgumentValueNext():
 					pathNext = true;
 
 					break;
-				case "--SERVICE" when NoArgumentValueNext():
+				case "--SERVICE" when noArgumentValueNext():
 					Service = true;
 
 					break;
-				case "--SYSTEM-REQUIRED" when NoArgumentValueNext():
+				case "--SYSTEM-REQUIRED" when noArgumentValueNext():
 					SystemRequired = true;
 
 					break;
@@ -661,7 +661,7 @@ internal static class Program {
 
 		return true;
 
-		bool NoArgumentValueNext() => !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext;
+		bool noArgumentValueNext() => !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext;
 	}
 
 	private static async Task<bool> ParseEnvironmentVariables() {
