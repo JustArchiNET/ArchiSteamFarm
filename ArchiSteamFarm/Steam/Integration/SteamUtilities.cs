@@ -91,7 +91,7 @@ public static class SteamUtilities {
 		if (match.Success && match.Groups.TryGetValue("EResult", out Group? groupResult)) {
 			errorCodeText = groupResult.Value;
 		} else {
-			int startIndex = errorText.LastIndexOf('(');
+			int startIndex = errorText.LastIndexOf('(', StringComparison.Ordinal);
 
 			if (startIndex < 0) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(errorText), errorText));
@@ -101,7 +101,7 @@ public static class SteamUtilities {
 
 			startIndex++;
 
-			int endIndex = errorText.IndexOf(')', startIndex + 1);
+			int endIndex = errorText.IndexOf(')', startIndex + 1, StringComparison.Ordinal);
 
 			if (endIndex < 0) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(errorText), errorText));
