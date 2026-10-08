@@ -43,7 +43,7 @@ jobs:
       run: npm run-script deploy --no-progress --prefix ASF-ui
 
     - name: Upload ASF-ui
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         compression-level: 1
         if-no-files-found: error
@@ -367,7 +367,7 @@ jobs:
         subject-path: out/ASF-${{ matrix.variant }}.zip
 
     - name: Upload ASF-${{ matrix.variant }}
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         compression-level: 1
         if-no-files-found: error
@@ -416,7 +416,7 @@ jobs:
 
     - name: Upload ArchiSteamFarm.OfficialPlugins.Monitoring
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.variant == 'generic' }}
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         compression-level: 1
         if-no-files-found: error
@@ -514,7 +514,7 @@ jobs:
         subject-path: out/SHA512SUMS
 
     - name: Upload SHA512SUMS
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         compression-level: 1
         if-no-files-found: error
@@ -527,7 +527,7 @@ jobs:
         subject-path: out/SHA512SUMS.sign
 
     - name: Upload SHA512SUMS.sign
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         compression-level: 1
         if-no-files-found: error
