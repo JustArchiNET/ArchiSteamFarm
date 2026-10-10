@@ -663,7 +663,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 			nameStartIndex += 12;
 
-			int nameEndIndex = name.LastIndexOf('.');
+			int nameEndIndex = name.LastIndexOf('.', StringComparison.Ordinal);
 
 			if (nameEndIndex <= nameStartIndex) {
 				Bot.ArchiLogger.LogNullError(nameEndIndex);
@@ -717,7 +717,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					continue;
 				}
 
-				int levelEndIndex = levelText.IndexOf(',', levelStartIndex);
+				int levelEndIndex = levelText.IndexOf(',', levelStartIndex, StringComparison.Ordinal);
 
 				if (levelEndIndex <= levelStartIndex) {
 					Bot.ArchiLogger.LogNullError(levelEndIndex);
@@ -1136,7 +1136,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				return null;
 			}
 
-			int levelEndIndex = levelText.IndexOf(',', levelStartIndex);
+			int levelEndIndex = levelText.IndexOf(',', levelStartIndex, StringComparison.Ordinal);
 
 			if (levelEndIndex <= levelStartIndex) {
 				Bot.ArchiLogger.LogNullError(levelEndIndex);

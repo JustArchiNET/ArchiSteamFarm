@@ -47,7 +47,7 @@
 	<!-- Required for SteamTokenDumper plugin -->
 	<assembly fullname="System.Runtime">
 		<type fullname="System.Random">
-			<method name="Next" />
+			<method name="NextInteger" />
 		</type>
 	</assembly>
 
