@@ -226,6 +226,10 @@ dotnet_style_require_accessibility_modifiers = always:warning
 # ASF project includes plugin system, therefore CA1515 typically doesn't make sense there
 dotnet_diagnostic.CA1515.severity = silent
 
+# TODO: Due to unknown bug in roslyn, analyzing the below file causes the build to freeze
+[ArchiSteamFarm/IPC/OpenApi/OpenApiSchemaReferenceIdProvider.cs]
+generated_code = true
+
 ###############################
 # JetBrains, IntelliJ/Rider   #
 ###############################
