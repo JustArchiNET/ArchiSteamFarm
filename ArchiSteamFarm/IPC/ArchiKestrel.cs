@@ -268,6 +268,9 @@ internal static class ArchiKestrel {
 		// Finally register proper API endpoints once we're done with routing
 		app.MapControllers();
 
+		// Add support for custom OpenAPI schema reference IDs, this should be called after all controllers are registered, so we can properly analyze them
+		OpenApiSchemaReferenceIdProvider.Initialize(app.Services);
+
 		// Add support for OpenAPI, responsible for automatic API documentation generation, this should be on the end, once we're done with API
 		IEndpointConventionBuilder openApi = app.MapOpenApi("/swagger/{documentName}/swagger.json");
 
@@ -355,6 +358,9 @@ internal static class ArchiKestrel {
 		// Add support for OpenAPI, responsible for automatic API documentation generation
 		services.AddOpenApi(
 			SharedInfo.ASF, static options => {
+				// Use custom schema reference ID provider, so we can have more control over OpenAPI schema generation
+				options.CreateSchemaReferenceId = OpenApiSchemaReferenceIdProvider.CreateSchemaReferenceId;
+
 				options.AddDocumentTransformer<DocumentTransformer>();
 				options.AddOperationTransformer<OperationTransformer>();
 				options.AddSchemaTransformer<SchemaTransformer>();

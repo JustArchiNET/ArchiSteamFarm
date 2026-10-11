@@ -24,6 +24,7 @@
 using System;
 using System.Globalization;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Integration;
@@ -40,6 +41,7 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 		ArgumentNullException.ThrowIfNull(context);
 
 		ApplyCustomAttributes(schema, context);
+		ApplyDefaultValue(schema, context);
 		ApplyEnumDefinition(schema, context);
 
 		return Task.CompletedTask;
@@ -56,6 +58,27 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 		foreach (CustomSwaggerAttribute customSwaggerAttribute in context.JsonPropertyInfo.AttributeProvider.GetCustomAttributes(typeof(CustomSwaggerAttribute), true)) {
 			customSwaggerAttribute.Apply(schema);
 		}
+	}
+
+	private static void ApplyDefaultValue(OpenApiSchema schema, OpenApiSchemaTransformerContext context) {
+		ArgumentNullException.ThrowIfNull(schema);
+		ArgumentNullException.ThrowIfNull(context);
+
+		if (schema.Default != null) {
+			return;
+		}
+
+		JsonPropertyInfo? jsonPropertyInfo = context.JsonPropertyInfo;
+
+		if (jsonPropertyInfo == null) {
+			return;
+		}
+
+		if (!OpenApiSchemaReferenceIdProvider.TryGetDefaultValue(jsonPropertyInfo, out JsonNode? defaultValue)) {
+			return;
+		}
+
+		schema.Default = defaultValue?.DeepClone() ?? JsonNullSentinel.JsonNull;
 	}
 
 	private static void ApplyEnumDefinition(OpenApiSchema schema, OpenApiSchemaTransformerContext context) {
