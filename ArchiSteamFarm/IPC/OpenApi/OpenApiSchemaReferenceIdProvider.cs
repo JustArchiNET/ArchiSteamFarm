@@ -21,8 +21,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -91,72 +89,17 @@ internal static class OpenApiSchemaReferenceIdProvider {
 
 		foreach (ApiDescription apiDescription in apiDescriptionProvider.ApiDescriptionGroups.Items.SelectMany(static group => group.Items)) {
 			foreach (ApiParameterDescription parameterDescription in apiDescription.ParameterDescriptions) {
-				registerSchemaType(parameterDescription.Type);
+				RegisterSchemaType(parameterDescription.Type, jsonSerializerOptions, visitedTypes, result);
 			}
 
 			foreach (ApiResponseType responseType in apiDescription.SupportedResponseTypes) {
 				if (responseType.Type != null) {
-					registerSchemaType(responseType.Type);
+					RegisterSchemaType(responseType.Type, jsonSerializerOptions, visitedTypes, result);
 				}
 			}
 		}
 
 		return result;
-
-		void registerSchemaType(Type type) {
-			ArgumentNullException.ThrowIfNull(type);
-
-			type = Nullable.GetUnderlyingType(type) ?? type;
-
-			if ((type == typeof(void)) || type.IsByRef || type.IsPointer || type.IsByRefLike || type.ContainsGenericParameters || !visitedTypes.Add(type)) {
-				return;
-			}
-
-			JsonTypeInfo jsonTypeInfo;
-
-			try {
-				jsonTypeInfo = jsonSerializerOptions.GetTypeInfo(type);
-			} catch (Exception e) when (e is NotSupportedException or ArgumentException) {
-				ASF.ArchiLogger.LogGenericWarningException(e);
-				result.InlineSchemaTypes.Add(type);
-
-				return;
-			}
-
-			object? instance = null;
-			bool hasDefaultInstance = (jsonTypeInfo.Kind == JsonTypeInfoKind.Object) && TryCreateDefaultInstance(type, out instance);
-
-			foreach (JsonPropertyInfo propertyInfo in jsonTypeInfo.Properties) {
-				Type memberType = propertyInfo.PropertyType;
-				Type? nullableType = Nullable.GetUnderlyingType(memberType);
-
-				object? rawDefaultValue = null;
-				JsonNode? defaultValueSnapshot = null;
-				bool hasDefaultValue = hasDefaultInstance && TryCreateDefaultValueSnapshot(propertyInfo, instance!, jsonSerializerOptions, out rawDefaultValue, out defaultValueSnapshot);
-
-				bool hasDefaultSnapshot = hasDefaultValue && propertyInfo.AttributeProvider is MemberInfo memberInfo && RegisterDefaultValue(result, memberInfo, memberType, defaultValueSnapshot);
-
-				if (!hasDefaultSnapshot || ((nullableType != null) && (rawDefaultValue == null)) || !IsDefaultValue(memberType, rawDefaultValue)) {
-					result.InlineSchemaTypes.Add(nullableType ?? memberType);
-				}
-
-				registerSchemaType(memberType);
-			}
-
-			if (jsonTypeInfo.ElementType != null) {
-				registerSchemaType(jsonTypeInfo.ElementType);
-			}
-
-			if (jsonTypeInfo.KeyType != null) {
-				registerSchemaType(jsonTypeInfo.KeyType);
-			}
-
-			if (jsonTypeInfo.PolymorphismOptions != null) {
-				foreach (JsonDerivedType derivedType in jsonTypeInfo.PolymorphismOptions.DerivedTypes) {
-					registerSchemaType(derivedType.DerivedType);
-				}
-			}
-		}
 	}
 
 	private static bool IsDefaultValue(Type type, object? value) {
@@ -191,6 +134,64 @@ internal static class OpenApiSchemaReferenceIdProvider {
 		}
 
 		return resultByMember;
+	}
+
+	private static void RegisterSchemaType(Type type, JsonSerializerOptions jsonSerializerOptions, HashSet<Type> visitedTypes, SchemaReferenceData result) {
+		ArgumentNullException.ThrowIfNull(type);
+		ArgumentNullException.ThrowIfNull(jsonSerializerOptions);
+		ArgumentNullException.ThrowIfNull(visitedTypes);
+		ArgumentNullException.ThrowIfNull(result);
+
+		type = Nullable.GetUnderlyingType(type) ?? type;
+
+		if ((type == typeof(void)) || type.IsByRef || type.IsPointer || type.IsByRefLike || type.ContainsGenericParameters || !visitedTypes.Add(type)) {
+			return;
+		}
+
+		JsonTypeInfo jsonTypeInfo;
+
+		try {
+			jsonTypeInfo = jsonSerializerOptions.GetTypeInfo(type);
+		} catch (Exception e) when (e is NotSupportedException or ArgumentException) {
+			ASF.ArchiLogger.LogGenericWarningException(e);
+			result.InlineSchemaTypes.Add(type);
+
+			return;
+		}
+
+		object? instance = null;
+		bool hasDefaultInstance = (jsonTypeInfo.Kind == JsonTypeInfoKind.Object) && TryCreateDefaultInstance(type, out instance);
+
+		foreach (JsonPropertyInfo propertyInfo in jsonTypeInfo.Properties) {
+			Type memberType = propertyInfo.PropertyType;
+			Type? nullableType = Nullable.GetUnderlyingType(memberType);
+
+			object? rawDefaultValue = null;
+			JsonNode? defaultValueSnapshot = null;
+			bool hasDefaultValue = hasDefaultInstance && TryCreateDefaultValueSnapshot(propertyInfo, instance!, jsonSerializerOptions, out rawDefaultValue, out defaultValueSnapshot);
+
+			bool hasDefaultSnapshot = hasDefaultValue && propertyInfo.AttributeProvider is MemberInfo memberInfo && RegisterDefaultValue(result, memberInfo, memberType, defaultValueSnapshot);
+
+			if (!hasDefaultSnapshot || ((nullableType != null) && (rawDefaultValue == null)) || !IsDefaultValue(memberType, rawDefaultValue)) {
+				result.InlineSchemaTypes.Add(nullableType ?? memberType);
+			}
+
+			RegisterSchemaType(memberType, jsonSerializerOptions, visitedTypes, result);
+		}
+
+		if (jsonTypeInfo.ElementType != null) {
+			RegisterSchemaType(jsonTypeInfo.ElementType, jsonSerializerOptions, visitedTypes, result);
+		}
+
+		if (jsonTypeInfo.KeyType != null) {
+			RegisterSchemaType(jsonTypeInfo.KeyType, jsonSerializerOptions, visitedTypes, result);
+		}
+
+		if (jsonTypeInfo.PolymorphismOptions != null) {
+			foreach (JsonDerivedType derivedType in jsonTypeInfo.PolymorphismOptions.DerivedTypes) {
+				RegisterSchemaType(derivedType.DerivedType, jsonSerializerOptions, visitedTypes, result);
+			}
+		}
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2067", Justification = "OpenAPI only considers types already used by its JSON metadata")]
