@@ -200,6 +200,7 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 
 		return new OpenApiSchema {
 			MaxLength = maximumDigits + (signed ? 1 : 0),
+			MinLength = 1,
 			Pattern = signed ? "^-?[0-9]+$" : "^[0-9]+$",
 			Type = JsonSchemaType.String
 		};
