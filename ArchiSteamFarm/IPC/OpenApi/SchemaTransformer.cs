@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json.Nodes;
@@ -142,6 +143,7 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 		schema.AddExtension("x-definition", new JsonNodeExtension(definition));
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2075", Justification = "OpenAPI only considers types already used by its JSON metadata")]
 	private static void ApplyUniqueItems(OpenApiSchema schema, OpenApiSchemaTransformerContext context) {
 		ArgumentNullException.ThrowIfNull(schema);
 		ArgumentNullException.ThrowIfNull(context);
