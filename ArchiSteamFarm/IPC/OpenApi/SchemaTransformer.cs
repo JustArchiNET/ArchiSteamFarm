@@ -22,7 +22,10 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
+using System.Linq;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading;
@@ -43,6 +46,7 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 		ApplyCustomAttributes(schema, context);
 		ApplyDefaultValue(schema, context);
 		ApplyEnumDefinition(schema, context);
+		ApplyUniqueItems(schema, context);
 
 		return Task.CompletedTask;
 	}
@@ -136,5 +140,32 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 		}
 
 		schema.AddExtension("x-definition", new JsonNodeExtension(definition));
+	}
+
+	private static void ApplyUniqueItems(OpenApiSchema schema, OpenApiSchemaTransformerContext context) {
+		ArgumentNullException.ThrowIfNull(schema);
+		ArgumentNullException.ThrowIfNull(context);
+
+		if ((schema.UniqueItems == true) || (schema.Items == null)) {
+			return;
+		}
+
+		Type type = context.JsonTypeInfo.Type;
+
+		if (IsSetInterface(type) || type.GetInterfaces().Any(IsSetInterface)) {
+			schema.UniqueItems = true;
+		}
+	}
+
+	private static bool IsSetInterface(Type type) {
+		ArgumentNullException.ThrowIfNull(type);
+
+		if (!type.IsGenericType) {
+			return false;
+		}
+
+		Type genericTypeDefinition = type.GetGenericTypeDefinition();
+
+		return (genericTypeDefinition == typeof(ISet<>)) || (genericTypeDefinition == typeof(IReadOnlySet<>)) || (genericTypeDefinition == typeof(IImmutableSet<>));
 	}
 }
