@@ -77,6 +77,10 @@ public sealed class CommandController : ArchiController {
 			command = command[commandPrefix.Length..];
 		}
 
+		if (string.IsNullOrWhiteSpace(command)) {
+			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(command))));
+		}
+
 		// Update process can result in kestrel shutdown request, just before patching the files
 		// In this case, we have very little opportunity to do anything, especially we will not have access to the return value of the command
 		// That's because update command will synchronously stop the kestrel, and wait for it before proceeding with an update, and that'll wait for us finishing the request, never happening

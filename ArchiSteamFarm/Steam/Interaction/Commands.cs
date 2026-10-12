@@ -118,7 +118,7 @@ public sealed class Commands {
 
 		switch (args.Length) {
 			case 0:
-				throw new InvalidOperationException(nameof(args.Length));
+				return null;
 			case 1:
 				switch (args[0].ToUpperInvariant()) {
 					case "2FA":
@@ -401,6 +401,10 @@ public sealed class Commands {
 			message = message[commandPrefix.Length..];
 		}
 
+		if (string.IsNullOrWhiteSpace(message)) {
+			return;
+		}
+
 		EAccess access = Bot.GetAccess(steamID);
 
 		Task<string?> responseTask = Response(access, message, steamID);
@@ -473,6 +477,10 @@ public sealed class Commands {
 			}
 
 			message = message[commandPrefix.Length..];
+		}
+
+		if (string.IsNullOrWhiteSpace(message)) {
+			return;
 		}
 
 		EAccess access = Bot.GetAccess(steamID);
