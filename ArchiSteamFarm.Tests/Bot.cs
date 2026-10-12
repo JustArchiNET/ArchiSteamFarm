@@ -27,8 +27,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json.Nodes;
+using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers.Json;
+using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
@@ -66,6 +68,24 @@ internal sealed class Bot {
 		ASF.GlobalDatabase ??= emptyObject.ToJsonObject<GlobalDatabase>();
 
 		return constructor.Invoke([botName, botConfig, botDatabase]) is Steam.Bot result ? result : throw new InvalidOperationException(nameof(result));
+	}
+
+	[DataRow(" ")]
+	[DataRow("\t")]
+	[DataRow("\r\n")]
+	[TestMethod]
+	internal async Task IgnoresCommandPrefixFollowedByWhitespace(string whitespace) {
+		ArgumentNullException.ThrowIfNull(whitespace);
+
+		const ulong steamID = 76561197960265729;
+
+		string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
+		string message = $"{commandPrefix}{whitespace}";
+
+		Steam.Bot bot = GenerateBot();
+
+		await bot.Commands.HandleMessage(steamID, message).ConfigureAwait(false);
+		await bot.Commands.HandleMessage(1, 1, steamID, message).ConfigureAwait(false);
 	}
 
 	[TestMethod]
@@ -433,6 +453,18 @@ internal sealed class Bot {
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
+	}
+
+	[DataRow(" ")]
+	[DataRow("\t")]
+	[DataRow("\r\n")]
+	[TestMethod]
+	internal async Task ResponseIgnoresWhitespaceOnlyCommands(string message) {
+		ArgumentNullException.ThrowIfNull(message);
+
+		Steam.Bot bot = GenerateBot();
+
+		Assert.IsNull(await bot.Commands.Response(EAccess.Owner, message).ConfigureAwait(false));
 	}
 
 	[TestMethod]
