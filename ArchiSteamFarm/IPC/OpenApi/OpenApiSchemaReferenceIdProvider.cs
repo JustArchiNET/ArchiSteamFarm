@@ -193,7 +193,7 @@ internal static class OpenApiSchemaReferenceIdProvider {
 		return resultByMember;
 	}
 
-	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2072", Justification = "OpenAPI only considers types already used by its JSON metadata")]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2067", Justification = "OpenAPI only considers types already used by its JSON metadata")]
 	private static bool TryCreateDefaultInstance(Type type, [NotNullWhen(true)] out object? instance) {
 		ArgumentNullException.ThrowIfNull(type);
 
@@ -220,6 +220,7 @@ internal static class OpenApiSchemaReferenceIdProvider {
 		}
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026", Justification = "OpenAPI only considers types already used by its JSON metadata")]
 	private static bool TryCreateDefaultValueSnapshot(JsonPropertyInfo jsonPropertyInfo, object instance, JsonSerializerOptions jsonSerializerOptions, out object? rawDefaultValue, out JsonNode? defaultValue) {
 		ArgumentNullException.ThrowIfNull(jsonPropertyInfo);
 		ArgumentNullException.ThrowIfNull(instance);
