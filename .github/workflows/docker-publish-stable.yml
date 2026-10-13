@@ -65,8 +65,8 @@ jobs:
           org.opencontainers.image.version=${{ env.FIXED_TAG }}
           org.opencontainers.image.revision=${{ github.sha }}
         tags: |
-           ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.TAG }}
-           ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.FIXED_TAG }}-${{ env.TAG }}
-           ${{ env.DH_REPOSITORY }}:${{ env.TAG }}
-           ${{ env.DH_REPOSITORY }}:${{ env.FIXED_TAG }}-${{ env.TAG }}
+          ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.TAG }}
+          ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.FIXED_TAG }}-${{ env.TAG }}
+          ${{ env.DH_REPOSITORY }}:${{ env.TAG }}
+          ${{ env.DH_REPOSITORY }}:${{ env.FIXED_TAG }}-${{ env.TAG }}
         push: true
