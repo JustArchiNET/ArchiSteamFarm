@@ -76,15 +76,17 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 
 		JsonPropertyInfo? jsonPropertyInfo = context.JsonPropertyInfo;
 
-		if (jsonPropertyInfo == null) {
+		if ((jsonPropertyInfo == null) || !OpenApiSchemaReferenceIdProvider.TryGetDefaultValue(jsonPropertyInfo, out JsonNode? defaultValue)) {
 			return;
 		}
 
-		if (!OpenApiSchemaReferenceIdProvider.TryGetDefaultValue(jsonPropertyInfo, out JsonNode? defaultValue)) {
-			return;
+		if (defaultValue is JsonObject { Count: 0 }) {
+			// OpenAPI.NET omits empty JsonObjects from Default, so add the keyword directly to preserve the empty object.
+			schema.Extensions ??= new Dictionary<string, IOpenApiExtension>(1, StringComparer.Ordinal);
+			schema.Extensions["default"] = new JsonNodeExtension(defaultValue.DeepClone());
+		} else {
+			schema.Default = defaultValue?.DeepClone() ?? JsonNullSentinel.JsonNull;
 		}
-
-		schema.Default = defaultValue?.DeepClone() ?? JsonNullSentinel.JsonNull;
 	}
 
 	private static void ApplyDictionaryKeyType(OpenApiSchema schema, OpenApiSchemaTransformerContext context) {
