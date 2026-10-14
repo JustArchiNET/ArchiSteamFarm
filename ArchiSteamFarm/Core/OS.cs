@@ -162,7 +162,7 @@ internal static class OS {
 				await Task.Delay(2000).ConfigureAwait(false);
 			}
 
-			singleInstance = new Mutex(true, uniqueName, out bool result);
+			singleInstance = new Mutex(true, uniqueName, new NamedWaitHandleOptions { CurrentSessionOnly = false, CurrentUserOnly = false }, out bool result);
 
 			if (result) {
 				break;

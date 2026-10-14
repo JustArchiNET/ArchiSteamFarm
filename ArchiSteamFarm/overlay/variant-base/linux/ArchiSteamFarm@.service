@@ -33,10 +33,6 @@ ProtectKernelTunables=yes
 ProtectProc=invisible
 ProtectSystem=strict
 ReadWritePaths=/home/%i/ArchiSteamFarm /tmp
-
-# TODO: Remove me after https://github.com/dotnet/runtime/issues/135726 mystery is resolved
-ReadWritePaths=/home/%i
-
 RemoveIPC=yes
 RestrictAddressFamilies=AF_INET AF_INET6 AF_NETLINK AF_UNIX
 RestrictNamespaces=yes
