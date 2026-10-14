@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.GitHub;
@@ -37,12 +38,12 @@ namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class IGitHubPluginUpdates : TestContextBase {
+internal sealed class GitHubPluginUpdates : TestContextBase {
 	private const string PluginName = "ArchiSteamFarm.OfficialPlugins.Monitoring";
 	private const string Repository = "JustArchiNET/ArchiSteamFarm";
 
 	[UsedImplicitly]
-	public IGitHubPluginUpdates(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
+	public GitHubPluginUpdates(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
 
 	[TestCategory("Manual")]
 	[TestMethod]
@@ -59,7 +60,7 @@ internal sealed class IGitHubPluginUpdates : TestContextBase {
 
 		Version version = Version.Parse(response.Tag);
 
-		Plugins.Interfaces.IGitHubPluginUpdates plugin = new TestGitHubPluginUpdates(version);
+		IGitHubPluginUpdates plugin = new TestGitHubPluginUpdates(version);
 
 		Uri? releaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, GlobalConfig.EUpdateChannel.Stable, false).ConfigureAwait(false);
 
@@ -70,7 +71,7 @@ internal sealed class IGitHubPluginUpdates : TestContextBase {
 		Assert.IsNotNull(forcedReleaseURL);
 	}
 
-	private sealed class TestGitHubPluginUpdates : Plugins.Interfaces.IGitHubPluginUpdates {
+	private sealed class TestGitHubPluginUpdates : IGitHubPluginUpdates {
 		public string Name => PluginName;
 		public string RepositoryName => Repository;
 		public Version Version { get; }

@@ -193,6 +193,18 @@ StackTrace:
 		<value>Steam 모바일 앱에서 로그인 승인 알림을 받았는지 확인해 주세요. 승인 알림을 받고 수락했다면 'Y'를, 대신에 코드를 제공하고 싶다면 'N'을 입력하세요: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Y를 입력하면 Steam 모바일 앱으로 QR 코드를 스캔하여 로그인하고, N을 입력하면 계정 정보로 로그인합니다: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>Steam 모바일 앱으로 이 QR 코드를 스캔하세요 (Steam에서 갱신하면 새로운 코드가 출력됩니다): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>QR 코드 로그인이 {0}(으)로 인증되었으며, 이는 설정된 Steam 로그인 {1}과 일치하지 않습니다. 봇 설정의 SteamLogin에 지정된 것과 동일한 Steam 계정으로 스캔하거나, 스캔한 계정을 사용하려면 설정에서 SteamLogin을 제거하세요.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Steam 인증 어플의 2차 인증 코드를 입력하세요: </value>
 		<comment>Please note that this translation should end with space</comment>

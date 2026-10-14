@@ -191,6 +191,18 @@
 		<value>Controlla la tua app mobile Steam, potresti aver ricevuto una notifica di approvazione per il login. Premi Y se hai ricevuto e approvato la notifica, N se vuoi fornire il codice: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Digita Y per accedere scansionando un codice QR con l'app mobile Steam, N per accedere con le credenziali: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>Scansiona questo codice QR con l'app mobile Steam (un nuovo verrà stampato se Steam lo aggiorna): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>Login del codice QR autenticato come {0}, che non corrisponde al login di Steam configurato: {1}. Scansiona con lo stesso account Steam di SteamLogin nella configurazione del bot, o rimuovere SteamLogin dalla configurazione se si desidera utilizzare l'account scannerizzato.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Inserisci il codice 2FA dell'autenticatore mobile di Steam: </value>
 		<comment>Please note that this translation should end with space</comment>

@@ -22,8 +22,13 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Integration;
@@ -40,7 +45,10 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 		ArgumentNullException.ThrowIfNull(context);
 
 		ApplyCustomAttributes(schema, context);
+		ApplyDefaultValue(schema, context);
+		ApplyDictionaryKeyType(schema, context);
 		ApplyEnumDefinition(schema, context);
+		ApplyUniqueItems(schema, context);
 
 		return Task.CompletedTask;
 	}
@@ -56,6 +64,42 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 		foreach (CustomSwaggerAttribute customSwaggerAttribute in context.JsonPropertyInfo.AttributeProvider.GetCustomAttributes(typeof(CustomSwaggerAttribute), true)) {
 			customSwaggerAttribute.Apply(schema);
 		}
+	}
+
+	private static void ApplyDefaultValue(OpenApiSchema schema, OpenApiSchemaTransformerContext context) {
+		ArgumentNullException.ThrowIfNull(schema);
+		ArgumentNullException.ThrowIfNull(context);
+
+		if (schema.Default != null) {
+			return;
+		}
+
+		JsonPropertyInfo? jsonPropertyInfo = context.JsonPropertyInfo;
+
+		if ((jsonPropertyInfo == null) || !OpenApiSchemaReferenceIdProvider.TryGetDefaultValue(jsonPropertyInfo, out JsonNode? defaultValue)) {
+			return;
+		}
+
+		if (defaultValue is JsonObject { Count: 0 }) {
+			// OpenAPI.NET omits empty JsonObjects from Default, so add the keyword directly to preserve the empty object.
+			schema.Extensions ??= new Dictionary<string, IOpenApiExtension>(1, StringComparer.Ordinal);
+			schema.Extensions["default"] = new JsonNodeExtension(defaultValue.DeepClone());
+		} else {
+			schema.Default = defaultValue?.DeepClone() ?? JsonNullSentinel.JsonNull;
+		}
+	}
+
+	private static void ApplyDictionaryKeyType(OpenApiSchema schema, OpenApiSchemaTransformerContext context) {
+		ArgumentNullException.ThrowIfNull(schema);
+		ArgumentNullException.ThrowIfNull(context);
+
+		if ((schema.AdditionalProperties == null) || context.JsonTypeInfo.KeyType is not { } keyType) {
+			return;
+		}
+
+		schema.AddExtension("x-key-type", new JsonNodeExtension(JsonValue.Create(keyType.ToString())));
+
+		schema.PropertyNames ??= GetDictionaryKeyNamesSchema(keyType);
 	}
 
 	private static void ApplyEnumDefinition(OpenApiSchema schema, OpenApiSchemaTransformerContext context) {
@@ -113,5 +157,66 @@ internal sealed class SchemaTransformer : IOpenApiSchemaTransformer {
 		}
 
 		schema.AddExtension("x-definition", new JsonNodeExtension(definition));
+	}
+
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2075", Justification = "OpenAPI only considers types already used by its JSON metadata")]
+	private static void ApplyUniqueItems(OpenApiSchema schema, OpenApiSchemaTransformerContext context) {
+		ArgumentNullException.ThrowIfNull(schema);
+		ArgumentNullException.ThrowIfNull(context);
+
+		if ((schema.UniqueItems == true) || (schema.Items == null)) {
+			return;
+		}
+
+		Type type = context.JsonTypeInfo.Type;
+
+		if (IsSetInterface(type) || type.GetInterfaces().Any(IsSetInterface)) {
+			schema.UniqueItems = true;
+		}
+	}
+
+	private static OpenApiSchema? GetDictionaryKeyNamesSchema(Type keyType) {
+		ArgumentNullException.ThrowIfNull(keyType);
+
+		int maximumDigits = keyType switch {
+			_ when keyType == typeof(byte) => 3,
+			_ when keyType == typeof(sbyte) => 3,
+			_ when keyType == typeof(ushort) => 5,
+			_ when keyType == typeof(short) => 5,
+			_ when keyType == typeof(uint) => 10,
+			_ when keyType == typeof(int) => 10,
+			_ when keyType == typeof(ulong) => 20,
+			_ when keyType == typeof(long) => 19,
+			_ when keyType == typeof(nuint) => nuint.Size <= 4 ? 10 : 20,
+			_ when keyType == typeof(nint) => nint.Size <= 4 ? 10 : 19,
+			_ when keyType == typeof(UInt128) => 39,
+			_ when keyType == typeof(Int128) => 39,
+			_ => 0
+		};
+
+		if (maximumDigits == 0) {
+			return null;
+		}
+
+		bool signed = (keyType == typeof(sbyte)) || (keyType == typeof(short)) || (keyType == typeof(int)) || (keyType == typeof(long)) || (keyType == typeof(nint)) || (keyType == typeof(Int128));
+
+		return new OpenApiSchema {
+			MaxLength = maximumDigits + (signed ? 1 : 0),
+			MinLength = 1,
+			Pattern = signed ? "^-?[0-9]+$" : "^[0-9]+$",
+			Type = JsonSchemaType.String
+		};
+	}
+
+	private static bool IsSetInterface(Type type) {
+		ArgumentNullException.ThrowIfNull(type);
+
+		if (!type.IsGenericType) {
+			return false;
+		}
+
+		Type genericTypeDefinition = type.GetGenericTypeDefinition();
+
+		return (genericTypeDefinition == typeof(ISet<>)) || (genericTypeDefinition == typeof(IReadOnlySet<>)) || (genericTypeDefinition == typeof(IImmutableSet<>));
 	}
 }

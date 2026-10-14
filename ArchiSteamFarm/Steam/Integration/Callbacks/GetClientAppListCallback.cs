@@ -23,14 +23,12 @@
 
 using System;
 using SteamKit2;
-using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.Steam.Integration.Callbacks;
 
 internal sealed class GetClientAppListCallback : CallbackMsg {
-	internal GetClientAppListCallback(JobID jobID, CMsgClientGetClientAppList msg) {
+	internal GetClientAppListCallback(JobID jobID) {
 		ArgumentNullException.ThrowIfNull(jobID);
-		ArgumentNullException.ThrowIfNull(msg);
 
 		JobID = jobID;
 	}

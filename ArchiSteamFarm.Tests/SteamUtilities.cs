@@ -41,6 +41,8 @@ internal sealed class SteamUtilities {
 	[DataRow("https://store.steampowered.com/app/730/SomeGameName/", EGameIdentifier.Package, EGameIdentifier.Application, 730U)]
 	[DataRow("steam://launch/730/Dialog", EGameIdentifier.Package, EGameIdentifier.Application, 730U)]
 	[DataRow("steam://launch/730/", EGameIdentifier.Package, EGameIdentifier.Application, 730U)]
+	[DataRow("steam://run/2357570", EGameIdentifier.Package, EGameIdentifier.Application, 2357570U)]
+	[DataRow("steam://run/730//-console", EGameIdentifier.Package, EGameIdentifier.Application, 730U)]
 	[TestMethod]
 	internal void TryParseGameIdentifierReturnsExpectedId(string input, EGameIdentifier defaultType, EGameIdentifier expectedType, uint expectedId) {
 		bool result = TryParseGameIdentifier(input, defaultType, out EGameIdentifier? type, out uint id);
@@ -60,6 +62,7 @@ internal sealed class SteamUtilities {
 	[DataRow("regex/pattern", EGameIdentifier.Application)]
 	[DataRow("name/Half-Life", EGameIdentifier.Application)]
 	[DataRow("steam://launch/Half-Life/", EGameIdentifier.Package)]
+	[DataRow("steam://run/Half-Life/", EGameIdentifier.Package)]
 	[TestMethod]
 	internal void TryParseGameIdentifierReturnsFalseForInvalidInput(string input, EGameIdentifier defaultType) {
 		bool result = TryParseGameIdentifier(input, defaultType, out EGameIdentifier? type, out uint id);

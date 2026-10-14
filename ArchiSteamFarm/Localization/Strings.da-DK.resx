@@ -193,6 +193,18 @@ StackTrace:
 		<value>Tjek venligst Steam appen på din telefon, du skulle have modtaget en login godkendelsesmeddelelse. Skriv Y, hvis du har modtaget og godkendt meddelelsen, N hvis du ønsker at angive koden i stedet: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Skriv Y for at logge ind ved at scanne en QR-kode med Steam-mobilappen, N for at logge ind med legitimationsoplysninger: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>Scan denne QR-kode med Steam-mobilappen (en ny vil blive udskrevet, hvis Steam opdaterer den): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>QR-kode login godkendt som {0}, som ikke matcher konfigureret Steam login: {1}. Scan med den samme Steam-konto som SteamLogin i bot-konfigurationen eller fjern SteamLogin fra konfigurationen, hvis du vil bruge den scannede konto.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Venligst indtast din 2FA kode fra din steam autentificering app: </value>
 		<comment>Please note that this translation should end with space</comment>

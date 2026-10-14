@@ -190,6 +190,18 @@
 		<value>Steamモバイルアプリを確認してください。ログイン承認通知を受け取ったはずです。 通知を受け取って承認した場合はYと入力してください。代わりにコードを提供したい場合はNと入力してください。 </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>SteamモバイルアプリでQRコードをスキャンしてログインし、認証情報を使ってログインするには、Yと入力します。 </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>SteamモバイルアプリでこのQRコードをスキャンしてください（Steamが更新されると新しいQRコードが印刷されます）： {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>{0}として認証されたQRコードログインは、設定されたSteamログインと一致しません： {1}。 Botの設定でSteamLoginと同じSteamアカウントでスキャンしてください スキャンしたアカウントを使用したい場合は、SteamLoginを設定から削除してください。</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Steam 認証アプリの二次認証コードを入力してください: </value>
 		<comment>Please note that this translation should end with space</comment>

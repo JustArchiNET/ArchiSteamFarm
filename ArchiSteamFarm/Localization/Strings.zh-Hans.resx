@@ -193,6 +193,18 @@
 		<value>请查看您的 Steam 手机客户端，您应该已经收到了登录请求通知。如果您已经收到并批准，请输入 Y，如果您要提供令牌代码，请输入 N: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>输入 Y 通过 Steam 移动端应用扫描二维码登录，输入 N 通过密码登录：</value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>用 Steam 移动端应用扫描此二维码（如果 Steam 刷新，会重新输出新的）：{0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>已通过二维码作为 {0} 登录，与已配置的 Steam 帐户不匹配：{1}。请使用与机器人配置中 SteamLogin 相同的帐户扫描，或从配置中删除 SteamLogin 以使用扫描的帐户登录。</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>请输入 Steam 手机验证器上的两步验证代码: </value>
 		<comment>Please note that this translation should end with space</comment>

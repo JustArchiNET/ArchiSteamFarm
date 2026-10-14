@@ -205,22 +205,6 @@ internal static class Logging {
 		return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 	}
 
-	internal static async Task WriteToConsole(string message) {
-		ArgumentException.ThrowIfNullOrEmpty(message);
-
-		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
-			return;
-		}
-
-		await ConsoleSemaphore.WaitAsync().ConfigureAwait(false);
-
-		try {
-			Console.WriteLine(message);
-		} finally {
-			ConsoleSemaphore.Release();
-		}
-	}
-
 	internal static void InitCoreLoggers(bool uniqueInstance) {
 		try {
 			// Handle edge case of user using NLog.config in non-standard directory (current directory)
@@ -284,10 +268,7 @@ internal static class Logging {
 		}
 
 		// This is a temporary, bare, file-less configuration that must work until we're able to initialize it properly
-		LogManager.Setup().SetupSerialization(static serialization => {
-				serialization.ParseMessageTemplates(false);
-			}
-		);
+		LogManager.Setup().SetupSerialization(static serialization => { serialization.ParseMessageTemplates(false); });
 
 		LoggingConfiguration config = new();
 
@@ -336,6 +317,22 @@ internal static class Logging {
 	internal static void StartInteractiveConsole() {
 		Utilities.InBackground(HandleConsoleInteractively, true);
 		ASF.ArchiLogger.LogGenericInfo(Strings.InteractiveConsoleEnabled);
+	}
+
+	internal static async Task WriteToConsole(string message) {
+		ArgumentException.ThrowIfNullOrEmpty(message);
+
+		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
+			return;
+		}
+
+		await ConsoleSemaphore.WaitAsync().ConfigureAwait(false);
+
+		try {
+			Console.WriteLine(message);
+		} finally {
+			ConsoleSemaphore.Release();
+		}
 	}
 
 	private static async Task BeepUntilCanceled(CancellationToken cancellationToken, byte secondsDelay = 30) {

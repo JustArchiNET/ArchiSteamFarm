@@ -193,6 +193,18 @@ StackTrace:
 		<value>Vă rugăm să verificați aplicația mobilă Steam, ar fi trebuit să primiți o notificare de aprobare a autentificării. Tastați Y dacă ați primit și aprobat notificarea, N dacă doriți să furnizați codul: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Tastați Y pentru a vă autentifica prin scanarea unui cod QR cu aplicația mobilă Steam, N pentru a vă autentifica cu acreditări: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>Scanați acest cod QR cu aplicația mobilă Steam (o nouă va fi tipărită dacă Steam o reîmprospătează): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>Autentificare cu cod QR autentificată ca {0}, care nu se potrivește cu autentificarea configurată prin Steam: {1}. Scanează cu același cont Steam ca SteamLogin în configurarea botului, sau eliminați SteamLogin din configurare dacă doriți să utilizați contul scanat.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Te rog să introduci codul 2FA de pe autentificatorul Steam: </value>
 		<comment>Please note that this translation should end with space</comment>

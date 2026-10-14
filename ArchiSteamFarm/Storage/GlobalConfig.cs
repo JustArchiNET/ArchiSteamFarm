@@ -80,12 +80,6 @@ public sealed class GlobalConfig {
 	public const bool DefaultHeadless = false;
 
 	[PublicAPI]
-	public const byte DefaultIdleFarmingPeriod = 8;
-
-	[PublicAPI]
-	public const byte DefaultInventoryLimiterDelay = 4;
-
-	[PublicAPI]
 	public const bool DefaultIPC = true;
 
 	[PublicAPI]
@@ -93,6 +87,12 @@ public sealed class GlobalConfig {
 
 	[PublicAPI]
 	public const ArchiCryptoHelper.EHashingMethod DefaultIPCPasswordFormat = ArchiCryptoHelper.EHashingMethod.PlainText;
+
+	[PublicAPI]
+	public const byte DefaultIdleFarmingPeriod = 8;
+
+	[PublicAPI]
+	public const byte DefaultInventoryLimiterDelay = 4;
 
 	[PublicAPI]
 	public const byte DefaultLoginLimiterDelay = 10;
@@ -236,14 +236,6 @@ public sealed class GlobalConfig {
 	public bool Headless { get; init; } = DefaultHeadless;
 
 	[JsonInclude]
-	[Range(byte.MinValue, byte.MaxValue)]
-	public byte IdleFarmingPeriod { get; init; } = DefaultIdleFarmingPeriod;
-
-	[JsonInclude]
-	[Range(byte.MinValue, byte.MaxValue)]
-	public byte InventoryLimiterDelay { get; init; } = DefaultInventoryLimiterDelay;
-
-	[JsonInclude]
 	public bool IPC { get; init; } = DefaultIPC;
 
 	[JsonInclude]
@@ -259,6 +251,14 @@ public sealed class GlobalConfig {
 
 	[JsonInclude]
 	public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; init; } = DefaultIPCPasswordFormat;
+
+	[JsonInclude]
+	[Range(byte.MinValue, byte.MaxValue)]
+	public byte IdleFarmingPeriod { get; init; } = DefaultIdleFarmingPeriod;
+
+	[JsonInclude]
+	[Range(byte.MinValue, byte.MaxValue)]
+	public byte InventoryLimiterDelay { get; init; } = DefaultInventoryLimiterDelay;
 
 	[JsonConverter(typeof(GuidJsonConverter))]
 	[JsonInclude]
@@ -407,12 +407,6 @@ public sealed class GlobalConfig {
 	public bool ShouldSerializeHeadless() => !Saving || (Headless != DefaultHeadless);
 
 	[UsedImplicitly]
-	public bool ShouldSerializeIdleFarmingPeriod() => !Saving || (IdleFarmingPeriod != DefaultIdleFarmingPeriod);
-
-	[UsedImplicitly]
-	public bool ShouldSerializeInventoryLimiterDelay() => !Saving || (InventoryLimiterDelay != DefaultInventoryLimiterDelay);
-
-	[UsedImplicitly]
 	public bool ShouldSerializeIPC() => !Saving || (IPC != DefaultIPC);
 
 	[UsedImplicitly]
@@ -420,6 +414,12 @@ public sealed class GlobalConfig {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeIPCPasswordFormat() => !Saving || (IPCPasswordFormat != DefaultIPCPasswordFormat);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeIdleFarmingPeriod() => !Saving || (IdleFarmingPeriod != DefaultIdleFarmingPeriod);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeInventoryLimiterDelay() => !Saving || (InventoryLimiterDelay != DefaultInventoryLimiterDelay);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeLicenseID() => Saving && IsLicenseIDSet && (LicenseID != DefaultLicenseID) && (LicenseID != Guid.Empty);
@@ -446,10 +446,10 @@ public sealed class GlobalConfig {
 	public bool ShouldSerializePluginsUpdateMode() => !Saving || (PluginsUpdateMode != DefaultPluginsUpdateMode);
 
 	[UsedImplicitly]
-	public bool ShouldSerializeShutdownIfPossible() => !Saving || (ShutdownIfPossible != DefaultShutdownIfPossible);
+	public bool ShouldSerializeSSteamOwnerID() => !Saving;
 
 	[UsedImplicitly]
-	public bool ShouldSerializeSSteamOwnerID() => !Saving;
+	public bool ShouldSerializeShutdownIfPossible() => !Saving || (ShutdownIfPossible != DefaultShutdownIfPossible);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSteamMessagePrefix() => !Saving || (SteamMessagePrefix != DefaultSteamMessagePrefix);

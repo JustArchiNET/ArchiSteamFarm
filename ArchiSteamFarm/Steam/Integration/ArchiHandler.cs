@@ -41,7 +41,6 @@ using SteamKit2.WebUI.Internal;
 using CMsgClientChangeStatus = SteamKit2.Internal.CMsgClientChangeStatus;
 using CMsgClientCommentNotifications = SteamKit2.Internal.CMsgClientCommentNotifications;
 using CMsgClientGamesPlayed = SteamKit2.Internal.CMsgClientGamesPlayed;
-using CMsgClientGetClientAppList = SteamKit2.Internal.CMsgClientGetClientAppList;
 using CMsgClientGetClientAppListResponse = SteamKit2.Internal.CMsgClientGetClientAppListResponse;
 using CMsgClientItemAnnouncements = SteamKit2.Internal.CMsgClientItemAnnouncements;
 using CMsgClientRedeemGuestPass = SteamKit2.Internal.CMsgClientRedeemGuestPass;
@@ -523,8 +522,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 
 				break;
 			case EMsg.ClientGetClientAppList:
-				ClientMsgProtobuf<CMsgClientGetClientAppList> getClientAppList = new(packetMsg);
-				Client.PostCallback(new GetClientAppListCallback(packetMsg.SourceJobID, getClientAppList.Body));
+				Client.PostCallback(new GetClientAppListCallback(packetMsg.SourceJobID));
 
 				break;
 			case EMsg.ClientItemAnnouncements:

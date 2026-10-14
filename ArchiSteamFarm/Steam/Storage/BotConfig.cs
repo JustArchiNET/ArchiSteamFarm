@@ -437,10 +437,10 @@ public sealed class BotConfig {
 	public bool ShouldSerializeRemoteCommunication() => !Saving || (RemoteCommunication != DefaultRemoteCommunication);
 
 	[UsedImplicitly]
-	public bool ShouldSerializeSendTradePeriod() => !Saving || (SendTradePeriod != DefaultSendTradePeriod);
+	public bool ShouldSerializeSSteamMasterClanID() => !Saving;
 
 	[UsedImplicitly]
-	public bool ShouldSerializeSSteamMasterClanID() => !Saving;
+	public bool ShouldSerializeSendTradePeriod() => !Saving || (SendTradePeriod != DefaultSendTradePeriod);
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSteamLogin() => Saving && IsSteamLoginSet && (SteamLogin != DefaultSteamLogin);
