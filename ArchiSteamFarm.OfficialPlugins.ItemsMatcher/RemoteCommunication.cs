@@ -56,7 +56,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const byte MaxInactivityDays = 14; // How long the server is willing to keep information about us for
 	private const uint MaxItemsCount = 500000; // Server is unwilling to accept more items than this
 	private const byte MaxTradeOffersActive = 5; // The actual upper limit is 30, but we should use lower amount to allow some bots to react before we hit the maximum allowed
-	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
+	private const byte MinAnnouncementTTL = 2; // Minimum amount of minutes we must wait before the next Announcement
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
 	private const byte MinPersonaStateTTL = MinAnnouncementTTL; // Minimum amount of minutes we must wait before requesting persona state update
 	private const byte MinimumPasswordResetCooldownDays = 5; // As imposed by Steam limits
