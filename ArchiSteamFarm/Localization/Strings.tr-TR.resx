@@ -193,6 +193,18 @@ Yığın Kaydı:
 		<value>Lütfen Steam mobil uygulamanızı kontrol edin, bir giriş onay bildirimi almış olmalısınız. Bildirimi aldıysanız ve onayladıysanız Y yazın, bunun yerine kod girmek istiyorsanız N yazın: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>Steam mobil uygulamasıyla QR kodunu tarayarak oturum açmak için Y, kimlik bilgileriyle oturum açmak için N yazın: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>Steam mobil uygulamasıyla bu QR kodunu tarayın (Steam kodu yenilerse yeni bir kod oluşturulacaktır): {0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>QR koduyla girişte {0} Steam hesabı kullanıldı; bu, yapılandırılmış Steam hesabı: {1} ile eşleşmiyor. Bot yapılandırmasındaki SteamLogin ile aynı Steam hesabını kullanarak kodu tarayın veya taranan hesabı kullanmak istiyorsanız yapılandırmadan SteamLogin'i kaldırın.</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>Lütfen Steam kimlik doğrulama uygulamanızdan İki Faktörlü Doğrulama kodunuzu girin: </value>
 		<comment>Please note that this translation should end with space</comment>
@@ -330,6 +342,10 @@ Yığın Kaydı:
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID: {0} | Durum: {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotAddLicenseNoItems" xml:space="preserve">
+		<value>İzin verilen uygulama veya paket yok</value>
+		<comment>Used in place of the list of granted IDs when Steam reports no granted apps or packages. This does not indicate why no grants were reported.</comment>
 	</data>
 	<data name="BotAddLicenseWithItems" xml:space="preserve">
 		<value>ID: {0} | Durum: {1} | Öğeler: {2}</value>
@@ -799,5 +815,27 @@ Yığın Kaydı:
 	<data name="Input" xml:space="preserve">
 		<value>Veri Girişi: {0}</value>
 		<comment>{0} will be replaced by text input from the user.</comment>
+	</data>
+	<data name="WarningNoSystemRequiredLinuxDependencies" xml:space="preserve">
+		<value>--system-required seçeneğini belirtmişsiniz ancak işletim sisteminizde bu özelliğin çalışması için gerekli bağımlılıklar eksik. dbus'u yüklemeyi düşünebilirsiniz; inhibition özelliğinin çalışması gerekmiyorsa bu uyarıyı güvenle yok sayabilirsiniz.</value>
+	</data>
+	<data name="WarningBotDatabaseComponentDecryptionFailed" xml:space="preserve">
+		<value>Veritabanının {0} bileşeninin şifresi çözülemedi. Botunuzun {1} ayarını yeni değiştirdiyseniz bu normal olabilir; bir sonraki çalıştırmada bu uyarıyı görmemeniz gerekir. Aksi takdirde hatanın kesin nedenini araştırın.</value>
+		<comment>{0} will be replaced by bot database component's name (string), {1} will be replaced by bot config component's name (string).</comment>
+	</data>
+	<data name="WarningNoValidKeysFound" xml:space="preserve">
+		<value>Kullanılabilir durumdaki .keys dosyanızda geçerli anahtar bulunamadı. Lütfen anahtarlarınızın doğru biçimde olduğundan emin olun.</value>
+	</data>
+	<data name="InfoKeysImported" xml:space="preserve">
+		<value>.keys dosyanızdan {0} anahtar(lar) başarıyla içe aktarıldı.</value>
+		<comment>{0} will be replaced by number of imported keys (integer).</comment>
+	</data>
+	<data name="InfoKeysImportedSkipped" xml:space="preserve">
+		<value>.keys dosyanızdan {0} anahtar(lar) başarıyla içe aktarıldı; biçimi doğru olmadığı, yorum satırı olduğu veya boş olduğu için {1} satır(lar) atlandı.</value>
+		<comment>{0} will be replaced by number of imported keys (integer), {1} will be replaced by number of skipped lines (integer).</comment>
+	</data>
+	<data name="InfoKeysLoaded" xml:space="preserve">
+		<value>Kuyruktan {0} anahtar yüklendi.</value>
+		<comment>{0} will be replaced by number of keys (integer) in the queue.</comment>
 	</data>
 </root>
