@@ -267,6 +267,7 @@ public sealed class BotConfig {
 	public byte SendTradePeriod { get; init; } = DefaultSendTradePeriod;
 
 	[JsonInclude]
+	[SwaggerSecurityCritical]
 	public string? SteamLogin {
 		get;
 
@@ -284,6 +285,7 @@ public sealed class BotConfig {
 	[JsonInclude]
 	[MaxLength(SteamParentalCodeLength)]
 	[MinLength(SteamParentalCodeLength)]
+	[SwaggerSecurityCritical]
 	[SwaggerValidValues(ValidStringValues = ["0"])]
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "This is optional, supportive attribute, we don't care if it gets trimmed or not")]
 	public string? SteamParentalCode {
