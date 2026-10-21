@@ -369,22 +369,22 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		ArchiHandler = new ArchiHandler(ArchiLogger, SteamClient.GetRequiredHandler<SteamUnifiedMessages>());
+		ArchiHandler = new ArchiHandler(ArchiLogger, GetRequiredHandler<SteamUnifiedMessages>());
 		SteamClient.AddHandler(ArchiHandler);
 
 		CallbackManager = new CallbackManager(SteamClient);
 		CallbackManager.Subscribe<SteamClient.ConnectedCallback>(OnConnected);
 		CallbackManager.Subscribe<SteamClient.DisconnectedCallback>(OnDisconnected);
 
-		SteamApps = SteamClient.GetRequiredHandler<SteamApps>();
+		SteamApps = GetRequiredHandler<SteamApps>();
 		CallbackManager.Subscribe<SteamApps.GuestPassListCallback>(OnGuestPassList);
 		CallbackManager.Subscribe<SteamApps.LicenseListCallback>(OnLicenseList);
 
-		SteamFriends = SteamClient.GetRequiredHandler<SteamFriends>();
+		SteamFriends = GetRequiredHandler<SteamFriends>();
 		CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 		CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
-		SteamUser = SteamClient.GetRequiredHandler<SteamUser>();
+		SteamUser = GetRequiredHandler<SteamUser>();
 		CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 		CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
 		CallbackManager.Subscribe<SteamUser.PlayingSessionStateCallback>(OnPlayingSessionState);
