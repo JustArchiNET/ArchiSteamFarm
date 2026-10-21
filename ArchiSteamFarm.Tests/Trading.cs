@@ -540,6 +540,6 @@ internal sealed class Trading {
 		Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 	}
 
-	private static Asset CreateItem(ulong classID, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, ulong instanceID = 0, uint amount = 1, bool marketable = false, bool tradable = false, uint realAppID = Asset.SteamAppID, EAssetType type = EAssetType.TradingCard, EAssetRarity rarity = EAssetRarity.Common) => new(appID, contextID, classID, amount, new InventoryDescription(Asset.SteamAppID, classID, instanceID, marketable, tradable, realAppID, type, rarity));
+	private static Asset CreateItem(ulong classID, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, ulong instanceID = 0, uint amount = 1, bool marketable = false, bool tradable = false, uint realAppID = Asset.SteamAppID, EAssetType type = EAssetType.TradingCard, EAssetRarity rarity = EAssetRarity.Common) => new(appID, contextID, classID, amount, new InventoryDescription(appID, classID, instanceID, marketable, tradable, realAppID, type, rarity));
 }
 #pragma warning restore CA1812 // False positive, the class is used during MSTest
