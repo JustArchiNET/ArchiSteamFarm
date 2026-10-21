@@ -286,7 +286,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		await Refresh(bot).ConfigureAwait(false);
 	}
 
-	private static async void OnLicenseList(Bot bot) {
+	private static async Task OnLicenseList(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (Config is not { Enabled: true }) {
