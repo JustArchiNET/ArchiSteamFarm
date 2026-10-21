@@ -194,7 +194,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 		SteamID? steamID = Client.SteamID;
 
 		if (steamID == null) {
-			throw new TimeoutException(Strings.FormatWarningFailedWithError(nameof(Client.IsConnected)));
+			throw new TimeoutException(Strings.FormatWarningFailedWithError(nameof(Client.SteamID)));
 		}
 
 		if (steamID == 0) {
