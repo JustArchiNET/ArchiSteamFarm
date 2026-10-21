@@ -369,22 +369,22 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		ArchiHandler = new ArchiHandler(ArchiLogger, SteamClient.GetHandler<SteamUnifiedMessages>() ?? throw new InvalidOperationException(nameof(SteamUnifiedMessages)));
+		ArchiHandler = new ArchiHandler(ArchiLogger, SteamClient.GetRequiredHandler<SteamUnifiedMessages>());
 		SteamClient.AddHandler(ArchiHandler);
 
 		CallbackManager = new CallbackManager(SteamClient);
 		CallbackManager.Subscribe<SteamClient.ConnectedCallback>(OnConnected);
 		CallbackManager.Subscribe<SteamClient.DisconnectedCallback>(OnDisconnected);
 
-		SteamApps = SteamClient.GetHandler<SteamApps>() ?? throw new InvalidOperationException(nameof(SteamApps));
+		SteamApps = SteamClient.GetRequiredHandler<SteamApps>();
 		CallbackManager.Subscribe<SteamApps.GuestPassListCallback>(OnGuestPassList);
 		CallbackManager.Subscribe<SteamApps.LicenseListCallback>(OnLicenseList);
 
-		SteamFriends = SteamClient.GetHandler<SteamFriends>() ?? throw new InvalidOperationException(nameof(SteamFriends));
+		SteamFriends = SteamClient.GetRequiredHandler<SteamFriends>();
 		CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 		CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
-		SteamUser = SteamClient.GetHandler<SteamUser>() ?? throw new InvalidOperationException(nameof(SteamUser));
+		SteamUser = SteamClient.GetRequiredHandler<SteamUser>();
 		CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 		CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
 		CallbackManager.Subscribe<SteamUser.PlayingSessionStateCallback>(OnPlayingSessionState);
@@ -818,6 +818,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return firstPageResult;
 		}
 	}
+
+	[PublicAPI]
+	public T GetRequiredHandler<T>() where T : ClientMsgHandler => SteamClient.GetRequiredHandler<T>();
 
 	[PublicAPI]
 	public async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID) {
