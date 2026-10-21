@@ -681,6 +681,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return GetFilePath(BotName, fileType);
 	}
 
+	[Obsolete($"Use {nameof(GetRequiredHandler)} instead, this method will be removed in future versions.")]
 	[PublicAPI]
 	public T? GetHandler<T>() where T : ClientMsgHandler => SteamClient.GetHandler<T>();
 
