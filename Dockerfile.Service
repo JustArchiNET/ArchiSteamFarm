@@ -28,6 +28,7 @@ COPY --link ArchiSteamFarm ArchiSteamFarm
 COPY --link ArchiSteamFarm.OfficialPlugins.ItemsMatcher ArchiSteamFarm.OfficialPlugins.ItemsMatcher
 COPY --link ArchiSteamFarm.OfficialPlugins.MobileAuthenticator ArchiSteamFarm.OfficialPlugins.MobileAuthenticator
 COPY --link ArchiSteamFarm.OfficialPlugins.SteamTokenDumper ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+COPY --link packages packages
 COPY --link resources resources
 COPY --link .editorconfig .editorconfig
 COPY --link Directory.Build.props Directory.Build.props
