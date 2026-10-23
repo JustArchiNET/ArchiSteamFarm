@@ -193,6 +193,18 @@
 		<value>請查看您的 Steam 行動裝置應用程式，您應該已收到登入請求通知。若您已收到且確認了登入請求，請輸入 Y；若您想要提供登入代碼，則輸入 N：</value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
+	<data name="UserInputQrCodeLogin" xml:space="preserve">
+		<value>輸入 Y 以使用 Steam 行動裝置應用程式掃描 QR 碼登入，輸入 N 以使用憑證登入：</value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="QrCodeLoginUrl" xml:space="preserve">
+		<value>請使用 Steam 行動裝置應用程式掃描此 QR 碼（若 Steam 重新整理，將會顯示新的 QR 碼）：{0}</value>
+		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
+	</data>
+	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
+		<value>QR 碼登入驗證的帳號為 {0}，與設定的 Steam 登入帳號 {1} 比對不符。請使用與 Bot 設定檔中 SteamLogin 相同的 Steam 帳號掃描，或者若您想使用所掃描的帳號，請從設定檔中移除 SteamLogin。</value>
+		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
+	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
 		<value>請輸入您的 Steam 行動驗證器上的雙重驗證代碼：</value>
 		<comment>Please note that this translation should end with space</comment>
@@ -330,6 +342,10 @@
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID：{0} | 狀態：{1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotAddLicenseNoItems" xml:space="preserve">
+		<value>未取得程式或軟體</value>
+		<comment>Used in place of the list of granted IDs when Steam reports no granted apps or packages. This does not indicate why no grants were reported.</comment>
 	</data>
 	<data name="BotAddLicenseWithItems" xml:space="preserve">
 		<value>ID：{0} | 狀態：{1} | 物品：{2}</value>
