@@ -552,3 +552,6 @@ $RECYCLE.BIN/
 
 # Files that could be ignored by above rules, that we want to ship
 !ArchiSteamFarm/overlay/**
+
+# Local packages provided for testing
+!packages/*.nupkg
