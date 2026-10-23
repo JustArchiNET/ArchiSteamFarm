@@ -34,6 +34,7 @@ COPY --link .editorconfig .editorconfig
 COPY --link Directory.Build.props Directory.Build.props
 COPY --link Directory.Packages.props Directory.Packages.props
 COPY --link LICENSE.txt LICENSE.txt
+COPY --link NuGet.config NuGet.config
 
 RUN --mount=type=secret,id=ASF_PRIVATE_SNK --mount=type=secret,id=STEAM_TOKEN_DUMPER_TOKEN <<EOF
     set -eu
