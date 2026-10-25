@@ -369,22 +369,22 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		ArchiHandler = new ArchiHandler(ArchiLogger, SteamClient.GetHandler<SteamUnifiedMessages>() ?? throw new InvalidOperationException(nameof(SteamUnifiedMessages)));
+		ArchiHandler = new ArchiHandler(ArchiLogger, GetRequiredHandler<SteamUnifiedMessages>());
 		SteamClient.AddHandler(ArchiHandler);
 
 		CallbackManager = new CallbackManager(SteamClient);
 		CallbackManager.Subscribe<SteamClient.ConnectedCallback>(OnConnected);
 		CallbackManager.Subscribe<SteamClient.DisconnectedCallback>(OnDisconnected);
 
-		SteamApps = SteamClient.GetHandler<SteamApps>() ?? throw new InvalidOperationException(nameof(SteamApps));
+		SteamApps = GetRequiredHandler<SteamApps>();
 		CallbackManager.Subscribe<SteamApps.GuestPassListCallback>(OnGuestPassList);
 		CallbackManager.Subscribe<SteamApps.LicenseListCallback>(OnLicenseList);
 
-		SteamFriends = SteamClient.GetHandler<SteamFriends>() ?? throw new InvalidOperationException(nameof(SteamFriends));
+		SteamFriends = GetRequiredHandler<SteamFriends>();
 		CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 		CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
-		SteamUser = SteamClient.GetHandler<SteamUser>() ?? throw new InvalidOperationException(nameof(SteamUser));
+		SteamUser = GetRequiredHandler<SteamUser>();
 		CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 		CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
 		CallbackManager.Subscribe<SteamUser.PlayingSessionStateCallback>(OnPlayingSessionState);
@@ -681,11 +681,16 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return GetFilePath(BotName, fileType);
 	}
 
+	[Obsolete($"Use {nameof(GetRequiredHandler)} instead, this method will be removed in future versions.")]
 	[PublicAPI]
 	public T? GetHandler<T>() where T : ClientMsgHandler => SteamClient.GetHandler<T>();
 
+	[Obsolete($"Use {nameof(GetItemsForFullSets)} variant that accepts AppID and ContextID as well, this method will be removed in future versions.")]
 	[PublicAPI]
-	public static HashSet<Asset> GetItemsForFullSets(IReadOnlyCollection<Asset> inventory, IReadOnlyDictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract, ushort maxItems = Trading.MaxItemsPerTrade) {
+	public static HashSet<Asset> GetItemsForFullSets(IReadOnlyCollection<Asset> inventory, IReadOnlyDictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract, ushort maxItems = Trading.MaxItemsPerTrade) => GetItemsForFullSets(inventory, amountsToExtract.ToDictionary(static kv => (Asset.SteamAppID, Asset.SteamCommunityContextID, kv.Key.RealAppID, kv.Key.Type, kv.Key.Rarity), static kv => kv.Value), maxItems);
+
+	[PublicAPI]
+	public static HashSet<Asset> GetItemsForFullSets(IReadOnlyCollection<Asset> inventory, IReadOnlyDictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract, ushort maxItems = Trading.MaxItemsPerTrade) {
 		if ((inventory == null) || (inventory.Count == 0)) {
 			throw new ArgumentNullException(nameof(inventory));
 		}
@@ -697,9 +702,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ArgumentOutOfRangeException.ThrowIfLessThan(maxItems, MinCardsPerBadge);
 
 		HashSet<Asset> result = [];
-		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, HashSet<Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(static item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(static grouping => grouping.Key, static grouping => grouping.GroupBy(static item => item.ClassID).ToDictionary(static group => group.Key, static group => group.ToHashSet()));
+		Dictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, HashSet<Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(static item => (item.AppID, item.ContextID, item.RealAppID, item.Type, item.Rarity)).ToDictionary(static grouping => grouping.Key, static grouping => grouping.GroupBy(static item => item.ClassID).ToDictionary(static group => group.Key, static group => group.ToHashSet()));
 
-		foreach (((uint RealAppID, EAssetType Type, EAssetRarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract.OrderBy(static kv => kv.Value.ItemsPerSet)) {
+		foreach (((uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract.OrderBy(static kv => kv.Value.ItemsPerSet)) {
 			if (!itemsPerClassIDPerSet.TryGetValue(set, out Dictionary<ulong, HashSet<Asset>>? itemsPerClassID)) {
 				continue;
 			}
@@ -818,6 +823,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return firstPageResult;
 		}
 	}
+
+	[PublicAPI]
+	public T GetRequiredHandler<T>() where T : ClientMsgHandler => SteamClient.GetRequiredHandler<T>();
 
 	[PublicAPI]
 	public async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID) {
@@ -2817,7 +2825,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async void OnConnected(SteamClient.ConnectedCallback callback) {
+	private async Task OnConnected(SteamClient.ConnectedCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		HeartBeatFailures = 0;
@@ -2992,7 +3000,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		SteamUser.LogOn(logOnDetails);
 	}
 
-	private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
+	private async Task OnDisconnected(SteamClient.DisconnectedCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		if (ASF.LoginRateLimitingSemaphore == null) {
@@ -3102,7 +3110,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await Reconnect().ConfigureAwait(false);
 	}
 
-	private async void OnFriendsList(SteamFriends.FriendsListCallback callback) {
+	private async Task OnFriendsList(SteamFriends.FriendsListCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 		ArgumentNullException.ThrowIfNull(callback.FriendList);
 
@@ -3184,7 +3192,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ArchiHandler.SendClientAppListResponse(callback.JobID);
 	}
 
-	private async void OnGuestPassList(SteamApps.GuestPassListCallback callback) {
+	private async Task OnGuestPassList(SteamApps.GuestPassListCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 		ArgumentNullException.ThrowIfNull(callback.GuestPasses);
 
@@ -3201,7 +3209,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await Actions.AcceptGuestPasses(guestPassIDs).ConfigureAwait(false);
 	}
 
-	private async void OnIncomingChatMessage(SteamUnifiedMessages.ServiceMethodNotification<CChatRoom_IncomingChatMessage_Notification> notification) {
+	private async Task OnIncomingChatMessage(SteamUnifiedMessages.ServiceMethodNotification<CChatRoom_IncomingChatMessage_Notification> notification) {
 		ArgumentNullException.ThrowIfNull(notification);
 
 		if (notification.Body.chat_group_id == 0) {
@@ -3256,7 +3264,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await Commands.HandleMessage(notification.Body.chat_group_id, notification.Body.chat_id, notification.Body.steamid_sender, message).ConfigureAwait(false);
 	}
 
-	private async void OnIncomingMessage(SteamUnifiedMessages.ServiceMethodNotification<CFriendMessages_IncomingMessage_Notification> notification) {
+	private async Task OnIncomingMessage(SteamUnifiedMessages.ServiceMethodNotification<CFriendMessages_IncomingMessage_Notification> notification) {
 		ArgumentNullException.ThrowIfNull(notification);
 
 		if (notification.Body.steamid_friend == 0) {
@@ -3325,7 +3333,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async void OnLicenseList(SteamApps.LicenseListCallback callback) {
+	private async Task OnLicenseList(SteamApps.LicenseListCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 		ArgumentNullException.ThrowIfNull(callback.LicenseList);
 
@@ -3420,7 +3428,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async void OnLoggedOff(SteamUser.LoggedOffCallback callback) {
+	private async Task OnLoggedOff(SteamUser.LoggedOffCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		// Keep LastLogOnResult for OnDisconnected()
@@ -3454,7 +3462,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		SteamClient.Disconnect();
 	}
 
-	private async void OnLoggedOn(SteamUser.LoggedOnCallback callback) {
+	private async Task OnLoggedOn(SteamUser.LoggedOnCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		// Always reset one-time-only access tokens when we get OnLoggedOn() response
@@ -3584,7 +3592,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await PluginsCore.OnBotLoggedOn(this).ConfigureAwait(false);
 	}
 
-	private async void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
+	private async Task OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.FriendID != SteamID) {
@@ -3609,7 +3617,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await PluginsCore.OnSelfPersonaState(this, callback, Nickname, AvatarHash).ConfigureAwait(false);
 	}
 
-	private async void OnPlayingSessionState(SteamUser.PlayingSessionStateCallback callback) {
+	private async Task OnPlayingSessionState(SteamUser.PlayingSessionStateCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.PlayingBlocked == PlayingBlocked) {
@@ -3635,7 +3643,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private async void OnSendItemsTimer(object? state = null) => await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 
-	private async void OnSharedLibraryLockStatus(SharedLibraryLockStatusCallback callback) {
+	private async Task OnSharedLibraryLockStatus(SharedLibraryLockStatusCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		// Ignore no status updates
@@ -3996,7 +4004,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					return;
 				}
 
-				Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(inventory);
+				Dictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(inventory);
 
 				// Filter appIDs that can't possibly be completed due to having less cards than smallest badges possible
 				appIDs.IntersectWith(inventorySets.Where(static kv => kv.Value.Count >= MinCardsPerBadge).Select(static kv => kv.Key.RealAppID));
@@ -4011,9 +4019,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					return;
 				}
 
-				Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = new();
+				Dictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = new();
 
-				foreach (((uint RealAppID, EAssetType Type, EAssetRarity Rarity) key, List<uint> amounts) in inventorySets.Where(set => appIDs.Contains(set.Key.RealAppID))) {
+				foreach (((uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity) key, List<uint> amounts) in inventorySets.Where(set => appIDs.Contains(set.Key.RealAppID))) {
 					if (!cardsCountPerAppID.TryGetValue(key.RealAppID, out byte cardsCount) || (cardsCount == 0)) {
 						throw new InvalidOperationException(nameof(cardsCount));
 					}

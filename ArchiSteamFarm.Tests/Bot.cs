@@ -107,7 +107,7 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, itemsPerSet, MinCardsPerBadge);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = items.Where(static item => item.RealAppID == relevantAppID).GroupBy(static item => (item.RealAppID, item.ContextID, item.ClassID)).ToDictionary(static group => group.Key, static group => (uint) group.Sum(static item => item.Amount));
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = items.Where(static item => item.RealAppID == relevantAppID).GroupBy(static item => (item.AppID, item.ContextID, item.ClassID, item.RealAppID, item.Type, item.Rarity)).ToDictionary(static group => group.Key, static group => (uint) group.Sum(static item => item.Amount));
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
 	}
@@ -137,10 +137,10 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-			{ (appID, Asset.SteamCommunityContextID, 1), 1 },
-			{ (appID, Asset.SteamCommunityContextID, 2), 1 },
-			{ (appID, Asset.SteamCommunityContextID, 3), 1 }
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new() {
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID, EAssetType.TradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 2, appID, EAssetType.TradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 3, appID, EAssetType.TradingCard, EAssetRarity.Common), 1 }
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
@@ -159,9 +159,9 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-			{ (appID, Asset.SteamCommunityContextID, 1), 2 },
-			{ (appID, Asset.SteamCommunityContextID, 2), 2 }
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new() {
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID, EAssetType.TradingCard, EAssetRarity.Common), 2 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 2, appID, EAssetType.TradingCard, EAssetRarity.Common), 2 }
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
@@ -179,9 +179,9 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-			{ (appID, Asset.SteamCommunityContextID, 1), 2 },
-			{ (appID, Asset.SteamCommunityContextID, 2), 2 }
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new() {
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID, EAssetType.TradingCard, EAssetRarity.Common), 2 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 2, appID, EAssetType.TradingCard, EAssetRarity.Common), 2 }
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
@@ -217,12 +217,16 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-			{ (appID, Asset.SteamCommunityContextID, 1), 2 },
-			{ (appID, Asset.SteamCommunityContextID, 2), 2 },
-			{ (appID, Asset.SteamCommunityContextID, 3), 3 },
-			{ (appID, Asset.SteamCommunityContextID, 4), 1 },
-			{ (appID, Asset.SteamCommunityContextID, 7), 1 }
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new() {
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID, EAssetType.TradingCard, EAssetRarity.Uncommon), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 2, appID, EAssetType.TradingCard, EAssetRarity.Uncommon), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 3, appID, EAssetType.TradingCard, EAssetRarity.Uncommon), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID, EAssetType.FoilTradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 3, appID, EAssetType.FoilTradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 7, appID, EAssetType.FoilTradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 2, appID, EAssetType.Unknown, EAssetRarity.Rare), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 3, appID, EAssetType.Unknown, EAssetRarity.Rare), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 4, appID, EAssetType.Unknown, EAssetRarity.Rare), 1 }
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
@@ -239,7 +243,7 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new(0);
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new(0);
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
 	}
 
@@ -254,9 +258,9 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-			{ (appID, Asset.SteamCommunityContextID, 1), 1 },
-			{ (appID, Asset.SteamCommunityContextID, 2), 1 }
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new() {
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID, EAssetType.TradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 2, appID, EAssetType.TradingCard, EAssetRarity.Common), 1 }
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
@@ -279,9 +283,9 @@ internal sealed class Bot {
 			}
 		);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-			{ (appID0, Asset.SteamCommunityContextID, 1), 1 },
-			{ (appID1, Asset.SteamCommunityContextID, 1), 1 }
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new() {
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID0, EAssetType.TradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID1, EAssetType.TradingCard, EAssetRarity.Common), 1 }
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
@@ -304,7 +308,7 @@ internal sealed class Bot {
 			}
 		);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new(0);
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new(0);
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
 	}
@@ -332,10 +336,10 @@ internal sealed class Bot {
 			}
 		);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-			{ (appID1, Asset.SteamCommunityContextID, 1), 1 },
-			{ (appID1, Asset.SteamCommunityContextID, 2), 1 },
-			{ (appID1, Asset.SteamCommunityContextID, 3), 1 }
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new() {
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID1, EAssetType.TradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 2, appID1, EAssetType.TradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 3, appID1, EAssetType.TradingCard, EAssetRarity.Common), 1 }
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
@@ -352,8 +356,9 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 1, appID);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-			{ (appID, Asset.SteamCommunityContextID, 1), 2 }
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new() {
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID, EAssetType.TradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID, EAssetType.TradingCard, EAssetRarity.Rare), 1 }
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
@@ -370,7 +375,7 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new(0);
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new(0);
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
 	}
@@ -389,10 +394,10 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-			{ (appID, Asset.SteamCommunityContextID, 1), 1 },
-			{ (appID, Asset.SteamCommunityContextID, 2), 1 },
-			{ (appID, Asset.SteamCommunityContextID, 3), 1 }
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new() {
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID, EAssetType.TradingCard, EAssetRarity.Uncommon), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 2, appID, EAssetType.TradingCard, EAssetRarity.Uncommon), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 3, appID, EAssetType.TradingCard, EAssetRarity.Uncommon), 1 }
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
@@ -409,8 +414,9 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 1, appID);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-			{ (appID, Asset.SteamCommunityContextID, 1), 2 }
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new() {
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID, EAssetType.TradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID, EAssetType.FoilTradingCard, EAssetRarity.Common), 1 }
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
@@ -427,7 +433,7 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new(0);
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new(0);
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
 	}
@@ -446,10 +452,10 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-			{ (appID, Asset.SteamCommunityContextID, 1), 1 },
-			{ (appID, Asset.SteamCommunityContextID, 2), 1 },
-			{ (appID, Asset.SteamCommunityContextID, 3), 1 }
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new() {
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID, EAssetType.FoilTradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 2, appID, EAssetType.FoilTradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 3, appID, EAssetType.FoilTradingCard, EAssetRarity.Common), 1 }
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
@@ -487,9 +493,9 @@ internal sealed class Bot {
 
 		HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID0);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-			{ (appID0, Asset.SteamCommunityContextID, 1), 1 },
-			{ (appID0, Asset.SteamCommunityContextID, 2), 1 }
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult = new() {
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 1, appID0, EAssetType.TradingCard, EAssetRarity.Common), 1 },
+			{ (Asset.SteamAppID, Asset.SteamCommunityContextID, 2, appID0, EAssetType.TradingCard, EAssetRarity.Common), 1 }
 		};
 
 		AssertResultMatchesExpectation(expectedResult, itemsToSend);
@@ -558,11 +564,11 @@ internal sealed class Bot {
 		);
 	}
 
-	private static void AssertResultMatchesExpectation(Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult, IReadOnlyCollection<Asset> itemsToSend) {
+	private static void AssertResultMatchesExpectation(Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), uint> expectedResult, IReadOnlyCollection<Asset> itemsToSend) {
 		ArgumentNullException.ThrowIfNull(expectedResult);
 		ArgumentNullException.ThrowIfNull(itemsToSend);
 
-		Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), long> realResult = itemsToSend.GroupBy(static asset => (asset.RealAppID, asset.ContextID, asset.ClassID)).ToDictionary(static group => group.Key, static group => group.Sum(static asset => asset.Amount));
+		Dictionary<(uint AppID, ulong ContextID, ulong ClassID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), long> realResult = itemsToSend.GroupBy(static asset => (asset.AppID, asset.ContextID, asset.ClassID, asset.RealAppID, asset.Type, asset.Rarity)).ToDictionary(static group => group.Key, static group => group.Sum(static asset => asset.Amount));
 		Assert.HasCount(expectedResult.Count, realResult);
 		Assert.IsTrue(expectedResult.All(expectation => realResult.TryGetValue(expectation.Key, out long reality) && (expectation.Value == reality)));
 	}
@@ -572,7 +578,7 @@ internal sealed class Bot {
 	private static HashSet<Asset> GetItemsForFullBadge(IReadOnlyCollection<Asset> inventory, byte cardsPerSet, uint appID, ushort maxItems = Steam.Exchange.Trading.MaxItemsPerTrade) => GetItemsForFullBadge(inventory, new Dictionary<uint, byte> { { appID, cardsPerSet } }, maxItems);
 
 	private static HashSet<Asset> GetItemsForFullBadge(IReadOnlyCollection<Asset> inventory, [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<uint, byte> cardsPerSet, ushort maxItems = Steam.Exchange.Trading.MaxItemsPerTrade) {
-		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> inventorySets = Steam.Exchange.Trading.GetInventorySets(inventory);
+		Dictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), List<uint>> inventorySets = Steam.Exchange.Trading.GetInventorySets(inventory);
 
 		return [.. GetItemsForFullSets(inventory, inventorySets.ToDictionary(static kv => kv.Key, kv => (SetsToExtract: inventorySets[kv.Key][0], cardsPerSet[kv.Key.RealAppID])), maxItems)];
 	}

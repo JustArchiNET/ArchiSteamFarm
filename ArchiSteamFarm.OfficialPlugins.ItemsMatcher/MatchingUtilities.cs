@@ -29,16 +29,16 @@ using ArchiSteamFarm.Steam.Data;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal static class MatchingUtilities {
-	internal static (Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> FullState, Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> TradableState) GetDividedInventoryState(IReadOnlyCollection<Asset> inventory) {
+	internal static (Dictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> FullState, Dictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> TradableState) GetDividedInventoryState(IReadOnlyCollection<Asset> inventory) {
 		if ((inventory == null) || (inventory.Count == 0)) {
 			throw new ArgumentNullException(nameof(inventory));
 		}
 
-		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> fullState = new();
-		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> tradableState = new();
+		Dictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> fullState = new();
+		Dictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> tradableState = new();
 
 		foreach (Asset item in inventory) {
-			(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
+			(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (item.AppID, item.ContextID, item.RealAppID, item.Type, item.Rarity);
 
 			if (fullState.TryGetValue(key, out Dictionary<ulong, uint>? fullSet)) {
 				fullSet[item.ClassID] = fullSet.GetValueOrDefault(item.ClassID) + item.Amount;
@@ -60,15 +60,15 @@ internal static class MatchingUtilities {
 		return (fullState, tradableState);
 	}
 
-	internal static Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> GetTradableInventoryState(IReadOnlyCollection<Asset> inventory) {
+	internal static Dictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> GetTradableInventoryState(IReadOnlyCollection<Asset> inventory) {
 		if ((inventory == null) || (inventory.Count == 0)) {
 			throw new ArgumentNullException(nameof(inventory));
 		}
 
-		Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> tradableState = new();
+		Dictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> tradableState = new();
 
 		foreach (Asset item in inventory.Where(static item => item.Tradable)) {
-			(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
+			(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (item.AppID, item.ContextID, item.RealAppID, item.Type, item.Rarity);
 
 			if (tradableState.TryGetValue(key, out Dictionary<ulong, uint>? tradableSet)) {
 				tradableSet[item.ClassID] = tradableSet.GetValueOrDefault(item.ClassID) + item.Amount;
@@ -139,11 +139,11 @@ internal static class MatchingUtilities {
 		throw new InvalidOperationException(nameof(classIDs));
 	}
 
-	internal static bool IsEmptyForMatching(IReadOnlyDictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> fullState, IReadOnlyDictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> tradableState) {
+	internal static bool IsEmptyForMatching(IReadOnlyDictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> fullState, IReadOnlyDictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> tradableState) {
 		ArgumentNullException.ThrowIfNull(fullState);
 		ArgumentNullException.ThrowIfNull(tradableState);
 
-		foreach (((uint RealAppID, EAssetType Type, EAssetRarity Rarity) set, IReadOnlyDictionary<ulong, uint> state) in tradableState) {
+		foreach (((uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity) set, IReadOnlyDictionary<ulong, uint> state) in tradableState) {
 			if (!fullState.TryGetValue(set, out Dictionary<ulong, uint>? fullSet) || (fullSet.Count == 0)) {
 				throw new InvalidOperationException(nameof(fullSet));
 			}

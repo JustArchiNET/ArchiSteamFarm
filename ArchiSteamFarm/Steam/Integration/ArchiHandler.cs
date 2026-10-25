@@ -187,14 +187,18 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(itemsCountPerRequest);
 
-		if (!Client.IsConnected || (Client.SteamID == null)) {
+		if (!Client.IsConnected) {
 			throw new TimeoutException(Strings.FormatWarningFailedWithError(nameof(Client.IsConnected)));
 		}
 
-		ulong steamID = Client.SteamID;
+		SteamID? steamID = Client.SteamID;
+
+		if (steamID == null) {
+			throw new TimeoutException(Strings.FormatWarningFailedWithError(nameof(Client.SteamID)));
+		}
 
 		if (steamID == 0) {
-			throw new InvalidOperationException(nameof(Client.SteamID));
+			throw new InvalidOperationException(nameof(steamID));
 		}
 
 		CEcon_GetInventoryItemsWithDescriptions_Request request = new() {
@@ -226,7 +230,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			while (true) {
 				SteamUnifiedMessages.ServiceMethodResponse<CEcon_GetInventoryItemsWithDescriptions_Response>? response = null;
 
-				for (byte i = 0; (i < WebBrowser.MaxTries) && (response?.Result != EResult.OK) && Client.IsConnected && (Client.SteamID != null); i++) {
+				for (byte i = 0; (i < WebBrowser.MaxTries) && (response?.Result != EResult.OK) && Client.IsConnected && (Client.SteamID == steamID); i++) {
 					if (i > 0) {
 						// It seems 2 seconds is enough to win over DuplicateRequest, so we'll use that for this and also other network-related failures
 						await Task.Delay(2000).ConfigureAwait(false);
@@ -379,14 +383,14 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			return null;
 		}
 
-		if (Client.SteamID == null) {
-			throw new InvalidOperationException(nameof(Client.SteamID));
+		SteamID? steamID = Client.SteamID;
+
+		if (steamID == null) {
+			return null;
 		}
 
-		ulong steamID = Client.SteamID;
-
 		if (steamID == 0) {
-			throw new InvalidOperationException(nameof(Client.SteamID));
+			throw new InvalidOperationException(nameof(steamID));
 		}
 
 		CLoyaltyRewards_GetSummary_Request request = new() { steamid = steamID };
@@ -765,11 +769,15 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			return null;
 		}
 
-		if (Client.SteamID == null) {
-			throw new InvalidOperationException(nameof(Client.SteamID));
+		SteamID? steamID = Client.SteamID;
+
+		if (steamID == null) {
+			return null;
 		}
 
-		ulong steamID = Client.SteamID;
+		if (steamID == 0) {
+			throw new InvalidOperationException(nameof(steamID));
+		}
 
 		CFamilyGroups_GetFamilyGroupForUser_Request request = new() {
 			include_family_group_response = true,
