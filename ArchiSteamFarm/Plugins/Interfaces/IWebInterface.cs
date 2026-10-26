@@ -35,6 +35,7 @@ public interface IWebInterface : IPlugin {
 	/// </summary>
 	/// <example>www</example>
 	/// <remarks>You'll need to ship this folder together with your plugin for the interface to work.</remarks>
+	[JsonIgnore]
 	public string PhysicalPath => "www";
 
 	/// <summary>
