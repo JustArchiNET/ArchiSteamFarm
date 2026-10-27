@@ -22,6 +22,6 @@
 		<PackageVersion Include="System.Composition" Version="10.0.14" />
 		<PackageVersion Include="System.Composition.AttributedModel" Version="10.0.14" />
 		<PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="10.0.14" />
-		<PackageVersion Include="Tmds.DBus.Protocol" Version="0.95.1" />
+		<PackageVersion Include="Tmds.DBus.Protocol" Version="0.95.2" />
 	</ItemGroup>
 </Project>
