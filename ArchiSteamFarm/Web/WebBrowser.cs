@@ -51,7 +51,7 @@ public sealed class WebBrowser : IDisposable {
 	internal const byte MaxConnections = 10; // Defines maximum number of connections per server. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 
 	private const ushort ExtendedTimeout = 600; // Defines timeout for WebBrowsers dealing with huge data (ASF update)
-	private const string FakeUserAgent = "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0";
+	private const string FakeUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36";
 	private const byte MaxIdleTime = 15; // Defines in seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 
 	[PublicAPI]
@@ -784,7 +784,7 @@ public sealed class WebBrowser : IDisposable {
 
 				if (requestOptions.HasFlag(ERequestOptions.SteamWafWorkarounds)) {
 					requestMessage.Headers.Accept.Clear();
-					requestMessage.Headers.Accept.ParseAdd("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+					requestMessage.Headers.Accept.ParseAdd("text/html,application/xhtml+xml,application/xml;q=0.9,image/jxl,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
 
 					requestMessage.Headers.AcceptEncoding.Clear();
 					requestMessage.Headers.AcceptEncoding.ParseAdd("gzip, deflate, br, zstd");
@@ -792,14 +792,15 @@ public sealed class WebBrowser : IDisposable {
 					requestMessage.Headers.AcceptLanguage.Clear();
 					requestMessage.Headers.AcceptLanguage.ParseAdd("en-US,en;q=0.9");
 
-					requestMessage.Headers.Add("DNT", "1");
-					requestMessage.Headers.Add("Priority", "u=0, i");
 					requestMessage.Headers.Add("Sec-Fetch-Dest", "document");
 					requestMessage.Headers.Add("Sec-Fetch-Mode", "navigate");
 					requestMessage.Headers.Add("Sec-Fetch-Site", "none");
 					requestMessage.Headers.Add("Sec-Fetch-User", "?1");
-					requestMessage.Headers.Add("Sec-GPC", "1");
 					requestMessage.Headers.Add("Upgrade-Insecure-Requests", "1");
+
+					requestMessage.Headers.Add("sec-ch-ua", "\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"156\", \"Google Chrome\";v=\"156\"");
+					requestMessage.Headers.Add("sec-ch-ua-mobile", "?0");
+					requestMessage.Headers.Add("sec-ch-ua-platform", "\"Windows\"");
 
 					requestMessage.Headers.UserAgent.Clear();
 					requestMessage.Headers.UserAgent.ParseAdd(FakeUserAgent);
