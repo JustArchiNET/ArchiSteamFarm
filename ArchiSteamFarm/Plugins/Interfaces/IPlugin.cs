@@ -31,6 +31,8 @@ namespace ArchiSteamFarm.Plugins.Interfaces;
 /// <summary>
 ///     Implementing this interface allows you to register your plugin in ASF, in turn providing you a way to implement your own custom logic.
 /// </summary>
+[JsonDerivedType(typeof(IWebInterface))]
+[JsonPolymorphic(UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor)]
 [PublicAPI]
 public interface IPlugin {
 	/// <summary>

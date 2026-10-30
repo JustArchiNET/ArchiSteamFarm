@@ -23,7 +23,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -56,12 +55,6 @@ internal sealed class ExamplePlugin : IASF, IBot, IBotCommand2, IBotConnection, 
 	// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place
 	[JsonInclude]
 	public Version Version => typeof(ExamplePlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
-
-	// Plugins can expose custom properties for our GET /Api/Plugins API call, simply annotate them with [JsonInclude] (or keep public)
-	[JsonInclude]
-	[JsonRequired]
-	[Required]
-	public bool CustomIsEnabledField { get; private init; } = true;
 
 	// This method, apart from being called before any bot initialization takes place, allows you to read custom global config properties that are not recognized by ASF
 	// Thanks to that, you can extend default ASF config with your own stuff, then parse it here in order to customize your plugin during runtime
