@@ -199,17 +199,30 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 	public async Task OnBotDestroy(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if (BotSubscriptions.TryRemove(bot, out IDisposable? subscription)) {
-			subscription.Dispose();
+		if (!BotSynchronizations.TryGetValue(bot, out (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer) synchronization)) {
+			BotSubscriptions.TryRemove(bot, out IDisposable? subscription);
+			subscription?.Dispose();
+
+			return;
 		}
 
-		if (BotSynchronizations.TryRemove(bot, out (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer) synchronization)) {
-			// Ensure the semaphore is empty, otherwise we're risking disposed exceptions
-			await synchronization.RefreshSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+		// Ensure the semaphore is empty, otherwise we're risking disposed exceptions
+		await synchronization.RefreshSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-			synchronization.RefreshSemaphore.Dispose();
+		if (!((ICollection<KeyValuePair<Bot, (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer)>>) BotSynchronizations).Remove(new KeyValuePair<Bot, (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer)>(bot, synchronization))) {
+			synchronization.RefreshSemaphore.Release();
 
+			return;
+		}
+
+		if (BotSubscriptions.TryRemove(bot, out IDisposable? botSubscription)) {
+			botSubscription.Dispose();
+		}
+
+		try {
 			await synchronization.RefreshTimer.DisposeAsync().ConfigureAwait(false);
+		} finally {
+			synchronization.RefreshSemaphore.Dispose();
 		}
 	}
 

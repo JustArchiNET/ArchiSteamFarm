@@ -231,9 +231,13 @@ public sealed class Trading : IDisposable {
 			ParsingScheduled = true;
 		}
 
-		await TradesSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+		bool parsingScheduled = true;
+		bool tradesSemaphoreAcquired = false;
 
 		try {
+			await TradesSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+			tradesSemaphoreAcquired = true;
+
 			bool lootableTypesReceived;
 
 			using (await Bot.Actions.GetTradingLock(cancellationToken).ConfigureAwait(false)) {
@@ -242,6 +246,8 @@ public sealed class Trading : IDisposable {
 					ParsingScheduled = false;
 				}
 
+				parsingScheduled = false;
+
 				lootableTypesReceived = await ParseActiveTrades(cancellationToken).ConfigureAwait(false);
 			}
 
@@ -249,7 +255,16 @@ public sealed class Trading : IDisposable {
 				await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type), cancellationToken: cancellationToken).ConfigureAwait(false);
 			}
 		} finally {
-			TradesSemaphore.Release();
+			if (parsingScheduled) {
+				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+				lock (TradesSemaphore) {
+					ParsingScheduled = false;
+				}
+			}
+
+			if (tradesSemaphoreAcquired) {
+				TradesSemaphore.Release();
+			}
 		}
 	}
 
@@ -275,65 +290,78 @@ public sealed class Trading : IDisposable {
 
 	private async Task<bool> ParseActiveTrades(CancellationToken cancellationToken = default) {
 		bool lootableTypesReceived = false;
+		HashSet<ulong> newlyHandledTradeOfferIDs = [];
 
-		for (byte i = 0; i < WebBrowser.MaxTries; i++) {
-			HashSet<TradeOffer>? tradeOffers = await Bot.ArchiWebHandler.GetTradeOffers(true, true, false, true, cancellationToken).ConfigureAwait(false);
+		try {
+			for (byte i = 0; i < WebBrowser.MaxTries; i++) {
+				HashSet<TradeOffer>? tradeOffers = await Bot.ArchiWebHandler.GetTradeOffers(true, true, false, true, cancellationToken).ConfigureAwait(false);
 
-			if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
-				return false;
-			}
+				if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
+					return false;
+				}
 
-			if (HandledTradeOfferIDs.Count > 0) {
-				HandledTradeOfferIDs.IntersectWith(tradeOffers.Select(static tradeOffer => tradeOffer.TradeOfferID));
-			}
+				if (HandledTradeOfferIDs.Count > 0) {
+					HandledTradeOfferIDs.IntersectWith(tradeOffers.Select(static tradeOffer => tradeOffer.TradeOfferID));
+				}
 
-			HashSet<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets = [];
+				HashSet<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets = [];
+				List<TradeOffer> newTradeOffers = [];
 
-			IEnumerable<Task<ParseTradeResult>> tasks = tradeOffers.Where(tradeOffer => (tradeOffer.State == ETradeOfferState.Active) && HandledTradeOfferIDs.Add(tradeOffer.TradeOfferID)).Select(tradeOffer => ParseTrade(tradeOffer, handledSets, cancellationToken));
+				foreach (TradeOffer tradeOffer in tradeOffers.Where(static tradeOffer => tradeOffer.State == ETradeOfferState.Active).Where(tradeOffer => HandledTradeOfferIDs.Add(tradeOffer.TradeOfferID))) {
+					newlyHandledTradeOfferIDs.Add(tradeOffer.TradeOfferID);
+					newTradeOffers.Add(tradeOffer);
+				}
 
-			IList<ParseTradeResult> tradeResults = await Utilities.InParallel(tasks, cancellationToken).ConfigureAwait(false);
+				IEnumerable<Task<ParseTradeResult>> tasks = newTradeOffers.Select(tradeOffer => ParseTrade(tradeOffer, handledSets, cancellationToken));
 
-			if (!Bot.BotDatabase.TradeRestrictionsAcknowledged && tradeResults.Any(static result => ((result.Result == ParseTradeResult.EResult.Accepted) && (result.ItemsToGive?.Any(static item => item.AppID != Asset.SteamAppID) == true)) || (result.ItemsToReceive?.Any(static item => item.AppID != Asset.SteamAppID) == true))) {
-				// We should normally fail the process in case of a failure here, but since the popup could be marked already in the past, we'll allow it in hope it wasn't needed after all
-				await AcknowledgeTradeRestrictions(cancellationToken).ConfigureAwait(false);
-			}
+				IList<ParseTradeResult> tradeResults = await Utilities.InParallel(tasks, cancellationToken).ConfigureAwait(false);
 
-			if (Bot.HasMobileAuthenticator) {
-				HashSet<ParseTradeResult> mobileTradeResults = [.. tradeResults.Where(static result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: false })];
+				if (!Bot.BotDatabase.TradeRestrictionsAcknowledged && tradeResults.Any(static result => ((result.Result == ParseTradeResult.EResult.Accepted) && (result.ItemsToGive?.Any(static item => item.AppID != Asset.SteamAppID) == true)) || (result.ItemsToReceive?.Any(static item => item.AppID != Asset.SteamAppID) == true))) {
+					// We should normally fail the process in case of a failure here, but since the popup could be marked already in the past, we'll allow it in hope it wasn't needed after all
+					await AcknowledgeTradeRestrictions(cancellationToken).ConfigureAwait(false);
+				}
 
-				if (mobileTradeResults.Count > 0) {
-					HashSet<ulong> mobileTradeOfferIDs = [.. mobileTradeResults.Select(static tradeOffer => tradeOffer.TradeOfferID)];
+				if (Bot.HasMobileAuthenticator) {
+					HashSet<ParseTradeResult> mobileTradeResults = [.. tradeResults.Where(static result => result is { Result: ParseTradeResult.EResult.Accepted, Confirmed: false })];
 
-					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, mobileTradeOfferIDs, true, cancellationToken).ConfigureAwait(false);
+					if (mobileTradeResults.Count > 0) {
+						HashSet<ulong> mobileTradeOfferIDs = [.. mobileTradeResults.Select(static tradeOffer => tradeOffer.TradeOfferID)];
 
-					if (twoFactorSuccess) {
-						foreach (ParseTradeResult mobileTradeResult in mobileTradeResults) {
-							mobileTradeResult.Confirmed = true;
+						(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, mobileTradeOfferIDs, true, cancellationToken).ConfigureAwait(false);
+
+						if (twoFactorSuccess) {
+							foreach (ParseTradeResult mobileTradeResult in mobileTradeResults) {
+								mobileTradeResult.Confirmed = true;
+							}
+						} else {
+							HandledTradeOfferIDs.ExceptWith(mobileTradeOfferIDs);
 						}
-					} else {
-						HandledTradeOfferIDs.ExceptWith(mobileTradeOfferIDs);
 					}
 				}
+
+				if (tradeResults.Count > 0) {
+					await PluginsCore.OnBotTradeOfferResults(Bot, tradeResults as IReadOnlyCollection<ParseTradeResult> ?? [.. tradeResults], cancellationToken).ConfigureAwait(false);
+				}
+
+				if (!lootableTypesReceived && tradeResults.Any(tradeResult => tradeResult is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && (tradeResult.ItemsToReceive?.Any(receivedItem => Bot.BotConfig.LootableTypes.Contains(receivedItem.Type)) == true))) {
+					lootableTypesReceived = true;
+				}
+
+				// If any trade asked to be retried, we do have ASF 2FA and actually managed to confirm something (else), then now is the time for retry
+				if (Bot.HasMobileAuthenticator && tradeResults.Any(static tradeResult => tradeResult.Result == ParseTradeResult.EResult.RetryAfterOthers) && tradeResults.Any(static tradeResult => tradeResult is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true })) {
+					continue;
+				}
+
+				return lootableTypesReceived;
 			}
 
-			if (tradeResults.Count > 0) {
-				await PluginsCore.OnBotTradeOfferResults(Bot, tradeResults as IReadOnlyCollection<ParseTradeResult> ?? [.. tradeResults], cancellationToken).ConfigureAwait(false);
-			}
-
-			if (!lootableTypesReceived && tradeResults.Any(tradeResult => tradeResult is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && (tradeResult.ItemsToReceive?.Any(receivedItem => Bot.BotConfig.LootableTypes.Contains(receivedItem.Type)) == true))) {
-				lootableTypesReceived = true;
-			}
-
-			// If any trade asked to be retried, we do have ASF 2FA and actually managed to confirm something (else), then now is the time for retry
-			if (Bot.HasMobileAuthenticator && tradeResults.Any(static tradeResult => tradeResult.Result == ParseTradeResult.EResult.RetryAfterOthers) && tradeResults.Any(static tradeResult => tradeResult is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true })) {
-				continue;
-			}
-
+			// The remaining trade offers we'll handle at later time
 			return lootableTypesReceived;
-		}
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			HandledTradeOfferIDs.ExceptWith(newlyHandledTradeOfferIDs);
 
-		// The remaining trade offers we'll handle at later time
-		return lootableTypesReceived;
+			throw;
+		}
 	}
 
 	private async Task<ParseTradeResult> ParseTrade(TradeOffer tradeOffer, ISet<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets, CancellationToken cancellationToken = default) {
@@ -438,12 +466,7 @@ public sealed class Trading : IDisposable {
 
 			// Deny trades from bad steamIDs if user wishes to do so
 			if (ASF.GlobalConfig?.FilterBadBots ?? GlobalConfig.DefaultFilterBadBots) {
-				// Keep short timeout allowed for this call, as we don't want to hold the flow for too long
-				using CancellationTokenSource archiNetCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-
-				archiNetCancellation.CancelAfter(TimeSpan.FromSeconds(15));
-
-				bool? isBadBot = await ArchiNet.IsBadBot(tradeOffer.OtherSteamID64, archiNetCancellation.Token).ConfigureAwait(false);
+				bool? isBadBot = await ArchiNet.IsBadBot(tradeOffer.OtherSteamID64, cancellationToken).ConfigureAwait(false);
 
 				if (isBadBot == true) {
 					Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Blacklisted, $"{nameof(tradeOffer.OtherSteamID64)} {tradeOffer.OtherSteamID64}"));
@@ -553,6 +576,8 @@ public sealed class Trading : IDisposable {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatBotTradeOfferResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
 
 			return ParseTradeResult.EResult.TryAgain;
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
 			Bot.ArchiLogger.LogGenericException(e);

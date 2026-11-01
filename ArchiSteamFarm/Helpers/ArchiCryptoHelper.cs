@@ -308,6 +308,8 @@ public static class ArchiCryptoHelper {
 
 		try {
 			text = await File.ReadAllTextAsync(filePath, cancellationToken).ConfigureAwait(false);
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

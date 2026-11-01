@@ -89,7 +89,7 @@ public static class PluginsCore {
 
 		try {
 			responses = await Utilities.InParallel(ActivePlugins.OfType<ICrossProcessSemaphoreProvider>().Select(plugin => plugin.GetCrossProcessSemaphore(resourceName, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return new CrossProcessFileBasedSemaphore(resourceName);
@@ -107,7 +107,7 @@ public static class PluginsCore {
 
 		try {
 			results = await Utilities.InParallel(ActivePlugins.OfType<IBotsComparer>().Select(plugin => Task.Run(() => plugin.BotsComparer, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return StringComparer.Ordinal;
@@ -129,7 +129,7 @@ public static class PluginsCore {
 
 		try {
 			results = await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => plugin.GetPreferredChangeNumberToStartFrom(cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return lastChangeNumber;
@@ -153,7 +153,7 @@ public static class PluginsCore {
 
 		try {
 			results = await Utilities.InParallel(ActivePlugins.OfType<IBotCustomMachineInfoProvider>().Select(plugin => plugin.GetMachineInfoProvider(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return null;
@@ -196,7 +196,7 @@ public static class PluginsCore {
 			try {
 				// This call is bare minimum to verify if the assembly can load itself
 				assembly.GetTypes();
-			} catch (Exception e) {
+			} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(assembly.FullName));
 				ASF.ArchiLogger.LogGenericException(e);
 
@@ -224,7 +224,7 @@ public static class PluginsCore {
 			await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 			return false;
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
@@ -253,7 +253,7 @@ public static class PluginsCore {
 				await plugin.OnLoaded(cancellationToken).ConfigureAwait(false);
 
 				ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginLoaded(plugin.Name));
-			} catch (Exception e) {
+			} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 				ASF.ArchiLogger.LogGenericException(e);
 				invalidPlugins.Add(plugin);
 			}
@@ -356,7 +356,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IASF>().Select(plugin => plugin.OnASFInit(additionalConfigProperties, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -382,7 +382,7 @@ public static class PluginsCore {
 
 		try {
 			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand2>().Select(plugin => plugin.OnBotCommand(bot, access, message, args, steamID, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return null;
@@ -400,7 +400,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IBot>().Select(plugin => plugin.OnBotDestroy(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -414,7 +414,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IBotConnection>().Select(plugin => plugin.OnBotDisconnected(bot, reason, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -428,7 +428,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => plugin.OnBotFarmingFinished(bot, farmedSomething, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -442,7 +442,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => plugin.OnBotFarmingStarted(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -456,7 +456,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => plugin.OnBotFarmingStopped(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -476,7 +476,7 @@ public static class PluginsCore {
 
 		try {
 			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotFriendRequest>().Select(plugin => plugin.OnBotFriendRequest(bot, steamID, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return false;
@@ -494,7 +494,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IBot>().Select(plugin => plugin.OnBotInit(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -508,7 +508,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IBotModules>().Select(plugin => plugin.OnBotInitModules(bot, additionalConfigProperties, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -522,7 +522,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IBotConnection>().Select(plugin => plugin.OnBotLoggedOn(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -544,7 +544,7 @@ public static class PluginsCore {
 
 		try {
 			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotMessage>().Select(plugin => plugin.OnBotMessage(bot, steamID, message, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return null;
@@ -563,7 +563,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IBotSteamClient>().Select(plugin => plugin.OnBotSteamCallbacksInit(bot, callbackManager, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -579,7 +579,7 @@ public static class PluginsCore {
 
 		try {
 			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotSteamClient>().Select(plugin => plugin.OnBotSteamHandlersInit(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return null;
@@ -600,7 +600,7 @@ public static class PluginsCore {
 
 		try {
 			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOffer2>().Select(plugin => plugin.OnBotTradeOffer(bot, tradeOffer, asfResult, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 
 			return false;
@@ -622,7 +622,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOfferResults>().Select(plugin => plugin.OnBotTradeOfferResults(bot, tradeResults, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -640,7 +640,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IBotUserNotifications>().Select(plugin => plugin.OnBotUserNotifications(bot, newNotifications, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -656,7 +656,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => plugin.OnPICSChanges(currentChangeNumber, appChanges, packageChanges, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -670,7 +670,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => plugin.OnPICSChangesRestart(currentChangeNumber, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -685,7 +685,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IBotIdentity>().Select(plugin => plugin.OnSelfPersonaState(bot, data, nickname, avatarHash, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -699,7 +699,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IUpdateAware>().Select(plugin => plugin.OnUpdateFinished(SharedInfo.Version, newVersion, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -713,7 +713,7 @@ public static class PluginsCore {
 
 		try {
 			await Utilities.InParallel(ActivePlugins.OfType<IUpdateAware>().Select(plugin => plugin.OnUpdateProceeding(SharedInfo.Version, newVersion, cancellationToken)), cancellationToken).ConfigureAwait(false);
-		} catch (Exception e) {
+		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
@@ -905,7 +905,7 @@ public static class PluginsCore {
 				}
 			}
 		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
-			return false;
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

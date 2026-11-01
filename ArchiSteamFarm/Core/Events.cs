@@ -47,6 +47,6 @@ internal static class Events {
 			return;
 		}
 
-		await Program.Exit(cancellationToken: cancellationToken).ConfigureAwait(false);
+		await Program.Exit().ConfigureAwait(false);
 	}
 }

@@ -101,6 +101,8 @@ internal sealed class CrashFile : SerializableFile {
 			}
 
 			crashFile = json.ToJsonObject<CrashFile>();
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

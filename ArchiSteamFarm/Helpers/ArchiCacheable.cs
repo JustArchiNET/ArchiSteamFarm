@@ -61,13 +61,7 @@ public sealed class ArchiCacheable<T> : IDisposable {
 			return (true, InitializedValue);
 		}
 
-		try {
-			await InitSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-		} catch (OperationCanceledException e) {
-			ASF.ArchiLogger.LogGenericDebuggingException(e);
-
-			return GetFailedValueFor(cacheFallback);
-		}
+		await InitSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (IsRecent) {
@@ -84,10 +78,8 @@ public sealed class ArchiCacheable<T> : IDisposable {
 			InitializedAt = DateTime.UtcNow;
 
 			return (true, result);
-		} catch (OperationCanceledException e) {
-			ASF.ArchiLogger.LogGenericDebuggingException(e);
-
-			return GetFailedValueFor(cacheFallback);
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

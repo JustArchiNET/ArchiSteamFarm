@@ -67,17 +67,17 @@ internal static class Program {
 	private static bool Minimized;
 	private static bool SystemRequired;
 
-	internal static async Task Exit(byte exitCode = 0, CancellationToken cancellationToken = default) {
+	internal static async Task Exit(byte exitCode = 0) {
 		if (exitCode != 0) {
 			ASF.ArchiLogger.LogGenericError(Strings.FormatErrorExitingWithNonZeroErrorCode(exitCode));
 		}
 
-		await Shutdown(exitCode, cancellationToken).ConfigureAwait(false);
+		await Shutdown(exitCode).ConfigureAwait(false);
 		Environment.Exit(exitCode);
 	}
 
-	internal static async Task Restart(CancellationToken cancellationToken = default) {
-		if (!await InitShutdownSequence(cancellationToken: cancellationToken).ConfigureAwait(false)) {
+	internal static async Task Restart() {
+		if (!await InitShutdownSequence().ConfigureAwait(false)) {
 			return;
 		}
 
@@ -94,7 +94,7 @@ internal static class Program {
 		}
 
 		// Give new process some time to take over the window (if needed)
-		await Task.Delay(5000, cancellationToken).ConfigureAwait(false);
+		await Task.Delay(5000).ConfigureAwait(false);
 
 		ShutdownResetEvent.TrySetResult(0);
 		Environment.Exit(0);
@@ -119,6 +119,8 @@ internal static class Program {
 
 		try {
 			cryptKey = await File.ReadAllTextAsync(cryptKeyFile, cancellationToken).ConfigureAwait(false);
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -195,7 +197,7 @@ internal static class Program {
 		);
 
 		if (!await InitCore(args, cancellationToken).ConfigureAwait(false) || !await InitASF(cancellationToken).ConfigureAwait(false)) {
-			await Exit(1, cancellationToken).ConfigureAwait(false);
+			await Exit(1).ConfigureAwait(false);
 		}
 	}
 
@@ -435,7 +437,7 @@ internal static class Program {
 		return true;
 	}
 
-	private static async Task<bool> InitShutdownSequence(byte exitCode = 0, CancellationToken cancellationToken = default) {
+	private static async Task<bool> InitShutdownSequence(byte exitCode = 0) {
 		if (ShutdownSequenceInitialized) {
 			// We've already initialized shutdown sequence before, we won't allow the caller to init shutdown sequence again
 			// While normally this will be respected, caller might not have any say in this for example because it's the runtime terminating ASF due to fatal exception
@@ -471,19 +473,19 @@ internal static class Program {
 
 		// Sockets created by IPC might still be running for a short while after complete app shutdown
 		// Ensure that IPC is stopped before we finalize shutdown sequence
-		await ArchiKestrel.Stop(cancellationToken).ConfigureAwait(false);
+		await ArchiKestrel.Stop().ConfigureAwait(false);
 
 		// Stop all the active bots so they can disconnect cleanly
 		if (Bot.Bots?.Count > 0) {
 			try {
 				// Stop() function can block due to SK2 sockets, don't forget a maximum delay
-				await Utilities.InParallel(Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true, cancellationToken), cancellationToken)), cancellationToken).WaitAsync(TimeSpan.FromSeconds(WebBrowser.MaxTries), cancellationToken).ConfigureAwait(false);
+				await Utilities.InParallel(Bot.Bots.Values.Select(static bot => Task.Run(() => bot.Stop(true)))).WaitAsync(TimeSpan.FromSeconds(WebBrowser.MaxTries)).ConfigureAwait(false);
 			} catch (TimeoutException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			}
 
 			// Extra second for Steam requests to go through
-			await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
+			await Task.Delay(1000).ConfigureAwait(false);
 		}
 
 		// Flush all the pending writes to log files
@@ -704,8 +706,8 @@ internal static class Program {
 		return true;
 	}
 
-	private static async Task Shutdown(byte exitCode = 0, CancellationToken cancellationToken = default) {
-		if (!await InitShutdownSequence(exitCode, cancellationToken).ConfigureAwait(false)) {
+	private static async Task Shutdown(byte exitCode = 0) {
+		if (!await InitShutdownSequence(exitCode).ConfigureAwait(false)) {
 			return;
 		}
 

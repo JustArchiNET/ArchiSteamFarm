@@ -558,6 +558,8 @@ public sealed class GlobalConfig {
 			}
 
 			globalConfig = json.ToJsonObject<GlobalConfig>();
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

@@ -183,11 +183,11 @@ public static class ASF {
 		if (Program.RestartAllowed && GlobalConfig.AutoRestart) {
 			ArchiLogger.LogGenericInfo(Strings.Restarting);
 			await Task.Delay(SharedInfo.ShortInformationDelay, cancellationToken).ConfigureAwait(false);
-			await Program.Restart(cancellationToken).ConfigureAwait(false);
+			await Program.Restart().ConfigureAwait(false);
 		} else {
 			ArchiLogger.LogGenericInfo(Strings.Exiting);
 			await Task.Delay(SharedInfo.ShortInformationDelay, cancellationToken).ConfigureAwait(false);
-			await Program.Exit(cancellationToken: cancellationToken).ConfigureAwait(false);
+			await Program.Exit().ConfigureAwait(false);
 		}
 	}
 
@@ -603,7 +603,7 @@ public static class ASF {
 			}
 
 			ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
-			await Program.Exit(1, cancellationToken).ConfigureAwait(false);
+			await Program.Exit(1).ConfigureAwait(false);
 
 			return;
 		}
@@ -772,12 +772,7 @@ public static class ASF {
 
 			ArchiLogger.LogGenericInfo(Strings.FetchingChecksumFromRemoteServer);
 
-			// Keep short timeout allowed for this call, as we don't want to hold the flow for too long
-			using CancellationTokenSource archiNetCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-
-			archiNetCancellation.CancelAfter(TimeSpan.FromSeconds(15));
-
-			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, BuildInfo.Variant, archiNetCancellation.Token).ConfigureAwait(false);
+			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, BuildInfo.Variant, cancellationToken).ConfigureAwait(false);
 
 			switch (remoteChecksum) {
 				case null:

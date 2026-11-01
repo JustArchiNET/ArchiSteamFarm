@@ -139,6 +139,8 @@ internal sealed class BotCache : SerializableFile {
 			}
 
 			botCache = json.ToJsonObject<BotCache>();
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

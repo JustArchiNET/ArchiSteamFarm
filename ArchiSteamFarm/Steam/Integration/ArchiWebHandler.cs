@@ -709,6 +709,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		HashSet<ulong>? tradeOfferIDs = null;
 		HashSet<ulong>? mobileTradeOfferIDs = null;
+		CancellationToken tradeSubmissionCancellationToken = cancellationToken;
 
 		foreach (TradeOfferSendRequest trade in trades) {
 			data["json_tradeoffer"] = trade.ToJsonText();
@@ -716,7 +717,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			ObjectResponse<TradeOfferSendResponse>? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
+				response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: tradeSubmissionCancellationToken).ConfigureAwait(false);
 
 				if (response == null) {
 					return (false, tradeOfferIDs, mobileTradeOfferIDs);
@@ -750,6 +751,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			tradeOfferIDs ??= [with(trades.Count)];
 
 			tradeOfferIDs.Add(response.Content.TradeOfferID);
+			tradeSubmissionCancellationToken = CancellationToken.None;
 
 			if (response.Content.RequiresMobileConfirmation) {
 				mobileTradeOfferIDs ??= [];
@@ -1684,6 +1686,8 @@ public sealed class ArchiWebHandler : IDisposable {
 						async () => await steamAppsService.CallAsync(method, endpoint, args: arguments).ConfigureAwait(false)
 						, cancellationToken
 					).ConfigureAwait(false);
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+					throw;
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
 				} catch (Exception e) {
@@ -1816,6 +1820,8 @@ public sealed class ArchiWebHandler : IDisposable {
 					async () => await econService.CallAsync(method, endpoint, args: arguments).ConfigureAwait(false)
 					, cancellationToken
 				).ConfigureAwait(false);
+			} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+				throw;
 			} catch (TaskCanceledException e) {
 				Bot.ArchiLogger.LogGenericDebuggingException(e);
 			} catch (Exception e) {
@@ -2180,23 +2186,37 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		int rateLimitingDelay = (ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay) * 1000;
 
-		await ASF.InventorySemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+		bool markingScheduled = true;
+		bool inventorySemaphoreAcquired = false;
 
 		try {
+			await ASF.InventorySemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+			inventorySemaphoreAcquired = true;
+
 			lock (ASF.InventorySemaphore) {
 				MarkingInventoryScheduled = false;
 			}
 
+			markingScheduled = false;
+
 			await UrlHeadWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, rateLimitingDelay: rateLimitingDelay, cancellationToken: cancellationToken).ConfigureAwait(false);
 		} finally {
-			if (rateLimitingDelay == 0) {
-				ASF.InventorySemaphore.Release();
-			} else {
-				Utilities.InBackground(async () => {
-						await Task.Delay(rateLimitingDelay, CancellationToken.None).ConfigureAwait(false);
-						ASF.InventorySemaphore.Release();
-					}
-				);
+			if (markingScheduled) {
+				lock (ASF.InventorySemaphore) {
+					MarkingInventoryScheduled = false;
+				}
+			}
+
+			if (inventorySemaphoreAcquired) {
+				if (rateLimitingDelay == 0) {
+					ASF.InventorySemaphore.Release();
+				} else {
+					Utilities.InBackground(async () => {
+							await Task.Delay(rateLimitingDelay, CancellationToken.None).ConfigureAwait(false);
+							ASF.InventorySemaphore.Release();
+						}
+					);
+				}
 			}
 		}
 	}

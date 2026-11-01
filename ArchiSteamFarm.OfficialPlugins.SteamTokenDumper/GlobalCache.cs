@@ -130,6 +130,8 @@ internal sealed class GlobalCache : SerializableFile {
 			}
 
 			globalCache = json.ToJsonObject<GlobalCache>();
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -359,6 +361,8 @@ internal sealed class GlobalCache : SerializableFile {
 
 					result.Add(depotID);
 				}
+			} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+				throw;
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericWarningException(e);
 

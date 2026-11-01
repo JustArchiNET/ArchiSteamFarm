@@ -153,17 +153,32 @@ public static class Utilities {
 	public static async Task<IList<T>> InParallel<T>(IEnumerable<Task<T>> tasks, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(tasks);
 
+		// Do not return while already-started child operations can still commit side effects.
 		switch (ASF.GlobalConfig?.OptimizationMode) {
 			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 				List<T> results = [];
 
 				foreach (Task<T> task in tasks) {
-					results.Add(await task.WaitAsync(cancellationToken).ConfigureAwait(false));
+					try {
+						results.Add(await task.WaitAsync(cancellationToken).ConfigureAwait(false));
+					} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+						await task.ConfigureAwait(false);
+
+						throw;
+					}
 				}
 
 				return results;
 			default:
-				return await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
+				Task<T[]> allTasks = Task.WhenAll(tasks);
+
+				try {
+					return await allTasks.WaitAsync(cancellationToken).ConfigureAwait(false);
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+					await allTasks.ConfigureAwait(false);
+
+					throw;
+				}
 		}
 	}
 
@@ -174,12 +189,26 @@ public static class Utilities {
 		switch (ASF.GlobalConfig?.OptimizationMode) {
 			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 				foreach (Task task in tasks) {
-					await task.WaitAsync(cancellationToken).ConfigureAwait(false);
+					try {
+						await task.WaitAsync(cancellationToken).ConfigureAwait(false);
+					} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+						await task.ConfigureAwait(false);
+
+						throw;
+					}
 				}
 
 				break;
 			default:
-				await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
+				Task allTasks = Task.WhenAll(tasks);
+
+				try {
+					await allTasks.WaitAsync(cancellationToken).ConfigureAwait(false);
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+					await allTasks.ConfigureAwait(false);
+
+					throw;
+				}
 
 				break;
 		}

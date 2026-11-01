@@ -25,6 +25,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using JetBrains.Annotations;
@@ -93,6 +95,41 @@ internal sealed class ConcurrentTests : TestContextBase {
 		);
 
 		foreach (ushort _ in collection.AsLinqThreadSafeEnumerable().OrderBy(static entry => entry)) { }
+	}
+
+	[TestMethod]
+	internal async Task InParallelWaitsForChildrenAfterCancellation() {
+		using CancellationTokenSource cancellationTokenSource = new();
+
+		TaskCompletionSource<bool> childStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		TaskCompletionSource<bool> allowChildToFinish = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		Task child = waitForRelease();
+		Task aggregate = Utilities.InParallel([child], cancellationTokenSource.Token);
+
+		await childStarted.Task.WaitAsync(CancellationToken).ConfigureAwait(false);
+		await cancellationTokenSource.CancelAsync().ConfigureAwait(false);
+
+		bool returnedBeforeChildFinished = aggregate.IsCompleted;
+
+		allowChildToFinish.SetResult(true);
+
+		try {
+			await aggregate.ConfigureAwait(false);
+		} catch (OperationCanceledException) {
+			// Expected after all child operations finish.
+		}
+
+		Assert.IsFalse(returnedBeforeChildFinished);
+		Assert.IsTrue(aggregate.IsCanceled);
+
+		return;
+
+		async Task waitForRelease() {
+			childStarted.SetResult(true);
+
+			await allowChildToFinish.Task.ConfigureAwait(false);
+		}
 	}
 }
 #pragma warning restore CA1812 // False positive, the class is used during MSTest

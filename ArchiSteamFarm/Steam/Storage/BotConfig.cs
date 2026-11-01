@@ -652,6 +652,8 @@ public sealed class BotConfig {
 			}
 
 			botConfig = json.ToJsonObject<BotConfig>();
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

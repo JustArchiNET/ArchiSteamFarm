@@ -57,8 +57,15 @@ internal static class ArchiNet {
 
 		ObjectResponse<GenericResponse<string>>? response;
 
+		// Keep short timeout allowed for this call, as we don't want to hold the flow for too long
+		using CancellationTokenSource timeoutCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+		timeoutCancellation.CancelAfter(TimeSpan.FromSeconds(15));
+
 		try {
-			response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<string>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
+			response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<string>>(request, cancellationToken: timeoutCancellation.Token).ConfigureAwait(false);
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (OperationCanceledException e) {
 			ASF.ArchiLogger.LogGenericDebuggingException(e);
 
@@ -194,8 +201,15 @@ internal static class ArchiNet {
 
 		ObjectResponse<GenericResponse<ImmutableHashSet<ulong>>>? response;
 
+		// Keep short timeout allowed for this call, as we don't want to hold the flow for too long
+		using CancellationTokenSource timeoutCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+		timeoutCancellation.CancelAfter(TimeSpan.FromSeconds(15));
+
 		try {
-			response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<ImmutableHashSet<ulong>>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
+			response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<ImmutableHashSet<ulong>>>(request, cancellationToken: timeoutCancellation.Token).ConfigureAwait(false);
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (OperationCanceledException e) {
 			ASF.ArchiLogger.LogGenericDebuggingException(e);
 

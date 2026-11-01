@@ -85,36 +85,36 @@ internal static class ArchiKestrel {
 		await StateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
-			await StopInternally(cancellationToken).ConfigureAwait(false);
-			await StartInternally(cancellationToken).ConfigureAwait(false);
+			await StopInternally(CancellationToken.None).ConfigureAwait(false);
+			await StartInternally(CancellationToken.None).ConfigureAwait(false);
 		} finally {
 			StateSemaphore.Release();
 		}
 	}
 
 	internal static async Task Start(CancellationToken cancellationToken = default) {
-		if (IsRunning) {
-			return;
-		}
-
 		await StateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
-			await StartInternally(cancellationToken).ConfigureAwait(false);
+			if (IsRunning) {
+				return;
+			}
+
+			await StartInternally(CancellationToken.None).ConfigureAwait(false);
 		} finally {
 			StateSemaphore.Release();
 		}
 	}
 
 	internal static async Task Stop(CancellationToken cancellationToken = default) {
-		if (!IsRunning) {
-			return;
-		}
-
 		await StateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
-			await StopInternally(cancellationToken).ConfigureAwait(false);
+			if (!IsRunning) {
+				return;
+			}
+
+			await StopInternally(CancellationToken.None).ConfigureAwait(false);
 		} finally {
 			StateSemaphore.Release();
 		}

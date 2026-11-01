@@ -1614,7 +1614,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			BotConfig = botConfig;
 
-			await InitModules(cancellationToken).ConfigureAwait(false);
+			await InitModules(CancellationToken.None).ConfigureAwait(false);
 			InitStart();
 		} finally {
 			InitializationSemaphore.Release();
@@ -1983,7 +1983,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 
 				if (File.Exists(mobileAuthenticatorFilePath)) {
-					await ImportAuthenticatorFromFile(mobileAuthenticatorFilePath, cancellationToken).ConfigureAwait(false);
+					await ImportAuthenticatorFromFile(mobileAuthenticatorFilePath, CancellationToken.None).ConfigureAwait(false);
 				}
 			}
 
@@ -1994,7 +1994,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			if (File.Exists(keysToRedeemFilePath)) {
-				await ImportKeysToRedeem(keysToRedeemFilePath, cancellationToken).ConfigureAwait(false);
+				await ImportKeysToRedeem(keysToRedeemFilePath, CancellationToken.None).ConfigureAwait(false);
 			}
 
 			// If any previous callbacks handling loop is still going, we're going to abort it
@@ -2443,6 +2443,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			File.Delete(maFilePath);
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ArchiLogger.LogGenericException(e);
 		}
@@ -3962,14 +3964,20 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			SendCompleteTypesScheduled = true;
 		}
 
-		await SendCompleteTypesSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+		bool scheduled = true;
+		bool semaphoreAcquired = false;
 
 		try {
+			await SendCompleteTypesSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+			semaphoreAcquired = true;
+
 			using (await Actions.GetTradingLock(cancellationToken).ConfigureAwait(false)) {
 				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 				lock (SendCompleteTypesSemaphore) {
 					SendCompleteTypesScheduled = false;
 				}
+
+				scheduled = false;
 
 				HashSet<uint>? appIDs = await GetPossiblyCompletedBadgeAppIDs(cancellationToken).ConfigureAwait(false);
 
@@ -3988,6 +3996,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					ArchiLogger.LogGenericWarningException(e);
 
 					return;
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+					throw;
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
 
@@ -4047,7 +4057,16 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 			}
 		} finally {
-			SendCompleteTypesSemaphore.Release();
+			if (scheduled) {
+				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+				lock (SendCompleteTypesSemaphore) {
+					SendCompleteTypesScheduled = false;
+				}
+			}
+
+			if (semaphoreAcquired) {
+				SendCompleteTypesSemaphore.Release();
+			}
 		}
 	}
 
@@ -4213,17 +4232,32 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			UnpackBoosterPacksScheduled = true;
 		}
 
-		await UnpackBoosterPacksSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+		bool scheduled = true;
+		bool semaphoreAcquired = false;
 
 		try {
+			await UnpackBoosterPacksSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+			semaphoreAcquired = true;
+
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (UnpackBoosterPacksSemaphore) {
 				UnpackBoosterPacksScheduled = false;
 			}
 
+			scheduled = false;
+
 			await Actions.UnpackBoosterPacks(cancellationToken).ConfigureAwait(false);
 		} finally {
-			UnpackBoosterPacksSemaphore.Release();
+			if (scheduled) {
+				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+				lock (UnpackBoosterPacksSemaphore) {
+					UnpackBoosterPacksScheduled = false;
+				}
+			}
+
+			if (semaphoreAcquired) {
+				UnpackBoosterPacksSemaphore.Release();
+			}
 		}
 
 		return true;

@@ -304,11 +304,9 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 	[PublicAPI]
 	public async Task<(bool Success, string Message)> Pause(bool permanent, ushort resumeInSeconds = 0, CancellationToken cancellationToken = default) {
-		if (Bot.CardsFarmer.Paused) {
+		if (!await Bot.CardsFarmer.Pause(permanent, cancellationToken).ConfigureAwait(false)) {
 			return (false, Strings.BotAutomaticIdlingPausedAlready);
 		}
-
-		await Bot.CardsFarmer.Pause(permanent, cancellationToken).ConfigureAwait(false);
 
 		if (!permanent && !Bot.BotConfig.GamesPlayedWhileIdle.IsEmpty) {
 			// We want to let family sharing users access our library, and in this case we must also stop GamesPlayedWhileIdle
@@ -343,13 +341,8 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return (false, Strings.BotNotConnected);
 		}
 
-		CancellationToken playCancellationToken = cancellationToken;
-
-		if (!Bot.CardsFarmer.Paused) {
-			await Bot.CardsFarmer.Pause(true, cancellationToken).ConfigureAwait(false);
-
-			playCancellationToken = CancellationToken.None;
-		}
+		bool paused = await Bot.CardsFarmer.Pause(true, cancellationToken).ConfigureAwait(false);
+		CancellationToken playCancellationToken = paused ? CancellationToken.None : cancellationToken;
 
 		await Bot.ArchiHandler.PlayGames(gameIDs, gameName, playCancellationToken).ConfigureAwait(false);
 
@@ -479,7 +472,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		(bool success, _, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, customMessage: customMessage, itemsPerTrade: itemsPerTrade, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if ((mobileTradeOfferIDs?.Count > 0) && Bot.HasMobileAuthenticator) {
-			(bool twoFactorSuccess, _, _) = await HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, mobileTradeOfferIDs, true, cancellationToken).ConfigureAwait(false);
+			(bool twoFactorSuccess, _, _) = await HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, mobileTradeOfferIDs, true, CancellationToken.None).ConfigureAwait(false);
 
 			if (!twoFactorSuccess) {
 				return (false, Strings.BotLootingFailed);
@@ -638,13 +631,19 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			ProcessingGiftsScheduled = true;
 		}
 
-		await GiftCardsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+		bool processingScheduled = true;
+		bool giftCardsSemaphoreAcquired = false;
 
 		try {
+			await GiftCardsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+			giftCardsSemaphoreAcquired = true;
+
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (GiftCardsSemaphore) {
 				ProcessingGiftsScheduled = false;
 			}
+
+			processingScheduled = false;
 
 			if (!Bot.IsConnectedAndLoggedOn) {
 				return;
@@ -656,22 +655,35 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			foreach (ulong giftCardID in giftCardIDs.Where(gid => !HandledGifts.Contains(gid))) {
-				HandledGifts.Add(giftCardID);
+			foreach (ulong giftCardID in giftCardIDs.Where(giftCardID => HandledGifts.Add(giftCardID))) {
+				try {
+					Bot.ArchiLogger.LogGenericInfo(Strings.FormatBotAcceptingGift(giftCardID));
+					await LimitGiftsRequestsAsync(cancellationToken).ConfigureAwait(false);
 
-				Bot.ArchiLogger.LogGenericInfo(Strings.FormatBotAcceptingGift(giftCardID));
-				await LimitGiftsRequestsAsync(cancellationToken).ConfigureAwait(false);
+					bool result = await Bot.ArchiWebHandler.AcceptDigitalGiftCard(giftCardID, cancellationToken).ConfigureAwait(false);
 
-				bool result = await Bot.ArchiWebHandler.AcceptDigitalGiftCard(giftCardID, cancellationToken).ConfigureAwait(false);
+					if (result) {
+						Bot.ArchiLogger.LogGenericInfo(Strings.Success);
+					} else {
+						Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					}
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+					HandledGifts.Remove(giftCardID);
 
-				if (result) {
-					Bot.ArchiLogger.LogGenericInfo(Strings.Success);
-				} else {
-					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					throw;
 				}
 			}
 		} finally {
-			GiftCardsSemaphore.Release();
+			if (processingScheduled) {
+				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+				lock (GiftCardsSemaphore) {
+					ProcessingGiftsScheduled = false;
+				}
+			}
+
+			if (giftCardsSemaphoreAcquired) {
+				GiftCardsSemaphore.Release();
+			}
 		}
 	}
 
@@ -684,11 +696,15 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		foreach (ulong guestPassID in guestPassIDs.Where(guestPassID => !HandledGifts.Contains(guestPassID))) {
-			HandledGifts.Add(guestPassID);
+		foreach (ulong guestPassID in guestPassIDs.Where(guestPassID => HandledGifts.Add(guestPassID))) {
+			try {
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatBotAcceptingGift(guestPassID));
+				await LimitGiftsRequestsAsync(cancellationToken).ConfigureAwait(false);
+			} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+				HandledGifts.Remove(guestPassID);
 
-			Bot.ArchiLogger.LogGenericInfo(Strings.FormatBotAcceptingGift(guestPassID));
-			await LimitGiftsRequestsAsync(cancellationToken).ConfigureAwait(false);
+				throw;
+			}
 
 			SteamApps.RedeemGuestPassResponseCallback? response = await Bot.ArchiHandler.RedeemGuestPass(guestPassID).ConfigureAwait(false);
 

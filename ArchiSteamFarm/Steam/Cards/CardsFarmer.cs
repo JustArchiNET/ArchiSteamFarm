@@ -221,13 +221,19 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			ParsingScheduled = true;
 		}
 
-		await EventSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+		bool parsingScheduled = true;
+		bool eventSemaphoreAcquired = false;
 
 		try {
+			await EventSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+			eventSemaphoreAcquired = true;
+
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (EventSemaphore) {
 				ParsingScheduled = false;
 			}
+
+			parsingScheduled = false;
 
 			// If we're not farming yet, obviously it's worth it to make a check
 			if (!NowFarming) {
@@ -241,10 +247,19 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			// The efficiency is affected only in complex algorithm (entirely), as it depends on hours order that is not independent (as specified above)
 			if (!ShouldSkipNewGamesIfPossible && ((Bot.BotConfig.HoursUntilCardDrops > 0) || (!Bot.BotConfig.FarmingOrders.IsEmpty && Bot.BotConfig.FarmingOrders.Any(static farmingOrder => farmingOrder is not BotConfig.EFarmingOrder.Unordered and not BotConfig.EFarmingOrder.Random)))) {
 				await StopFarming(cancellationToken).ConfigureAwait(false);
-				await StartFarming(cancellationToken).ConfigureAwait(false);
+				await StartFarming(CancellationToken.None).ConfigureAwait(false);
 			}
 		} finally {
-			EventSemaphore.Release();
+			if (parsingScheduled) {
+				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+				lock (EventSemaphore) {
+					ParsingScheduled = false;
+				}
+			}
+
+			if (eventSemaphoreAcquired) {
+				EventSemaphore.Release();
+			}
 		}
 	}
 
@@ -270,44 +285,58 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	internal async Task Pause(bool permanent, CancellationToken cancellationToken = default) {
-		if (permanent) {
-			PermanentlyPaused = true;
-		}
+	internal async Task<bool> Pause(bool permanent, CancellationToken cancellationToken = default) {
+		await FarmingInitializationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-		Paused = true;
-
-		if (!NowFarming) {
-			return;
-		}
-
-		await StopFarming(cancellationToken).ConfigureAwait(false);
-	}
-
-	internal async Task<bool> Resume(bool userAction, CancellationToken cancellationToken = default) {
-		if (PermanentlyPaused) {
-			if (!userAction) {
-				Bot.ArchiLogger.LogGenericInfo(Strings.IgnoredPermanentPauseEnabled);
-
+		try {
+			if (Paused) {
 				return false;
 			}
 
-			PermanentlyPaused = false;
-		}
+			if (permanent) {
+				PermanentlyPaused = true;
+			}
 
-		Paused = false;
+			Paused = true;
 
-		if (NowFarming) {
+			await StopFarmingInternally().ConfigureAwait(false);
+
 			return true;
+		} finally {
+			FarmingInitializationSemaphore.Release();
 		}
+	}
 
-		if (!userAction && !ShouldResumeFarming) {
-			return false;
+	internal async Task<bool> Resume(bool userAction, CancellationToken cancellationToken = default) {
+		await FarmingInitializationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+		try {
+			if (PermanentlyPaused) {
+				if (!userAction) {
+					Bot.ArchiLogger.LogGenericInfo(Strings.IgnoredPermanentPauseEnabled);
+
+					return false;
+				}
+
+				PermanentlyPaused = false;
+			}
+
+			Paused = false;
+
+			if (NowFarming) {
+				return true;
+			}
+
+			if (!userAction && !ShouldResumeFarming) {
+				return false;
+			}
+
+			await StartFarmingInternally(CancellationToken.None).ConfigureAwait(false);
+
+			return true;
+		} finally {
+			FarmingInitializationSemaphore.Release();
 		}
-
-		await StartFarming(cancellationToken).ConfigureAwait(false);
-
-		return true;
 	}
 
 	internal void SetInitialState(bool paused) {
@@ -320,105 +349,20 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmPriorityQueueOnly) && (Bot.BotDatabase.FarmingPriorityQueueAppIDs.Count == 0))) {
-			Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
-			await Bot.OnFarmingFinished(false, cancellationToken).ConfigureAwait(false);
-
-			return;
-		}
-
 		await FarmingInitializationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
-			if (NowFarming || Paused || !Bot.IsPlayingPossible) {
-				return;
-			}
-
-			bool? isAnythingToFarm = await IsAnythingToFarm(cancellationToken).ConfigureAwait(false);
-
-			if (!isAnythingToFarm.HasValue) {
-				return;
-			}
-
-			if (!isAnythingToFarm.Value) {
-				Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
-				await Bot.OnFarmingFinished(false, cancellationToken).ConfigureAwait(false);
-
-				return;
-			}
-
-			if (GamesToFarm.Count == 0) {
-				Bot.ArchiLogger.LogNullError(GamesToFarm);
-
-				return;
-			}
-
-			// This is the last moment for final check if we can farm
-			if (Paused || !Bot.IsPlayingPossible) {
-				Bot.ArchiLogger.LogGenericInfo(Strings.PlayingNotAvailable);
-
-				return;
-			}
-
-			if (Bot.PlayingWasBlocked) {
-				byte minFarmingDelayAfterBlock = ASF.GlobalConfig?.MinFarmingDelayAfterBlock ?? GlobalConfig.DefaultMinFarmingDelayAfterBlock;
-
-				if (minFarmingDelayAfterBlock > 0) {
-					Bot.ArchiLogger.LogGenericInfo(Strings.FormatBotExtraIdlingCooldown(TimeSpan.FromSeconds(minFarmingDelayAfterBlock).ToHumanReadable()));
-
-					for (byte i = 0; (i < minFarmingDelayAfterBlock) && Bot is { IsConnectedAndLoggedOn: true, IsPlayingPossible: true, PlayingWasBlocked: true }; i++) {
-						await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-					}
-
-					if (!Bot.IsConnectedAndLoggedOn) {
-						return;
-					}
-
-					if (Paused || !Bot.IsPlayingPossible) {
-						Bot.ArchiLogger.LogGenericInfo(Strings.PlayingNotAvailable);
-
-						return;
-					}
-				}
-			}
-
-			NowFarming = true;
-			Utilities.InBackground(() => Farm(CancellationToken.None), true);
-
-			await PluginsCore.OnBotFarmingStarted(Bot, CancellationToken.None).ConfigureAwait(false);
+			await StartFarmingInternally(cancellationToken).ConfigureAwait(false);
 		} finally {
 			FarmingInitializationSemaphore.Release();
 		}
 	}
 
 	internal async Task StopFarming(CancellationToken cancellationToken = default) {
-		if (!NowFarming) {
-			return;
-		}
-
 		await FarmingInitializationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
-			if (!NowFarming) {
-				return;
-			}
-
-			for (byte i = 0; (i < byte.MaxValue) && NowFarming; i++) {
-				FarmingResetEvent?.TrySetResult(false);
-
-				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-			}
-
-			if (NowFarming) {
-				Bot.ArchiLogger.LogGenericError(Strings.WarningFailed);
-
-				NowFarming = false;
-
-				GamesToFarm.Clear();
-			}
-
-			Bot.ArchiLogger.LogGenericInfo(Strings.IdlingStopped);
-			await Bot.OnFarmingStopped(cancellationToken).ConfigureAwait(false);
+			await StopFarmingInternally().ConfigureAwait(false);
 		} finally {
 			FarmingInitializationSemaphore.Release();
 		}
@@ -1563,5 +1507,94 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		// We must call ToList() here as we can't do in-place replace
 		List<Game> gamesToFarm = [.. orderedGamesToFarm];
 		GamesToFarm.ReplaceWith(gamesToFarm);
+	}
+
+	private async Task StartFarmingInternally(CancellationToken cancellationToken = default) {
+		if (NowFarming || Paused || !Bot.IsPlayingPossible) {
+			return;
+		}
+
+		if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmPriorityQueueOnly) && (Bot.BotDatabase.FarmingPriorityQueueAppIDs.Count == 0))) {
+			Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
+			await Bot.OnFarmingFinished(false, cancellationToken).ConfigureAwait(false);
+
+			return;
+		}
+
+		bool? isAnythingToFarm = await IsAnythingToFarm(cancellationToken).ConfigureAwait(false);
+
+		if (!isAnythingToFarm.HasValue) {
+			return;
+		}
+
+		if (!isAnythingToFarm.Value) {
+			Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
+			await Bot.OnFarmingFinished(false, cancellationToken).ConfigureAwait(false);
+
+			return;
+		}
+
+		if (GamesToFarm.Count == 0) {
+			Bot.ArchiLogger.LogNullError(GamesToFarm);
+
+			return;
+		}
+
+		// This is the last moment for final check if we can farm
+		if (Paused || !Bot.IsPlayingPossible) {
+			Bot.ArchiLogger.LogGenericInfo(Strings.PlayingNotAvailable);
+
+			return;
+		}
+
+		if (Bot.PlayingWasBlocked) {
+			byte minFarmingDelayAfterBlock = ASF.GlobalConfig?.MinFarmingDelayAfterBlock ?? GlobalConfig.DefaultMinFarmingDelayAfterBlock;
+
+			if (minFarmingDelayAfterBlock > 0) {
+				Bot.ArchiLogger.LogGenericInfo(Strings.FormatBotExtraIdlingCooldown(TimeSpan.FromSeconds(minFarmingDelayAfterBlock).ToHumanReadable()));
+
+				for (byte i = 0; (i < minFarmingDelayAfterBlock) && Bot is { IsConnectedAndLoggedOn: true, IsPlayingPossible: true, PlayingWasBlocked: true }; i++) {
+					await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
+				}
+
+				if (!Bot.IsConnectedAndLoggedOn) {
+					return;
+				}
+
+				if (Paused || !Bot.IsPlayingPossible) {
+					Bot.ArchiLogger.LogGenericInfo(Strings.PlayingNotAvailable);
+
+					return;
+				}
+			}
+		}
+
+		NowFarming = true;
+		Utilities.InBackground(() => Farm(CancellationToken.None), true);
+
+		await PluginsCore.OnBotFarmingStarted(Bot, CancellationToken.None).ConfigureAwait(false);
+	}
+
+	private async Task StopFarmingInternally() {
+		if (!NowFarming) {
+			return;
+		}
+
+		for (byte i = 0; (i < byte.MaxValue) && NowFarming; i++) {
+			FarmingResetEvent?.TrySetResult(false);
+
+			await Task.Delay(1000).ConfigureAwait(false);
+		}
+
+		if (NowFarming) {
+			Bot.ArchiLogger.LogGenericError(Strings.WarningFailed);
+
+			NowFarming = false;
+
+			GamesToFarm.Clear();
+		}
+
+		Bot.ArchiLogger.LogGenericInfo(Strings.IdlingStopped);
+		await Bot.OnFarmingStopped().ConfigureAwait(false);
 	}
 }

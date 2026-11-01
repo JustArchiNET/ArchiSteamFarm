@@ -208,6 +208,8 @@ public sealed class GlobalDatabase : GenericDatabase {
 			}
 
 			globalDatabase = json.ToJsonObject<GlobalDatabase>();
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

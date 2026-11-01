@@ -260,6 +260,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 
 				return;
+			} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+				throw;
 			} catch (Exception e) {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
 				ShouldSendHeartBeats = false;
