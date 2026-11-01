@@ -136,7 +136,7 @@ internal static class OpenApiSchemaReferenceIdProvider {
 		return resultByMember;
 	}
 
-	private static void RegisterSchemaType(Type type, JsonSerializerOptions jsonSerializerOptions, HashSet<Type> visitedTypes, SchemaReferenceData result) {
+	private static void RegisterSchemaType(Type type, JsonSerializerOptions jsonSerializerOptions, ISet<Type> visitedTypes, SchemaReferenceData result) {
 		ArgumentNullException.ThrowIfNull(type);
 		ArgumentNullException.ThrowIfNull(jsonSerializerOptions);
 		ArgumentNullException.ThrowIfNull(visitedTypes);

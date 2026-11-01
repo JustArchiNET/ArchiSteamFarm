@@ -60,12 +60,12 @@ public sealed class Trading : IDisposable {
 	public void Dispose() => TradesSemaphore.Dispose();
 
 	[PublicAPI]
-	public async Task<bool> AcknowledgeTradeRestrictions() {
+	public async Task<bool> AcknowledgeTradeRestrictions(CancellationToken cancellationToken = default) {
 		if (Bot.BotDatabase.TradeRestrictionsAcknowledged) {
 			return true;
 		}
 
-		return Bot.BotDatabase.TradeRestrictionsAcknowledged = await Bot.ArchiWebHandler.AcknowledgeTradeRestrictions().ConfigureAwait(false);
+		return Bot.BotDatabase.TradeRestrictionsAcknowledged = await Bot.ArchiWebHandler.AcknowledgeTradeRestrictions(cancellationToken).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
@@ -214,7 +214,7 @@ public sealed class Trading : IDisposable {
 
 	internal void OnDisconnected() => HandledTradeOfferIDs.Clear();
 
-	internal async Task OnNewTrade() {
+	internal async Task OnNewTrade(CancellationToken cancellationToken = default) {
 		if (Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DisableIncomingTradesParsing)) {
 			return;
 		}
@@ -231,22 +231,22 @@ public sealed class Trading : IDisposable {
 			ParsingScheduled = true;
 		}
 
-		await TradesSemaphore.WaitAsync().ConfigureAwait(false);
+		await TradesSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			bool lootableTypesReceived;
 
-			using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
+			using (await Bot.Actions.GetTradingLock(cancellationToken).ConfigureAwait(false)) {
 				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 				lock (TradesSemaphore) {
 					ParsingScheduled = false;
 				}
 
-				lootableTypesReceived = await ParseActiveTrades().ConfigureAwait(false);
+				lootableTypesReceived = await ParseActiveTrades(cancellationToken).ConfigureAwait(false);
 			}
 
 			if (lootableTypesReceived && Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && !Bot.BotConfig.LootableTypes.IsEmpty) {
-				await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
+				await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type), cancellationToken: cancellationToken).ConfigureAwait(false);
 			}
 		} finally {
 			TradesSemaphore.Release();
@@ -273,11 +273,11 @@ public sealed class Trading : IDisposable {
 		return state;
 	}
 
-	private async Task<bool> ParseActiveTrades() {
+	private async Task<bool> ParseActiveTrades(CancellationToken cancellationToken = default) {
 		bool lootableTypesReceived = false;
 
 		for (byte i = 0; i < WebBrowser.MaxTries; i++) {
-			HashSet<TradeOffer>? tradeOffers = await Bot.ArchiWebHandler.GetTradeOffers(true, true, false, true).ConfigureAwait(false);
+			HashSet<TradeOffer>? tradeOffers = await Bot.ArchiWebHandler.GetTradeOffers(true, true, false, true, cancellationToken).ConfigureAwait(false);
 
 			if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
 				return false;
@@ -289,13 +289,13 @@ public sealed class Trading : IDisposable {
 
 			HashSet<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets = [];
 
-			IEnumerable<Task<ParseTradeResult>> tasks = tradeOffers.Where(tradeOffer => (tradeOffer.State == ETradeOfferState.Active) && HandledTradeOfferIDs.Add(tradeOffer.TradeOfferID)).Select(tradeOffer => ParseTrade(tradeOffer, handledSets));
+			IEnumerable<Task<ParseTradeResult>> tasks = tradeOffers.Where(tradeOffer => (tradeOffer.State == ETradeOfferState.Active) && HandledTradeOfferIDs.Add(tradeOffer.TradeOfferID)).Select(tradeOffer => ParseTrade(tradeOffer, handledSets, cancellationToken));
 
-			IList<ParseTradeResult> tradeResults = await Utilities.InParallel(tasks).ConfigureAwait(false);
+			IList<ParseTradeResult> tradeResults = await Utilities.InParallel(tasks, cancellationToken).ConfigureAwait(false);
 
 			if (!Bot.BotDatabase.TradeRestrictionsAcknowledged && tradeResults.Any(static result => ((result.Result == ParseTradeResult.EResult.Accepted) && (result.ItemsToGive?.Any(static item => item.AppID != Asset.SteamAppID) == true)) || (result.ItemsToReceive?.Any(static item => item.AppID != Asset.SteamAppID) == true))) {
 				// We should normally fail the process in case of a failure here, but since the popup could be marked already in the past, we'll allow it in hope it wasn't needed after all
-				await AcknowledgeTradeRestrictions().ConfigureAwait(false);
+				await AcknowledgeTradeRestrictions(cancellationToken).ConfigureAwait(false);
 			}
 
 			if (Bot.HasMobileAuthenticator) {
@@ -304,7 +304,7 @@ public sealed class Trading : IDisposable {
 				if (mobileTradeResults.Count > 0) {
 					HashSet<ulong> mobileTradeOfferIDs = [.. mobileTradeResults.Select(static tradeOffer => tradeOffer.TradeOfferID)];
 
-					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, mobileTradeOfferIDs, true, cancellationToken).ConfigureAwait(false);
 
 					if (twoFactorSuccess) {
 						foreach (ParseTradeResult mobileTradeResult in mobileTradeResults) {
@@ -317,7 +317,7 @@ public sealed class Trading : IDisposable {
 			}
 
 			if (tradeResults.Count > 0) {
-				await PluginsCore.OnBotTradeOfferResults(Bot, tradeResults as IReadOnlyCollection<ParseTradeResult> ?? [.. tradeResults]).ConfigureAwait(false);
+				await PluginsCore.OnBotTradeOfferResults(Bot, tradeResults as IReadOnlyCollection<ParseTradeResult> ?? [.. tradeResults], cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!lootableTypesReceived && tradeResults.Any(tradeResult => tradeResult is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && (tradeResult.ItemsToReceive?.Any(receivedItem => Bot.BotConfig.LootableTypes.Contains(receivedItem.Type)) == true))) {
@@ -336,18 +336,18 @@ public sealed class Trading : IDisposable {
 		return lootableTypesReceived;
 	}
 
-	private async Task<ParseTradeResult> ParseTrade(TradeOffer tradeOffer, ISet<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets) {
+	private async Task<ParseTradeResult> ParseTrade(TradeOffer tradeOffer, ISet<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(tradeOffer);
 		ArgumentNullException.ThrowIfNull(handledSets);
 
-		ParseTradeResult.EResult result = await ShouldAcceptTrade(tradeOffer, handledSets).ConfigureAwait(false);
+		ParseTradeResult.EResult result = await ShouldAcceptTrade(tradeOffer, handledSets, cancellationToken).ConfigureAwait(false);
 		bool tradeRequiresMobileConfirmation = false;
 
 		switch (result) {
 			case ParseTradeResult.EResult.Blacklisted:
 			case ParseTradeResult.EResult.Ignored:
 			case ParseTradeResult.EResult.Rejected:
-				bool accept = await PluginsCore.OnBotTradeOffer(Bot, tradeOffer, result).ConfigureAwait(false);
+				bool accept = await PluginsCore.OnBotTradeOffer(Bot, tradeOffer, result, cancellationToken).ConfigureAwait(false);
 
 				if (accept) {
 					result = ParseTradeResult.EResult.Accepted;
@@ -360,7 +360,7 @@ public sealed class Trading : IDisposable {
 			case ParseTradeResult.EResult.Accepted:
 				Bot.ArchiLogger.LogGenericInfo(Strings.FormatAcceptingTrade(tradeOffer.TradeOfferID));
 
-				(bool success, bool requiresMobileConfirmation) = await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
+				(bool success, bool requiresMobileConfirmation) = await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID, cancellationToken).ConfigureAwait(false);
 
 				if (!success) {
 					result = ParseTradeResult.EResult.TryAgain;
@@ -382,7 +382,7 @@ public sealed class Trading : IDisposable {
 			case ParseTradeResult.EResult.Rejected when Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades):
 				Bot.ArchiLogger.LogGenericInfo(Strings.FormatRejectingTrade(tradeOffer.TradeOfferID));
 
-				if (!await Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false)) {
+				if (!await Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID, cancellationToken).ConfigureAwait(false)) {
 					result = ParseTradeResult.EResult.TryAgain;
 
 					goto case ParseTradeResult.EResult.TryAgain;
@@ -413,7 +413,7 @@ public sealed class Trading : IDisposable {
 		return new ParseTradeResult(tradeOffer.TradeOfferID, result, tradeRequiresMobileConfirmation, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 	}
 
-	private async Task<ParseTradeResult.EResult> ShouldAcceptTrade(TradeOffer tradeOffer, ISet<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets) {
+	private async Task<ParseTradeResult.EResult> ShouldAcceptTrade(TradeOffer tradeOffer, ISet<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity)> handledSets, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(tradeOffer);
 		ArgumentNullException.ThrowIfNull(handledSets);
 
@@ -514,7 +514,7 @@ public sealed class Trading : IDisposable {
 
 		// We assume that steam trade hold duration can't exceed the max, so skip the fetch unless we need it for blacklist handling or a lower configured limit
 		if (hasBlacklistedCards || (maxTradeHoldDuration < MaxTradeHoldDuration)) {
-			byte? holdDuration = await Bot.GetTradeHoldDuration(tradeOffer.OtherSteamID64, tradeOffer.TradeOfferID).ConfigureAwait(false);
+			byte? holdDuration = await Bot.GetTradeHoldDuration(tradeOffer.OtherSteamID64, tradeOffer.TradeOfferID, cancellationToken).ConfigureAwait(false);
 
 			switch (holdDuration) {
 				case null:
@@ -544,7 +544,7 @@ public sealed class Trading : IDisposable {
 		HashSet<Asset> inventory;
 
 		try {
-			inventory = await Bot.ArchiHandler.GetMyInventoryAsync().Where(item => !item.IsSteamPointsShopItem && wantedSets.Contains((item.AppID, item.ContextID, item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
+			inventory = await Bot.ArchiHandler.GetMyInventoryAsync(cancellationToken: cancellationToken).Where(item => !item.IsSteamPointsShopItem && wantedSets.Contains((item.AppID, item.ContextID, item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 		} catch (TimeoutException e) {
 			// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
 			Bot.ArchiLogger.LogGenericWarningException(e);

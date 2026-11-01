@@ -23,6 +23,7 @@
 
 using System;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
@@ -53,5 +54,6 @@ public interface IPlugin {
 	/// <summary>
 	///     ASF will call this method right after plugin initialization.
 	/// </summary>
-	public Task OnLoaded();
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnLoaded(CancellationToken cancellationToken = default);
 }

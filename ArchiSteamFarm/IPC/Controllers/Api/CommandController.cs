@@ -52,7 +52,7 @@ public sealed class CommandController : ArchiController {
 	[HttpPost]
 	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> CommandPost([FromBody] CommandRequest request) {
+	public async Task<ActionResult<GenericResponse>> CommandPost([FromBody] CommandRequest request, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (string.IsNullOrEmpty(request.Command)) {
@@ -90,7 +90,7 @@ public sealed class CommandController : ArchiController {
 		CancellationTokenRegistration applicationStoppingRegistration = ApplicationLifetime.ApplicationStopping.Register(() => applicationStopping.SetResult(true));
 
 		await using (applicationStoppingRegistration.ConfigureAwait(false)) {
-			Task<string?> commandTask = targetBot.Commands.Response(EAccess.Owner, command);
+			Task<string?> commandTask = targetBot.Commands.Response(EAccess.Owner, command, cancellationToken: cancellationToken);
 
 			string? response;
 

@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
@@ -62,14 +63,14 @@ public sealed class PluginsController : ArchiController {
 	[EndpointSummary("Makes ASF update selected plugins")]
 	[HttpPost("Update")]
 	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
-	public async Task<ActionResult<GenericResponse<string>>> UpdatePost([FromBody] PluginUpdateRequest request) {
+	public async Task<ActionResult<GenericResponse<string>>> UpdatePost([FromBody] PluginUpdateRequest request, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (request.Channel.HasValue && !Enum.IsDefined(request.Channel.Value)) {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(request.Channel))));
 		}
 
-		(bool success, string? message) = await Actions.UpdatePlugins(request.Channel, request.Plugins, request.Forced).ConfigureAwait(false);
+		(bool success, string? message) = await Actions.UpdatePlugins(request.Channel, request.Plugins, request.Forced, cancellationToken).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(message)) {
 			message = success ? Strings.Success : Strings.WarningFailed;

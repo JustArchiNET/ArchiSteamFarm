@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;
@@ -43,6 +44,7 @@ public interface IBotCommand2 : IPlugin {
 	/// <param name="message">Command message in its raw format, stripped of <see cref="GlobalConfig.CommandPrefix" />.</param>
 	/// <param name="args">Pre-parsed message using standard ASF delimiters.</param>
 	/// <param name="steamID">Optionally, steamID of the user who executed the command - may not be available with value of 0 (e.g. ASF API).</param>
+	/// <param name="cancellationToken">Cancellation token.</param>
 	/// <returns>Response to the command, or null/empty (as the task value) if the command isn't handled by this plugin.</returns>
-	public Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0);
+	public Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default);
 }

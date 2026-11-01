@@ -49,9 +49,7 @@ public sealed class HealthCheckController : ControllerBase {
 	[HttpGet]
 	[ProducesResponseType(typeof(HealthCheckResponse), (int) HttpStatusCode.OK)]
 	[ProducesResponseType(typeof(HealthCheckResponse), (int) HttpStatusCode.ServiceUnavailable)]
-	public async Task<IActionResult> Get() {
-		CancellationToken cancellationToken = HttpContext.RequestAborted;
-
+	public async Task<IActionResult> Get(CancellationToken cancellationToken = default) {
 		HealthReport report = await HealthCheckService.CheckHealthAsync(cancellationToken).ConfigureAwait(false);
 
 		HealthCheckResponse response = new(report);

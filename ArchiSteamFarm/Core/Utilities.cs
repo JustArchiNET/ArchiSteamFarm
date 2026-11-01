@@ -130,7 +130,7 @@ public static class Utilities {
 	public static ulong GetUnixTime() => (ulong) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
 	[PublicAPI]
-	public static async void InBackground(Action action, bool longRunning = false) {
+	public static async void InBackground(Action action, bool longRunning = false, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(action);
 
 		TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
@@ -139,7 +139,7 @@ public static class Utilities {
 			options |= TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness;
 		}
 
-		await Task.Factory.StartNew(action, CancellationToken.None, options, TaskScheduler.Default).ConfigureAwait(false);
+		await Task.Factory.StartNew(action, cancellationToken, options, TaskScheduler.Default).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
@@ -150,7 +150,7 @@ public static class Utilities {
 	}
 
 	[PublicAPI]
-	public static async Task<IList<T>> InParallel<T>(IEnumerable<Task<T>> tasks) {
+	public static async Task<IList<T>> InParallel<T>(IEnumerable<Task<T>> tasks, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(tasks);
 
 		switch (ASF.GlobalConfig?.OptimizationMode) {
@@ -158,28 +158,28 @@ public static class Utilities {
 				List<T> results = [];
 
 				foreach (Task<T> task in tasks) {
-					results.Add(await task.ConfigureAwait(false));
+					results.Add(await task.WaitAsync(cancellationToken).ConfigureAwait(false));
 				}
 
 				return results;
 			default:
-				return await Task.WhenAll(tasks).ConfigureAwait(false);
+				return await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
 		}
 	}
 
 	[PublicAPI]
-	public static async Task InParallel(IEnumerable<Task> tasks) {
+	public static async Task InParallel(IEnumerable<Task> tasks, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(tasks);
 
 		switch (ASF.GlobalConfig?.OptimizationMode) {
 			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 				foreach (Task task in tasks) {
-					await task.ConfigureAwait(false);
+					await task.WaitAsync(cancellationToken).ConfigureAwait(false);
 				}
 
 				break;
 			default:
-				await Task.WhenAll(tasks).ConfigureAwait(false);
+				await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
 
 				break;
 		}
@@ -263,7 +263,7 @@ public static class Utilities {
 		ASF.ArchiLogger.LogGenericDebug($"{fileName} {progressPercentage}%...");
 	}
 
-	internal static async Task<bool> UpdateCleanup(string targetDirectory) {
+	internal static async Task<bool> UpdateCleanup(string targetDirectory, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(targetDirectory);
 
 		bool updateCleanup = false;
@@ -290,7 +290,7 @@ public static class Utilities {
 					ASF.ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
 				}
 
-				await DeletePotentiallyUsedDirectory(backupDirectory).ConfigureAwait(false);
+				await DeletePotentiallyUsedDirectory(backupDirectory, cancellationToken).ConfigureAwait(false);
 			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
@@ -305,19 +305,19 @@ public static class Utilities {
 		return true;
 	}
 
-	internal static async Task<bool> UpdateFromArchive(ZipArchive zipArchive, string targetDirectory) {
+	internal static async Task<bool> UpdateFromArchive(ZipArchive zipArchive, string targetDirectory, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(zipArchive);
 		ArgumentException.ThrowIfNullOrEmpty(targetDirectory);
 
 		// Firstly, ensure once again our directories are purged and ready to work with
-		if (!await UpdateCleanup(targetDirectory).ConfigureAwait(false)) {
+		if (!await UpdateCleanup(targetDirectory, cancellationToken).ConfigureAwait(false)) {
 			return false;
 		}
 
 		// Now extract the zip file to entirely new location, this decreases chance of corruptions if user kills the process during this stage
 		string updateDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryNew);
 
-		await zipArchive.ExtractToDirectoryAsync(updateDirectory, true).ConfigureAwait(false);
+		await zipArchive.ExtractToDirectoryAsync(updateDirectory, true, cancellationToken).ConfigureAwait(false);
 
 		// Now, critical section begins, we're going to move all files from target directory to a backup directory
 		string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectoryOld);
@@ -391,12 +391,12 @@ public static class Utilities {
 		}
 	}
 
-	private static async Task DeletePotentiallyUsedDirectory(string directory) {
+	private static async Task DeletePotentiallyUsedDirectory(string directory, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(directory);
 
 		for (byte i = 1; (i <= MaxSharingViolationTries) && Directory.Exists(directory); i++) {
 			if (i > 1) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			try {

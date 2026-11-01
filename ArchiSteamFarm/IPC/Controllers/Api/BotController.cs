@@ -28,6 +28,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Requests;
@@ -49,7 +50,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/AddLicense")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, BotAddLicenseResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> AddLicensePost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotAddLicenseRequest request) {
+	public async Task<ActionResult<GenericResponse>> AddLicensePost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotAddLicenseRequest request, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -63,7 +64,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<BotAddLicenseResponse> results = await Utilities.InParallel(bots.Select(bot => AddLicense(bot, request))).ConfigureAwait(false);
+		IList<BotAddLicenseResponse> results = await Utilities.InParallel(bots.Select(bot => AddLicense(bot, request, cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		Dictionary<string, BotAddLicenseResponse> result = new(bots.Count, Bot.BotsComparer);
 
@@ -78,7 +79,7 @@ public sealed class BotController : ArchiController {
 	[HttpDelete("{botNames:required}")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> BotDelete([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
+	public async Task<ActionResult<GenericResponse>> BotDelete([Description(WebUtilities.BotNamesParameterDescription)] string botNames, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -87,7 +88,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<bool> results = await Utilities.InParallel(bots.Select(static bot => bot.DeleteAllRelatedFiles())).ConfigureAwait(false);
+		IList<bool> results = await Utilities.InParallel(bots.Select(bot => bot.DeleteAllRelatedFiles(cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		return Ok(new GenericResponse(results.All(static result => result)));
 	}
@@ -112,7 +113,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, bool>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> BotPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotRequest request) {
+	public async Task<ActionResult<GenericResponse>> BotPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotRequest request, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -174,7 +175,7 @@ public sealed class BotController : ArchiController {
 				throw new InvalidOperationException(nameof(filePath));
 			}
 
-			result[botName] = await BotConfig.Write(filePath, request.BotConfig).ConfigureAwait(false);
+			result[botName] = await BotConfig.Write(filePath, request.BotConfig, cancellationToken).ConfigureAwait(false);
 		}
 
 		return Ok(new GenericResponse<IReadOnlyDictionary<string, bool>>(result.Values.All(static value => value), result));
@@ -184,7 +185,7 @@ public sealed class BotController : ArchiController {
 	[HttpDelete("{botNames:required}/GamesToRedeemInBackground")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundDelete([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
+	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundDelete([Description(WebUtilities.BotNamesParameterDescription)] string botNames, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -193,7 +194,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<bool> results = await Utilities.InParallel(bots.Select(static bot => Task.Run(bot.DeleteRedeemedKeysFiles))).ConfigureAwait(false);
+		IList<bool> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.DeleteRedeemedKeysFiles, cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		return Ok(results.All(static result => result) ? new GenericResponse(true) : new GenericResponse(false, Strings.WarningFailed));
 	}
@@ -202,7 +203,7 @@ public sealed class BotController : ArchiController {
 	[HttpGet("{botNames:required}/GamesToRedeemInBackground")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundGet([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
+	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundGet([Description(WebUtilities.BotNamesParameterDescription)] string botNames, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -211,7 +212,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<(Dictionary<string, string>? UnusedKeys, Dictionary<string, string>? UsedKeys)> results = await Utilities.InParallel(bots.Select(static bot => bot.GetUsedAndUnusedKeys())).ConfigureAwait(false);
+		IList<(Dictionary<string, string>? UnusedKeys, Dictionary<string, string>? UsedKeys)> results = await Utilities.InParallel(bots.Select(bot => bot.GetUsedAndUnusedKeys(cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		Dictionary<string, GamesToRedeemInBackgroundResponse> result = new(bots.Count, Bot.BotsComparer);
 
@@ -227,7 +228,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/GamesToRedeemInBackground")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, OrderedDictionary<string, string>>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotGamesToRedeemInBackgroundRequest request) {
+	public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotGamesToRedeemInBackgroundRequest request, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -251,7 +252,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(request.GamesToRedeemInBackground))));
 		}
 
-		await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.AddGamesToRedeemInBackground(request.GamesToRedeemInBackground)))).ConfigureAwait(false);
+		await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.AddGamesToRedeemInBackground(request.GamesToRedeemInBackground), cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		Dictionary<string, OrderedDictionary<string, string>> result = new(bots.Count, Bot.BotsComparer);
 
@@ -266,7 +267,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/Input")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> InputPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotInputRequest request) {
+	public async Task<ActionResult<GenericResponse>> InputPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotInputRequest request, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -280,7 +281,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<bool> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.SetUserInput(request.Type, request.Value)))).ConfigureAwait(false);
+		IList<bool> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.SetUserInput(request.Type, request.Value), cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		return Ok(results.All(static result => result) ? new GenericResponse(true) : new GenericResponse(false, Strings.WarningFailed));
 	}
@@ -289,7 +290,7 @@ public sealed class BotController : ArchiController {
 	[HttpGet("{botNames:required}/Inventory/{appID}/{contextID}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, BotInventoryResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> InventoryGet([Description(WebUtilities.BotNamesParameterDescription)] string botNames, uint appID, ulong contextID, [FromQuery] string? language = null) {
+	public async Task<ActionResult<GenericResponse>> InventoryGet([Description(WebUtilities.BotNamesParameterDescription)] string botNames, uint appID, ulong contextID, [FromQuery] string? language = null, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		if (appID == 0) {
@@ -306,7 +307,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<(HashSet<Asset>? Result, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.GetInventory(appID, contextID, language: language))).ConfigureAwait(false);
+		IList<(HashSet<Asset>? Result, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.GetInventory(appID, contextID, language: language, cancellationToken: cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		Dictionary<string, BotInventoryResponse> result = new(bots.Count, Bot.BotsComparer);
 
@@ -340,7 +341,7 @@ public sealed class BotController : ArchiController {
 	[HttpGet("{botNames:required}/Inventory")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, ImmutableDictionary<uint, InventoryAppData>>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> InventoryInfoGet([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
+	public async Task<ActionResult<GenericResponse>> InventoryInfoGet([Description(WebUtilities.BotNamesParameterDescription)] string botNames, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -349,7 +350,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<ImmutableDictionary<uint, InventoryAppData>?> results = await Utilities.InParallel(bots.Select(static bot => bot.ArchiWebHandler.GetInventoryContextData())).ConfigureAwait(false);
+		IList<ImmutableDictionary<uint, InventoryAppData>?> results = await Utilities.InParallel(bots.Select(bot => bot.ArchiWebHandler.GetInventoryContextData(cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		Dictionary<string, ImmutableDictionary<uint, InventoryAppData>?> result = new(bots.Count, Bot.BotsComparer);
 
@@ -364,7 +365,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/Pause")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> PausePost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotPauseRequest request) {
+	public async Task<ActionResult<GenericResponse>> PausePost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotPauseRequest request, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -374,7 +375,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.Pause(request.Permanent, request.ResumeInSeconds))).ConfigureAwait(false);
+		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.Pause(request.Permanent, request.ResumeInSeconds, cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		return Ok(new GenericResponse(results.All(static result => result.Success), string.Join(Environment.NewLine, results.Select(static result => result.Message))));
 	}
@@ -383,7 +384,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/RedeemPoints/{definitionID:required}")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, EResult>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> RedeemPointsPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, uint definitionID, [FromQuery] bool forced = false) {
+	public async Task<ActionResult<GenericResponse>> RedeemPointsPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, uint definitionID, [FromQuery] bool forced = false, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
 
@@ -393,7 +394,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<EResult> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.RedeemPoints(definitionID, forced))).ConfigureAwait(false);
+		IList<EResult> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.RedeemPoints(definitionID, forced)), cancellationToken).ConfigureAwait(false);
 
 		Dictionary<string, EResult> result = new(bots.Count, Bot.BotsComparer);
 
@@ -409,7 +410,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/Redeem")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, CStore_RegisterCDKey_Response>>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> RedeemPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotRedeemRequest request) {
+	public async Task<ActionResult<GenericResponse>> RedeemPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotRedeemRequest request, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -423,7 +424,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<CStore_RegisterCDKey_Response?> results = await Utilities.InParallel(bots.Select(bot => request.KeysToRedeem.Select(key => bot.Actions.RedeemKey(key))).SelectMany(static task => task)).ConfigureAwait(false);
+		IList<CStore_RegisterCDKey_Response?> results = await Utilities.InParallel(bots.Select(bot => request.KeysToRedeem.Select(key => bot.Actions.RedeemKey(key, cancellationToken))).SelectMany(static task => task), cancellationToken).ConfigureAwait(false);
 
 		Dictionary<string, IReadOnlyDictionary<string, CStore_RegisterCDKey_Response?>> result = new(bots.Count, Bot.BotsComparer);
 
@@ -445,7 +446,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/RemoveLicense")]
 	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, BotRemoveLicenseResponse>>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> RemoveLicensePost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotRemoveLicenseRequest request) {
+	public async Task<ActionResult<GenericResponse>> RemoveLicensePost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, [FromBody] BotRemoveLicenseRequest request, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -459,7 +460,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<BotRemoveLicenseResponse> results = await Utilities.InParallel(bots.Select(bot => RemoveLicense(bot, request))).ConfigureAwait(false);
+		IList<BotRemoveLicenseResponse> results = await Utilities.InParallel(bots.Select(bot => RemoveLicense(bot, request, cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		Dictionary<string, BotRemoveLicenseResponse> result = new(bots.Count, Bot.BotsComparer);
 
@@ -474,7 +475,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botName:required}/Rename")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> RenamePost([Description(WebUtilities.BotNamesParameterDescription)] string botName, [FromBody] BotRenameRequest request) {
+	public async Task<ActionResult<GenericResponse>> RenamePost([Description(WebUtilities.BotNamesParameterDescription)] string botName, [FromBody] BotRenameRequest request, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botName);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -490,7 +491,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botName)));
 		}
 
-		bool result = await bot.Rename(request.NewName).ConfigureAwait(false);
+		bool result = await bot.Rename(request.NewName, cancellationToken).ConfigureAwait(false);
 
 		return Ok(new GenericResponse(result));
 	}
@@ -499,7 +500,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/Resume")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> ResumePost([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
+	public async Task<ActionResult<GenericResponse>> ResumePost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -508,7 +509,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(static bot => Task.Run(bot.Actions.Resume))).ConfigureAwait(false);
+		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.Actions.Resume, cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		return Ok(new GenericResponse(results.All(static result => result.Success), string.Join(Environment.NewLine, results.Select(static result => result.Message))));
 	}
@@ -517,7 +518,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/Start")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> StartPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
+	public async Task<ActionResult<GenericResponse>> StartPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -526,7 +527,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(static bot => Task.Run(bot.Actions.Start))).ConfigureAwait(false);
+		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.Actions.Start, cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		return Ok(new GenericResponse(results.All(static result => result.Success), string.Join(Environment.NewLine, results.Select(static result => result.Message))));
 	}
@@ -535,7 +536,7 @@ public sealed class BotController : ArchiController {
 	[HttpPost("{botNames:required}/Stop")]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> StopPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames) {
+	public async Task<ActionResult<GenericResponse>> StopPost([Description(WebUtilities.BotNamesParameterDescription)] string botNames, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -544,12 +545,12 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(static bot => Task.Run(bot.Actions.Stop))).ConfigureAwait(false);
+		IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.Stop(cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		return Ok(new GenericResponse(results.All(static result => result.Success), string.Join(Environment.NewLine, results.Select(static result => result.Message))));
 	}
 
-	private static async Task<BotAddLicenseResponse> AddLicense(Bot bot, BotAddLicenseRequest request) {
+	private static async Task<BotAddLicenseResponse> AddLicense(Bot bot, BotAddLicenseRequest request, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -582,7 +583,7 @@ public sealed class BotController : ArchiController {
 					continue;
 				}
 
-				(EResult result, EPurchaseResultDetail purchaseResultDetail) = await bot.Actions.AddFreeLicensePackage(subID).ConfigureAwait(false);
+				(EResult result, EPurchaseResultDetail purchaseResultDetail) = await bot.Actions.AddFreeLicensePackage(subID, cancellationToken).ConfigureAwait(false);
 
 				packages[subID] = new AddLicenseResult(result, purchaseResultDetail);
 			}
@@ -591,7 +592,7 @@ public sealed class BotController : ArchiController {
 		return new BotAddLicenseResponse(apps, packages);
 	}
 
-	private static async Task<BotRemoveLicenseResponse> RemoveLicense(Bot bot, BotRemoveLicenseRequest request) {
+	private static async Task<BotRemoveLicenseResponse> RemoveLicense(Bot bot, BotRemoveLicenseRequest request, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -622,7 +623,7 @@ public sealed class BotController : ArchiController {
 					continue;
 				}
 
-				packages[subID] = await bot.Actions.RemoveLicensePackage(subID).ConfigureAwait(false);
+				packages[subID] = await bot.Actions.RemoveLicensePackage(subID, cancellationToken).ConfigureAwait(false);
 			}
 		}
 

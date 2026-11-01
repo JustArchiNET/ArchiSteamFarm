@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Cards;
@@ -39,17 +40,20 @@ public interface IBotCardsFarmerInfo : IPlugin {
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="farmedSomething">Bool value indicating whether the module has finished successfully, so when there was at least one card to drop, and nothing has interrupted us in the meantime.</param>
-	public Task OnBotFarmingFinished(Bot bot, bool farmedSomething);
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnBotFarmingFinished(Bot bot, bool farmedSomething, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	///     ASF will call this method when cards farming module is started on given bot instance. The module is started only when there are valid cards to drop, so this method won't be called when there is nothing to idle.
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
-	public Task OnBotFarmingStarted(Bot bot);
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnBotFarmingStarted(Bot bot, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	///     ASF will call this method when cards farming module is stopped on given bot instance. The stop could be a result of a natural finish, or other situations (e.g. Steam networking issues, user commands).
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
-	public Task OnBotFarmingStopped(Bot bot);
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnBotFarmingStopped(Bot bot, CancellationToken cancellationToken = default);
 }

@@ -103,7 +103,7 @@ public sealed class ASFController : ArchiController {
 	[HttpPost]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult<GenericResponse>> ASFPost([FromBody] ASFRequest request) {
+	public async Task<ActionResult<GenericResponse>> ASFPost([FromBody] ASFRequest request, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (ASF.GlobalConfig == null) {
@@ -148,7 +148,7 @@ public sealed class ASFController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(filePath))));
 		}
 
-		bool result = await GlobalConfig.Write(filePath, request.GlobalConfig).ConfigureAwait(false);
+		bool result = await GlobalConfig.Write(filePath, request.GlobalConfig, cancellationToken).ConfigureAwait(false);
 
 		return Ok(new GenericResponse(result));
 	}
@@ -174,7 +174,7 @@ public sealed class ASFController : ArchiController {
 	[EndpointSummary("Makes ASF update itself")]
 	[HttpPost("Update")]
 	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
-	public async Task<ActionResult<GenericResponse<string>>> UpdatePost([FromBody] UpdateRequest request) {
+	public async Task<ActionResult<GenericResponse<string>>> UpdatePost([FromBody] UpdateRequest request, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (request.Channel.HasValue && !Enum.IsDefined(request.Channel.Value)) {
@@ -190,7 +190,7 @@ public sealed class ASFController : ArchiController {
 		CancellationTokenRegistration applicationStoppingRegistration = ApplicationLifetime.ApplicationStopping.Register(() => applicationStopping.SetResult(true));
 
 		await using (applicationStoppingRegistration.ConfigureAwait(false)) {
-			Task<(bool Success, string? Message, Version? Version)> updateTask = Actions.Update(request.Channel, request.Forced);
+			Task<(bool Success, string? Message, Version? Version)> updateTask = Actions.Update(request.Channel, request.Forced, cancellationToken);
 
 			bool success;
 			string? message = null;

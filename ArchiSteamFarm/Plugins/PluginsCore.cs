@@ -37,6 +37,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
@@ -62,7 +63,7 @@ public static class PluginsCore {
 	private static FrozenSet<IPluginUpdates> ActivePluginUpdates = [];
 
 	[PublicAPI]
-	public static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName) {
+	public static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(objectName);
 
 		if (ASF.GlobalConfig == null) {
@@ -87,7 +88,7 @@ public static class PluginsCore {
 		IList<ICrossProcessSemaphore?> responses;
 
 		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<ICrossProcessSemaphoreProvider>().Select(plugin => plugin.GetCrossProcessSemaphore(resourceName))).ConfigureAwait(false);
+			responses = await Utilities.InParallel(ActivePlugins.OfType<ICrossProcessSemaphoreProvider>().Select(plugin => plugin.GetCrossProcessSemaphore(resourceName, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -97,7 +98,7 @@ public static class PluginsCore {
 		return responses.FirstOrDefault(static response => response != null) ?? new CrossProcessFileBasedSemaphore(resourceName);
 	}
 
-	internal static async Task<StringComparer> GetBotsComparer() {
+	internal static async Task<StringComparer> GetBotsComparer(CancellationToken cancellationToken = default) {
 		if (ActivePlugins.Count == 0) {
 			return StringComparer.Ordinal;
 		}
@@ -105,7 +106,7 @@ public static class PluginsCore {
 		IList<StringComparer> results;
 
 		try {
-			results = await Utilities.InParallel(ActivePlugins.OfType<IBotsComparer>().Select(static plugin => Task.Run(() => plugin.BotsComparer))).ConfigureAwait(false);
+			results = await Utilities.InParallel(ActivePlugins.OfType<IBotsComparer>().Select(plugin => Task.Run(() => plugin.BotsComparer, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -117,7 +118,7 @@ public static class PluginsCore {
 		return result ?? StringComparer.Ordinal;
 	}
 
-	internal static async Task<uint> GetChangeNumberToStartFrom() {
+	internal static async Task<uint> GetChangeNumberToStartFrom(CancellationToken cancellationToken = default) {
 		uint lastChangeNumber = ASF.GlobalDatabase?.LastChangeNumber ?? 0;
 
 		if ((lastChangeNumber == 0) || (ActivePlugins.Count == 0)) {
@@ -127,7 +128,7 @@ public static class PluginsCore {
 		IList<uint> results;
 
 		try {
-			results = await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(static plugin => plugin.GetPreferredChangeNumberToStartFrom())).ConfigureAwait(false);
+			results = await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => plugin.GetPreferredChangeNumberToStartFrom(cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -141,7 +142,7 @@ public static class PluginsCore {
 		return lastChangeNumber;
 	}
 
-	internal static async Task<IMachineInfoProvider?> GetCustomMachineInfoProvider(Bot bot) {
+	internal static async Task<IMachineInfoProvider?> GetCustomMachineInfoProvider(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (ActivePlugins.Count == 0) {
@@ -151,7 +152,7 @@ public static class PluginsCore {
 		IList<IMachineInfoProvider?> results;
 
 		try {
-			results = await Utilities.InParallel(ActivePlugins.OfType<IBotCustomMachineInfoProvider>().Select(plugin => plugin.GetMachineInfoProvider(bot))).ConfigureAwait(false);
+			results = await Utilities.InParallel(ActivePlugins.OfType<IBotCustomMachineInfoProvider>().Select(plugin => plugin.GetMachineInfoProvider(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -172,7 +173,7 @@ public static class PluginsCore {
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	internal static async Task<bool> InitPlugins() {
+	internal static async Task<bool> InitPlugins(CancellationToken cancellationToken = default) {
 		if (ActivePlugins.Count > 0) {
 			throw new InvalidOperationException(nameof(ActivePlugins));
 		}
@@ -199,7 +200,7 @@ public static class PluginsCore {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(assembly.FullName));
 				ASF.ArchiLogger.LogGenericException(e);
 
-				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 				return false;
 			}
@@ -220,13 +221,13 @@ public static class PluginsCore {
 			ASF.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(e.TypeName));
 			ASF.ArchiLogger.LogGenericException(e);
 
-			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+			await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 			return false;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
-			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+			await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 			return false;
 		}
@@ -244,12 +245,12 @@ public static class PluginsCore {
 				if (!Program.IgnoreUnsupportedEnvironment && plugin is OfficialPlugin officialPlugin && !officialPlugin.HasSameVersion()) {
 					ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnsupportedOfficialPlugins(plugin.Name, plugin.Version, SharedInfo.Version));
 
-					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 					return false;
 				}
 
-				await plugin.OnLoaded().ConfigureAwait(false);
+				await plugin.OnLoaded(cancellationToken).ConfigureAwait(false);
 
 				ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginLoaded(plugin.Name));
 			} catch (Exception e) {
@@ -259,7 +260,7 @@ public static class PluginsCore {
 		}
 
 		if (invalidPlugins.Count > 0) {
-			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+			await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 			activePlugins.ExceptWith(invalidPlugins);
 		}
@@ -348,19 +349,19 @@ public static class PluginsCore {
 		return assemblies;
 	}
 
-	internal static async Task OnASFInitModules(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
+	internal static async Task OnASFInitModules(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null, CancellationToken cancellationToken = default) {
 		if (ActivePlugins.Count == 0) {
 			return;
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IASF>().Select(plugin => plugin.OnASFInit(additionalConfigProperties))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IASF>().Select(plugin => plugin.OnASFInit(additionalConfigProperties, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
+	internal static async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!Enum.IsDefined(access)) {
@@ -380,7 +381,7 @@ public static class PluginsCore {
 		IList<string?> responses;
 
 		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand2>().Select(plugin => plugin.OnBotCommand(bot, access, message, args, steamID))).ConfigureAwait(false);
+			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand2>().Select(plugin => plugin.OnBotCommand(bot, access, message, args, steamID, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -390,7 +391,7 @@ public static class PluginsCore {
 		return string.Join(Environment.NewLine, responses.Where(static response => !string.IsNullOrEmpty(response)));
 	}
 
-	internal static async Task OnBotDestroy(Bot bot) {
+	internal static async Task OnBotDestroy(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (ActivePlugins.Count == 0) {
@@ -398,13 +399,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBot>().Select(plugin => plugin.OnBotDestroy(bot))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBot>().Select(plugin => plugin.OnBotDestroy(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task OnBotDisconnected(Bot bot, EResult reason) {
+	internal static async Task OnBotDisconnected(Bot bot, EResult reason, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (ActivePlugins.Count == 0) {
@@ -412,13 +413,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotConnection>().Select(plugin => plugin.OnBotDisconnected(bot, reason))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotConnection>().Select(plugin => plugin.OnBotDisconnected(bot, reason, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task OnBotFarmingFinished(Bot bot, bool farmedSomething) {
+	internal static async Task OnBotFarmingFinished(Bot bot, bool farmedSomething, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (ActivePlugins.Count == 0) {
@@ -426,13 +427,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => plugin.OnBotFarmingFinished(bot, farmedSomething))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => plugin.OnBotFarmingFinished(bot, farmedSomething, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task OnBotFarmingStarted(Bot bot) {
+	internal static async Task OnBotFarmingStarted(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (ActivePlugins.Count == 0) {
@@ -440,13 +441,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => plugin.OnBotFarmingStarted(bot))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => plugin.OnBotFarmingStarted(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task OnBotFarmingStopped(Bot bot) {
+	internal static async Task OnBotFarmingStopped(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (ActivePlugins.Count == 0) {
@@ -454,13 +455,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => plugin.OnBotFarmingStopped(bot))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => plugin.OnBotFarmingStopped(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task<bool> OnBotFriendRequest(Bot bot, ulong steamID) {
+	internal static async Task<bool> OnBotFriendRequest(Bot bot, ulong steamID, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsValid) {
@@ -474,7 +475,7 @@ public static class PluginsCore {
 		IList<bool> responses;
 
 		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotFriendRequest>().Select(plugin => plugin.OnBotFriendRequest(bot, steamID))).ConfigureAwait(false);
+			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotFriendRequest>().Select(plugin => plugin.OnBotFriendRequest(bot, steamID, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -484,7 +485,7 @@ public static class PluginsCore {
 		return responses.Any(static response => response);
 	}
 
-	internal static async Task OnBotInit(Bot bot) {
+	internal static async Task OnBotInit(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (ActivePlugins.Count == 0) {
@@ -492,13 +493,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBot>().Select(plugin => plugin.OnBotInit(bot))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBot>().Select(plugin => plugin.OnBotInit(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
+	internal static async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (ActivePlugins.Count == 0) {
@@ -506,13 +507,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotModules>().Select(plugin => plugin.OnBotInitModules(bot, additionalConfigProperties))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotModules>().Select(plugin => plugin.OnBotInitModules(bot, additionalConfigProperties, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task OnBotLoggedOn(Bot bot) {
+	internal static async Task OnBotLoggedOn(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (ActivePlugins.Count == 0) {
@@ -520,13 +521,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotConnection>().Select(plugin => plugin.OnBotLoggedOn(bot))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotConnection>().Select(plugin => plugin.OnBotLoggedOn(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task<string?> OnBotMessage(Bot bot, ulong steamID, string message) {
+	internal static async Task<string?> OnBotMessage(Bot bot, ulong steamID, string message, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -542,7 +543,7 @@ public static class PluginsCore {
 		IList<string?> responses;
 
 		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotMessage>().Select(plugin => plugin.OnBotMessage(bot, steamID, message))).ConfigureAwait(false);
+			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotMessage>().Select(plugin => plugin.OnBotMessage(bot, steamID, message, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -552,7 +553,7 @@ public static class PluginsCore {
 		return string.Join(Environment.NewLine, responses.Where(static response => !string.IsNullOrEmpty(response)));
 	}
 
-	internal static async Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager) {
+	internal static async Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(callbackManager);
 
@@ -561,13 +562,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotSteamClient>().Select(plugin => plugin.OnBotSteamCallbacksInit(bot, callbackManager))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotSteamClient>().Select(plugin => plugin.OnBotSteamCallbacksInit(bot, callbackManager, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task<HashSet<ClientMsgHandler>?> OnBotSteamHandlersInit(Bot bot) {
+	internal static async Task<HashSet<ClientMsgHandler>?> OnBotSteamHandlersInit(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (ActivePlugins.Count == 0) {
@@ -577,7 +578,7 @@ public static class PluginsCore {
 		IList<IReadOnlyCollection<ClientMsgHandler>?> responses;
 
 		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotSteamClient>().Select(plugin => plugin.OnBotSteamHandlersInit(bot))).ConfigureAwait(false);
+			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotSteamClient>().Select(plugin => plugin.OnBotSteamHandlersInit(bot, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -587,7 +588,7 @@ public static class PluginsCore {
 		return [.. responses.Where(static response => response != null).SelectMany(static handlers => handlers ?? [])];
 	}
 
-	internal static async Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ParseTradeResult.EResult asfResult) {
+	internal static async Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ParseTradeResult.EResult asfResult, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(tradeOffer);
 
@@ -598,7 +599,7 @@ public static class PluginsCore {
 		IList<bool> responses;
 
 		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOffer2>().Select(plugin => plugin.OnBotTradeOffer(bot, tradeOffer, asfResult))).ConfigureAwait(false);
+			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOffer2>().Select(plugin => plugin.OnBotTradeOffer(bot, tradeOffer, asfResult, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -608,7 +609,7 @@ public static class PluginsCore {
 		return responses.Any(static response => response);
 	}
 
-	internal static async Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults) {
+	internal static async Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((tradeResults == null) || (tradeResults.Count == 0)) {
@@ -620,13 +621,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOfferResults>().Select(plugin => plugin.OnBotTradeOfferResults(bot, tradeResults))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOfferResults>().Select(plugin => plugin.OnBotTradeOfferResults(bot, tradeResults, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications) {
+	internal static async Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((newNotifications == null) || (newNotifications.Count == 0)) {
@@ -638,13 +639,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotUserNotifications>().Select(plugin => plugin.OnBotUserNotifications(bot, newNotifications))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotUserNotifications>().Select(plugin => plugin.OnBotUserNotifications(bot, newNotifications, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges) {
+	internal static async Task OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 		ArgumentNullException.ThrowIfNull(appChanges);
 		ArgumentNullException.ThrowIfNull(packageChanges);
@@ -654,13 +655,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => plugin.OnPICSChanges(currentChangeNumber, appChanges, packageChanges))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => plugin.OnPICSChanges(currentChangeNumber, appChanges, packageChanges, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task OnPICSChangesRestart(uint currentChangeNumber) {
+	internal static async Task OnPICSChangesRestart(uint currentChangeNumber, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 
 		if (ActivePlugins.Count == 0) {
@@ -668,13 +669,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => plugin.OnPICSChangesRestart(currentChangeNumber))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => plugin.OnPICSChangesRestart(currentChangeNumber, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task OnSelfPersonaState(Bot bot, SteamFriends.PersonaStateCallback data, string? nickname, string? avatarHash) {
+	internal static async Task OnSelfPersonaState(Bot bot, SteamFriends.PersonaStateCallback data, string? nickname, string? avatarHash, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(data);
 
@@ -683,13 +684,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IBotIdentity>().Select(plugin => plugin.OnSelfPersonaState(bot, data, nickname, avatarHash))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IBotIdentity>().Select(plugin => plugin.OnSelfPersonaState(bot, data, nickname, avatarHash, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task OnUpdateFinished(Version newVersion) {
+	internal static async Task OnUpdateFinished(Version newVersion, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(newVersion);
 
 		if (ActivePlugins.Count == 0) {
@@ -697,13 +698,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IUpdateAware>().Select(plugin => plugin.OnUpdateFinished(SharedInfo.Version, newVersion))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IUpdateAware>().Select(plugin => plugin.OnUpdateFinished(SharedInfo.Version, newVersion, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task OnUpdateProceeding(Version newVersion) {
+	internal static async Task OnUpdateProceeding(Version newVersion, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(newVersion);
 
 		if (ActivePlugins.Count == 0) {
@@ -711,13 +712,13 @@ public static class PluginsCore {
 		}
 
 		try {
-			await Utilities.InParallel(ActivePlugins.OfType<IUpdateAware>().Select(plugin => plugin.OnUpdateProceeding(SharedInfo.Version, newVersion))).ConfigureAwait(false);
+			await Utilities.InParallel(ActivePlugins.OfType<IUpdateAware>().Select(plugin => plugin.OnUpdateProceeding(SharedInfo.Version, newVersion, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 
-	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool asfUpdate, GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false) {
+	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool asfUpdate, GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 
 		if (updateChannel.HasValue && !Enum.IsDefined(updateChannel.Value)) {
@@ -728,10 +729,10 @@ public static class PluginsCore {
 			return false;
 		}
 
-		return await UpdatePlugins(asfVersion, asfUpdate, ActivePluginUpdates, updateChannel, updateOverride, forced).ConfigureAwait(false);
+		return await UpdatePlugins(asfVersion, asfUpdate, ActivePluginUpdates, updateChannel, updateOverride, forced, cancellationToken).ConfigureAwait(false);
 	}
 
-	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool asfUpdate, IReadOnlyCollection<IPluginUpdates> plugins, GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false) {
+	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool asfUpdate, IReadOnlyCollection<IPluginUpdates> plugins, GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 
 		if ((plugins == null) || (plugins.Count == 0)) {
@@ -754,7 +755,7 @@ public static class PluginsCore {
 
 		ASF.ArchiLogger.LogGenericInfo(Strings.PluginUpdatesChecking);
 
-		IList<bool> pluginUpdates = await Utilities.InParallel(plugins.Select(plugin => UpdatePlugin(asfVersion, asfUpdate, plugin, updateChannel.Value, updateOverride, forced))).ConfigureAwait(false);
+		IList<bool> pluginUpdates = await Utilities.InParallel(plugins.Select(plugin => UpdatePlugin(asfVersion, asfUpdate, plugin, updateChannel.Value, updateOverride, forced, cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		return pluginUpdates.Any(static updated => updated);
 	}
@@ -824,7 +825,7 @@ public static class PluginsCore {
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL3000", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	private static async Task<bool> UpdatePlugin(Version asfVersion, bool asfUpdate, IPluginUpdates plugin, GlobalConfig.EUpdateChannel updateChannel, bool updateOverride, bool forced) {
+	private static async Task<bool> UpdatePlugin(Version asfVersion, bool asfUpdate, IPluginUpdates plugin, GlobalConfig.EUpdateChannel updateChannel, bool updateOverride, bool forced, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentNullException.ThrowIfNull(plugin);
 
@@ -850,11 +851,11 @@ public static class PluginsCore {
 			}
 
 			// If directories from previous update exist, it's a good idea to purge them now
-			if (!await Utilities.UpdateCleanup(assemblyDirectory).ConfigureAwait(false)) {
+			if (!await Utilities.UpdateCleanup(assemblyDirectory, cancellationToken).ConfigureAwait(false)) {
 				return false;
 			}
 
-			Uri? releaseURL = await plugin.GetTargetReleaseURL(asfVersion, BuildInfo.Variant, asfUpdate, updateChannel, forced).ConfigureAwait(false);
+			Uri? releaseURL = await plugin.GetTargetReleaseURL(asfVersion, BuildInfo.Variant, asfUpdate, updateChannel, forced, cancellationToken).ConfigureAwait(false);
 
 			if (releaseURL == null) {
 				return false;
@@ -875,7 +876,7 @@ public static class PluginsCore {
 			BinaryResponse? response;
 
 			try {
-				response = await ASF.WebBrowser.UrlGetToBinary(releaseURL, progressReporter: progressReporter).ConfigureAwait(false);
+				response = await ASF.WebBrowser.UrlGetToBinary(releaseURL, progressReporter: progressReporter, cancellationToken: cancellationToken).ConfigureAwait(false);
 			} finally {
 				progressReporter.ProgressChanged -= onProgressChanged;
 			}
@@ -886,7 +887,7 @@ public static class PluginsCore {
 
 			ASF.ArchiLogger.LogGenericInfo(Strings.PatchingFiles);
 
-			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
+			byte[] responseBytes = response.Content as byte[] ?? [.. response.Content];
 
 			MemoryStream memoryStream = new(responseBytes);
 
@@ -896,7 +897,7 @@ public static class PluginsCore {
 				await using (zipArchive.ConfigureAwait(false)) {
 					await plugin.OnPluginUpdateProceeding().ConfigureAwait(false);
 
-					if (!await Utilities.UpdateFromArchive(zipArchive, assemblyDirectory).ConfigureAwait(false)) {
+					if (!await Utilities.UpdateFromArchive(zipArchive, assemblyDirectory, cancellationToken).ConfigureAwait(false)) {
 						ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
 
 						return false;

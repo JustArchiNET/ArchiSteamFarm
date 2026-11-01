@@ -24,6 +24,7 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
@@ -40,5 +41,6 @@ public interface IASF : IPlugin {
 	///     ASF will call this method right after global config initialization.
 	/// </summary>
 	/// <param name="additionalConfigProperties">Extra config properties made out of <see cref="JsonExtensionDataAttribute" />. Can be null if no extra properties are found.</param>
-	public Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null);
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null, CancellationToken cancellationToken = default);
 }

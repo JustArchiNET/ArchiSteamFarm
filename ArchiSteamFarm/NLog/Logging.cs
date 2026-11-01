@@ -74,7 +74,7 @@ internal static class Logging {
 		}
 	}
 
-	internal static async Task<string?> GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF) {
+	internal static async Task<string?> GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF, CancellationToken cancellationToken = default) {
 		if ((userInputType == ASF.EUserInputType.None) || !Enum.IsDefined(userInputType)) {
 			throw new InvalidEnumArgumentException(nameof(userInputType), (int) userInputType, typeof(ASF.EUserInputType));
 		}
@@ -87,7 +87,7 @@ internal static class Logging {
 			return null;
 		}
 
-		await ConsoleSemaphore.WaitAsync().ConfigureAwait(false);
+		await ConsoleSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		string? result;
 
@@ -302,31 +302,31 @@ internal static class Logging {
 		ArchiKestrel.OnNewHistoryTarget(historyTarget);
 	}
 
-	internal static async Task<string[]?> ReadLogFileLines() {
+	internal static async Task<string[]?> ReadLogFileLines(CancellationToken cancellationToken = default) {
 		if (LogManager.Configuration == null) {
-			return File.Exists(SharedInfo.LogFile) ? await ReadLogFileLines(SharedInfo.LogFile).ConfigureAwait(false) : null;
+			return File.Exists(SharedInfo.LogFile) ? await ReadLogFileLines(SharedInfo.LogFile, cancellationToken).ConfigureAwait(false) : null;
 		}
 
 		foreach (string fileName in LogManager.Configuration.LoggingRules.OrderBy(static rule => rule.Filters.Count).ThenByDescending(static rule => rule.Levels.Count).SelectMany(static rule => rule.Targets.Select(static target => target is WrapperTargetBase wrapper ? wrapper.WrappedTarget : target).OfType<FileTarget>().Select(static fileTarget => fileTarget.FileName.Render(new LogEventInfo { TimeStamp = DateTime.UtcNow })).Where(File.Exists))) {
-			return await ReadLogFileLines(fileName).ConfigureAwait(false);
+			return await ReadLogFileLines(fileName, cancellationToken).ConfigureAwait(false);
 		}
 
 		return null;
 	}
 
 	internal static void StartInteractiveConsole() {
-		Utilities.InBackground(HandleConsoleInteractively, true);
+		Utilities.InBackground(static () => HandleConsoleInteractively(CancellationToken.None), true);
 		ASF.ArchiLogger.LogGenericInfo(Strings.InteractiveConsoleEnabled);
 	}
 
-	internal static async Task WriteToConsole(string message) {
+	internal static async Task WriteToConsole(string message, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
 			return;
 		}
 
-		await ConsoleSemaphore.WaitAsync().ConfigureAwait(false);
+		await ConsoleSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			Console.WriteLine(message);
@@ -425,16 +425,16 @@ internal static class Logging {
 		}
 	}
 
-	private static async Task HandleConsoleInteractively() {
+	private static async Task HandleConsoleInteractively(CancellationToken cancellationToken = default) {
 		try {
 			while (!Program.ShutdownSequenceInitialized) {
 				if (IsWaitingForUserInput || !Console.KeyAvailable) {
-					await Task.Delay(ConsoleResponsivenessDelay).ConfigureAwait(false);
+					await Task.Delay(ConsoleResponsivenessDelay, cancellationToken).ConfigureAwait(false);
 
 					continue;
 				}
 
-				await ConsoleSemaphore.WaitAsync().ConfigureAwait(false);
+				await ConsoleSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 				try {
 					ConsoleKeyInfo keyInfo = Console.ReadKey(true);
@@ -491,7 +491,7 @@ internal static class Logging {
 
 						Console.WriteLine($@"<> {Strings.Executing}");
 
-						string? response = await targetBot.Commands.Response(EAccess.Owner, command).ConfigureAwait(false);
+						string? response = await targetBot.Commands.Response(EAccess.Owner, command, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(response)) {
 							ASF.ArchiLogger.LogNullError(response);
@@ -598,11 +598,11 @@ internal static class Logging {
 		}
 	}
 
-	private static async Task<string[]?> ReadLogFileLines(string filePath) {
+	private static async Task<string[]?> ReadLogFileLines(string filePath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		try {
-			return await File.ReadAllLinesAsync(filePath).ConfigureAwait(false);
+			return await File.ReadAllLinesAsync(filePath, cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

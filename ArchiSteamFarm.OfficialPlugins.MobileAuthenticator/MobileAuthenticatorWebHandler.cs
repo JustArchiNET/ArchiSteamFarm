@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -38,7 +39,7 @@ namespace ArchiSteamFarm.OfficialPlugins.MobileAuthenticator;
 internal static class MobileAuthenticatorWebHandler {
 	private const string TwoFactorService = "ITwoFactorService";
 
-	internal static async Task<CTwoFactor_AddAuthenticator_Response?> AddAuthenticator(Bot bot, string deviceID) {
+	internal static async Task<CTwoFactor_AddAuthenticator_Response?> AddAuthenticator(Bot bot, string deviceID, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentException.ThrowIfNullOrEmpty(deviceID);
 
@@ -74,7 +75,7 @@ internal static class MobileAuthenticatorWebHandler {
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 			if ((i > 0) && (ArchiWebHandler.WebLimiterDelay > 0)) {
-				await Task.Delay(ArchiWebHandler.WebLimiterDelay).ConfigureAwait(false);
+				await Task.Delay(ArchiWebHandler.WebLimiterDelay, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (Debugging.IsUserDebugging) {
@@ -87,6 +88,7 @@ internal static class MobileAuthenticatorWebHandler {
 
 					// ReSharper disable once AccessToDisposedClosure
 					async () => await twoFactorService.CallProtobufAsync<CTwoFactor_AddAuthenticator_Response, CTwoFactor_AddAuthenticator_Request>(method, endpoint, request, extraArgs: arguments).ConfigureAwait(false)
+					, cancellationToken
 				).ConfigureAwait(false);
 			} catch (TaskCanceledException e) {
 				bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -104,7 +106,7 @@ internal static class MobileAuthenticatorWebHandler {
 		return response.Body;
 	}
 
-	internal static async Task<CTwoFactor_FinalizeAddAuthenticator_Response?> FinalizeAuthenticator(Bot bot, string activationCode, string authenticatorCode, ulong authenticatorTime) {
+	internal static async Task<CTwoFactor_FinalizeAddAuthenticator_Response?> FinalizeAuthenticator(Bot bot, string activationCode, string authenticatorCode, ulong authenticatorTime, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentException.ThrowIfNullOrEmpty(activationCode);
 		ArgumentException.ThrowIfNullOrEmpty(authenticatorCode);
@@ -142,7 +144,7 @@ internal static class MobileAuthenticatorWebHandler {
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 			if ((i > 0) && (ArchiWebHandler.WebLimiterDelay > 0)) {
-				await Task.Delay(ArchiWebHandler.WebLimiterDelay).ConfigureAwait(false);
+				await Task.Delay(ArchiWebHandler.WebLimiterDelay, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (Debugging.IsUserDebugging) {
@@ -155,6 +157,7 @@ internal static class MobileAuthenticatorWebHandler {
 
 					// ReSharper disable once AccessToDisposedClosure
 					async () => await twoFactorService.CallProtobufAsync<CTwoFactor_FinalizeAddAuthenticator_Response, CTwoFactor_FinalizeAddAuthenticator_Request>(method, endpoint, request, extraArgs: arguments).ConfigureAwait(false)
+					, cancellationToken
 				).ConfigureAwait(false);
 			} catch (TaskCanceledException e) {
 				bot.ArchiLogger.LogGenericDebuggingException(e);

@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
@@ -40,6 +41,7 @@ public interface IBotCustomMachineInfoProvider : IPlugin {
 	/// </summary>
 	/// <remarks>This method will be called with very limited amount of bot-related data, as it's used during bot initialization. We recommend to stick with <see cref="Bot.BotName" />, <see cref="Bot.BotConfig" /> and <see cref="Bot.BotDatabase" /> exclusively.</remarks>
 	/// <param name="bot">Bot object related to this callback.</param>
+	/// <param name="cancellationToken">Cancellation token.</param>
 	/// <returns><see cref="IMachineInfoProvider" /> that will be used for the particular bot. You can return null if you want to use default implementation.</returns>
-	public Task<IMachineInfoProvider?> GetMachineInfoProvider(Bot bot);
+	public Task<IMachineInfoProvider?> GetMachineInfoProvider(Bot bot, CancellationToken cancellationToken = default);
 }

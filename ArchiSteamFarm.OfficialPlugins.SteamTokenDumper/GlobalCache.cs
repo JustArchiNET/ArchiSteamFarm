@@ -96,7 +96,7 @@ internal sealed class GlobalCache : SerializableFile {
 	[UsedImplicitly]
 	public bool ShouldSerializeSubmittedPackages() => !SubmittedPackages.IsEmpty;
 
-	protected override Task Save() => Save(this);
+	protected override Task Save(CancellationToken cancellationToken = default) => Save(this, cancellationToken);
 
 	internal ulong GetAppToken(uint appID) => AppTokens[appID];
 
@@ -111,7 +111,7 @@ internal sealed class GlobalCache : SerializableFile {
 		return ASF.GlobalDatabase.PackageAccessTokensReadOnly.Where(packageToken => (SteamTokenDumperPlugin.Config?.SecretPackageIDs.Contains(packageToken.Key) != true) && (packageToken.Value > 0) && (!SubmittedPackages.TryGetValue(packageToken.Key, out ulong token) || (packageToken.Value != token))).ToDictionary(static packageToken => packageToken.Key, static packageToken => packageToken.Value);
 	}
 
-	internal static async Task<GlobalCache?> Load() {
+	internal static async Task<GlobalCache?> Load(CancellationToken cancellationToken = default) {
 		if (!File.Exists(SharedFilePath)) {
 			return new GlobalCache();
 		}
@@ -121,7 +121,7 @@ internal sealed class GlobalCache : SerializableFile {
 		GlobalCache? globalCache;
 
 		try {
-			string json = await File.ReadAllTextAsync(SharedFilePath).ConfigureAwait(false);
+			string json = await File.ReadAllTextAsync(SharedFilePath, cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
 				ASF.ArchiLogger.LogGenericError(ArchiSteamFarm.Localization.Strings.FormatErrorIsEmpty(nameof(json)));
@@ -171,7 +171,7 @@ internal sealed class GlobalCache : SerializableFile {
 			AppChangeNumbers.TryRemove(appID, out _);
 		}
 
-		Utilities.InBackground(Save);
+		Utilities.InBackground(() => Save());
 	}
 
 	internal void OnPICSChangesRestart(uint currentChangeNumber) {
@@ -194,7 +194,7 @@ internal sealed class GlobalCache : SerializableFile {
 			DepotKeys.Clear();
 		}
 
-		Utilities.InBackground(Save);
+		Utilities.InBackground(() => Save());
 	}
 
 	internal bool ShouldRefreshAppInfo(uint appID) => !AppChangeNumbers.ContainsKey(appID);
@@ -215,7 +215,7 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		if (save) {
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -244,7 +244,7 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		if (save) {
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -269,7 +269,7 @@ internal sealed class GlobalCache : SerializableFile {
 
 		DepotKeys[depotKeyResult.DepotID] = depotKey;
 
-		Utilities.InBackground(Save);
+		Utilities.InBackground(() => Save());
 	}
 
 	internal void UpdateSubmittedData(IReadOnlyDictionary<uint, ulong> apps, IReadOnlyDictionary<uint, ulong> packages, IReadOnlyDictionary<uint, string> depots) {
@@ -307,7 +307,7 @@ internal sealed class GlobalCache : SerializableFile {
 		}
 
 		if (save) {
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 

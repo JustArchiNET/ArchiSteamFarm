@@ -30,6 +30,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Integration;
@@ -83,7 +84,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 
 	public void Dispose() => Meter?.Dispose();
 
-	public Task OnBotDestroy(Bot bot) {
+	public Task OnBotDestroy(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		TradeStatistics.TryRemove(bot, out _);
@@ -91,13 +92,13 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 		return Task.CompletedTask;
 	}
 
-	public Task OnBotInit(Bot bot) {
+	public Task OnBotInit(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		return Task.CompletedTask;
 	}
 
-	public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults) {
+	public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(tradeResults);
 
@@ -143,7 +144,7 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 		);
 	}
 
-	public override Task OnLoaded() => Task.CompletedTask;
+	public override Task OnLoaded(CancellationToken cancellationToken = default) => Task.CompletedTask;
 
 	private void InitializeMeter() {
 		if (Meter != null) {

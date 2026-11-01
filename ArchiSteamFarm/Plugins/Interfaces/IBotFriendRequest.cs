@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
@@ -38,6 +39,7 @@ public interface IBotFriendRequest : IPlugin {
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="steamID">64-bit Steam identificator of the user that sent a friend request, or a group that the bot has been invited to.</param>
+	/// <param name="cancellationToken">Cancellation token.</param>
 	/// <returns>True if the request should be accepted as part of this plugin, false otherwise.</returns>
-	public Task<bool> OnBotFriendRequest(Bot bot, ulong steamID);
+	public Task<bool> OnBotFriendRequest(Bot bot, ulong steamID, CancellationToken cancellationToken = default);
 }

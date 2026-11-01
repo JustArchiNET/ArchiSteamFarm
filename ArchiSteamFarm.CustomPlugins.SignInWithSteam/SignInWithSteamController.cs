@@ -24,6 +24,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
@@ -45,7 +46,7 @@ public sealed class SignInWithSteamController : ArchiController {
 	[ProducesResponseType<GenericResponse<SignInWithSteamResponse>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
-	public async Task<ActionResult<GenericResponse>> Post(string botName, [FromBody] SignInWithSteamRequest request) {
+	public async Task<ActionResult<GenericResponse>> Post(string botName, [FromBody] SignInWithSteamRequest request, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botName);
 		ArgumentNullException.ThrowIfNull(request);
 
@@ -60,7 +61,7 @@ public sealed class SignInWithSteamController : ArchiController {
 		}
 
 		// We've got a redirection, initiate OpenID procedure by following it
-		using HtmlDocumentResponse? challengeResponse = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request.RedirectURL).ConfigureAwait(false);
+		using HtmlDocumentResponse? challengeResponse = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request.RedirectURL, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (challengeResponse?.Content == null) {
 			return StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries)));
@@ -113,7 +114,7 @@ public sealed class SignInWithSteamController : ArchiController {
 		data.Add(nonceContent, "nonce");
 
 		// Accept OpenID request presented and follow redirection back to the data we initially expected
-		BasicResponse? loginResponse = await bot.ArchiWebHandler.WebBrowser.UrlPost(loginRequest, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections).ConfigureAwait(false);
+		BasicResponse? loginResponse = await bot.ArchiWebHandler.WebBrowser.UrlPost(loginRequest, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return loginResponse != null ? Ok(new GenericResponse<SignInWithSteamResponse>(new SignInWithSteamResponse(loginResponse.FinalUri))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries)));
 	}

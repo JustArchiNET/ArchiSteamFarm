@@ -469,8 +469,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<bool> DeleteAllRelatedFiles() {
-		await BotDatabase.MakeReadOnly().ConfigureAwait(false);
+	public async Task<bool> DeleteAllRelatedFiles(CancellationToken cancellationToken = default) {
+		await BotDatabase.MakeReadOnly(cancellationToken).ConfigureAwait(false);
 
 		foreach (string filePath in RelatedFiles.Select(static file => file.FilePath).Where(File.Exists)) {
 			try {
@@ -739,8 +739,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs() {
-		using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
+	public async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs(CancellationToken cancellationToken = default) {
+		using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(1, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (badgePage == null) {
 			ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
@@ -783,7 +783,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		switch (ASF.GlobalConfig?.OptimizationMode) {
 			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 				for (byte page = 2; page <= maxPages; page++) {
-					HashSet<uint>? pageIDs = await GetPossiblyCompletedBadgeAppIDs(page).ConfigureAwait(false);
+					HashSet<uint>? pageIDs = await GetPossiblyCompletedBadgeAppIDs(page, cancellationToken).ConfigureAwait(false);
 
 					if (pageIDs == null) {
 						return null;
@@ -799,10 +799,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				for (byte page = 2; page <= maxPages; page++) {
 					// ReSharper disable once InlineTemporaryVariable - we need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
 					byte currentPage = page;
-					tasks.Add(GetPossiblyCompletedBadgeAppIDs(currentPage));
+					tasks.Add(GetPossiblyCompletedBadgeAppIDs(currentPage, cancellationToken));
 				}
 
-				IList<HashSet<uint>?> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
+				IList<HashSet<uint>?> results = await Utilities.InParallel(tasks, cancellationToken).ConfigureAwait(false);
 
 				foreach (HashSet<uint>? result in results) {
 					if (result == null) {
@@ -820,7 +820,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	public T GetRequiredHandler<T>() where T : ClientMsgHandler => SteamClient.GetRequiredHandler<T>();
 
 	[PublicAPI]
-	public async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID) {
+	public async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID, CancellationToken cancellationToken = default) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -832,7 +832,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (SteamFriends.GetFriendRelationship(steamID) == EFriendRelationship.Friend) {
-			byte? tradeHoldDuration = await ArchiWebHandler.GetCombinedTradeHoldDurationAgainstUser(steamID).ConfigureAwait(false);
+			byte? tradeHoldDuration = await ArchiWebHandler.GetCombinedTradeHoldDurationAgainstUser(steamID, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (tradeHoldDuration.HasValue) {
 				return tradeHoldDuration;
@@ -845,7 +845,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			string? targetTradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
 
 			if (!string.IsNullOrEmpty(targetTradeToken)) {
-				byte? tradeHoldDuration = await ArchiWebHandler.GetCombinedTradeHoldDurationAgainstUser(steamID, targetTradeToken).ConfigureAwait(false);
+				byte? tradeHoldDuration = await ArchiWebHandler.GetCombinedTradeHoldDurationAgainstUser(steamID, targetTradeToken, cancellationToken).ConfigureAwait(false);
 
 				if (tradeHoldDuration.HasValue) {
 					return tradeHoldDuration;
@@ -853,11 +853,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		return await ArchiWebHandler.GetTradeHoldDurationForTrade(tradeID).ConfigureAwait(false);
+		return await ArchiWebHandler.GetTradeHoldDurationForTrade(tradeID, cancellationToken).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
-	public async Task<Dictionary<uint, byte>?> LoadCardsPerSet(IReadOnlyCollection<uint> appIDs) {
+	public async Task<Dictionary<uint, byte>?> LoadCardsPerSet(IReadOnlyCollection<uint> appIDs, CancellationToken cancellationToken = default) {
 		if ((appIDs == null) || (appIDs.Count == 0)) {
 			throw new ArgumentNullException(nameof(appIDs));
 		}
@@ -869,7 +869,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				Dictionary<uint, byte> result = new(uniqueAppIDs.Count);
 
 				foreach (uint appID in uniqueAppIDs) {
-					byte cardCount = await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false);
+					byte cardCount = await ArchiWebHandler.GetCardCountForGame(appID, cancellationToken).ConfigureAwait(false);
 
 					if (cardCount == 0) {
 						return null;
@@ -880,15 +880,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				return result;
 			default:
-				IEnumerable<Task<(uint AppID, byte Cards)>> tasks = uniqueAppIDs.Select(async appID => (AppID: appID, Cards: await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false)));
-				IList<(uint AppID, byte Cards)> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
+				IEnumerable<Task<(uint AppID, byte Cards)>> tasks = uniqueAppIDs.Select(async appID => (AppID: appID, Cards: await ArchiWebHandler.GetCardCountForGame(appID, cancellationToken).ConfigureAwait(false)));
+				IList<(uint AppID, byte Cards)> results = await Utilities.InParallel(tasks, cancellationToken).ConfigureAwait(false);
 
 				return results.All(static tuple => tuple.Cards > 0) ? results.ToDictionary(static res => res.AppID, static res => res.Cards) : null;
 		}
 	}
 
 	[PublicAPI]
-	public async Task<bool> SendMessage(ulong steamID, string message) {
+	public async Task<bool> SendMessage(ulong steamID, string message, CancellationToken cancellationToken = default) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -903,8 +903,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
 
-		await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix, IsAccountLimited).ConfigureAwait(false)) {
-			if (!await SendMessagePart(steamID, messagePart).ConfigureAwait(false)) {
+		await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix, IsAccountLimited, cancellationToken).ConfigureAwait(false)) {
+			if (!await SendMessagePart(steamID, messagePart, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 				ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 				return false;
@@ -915,7 +915,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<bool> SendMessage(ulong chatGroupID, ulong chatID, string message) {
+	public async Task<bool> SendMessage(ulong chatGroupID, ulong chatID, string message, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(chatGroupID);
 		ArgumentOutOfRangeException.ThrowIfZero(chatID);
 		ArgumentException.ThrowIfNullOrEmpty(message);
@@ -928,8 +928,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
 
-		await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix, IsAccountLimited).ConfigureAwait(false)) {
-			if (!await SendMessagePart(chatID, messagePart, chatGroupID).ConfigureAwait(false)) {
+		await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix, IsAccountLimited, cancellationToken).ConfigureAwait(false)) {
+			if (!await SendMessagePart(chatID, messagePart, chatGroupID, cancellationToken).ConfigureAwait(false)) {
 				ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 				return false;
@@ -1043,7 +1043,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	internal async Task CheckOccupationStatus() {
+	internal async Task CheckOccupationStatus(CancellationToken cancellationToken = default) {
 		StopPlayingWasBlockedTimer();
 
 		if (!IsPlayingPossible) {
@@ -1059,8 +1059,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		ArchiLogger.LogGenericInfo(Strings.BotAccountFree);
 
-		if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
-			await ResetGamesPlayed().ConfigureAwait(false);
+		if (!await CardsFarmer.Resume(false, cancellationToken).ConfigureAwait(false)) {
+			await ResetGamesPlayed(cancellationToken).ConfigureAwait(false);
 		}
 	}
 
@@ -1424,10 +1424,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return result;
 	}
 
-	internal async Task<(Dictionary<string, string>? UnusedKeys, Dictionary<string, string>? UsedKeys)> GetUsedAndUnusedKeys() {
+	internal async Task<(Dictionary<string, string>? UnusedKeys, Dictionary<string, string>? UsedKeys)> GetUsedAndUnusedKeys(CancellationToken cancellationToken = default) {
 		string[] files = [GetFilePath(EFileType.KeysToRedeemUnused), GetFilePath(EFileType.KeysToRedeemUsed)];
 
-		IList<Dictionary<string, string>?> results = await Utilities.InParallel(files.Select(GetKeysFromFile)).ConfigureAwait(false);
+		IList<Dictionary<string, string>?> results = await Utilities.InParallel(files.Select(filePath => GetKeysFromFile(filePath, cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		return (results[0], results[1]);
 	}
@@ -1448,7 +1448,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return ((ECommunityPrivacy) privacySettings.privacy_state == ECommunityPrivacy.Public) && ((ECommunityPrivacy) privacySettings.privacy_state_inventory == ECommunityPrivacy.Public);
 	}
 
-	internal async Task IdleGame(Game game) {
+	internal async Task IdleGame(Game game, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(game);
 
 		string? gameName = null;
@@ -1457,10 +1457,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming, game.AppID, game.GameName);
 		}
 
-		await ArchiHandler.PlayGames(new HashSet<uint>(1) { game.PlayableAppID }, gameName).ConfigureAwait(false);
+		await ArchiHandler.PlayGames(new HashSet<uint>(1) { game.PlayableAppID }, gameName, cancellationToken).ConfigureAwait(false);
 	}
 
-	internal async Task IdleGames(IReadOnlyCollection<Game> games) {
+	internal async Task IdleGames(IReadOnlyCollection<Game> games, CancellationToken cancellationToken = default) {
 		if ((games == null) || (games.Count == 0)) {
 			throw new ArgumentNullException(nameof(games));
 		}
@@ -1471,10 +1471,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming, string.Join(", ", games.Select(static game => game.AppID)), string.Join(", ", games.Select(static game => game.GameName)));
 		}
 
-		await ArchiHandler.PlayGames([.. games.Select(static game => game.PlayableAppID)], gameName).ConfigureAwait(false);
+		await ArchiHandler.PlayGames([.. games.Select(static game => game.PlayableAppID)], gameName, cancellationToken).ConfigureAwait(false);
 	}
 
-	internal async Task ImportKeysToRedeem(string filePath) {
+	internal async Task ImportKeysToRedeem(string filePath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
@@ -1493,7 +1493,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			int lineCount = 0;
 
 			using (StreamReader reader = new(filePath)) {
-				while (await reader.ReadLineAsync().ConfigureAwait(false) is { } line) {
+				while (await reader.ReadLineAsync(cancellationToken).ConfigureAwait(false) is { } line) {
 					lineCount++;
 
 					if (line.Length == 0) {
@@ -1509,7 +1509,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					if (parsedArgs.Length < 1) {
 						ArchiLogger.LogGenericWarning(Strings.FormatErrorIsInvalid(line));
 
-						await File.AppendAllTextAsync(keysToRedeemInvalidFilePath, $"{line}{Environment.NewLine}").ConfigureAwait(false);
+						await File.AppendAllTextAsync(keysToRedeemInvalidFilePath, $"{line}{Environment.NewLine}", cancellationToken).ConfigureAwait(false);
 
 						continue;
 					}
@@ -1520,7 +1520,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					if (!BotDatabase.IsValidGameToRedeemInBackground(key, name)) {
 						ArchiLogger.LogGenericWarning(Strings.FormatErrorIsInvalid(line));
 
-						await File.AppendAllTextAsync(keysToRedeemInvalidFilePath, $"{line}{Environment.NewLine}").ConfigureAwait(false);
+						await File.AppendAllTextAsync(keysToRedeemInvalidFilePath, $"{line}{Environment.NewLine}", cancellationToken).ConfigureAwait(false);
 
 						continue;
 					}
@@ -1578,9 +1578,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return BotDatabase.FarmingPriorityQueueAppIDs.Contains(appID);
 	}
 
-	internal async Task OnConfigChanged(bool deleted) {
+	internal async Task OnConfigChanged(bool deleted, CancellationToken cancellationToken = default) {
 		if (deleted) {
-			await Destroy().ConfigureAwait(false);
+			await Destroy(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			return;
 		}
@@ -1591,7 +1591,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(configFile));
 		}
 
-		(BotConfig? botConfig, _) = await BotConfig.Load(configFile).ConfigureAwait(false);
+		(BotConfig? botConfig, _) = await BotConfig.Load(configFile, cancellationToken).ConfigureAwait(false);
 
 		if (botConfig == null) {
 			// Invalid config file, we allow user to fix it without destroying the bot right away
@@ -1602,7 +1602,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		await InitializationSemaphore.WaitAsync().ConfigureAwait(false);
+		await InitializationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (botConfig == BotConfig) {
@@ -1610,44 +1610,44 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			// Skip shutdown event as we're actually reinitializing the bot, not fully stopping it
-			await Stop(true).ConfigureAwait(false);
+			await Stop(true, cancellationToken).ConfigureAwait(false);
 
 			BotConfig = botConfig;
 
-			await InitModules().ConfigureAwait(false);
+			await InitModules(cancellationToken).ConfigureAwait(false);
 			InitStart();
 		} finally {
 			InitializationSemaphore.Release();
 		}
 	}
 
-	internal async Task OnFarmingFinished(bool farmedSomething) {
-		await OnFarmingStopped().ConfigureAwait(false);
+	internal async Task OnFarmingFinished(bool farmedSomething, CancellationToken cancellationToken = default) {
+		await OnFarmingStopped(cancellationToken).ConfigureAwait(false);
 
 		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && !BotConfig.LootableTypes.IsEmpty && (farmedSomething || !FirstTradeSent)) {
 			FirstTradeSent = true;
 
-			await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
+			await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type), cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 
 		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.ShutdownOnFarmingFinished)) {
-			await Stop().ConfigureAwait(false);
+			await Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 
-		await PluginsCore.OnBotFarmingFinished(this, farmedSomething).ConfigureAwait(false);
+		await PluginsCore.OnBotFarmingFinished(this, farmedSomething, cancellationToken).ConfigureAwait(false);
 	}
 
-	internal async Task OnFarmingStopped() {
-		await ResetGamesPlayed().ConfigureAwait(false);
-		await PluginsCore.OnBotFarmingStopped(this).ConfigureAwait(false);
+	internal async Task OnFarmingStopped(CancellationToken cancellationToken = default) {
+		await ResetGamesPlayed(cancellationToken).ConfigureAwait(false);
+		await PluginsCore.OnBotFarmingStopped(this, cancellationToken).ConfigureAwait(false);
 	}
 
-	internal async Task<bool> RefreshWebSession(bool force = false) {
+	internal async Task<bool> RefreshWebSession(bool force = false, CancellationToken cancellationToken = default) {
 		if (!IsConnectedAndLoggedOn) {
 			return false;
 		}
 
-		await RefreshWebSessionSemaphore.WaitAsync().ConfigureAwait(false);
+		await RefreshWebSessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (!IsConnectedAndLoggedOn) {
@@ -1658,7 +1658,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			if (!force && !string.IsNullOrEmpty(AccessToken) && (!AccessTokenValidUntil.HasValue || (AccessTokenValidUntil.Value >= minimumValidUntil))) {
 				// We can use the tokens we already have
-				if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+				if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null, cancellationToken).ConfigureAwait(false)) {
 					InitRefreshTokensTimer(AccessTokenValidUntil ?? minimumValidUntil);
 
 					return true;
@@ -1670,7 +1670,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			if (string.IsNullOrEmpty(RefreshToken)) {
 				// Without refresh token we can't get fresh access tokens, relog needed
-				await Reconnect().ConfigureAwait(false);
+				await Reconnect(cancellationToken).ConfigureAwait(false);
 
 				return false;
 			}
@@ -1685,7 +1685,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				BotDatabase.RefreshToken = RefreshToken = null;
 
-				await Reconnect().ConfigureAwait(false);
+				await Reconnect(cancellationToken).ConfigureAwait(false);
 
 				return false;
 			}
@@ -1696,14 +1696,14 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(SteamClient.Authentication.GenerateAccessTokenForAppAsync)));
 
-				await Reconnect().ConfigureAwait(false);
+				await Reconnect(cancellationToken).ConfigureAwait(false);
 
 				return false;
 			}
 
 			UpdateTokens(response.AccessToken, response.RefreshToken);
 
-			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, response.AccessToken, SteamParentalActive ? BotConfig.SteamParentalCode : null, cancellationToken).ConfigureAwait(false)) {
 				InitRefreshTokensTimer(AccessTokenValidUntil ?? minimumValidUntil);
 
 				return true;
@@ -1712,7 +1712,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			// We got the tokens, but failed to authorize? Purge them just to be sure and reconnect
 			BotDatabase.AccessToken = AccessToken = null;
 
-			await Reconnect().ConfigureAwait(false);
+			await Reconnect(cancellationToken).ConfigureAwait(false);
 
 			return false;
 		} finally {
@@ -1720,7 +1720,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	internal static async Task RegisterBot(string botName) {
+	internal static async Task RegisterBot(string botName, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(botName);
 
 		if (Bots == null) {
@@ -1737,7 +1737,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(configFilePath));
 		}
 
-		(BotConfig? botConfig, string? latestJson) = await BotConfig.Load(configFilePath).ConfigureAwait(false);
+		(BotConfig? botConfig, string? latestJson) = await BotConfig.Load(configFilePath, cancellationToken).ConfigureAwait(false);
 
 		if (botConfig == null) {
 			ASF.ArchiLogger.LogGenericError(Strings.FormatErrorBotConfigInvalid(configFilePath));
@@ -1752,7 +1752,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		if (!string.IsNullOrEmpty(latestJson)) {
 			ASF.ArchiLogger.LogGenericWarning(Strings.FormatAutomaticFileMigration(configFilePath));
 
-			await SerializableFile.Write(configFilePath, latestJson).ConfigureAwait(false);
+			await SerializableFile.Write(configFilePath, latestJson, cancellationToken).ConfigureAwait(false);
 
 			ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 		}
@@ -1763,7 +1763,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(databaseFilePath));
 		}
 
-		BotDatabase? botDatabase = await BotDatabase.CreateOrLoad(databaseFilePath).ConfigureAwait(false);
+		BotDatabase? botDatabase = await BotDatabase.CreateOrLoad(databaseFilePath, cancellationToken).ConfigureAwait(false);
 
 		if (botDatabase == null) {
 			ASF.ArchiLogger.LogGenericError(Strings.FormatErrorDatabaseInvalid(databaseFilePath));
@@ -1779,7 +1779,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		Bot bot;
 
-		await BotsSemaphore.WaitAsync().ConfigureAwait(false);
+		await BotsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (Bots.ContainsKey(botName)) {
@@ -1799,9 +1799,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			BotsSemaphore.Release();
 		}
 
-		await PluginsCore.OnBotInit(bot).ConfigureAwait(false);
+		await PluginsCore.OnBotInit(bot, cancellationToken).ConfigureAwait(false);
 
-		HashSet<ClientMsgHandler>? customHandlers = await PluginsCore.OnBotSteamHandlersInit(bot).ConfigureAwait(false);
+		HashSet<ClientMsgHandler>? customHandlers = await PluginsCore.OnBotSteamHandlersInit(bot, cancellationToken).ConfigureAwait(false);
 
 		if (customHandlers?.Count > 0) {
 			foreach (ClientMsgHandler customHandler in customHandlers) {
@@ -1809,9 +1809,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		await PluginsCore.OnBotSteamCallbacksInit(bot, bot.CallbackManager).ConfigureAwait(false);
+		await PluginsCore.OnBotSteamCallbacksInit(bot, bot.CallbackManager, cancellationToken).ConfigureAwait(false);
 
-		await bot.InitModules().ConfigureAwait(false);
+		await bot.InitModules(cancellationToken).ConfigureAwait(false);
 
 		bot.InitStart();
 	}
@@ -1829,7 +1829,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return (true, null);
 	}
 
-	internal async Task<bool> Rename(string newBotName) {
+	internal async Task<bool> Rename(string newBotName, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(newBotName);
 
 		if (Bots == null) {
@@ -1841,10 +1841,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (KeepRunning) {
-			await Stop(true).ConfigureAwait(false);
+			await Stop(true, cancellationToken).ConfigureAwait(false);
 		}
 
-		await BotDatabase.MakeReadOnly().ConfigureAwait(false);
+		await BotDatabase.MakeReadOnly(cancellationToken).ConfigureAwait(false);
 
 		// We handle the config file last as it'll trigger new bot creation
 		foreach ((string filePath, EFileType fileType) in RelatedFiles.Where(static file => File.Exists(file.FilePath)).OrderByDescending(static file => file.FileType != EFileType.Config)) {
@@ -1866,7 +1866,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
-	internal async Task<string?> RequestInput(ASF.EUserInputType inputType, bool previousCodeWasIncorrect) {
+	internal async Task<string?> RequestInput(ASF.EUserInputType inputType, bool previousCodeWasIncorrect, CancellationToken cancellationToken = default) {
 		if ((inputType == ASF.EUserInputType.None) || !Enum.IsDefined(inputType)) {
 			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
 		}
@@ -1894,10 +1894,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				if (previousCodeWasIncorrect) {
 					// There is a possibility that our cached time is no longer appropriate, so we should reset the cache in this case in order to fetch it upon the next login attempt
 					// Yes, this might as well be just invalid 2FA credentials, but we can't be sure about that, and we have LoginFailures designed to verify that for us
-					await MobileAuthenticator.ResetSteamTimeDifference().ConfigureAwait(false);
+					await MobileAuthenticator.ResetSteamTimeDifference(cancellationToken).ConfigureAwait(false);
 				}
 
-				string? generatedTwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
+				string? generatedTwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken(cancellationToken).ConfigureAwait(false);
 
 				if (!string.IsNullOrEmpty(generatedTwoFactorCode)) {
 					return generatedTwoFactorCode;
@@ -1908,12 +1908,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		RequiredInput = inputType;
 
-		string? input = await Logging.GetUserInput(inputType, BotName).ConfigureAwait(false);
+		string? input = await Logging.GetUserInput(inputType, BotName, cancellationToken).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(input) || !SetUserInput(inputType, input)) {
 			ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(input)));
 
-			await Stop().ConfigureAwait(false);
+			await Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			return null;
 		}
@@ -1954,12 +1954,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return await ArchiHandler.SendTypingStatus(steamID).ConfigureAwait(false) == EResult.OK;
 	}
 
-	internal async Task Start() {
+	internal async Task Start(CancellationToken cancellationToken = default) {
 		if (KeepRunning) {
 			return;
 		}
 
-		await ConnectionSemaphore.WaitAsync().ConfigureAwait(false);
+		await ConnectionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (KeepRunning) {
@@ -1979,7 +1979,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 
 				if (File.Exists(mobileAuthenticatorFilePath)) {
-					await ImportAuthenticatorFromFile(mobileAuthenticatorFilePath).ConfigureAwait(false);
+					await ImportAuthenticatorFromFile(mobileAuthenticatorFilePath, cancellationToken).ConfigureAwait(false);
 				}
 			}
 
@@ -1990,7 +1990,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			if (File.Exists(keysToRedeemFilePath)) {
-				await ImportKeysToRedeem(keysToRedeemFilePath).ConfigureAwait(false);
+				await ImportKeysToRedeem(keysToRedeemFilePath, cancellationToken).ConfigureAwait(false);
 			}
 
 			// If any previous callbacks handling loop is still going, we're going to abort it
@@ -2001,18 +2001,18 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			CancellationToken token = CallbacksAborted.Token;
 
 			Utilities.InBackground(() => HandleCallbacks(token), true);
-			Utilities.InBackground(Connect);
+			Utilities.InBackground(() => Connect(CancellationToken.None));
 		} finally {
 			ConnectionSemaphore.Release();
 		}
 	}
 
-	internal async Task Stop(bool skipShutdownEvent = false) {
+	internal async Task Stop(bool skipShutdownEvent = false, CancellationToken cancellationToken = default) {
 		if (!KeepRunning) {
 			return;
 		}
 
-		await ConnectionSemaphore.WaitAsync().ConfigureAwait(false);
+		await ConnectionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (!KeepRunning) {
@@ -2028,7 +2028,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			if (!skipShutdownEvent) {
-				Utilities.InBackground(Events.OnBotShutdown);
+				Utilities.InBackground(static () => Events.OnBotShutdown(CancellationToken.None));
 			}
 		} finally {
 			ConnectionSemaphore.Release();
@@ -2050,12 +2050,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
-	private async Task Connect() {
+	private async Task Connect(CancellationToken cancellationToken = default) {
 		if (!KeepRunning || SteamClient.IsConnected) {
 			return;
 		}
 
-		await LimitLoginRequestsAsync().ConfigureAwait(false);
+		await LimitLoginRequestsAsync(cancellationToken).ConfigureAwait(false);
 
 		if (!KeepRunning || SteamClient.IsConnected) {
 			return;
@@ -2069,17 +2069,17 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		SteamClient.Connect();
 	}
 
-	private async Task Destroy(bool force = false) {
+	private async Task Destroy(bool force = false, CancellationToken cancellationToken = default) {
 		if (Bots == null) {
 			throw new InvalidOperationException(nameof(Bots));
 		}
 
 		if (KeepRunning) {
 			if (!force) {
-				await Stop().ConfigureAwait(false);
+				await Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
 			} else {
 				// Stop() will most likely block due to connection freeze, don't wait for it
-				Utilities.InBackground(() => Stop());
+				Utilities.InBackground(() => Stop(cancellationToken: CancellationToken.None));
 			}
 		}
 
@@ -2100,7 +2100,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		Bots.TryRemove(BotName, out _);
-		await PluginsCore.OnBotDestroy(this).ConfigureAwait(false);
+		await PluginsCore.OnBotDestroy(this, cancellationToken).ConfigureAwait(false);
 	}
 
 	private void Disconnect(bool reconnect = false) {
@@ -2128,13 +2128,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		UnpackBoosterPacksSemaphore.Dispose();
 	}
 
-	private async Task ExtendWithStoreData([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<uint, LicenseData> ownedPackages, HashSet<uint> allPackages, Dictionary<uint, uint> packagesToRefresh) {
+	private async Task ExtendWithStoreData([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<uint, LicenseData> ownedPackages, HashSet<uint> allPackages, Dictionary<uint, uint> packagesToRefresh, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(ownedPackages);
 		ArgumentNullException.ThrowIfNull(allPackages);
 		ArgumentNullException.ThrowIfNull(packagesToRefresh);
 
 		if (BotDatabase.ExtraStorePackagesRefreshedAt.AddDays(ExtraStorePackagesValidForDays) < DateTime.UtcNow) {
-			await RefreshStoreData(allPackages, packagesToRefresh).ConfigureAwait(false);
+			await RefreshStoreData(allPackages, packagesToRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		foreach (uint packageID in BotDatabase.ExtraStorePackages.Where(packageID => !allPackages.Contains(packageID))) {
@@ -2148,7 +2148,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task<Dictionary<string, string>?> GetKeysFromFile(string filePath) {
+	private async Task<Dictionary<string, string>?> GetKeysFromFile(string filePath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
@@ -2160,7 +2160,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		try {
 			using StreamReader reader = new(filePath);
 
-			while (await reader.ReadLineAsync().ConfigureAwait(false) is { } line) {
+			while (await reader.ReadLineAsync(cancellationToken).ConfigureAwait(false) is { } line) {
 				if (line.Length == 0) {
 					continue;
 				}
@@ -2193,10 +2193,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return keys;
 	}
 
-	private async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs(byte page) {
+	private async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs(byte page, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(page);
 
-		using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
+		using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(page, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (badgePage == null) {
 			ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
@@ -2251,7 +2251,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task HandleLoginResult(EResult result, EResult extendedResult) {
+	private async Task HandleLoginResult(EResult result, EResult extendedResult, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(result)) {
 			throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(EResult));
 		}
@@ -2271,7 +2271,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				// Those failures are permanent, we should Stop() the bot if any of those happen
 				ArchiLogger.LogGenericError(Strings.FormatBotUnableToLogin(result, extendedResult));
 
-				await Stop().ConfigureAwait(false);
+				await Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				break;
 			case EResult.AccessDenied when string.IsNullOrEmpty(RefreshToken) && (++LoginFailures >= MaxLoginFailures):
@@ -2297,7 +2297,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				ArchiLogger.LogGenericError(Strings.FormatBotInvalidPasswordDuringLogin(MaxLoginFailures));
 
-				await Stop().ConfigureAwait(false);
+				await Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				break;
 			case EResult.AccountLoginDeniedNeedTwoFactor when HasMobileAuthenticator && (++LoginFailures >= MaxLoginFailures):
@@ -2307,7 +2307,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				ArchiLogger.LogGenericError(Strings.FormatBotInvalidAuthenticatorDuringLogin(MaxLoginFailures));
 
-				await Stop().ConfigureAwait(false);
+				await Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				break;
 			case EResult.AccountLoginDeniedNeedTwoFactor when HasMobileAuthenticator:
@@ -2317,7 +2317,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				// There is a possibility that our cached time is no longer appropriate, so we should reset the cache in this case in order to fetch it upon the next login attempt
 				// Yes, this might as well be just invalid 2FA credentials, but we can't be sure about that, and we have LoginFailures designed to verify that for us
-				await MobileAuthenticator.ResetSteamTimeDifference().ConfigureAwait(false);
+				await MobileAuthenticator.ResetSteamTimeDifference(cancellationToken).ConfigureAwait(false);
 
 				break;
 			case EResult.AccountLogonDenied:
@@ -2325,12 +2325,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				// SteamGuard input required
 				RequiredInput = ASF.EUserInputType.SteamGuard;
 
-				string? authCode = await Logging.GetUserInput(ASF.EUserInputType.SteamGuard, BotName).ConfigureAwait(false);
+				string? authCode = await Logging.GetUserInput(ASF.EUserInputType.SteamGuard, BotName, cancellationToken).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(authCode) || !SetUserInput(ASF.EUserInputType.SteamGuard, authCode)) {
 					ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(authCode)));
 
-					await Stop().ConfigureAwait(false);
+					await Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
 				}
 
 				break;
@@ -2339,12 +2339,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				// TwoFactorAuthentication input required
 				RequiredInput = ASF.EUserInputType.TwoFactorAuthentication;
 
-				string? twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName).ConfigureAwait(false);
+				string? twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName, cancellationToken).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode)) {
 					ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(twoFactorCode)));
 
-					await Stop().ConfigureAwait(false);
+					await Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
 				}
 
 				break;
@@ -2375,7 +2375,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				ArchiLogger.LogGenericError(Strings.FormatWarningUnknownValuePleaseReport(nameof(result), result));
 				ArchiLogger.LogGenericError(Strings.FormatBotUnableToLogin(result, extendedResult));
 
-				await Stop().ConfigureAwait(false);
+				await Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				break;
 		}
@@ -2405,12 +2405,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				HeartBeatFailures = byte.MaxValue;
 				ArchiLogger.LogGenericWarning(Strings.BotConnectionLost);
 
-				Utilities.InBackground(Reconnect);
+				Utilities.InBackground(() => Reconnect());
 			}
 		}
 	}
 
-	private async Task ImportAuthenticatorFromFile(string maFilePath) {
+	private async Task ImportAuthenticatorFromFile(string maFilePath, CancellationToken cancellationToken = default) {
 		if (HasMobileAuthenticator || !File.Exists(maFilePath)) {
 			return;
 		}
@@ -2418,7 +2418,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorConverting);
 
 		try {
-			string json = await File.ReadAllTextAsync(maFilePath).ConfigureAwait(false);
+			string json = await File.ReadAllTextAsync(maFilePath, cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
 				ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(nameof(json)));
@@ -2459,11 +2459,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		);
 	}
 
-	private async Task<bool> InitLoginAndPassword(bool requiresPassword) {
+	private async Task<bool> InitLoginAndPassword(bool requiresPassword, CancellationToken cancellationToken = default) {
 		if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
 			RequiredInput = ASF.EUserInputType.Login;
 
-			string? steamLogin = await Logging.GetUserInput(ASF.EUserInputType.Login, BotName).ConfigureAwait(false);
+			string? steamLogin = await Logging.GetUserInput(ASF.EUserInputType.Login, BotName, cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(steamLogin) || !SetUserInput(ASF.EUserInputType.Login, steamLogin)) {
 				ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(steamLogin)));
@@ -2473,12 +2473,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (requiresPassword) {
-			string? decryptedSteamPassword = await BotConfig.GetDecryptedSteamPassword().ConfigureAwait(false);
+			string? decryptedSteamPassword = await BotConfig.GetDecryptedSteamPassword(cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(decryptedSteamPassword)) {
 				RequiredInput = ASF.EUserInputType.Password;
 
-				string? steamPassword = await Logging.GetUserInput(ASF.EUserInputType.Password, BotName).ConfigureAwait(false);
+				string? steamPassword = await Logging.GetUserInput(ASF.EUserInputType.Password, BotName, cancellationToken).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(steamPassword) || !SetUserInput(ASF.EUserInputType.Password, steamPassword)) {
 					ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(steamPassword)));
@@ -2491,7 +2491,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
-	private async Task InitModules() {
+	private async Task InitModules(CancellationToken cancellationToken = default) {
 		if (Bots == null) {
 			throw new InvalidOperationException(nameof(Bots));
 		}
@@ -2508,7 +2508,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (BotConfig.PasswordFormat.HasTransformation()) {
 			if (!string.IsNullOrEmpty(accessTokenText)) {
-				accessTokenText = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, accessTokenText).ConfigureAwait(false);
+				accessTokenText = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, accessTokenText, cancellationToken).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(accessTokenText)) {
 					BotDatabase.AccessToken = null;
@@ -2518,7 +2518,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			if (!string.IsNullOrEmpty(refreshTokenText)) {
-				refreshTokenText = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshTokenText).ConfigureAwait(false);
+				refreshTokenText = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, refreshTokenText, cancellationToken).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(refreshTokenText)) {
 					BotDatabase.RefreshToken = null;
@@ -2574,7 +2574,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		BotDatabase.MobileAuthenticator?.OnInitModules();
 
-		await PluginsCore.OnBotInitModules(this, BotConfig.AdditionalProperties).ConfigureAwait(false);
+		await PluginsCore.OnBotInitModules(this, BotConfig.AdditionalProperties, cancellationToken).ConfigureAwait(false);
 	}
 
 	private async void InitPermanentConnectionFailure(object? state = null) {
@@ -2644,12 +2644,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		// Start
-		Utilities.InBackground(Start);
+		Utilities.InBackground(() => Start());
 	}
 
-	private async Task InitializeFamilySharing() {
+	private async Task InitializeFamilySharing(CancellationToken cancellationToken = default) {
 		// TODO: Old call should be removed eventually when Steam stops supporting both systems at once
-		Task<HashSet<ulong>?> oldFamilySharingSteamIDsTask = ArchiWebHandler.GetFamilySharingSteamIDs();
+		Task<HashSet<ulong>?> oldFamilySharingSteamIDsTask = ArchiWebHandler.GetFamilySharingSteamIDs(cancellationToken);
 
 		HashSet<ulong>? steamIDs = await ArchiHandler.GetFamilyGroupSteamIDs().ConfigureAwait(false);
 		HashSet<ulong>? oldSteamIDs = await oldFamilySharingSteamIDsTask.ConfigureAwait(false);
@@ -2716,7 +2716,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private static async Task LimitLoginRequestsAsync() {
+	private static async Task LimitLoginRequestsAsync(CancellationToken cancellationToken = default) {
 		if (ASF.LoginSemaphore == null) {
 			ASF.ArchiLogger.LogNullError(ASF.LoginSemaphore);
 
@@ -2732,27 +2732,27 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		byte loginLimiterDelay = ASF.GlobalConfig?.LoginLimiterDelay ?? GlobalConfig.DefaultLoginLimiterDelay;
 
 		if (loginLimiterDelay == 0) {
-			await ASF.LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+			await ASF.LoginRateLimitingSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			ASF.LoginRateLimitingSemaphore.Release();
 
 			return;
 		}
 
-		await ASF.LoginSemaphore.WaitAsync().ConfigureAwait(false);
+		await ASF.LoginSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
-			await ASF.LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+			await ASF.LoginRateLimitingSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			ASF.LoginRateLimitingSemaphore.Release();
 		} finally {
 			Utilities.InBackground(async () => {
-					await Task.Delay(loginLimiterDelay * 1000).ConfigureAwait(false);
+					await Task.Delay(loginLimiterDelay * 1000, cancellationToken).ConfigureAwait(false);
 					ASF.LoginSemaphore.Release();
 				}
 			);
 		}
 	}
 
-	private async Task<bool> LoginWithQrCode(string machineName) {
+	private async Task<bool> LoginWithQrCode(string machineName, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(machineName);
 
 		QrLoginCancellation?.Dispose();
@@ -2768,7 +2768,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			).ConfigureAwait(false);
 
 			RequiredInput = ASF.EUserInputType.QrCodeLogin;
-			await publishQrChallengeUrl().ConfigureAwait(false);
+			await publishQrChallengeUrl(cancellationToken).ConfigureAwait(false);
 			authSession.ChallengeURLChanged = async void () => await publishQrChallengeUrl().ConfigureAwait(false);
 
 			AuthPollResult pollResult = await authSession.PollingWaitForResultAsync(QrLoginCancellation.Token).ConfigureAwait(false);
@@ -2789,21 +2789,21 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			return TryApplyAuthPollResult(pollResult);
 
-			async Task publishQrChallengeUrl() {
+			async Task publishQrChallengeUrl(CancellationToken publishCancellationToken = default) {
 				QrChallengeURL = Uri.TryCreate(authSession.ChallengeURL, UriKind.Absolute, out Uri? challengeUrl) ? challengeUrl : null;
 				ArchiLogger.LogGenericWarning(Strings.FormatQrCodeLoginUrl(authSession.ChallengeURL));
-				await Logging.WriteToConsole(QrCodeHelper.GenerateAscii(authSession.ChallengeURL)).ConfigureAwait(false);
+				await Logging.WriteToConsole(QrCodeHelper.GenerateAscii(authSession.ChallengeURL), publishCancellationToken).ConfigureAwait(false);
 			}
 		} catch (AsyncJobFailedException e) {
 			ArchiLogger.LogGenericWarningException(e);
 
-			await HandleLoginResult(EResult.Timeout, EResult.Timeout).ConfigureAwait(false);
+			await HandleLoginResult(EResult.Timeout, EResult.Timeout, cancellationToken).ConfigureAwait(false);
 
 			return false;
 		} catch (AuthenticationException e) {
 			ArchiLogger.LogGenericWarningException(e);
 
-			await HandleLoginResult(e.Result, e.Result).ConfigureAwait(false);
+			await HandleLoginResult(e.Result, e.Result, cancellationToken).ConfigureAwait(false);
 
 			return false;
 		} catch (OperationCanceledException) {
@@ -3301,10 +3301,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	private void OnInventoryChanged() {
-		Utilities.InBackground(CardsFarmer.OnNewItemsNotification);
+		Utilities.InBackground(() => CardsFarmer.OnNewItemsNotification());
 
 		if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DismissInventoryNotifications)) {
-			Utilities.InBackground(ArchiWebHandler.MarkInventory);
+			Utilities.InBackground(() => ArchiWebHandler.MarkInventory());
 		}
 
 		// The following actions should be synchronized, as they modify the state of the inventory
@@ -3321,7 +3321,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 			);
 		} else if (!BotConfig.CompleteTypesToSend.IsEmpty) {
-			Utilities.InBackground(SendCompletedSets);
+			Utilities.InBackground(() => SendCompletedSets());
 		}
 	}
 
@@ -3555,7 +3555,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
 		RequestPersonaStateUpdate();
 
-		Utilities.InBackground(InitializeFamilySharing);
+		Utilities.InBackground(() => InitializeFamilySharing());
 
 		ResetPersonaState();
 
@@ -3576,7 +3576,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (CardsFarmer.Paused) {
 			// Emit initial game playing status in this case
-			Utilities.InBackground(ResetGamesPlayed);
+			Utilities.InBackground(() => ResetGamesPlayed());
 		}
 
 		SteamPICSChanges.OnBotLoggedOn();
@@ -3656,9 +3656,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await CheckOccupationStatus().ConfigureAwait(false);
 	}
 
-	private void OnTradeCheckTimer(object? state = null) {
+	private async void OnTradeCheckTimer(object? state = null) {
 		if (IsConnectedAndLoggedOn) {
-			Utilities.InBackground(Trading.OnNewTrade);
+			await Trading.OnNewTrade().ConfigureAwait(false);
 		}
 	}
 
@@ -3691,7 +3691,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			switch (notification) {
 				case UserNotificationsCallback.EUserNotification.Gifts when newNotification && BotConfig.AcceptGifts:
-					Utilities.InBackground(Actions.AcceptDigitalGiftCards);
+					Utilities.InBackground(() => Actions.AcceptDigitalGiftCards());
 
 					break;
 				case UserNotificationsCallback.EUserNotification.Items when newNotification:
@@ -3699,7 +3699,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 					break;
 				case UserNotificationsCallback.EUserNotification.Trading when newNotification && !BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DisableIncomingTradesParsing):
-					Utilities.InBackground(Trading.OnNewTrade);
+					Utilities.InBackground(() => Trading.OnNewTrade());
 
 					break;
 			}
@@ -3724,11 +3724,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		WalletCurrency = callback.Currency;
 	}
 
-	private async Task Reconnect() {
+	private async Task Reconnect(CancellationToken cancellationToken = default) {
 		if (SteamClient.IsConnected) {
 			Disconnect(true);
 		} else {
-			await Connect().ConfigureAwait(false);
+			await Connect(cancellationToken).ConfigureAwait(false);
 		}
 	}
 
@@ -3867,7 +3867,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task RefreshStoreData([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] HashSet<uint> allPackages, [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<uint, uint> packagesToRefresh) {
+	private async Task RefreshStoreData([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] HashSet<uint> allPackages, [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<uint, uint> packagesToRefresh, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(allPackages);
 		ArgumentNullException.ThrowIfNull(packagesToRefresh);
 
@@ -3875,7 +3875,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 		}
 
-		StoreUserData? storeData = await ArchiWebHandler.GetStoreUserData().ConfigureAwait(false);
+		StoreUserData? storeData = await ArchiWebHandler.GetStoreUserData(cancellationToken).ConfigureAwait(false);
 
 		if (storeData == null) {
 			return;
@@ -3898,7 +3898,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		// Wait up to 5 seconds for initialization, we can work with any change number, although non-zero is preferred
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (SteamPICSChanges.LastChangeNumber == 0); i++) {
-			await Task.Delay(1000).ConfigureAwait(false);
+			await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 		}
 
 		foreach (uint packageID in BotDatabase.ExtraStorePackages) {
@@ -3906,7 +3906,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task ResetGamesPlayed() {
+	private async Task ResetGamesPlayed(CancellationToken cancellationToken = default) {
 		if (!IsConnectedAndLoggedOn || CardsFarmer.NowFarming) {
 			return;
 		}
@@ -3917,7 +3917,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 
 			// This function might be executed before PlayingSessionStateCallback/SharedLibraryLockStatusCallback, ensure proper delay in this case
-			await Task.Delay(2000).ConfigureAwait(false);
+			await Task.Delay(2000, cancellationToken).ConfigureAwait(false);
 
 			if (!IsConnectedAndLoggedOn || CardsFarmer.NowFarming || !IsPlayingPossible) {
 				return;
@@ -3928,7 +3928,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				if (minFarmingDelayAfterBlock > 0) {
 					for (byte i = 0; (i < minFarmingDelayAfterBlock) && IsConnectedAndLoggedOn && !CardsFarmer.NowFarming && IsPlayingPossible && PlayingWasBlocked; i++) {
-						await Task.Delay(1000).ConfigureAwait(false);
+						await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 					}
 
 					if (!IsConnectedAndLoggedOn || CardsFarmer.NowFarming || !IsPlayingPossible) {
@@ -3940,7 +3940,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			ArchiLogger.LogGenericInfo(Strings.FormatBotIdlingSelectedGames(nameof(BotConfig.GamesPlayedWhileIdle), string.Join(", ", BotConfig.GamesPlayedWhileIdle)));
 		}
 
-		await ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle, BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
+		await ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle, BotConfig.CustomGamePlayedWhileIdle, cancellationToken).ConfigureAwait(false);
 	}
 
 	private void ResetPlayingWasBlockedWithTimer(object? state = null) {
@@ -3948,7 +3948,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		StopPlayingWasBlockedTimer();
 	}
 
-	private async Task SendCompletedSets() {
+	private async Task SendCompletedSets(CancellationToken cancellationToken = default) {
 		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 		lock (SendCompleteTypesSemaphore) {
 			if (SendCompleteTypesScheduled) {
@@ -3958,16 +3958,16 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			SendCompleteTypesScheduled = true;
 		}
 
-		await SendCompleteTypesSemaphore.WaitAsync().ConfigureAwait(false);
+		await SendCompleteTypesSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
-			using (await Actions.GetTradingLock().ConfigureAwait(false)) {
+			using (await Actions.GetTradingLock(cancellationToken).ConfigureAwait(false)) {
 				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 				lock (SendCompleteTypesSemaphore) {
 					SendCompleteTypesScheduled = false;
 				}
 
-				HashSet<uint>? appIDs = await GetPossiblyCompletedBadgeAppIDs().ConfigureAwait(false);
+				HashSet<uint>? appIDs = await GetPossiblyCompletedBadgeAppIDs(cancellationToken).ConfigureAwait(false);
 
 				if ((appIDs == null) || (appIDs.Count == 0)) {
 					return;
@@ -3976,9 +3976,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				HashSet<Asset> inventory;
 
 				try {
-					inventory = await ArchiHandler.GetMyInventoryAsync(tradableOnly: true)
+					inventory = await ArchiHandler.GetMyInventoryAsync(tradableOnly: true, cancellationToken: cancellationToken)
 						.Where(item => appIDs.Contains(item.RealAppID) && BotConfig.CompleteTypesToSend.Contains(item.Type))
-						.ToHashSetAsync()
+						.ToHashSetAsync(cancellationToken: cancellationToken)
 						.ConfigureAwait(false);
 				} catch (TimeoutException e) {
 					ArchiLogger.LogGenericWarningException(e);
@@ -4005,7 +4005,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					return;
 				}
 
-				Dictionary<uint, byte>? cardsCountPerAppID = await LoadCardsPerSet(appIDs).ConfigureAwait(false);
+				Dictionary<uint, byte>? cardsCountPerAppID = await LoadCardsPerSet(appIDs, cancellationToken).ConfigureAwait(false);
 
 				if (cardsCountPerAppID == null) {
 					return;
@@ -4039,7 +4039,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				HashSet<Asset> result = GetItemsForFullSets(inventory, itemsToTakePerInventorySet);
 
 				if (result.Count > 0) {
-					await Actions.SendInventory(result).ConfigureAwait(false);
+					await Actions.SendInventory(result, cancellationToken: cancellationToken).ConfigureAwait(false);
 				}
 			}
 		} finally {
@@ -4047,7 +4047,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task<bool> SendMessagePart(ulong steamID, string messagePart, ulong chatGroupID = 0) {
+	private async Task<bool> SendMessagePart(ulong steamID, string messagePart, ulong chatGroupID = 0, CancellationToken cancellationToken = default) {
 		if ((steamID == 0) || ((chatGroupID == 0) && !new SteamID(steamID).IsIndividualAccount)) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -4058,7 +4058,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return false;
 		}
 
-		await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
+		await MessagingSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			for (byte i = 0; (i < WebBrowser.MaxTries) && IsConnectedAndLoggedOn; i++) {
@@ -4083,7 +4083,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					case EResult.RateLimitExceeded:
 					case EResult.ServiceUnavailable:
 					case EResult.Timeout:
-						await Task.Delay(5000).ConfigureAwait(false);
+						await Task.Delay(5000, cancellationToken).ConfigureAwait(false);
 
 						continue;
 					case EResult.OK:
@@ -4137,12 +4137,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		CallbacksAborted = null;
 	}
 
-	private async Task StopHandlingCallbacksIfPossible() {
+	private async Task StopHandlingCallbacksIfPossible(CancellationToken cancellationToken = default) {
 		if ((CallbacksAborted == null) || KeepRunning) {
 			return;
 		}
 
-		await ConnectionSemaphore.WaitAsync().ConfigureAwait(false);
+		await ConnectionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 #pragma warning disable CA1508 // False positive, the state could change between our previous check and this one due to semaphore wait
@@ -4199,7 +4199,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
-	private async Task<bool> UnpackBoosterPacks() {
+	private async Task<bool> UnpackBoosterPacks(CancellationToken cancellationToken = default) {
 		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 		lock (UnpackBoosterPacksSemaphore) {
 			if (UnpackBoosterPacksScheduled) {
@@ -4209,7 +4209,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			UnpackBoosterPacksScheduled = true;
 		}
 
-		await UnpackBoosterPacksSemaphore.WaitAsync().ConfigureAwait(false);
+		await UnpackBoosterPacksSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
@@ -4217,7 +4217,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				UnpackBoosterPacksScheduled = false;
 			}
 
-			await Actions.UnpackBoosterPacks().ConfigureAwait(false);
+			await Actions.UnpackBoosterPacks(cancellationToken).ConfigureAwait(false);
 		} finally {
 			UnpackBoosterPacksSemaphore.Release();
 		}
@@ -4316,7 +4316,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return (true, steamParentalCode);
 	}
 
-	private async Task<bool> WantsQrCodeLogin() {
+	private async Task<bool> WantsQrCodeLogin(CancellationToken cancellationToken = default) {
 		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
 			// In headless/service mode, we always fallback to the other inputs instead, as we never want to wait in blocked call
 			return false;
@@ -4327,7 +4327,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return false;
 		}
 
-		string? input = await RequestInput(ASF.EUserInputType.QrCodeLogin, false).ConfigureAwait(false);
+		string? input = await RequestInput(ASF.EUserInputType.QrCodeLogin, false, cancellationToken).ConfigureAwait(false);
 
 		return input?.Equals("Y", StringComparison.OrdinalIgnoreCase) == true;
 	}

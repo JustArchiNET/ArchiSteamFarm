@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -57,7 +58,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	/// <example>JustArchiNET/ArchiSteamFarm</example>
 	public string RepositoryName { get; }
 
-	Task<Uri?> IPluginUpdates.GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, GlobalConfig.EUpdateChannel updateChannel, bool forced) {
+	Task<Uri?> IPluginUpdates.GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, GlobalConfig.EUpdateChannel updateChannel, bool forced, CancellationToken cancellationToken) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 
@@ -65,7 +66,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
 		}
 
-		return GetTargetReleaseURL(asfVersion, asfVariant, asfUpdate, updateChannel == GlobalConfig.EUpdateChannel.Stable, forced);
+		return GetTargetReleaseURL(asfVersion, asfVariant, asfUpdate, updateChannel == GlobalConfig.EUpdateChannel.Stable, forced, cancellationToken);
 	}
 
 	/// <summary>
@@ -151,7 +152,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 		}
 	}
 
-	protected async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, bool stable, bool forced) {
+	protected async Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, bool stable, bool forced, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 
@@ -165,7 +166,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			return null;
 		}
 
-		ReleaseResponse? releaseResponse = await GitHubService.GetLatestRelease(RepositoryName, stable).ConfigureAwait(false);
+		ReleaseResponse? releaseResponse = await GitHubService.GetLatestRelease(RepositoryName, stable, cancellationToken).ConfigureAwait(false);
 
 		if (releaseResponse == null) {
 			return null;

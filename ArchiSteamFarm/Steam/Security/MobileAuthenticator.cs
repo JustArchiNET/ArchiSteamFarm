@@ -77,12 +77,12 @@ public sealed class MobileAuthenticator : IDisposable {
 
 	public void Dispose() => CachedDeviceID.Dispose();
 
-	internal async Task<string?> GenerateToken() {
+	internal async Task<string?> GenerateToken(CancellationToken cancellationToken = default) {
 		if (Bot == null) {
 			throw new InvalidOperationException(nameof(Bot));
 		}
 
-		ulong time = await GetSteamTime().ConfigureAwait(false);
+		ulong time = await GetSteamTime(cancellationToken).ConfigureAwait(false);
 
 		if (time == 0) {
 			throw new InvalidOperationException(nameof(time));
@@ -140,12 +140,12 @@ public sealed class MobileAuthenticator : IDisposable {
 		);
 	}
 
-	internal async Task<ImmutableHashSet<Confirmation>?> GetConfirmations() {
+	internal async Task<ImmutableHashSet<Confirmation>?> GetConfirmations(CancellationToken cancellationToken = default) {
 		if (Bot == null) {
 			throw new InvalidOperationException(nameof(Bot));
 		}
 
-		(_, string? deviceID) = await CachedDeviceID.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		(_, string? deviceID) = await CachedDeviceID.GetValue(ECacheFallback.SuccessPreviously, cancellationToken).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(deviceID)) {
 			Bot.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(deviceID)));
@@ -153,9 +153,9 @@ public sealed class MobileAuthenticator : IDisposable {
 			return null;
 		}
 
-		await LimitConfirmationsRequestsAsync().ConfigureAwait(false);
+		await LimitConfirmationsRequestsAsync(cancellationToken).ConfigureAwait(false);
 
-		ulong time = await GetSteamTime().ConfigureAwait(false);
+		ulong time = await GetSteamTime(cancellationToken).ConfigureAwait(false);
 
 		if (time == 0) {
 			throw new InvalidOperationException(nameof(time));
@@ -169,7 +169,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			return null;
 		}
 
-		ConfirmationsResponse? response = await Bot.ArchiWebHandler.GetConfirmations(deviceID, confirmationHash, time).ConfigureAwait(false);
+		ConfirmationsResponse? response = await Bot.ArchiWebHandler.GetConfirmations(deviceID, confirmationHash, time, cancellationToken).ConfigureAwait(false);
 
 		if (response?.Success != true) {
 			return null;
@@ -182,7 +182,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		return response.Confirmations;
 	}
 
-	internal async Task<ulong> GetSteamTime() {
+	internal async Task<ulong> GetSteamTime(CancellationToken cancellationToken = default) {
 		if (Bot == null) {
 			throw new InvalidOperationException(nameof(Bot));
 		}
@@ -193,7 +193,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
 		}
 
-		await TimeSemaphore.WaitAsync().ConfigureAwait(false);
+		await TimeSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			steamTimeDifference = SteamTimeDifference;
@@ -220,7 +220,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		return Utilities.MathAdd(Utilities.GetUnixTime(), steamTimeDifference.Value);
 	}
 
-	internal async Task<bool> HandleConfirmations(IReadOnlyCollection<Confirmation> confirmations, bool accept) {
+	internal async Task<bool> HandleConfirmations(IReadOnlyCollection<Confirmation> confirmations, bool accept, CancellationToken cancellationToken = default) {
 		if ((confirmations == null) || (confirmations.Count == 0)) {
 			throw new ArgumentNullException(nameof(confirmations));
 		}
@@ -229,7 +229,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			throw new InvalidOperationException(nameof(Bot));
 		}
 
-		(_, string? deviceID) = await CachedDeviceID.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		(_, string? deviceID) = await CachedDeviceID.GetValue(ECacheFallback.SuccessPreviously, cancellationToken).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(deviceID)) {
 			Bot.ArchiLogger.LogGenericError(Strings.FormatWarningFailedWithError(nameof(deviceID)));
@@ -237,7 +237,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			return false;
 		}
 
-		ulong time = await GetSteamTime().ConfigureAwait(false);
+		ulong time = await GetSteamTime(cancellationToken).ConfigureAwait(false);
 
 		if (time == 0) {
 			throw new InvalidOperationException(nameof(time));
@@ -251,7 +251,7 @@ public sealed class MobileAuthenticator : IDisposable {
 			return false;
 		}
 
-		bool? result = await Bot.ArchiWebHandler.HandleConfirmations(deviceID, confirmationHash, time, confirmations, accept).ConfigureAwait(false);
+		bool? result = await Bot.ArchiWebHandler.HandleConfirmations(deviceID, confirmationHash, time, confirmations, accept, cancellationToken).ConfigureAwait(false);
 
 		if (!result.HasValue) {
 			// Request timed out
@@ -267,7 +267,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		// In this case, we'll accept all pending confirmations one-by-one, synchronously (as Steam can't handle them in parallel)
 		// We totally ignore actual result returned by those calls, abort only if request timed out
 		foreach (Confirmation confirmation in confirmations) {
-			bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(deviceID, confirmationHash, time, confirmation.ID, confirmation.Nonce, accept).ConfigureAwait(false);
+			bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(deviceID, confirmationHash, time, confirmation.ID, confirmation.Nonce, accept, cancellationToken).ConfigureAwait(false);
 
 			if (!confirmationResult.HasValue) {
 				return false;
@@ -285,12 +285,12 @@ public sealed class MobileAuthenticator : IDisposable {
 
 	internal void OnInitModules() => Utilities.InBackground(() => CachedDeviceID.Reset());
 
-	internal static async Task ResetSteamTimeDifference() {
+	internal static async Task ResetSteamTimeDifference(CancellationToken cancellationToken = default) {
 		if ((SteamTimeDifference == null) && (LastSteamTimeCheck == DateTime.MinValue)) {
 			return;
 		}
 
-		if (!await TimeSemaphore.WaitAsync(0).ConfigureAwait(false)) {
+		if (!await TimeSemaphore.WaitAsync(0, cancellationToken).ConfigureAwait(false)) {
 			// Resolve or reset is already in-progress
 			return;
 		}
@@ -346,7 +346,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		return Convert.ToBase64String(hash);
 	}
 
-	private static async Task LimitConfirmationsRequestsAsync() {
+	private static async Task LimitConfirmationsRequestsAsync(CancellationToken cancellationToken = default) {
 		if (ASF.ConfirmationsSemaphore == null) {
 			throw new InvalidOperationException(nameof(ASF.ConfirmationsSemaphore));
 		}
@@ -357,10 +357,10 @@ public sealed class MobileAuthenticator : IDisposable {
 			return;
 		}
 
-		await ASF.ConfirmationsSemaphore.WaitAsync().ConfigureAwait(false);
+		await ASF.ConfirmationsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		Utilities.InBackground(async () => {
-				await Task.Delay(confirmationsLimiterDelay * 1000).ConfigureAwait(false);
+				await Task.Delay(confirmationsLimiterDelay * 1000, cancellationToken).ConfigureAwait(false);
 				ASF.ConfirmationsSemaphore.Release();
 			}
 		);

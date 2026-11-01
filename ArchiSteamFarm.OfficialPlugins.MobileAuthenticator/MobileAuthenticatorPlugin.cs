@@ -26,6 +26,7 @@ using System.ComponentModel;
 using System.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.OfficialPlugins.MobileAuthenticator.Localization;
@@ -45,7 +46,7 @@ internal sealed class MobileAuthenticatorPlugin : OfficialPlugin, IBotCommand2 {
 	[JsonInclude]
 	public override Version Version => typeof(MobileAuthenticatorPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
+	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!Enum.IsDefined(access)) {
@@ -62,10 +63,10 @@ internal sealed class MobileAuthenticatorPlugin : OfficialPlugin, IBotCommand2 {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		return await Commands.OnBotCommand(bot, access, message, args, steamID).ConfigureAwait(false);
+		return await Commands.OnBotCommand(bot, access, message, args, steamID, cancellationToken).ConfigureAwait(false);
 	}
 
-	public override Task OnLoaded() {
+	public override Task OnLoaded(CancellationToken cancellationToken = default) {
 		Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
 
 		return Task.CompletedTask;

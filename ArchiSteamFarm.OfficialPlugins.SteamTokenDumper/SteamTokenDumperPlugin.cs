@@ -69,9 +69,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 	[JsonInclude]
 	public override Version Version => typeof(SteamTokenDumperPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-	public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(GlobalCache?.LastChangeNumber ?? 0);
+	public Task<uint> GetPreferredChangeNumberToStartFrom(CancellationToken cancellationToken = default) => Task.FromResult(GlobalCache?.LastChangeNumber ?? 0);
 
-	public async Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
+	public async Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null, CancellationToken cancellationToken = default) {
 		if (!SharedInfo.HasValidToken) {
 			ASF.ArchiLogger.LogGenericError(Strings.FormatPluginDisabledMissingBuildToken(nameof(SteamTokenDumperPlugin)));
 
@@ -108,7 +108,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		}
 
 		if (GlobalCache == null) {
-			GlobalCache? globalCache = await GlobalCache.Load().ConfigureAwait(false);
+			GlobalCache? globalCache = await GlobalCache.Load(cancellationToken).ConfigureAwait(false);
 
 			if (globalCache == null) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatFileCouldNotBeLoadedFreshInit(nameof(GlobalCache)));
@@ -165,7 +165,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginInitializedAndEnabled(nameof(SteamTokenDumperPlugin), startIn.ToHumanReadable()));
 	}
 
-	public Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
+	public Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!Enum.IsDefined(access)) {
@@ -196,7 +196,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		return Task.FromResult<string?>(null);
 	}
 
-	public async Task OnBotDestroy(Bot bot) {
+	public async Task OnBotDestroy(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (BotSubscriptions.TryRemove(bot, out IDisposable? subscription)) {
@@ -205,7 +205,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 		if (BotSynchronizations.TryRemove(bot, out (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer) synchronization)) {
 			// Ensure the semaphore is empty, otherwise we're risking disposed exceptions
-			await synchronization.RefreshSemaphore.WaitAsync().ConfigureAwait(false);
+			await synchronization.RefreshSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 			synchronization.RefreshSemaphore.Dispose();
 
@@ -213,7 +213,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		}
 	}
 
-	public async Task OnBotInit(Bot bot) {
+	public async Task OnBotInit(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (GlobalCache == null) {
@@ -231,7 +231,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		}
 	}
 
-	public Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager) {
+	public Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(callbackManager);
 
@@ -252,15 +252,15 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		return Task.CompletedTask;
 	}
 
-	public Task<IReadOnlyCollection<ClientMsgHandler>?> OnBotSteamHandlersInit(Bot bot) => Task.FromResult<IReadOnlyCollection<ClientMsgHandler>?>(null);
+	public Task<IReadOnlyCollection<ClientMsgHandler>?> OnBotSteamHandlersInit(Bot bot, CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyCollection<ClientMsgHandler>?>(null);
 
-	public override Task OnLoaded() {
+	public override Task OnLoaded(CancellationToken cancellationToken = default) {
 		Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
 
 		return Task.CompletedTask;
 	}
 
-	public Task OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges) {
+	public Task OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 		ArgumentNullException.ThrowIfNull(appChanges);
 		ArgumentNullException.ThrowIfNull(packageChanges);
@@ -270,7 +270,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		return Task.CompletedTask;
 	}
 
-	public Task OnPICSChangesRestart(uint currentChangeNumber) {
+	public Task OnPICSChangesRestart(uint currentChangeNumber, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 
 		GlobalCache?.OnPICSChangesRestart(currentChangeNumber);
@@ -312,7 +312,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 	private static async void OnSubmissionTimer(object? state = null) => await SubmitData().ConfigureAwait(false);
 
-	private static async Task Refresh(Bot bot) {
+	private static async Task Refresh(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (GlobalCache == null) {
@@ -327,7 +327,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			throw new InvalidOperationException(nameof(synchronization));
 		}
 
-		if (!await synchronization.RefreshSemaphore.WaitAsync(0).ConfigureAwait(false)) {
+		if (!await synchronization.RefreshSemaphore.WaitAsync(0, cancellationToken).ConfigureAwait(false)) {
 			return;
 		}
 
@@ -384,7 +384,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 			bot.ArchiLogger.LogGenericInfo(Strings.FormatBotFinishedRetrievingTotalAppAccessTokens(appIDsToRefresh.Count));
 			bot.ArchiLogger.LogGenericInfo(Strings.FormatBotRetrievingTotalDepots(appIDsToRefresh.Count));
 
-			(_, FrozenSet<uint>? knownDepotIDs) = await GlobalCache.KnownDepotIDs.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+			(_, FrozenSet<uint>? knownDepotIDs) = await GlobalCache.KnownDepotIDs.GetValue(ECacheFallback.SuccessPreviously, cancellationToken).ConfigureAwait(false);
 
 			foreach (uint[] appIDsThisRound in appIDsToRefresh.Chunk(Bot.EntriesPerSinglePICSRequest)) {
 				if (!bot.IsConnectedAndLoggedOn) {
@@ -428,7 +428,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 						depotKeysTotal++;
 
-						await depotsRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+						await depotsRateLimitingSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 						try {
 							SteamApps.DepotKeyCallback depotResponse = await bot.SteamApps.GetDepotDecryptionKey(depotID, app.ID).ToLongRunningTask().ConfigureAwait(false);
@@ -447,7 +447,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 							bot.ArchiLogger.LogGenericWarningException(e);
 						} finally {
 							Utilities.InBackground(async () => {
-									await Task.Delay(DepotsRateLimitingDelay).ConfigureAwait(false);
+									await Task.Delay(DepotsRateLimitingDelay, cancellationToken).ConfigureAwait(false);
 
 									// ReSharper disable once AccessToDisposedClosure - we're waiting for the semaphore to be free before disposing it
 									depotsRateLimitingSemaphore.Release();
@@ -458,7 +458,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 					// Consider fetching main appID key only if we've actually considered some new depots for resolving
 					if (shouldFetchMainKey && (knownDepotIDs?.Contains(app.ID) != true) && GlobalCache.ShouldRefreshDepotKey(app.ID)) {
-						await depotsRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+						await depotsRateLimitingSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 						try {
 							SteamApps.DepotKeyCallback depotResponse = await bot.SteamApps.GetDepotDecryptionKey(app.ID, app.ID).ToLongRunningTask().ConfigureAwait(false);
@@ -473,7 +473,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 							bot.ArchiLogger.LogGenericWarningException(e);
 						} finally {
 							Utilities.InBackground(async () => {
-									await Task.Delay(DepotsRateLimitingDelay).ConfigureAwait(false);
+									await Task.Delay(DepotsRateLimitingDelay, cancellationToken).ConfigureAwait(false);
 
 									// ReSharper disable once AccessToDisposedClosure - we're waiting for the semaphore to be free before disposing it
 									depotsRateLimitingSemaphore.Release();
@@ -503,7 +503,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				synchronization.RefreshTimer.Change(timeSpan, timeSpan);
 			}
 
-			await depotsRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+			await depotsRateLimitingSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 			synchronization.RefreshSemaphore.Release();
 

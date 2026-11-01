@@ -60,11 +60,11 @@ public abstract class SerializableFile : IDisposable {
 	///     This approach will allow JSON serializer used in the <see cref="SerializableFile" /> to properly discover all of the properties used in your class.
 	///     Unfortunately, due to STJ's limitations, called by some "security", it's not possible for base class to resolve your properties automatically otherwise.
 	/// </summary>
-	/// <example>protected override Task Save() => Save(this);</example>
+	/// <example>protected override Task Save(CancellationToken cancellationToken = default) => Save(this, cancellationToken);</example>
 	[UsedImplicitly]
-	protected abstract Task Save();
+	protected abstract Task Save(CancellationToken cancellationToken = default);
 
-	protected static async Task Save<T>(T serializableFile) where T : SerializableFile {
+	protected static async Task Save<T>(T serializableFile, CancellationToken cancellationToken = default) where T : SerializableFile {
 		ArgumentNullException.ThrowIfNull(serializableFile);
 
 		if (string.IsNullOrEmpty(serializableFile.FilePath)) {
@@ -84,7 +84,16 @@ public abstract class SerializableFile : IDisposable {
 			serializableFile.SavingScheduled = true;
 		}
 
-		await serializableFile.FileSemaphore.WaitAsync().ConfigureAwait(false);
+		try {
+			await serializableFile.FileSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+		} catch {
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+			lock (serializableFile.FileSemaphore) {
+				serializableFile.SavingScheduled = false;
+			}
+
+			throw;
+		}
 
 		try {
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
@@ -102,7 +111,9 @@ public abstract class SerializableFile : IDisposable {
 				throw new InvalidOperationException(nameof(json));
 			}
 
-			await WriteContentSafely(serializableFile.FilePath, json).ConfigureAwait(false);
+			await WriteContentSafely(serializableFile.FilePath, json, cancellationToken).ConfigureAwait(false);
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		} finally {
@@ -110,12 +121,12 @@ public abstract class SerializableFile : IDisposable {
 		}
 	}
 
-	internal async Task MakeReadOnly() {
+	internal async Task MakeReadOnly(CancellationToken cancellationToken = default) {
 		if (ReadOnly) {
 			return;
 		}
 
-		await FileSemaphore.WaitAsync().ConfigureAwait(false);
+		await FileSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (ReadOnly) {
@@ -128,16 +139,18 @@ public abstract class SerializableFile : IDisposable {
 		}
 	}
 
-	internal static async Task<bool> Write(string filePath, string json) {
+	internal static async Task<bool> Write(string filePath, string json, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 		ArgumentException.ThrowIfNullOrEmpty(json);
 
-		await GlobalFileSemaphore.WaitAsync().ConfigureAwait(false);
+		await GlobalFileSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
-			await WriteContentSafely(filePath, json).ConfigureAwait(false);
+			await WriteContentSafely(filePath, json, cancellationToken).ConfigureAwait(false);
 
 			return true;
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -147,7 +160,7 @@ public abstract class SerializableFile : IDisposable {
 		}
 	}
 
-	private static async Task WriteContentSafely(string filePath, string json) {
+	private static async Task WriteContentSafely(string filePath, string json, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 		ArgumentException.ThrowIfNullOrEmpty(json);
 
@@ -167,8 +180,8 @@ public abstract class SerializableFile : IDisposable {
 			StreamWriter streamWriter = new(fileStream, new UTF8Encoding(false), leaveOpen: true);
 
 			await using (streamWriter.ConfigureAwait(false)) {
-				await streamWriter.WriteAsync(json).ConfigureAwait(false);
-				await streamWriter.FlushAsync().ConfigureAwait(false);
+				await streamWriter.WriteAsync(json, cancellationToken).ConfigureAwait(false);
+				await streamWriter.FlushAsync(cancellationToken).ConfigureAwait(false);
 			}
 
 #pragma warning disable CA1849 // Asynchronous variant does not allow flushing OS buffers, so we need to use synchronous variant here

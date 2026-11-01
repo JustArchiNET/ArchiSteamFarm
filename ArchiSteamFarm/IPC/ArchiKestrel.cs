@@ -81,40 +81,40 @@ internal static class ArchiKestrel {
 		}
 	}
 
-	internal static async Task Restart() {
-		await StateSemaphore.WaitAsync().ConfigureAwait(false);
+	internal static async Task Restart(CancellationToken cancellationToken = default) {
+		await StateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
-			await StopInternally().ConfigureAwait(false);
-			await StartInternally().ConfigureAwait(false);
+			await StopInternally(cancellationToken).ConfigureAwait(false);
+			await StartInternally(cancellationToken).ConfigureAwait(false);
 		} finally {
 			StateSemaphore.Release();
 		}
 	}
 
-	internal static async Task Start() {
+	internal static async Task Start(CancellationToken cancellationToken = default) {
 		if (IsRunning) {
 			return;
 		}
 
-		await StateSemaphore.WaitAsync().ConfigureAwait(false);
+		await StateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
-			await StartInternally().ConfigureAwait(false);
+			await StartInternally(cancellationToken).ConfigureAwait(false);
 		} finally {
 			StateSemaphore.Release();
 		}
 	}
 
-	internal static async Task Stop() {
+	internal static async Task Stop(CancellationToken cancellationToken = default) {
 		if (!IsRunning) {
 			return;
 		}
 
-		await StateSemaphore.WaitAsync().ConfigureAwait(false);
+		await StateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
-			await StopInternally().ConfigureAwait(false);
+			await StopInternally(cancellationToken).ConfigureAwait(false);
 		} finally {
 			StateSemaphore.Release();
 		}
@@ -414,7 +414,7 @@ internal static class ArchiKestrel {
 		);
 	}
 
-	private static async Task<WebApplication> CreateWebApplication() {
+	private static async Task<WebApplication> CreateWebApplication(CancellationToken cancellationToken = default) {
 		// Try to initialize to custom www folder first
 		string? webRootPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);
 
@@ -449,7 +449,7 @@ internal static class ArchiKestrel {
 		if (customConfigExists) {
 			if (Debugging.IsDebugConfigured) {
 				try {
-					string json = await File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
+					string json = await File.ReadAllTextAsync(customConfigPath, cancellationToken).ConfigureAwait(false);
 
 					if (!string.IsNullOrEmpty(json)) {
 						JsonNode? jsonNode = JsonNode.Parse(json);
@@ -530,7 +530,7 @@ internal static class ArchiKestrel {
 		headers.CacheControl = cacheControl;
 	}
 
-	private static async Task StartInternally() {
+	private static async Task StartInternally(CancellationToken cancellationToken = default) {
 		if (WebApplication != null) {
 			return;
 		}
@@ -544,9 +544,9 @@ internal static class ArchiKestrel {
 
 		try {
 			// Start the server
-			webApplication = await CreateWebApplication().ConfigureAwait(false);
+			webApplication = await CreateWebApplication(cancellationToken).ConfigureAwait(false);
 
-			await webApplication.StartAsync().ConfigureAwait(false);
+			await webApplication.StartAsync(cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -581,12 +581,12 @@ internal static class ArchiKestrel {
 		ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);
 	}
 
-	private static async Task StopInternally() {
+	private static async Task StopInternally(CancellationToken cancellationToken = default) {
 		if (WebApplication == null) {
 			return;
 		}
 
-		await WebApplication.StopAsync().ConfigureAwait(false);
+		await WebApplication.StopAsync(cancellationToken).ConfigureAwait(false);
 		await WebApplication.DisposeAsync().ConfigureAwait(false);
 
 		WebApplication = null;

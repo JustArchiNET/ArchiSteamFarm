@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -35,7 +36,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal static class Commands {
-	internal static async Task<string?> OnBotCommand(Bot bot, EAccess access, string[] args, ulong steamID = 0) {
+	internal static async Task<string?> OnBotCommand(Bot bot, EAccess access, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!Enum.IsDefined(access)) {
@@ -61,7 +62,7 @@ internal static class Commands {
 			default:
 				switch (args[0].ToUpperInvariant()) {
 					case "MATCH":
-						return await ResponseMatch(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
+						return await ResponseMatch(access, Utilities.GetArgsAsText(args, 1, ","), steamID, cancellationToken).ConfigureAwait(false);
 				}
 
 				break;
@@ -102,7 +103,7 @@ internal static class Commands {
 		return bot.Commands.FormatBotResponse(Strings.Done);
 	}
 
-	private static async Task<string?> ResponseMatch(EAccess access, string botNames, ulong steamID = 0) {
+	private static async Task<string?> ResponseMatch(EAccess access, string botNames, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
@@ -119,7 +120,7 @@ internal static class Commands {
 			return access >= EAccess.Owner ? Steam.Interaction.Commands.FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => ResponseMatch(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot)))).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => ResponseMatch(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot), cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		List<string> responses = [.. results.Where(static result => !string.IsNullOrEmpty(result)).Select(static result => result!)];
 

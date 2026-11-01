@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
@@ -40,12 +41,14 @@ public interface IBotSteamClient : IPlugin {
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="callbackManager">Callback manager object which can be used for establishing subscriptions to standard and custom callbacks.</param>
-	public Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager);
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	///     ASF will call this method right after bot initialization in order to allow you hooking custom SK2 client handlers into the SteamClient.
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
+	/// <param name="cancellationToken">Cancellation token.</param>
 	/// <returns>Collection of custom client handlers that are supposed to be hooked into the SteamClient by ASF. If you do not require any, just return null or empty collection.</returns>
-	public Task<IReadOnlyCollection<ClientMsgHandler>?> OnBotSteamHandlersInit(Bot bot);
+	public Task<IReadOnlyCollection<ClientMsgHandler>?> OnBotSteamHandlersInit(Bot bot, CancellationToken cancellationToken = default);
 }

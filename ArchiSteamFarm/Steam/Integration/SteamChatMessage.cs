@@ -26,7 +26,9 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 
 namespace ArchiSteamFarm.Steam.Integration;
 
@@ -41,7 +43,7 @@ internal static class SteamChatMessage {
 	internal const byte ReservedContinuationMessageBytes = ContinuationCharacterBytes * 2; // Up to 2 optional continuation characters
 	internal const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
 
-	internal static async IAsyncEnumerable<string> GetMessageParts(string message, string? steamMessagePrefix = null, bool isAccountLimited = false) {
+	internal static async IAsyncEnumerable<string> GetMessageParts(string message, string? steamMessagePrefix = null, bool isAccountLimited = false, [EnumeratorCancellation] CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		int prefixBytes = 0;
@@ -73,7 +75,7 @@ internal static class SteamChatMessage {
 
 		using StringReader stringReader = new(message);
 
-		while (await stringReader.ReadLineAsync().ConfigureAwait(false) is { } line) {
+		while (await stringReader.ReadLineAsync(cancellationToken).ConfigureAwait(false) is { } line) {
 			// Special case for empty newline
 			if (line.Length == 0) {
 				if (messagePart.Length > prefixLength) {

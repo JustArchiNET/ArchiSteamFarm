@@ -47,7 +47,7 @@ internal sealed class PeriodicGCPlugin : IPlugin {
 	[JsonInclude]
 	public Version Version => typeof(PeriodicGCPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-	public Task OnLoaded() {
+	public Task OnLoaded(CancellationToken cancellationToken = default) {
 		TimeSpan timeSpan = TimeSpan.FromSeconds(GCPeriod);
 
 		ASF.ArchiLogger.LogGenericWarning($"Periodic GC will occur every {timeSpan.ToHumanReadable()}. Please keep in mind that this plugin should be used for debugging tests only.");

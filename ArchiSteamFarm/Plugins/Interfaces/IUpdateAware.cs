@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
@@ -38,12 +39,14 @@ public interface IUpdateAware : IPlugin {
 	/// </summary>
 	/// <param name="currentVersion">The current (old) version of ASF program.</param>
 	/// <param name="newVersion">The target (new) version of ASF program.</param>
-	public Task OnUpdateFinished(Version currentVersion, Version newVersion);
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnUpdateFinished(Version currentVersion, Version newVersion, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	///     ASF will call this method before proceeding with an update to a particular ASF version.
 	/// </summary>
 	/// <param name="currentVersion">The current (old) version of ASF program.</param>
 	/// <param name="newVersion">The target (new) version of ASF program.</param>
-	public Task OnUpdateProceeding(Version currentVersion, Version newVersion);
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnUpdateProceeding(Version currentVersion, Version newVersion, CancellationToken cancellationToken = default);
 }

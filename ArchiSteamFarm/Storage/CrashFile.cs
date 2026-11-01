@@ -24,6 +24,7 @@
 using System;
 using System.IO;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
@@ -45,7 +46,7 @@ internal sealed class CrashFile : SerializableFile {
 			}
 
 			field = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -60,7 +61,7 @@ internal sealed class CrashFile : SerializableFile {
 			}
 
 			field = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -79,9 +80,9 @@ internal sealed class CrashFile : SerializableFile {
 	[UsedImplicitly]
 	public bool ShouldSerializeStartupCount() => StartupCount > 0;
 
-	protected override Task Save() => Save(this);
+	protected override Task Save(CancellationToken cancellationToken = default) => Save(this, cancellationToken);
 
-	internal static async Task<CrashFile> CreateOrLoad(string filePath) {
+	internal static async Task<CrashFile> CreateOrLoad(string filePath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
@@ -91,7 +92,7 @@ internal sealed class CrashFile : SerializableFile {
 		CrashFile? crashFile;
 
 		try {
-			string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+			string json = await File.ReadAllTextAsync(filePath, cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(nameof(json)));

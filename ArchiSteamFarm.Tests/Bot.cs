@@ -34,6 +34,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ArchiSteamFarm.Steam.Bot;
 
@@ -41,7 +42,10 @@ namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class Bot {
+internal sealed class Bot : TestContextBase {
+	[UsedImplicitly]
+	public Bot(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
+
 	internal static Steam.Bot GenerateBot(string botName = "Test") {
 		ArgumentException.ThrowIfNullOrEmpty(botName);
 
@@ -84,8 +88,8 @@ internal sealed class Bot {
 
 		Steam.Bot bot = GenerateBot();
 
-		await bot.Commands.HandleMessage(steamID, message).ConfigureAwait(false);
-		await bot.Commands.HandleMessage(1, 1, steamID, message).ConfigureAwait(false);
+		await bot.Commands.HandleMessage(steamID, message, CancellationToken).ConfigureAwait(false);
+		await bot.Commands.HandleMessage(1, 1, steamID, message, CancellationToken).ConfigureAwait(false);
 	}
 
 	[TestMethod]
@@ -470,7 +474,7 @@ internal sealed class Bot {
 
 		Steam.Bot bot = GenerateBot();
 
-		Assert.IsNull(await bot.Commands.Response(EAccess.Owner, message).ConfigureAwait(false));
+		Assert.IsNull(await bot.Commands.Response(EAccess.Owner, message, cancellationToken: CancellationToken).ConfigureAwait(false));
 	}
 
 	[TestMethod]

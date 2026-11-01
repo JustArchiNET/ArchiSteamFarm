@@ -26,6 +26,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -160,7 +161,7 @@ public sealed class ArchiLogger {
 		Logger.Fatal($"{previousMethodName}() {message}");
 	}
 
-	internal async Task LogFatalException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
+	internal async Task LogFatalException(Exception exception, [CallerMemberName] string? previousMethodName = null, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(exception);
 		ArgumentException.ThrowIfNullOrEmpty(previousMethodName);
 
@@ -175,7 +176,7 @@ public sealed class ArchiLogger {
 		string message = $"{DateTime.Now} {Strings.FormatErrorEarlyFatalExceptionInfo(SharedInfo.Version)}{Environment.NewLine}";
 
 		try {
-			await File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
+			await File.WriteAllTextAsync(SharedInfo.LogFile, message, cancellationToken).ConfigureAwait(false);
 		} catch {
 			// Ignored, we can't do anything about this
 		}
@@ -190,7 +191,7 @@ public sealed class ArchiLogger {
 			message = $"{Strings.FormatErrorEarlyFatalExceptionPrint(previousMethodName, exception.Message, exception.StackTrace)}{Environment.NewLine}";
 
 			try {
-				await File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
+				await File.AppendAllTextAsync(SharedInfo.LogFile, message, cancellationToken).ConfigureAwait(false);
 			} catch {
 				// Ignored, we can't do anything about this
 			}

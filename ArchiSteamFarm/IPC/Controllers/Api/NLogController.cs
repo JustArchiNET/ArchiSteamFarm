@@ -61,7 +61,7 @@ public sealed class NLogController : ArchiController {
 	[ProducesResponseType<GenericResponse<LogResponse>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
-	public async Task<ActionResult<GenericResponse>> FileGet([Description("Maximum amount of lines from the log file returned. The respone naturally might have less amount than specified, if you've read whole file already")] int count = 100, [Description("Ending index, used for pagination. Omit it for the first request, then initialize to TotalLines returned, and on every following request subtract count that you've used in the previous request from it until you hit 0 or less, which means you've read whole file already")] int lastAt = 0) {
+	public async Task<ActionResult<GenericResponse>> FileGet([Description("Maximum amount of lines from the log file returned. The respone naturally might have less amount than specified, if you've read whole file already")] int count = 100, [Description("Ending index, used for pagination. Omit it for the first request, then initialize to TotalLines returned, and on every following request subtract count that you've used in the previous request from it until you hit 0 or less, which means you've read whole file already")] int lastAt = 0, CancellationToken cancellationToken = default) {
 		if (count <= 0) {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(count))));
 		}
@@ -70,7 +70,7 @@ public sealed class NLogController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid(nameof(lastAt))));
 		}
 
-		string[]? lines = await Logging.ReadLogFileLines().ConfigureAwait(false);
+		string[]? lines = await Logging.ReadLogFileLines(cancellationToken).ConfigureAwait(false);
 
 		if ((lines == null) || (lines.Length == 0)) {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsEmpty(nameof(SharedInfo.LogFile))));
@@ -90,7 +90,7 @@ public sealed class NLogController : ArchiController {
 	[ProducesResponseType((int) HttpStatusCode.SwitchingProtocols)]
 	[ProducesResponseType((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
-	public async Task<ActionResult> Get() {
+	public async Task<ActionResult> Get(CancellationToken cancellationToken = default) {
 		if (HttpContext == null) {
 			throw new InvalidOperationException(nameof(HttpContext));
 		}
@@ -106,7 +106,7 @@ public sealed class NLogController : ArchiController {
 
 			SemaphoreSlim sendSemaphore = new(1, 1);
 
-			using CancellationTokenSource cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(HttpContext.RequestAborted, ApplicationLifetime.ApplicationStopping);
+			using CancellationTokenSource cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, ApplicationLifetime.ApplicationStopping);
 
 			if (!ActiveLogWebSockets.TryAdd(webSocket, (sendSemaphore, cancellationTokenSource.Token))) {
 				sendSemaphore.Dispose();

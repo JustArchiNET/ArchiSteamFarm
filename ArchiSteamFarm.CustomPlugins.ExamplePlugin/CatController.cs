@@ -43,12 +43,10 @@ public sealed class CatController : ArchiController {
 	[HttpGet]
 	[ProducesResponseType<GenericResponse<Uri>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
-	public async Task<ActionResult<GenericResponse>> CatGet() {
+	public async Task<ActionResult<GenericResponse>> CatGet(CancellationToken cancellationToken = default) {
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
-
-		CancellationToken cancellationToken = HttpContext.RequestAborted;
 
 		Uri? url = await CatAPI.GetRandomCatURL(ASF.WebBrowser, cancellationToken).ConfigureAwait(false);
 

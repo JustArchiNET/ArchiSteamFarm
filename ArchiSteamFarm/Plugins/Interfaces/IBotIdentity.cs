@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
@@ -41,5 +42,6 @@ public interface IBotIdentity : IPlugin {
 	/// <param name="data">Full data received by ASF in the callback that relates to this bot (Steam) account.</param>
 	/// <param name="nickname">Parsed nickname set for this bot (Steam) account.</param>
 	/// <param name="avatarHash">Parsed hash of the avatar of this bot (Steam) account, as hex.</param>
-	public Task OnSelfPersonaState(Bot bot, SteamFriends.PersonaStateCallback data, string? nickname, string? avatarHash);
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnSelfPersonaState(Bot bot, SteamFriends.PersonaStateCallback data, string? nickname, string? avatarHash, CancellationToken cancellationToken = default);
 }

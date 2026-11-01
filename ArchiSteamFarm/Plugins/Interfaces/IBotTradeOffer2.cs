@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
@@ -41,6 +42,7 @@ public interface IBotTradeOffer2 : IPlugin {
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="tradeOffer">Trade offer related to this callback.</param>
 	/// <param name="asfResult">ASF result in regards to parsing this trade offer, can be useful for determining why it wasn't accepted as part of the core logic.</param>
+	/// <param name="cancellationToken">Cancellation token.</param>
 	/// <returns>True if the trade offer should be accepted as part of this plugin, false otherwise.</returns>
-	public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ParseTradeResult.EResult asfResult);
+	public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ParseTradeResult.EResult asfResult, CancellationToken cancellationToken = default);
 }

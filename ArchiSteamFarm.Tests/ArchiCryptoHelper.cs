@@ -24,6 +24,7 @@
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ArchiSteamFarm.Helpers.ArchiCryptoHelper;
 
@@ -31,8 +32,11 @@ namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class ArchiCryptoHelper {
+internal sealed class ArchiCryptoHelper : TestContextBase {
 	private const string TestPassword = "a2o41PuPdZNDLw9AT6dZt5pLVC23MN9O7NfKI4a0MWJgWWIAVGt3naYiIA0BhPel";
+
+	[UsedImplicitly]
+	public ArchiCryptoHelper(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
 
 	[DataRow(ECryptoMethod.PlainText)]
 	[DataRow(ECryptoMethod.AES)]
@@ -46,7 +50,7 @@ internal sealed class ArchiCryptoHelper {
 
 		Assert.IsNotNull(encrypted);
 
-		string? decrypted = await Decrypt(cryptoMethod, encrypted).ConfigureAwait(false);
+		string? decrypted = await Decrypt(cryptoMethod, encrypted, CancellationToken).ConfigureAwait(false);
 
 		Assert.IsNotNull(decrypted);
 		Assert.AreEqual(TestPassword, decrypted);

@@ -145,7 +145,7 @@ internal static class OS {
 		return false;
 	}
 
-	internal static async Task<bool> RegisterProcess() {
+	internal static async Task<bool> RegisterProcess(CancellationToken cancellationToken = default) {
 		if (SingleInstance != null) {
 			return false;
 		}
@@ -159,7 +159,7 @@ internal static class OS {
 
 		for (byte i = 0; i < WebBrowser.MaxTries; i++) {
 			if (i > 0) {
-				await Task.Delay(2000).ConfigureAwait(false);
+				await Task.Delay(2000, cancellationToken).ConfigureAwait(false);
 			}
 
 			singleInstance = new Mutex(true, uniqueName, new NamedWaitHandleOptions { CurrentSessionOnly = false, CurrentUserOnly = false }, out bool result);

@@ -44,9 +44,7 @@ public sealed class GitHubController : ArchiController {
 	[HttpGet("Release")]
 	[ProducesResponseType<GenericResponse<GitHubReleaseResponse>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
-	public async Task<ActionResult<GenericResponse>> GitHubReleaseGet() {
-		CancellationToken cancellationToken = HttpContext.RequestAborted;
-
+	public async Task<ActionResult<GenericResponse>> GitHubReleaseGet(CancellationToken cancellationToken = default) {
 		ReleaseResponse? releaseResponse = await GitHubService.GetLatestRelease(SharedInfo.GithubRepo, false, cancellationToken).ConfigureAwait(false);
 
 		return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries)));
@@ -58,10 +56,8 @@ public sealed class GitHubController : ArchiController {
 	[ProducesResponseType<GenericResponse<GitHubReleaseResponse>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
-	public async Task<ActionResult<GenericResponse>> GitHubReleaseGet(string version) {
+	public async Task<ActionResult<GenericResponse>> GitHubReleaseGet(string version, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(version);
-
-		CancellationToken cancellationToken = HttpContext.RequestAborted;
 
 		ReleaseResponse? releaseResponse;
 
@@ -89,10 +85,8 @@ public sealed class GitHubController : ArchiController {
 	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
-	public async Task<ActionResult<GenericResponse>> GitHubWikiHistoryGet(string page) {
+	public async Task<ActionResult<GenericResponse>> GitHubWikiHistoryGet(string page, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(page);
-
-		CancellationToken cancellationToken = HttpContext.RequestAborted;
 
 		Dictionary<string, DateTime>? revisions = await GitHubService.GetWikiHistory(page, cancellationToken).ConfigureAwait(false);
 
@@ -105,10 +99,8 @@ public sealed class GitHubController : ArchiController {
 	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
-	public async Task<ActionResult<GenericResponse>> GitHubWikiPageGet(string page, [FromQuery] string? revision = null) {
+	public async Task<ActionResult<GenericResponse>> GitHubWikiPageGet(string page, [FromQuery] string? revision = null, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(page);
-
-		CancellationToken cancellationToken = HttpContext.RequestAborted;
 
 		string? html = await GitHubService.GetWikiPage(page, revision, cancellationToken).ConfigureAwait(false);
 

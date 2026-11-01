@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -182,7 +183,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false, ushort itemsCountPerRequest = ArchiWebHandler.MaxItemsInSingleInventoryRequest, string? language = null) {
+	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false, ushort itemsCountPerRequest = ArchiWebHandler.MaxItemsInSingleInventoryRequest, string? language = null, [EnumeratorCancellation] CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(itemsCountPerRequest);
@@ -224,7 +225,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 
 		Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>? descriptions = null;
 
-		await InventorySemaphore.WaitAsync().ConfigureAwait(false);
+		await InventorySemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			while (true) {
@@ -233,7 +234,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 				for (byte i = 0; (i < WebBrowser.MaxTries) && (response?.Result != EResult.OK) && Client.IsConnected && (Client.SteamID == steamID); i++) {
 					if (i > 0) {
 						// It seems 2 seconds is enough to win over DuplicateRequest, so we'll use that for this and also other network-related failures
-						await Task.Delay(2000).ConfigureAwait(false);
+						await Task.Delay(2000, cancellationToken).ConfigureAwait(false);
 					}
 
 					try {
@@ -955,7 +956,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 		return response.Result == EResult.OK ? response.Body.device_identifier : null;
 	}
 
-	internal async Task PlayGames(IReadOnlyCollection<uint> gameIDs, string? gameName = null) {
+	internal async Task PlayGames(IReadOnlyCollection<uint> gameIDs, string? gameName = null, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(gameIDs);
 
 		if (Client == null) {
@@ -978,7 +979,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			// This ensures that custom name will in fact display properly (if it's not omitted due to MaxGamesPlayedConcurrently, that is)
 			Client.Send(request);
 
-			await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
+			await Task.Delay(Bot.CallbackSleep, cancellationToken).ConfigureAwait(false);
 
 			request.Body.games_played.Add(
 				new CMsgClientGamesPlayed.GamePlayed {

@@ -31,6 +31,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
@@ -66,17 +67,17 @@ internal static class Program {
 	private static bool Minimized;
 	private static bool SystemRequired;
 
-	internal static async Task Exit(byte exitCode = 0) {
+	internal static async Task Exit(byte exitCode = 0, CancellationToken cancellationToken = default) {
 		if (exitCode != 0) {
 			ASF.ArchiLogger.LogGenericError(Strings.FormatErrorExitingWithNonZeroErrorCode(exitCode));
 		}
 
-		await Shutdown(exitCode).ConfigureAwait(false);
+		await Shutdown(exitCode, cancellationToken).ConfigureAwait(false);
 		Environment.Exit(exitCode);
 	}
 
-	internal static async Task Restart() {
-		if (!await InitShutdownSequence().ConfigureAwait(false)) {
+	internal static async Task Restart(CancellationToken cancellationToken = default) {
+		if (!await InitShutdownSequence(cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			return;
 		}
 
@@ -93,7 +94,7 @@ internal static class Program {
 		}
 
 		// Give new process some time to take over the window (if needed)
-		await Task.Delay(5000).ConfigureAwait(false);
+		await Task.Delay(5000, cancellationToken).ConfigureAwait(false);
 
 		ShutdownResetEvent.TrySetResult(0);
 		Environment.Exit(0);
@@ -105,7 +106,7 @@ internal static class Program {
 		ArchiCryptoHelper.SetEncryptionKey(cryptKey);
 	}
 
-	private static async Task<bool> HandleCryptKeyFileArgument(string cryptKeyFile) {
+	private static async Task<bool> HandleCryptKeyFileArgument(string cryptKeyFile, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(cryptKeyFile);
 
 		if (!File.Exists(cryptKeyFile)) {
@@ -117,7 +118,7 @@ internal static class Program {
 		string cryptKey;
 
 		try {
-			cryptKey = await File.ReadAllTextAsync(cryptKeyFile).ConfigureAwait(false);
+			cryptKey = await File.ReadAllTextAsync(cryptKeyFile, cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -170,7 +171,7 @@ internal static class Program {
 		return true;
 	}
 
-	private static async Task Init(IReadOnlyCollection<string>? args) {
+	private static async Task Init(IReadOnlyCollection<string>? args, CancellationToken cancellationToken = default) {
 		AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 		AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 		TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
@@ -193,22 +194,22 @@ internal static class Program {
 			}
 		);
 
-		if (!await InitCore(args).ConfigureAwait(false) || !await InitASF().ConfigureAwait(false)) {
-			await Exit(1).ConfigureAwait(false);
+		if (!await InitCore(args, cancellationToken).ConfigureAwait(false) || !await InitASF(cancellationToken).ConfigureAwait(false)) {
+			await Exit(1, cancellationToken).ConfigureAwait(false);
 		}
 	}
 
-	private static async Task<bool> InitASF() {
-		if (!await InitGlobalConfigAndLanguage().ConfigureAwait(false)) {
+	private static async Task<bool> InitASF(CancellationToken cancellationToken = default) {
+		if (!await InitGlobalConfigAndLanguage(cancellationToken).ConfigureAwait(false)) {
 			return false;
 		}
 
 		OS.Init(ASF.GlobalConfig?.OptimizationMode ?? GlobalConfig.DefaultOptimizationMode);
 
-		return await InitGlobalDatabaseAndServices().ConfigureAwait(false) && await ASF.Init().ConfigureAwait(false);
+		return await InitGlobalDatabaseAndServices(cancellationToken).ConfigureAwait(false) && await ASF.Init(cancellationToken).ConfigureAwait(false);
 	}
 
-	private static async Task<bool> InitCore(IReadOnlyCollection<string>? args) {
+	private static async Task<bool> InitCore(IReadOnlyCollection<string>? args, CancellationToken cancellationToken = default) {
 		// Init emergency loggers used for failures before setting up ones according to preference of the user
 		Logging.InitEmergencyLoggers();
 
@@ -232,8 +233,8 @@ internal static class Program {
 		}
 
 		// Parse environment variables
-		if (!await ParseEnvironmentVariables().ConfigureAwait(false)) {
-			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+		if (!await ParseEnvironmentVariables(cancellationToken).ConfigureAwait(false)) {
+			await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 			return false;
 		}
@@ -243,8 +244,8 @@ internal static class Program {
 			string[]? asfArgs = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableArguments)?.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries);
 
 			if (asfArgs?.Length > 0) {
-				if (!await ParseArgs(asfArgs).ConfigureAwait(false)) {
-					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+				if (!await ParseArgs(asfArgs, cancellationToken).ConfigureAwait(false)) {
+					await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 					return false;
 				}
@@ -252,28 +253,28 @@ internal static class Program {
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
-			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+			await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 			return false;
 		}
 
 		// Parse cmdline args
 		if (args?.Count > 0) {
-			if (!await ParseArgs(args).ConfigureAwait(false)) {
-				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+			if (!await ParseArgs(args, cancellationToken).ConfigureAwait(false)) {
+				await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 				return false;
 			}
 		}
 
-		bool uniqueInstance = await OS.RegisterProcess().ConfigureAwait(false);
+		bool uniqueInstance = await OS.RegisterProcess(cancellationToken).ConfigureAwait(false);
 
 		// Init core loggers according to user's preferences
 		Logging.InitCoreLoggers(uniqueInstance);
 
 		if (!uniqueInstance) {
 			ASF.ArchiLogger.LogGenericError(Strings.ErrorSingleInstanceRequired);
-			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+			await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 			return false;
 		}
@@ -294,19 +295,19 @@ internal static class Program {
 		} else {
 			if (!OS.VerifyEnvironment()) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningUnsupportedEnvironment(BuildInfo.Variant, OS.Version));
-				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 				return false;
 			}
 
 			if (OS.IsRunningAsRoot()) {
 				ASF.ArchiLogger.LogGenericWarning(Strings.WarningRunningAsRoot);
-				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
 		if (InputCryptkeyManually) {
-			string? cryptkey = await Logging.GetUserInput(ASF.EUserInputType.Cryptkey).ConfigureAwait(false);
+			string? cryptkey = await Logging.GetUserInput(ASF.EUserInputType.Cryptkey, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(cryptkey)) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(cryptkey)));
@@ -319,7 +320,7 @@ internal static class Program {
 
 		if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
 			ASF.ArchiLogger.LogGenericError(Strings.ErrorConfigDirectoryNotFound);
-			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+			await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 			return false;
 		}
@@ -327,7 +328,7 @@ internal static class Program {
 		return true;
 	}
 
-	private static async Task<bool> InitGlobalConfigAndLanguage() {
+	private static async Task<bool> InitGlobalConfigAndLanguage(CancellationToken cancellationToken = default) {
 		string globalConfigFile = ASF.GetFilePath(ASF.EFileType.Config);
 
 		if (string.IsNullOrEmpty(globalConfigFile)) {
@@ -339,11 +340,11 @@ internal static class Program {
 		GlobalConfig? globalConfig;
 
 		if (File.Exists(globalConfigFile)) {
-			(globalConfig, latestJson) = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
+			(globalConfig, latestJson) = await GlobalConfig.Load(globalConfigFile, cancellationToken).ConfigureAwait(false);
 
 			if (globalConfig == null) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorGlobalConfigNotLoaded(globalConfigFile));
-				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay, cancellationToken).ConfigureAwait(false);
 
 				return false;
 			}
@@ -373,7 +374,7 @@ internal static class Program {
 		if (!string.IsNullOrEmpty(latestJson)) {
 			ASF.ArchiLogger.LogGenericWarning(Strings.FormatAutomaticFileMigration(globalConfigFile));
 
-			await SerializableFile.Write(globalConfigFile, latestJson).ConfigureAwait(false);
+			await SerializableFile.Write(globalConfigFile, latestJson, cancellationToken).ConfigureAwait(false);
 
 			ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 		}
@@ -385,7 +386,7 @@ internal static class Program {
 		return true;
 	}
 
-	private static async Task<bool> InitGlobalDatabaseAndServices() {
+	private static async Task<bool> InitGlobalDatabaseAndServices(CancellationToken cancellationToken = default) {
 		string globalDatabaseFile = ASF.GetFilePath(ASF.EFileType.Database);
 
 		if (string.IsNullOrEmpty(globalDatabaseFile)) {
@@ -394,18 +395,18 @@ internal static class Program {
 
 		if (!File.Exists(globalDatabaseFile)) {
 			ASF.ArchiLogger.LogGenericInfo(Strings.Welcome);
-			await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+			await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 			ASF.ArchiLogger.LogGenericWarning(Strings.WarningPrivacyPolicy);
-			await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
+			await Task.Delay(SharedInfo.ShortInformationDelay, cancellationToken).ConfigureAwait(false);
 		}
 
 		ASF.ArchiLogger.LogGenericInfo(Strings.FormatInitializing(nameof(GlobalDatabase)));
 
-		GlobalDatabase? globalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
+		GlobalDatabase? globalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile, cancellationToken).ConfigureAwait(false);
 
 		if (globalDatabase == null) {
 			ASF.ArchiLogger.LogGenericError(Strings.FormatErrorDatabaseInvalid(globalDatabaseFile));
-			await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
+			await Task.Delay(SharedInfo.ShortInformationDelay, cancellationToken).ConfigureAwait(false);
 
 			return false;
 		}
@@ -434,7 +435,7 @@ internal static class Program {
 		return true;
 	}
 
-	private static async Task<bool> InitShutdownSequence(byte exitCode = 0) {
+	private static async Task<bool> InitShutdownSequence(byte exitCode = 0, CancellationToken cancellationToken = default) {
 		if (ShutdownSequenceInitialized) {
 			// We've already initialized shutdown sequence before, we won't allow the caller to init shutdown sequence again
 			// While normally this will be respected, caller might not have any say in this for example because it's the runtime terminating ASF due to fatal exception
@@ -470,19 +471,19 @@ internal static class Program {
 
 		// Sockets created by IPC might still be running for a short while after complete app shutdown
 		// Ensure that IPC is stopped before we finalize shutdown sequence
-		await ArchiKestrel.Stop().ConfigureAwait(false);
+		await ArchiKestrel.Stop(cancellationToken).ConfigureAwait(false);
 
 		// Stop all the active bots so they can disconnect cleanly
 		if (Bot.Bots?.Count > 0) {
 			try {
 				// Stop() function can block due to SK2 sockets, don't forget a maximum delay
-				await Utilities.InParallel(Bot.Bots.Values.Select(static bot => Task.Run(() => bot.Stop(true)))).WaitAsync(TimeSpan.FromSeconds(WebBrowser.MaxTries)).ConfigureAwait(false);
+				await Utilities.InParallel(Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true, cancellationToken), cancellationToken)), cancellationToken).WaitAsync(TimeSpan.FromSeconds(WebBrowser.MaxTries), cancellationToken).ConfigureAwait(false);
 			} catch (TimeoutException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			}
 
 			// Extra second for Steam requests to go through
-			await Task.Delay(1000).ConfigureAwait(false);
+			await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 		}
 
 		// Flush all the pending writes to log files
@@ -543,7 +544,7 @@ internal static class Program {
 		e.SetObserved();
 	}
 
-	private static async Task<bool> ParseArgs(IReadOnlyCollection<string> args) {
+	private static async Task<bool> ParseArgs(IReadOnlyCollection<string> args, CancellationToken cancellationToken = default) {
 		if ((args == null) || (args.Count == 0)) {
 			throw new ArgumentNullException(nameof(args));
 		}
@@ -614,7 +615,7 @@ internal static class Program {
 					} else if (cryptKeyFileNext) {
 						cryptKeyFileNext = false;
 
-						if (!await HandleCryptKeyFileArgument(arg).ConfigureAwait(false)) {
+						if (!await HandleCryptKeyFileArgument(arg, cancellationToken).ConfigureAwait(false)) {
 							return false;
 						}
 					} else if (networkGroupNext) {
@@ -629,7 +630,7 @@ internal static class Program {
 					} else {
 						switch (arg.Length) {
 							case > 16 when arg.StartsWith("--CRYPTKEY-FILE=", StringComparison.OrdinalIgnoreCase):
-								if (!await HandleCryptKeyFileArgument(arg[16..]).ConfigureAwait(false)) {
+								if (!await HandleCryptKeyFileArgument(arg[16..], cancellationToken).ConfigureAwait(false)) {
 									return false;
 								}
 
@@ -664,7 +665,7 @@ internal static class Program {
 		bool noArgumentValueNext() => !cryptKeyNext && !cryptKeyFileNext && !networkGroupNext && !pathNext;
 	}
 
-	private static async Task<bool> ParseEnvironmentVariables() {
+	private static async Task<bool> ParseEnvironmentVariables(CancellationToken cancellationToken = default) {
 		// We're using a single try-catch block here, as a failure for getting one variable will result in the same failure for all other ones
 		try {
 			string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
@@ -684,7 +685,7 @@ internal static class Program {
 			string? envCryptKeyFile = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKeyFile);
 
 			if (!string.IsNullOrEmpty(envCryptKeyFile)) {
-				if (!await HandleCryptKeyFileArgument(envCryptKeyFile).ConfigureAwait(false)) {
+				if (!await HandleCryptKeyFileArgument(envCryptKeyFile, cancellationToken).ConfigureAwait(false)) {
 					return false;
 				}
 			}
@@ -703,8 +704,8 @@ internal static class Program {
 		return true;
 	}
 
-	private static async Task Shutdown(byte exitCode = 0) {
-		if (!await InitShutdownSequence(exitCode).ConfigureAwait(false)) {
+	private static async Task Shutdown(byte exitCode = 0, CancellationToken cancellationToken = default) {
+		if (!await InitShutdownSequence(exitCode, cancellationToken).ConfigureAwait(false)) {
 			return;
 		}
 

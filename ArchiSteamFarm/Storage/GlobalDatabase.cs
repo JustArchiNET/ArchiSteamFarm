@@ -76,7 +76,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 			}
 
 			field = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -91,7 +91,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 			}
 
 			field = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -183,15 +183,15 @@ public sealed class GlobalDatabase : GenericDatabase {
 		base.Dispose(disposing);
 	}
 
-	protected override Task Save() => Save(this);
+	protected override Task Save(CancellationToken cancellationToken = default) => Save(this, cancellationToken);
 
-	internal static async Task<GlobalDatabase?> CreateOrLoad(string filePath) {
+	internal static async Task<GlobalDatabase?> CreateOrLoad(string filePath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
 			GlobalDatabase result = new(filePath);
 
-			Utilities.InBackground(() => Save(result));
+			Utilities.InBackground(() => Save(result, CancellationToken.None));
 
 			return result;
 		}
@@ -199,7 +199,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 		GlobalDatabase? globalDatabase;
 
 		try {
-			string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+			string json = await File.ReadAllTextAsync(filePath, cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(nameof(json)));
@@ -246,7 +246,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 		return result;
 	}
 
-	internal async Task OnPICSChangesRestart(uint currentChangeNumber) {
+	internal async Task OnPICSChangesRestart(uint currentChangeNumber, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 
 		if (Bot.Bots == null) {
@@ -271,7 +271,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 
 		Dictionary<uint, uint> packageIDs = PackagesData.Keys.ToDictionary(static packageID => packageID, _ => currentChangeNumber);
 
-		await RefreshPackages(refreshBot, packageIDs).ConfigureAwait(false);
+		await RefreshPackages(refreshBot, packageIDs, cancellationToken).ConfigureAwait(false);
 	}
 
 	internal void RefreshPackageAccessTokens(IReadOnlyDictionary<uint, ulong> packageAccessTokens) {
@@ -289,18 +289,18 @@ public sealed class GlobalDatabase : GenericDatabase {
 		}
 
 		if (save) {
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
-	internal async Task RefreshPackages(Bot bot, IReadOnlyDictionary<uint, uint> packages) {
+	internal async Task RefreshPackages(Bot bot, IReadOnlyDictionary<uint, uint> packages, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((packages == null) || (packages.Count == 0)) {
 			throw new ArgumentNullException(nameof(packages));
 		}
 
-		await PackagesRefreshSemaphore.WaitAsync().ConfigureAwait(false);
+		await PackagesRefreshSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			DateTime now = DateTime.UtcNow;
@@ -323,7 +323,7 @@ public sealed class GlobalDatabase : GenericDatabase {
 				PackagesData[packageID] = packageData;
 			}
 
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save(CancellationToken.None));
 		} finally {
 			PackagesRefreshSemaphore.Release();
 		}

@@ -182,7 +182,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 	internal void OnNewItemsNotification() => ShouldSendAnnouncementEarlier = true;
 
-	internal async Task OnPersonaState(string? nickname = null, string? avatarHash = null) {
+	internal async Task OnPersonaState(string? nickname = null, string? avatarHash = null, CancellationToken cancellationToken = default) {
 		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
 			return;
 		}
@@ -196,7 +196,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
+		await RequestsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (DateTime.UtcNow < LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL)) {
@@ -252,7 +252,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			List<Asset> inventory;
 
 			try {
-				inventory = await Bot.ArchiHandler.GetMyInventoryAsync().ToListAsync().ConfigureAwait(false);
+				inventory = await Bot.ArchiHandler.GetMyInventoryAsync(cancellationToken: cancellationToken).ToListAsync(cancellationToken).ConfigureAwait(false);
 			} catch (TimeoutException e) {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
 				ShouldSendHeartBeats = false;
@@ -334,7 +334,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			assetsForListing.Sort(static (x, y) => x.Index.CompareTo(y.Index));
 
-			BotCache ??= await BotCache.CreateOrLoad(BotCacheFilePath).ConfigureAwait(false);
+			BotCache ??= await BotCache.CreateOrLoad(BotCacheFilePath, cancellationToken).ConfigureAwait(false);
 
 			string inventoryChecksumBeforeDeduplication = Backend.GenerateChecksumFor(assetsForListing);
 
@@ -352,7 +352,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 						Bot.ArchiLogger.LogGenericInfo(Localization.Strings.FormatListingAnnouncing(Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 						Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
-						Utilities.InBackground(() => OnHeartBeatTimer());
+						Utilities.InBackground(() => OnHeartBeatTimer(), cancellationToken: cancellationToken);
 					}
 
 					return;
@@ -360,7 +360,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			if (!SignedInWithSteam) {
-				HttpStatusCode? signInWithSteam = await ArchiNet.SignInWithSteam(Bot, WebBrowser).ConfigureAwait(false);
+				HttpStatusCode? signInWithSteam = await ArchiNet.SignInWithSteam(Bot, WebBrowser, cancellationToken).ConfigureAwait(false);
 
 				if (signInWithSteam == null) {
 					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -397,7 +397,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					}
 				}
 
-				ObjectResponse<GenericResponse<ImmutableHashSet<SetPart>>>? setPartsResponse = await Backend.GetSetParts(WebBrowser, Bot.SteamID, acceptedMatchableTypes, realAppIDs).ConfigureAwait(false);
+				ObjectResponse<GenericResponse<ImmutableHashSet<SetPart>>>? setPartsResponse = await Backend.GetSetParts(WebBrowser, Bot.SteamID, acceptedMatchableTypes, realAppIDs, cancellationToken).ConfigureAwait(false);
 
 				if (setPartsResponse == null) {
 					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -555,7 +555,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				ShouldSendHeartBeats = true;
 
 				if (triggerImmediately) {
-					Utilities.InBackground(() => OnHeartBeatTimer());
+					Utilities.InBackground(() => OnHeartBeatTimer(), cancellationToken: cancellationToken);
 				}
 
 				// There is a possibility that our inventory has changed even if our announced assets did not, record that
@@ -565,7 +565,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			if ((BotCache.LastAnnouncedAssetsForListing.Count > 0) && !string.IsNullOrEmpty(previousChecksum)) {
-				ObjectResponse<GenericResponse<bool>>? diffCheckResponse = await Backend.CheckAnnounceDiffForListing(WebBrowser, Bot.SteamID, previousChecksum).ConfigureAwait(false);
+				ObjectResponse<GenericResponse<bool>>? diffCheckResponse = await Backend.CheckAnnounceDiffForListing(WebBrowser, Bot.SteamID, previousChecksum, cancellationToken).ConfigureAwait(false);
 
 				if (diffCheckResponse == null) {
 					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -633,9 +633,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 						for (byte i = 0; i < WebBrowser.MaxTries; i++) {
 							if (diffRequestID != Guid.Empty) {
-								diffResponse = await Backend.PollResult(WebBrowser, Bot.SteamID, diffRequestID).ConfigureAwait(false);
+								diffResponse = await Backend.PollResult(WebBrowser, Bot.SteamID, diffRequestID, cancellationToken).ConfigureAwait(false);
 							} else {
-								diffResponse = await Backend.AnnounceDiffForListing(WebBrowser, Bot.SteamID, inventoryAddedChanged, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, previousInventoryState.Values, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
+								diffResponse = await Backend.AnnounceDiffForListing(WebBrowser, Bot.SteamID, inventoryAddedChanged, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, previousInventoryState.Values, previousChecksum, nickname, avatarHash, cancellationToken).ConfigureAwait(false);
 							}
 
 							if (diffResponse == null) {
@@ -742,9 +742,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			for (byte i = 0; i < WebBrowser.MaxTries; i++) {
 				if (announceRequestID != Guid.Empty) {
-					announceResponse = await Backend.PollResult(WebBrowser, Bot.SteamID, announceRequestID).ConfigureAwait(false);
+					announceResponse = await Backend.PollResult(WebBrowser, Bot.SteamID, announceRequestID, cancellationToken).ConfigureAwait(false);
 				} else {
-					announceResponse = await Backend.AnnounceForListing(WebBrowser, Bot.SteamID, assetsForListing, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname, avatarHash).ConfigureAwait(false);
+					announceResponse = await Backend.AnnounceForListing(WebBrowser, Bot.SteamID, assetsForListing, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname, avatarHash, cancellationToken).ConfigureAwait(false);
 				}
 
 				if (announceResponse == null) {

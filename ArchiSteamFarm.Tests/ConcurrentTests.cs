@@ -21,18 +21,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class ConcurrentTests {
+internal sealed class ConcurrentTests : TestContextBase {
+	[UsedImplicitly]
+	public ConcurrentTests(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
+
 	[TestMethod]
 	internal void ConcurrentDictionarySupportsWritingDuringLinq() {
 		ConcurrentDictionary<ushort, bool> collection = [];
@@ -46,7 +51,7 @@ internal sealed class ConcurrentTests {
 				for (ushort i = 10; i < ushort.MaxValue; i++) {
 					collection.TryAdd(i, true);
 				}
-			}, true
+			}, true, CancellationToken
 		);
 
 		foreach (KeyValuePair<ushort, bool> _ in collection.AsLinqThreadSafeEnumerable().OrderBy(static entry => entry.Key)) { }
@@ -65,7 +70,7 @@ internal sealed class ConcurrentTests {
 				for (ushort i = 10; i < ushort.MaxValue; i++) {
 					collection.Add(i);
 				}
-			}, true
+			}, true, CancellationToken
 		);
 
 		foreach (ushort _ in collection.AsLinqThreadSafeEnumerable().OrderBy(static entry => entry)) { }
@@ -84,7 +89,7 @@ internal sealed class ConcurrentTests {
 				for (ushort i = 10; i < ushort.MaxValue; i++) {
 					collection.Add(i);
 				}
-			}, true
+			}, true, CancellationToken
 		);
 
 		foreach (ushort _ in collection.AsLinqThreadSafeEnumerable().OrderBy(static entry => entry)) { }

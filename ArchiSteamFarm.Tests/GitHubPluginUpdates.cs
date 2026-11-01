@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -62,11 +63,11 @@ internal sealed class GitHubPluginUpdates : TestContextBase {
 
 		IGitHubPluginUpdates plugin = new TestGitHubPluginUpdates(version);
 
-		Uri? releaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, GlobalConfig.EUpdateChannel.Stable, false).ConfigureAwait(false);
+		Uri? releaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, GlobalConfig.EUpdateChannel.Stable, false, CancellationToken).ConfigureAwait(false);
 
 		Assert.IsNull(releaseURL);
 
-		Uri? forcedReleaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, GlobalConfig.EUpdateChannel.Stable, true).ConfigureAwait(false);
+		Uri? forcedReleaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, GlobalConfig.EUpdateChannel.Stable, true, CancellationToken).ConfigureAwait(false);
 
 		Assert.IsNotNull(forcedReleaseURL);
 	}
@@ -82,7 +83,7 @@ internal sealed class GitHubPluginUpdates : TestContextBase {
 			Version = version;
 		}
 
-		public Task OnLoaded() => Task.CompletedTask;
+		public Task OnLoaded(CancellationToken cancellationToken = default) => Task.CompletedTask;
 	}
 }
 #pragma warning restore CA1812 // False positive, the class is used during MSTest

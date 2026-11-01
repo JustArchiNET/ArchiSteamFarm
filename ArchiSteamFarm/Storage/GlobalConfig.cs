@@ -31,6 +31,7 @@ using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
@@ -537,7 +538,7 @@ public sealed class GlobalConfig {
 		return Enum.IsDefined(UpdateChannel) ? (true, null) : (false, Strings.FormatErrorConfigPropertyInvalid(nameof(UpdateChannel), UpdateChannel));
 	}
 
-	internal static async Task<(GlobalConfig? GlobalConfig, string? LatestJson)> Load(string filePath) {
+	internal static async Task<(GlobalConfig? GlobalConfig, string? LatestJson)> Load(string filePath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
@@ -548,7 +549,7 @@ public sealed class GlobalConfig {
 		GlobalConfig? globalConfig;
 
 		try {
-			json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+			json = await File.ReadAllTextAsync(filePath, cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(nameof(json)));
@@ -600,13 +601,13 @@ public sealed class GlobalConfig {
 		return (globalConfig, json != latestJson ? latestJson : null);
 	}
 
-	internal static async Task<bool> Write(string filePath, GlobalConfig globalConfig) {
+	internal static async Task<bool> Write(string filePath, GlobalConfig globalConfig, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 		ArgumentNullException.ThrowIfNull(globalConfig);
 
 		string json = globalConfig.ToJsonText(true);
 
-		return await SerializableFile.Write(filePath, json).ConfigureAwait(false);
+		return await SerializableFile.Write(filePath, json, cancellationToken).ConfigureAwait(false);
 	}
 
 	[PublicAPI]

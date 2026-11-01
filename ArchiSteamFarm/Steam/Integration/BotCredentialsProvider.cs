@@ -63,9 +63,9 @@ internal sealed class BotCredentialsProvider : IAuthenticator {
 		return input.Equals("Y", StringComparison.OrdinalIgnoreCase);
 	}
 
-	public async Task<string> GetDeviceCodeAsync(bool previousCodeWasIncorrect) => await ProvideInput(ASF.EUserInputType.TwoFactorAuthentication, previousCodeWasIncorrect).ConfigureAwait(false);
+	public Task<string> GetDeviceCodeAsync(bool previousCodeWasIncorrect) => ProvideInput(ASF.EUserInputType.TwoFactorAuthentication, previousCodeWasIncorrect);
 
-	public async Task<string> GetEmailCodeAsync(string email, bool previousCodeWasIncorrect) => await ProvideInput(ASF.EUserInputType.SteamGuard, previousCodeWasIncorrect).ConfigureAwait(false);
+	public Task<string> GetEmailCodeAsync(string email, bool previousCodeWasIncorrect) => ProvideInput(ASF.EUserInputType.SteamGuard, previousCodeWasIncorrect);
 
 	private async Task<string> ProvideInput(ASF.EUserInputType inputType, bool previousCodeWasIncorrect) {
 		if (!Enum.IsDefined(inputType)) {

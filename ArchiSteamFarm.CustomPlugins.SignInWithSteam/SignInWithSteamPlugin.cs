@@ -24,6 +24,7 @@
 using System;
 using System.Composition;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Plugins.Interfaces;
@@ -40,7 +41,7 @@ internal sealed class SignInWithSteamPlugin : IPlugin {
 	[JsonInclude]
 	public Version Version => typeof(SignInWithSteamPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-	public Task OnLoaded() {
+	public Task OnLoaded(CancellationToken cancellationToken = default) {
 		ASF.ArchiLogger.LogGenericInfo("Loaded!");
 
 		return Task.CompletedTask;

@@ -75,7 +75,9 @@ internal sealed class ApiAuthenticationMiddleware {
 		ArgumentNullException.ThrowIfNull(context);
 		ArgumentNullException.ThrowIfNull(jsonOptions);
 
-		(HttpStatusCode statusCode, bool permanent) = await GetAuthenticationStatus(context).ConfigureAwait(false);
+		CancellationToken cancellationToken = context.RequestAborted;
+
+		(HttpStatusCode statusCode, bool permanent) = await GetAuthenticationStatus(context, cancellationToken).ConfigureAwait(false);
 
 		if (statusCode == HttpStatusCode.OK) {
 			await Next(context).ConfigureAwait(false);
@@ -87,7 +89,7 @@ internal sealed class ApiAuthenticationMiddleware {
 
 		StatusCodeResponse statusCodeResponse = new(statusCode, permanent);
 
-		await context.Response.WriteAsJsonAsync(new GenericResponse<StatusCodeResponse>(false, statusCodeResponse), jsonOptions.Value.JsonSerializerOptions).ConfigureAwait(false);
+		await context.Response.WriteAsJsonAsync(new GenericResponse<StatusCodeResponse>(false, statusCodeResponse), jsonOptions.Value.JsonSerializerOptions, cancellationToken).ConfigureAwait(false);
 	}
 
 	internal static void ClearFailedAuthorizations(object? state = null) => FailedAuthorizations.Clear();
@@ -104,7 +106,7 @@ internal sealed class ApiAuthenticationMiddleware {
 		return FailedAuthorizations.TryRemove(ipAddress, out _);
 	}
 
-	private async Task<(HttpStatusCode StatusCode, bool Permanent)> GetAuthenticationStatus(HttpContext context) {
+	private async Task<(HttpStatusCode StatusCode, bool Permanent)> GetAuthenticationStatus(HttpContext context, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(context);
 
 		IPAddress? clientIP = context.Connection.RemoteIpAddress;
@@ -155,7 +157,7 @@ internal sealed class ApiAuthenticationMiddleware {
 
 		while (true) {
 			if (AuthorizationTasks.TryGetValue(clientIP, out Task? task)) {
-				await task.ConfigureAwait(false);
+				await task.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 				continue;
 			}

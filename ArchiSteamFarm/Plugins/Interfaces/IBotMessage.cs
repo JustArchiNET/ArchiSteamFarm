@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;
@@ -41,6 +42,7 @@ public interface IBotMessage : IPlugin {
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="steamID">64-bit long unsigned integer of steamID executing the command.</param>
 	/// <param name="message">Message in its raw format.</param>
+	/// <param name="cancellationToken">Cancellation token.</param>
 	/// <returns>Response to the message, or null/empty (as the task value) for silence.</returns>
-	public Task<string?> OnBotMessage(Bot bot, ulong steamID, string message);
+	public Task<string?> OnBotMessage(Bot bot, ulong steamID, string message, CancellationToken cancellationToken = default);
 }

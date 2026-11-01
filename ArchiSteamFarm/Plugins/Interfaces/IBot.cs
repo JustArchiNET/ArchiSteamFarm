@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
@@ -40,12 +41,14 @@ public interface IBot : IPlugin {
 	///     Doing so will allow the garbage collector to dispose the bot afterwards, refraining from doing so will create a "memory leak" by keeping the reference alive.
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
-	public Task OnBotDestroy(Bot bot);
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnBotDestroy(Bot bot, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	///     ASF will call this method after creating the bot object, e.g. after config creation.
 	///     Bot config is not yet available at this stage. This function will execute only once for every bot object.
 	/// </summary>
 	/// <param name="bot">Bot object related to this callback.</param>
-	public Task OnBotInit(Bot bot);
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnBotInit(Bot bot, CancellationToken cancellationToken = default);
 }

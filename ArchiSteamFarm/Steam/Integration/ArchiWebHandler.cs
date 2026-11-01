@@ -30,6 +30,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.Json.Nodes;
 using System.Threading;
@@ -100,7 +101,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID) {
+	public async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/accept");
@@ -115,7 +116,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		ObjectResponse<TradeOfferAcceptResponse>? response = null;
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			response = await UrlPostToJsonObjectWithSession<TradeOfferAcceptResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+			response = await UrlPostToJsonObjectWithSession<TradeOfferAcceptResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				return (false, false);
@@ -140,30 +141,30 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<bool> CancelTradeOffer(ulong tradeID) {
+	public async Task<bool> CancelTradeOffer(ulong tradeID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/cancel");
 
-		return await UrlPostWithSession(request).ConfigureAwait(false);
+		return await UrlPostWithSession(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
-	public async Task<bool> DeclineTradeOffer(ulong tradeID) {
+	public async Task<bool> DeclineTradeOffer(ulong tradeID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/decline");
 
-		return await UrlPostWithSession(request).ConfigureAwait(false);
+		return await UrlPostWithSession(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
-	public async Task<string?> GetAbsoluteProfileURL(bool waitForInitialization = true) {
+	public async Task<string?> GetAbsoluteProfileURL(bool waitForInitialization = true, CancellationToken cancellationToken = default) {
 		if (waitForInitialization && !Initialized) {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -177,10 +178,10 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<ImmutableHashSet<BoosterCreatorEntry>?> GetBoosterCreatorEntries() {
+	public async Task<ImmutableHashSet<BoosterCreatorEntry>?> GetBoosterCreatorEntries(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamCommunityURL, "/tradingcards/boostercreator?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content == null) {
 			return null;
@@ -236,10 +237,10 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HashSet<uint>?> GetBoosterEligibility() {
+	public async Task<HashSet<uint>?> GetBoosterEligibility(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamCommunityURL, "/my/ajaxgetboostereligibility?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content == null) {
 			return null;
@@ -283,7 +284,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	///     This method should be used exclusively for foreign inventories (other users), but in special circumstances it can be used for fetching bot's own inventory as well.
 	/// </remarks>
 	[PublicAPI]
-	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, ushort itemsCountPerRequest = MaxItemsInSingleInventoryRequest, string? language = null) {
+	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, ushort itemsCountPerRequest = MaxItemsInSingleInventoryRequest, string? language = null, [EnumeratorCancellation] CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(itemsCountPerRequest);
@@ -293,7 +294,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-					await Task.Delay(1000).ConfigureAwait(false);
+					await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 				}
 
 				if (!Initialized) {
@@ -326,17 +327,17 @@ public sealed class ArchiWebHandler : IDisposable {
 		while (true) {
 			Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?l={language}&count={itemsCountPerRequest}{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
 
-			await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
+			await ASF.InventorySemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 			ObjectResponse<InventoryResponse>? response = null;
 
 			try {
 				for (byte i = 0; (i < WebBrowser.MaxTries) && (response?.Content is not { Result: EResult.OK } || !response.StatusCode.IsSuccessCode()); i++) {
 					if ((i > 0) && (rateLimitingDelay > 0)) {
-						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+						await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 					}
 
-					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.SteamWafWorkarounds, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
+					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.SteamWafWorkarounds, rateLimitingDelay: rateLimitingDelay, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 					if (response == null) {
 						throw new HttpRequestException(Strings.FormatErrorObjectIsNull(nameof(response)));
@@ -380,7 +381,7 @@ public sealed class ArchiWebHandler : IDisposable {
 					ASF.InventorySemaphore.Release();
 				} else {
 					Utilities.InBackground(async () => {
-							await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+							await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 							ASF.InventorySemaphore.Release();
 						}
 					);
@@ -448,10 +449,10 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<ImmutableDictionary<uint, InventoryAppData>?> GetInventoryContextData() {
+	public async Task<ImmutableDictionary<uint, InventoryAppData>?> GetInventoryContextData(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamCommunityURL, "/my/inventory?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		IElement? htmlNode = response?.Content?.QuerySelectorAll("script[type='text/javascript']").FirstOrDefault(static scriptNode => scriptNode.TextContent.Contains("g_rgAppContextData = {", StringComparison.Ordinal));
 
@@ -501,7 +502,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HashSet<TradeOffer>?> GetTradeOffers(bool? activeOffers = null, bool? receivedOffers = null, bool? sentOffers = null, bool? withDescriptions = null) {
+	public async Task<HashSet<TradeOffer>?> GetTradeOffers(bool? activeOffers = null, bool? receivedOffers = null, bool? sentOffers = null, bool? withDescriptions = null, CancellationToken cancellationToken = default) {
 		if ((receivedOffers == false) && (sentOffers == false)) {
 			throw new ArgumentException($"{nameof(receivedOffers)} && {nameof(sentOffers)}");
 		}
@@ -548,10 +549,10 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (tradeOffersResponse == null); i++) {
 			if (i > 0) {
-				await Task.Delay(i * 1000).ConfigureAwait(false);
+				await Task.Delay(i * 1000, cancellationToken).ConfigureAwait(false);
 			}
 
-			ObjectResponse<APIWrappedResponse<TradeOffersResponse>>? response = await WebLimitRequest(Bot.SteamConfiguration.WebAPIBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false)).ConfigureAwait(false);
+			ObjectResponse<APIWrappedResponse<TradeOffersResponse>>? response = await WebLimitRequest(Bot.SteamConfiguration.WebAPIBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				continue;
@@ -629,7 +630,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<bool> JoinGroup(ulong groupID) {
+	public async Task<bool> JoinGroup(ulong groupID, CancellationToken cancellationToken = default) {
 		if ((groupID == 0) || !new SteamID(groupID).IsClanAccount) {
 			throw new ArgumentOutOfRangeException(nameof(groupID));
 		}
@@ -639,11 +640,11 @@ public sealed class ArchiWebHandler : IDisposable {
 		// Extra entry for sessionID
 		Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "action", "join" } };
 
-		return await UrlPostWithSession(request, data: data, session: ESession.CamelCase).ConfigureAwait(false);
+		return await UrlPostWithSession(request, data: data, session: ESession.CamelCase, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, HashSet<ulong>? TradeOfferIDs, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Asset>? itemsToGive = null, IReadOnlyCollection<Asset>? itemsToReceive = null, string? token = null, string? customMessage = null, bool forcedSingleOffer = false, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+	public async Task<(bool Success, HashSet<ulong>? TradeOfferIDs, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Asset>? itemsToGive = null, IReadOnlyCollection<Asset>? itemsToReceive = null, string? token = null, string? customMessage = null, bool forcedSingleOffer = false, ushort itemsPerTrade = Trading.MaxItemsPerTrade, CancellationToken cancellationToken = default) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -715,7 +716,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			ObjectResponse<TradeOfferSendResponse>? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+				response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				if (response == null) {
 					return (false, tradeOfferIDs, mobileTradeOfferIDs);
@@ -772,10 +773,10 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (checkSessionPreemptively) {
 			// Check session preemptively as this request might not get redirected to expiration
-			bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+			bool? sessionExpired = await IsSessionExpired(cancellationToken).ConfigureAwait(false);
 
 			if (sessionExpired.GetValueOrDefault(true)) {
-				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+				if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 					return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
@@ -815,7 +816,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
-			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+			if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 				return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
@@ -826,7 +827,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -854,10 +855,10 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (checkSessionPreemptively) {
 			// Check session preemptively as this request might not get redirected to expiration
-			bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+			bool? sessionExpired = await IsSessionExpired(cancellationToken).ConfigureAwait(false);
 
 			if (sessionExpired.GetValueOrDefault(true)) {
-				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+				if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 					return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
@@ -897,7 +898,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
-			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+			if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 				return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
@@ -908,7 +909,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -936,10 +937,10 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (checkSessionPreemptively) {
 			// Check session preemptively as this request might not get redirected to expiration
-			bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+			bool? sessionExpired = await IsSessionExpired(cancellationToken).ConfigureAwait(false);
 
 			if (sessionExpired.GetValueOrDefault(true)) {
-				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+				if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 					return await UrlHeadWithSession(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
@@ -979,7 +980,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
-			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+			if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 				return await UrlHeadWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
@@ -990,7 +991,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -1023,10 +1024,10 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (checkSessionPreemptively) {
 			// Check session preemptively as this request might not get redirected to expiration
-			bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+			bool? sessionExpired = await IsSessionExpired(cancellationToken).ConfigureAwait(false);
 
 			if (sessionExpired.GetValueOrDefault(true)) {
-				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+				if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 					return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
@@ -1089,7 +1090,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
-			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+			if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 				return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
@@ -1100,7 +1101,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -1133,10 +1134,10 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (checkSessionPreemptively) {
 			// Check session preemptively as this request might not get redirected to expiration
-			bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+			bool? sessionExpired = await IsSessionExpired(cancellationToken).ConfigureAwait(false);
 
 			if (sessionExpired.GetValueOrDefault(true)) {
-				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+				if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 					return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
@@ -1199,7 +1200,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
-			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+			if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 				return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
@@ -1210,7 +1211,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -1243,10 +1244,10 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (checkSessionPreemptively) {
 			// Check session preemptively as this request might not get redirected to expiration
-			bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+			bool? sessionExpired = await IsSessionExpired(cancellationToken).ConfigureAwait(false);
 
 			if (sessionExpired.GetValueOrDefault(true)) {
-				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+				if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 					return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
@@ -1312,7 +1313,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
-			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+			if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 				return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
@@ -1323,7 +1324,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -1356,10 +1357,10 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (checkSessionPreemptively) {
 			// Check session preemptively as this request might not get redirected to expiration
-			bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+			bool? sessionExpired = await IsSessionExpired(cancellationToken).ConfigureAwait(false);
 
 			if (sessionExpired.GetValueOrDefault(true)) {
-				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+				if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 					return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
@@ -1422,7 +1423,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
-			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
+			if (allowSessionRefresh && await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 				return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
@@ -1433,7 +1434,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri).ConfigureAwait(false) && !await IsProfileUri(request).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -1494,7 +1495,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	internal async Task<bool> AcceptDigitalGiftCard(ulong giftCardID) {
+	internal async Task<bool> AcceptDigitalGiftCard(ulong giftCardID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(giftCardID);
 
 		Uri request = new(SteamStoreURL, "/gifts/0/resolvegiftcard");
@@ -1505,7 +1506,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "giftcardid", giftCardID.ToString(CultureInfo.InvariantCulture) }
 		};
 
-		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
+		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content == null) {
 			return false;
@@ -1520,7 +1521,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return true;
 	}
 
-	internal async Task<bool> AcknowledgeTradeRestrictions() {
+	internal async Task<bool> AcknowledgeTradeRestrictions(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamCommunityURL, "/trade/new/acknowledge");
 
 		// Extra entry for sessionID
@@ -1528,10 +1529,10 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "message", "1" }
 		};
 
-		return await UrlPostWithSession(request, data: data).ConfigureAwait(false);
+		return await UrlPostWithSession(request, data: data, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
-	internal async Task<(EResult Result, EPurchaseResultDetail PurchaseResult)> AddFreeLicense(uint subID) {
+	internal async Task<(EResult Result, EPurchaseResultDetail PurchaseResult)> AddFreeLicense(uint subID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(subID);
 
 		Uri request = new(SteamStoreURL, $"/freelicense/addfreelicense/{subID}");
@@ -1541,7 +1542,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "ajax", "true" }
 		};
 
-		ObjectResponse<JsonNode>? response = await UrlPostToJsonObjectWithSession<JsonNode>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+		ObjectResponse<JsonNode>? response = await UrlPostToJsonObjectWithSession<JsonNode>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return (EResult.Timeout, EPurchaseResultDetail.Timeout);
@@ -1605,10 +1606,10 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	internal async Task<bool> ChangePrivacySettings(UserPrivacy userPrivacy) {
+	internal async Task<bool> ChangePrivacySettings(UserPrivacy userPrivacy, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(userPrivacy);
 
-		string? profileURL = await GetAbsoluteProfileURL().ConfigureAwait(false);
+		string? profileURL = await GetAbsoluteProfileURL(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(profileURL)) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1624,7 +1625,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "Privacy", userPrivacy.Settings.ToJsonText() }
 		};
 
-		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
+		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content == null) {
 			return false;
@@ -1639,7 +1640,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return true;
 	}
 
-	internal async Task<HashSet<uint>?> GetAppList() {
+	internal async Task<HashSet<uint>?> GetAppList(CancellationToken cancellationToken = default) {
 		string? accessToken = Bot.AccessToken;
 
 		if (string.IsNullOrEmpty(accessToken)) {
@@ -1668,7 +1669,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 				if ((i > 0) && (WebLimiterDelay > 0)) {
-					await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
+					await Task.Delay(WebLimiterDelay, cancellationToken).ConfigureAwait(false);
 				}
 
 				if (Debugging.IsUserDebugging) {
@@ -1681,6 +1682,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await steamAppsService.CallAsync(method, endpoint, args: arguments).ConfigureAwait(false)
+						, cancellationToken
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1727,25 +1729,25 @@ public sealed class ArchiWebHandler : IDisposable {
 		return result;
 	}
 
-	internal async Task<IDocument?> GetBadgePage(byte page, byte maxTries = WebBrowser.MaxTries) {
+	internal async Task<IDocument?> GetBadgePage(byte page, byte maxTries = WebBrowser.MaxTries, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(page);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 
 		Uri request = new(SteamCommunityURL, $"/my/badges?l=english&p={page}");
 
-		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false, maxTries: maxTries).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false, maxTries: maxTries, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content;
 	}
 
-	internal async Task<byte> GetCardCountForGame(uint appID) {
+	internal async Task<byte> GetCardCountForGame(uint appID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		if (ASF.GlobalDatabase?.CardCountsPerGame.TryGetValue(appID, out byte result) == true) {
 			return result;
 		}
 
-		using IDocument? htmlDocument = await GetGameCardsPage(appID).ConfigureAwait(false);
+		using IDocument? htmlDocument = await GetGameCardsPage(appID, cancellationToken).ConfigureAwait(false);
 
 		if (htmlDocument == null) {
 			Bot.ArchiLogger.LogNullError(htmlDocument);
@@ -1768,7 +1770,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return result;
 	}
 
-	internal async Task<byte?> GetCombinedTradeHoldDurationAgainstUser(ulong steamID, string? tradeToken = null) {
+	internal async Task<byte?> GetCombinedTradeHoldDurationAgainstUser(ulong steamID, string? tradeToken = null, CancellationToken cancellationToken = default) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -1799,7 +1801,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 			if ((i > 0) && (WebLimiterDelay > 0)) {
-				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
+				await Task.Delay(WebLimiterDelay, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (Debugging.IsUserDebugging) {
@@ -1812,6 +1814,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 					// ReSharper disable once AccessToDisposedClosure
 					async () => await econService.CallAsync(method, endpoint, args: arguments).ConfigureAwait(false)
+					, cancellationToken
 				).ConfigureAwait(false);
 			} catch (TaskCanceledException e) {
 				Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1837,7 +1840,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return resultInSeconds == 0 ? (byte) 0 : (byte) (resultInSeconds / 86400);
 	}
 
-	internal async Task<ConfirmationsResponse?> GetConfirmations(string deviceID, string confirmationHash, ulong time) {
+	internal async Task<ConfirmationsResponse?> GetConfirmations(string deviceID, string confirmationHash, ulong time, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(deviceID);
 		ArgumentException.ThrowIfNullOrEmpty(confirmationHash);
 		ArgumentOutOfRangeException.ThrowIfZero(time);
@@ -1846,7 +1849,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -1860,22 +1863,22 @@ public sealed class ArchiWebHandler : IDisposable {
 		// It's unknown what exactly causes those problems, but restart of the bot fixes those in almost all cases
 		// Normally this wouldn't make any sense, but let's ensure that we've refreshed our session recently as a possible workaround
 		if (DateTime.UtcNow - SessionValidUntil > TimeSpan.FromMinutes(5)) {
-			if (!await RefreshSession().ConfigureAwait(false)) {
+			if (!await RefreshSession(cancellationToken).ConfigureAwait(false)) {
 				return null;
 			}
 		}
 
 		Uri request = new(SteamCommunityURL, $"/mobileconf/getlist?a={Bot.SteamID}&k={Uri.EscapeDataString(confirmationHash)}&l=english&m=react&p={Uri.EscapeDataString(deviceID)}&t={time}&tag=conf");
 
-		ObjectResponse<ConfirmationsResponse>? response = await UrlGetToJsonObjectWithSession<ConfirmationsResponse>(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false).ConfigureAwait(false);
+		ObjectResponse<ConfirmationsResponse>? response = await UrlGetToJsonObjectWithSession<ConfirmationsResponse>(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content;
 	}
 
-	internal async Task<HashSet<ulong>?> GetDigitalGiftCards() {
+	internal async Task<HashSet<ulong>?> GetDigitalGiftCards(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamStoreURL, "/gifts?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content == null) {
 			return null;
@@ -1910,10 +1913,10 @@ public sealed class ArchiWebHandler : IDisposable {
 		return results;
 	}
 
-	internal async Task<HashSet<ulong>?> GetFamilySharingSteamIDs() {
+	internal async Task<HashSet<ulong>?> GetFamilySharingSteamIDs(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamStoreURL, "/account/managedevices?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content == null) {
 			return null;
@@ -1948,30 +1951,30 @@ public sealed class ArchiWebHandler : IDisposable {
 		return result;
 	}
 
-	internal async Task<IDocument?> GetGameCardsPage(uint appID) {
+	internal async Task<IDocument?> GetGameCardsPage(uint appID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		Uri request = new(SteamCommunityURL, $"/my/gamecards/{appID}?l=english");
 
-		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content;
 	}
 
-	internal async Task<StoreUserData?> GetStoreUserData() {
+	internal async Task<StoreUserData?> GetStoreUserData(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamStoreURL, "/dynamicstore/userdata?l=english");
 
-		ObjectResponse<StoreUserData>? response = await UrlGetToJsonObjectWithSession<StoreUserData>(request).ConfigureAwait(false);
+		ObjectResponse<StoreUserData>? response = await UrlGetToJsonObjectWithSession<StoreUserData>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content;
 	}
 
-	internal async Task<byte?> GetTradeHoldDurationForTrade(ulong tradeID) {
+	internal async Task<byte?> GetTradeHoldDurationForTrade(ulong tradeID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		IElement? htmlNode = response?.Content?.QuerySelector("div[class='pagecontent'] > script");
 
@@ -2019,7 +2022,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return result;
 	}
 
-	internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, ulong time, ulong confirmationID, ulong confirmationKey, bool accept) {
+	internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, ulong time, ulong confirmationID, ulong confirmationKey, bool accept, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(deviceID);
 		ArgumentException.ThrowIfNullOrEmpty(confirmationHash);
 		ArgumentOutOfRangeException.ThrowIfZero(time);
@@ -2030,7 +2033,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -2042,12 +2045,12 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Uri request = new(SteamCommunityURL, $"/mobileconf/ajaxop?a={Bot.SteamID}&cid={confirmationID}&ck={confirmationKey}&k={Uri.EscapeDataString(confirmationHash)}&l=english&m=react&op={(accept ? "allow" : "cancel")}&p={Uri.EscapeDataString(deviceID)}&t={time}&tag=conf");
 
-		ObjectResponse<BooleanResponse>? response = await UrlGetToJsonObjectWithSession<BooleanResponse>(request).ConfigureAwait(false);
+		ObjectResponse<BooleanResponse>? response = await UrlGetToJsonObjectWithSession<BooleanResponse>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content?.Success;
 	}
 
-	internal async Task<bool?> HandleConfirmations(string deviceID, string confirmationHash, ulong time, IReadOnlyCollection<Confirmation> confirmations, bool accept) {
+	internal async Task<bool?> HandleConfirmations(string deviceID, string confirmationHash, ulong time, IReadOnlyCollection<Confirmation> confirmations, bool accept, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(deviceID);
 		ArgumentException.ThrowIfNullOrEmpty(confirmationHash);
 		ArgumentOutOfRangeException.ThrowIfZero(time);
@@ -2060,7 +2063,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -2090,12 +2093,12 @@ public sealed class ArchiWebHandler : IDisposable {
 			data.Add(new KeyValuePair<string, string>("ck[]", confirmation.Nonce.ToString(CultureInfo.InvariantCulture)));
 		}
 
-		ObjectResponse<BooleanResponse>? response = await UrlPostToJsonObjectWithSession<BooleanResponse>(request, data: data).ConfigureAwait(false);
+		ObjectResponse<BooleanResponse>? response = await UrlPostToJsonObjectWithSession<BooleanResponse>(request, data: data, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content?.Success;
 	}
 
-	internal async Task<bool> Init(ulong steamID, EUniverse universe, string accessToken, string? parentalCode = null) {
+	internal async Task<bool> Init(ulong steamID, EUniverse universe, string accessToken, string? parentalCode = null, CancellationToken cancellationToken = default) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -2146,7 +2149,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		// Unlock Steam Parental if needed
 		if (!string.IsNullOrEmpty(parentalCode)) {
-			if (!await UnlockParentalAccount(parentalCode).ConfigureAwait(false)) {
+			if (!await UnlockParentalAccount(parentalCode, cancellationToken).ConfigureAwait(false)) {
 				return false;
 			}
 		}
@@ -2158,7 +2161,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return true;
 	}
 
-	internal async Task MarkInventory() {
+	internal async Task MarkInventory(CancellationToken cancellationToken = default) {
 		if (ASF.InventorySemaphore == null) {
 			throw new InvalidOperationException(nameof(ASF.InventorySemaphore));
 		}
@@ -2177,20 +2180,20 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		int rateLimitingDelay = (ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay) * 1000;
 
-		await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
+		await ASF.InventorySemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			lock (ASF.InventorySemaphore) {
 				MarkingInventoryScheduled = false;
 			}
 
-			await UrlHeadWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, rateLimitingDelay: rateLimitingDelay).ConfigureAwait(false);
+			await UrlHeadWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, rateLimitingDelay: rateLimitingDelay, cancellationToken: cancellationToken).ConfigureAwait(false);
 		} finally {
 			if (rateLimitingDelay == 0) {
 				ASF.InventorySemaphore.Release();
 			} else {
 				Utilities.InBackground(async () => {
-						await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+						await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 						ASF.InventorySemaphore.Release();
 					}
 				);
@@ -2198,17 +2201,17 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	internal async Task MarkSentTrades() {
+	internal async Task MarkSentTrades(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamCommunityURL, "/my/tradeoffers/sent");
 
-		await UrlHeadWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false).ConfigureAwait(false);
+		await UrlHeadWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	internal void OnDisconnected() => Initialized = false;
 
 	internal void OnVanityURLChanged(string? vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
 
-	internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)?> RedeemWalletKey(string key) {
+	internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)?> RedeemWalletKey(string key, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		Uri request = new(SteamStoreURL, "/account/ajaxredeemwalletcode");
@@ -2216,7 +2219,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		// Extra entry for sessionID
 		Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "wallet_code", key } };
 
-		ObjectResponse<RedeemWalletResponse>? response = await UrlPostToJsonObjectWithSession<RedeemWalletResponse>(request, data: data).ConfigureAwait(false);
+		ObjectResponse<RedeemWalletResponse>? response = await UrlPostToJsonObjectWithSession<RedeemWalletResponse>(request, data: data, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content == null) {
 			return null;
@@ -2230,7 +2233,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return (EResult.OK, EPurchaseResultDetail.NoDetail, response.Content.BalanceText);
 	}
 
-	internal async Task<EResult> RemoveLicense(uint subID) {
+	internal async Task<EResult> RemoveLicense(uint subID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(subID);
 
 		Uri request = new(SteamStoreURL, "/account/removelicense");
@@ -2240,16 +2243,16 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "packageid", subID.ToString(CultureInfo.InvariantCulture) }
 		};
 
-		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
+		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content?.Result ?? EResult.Timeout;
 	}
 
-	internal async Task<bool> UnpackBooster(uint appID, ulong itemID) {
+	internal async Task<bool> UnpackBooster(uint appID, ulong itemID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(itemID);
 
-		string? profileURL = await GetAbsoluteProfileURL().ConfigureAwait(false);
+		string? profileURL = await GetAbsoluteProfileURL(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(profileURL)) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -2265,15 +2268,15 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "communityitemid", itemID.ToString(CultureInfo.InvariantCulture) }
 		};
 
-		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
+		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content?.Result == EResult.OK;
 	}
 
-	private async Task<bool> IsProfileUri(Uri uri, bool waitForInitialization = true) {
+	private async Task<bool> IsProfileUri(Uri uri, bool waitForInitialization = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(uri);
 
-		string? profileURL = await GetAbsoluteProfileURL(waitForInitialization).ConfigureAwait(false);
+		string? profileURL = await GetAbsoluteProfileURL(waitForInitialization, cancellationToken).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(profileURL)) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -2284,7 +2287,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return uri.AbsolutePath.Equals(profileURL, StringComparison.OrdinalIgnoreCase);
 	}
 
-	private async Task<bool?> IsSessionExpired() {
+	private async Task<bool?> IsSessionExpired(CancellationToken cancellationToken = default) {
 		DateTime triggeredAt = DateTime.UtcNow;
 
 		if (triggeredAt <= SessionValidUntil) {
@@ -2292,7 +2295,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return false;
 		}
 
-		await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+		await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (triggeredAt <= SessionValidUntil) {
@@ -2313,7 +2316,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			// Lastly, it should be a request that is preferably generic enough as a routine check, not something specialized and targetted, to make it very clear that we're just checking if session is up, and to further aid internal dependencies specified above by rendering as general Steam info as possible
 			Uri request = new(SteamStoreURL, "/account");
 
-			BasicResponse? response = await WebLimitRequest(SteamStoreURL, async () => await WebBrowser.UrlHead(request, rateLimitingDelay: WebLimiterDelay).ConfigureAwait(false)).ConfigureAwait(false);
+			BasicResponse? response = await WebLimitRequest(SteamStoreURL, async () => await WebBrowser.UrlHead(request, rateLimitingDelay: WebLimiterDelay, cancellationToken: cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -2344,7 +2347,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return uri.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase) || uri.Host.Equals("lostauth", StringComparison.OrdinalIgnoreCase);
 	}
 
-	private async Task<bool> RefreshSession() {
+	private async Task<bool> RefreshSession(CancellationToken cancellationToken = default) {
 		if (!Bot.IsConnectedAndLoggedOn) {
 			return false;
 		}
@@ -2353,7 +2356,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		DateTime triggeredAt = DateTime.UtcNow;
 
-		await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+		await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if ((triggeredAt <= SessionValidUntil) && (SessionValidUntil > previousSessionValidUntil)) {
@@ -2374,7 +2377,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.RefreshingOurSession);
-			bool result = await Bot.RefreshWebSession(true).ConfigureAwait(false);
+			bool result = await Bot.RefreshWebSession(true, cancellationToken).ConfigureAwait(false);
 
 			DateTime now = DateTime.UtcNow;
 
@@ -2403,14 +2406,14 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	private async Task<bool> UnlockParentalAccount(string parentalCode) {
+	private async Task<bool> UnlockParentalAccount(string parentalCode, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(parentalCode);
 
 		Bot.ArchiLogger.LogGenericInfo(Strings.UnlockingParentalAccount);
 
 		bool[] results = await Task.WhenAll(
-			UnlockParentalAccountForService(SteamCommunityURL, parentalCode),
-			UnlockParentalAccountForService(SteamStoreURL, parentalCode)
+			UnlockParentalAccountForService(SteamCommunityURL, parentalCode, cancellationToken: cancellationToken),
+			UnlockParentalAccountForService(SteamStoreURL, parentalCode, cancellationToken: cancellationToken)
 		).ConfigureAwait(false);
 
 		if (results.Any(static result => !result)) {
@@ -2424,7 +2427,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return true;
 	}
 
-	private async Task<bool> UnlockParentalAccountForService(Uri service, string parentalCode, byte maxTries = WebBrowser.MaxTries) {
+	private async Task<bool> UnlockParentalAccountForService(Uri service, string parentalCode, byte maxTries = WebBrowser.MaxTries, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(service);
 		ArgumentException.ThrowIfNullOrEmpty(parentalCode);
 
@@ -2451,7 +2454,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		};
 
 		// This request doesn't go through UrlPostRetryWithSession as we have no access to session refresh capability (this is in fact session initialization)
-		BasicResponse? response = await WebLimitRequest(service, async () => await WebBrowser.UrlPost(request, data: data, referer: service, rateLimitingDelay: WebLimiterDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		BasicResponse? response = await WebLimitRequest(service, async () => await WebBrowser.UrlPost(request, data: data, referer: service, rateLimitingDelay: WebLimiterDelay, cancellationToken: cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if ((response == null) || IsSessionExpiredUri(response.FinalUri)) {
 			// There is no session refresh capability at this stage
@@ -2459,10 +2462,10 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (await IsProfileUri(response.FinalUri, false).ConfigureAwait(false)) {
+		if (await IsProfileUri(response.FinalUri, false, cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
-			return await UnlockParentalAccountForService(service, parentalCode, --maxTries).ConfigureAwait(false);
+			return await UnlockParentalAccountForService(service, parentalCode, --maxTries, cancellationToken).ConfigureAwait(false);
 		}
 
 		return true;

@@ -33,6 +33,7 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
@@ -487,13 +488,13 @@ public sealed class BotConfig {
 	public bool ShouldSerializeWebProxyUsername() => !Saving || (WebProxyUsername != DefaultWebProxyUsername);
 
 	[PublicAPI]
-	public static async Task<bool> Write(string filePath, BotConfig botConfig) {
+	public static async Task<bool> Write(string filePath, BotConfig botConfig, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 		ArgumentNullException.ThrowIfNull(botConfig);
 
 		string json = botConfig.ToJsonText(true);
 
-		return await SerializableFile.Write(filePath, json).ConfigureAwait(false);
+		return await SerializableFile.Write(filePath, json, cancellationToken).ConfigureAwait(false);
 	}
 
 	internal (bool Valid, string? ErrorMessage) CheckValidation() {
@@ -610,7 +611,7 @@ public sealed class BotConfig {
 		return (UserInterfaceMode < EUIMode.VGUI) || !Enum.IsDefined(UserInterfaceMode) ? (false, Strings.FormatErrorConfigPropertyInvalid(nameof(UserInterfaceMode), UserInterfaceMode)) : (true, null);
 	}
 
-	internal async Task<string?> GetDecryptedSteamPassword() {
+	internal async Task<string?> GetDecryptedSteamPassword(CancellationToken cancellationToken = default) {
 		if (string.IsNullOrEmpty(SteamPassword)) {
 			return null;
 		}
@@ -620,7 +621,7 @@ public sealed class BotConfig {
 			return SteamPassword;
 		}
 
-		string? result = await ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword).ConfigureAwait(false);
+		string? result = await ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword, cancellationToken).ConfigureAwait(false);
 
 		if (string.IsNullOrEmpty(result)) {
 			ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(SteamPassword)));
@@ -631,7 +632,7 @@ public sealed class BotConfig {
 		return result;
 	}
 
-	internal static async Task<(BotConfig? BotConfig, string? LatestJson)> Load(string filePath) {
+	internal static async Task<(BotConfig? BotConfig, string? LatestJson)> Load(string filePath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
@@ -642,7 +643,7 @@ public sealed class BotConfig {
 		BotConfig? botConfig;
 
 		try {
-			json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+			json = await File.ReadAllTextAsync(filePath, cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(nameof(json)));

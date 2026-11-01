@@ -51,14 +51,14 @@ internal sealed class SerializableFile : TestContextBase {
 		Assert.IsFalse(File.Exists(tempFileName));
 
 		try {
-			await Write(tempFileName, expectedFileContent).ConfigureAwait(false);
+			await Write(tempFileName, expectedFileContent, CancellationToken).ConfigureAwait(false);
 
 			Assert.IsTrue(File.Exists(tempFileName));
 			Assert.AreEqual(expectedFileContent, await File.ReadAllTextAsync(tempFileName, CancellationToken).ConfigureAwait(false));
 
 			expectedFileContent += "-2";
 
-			await Write(tempFileName, expectedFileContent).ConfigureAwait(false);
+			await Write(tempFileName, expectedFileContent, CancellationToken).ConfigureAwait(false);
 
 			Assert.IsTrue(File.Exists(tempFileName));
 			Assert.AreEqual(expectedFileContent, await File.ReadAllTextAsync(tempFileName, CancellationToken).ConfigureAwait(false));

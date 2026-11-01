@@ -93,9 +93,9 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 		Task task;
 
 		if (ChatGroupID != 0) {
-			task = SendGroupMessage(message, bot);
+			task = SendGroupMessage(message, bot, cancellationToken);
 		} else if (bot?.SteamID != SteamID) {
-			task = SendPrivateMessage(message, bot);
+			task = SendPrivateMessage(message, bot, cancellationToken);
 		} else {
 			return;
 		}
@@ -103,7 +103,7 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 		await task.ConfigureAwait(false);
 	}
 
-	private async Task SendGroupMessage(string message, Bot? bot = null) {
+	private async Task SendGroupMessage(string message, Bot? bot = null, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if (bot == null) {
@@ -114,12 +114,12 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 			}
 		}
 
-		if (!await bot.SendMessage(ChatGroupID, SteamID, message).ConfigureAwait(false)) {
+		if (!await bot.SendMessage(ChatGroupID, SteamID, message, cancellationToken).ConfigureAwait(false)) {
 			bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
 		}
 	}
 
-	private async Task SendPrivateMessage(string message, Bot? bot = null) {
+	private async Task SendPrivateMessage(string message, Bot? bot = null, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if (bot == null) {
@@ -130,7 +130,7 @@ internal sealed class SteamTarget : AsyncTaskTarget {
 			}
 		}
 
-		if (!await bot.SendMessage(SteamID, message).ConfigureAwait(false)) {
+		if (!await bot.SendMessage(SteamID, message, cancellationToken).ConfigureAwait(false)) {
 			bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError(nameof(Bot.SendMessage)));
 		}
 	}

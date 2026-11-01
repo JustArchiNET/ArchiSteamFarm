@@ -29,6 +29,7 @@ using System.Composition;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Localization;
@@ -51,7 +52,7 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 	[JsonInclude]
 	public override Version Version => typeof(ItemsMatcherPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
+	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!Enum.IsDefined(access)) {
@@ -68,10 +69,10 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		return await Commands.OnBotCommand(bot, access, args, steamID).ConfigureAwait(false);
+		return await Commands.OnBotCommand(bot, access, args, steamID, cancellationToken).ConfigureAwait(false);
 	}
 
-	public async Task OnBotDestroy(Bot bot) {
+	public async Task OnBotDestroy(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (RemoteCommunications.TryRemove(bot, out RemoteCommunication? remoteCommunication)) {
@@ -79,13 +80,13 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 		}
 	}
 
-	public Task OnBotInit(Bot bot) {
+	public Task OnBotInit(Bot bot, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		return Task.CompletedTask;
 	}
 
-	public async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
+	public async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (RemoteCommunications.TryRemove(bot, out RemoteCommunication? remoteCommunication)) {
@@ -99,7 +100,7 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 		}
 	}
 
-	public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults) {
+	public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((tradeResults == null) || (tradeResults.Count == 0)) {
@@ -116,7 +117,7 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 		return Task.CompletedTask;
 	}
 
-	public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications) {
+	public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((newNotifications == null) || (newNotifications.Count == 0)) {
@@ -133,13 +134,13 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 		return Task.CompletedTask;
 	}
 
-	public override Task OnLoaded() {
+	public override Task OnLoaded(CancellationToken cancellationToken = default) {
 		Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
 
 		return Task.CompletedTask;
 	}
 
-	public async Task OnSelfPersonaState(Bot bot, SteamFriends.PersonaStateCallback data, string? nickname, string? avatarHash) {
+	public async Task OnSelfPersonaState(Bot bot, SteamFriends.PersonaStateCallback data, string? nickname, string? avatarHash, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication)) {
@@ -147,6 +148,6 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 			return;
 		}
 
-		await remoteCommunication.OnPersonaState(nickname, avatarHash).ConfigureAwait(false);
+		await remoteCommunication.OnPersonaState(nickname, avatarHash, cancellationToken).ConfigureAwait(false);
 	}
 }

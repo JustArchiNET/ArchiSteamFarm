@@ -21,6 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Helpers;
 using JetBrains.Annotations;
@@ -38,6 +39,7 @@ public interface ICrossProcessSemaphoreProvider : IPlugin {
 	///     ASF will call this method when initializing instance of <see cref="ICrossProcessSemaphore" /> for its internal limiters.
 	/// </summary>
 	/// <param name="resourceName">Unique resource name provided by ASF for identification purposes.</param>
+	/// <param name="cancellationToken">Cancellation token.</param>
 	/// <returns>Concrete implementation of <see cref="ICrossProcessSemaphore" /> providing required functionality. It's allowed to return null if you want to use ASF's default implementation for specified resource instead.</returns>
-	public Task<ICrossProcessSemaphore?> GetCrossProcessSemaphore(string resourceName);
+	public Task<ICrossProcessSemaphore?> GetCrossProcessSemaphore(string resourceName, CancellationToken cancellationToken = default);
 }

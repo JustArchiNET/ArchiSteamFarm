@@ -22,6 +22,7 @@
 // limitations under the License.
 
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
@@ -30,7 +31,7 @@ using ArchiSteamFarm.Storage;
 namespace ArchiSteamFarm.Core;
 
 internal static class Events {
-	internal static async Task OnBotShutdown() {
+	internal static async Task OnBotShutdown(CancellationToken cancellationToken = default) {
 		bool shutdownIfPossible = ASF.GlobalConfig?.ShutdownIfPossible ?? GlobalConfig.DefaultShutdownIfPossible;
 
 		if (!shutdownIfPossible || (Bot.Bots?.Values.Any(static bot => bot.KeepRunning) == true)) {
@@ -40,12 +41,12 @@ internal static class Events {
 		ASF.ArchiLogger.LogGenericInfo(Strings.NoBotsAreRunning);
 
 		// We give user extra 5 seconds for eventual config changes
-		await Task.Delay(5000).ConfigureAwait(false);
+		await Task.Delay(5000, cancellationToken).ConfigureAwait(false);
 
 		if (Bot.Bots?.Values.Any(static bot => bot.KeepRunning) == true) {
 			return;
 		}
 
-		await Program.Exit().ConfigureAwait(false);
+		await Program.Exit(cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 }

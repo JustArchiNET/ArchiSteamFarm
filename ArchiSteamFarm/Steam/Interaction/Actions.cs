@@ -100,10 +100,10 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(EResult Result, EPurchaseResultDetail PurchaseResultDetail)> AddFreeLicensePackage(uint subID) {
+	public async Task<(EResult Result, EPurchaseResultDetail PurchaseResultDetail)> AddFreeLicensePackage(uint subID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(subID);
 
-		return await Bot.ArchiWebHandler.AddFreeLicense(subID).ConfigureAwait(false);
+		return await Bot.ArchiWebHandler.AddFreeLicense(subID, cancellationToken).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
@@ -130,12 +130,12 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, string? Token, string Message)> GenerateTwoFactorAuthenticationToken() {
+	public async Task<(bool Success, string? Token, string Message)> GenerateTwoFactorAuthenticationToken(CancellationToken cancellationToken = default) {
 		if (Bot.BotDatabase.MobileAuthenticator == null) {
 			return (false, null, Strings.BotNoASFAuthenticator);
 		}
 
-		string? token = await Bot.BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
+		string? token = await Bot.BotDatabase.MobileAuthenticator.GenerateToken(cancellationToken).ConfigureAwait(false);
 
 		bool success = !string.IsNullOrEmpty(token);
 
@@ -143,7 +143,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? Confirmations, string Message)> GetConfirmations() {
+	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? Confirmations, string Message)> GetConfirmations(CancellationToken cancellationToken = default) {
 		if (Bot.BotDatabase.MobileAuthenticator == null) {
 			return (false, null, Strings.BotNoASFAuthenticator);
 		}
@@ -152,7 +152,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return (false, null, Strings.BotNotConnected);
 		}
 
-		ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
+		ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations(cancellationToken).ConfigureAwait(false);
 
 		bool success = confirmations != null;
 
@@ -174,7 +174,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 	/// <remarks>This action should be used if you require full inventory exclusively, otherwise consider calling <see cref="ArchiHandler.GetMyInventoryAsync" /> instead.</remarks>
 	[PublicAPI]
-	public async Task<(HashSet<Asset>? Result, string Message)> GetInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, Func<Asset, bool>? filterFunction = null, string? language = null) {
+	public async Task<(HashSet<Asset>? Result, string Message)> GetInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, Func<Asset, bool>? filterFunction = null, string? language = null, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 
@@ -184,9 +184,9 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 		filterFunction ??= static _ => true;
 
-		using (await GetTradingLock().ConfigureAwait(false)) {
+		using (await GetTradingLock(cancellationToken).ConfigureAwait(false)) {
 			try {
-				return (await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID, language: language).Where(item => filterFunction(item)).ToHashSetAsync().ConfigureAwait(false), Strings.Success);
+				return (await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID, language: language, cancellationToken: cancellationToken).Where(item => filterFunction(item)).ToHashSetAsync(cancellationToken: cancellationToken).ConfigureAwait(false), Strings.Success);
 			} catch (TimeoutException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 
@@ -210,14 +210,14 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 	[MustDisposeResource]
 	[PublicAPI]
-	public async Task<IDisposable> GetTradingLock() {
-		await TradingSemaphore.WaitAsync().ConfigureAwait(false);
+	public async Task<IDisposable> GetTradingLock(CancellationToken cancellationToken = default) {
+		await TradingSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		return new SemaphoreLock(TradingSemaphore);
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? HandledConfirmations, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, EMobileConfirmationType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false) {
+	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? HandledConfirmations, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, EMobileConfirmationType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false, CancellationToken cancellationToken = default) {
 		if (Bot.BotDatabase.MobileAuthenticator == null) {
 			return (false, null, Strings.BotNoASFAuthenticator);
 		}
@@ -232,10 +232,10 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 		for (byte i = 0; (i == 0) || ((i < WebBrowser.MaxTries) && waitIfNeeded); i++) {
 			if (i > 0) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
-			ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
+			ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations(cancellationToken).ConfigureAwait(false);
 
 			if (confirmations == null) {
 				continue;
@@ -265,7 +265,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				}
 			}
 
-			if (!await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(remainingConfirmations, accept).ConfigureAwait(false)) {
+			if (!await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(remainingConfirmations, accept, cancellationToken).ConfigureAwait(false)) {
 				return (false, handledConfirmations?.Values, Strings.WarningFailed);
 			}
 
@@ -302,20 +302,20 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, string Message)> Pause(bool permanent, ushort resumeInSeconds = 0) {
+	public async Task<(bool Success, string Message)> Pause(bool permanent, ushort resumeInSeconds = 0, CancellationToken cancellationToken = default) {
 		if (Bot.CardsFarmer.Paused) {
 			return (false, Strings.BotAutomaticIdlingPausedAlready);
 		}
 
-		await Bot.CardsFarmer.Pause(permanent).ConfigureAwait(false);
+		await Bot.CardsFarmer.Pause(permanent, cancellationToken).ConfigureAwait(false);
 
 		if (!permanent && !Bot.BotConfig.GamesPlayedWhileIdle.IsEmpty) {
 			// We want to let family sharing users access our library, and in this case we must also stop GamesPlayedWhileIdle
 			// We add extra delay because OnFarmingStopped() also executes PlayGames()
 			// Despite of proper order on our end, Steam network might not respect it
-			await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
+			await Task.Delay(Bot.CallbackSleep, cancellationToken).ConfigureAwait(false);
 
-			await Bot.ArchiHandler.PlayGames([], Bot.BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
+			await Bot.ArchiHandler.PlayGames([], Bot.BotConfig.CustomGamePlayedWhileIdle, cancellationToken).ConfigureAwait(false);
 		}
 
 		if (resumeInSeconds > 0) {
@@ -335,7 +335,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, string Message)> Play(IReadOnlyCollection<uint> gameIDs, string? gameName = null) {
+	public async Task<(bool Success, string Message)> Play(IReadOnlyCollection<uint> gameIDs, string? gameName = null, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(gameIDs);
 
 		if (!Bot.IsConnectedAndLoggedOn) {
@@ -343,17 +343,17 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		}
 
 		if (!Bot.CardsFarmer.Paused) {
-			await Bot.CardsFarmer.Pause(true).ConfigureAwait(false);
+			await Bot.CardsFarmer.Pause(true, cancellationToken).ConfigureAwait(false);
 		}
 
-		await Bot.ArchiHandler.PlayGames(gameIDs, gameName).ConfigureAwait(false);
+		await Bot.ArchiHandler.PlayGames(gameIDs, gameName, cancellationToken).ConfigureAwait(false);
 
 		return (true, gameIDs.Count > 0 ? Strings.FormatBotIdlingSelectedGames(nameof(gameIDs), string.Join(", ", gameIDs)) : Strings.Done);
 	}
 
 	[PublicAPI]
-	public async Task<CStore_RegisterCDKey_Response?> RedeemKey(string key) {
-		await LimitGiftsRequestsAsync().ConfigureAwait(false);
+	public async Task<CStore_RegisterCDKey_Response?> RedeemKey(string key, CancellationToken cancellationToken = default) {
+		await LimitGiftsRequestsAsync(cancellationToken).ConfigureAwait(false);
 
 		return await Bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 	}
@@ -389,10 +389,10 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<EResult> RemoveLicensePackage(uint subID) {
+	public async Task<EResult> RemoveLicensePackage(uint subID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(subID);
 
-		return await Bot.ArchiWebHandler.RemoveLicense(subID).ConfigureAwait(false);
+		return await Bot.ArchiWebHandler.RemoveLicense(subID, cancellationToken).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
@@ -423,7 +423,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, string Message)> SendInventory(IReadOnlyCollection<Asset> items, ulong targetSteamID = 0, string? tradeToken = null, string? customMessage = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+	public async Task<(bool Success, string Message)> SendInventory(IReadOnlyCollection<Asset> items, ulong targetSteamID = 0, string? tradeToken = null, string? customMessage = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade, CancellationToken cancellationToken = default) {
 		if ((items == null) || (items.Count == 0)) {
 			throw new ArgumentNullException(nameof(items));
 		}
@@ -463,18 +463,18 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		// Steam might not always realize e.g. "items no longer available" trades and prevent us from sending further ones
 		// A simple visit to sent trade offers page will usually suffice
 		// We proceed with the rest of this logic even if this call fails, as it's almost never needed for the whole process to succeed
-		await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false);
+		await Bot.ArchiWebHandler.MarkSentTrades(cancellationToken).ConfigureAwait(false);
 
 		// In similar way we might need to accept popup on Steam side, we limit it only to cases that we're aware of, as sending this request otherwise is additional overhead for no reason
 		if (!Bot.BotDatabase.TradeRestrictionsAcknowledged && items.Any(static item => item.AppID != Asset.SteamAppID)) {
 			// We should normally fail the process in case of a failure here, but since the popup could be marked already in the past, we'll allow it in hope it wasn't needed after all
-			await Bot.Trading.AcknowledgeTradeRestrictions().ConfigureAwait(false);
+			await Bot.Trading.AcknowledgeTradeRestrictions(cancellationToken).ConfigureAwait(false);
 		}
 
-		(bool success, _, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, customMessage: customMessage, itemsPerTrade: itemsPerTrade).ConfigureAwait(false);
+		(bool success, _, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, customMessage: customMessage, itemsPerTrade: itemsPerTrade, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if ((mobileTradeOfferIDs?.Count > 0) && Bot.HasMobileAuthenticator) {
-			(bool twoFactorSuccess, _, _) = await HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+			(bool twoFactorSuccess, _, _) = await HandleTwoFactorAuthenticationConfirmations(true, EMobileConfirmationType.Trade, mobileTradeOfferIDs, true, cancellationToken).ConfigureAwait(false);
 
 			if (!twoFactorSuccess) {
 				return (false, Strings.BotLootingFailed);
@@ -485,7 +485,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, string Message)> SendInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, string? customMessage = null, Func<Asset, bool>? filterFunction = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+	public async Task<(bool Success, string Message)> SendInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, string? customMessage = null, Func<Asset, bool>? filterFunction = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 
@@ -506,14 +506,14 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			TradingScheduled = true;
 		}
 
-		using (await GetTradingLock().ConfigureAwait(false)) {
+		using (await GetTradingLock(cancellationToken).ConfigureAwait(false)) {
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (TradingSemaphore) {
 				TradingScheduled = false;
 			}
 
 			try {
-				inventory = await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID, true).Where(item => filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
+				inventory = await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID, true, cancellationToken: cancellationToken).Where(item => filterFunction(item)).ToHashSetAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 			} catch (TimeoutException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 
@@ -529,7 +529,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return (false, Strings.FormatErrorIsEmpty(nameof(inventory)));
 		}
 
-		return await SendInventory(inventory, targetSteamID, tradeToken, customMessage, itemsPerTrade).ConfigureAwait(false);
+		return await SendInventory(inventory, targetSteamID, tradeToken, customMessage, itemsPerTrade, cancellationToken).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
@@ -538,24 +538,24 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return (false, Strings.BotAlreadyRunning);
 		}
 
-		Utilities.InBackground(Bot.Start);
+		Utilities.InBackground(() => Bot.Start());
 
 		return (true, Strings.Done);
 	}
 
 	[PublicAPI]
-	public async Task<(bool Success, string Message)> Stop() {
+	public async Task<(bool Success, string Message)> Stop(CancellationToken cancellationToken = default) {
 		if (!Bot.KeepRunning) {
 			return (false, Strings.BotAlreadyStopped);
 		}
 
-		await Bot.Stop().ConfigureAwait(false);
+		await Bot.Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return (true, Strings.Done);
 	}
 
 	[PublicAPI]
-	public async Task<bool> UnpackBoosterPacks() {
+	public async Task<bool> UnpackBoosterPacks(CancellationToken cancellationToken = default) {
 		if (!Bot.IsConnectedAndLoggedOn) {
 			return false;
 		}
@@ -565,8 +565,8 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 		// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/archiasf/discussions/1/3559414588264550284/
 		try {
-			await foreach (Asset item in Bot.ArchiHandler.GetMyInventoryAsync().Where(static item => item.Type == EAssetType.BoosterPack).ConfigureAwait(false)) {
-				if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
+			await foreach (Asset item in Bot.ArchiHandler.GetMyInventoryAsync(cancellationToken: cancellationToken).Where(static item => item.Type == EAssetType.BoosterPack).WithCancellation(cancellationToken).ConfigureAwait(false)) {
+				if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID, cancellationToken).ConfigureAwait(false)) {
 					result = false;
 				}
 			}
@@ -584,22 +584,22 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public static async Task<(bool Success, string? Message, Version? Version)> Update(GlobalConfig.EUpdateChannel? channel = null, bool forced = false) {
+	public static async Task<(bool Success, string? Message, Version? Version)> Update(GlobalConfig.EUpdateChannel? channel = null, bool forced = false, CancellationToken cancellationToken = default) {
 		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
 			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
 		}
 
-		(bool updated, Version? newVersion) = await ASF.Update(channel, true, forced).ConfigureAwait(false);
+		(bool updated, Version? newVersion) = await ASF.Update(channel, true, forced, cancellationToken).ConfigureAwait(false);
 
 		if (updated) {
-			Utilities.InBackground(ASF.RestartOrExit);
+			Utilities.InBackground(static () => ASF.RestartOrExit(CancellationToken.None));
 		}
 
 		return updated ? (true, null, newVersion) : SharedInfo.Version >= newVersion ? (false, $"V{SharedInfo.Version} ≥ V{newVersion}", newVersion) : (false, null, newVersion);
 	}
 
 	[PublicAPI]
-	public static async Task<(bool Success, string? Message)> UpdatePlugins(GlobalConfig.EUpdateChannel? channel = null, IReadOnlyCollection<string>? plugins = null, bool forced = false) {
+	public static async Task<(bool Success, string? Message)> UpdatePlugins(GlobalConfig.EUpdateChannel? channel = null, IReadOnlyCollection<string>? plugins = null, bool forced = false, CancellationToken cancellationToken = default) {
 		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
 			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
 		}
@@ -615,13 +615,13 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				return (false, Strings.NothingFound);
 			}
 
-			updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, pluginsForUpdate, channel, true, forced).ConfigureAwait(false);
+			updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, pluginsForUpdate, channel, true, forced, cancellationToken).ConfigureAwait(false);
 		} else {
-			updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, channel, true, forced).ConfigureAwait(false);
+			updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, channel, true, forced, cancellationToken).ConfigureAwait(false);
 		}
 
 		if (updated) {
-			Utilities.InBackground(ASF.RestartOrExit);
+			Utilities.InBackground(static () => ASF.RestartOrExit(CancellationToken.None));
 		}
 
 		string message = updated ? Strings.UpdateFinished : Strings.NothingFound;
@@ -629,7 +629,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		return (true, message);
 	}
 
-	internal async Task AcceptDigitalGiftCards() {
+	internal async Task AcceptDigitalGiftCards(CancellationToken cancellationToken = default) {
 		if (!Bot.IsConnectedAndLoggedOn) {
 			return;
 		}
@@ -643,7 +643,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			ProcessingGiftsScheduled = true;
 		}
 
-		await GiftCardsSemaphore.WaitAsync().ConfigureAwait(false);
+		await GiftCardsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
@@ -655,7 +655,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			HashSet<ulong>? giftCardIDs = await Bot.ArchiWebHandler.GetDigitalGiftCards().ConfigureAwait(false);
+			HashSet<ulong>? giftCardIDs = await Bot.ArchiWebHandler.GetDigitalGiftCards(cancellationToken).ConfigureAwait(false);
 
 			if ((giftCardIDs == null) || (giftCardIDs.Count == 0)) {
 				return;
@@ -665,9 +665,9 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				HandledGifts.Add(giftCardID);
 
 				Bot.ArchiLogger.LogGenericInfo(Strings.FormatBotAcceptingGift(giftCardID));
-				await LimitGiftsRequestsAsync().ConfigureAwait(false);
+				await LimitGiftsRequestsAsync(cancellationToken).ConfigureAwait(false);
 
-				bool result = await Bot.ArchiWebHandler.AcceptDigitalGiftCard(giftCardID).ConfigureAwait(false);
+				bool result = await Bot.ArchiWebHandler.AcceptDigitalGiftCard(giftCardID, cancellationToken).ConfigureAwait(false);
 
 				if (result) {
 					Bot.ArchiLogger.LogGenericInfo(Strings.Success);
@@ -680,7 +680,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	internal async Task AcceptGuestPasses(IReadOnlyCollection<ulong> guestPassIDs) {
+	internal async Task AcceptGuestPasses(IReadOnlyCollection<ulong> guestPassIDs, CancellationToken cancellationToken = default) {
 		if ((guestPassIDs == null) || (guestPassIDs.Count == 0)) {
 			throw new ArgumentNullException(nameof(guestPassIDs));
 		}
@@ -693,7 +693,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			HandledGifts.Add(guestPassID);
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.FormatBotAcceptingGift(guestPassID));
-			await LimitGiftsRequestsAsync().ConfigureAwait(false);
+			await LimitGiftsRequestsAsync(cancellationToken).ConfigureAwait(false);
 
 			SteamApps.RedeemGuestPassResponseCallback? response = await Bot.ArchiHandler.RedeemGuestPass(guestPassID).ConfigureAwait(false);
 
@@ -711,7 +711,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 	internal void OnDisconnected() => HandledGifts.Clear();
 
-	private static async Task LimitGiftsRequestsAsync() {
+	private static async Task LimitGiftsRequestsAsync(CancellationToken cancellationToken = default) {
 		if (ASF.GiftsSemaphore == null) {
 			throw new InvalidOperationException(nameof(ASF.GiftsSemaphore));
 		}
@@ -722,10 +722,10 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		await ASF.GiftsSemaphore.WaitAsync().ConfigureAwait(false);
+		await ASF.GiftsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		Utilities.InBackground(async () => {
-				await Task.Delay(giftsLimiterDelay * 1000).ConfigureAwait(false);
+				await Task.Delay(giftsLimiterDelay * 1000, cancellationToken).ConfigureAwait(false);
 				ASF.GiftsSemaphore.Release();
 			}
 		);

@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -58,7 +59,7 @@ public static class ArchiCryptoHelper {
 
 	private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
-	internal static async Task<string?> Decrypt(ECryptoMethod cryptoMethod, string text) {
+	internal static async Task<string?> Decrypt(ECryptoMethod cryptoMethod, string text, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(cryptoMethod)) {
 			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ECryptoMethod));
 		}
@@ -68,7 +69,7 @@ public static class ArchiCryptoHelper {
 		return cryptoMethod switch {
 			ECryptoMethod.AES => DecryptAES(text),
 			ECryptoMethod.EnvironmentVariable => Environment.GetEnvironmentVariable(text)?.Trim(),
-			ECryptoMethod.File => await ReadFromFile(text).ConfigureAwait(false),
+			ECryptoMethod.File => await ReadFromFile(text, cancellationToken).ConfigureAwait(false),
 			ECryptoMethod.PlainText => text,
 			ECryptoMethod.ProtectedDataForCurrentUser => DecryptProtectedDataForCurrentUser(text),
 			_ => throw new InvalidOperationException(nameof(cryptoMethod))
@@ -296,7 +297,7 @@ public static class ArchiCryptoHelper {
 		}
 	}
 
-	private static async Task<string?> ReadFromFile(string filePath) {
+	private static async Task<string?> ReadFromFile(string filePath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
@@ -306,7 +307,7 @@ public static class ArchiCryptoHelper {
 		string text;
 
 		try {
-			text = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+			text = await File.ReadAllTextAsync(filePath, cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

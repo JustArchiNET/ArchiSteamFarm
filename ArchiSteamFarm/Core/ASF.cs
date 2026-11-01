@@ -112,20 +112,20 @@ public static class ASF {
 		};
 	}
 
-	internal static async Task<bool> Init() {
+	internal static async Task<bool> Init(CancellationToken cancellationToken = default) {
 		if (GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
 
 		WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
 
-		if (!await PluginsCore.InitPlugins().ConfigureAwait(false)) {
+		if (!await PluginsCore.InitPlugins(cancellationToken).ConfigureAwait(false)) {
 			return false;
 		}
 
-		await UpdateAndRestart().ConfigureAwait(false);
+		await UpdateAndRestart(cancellationToken).ConfigureAwait(false);
 
-		if (!Program.IgnoreUnsupportedEnvironment && !await ProtectAgainstCrashes().ConfigureAwait(false)) {
+		if (!Program.IgnoreUnsupportedEnvironment && !await ProtectAgainstCrashes(cancellationToken).ConfigureAwait(false)) {
 			ArchiLogger.LogFatalError(Strings.ErrorTooManyCrashes);
 
 			return true;
@@ -133,10 +133,10 @@ public static class ASF {
 
 		Program.AllowCrashFileRemoval = true;
 
-		await PluginsCore.OnASFInitModules(GlobalConfig.AdditionalProperties).ConfigureAwait(false);
-		await InitRateLimiters().ConfigureAwait(false);
+		await PluginsCore.OnASFInitModules(GlobalConfig.AdditionalProperties, cancellationToken).ConfigureAwait(false);
+		await InitRateLimiters(cancellationToken).ConfigureAwait(false);
 
-		StringComparer botsComparer = await PluginsCore.GetBotsComparer().ConfigureAwait(false);
+		StringComparer botsComparer = await PluginsCore.GetBotsComparer(cancellationToken).ConfigureAwait(false);
 
 		Bot.Init(botsComparer);
 
@@ -145,14 +145,14 @@ public static class ASF {
 		}
 
 		if (GlobalConfig.IPC) {
-			await ArchiKestrel.Start().ConfigureAwait(false);
+			await ArchiKestrel.Start(cancellationToken).ConfigureAwait(false);
 		}
 
-		uint changeNumberToStartFrom = await PluginsCore.GetChangeNumberToStartFrom().ConfigureAwait(false);
+		uint changeNumberToStartFrom = await PluginsCore.GetChangeNumberToStartFrom(cancellationToken).ConfigureAwait(false);
 
 		SteamPICSChanges.Init(changeNumberToStartFrom);
 
-		await RegisterBots().ConfigureAwait(false);
+		await RegisterBots(cancellationToken).ConfigureAwait(false);
 
 		if (Program.ConfigWatch) {
 			InitConfigWatchEvents();
@@ -175,23 +175,23 @@ public static class ASF {
 		return Path.GetRelativePath(".", botName) == botName;
 	}
 
-	internal static async Task RestartOrExit() {
+	internal static async Task RestartOrExit(CancellationToken cancellationToken = default) {
 		if (GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
 
 		if (Program.RestartAllowed && GlobalConfig.AutoRestart) {
 			ArchiLogger.LogGenericInfo(Strings.Restarting);
-			await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
-			await Program.Restart().ConfigureAwait(false);
+			await Task.Delay(SharedInfo.ShortInformationDelay, cancellationToken).ConfigureAwait(false);
+			await Program.Restart(cancellationToken).ConfigureAwait(false);
 		} else {
 			ArchiLogger.LogGenericInfo(Strings.Exiting);
-			await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
-			await Program.Exit().ConfigureAwait(false);
+			await Task.Delay(SharedInfo.ShortInformationDelay, cancellationToken).ConfigureAwait(false);
+			await Program.Exit(cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 	}
 
-	internal static async Task<(bool Updated, Version? NewVersion)> Update(GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false) {
+	internal static async Task<(bool Updated, Version? NewVersion)> Update(GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false, CancellationToken cancellationToken = default) {
 		if (updateChannel.HasValue && !Enum.IsDefined(updateChannel.Value)) {
 			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
 		}
@@ -200,17 +200,17 @@ public static class ASF {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
 
-		(bool updated, Version? newVersion) = await UpdateASF(updateChannel, updateOverride, forced).ConfigureAwait(false);
+		(bool updated, Version? newVersion) = await UpdateASF(updateChannel, updateOverride, forced, cancellationToken).ConfigureAwait(false);
 
 		if (!updated) {
 			// ASF wasn't updated as part of the process, update the plugins alone
-			updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, updateChannel, updateOverride, forced).ConfigureAwait(false);
+			updated = await PluginsCore.UpdatePlugins(SharedInfo.Version, false, updateChannel, updateOverride, forced, cancellationToken).ConfigureAwait(false);
 		}
 
 		return (updated, newVersion);
 	}
 
-	private static async Task<bool> CanHandleWriteEvent(string filePath) {
+	private static async Task<bool> CanHandleWriteEvent(string filePath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (LastWriteEvents == null) {
@@ -222,7 +222,7 @@ public static class ASF {
 		LastWriteEvents[filePath] = currentWriteEvent;
 
 		// Wait a second for eventual other events to arrive
-		await Task.Delay(1000).ConfigureAwait(false);
+		await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 
 		// We're allowed to handle this event if the one that is saved after full second is our event and we succeed in clearing it (we don't care what we're clearing anymore, it doesn't have to be atomic operation)
 		return LastWriteEvents.TryGetValue(filePath, out object? savedWriteEvent) && (currentWriteEvent == savedWriteEvent) && LastWriteEvents.TryRemove(filePath, out _);
@@ -255,20 +255,20 @@ public static class ASF {
 		FileSystemWatcher.EnableRaisingEvents = true;
 	}
 
-	private static async Task InitRateLimiters() {
-		ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(ConfirmationsSemaphore)).ConfigureAwait(false);
-		GiftsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(GiftsSemaphore)).ConfigureAwait(false);
-		InventorySemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(InventorySemaphore)).ConfigureAwait(false);
-		LoginRateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore)).ConfigureAwait(false);
-		LoginSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginSemaphore)).ConfigureAwait(false);
-		RateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(RateLimitingSemaphore)).ConfigureAwait(false);
+	private static async Task InitRateLimiters(CancellationToken cancellationToken = default) {
+		ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(ConfirmationsSemaphore), cancellationToken).ConfigureAwait(false);
+		GiftsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(GiftsSemaphore), cancellationToken).ConfigureAwait(false);
+		InventorySemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(InventorySemaphore), cancellationToken).ConfigureAwait(false);
+		LoginRateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore), cancellationToken).ConfigureAwait(false);
+		LoginSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginSemaphore), cancellationToken).ConfigureAwait(false);
+		RateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(RateLimitingSemaphore), cancellationToken).ConfigureAwait(false);
 
 		WebLimitingSemaphores ??= new Dictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(5) {
-			{ ArchiWebHandler.SteamCheckoutURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamCheckoutURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-			{ ArchiWebHandler.SteamCommunityURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamCommunityURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-			{ ArchiWebHandler.SteamHelpURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamHelpURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-			{ ArchiWebHandler.SteamStoreURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamStoreURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-			{ WebAPI.DefaultBaseAddress, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(WebAPI)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
+			{ ArchiWebHandler.SteamCheckoutURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamCheckoutURL)}", cancellationToken).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ ArchiWebHandler.SteamCommunityURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamCommunityURL)}", cancellationToken).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ ArchiWebHandler.SteamHelpURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamHelpURL)}", cancellationToken).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ ArchiWebHandler.SteamStoreURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(ArchiWebHandler.SteamStoreURL)}", cancellationToken).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ WebAPI.DefaultBaseAddress, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(WebAPI)}", cancellationToken).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
 		}.ToFrozenDictionary();
 	}
 
@@ -336,30 +336,30 @@ public static class ASF {
 		await OnChangedFile(e.Name, e.FullPath).ConfigureAwait(false);
 	}
 
-	private static async Task OnChangedConfigFile(string name, string fullPath) {
+	private static async Task OnChangedConfigFile(string name, string fullPath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(name);
 		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
-		await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
+		await OnCreatedConfigFile(name, fullPath, cancellationToken).ConfigureAwait(false);
 	}
 
-	private static async Task OnChangedConfigFile(string name) {
+	private static async Task OnChangedConfigFile(string name, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(name);
 
 		if (!name.Equals(SharedInfo.IPCConfigFile, StringComparison.OrdinalIgnoreCase) || (GlobalConfig?.IPC != true)) {
 			return;
 		}
 
-		if (!await CanHandleWriteEvent(name).ConfigureAwait(false)) {
+		if (!await CanHandleWriteEvent(name, cancellationToken).ConfigureAwait(false)) {
 			return;
 		}
 
 		ArchiLogger.LogGenericInfo(Strings.IPCConfigChanged);
 
-		await ArchiKestrel.Restart().ConfigureAwait(false);
+		await ArchiKestrel.Restart(cancellationToken).ConfigureAwait(false);
 	}
 
-	private static async Task OnChangedFile(string name, string fullPath) {
+	private static async Task OnChangedFile(string name, string fullPath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(name);
 		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
@@ -368,31 +368,31 @@ public static class ASF {
 		switch (extension) {
 			case SharedInfo.JsonConfigExtension:
 			case SharedInfo.IPCConfigExtension:
-				await OnChangedConfigFile(name, fullPath).ConfigureAwait(false);
+				await OnChangedConfigFile(name, fullPath, cancellationToken).ConfigureAwait(false);
 
 				break;
 			case SharedInfo.KeysExtension:
-				await OnChangedKeysFile(name, fullPath).ConfigureAwait(false);
+				await OnChangedKeysFile(name, fullPath, cancellationToken).ConfigureAwait(false);
 
 				break;
 		}
 	}
 
-	private static async Task OnChangedKeysFile(string name, string fullPath) {
+	private static async Task OnChangedKeysFile(string name, string fullPath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(name);
 		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
-		await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
+		await OnCreatedKeysFile(name, fullPath, cancellationToken).ConfigureAwait(false);
 	}
 
-	private static async Task OnConfigChanged() {
+	private static async Task OnConfigChanged(CancellationToken cancellationToken = default) {
 		string globalConfigFile = GetFilePath(EFileType.Config);
 
 		if (string.IsNullOrEmpty(globalConfigFile)) {
 			throw new InvalidOperationException(nameof(globalConfigFile));
 		}
 
-		(GlobalConfig? globalConfig, _) = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
+		(GlobalConfig? globalConfig, _) = await GlobalConfig.Load(globalConfigFile, cancellationToken).ConfigureAwait(false);
 
 		if (globalConfig == null) {
 			// Invalid config file, we allow user to fix it without destroying the ASF instance right away
@@ -404,7 +404,7 @@ public static class ASF {
 		}
 
 		ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
-		await RestartOrExit().ConfigureAwait(false);
+		await RestartOrExit(cancellationToken).ConfigureAwait(false);
 	}
 
 	private static async void OnCreated(object sender, FileSystemEventArgs e) {
@@ -422,7 +422,7 @@ public static class ASF {
 		await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 	}
 
-	private static async Task OnCreatedConfigFile(string name, string fullPath) {
+	private static async Task OnCreatedConfigFile(string name, string fullPath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(name);
 		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
@@ -430,17 +430,17 @@ public static class ASF {
 
 		switch (extension) {
 			case SharedInfo.IPCConfigExtension:
-				await OnChangedConfigFile(name).ConfigureAwait(false);
+				await OnChangedConfigFile(name, cancellationToken).ConfigureAwait(false);
 
 				break;
 			case SharedInfo.JsonConfigExtension:
-				await OnCreatedJsonFile(name, fullPath).ConfigureAwait(false);
+				await OnCreatedJsonFile(name, fullPath, cancellationToken).ConfigureAwait(false);
 
 				break;
 		}
 	}
 
-	private static async Task OnCreatedFile(string name, string fullPath) {
+	private static async Task OnCreatedFile(string name, string fullPath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(name);
 		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
@@ -448,18 +448,18 @@ public static class ASF {
 
 		switch (extension) {
 			case SharedInfo.JsonConfigExtension:
-				await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
+				await OnCreatedConfigFile(name, fullPath, cancellationToken).ConfigureAwait(false);
 
 				break;
 
 			case SharedInfo.KeysExtension:
-				await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
+				await OnCreatedKeysFile(name, fullPath, cancellationToken).ConfigureAwait(false);
 
 				break;
 		}
 	}
 
-	private static async Task OnCreatedJsonFile(string name, string fullPath) {
+	private static async Task OnCreatedJsonFile(string name, string fullPath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(name);
 		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
@@ -473,12 +473,12 @@ public static class ASF {
 			return;
 		}
 
-		if (!await CanHandleWriteEvent(fullPath).ConfigureAwait(false)) {
+		if (!await CanHandleWriteEvent(fullPath, cancellationToken).ConfigureAwait(false)) {
 			return;
 		}
 
 		if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
-			await OnConfigChanged().ConfigureAwait(false);
+			await OnConfigChanged(cancellationToken).ConfigureAwait(false);
 
 			return;
 		}
@@ -488,9 +488,9 @@ public static class ASF {
 		}
 
 		if (Bot.Bots.TryGetValue(botName, out Bot? bot)) {
-			await bot.OnConfigChanged(false).ConfigureAwait(false);
+			await bot.OnConfigChanged(false, cancellationToken).ConfigureAwait(false);
 		} else {
-			await Bot.RegisterBot(botName).ConfigureAwait(false);
+			await Bot.RegisterBot(botName, cancellationToken).ConfigureAwait(false);
 
 			if (Bot.Bots.Count > MaximumRecommendedBotsCount) {
 				ArchiLogger.LogGenericWarning(Strings.FormatWarningExcessiveBotsCount(MaximumRecommendedBotsCount));
@@ -498,7 +498,7 @@ public static class ASF {
 		}
 	}
 
-	private static async Task OnCreatedKeysFile(string name, string fullPath) {
+	private static async Task OnCreatedKeysFile(string name, string fullPath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(name);
 		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
@@ -512,7 +512,7 @@ public static class ASF {
 			return;
 		}
 
-		if (!await CanHandleWriteEvent(fullPath).ConfigureAwait(false)) {
+		if (!await CanHandleWriteEvent(fullPath, cancellationToken).ConfigureAwait(false)) {
 			return;
 		}
 
@@ -520,7 +520,7 @@ public static class ASF {
 			return;
 		}
 
-		await bot.ImportKeysToRedeem(fullPath).ConfigureAwait(false);
+		await bot.ImportKeysToRedeem(fullPath, cancellationToken).ConfigureAwait(false);
 	}
 
 	private static async void OnDeleted(object sender, FileSystemEventArgs e) {
@@ -538,7 +538,7 @@ public static class ASF {
 		await OnDeletedFile(e.Name, e.FullPath).ConfigureAwait(false);
 	}
 
-	private static async Task OnDeletedConfigFile(string name, string fullPath) {
+	private static async Task OnDeletedConfigFile(string name, string fullPath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(name);
 		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
@@ -546,17 +546,17 @@ public static class ASF {
 
 		switch (extension) {
 			case SharedInfo.IPCConfigExtension:
-				await OnChangedConfigFile(name).ConfigureAwait(false);
+				await OnChangedConfigFile(name, cancellationToken).ConfigureAwait(false);
 
 				break;
 			case SharedInfo.JsonConfigExtension:
-				await OnDeletedJsonConfigFile(name, fullPath).ConfigureAwait(false);
+				await OnDeletedJsonConfigFile(name, fullPath, cancellationToken).ConfigureAwait(false);
 
 				break;
 		}
 	}
 
-	private static async Task OnDeletedFile(string name, string fullPath) {
+	private static async Task OnDeletedFile(string name, string fullPath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(name);
 		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
@@ -565,13 +565,13 @@ public static class ASF {
 		switch (extension) {
 			case SharedInfo.JsonConfigExtension:
 			case SharedInfo.IPCConfigExtension:
-				await OnDeletedConfigFile(name, fullPath).ConfigureAwait(false);
+				await OnDeletedConfigFile(name, fullPath, cancellationToken).ConfigureAwait(false);
 
 				break;
 		}
 	}
 
-	private static async Task OnDeletedJsonConfigFile(string name, string fullPath) {
+	private static async Task OnDeletedJsonConfigFile(string name, string fullPath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(name);
 		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
@@ -585,7 +585,7 @@ public static class ASF {
 			return;
 		}
 
-		if (!await CanHandleWriteEvent(fullPath).ConfigureAwait(false)) {
+		if (!await CanHandleWriteEvent(fullPath, cancellationToken).ConfigureAwait(false)) {
 			return;
 		}
 
@@ -596,14 +596,14 @@ public static class ASF {
 
 			// Some editors might decide to delete file and re-create it in order to modify it
 			// If that's the case, we wait for maximum of 5 seconds before shutting down
-			await Task.Delay(5000).ConfigureAwait(false);
+			await Task.Delay(5000, cancellationToken).ConfigureAwait(false);
 
 			if (File.Exists(fullPath)) {
 				return;
 			}
 
 			ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
-			await Program.Exit(1).ConfigureAwait(false);
+			await Program.Exit(1, cancellationToken).ConfigureAwait(false);
 
 			return;
 		}
@@ -613,7 +613,7 @@ public static class ASF {
 		}
 
 		if (Bot.Bots.TryGetValue(botName, out Bot? bot)) {
-			await bot.OnConfigChanged(true).ConfigureAwait(false);
+			await bot.OnConfigChanged(true, cancellationToken).ConfigureAwait(false);
 		}
 	}
 
@@ -631,7 +631,7 @@ public static class ASF {
 		}
 	}
 
-	private static async Task<bool> ProtectAgainstCrashes() {
+	private static async Task<bool> ProtectAgainstCrashes(CancellationToken cancellationToken = default) {
 		if (Debugging.IsDebugBuild) {
 			// Allow debug builds to run unconditionally, we expect to crash a lot in those
 			return true;
@@ -639,7 +639,7 @@ public static class ASF {
 
 		string crashFilePath = GetFilePath(EFileType.Crash);
 
-		CrashFile crashFile = await CrashFile.CreateOrLoad(crashFilePath).ConfigureAwait(false);
+		CrashFile crashFile = await CrashFile.CreateOrLoad(crashFilePath, cancellationToken).ConfigureAwait(false);
 
 		if (crashFile.StartupCount >= WebBrowser.MaxTries) {
 			// We've reached maximum allowed count of recent crashes, return failure
@@ -662,7 +662,7 @@ public static class ASF {
 		return true;
 	}
 
-	private static async Task RegisterBots() {
+	private static async Task RegisterBots(CancellationToken cancellationToken = default) {
 		if (GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
@@ -692,15 +692,15 @@ public static class ASF {
 				return;
 			case > MaximumRecommendedBotsCount:
 				ArchiLogger.LogGenericWarning(Strings.FormatWarningExcessiveBotsCount(MaximumRecommendedBotsCount));
-				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 
 				break;
 		}
 
-		await Utilities.InParallel(botNames.OrderBy(static botName => botName, Bot.BotsComparer).Select(Bot.RegisterBot)).ConfigureAwait(false);
+		await Utilities.InParallel(botNames.OrderBy(static botName => botName, Bot.BotsComparer).Select(botName => Bot.RegisterBot(botName, cancellationToken)), cancellationToken).ConfigureAwait(false);
 	}
 
-	private static async Task<(bool Updated, Version? NewVersion)> UpdateASF(GlobalConfig.EUpdateChannel? channel = null, bool updateOverride = false, bool forced = false) {
+	private static async Task<(bool Updated, Version? NewVersion)> UpdateASF(GlobalConfig.EUpdateChannel? channel = null, bool updateOverride = false, bool forced = false, CancellationToken cancellationToken = default) {
 		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
 			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
 		}
@@ -721,17 +721,17 @@ public static class ASF {
 
 		string targetFile;
 
-		await UpdateSemaphore.WaitAsync().ConfigureAwait(false);
+		await UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			// If directories from previous update exist, it's a good idea to purge them now
-			if (!await Utilities.UpdateCleanup(SharedInfo.HomeDirectory).ConfigureAwait(false)) {
+			if (!await Utilities.UpdateCleanup(SharedInfo.HomeDirectory, cancellationToken).ConfigureAwait(false)) {
 				return (false, null);
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
 
-			ReleaseResponse? releaseResponse = await GitHubService.GetLatestRelease(SharedInfo.GithubRepo, channel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
+			ReleaseResponse? releaseResponse = await GitHubService.GetLatestRelease(SharedInfo.GithubRepo, channel == GlobalConfig.EUpdateChannel.Stable, cancellationToken).ConfigureAwait(false);
 
 			if ((releaseResponse == null) || string.IsNullOrEmpty(releaseResponse.Tag)) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
@@ -749,7 +749,7 @@ public static class ASF {
 
 			if (!updateOverride && (GlobalConfig.UpdatePeriod == 0)) {
 				ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
-				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay, cancellationToken).ConfigureAwait(false);
 
 				return (false, newVersion);
 			}
@@ -824,7 +824,7 @@ public static class ASF {
 				return (false, newVersion);
 			}
 
-			await PluginsCore.OnUpdateProceeding(newVersion).ConfigureAwait(false);
+			await PluginsCore.OnUpdateProceeding(newVersion, cancellationToken).ConfigureAwait(false);
 
 			bool kestrelWasRunning = ArchiKestrel.IsRunning;
 
@@ -833,7 +833,7 @@ public static class ASF {
 				ASFController.PendingVersionUpdate = newVersion;
 
 				try {
-					await ArchiKestrel.Stop().ConfigureAwait(false);
+					await ArchiKestrel.Stop(cancellationToken).ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 				} finally {
@@ -850,7 +850,7 @@ public static class ASF {
 					ZipArchive zipArchive = new(memoryStream);
 
 					await using (zipArchive.ConfigureAwait(false)) {
-						if (!await UpdateFromArchive(newVersion, channel.Value, updateOverride, forced, zipArchive).ConfigureAwait(false)) {
+						if (!await UpdateFromArchive(newVersion, channel.Value, updateOverride, forced, zipArchive, cancellationToken).ConfigureAwait(false)) {
 							ArchiLogger.LogGenericError(Strings.WarningFailed);
 						}
 					}
@@ -862,7 +862,7 @@ public static class ASF {
 					// We've temporarily disabled ArchiKestrel but the update has failed, let's bring it back up
 					// We can't even be sure if it's possible to bring it back up in this state, but it's worth trying anyway
 					try {
-						await ArchiKestrel.Start().ConfigureAwait(false);
+						await ArchiKestrel.Start(cancellationToken).ConfigureAwait(false);
 					} catch (Exception ex) {
 						ArchiLogger.LogGenericWarningException(ex);
 					}
@@ -873,7 +873,7 @@ public static class ASF {
 
 			ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
 
-			await PluginsCore.OnUpdateFinished(newVersion).ConfigureAwait(false);
+			await PluginsCore.OnUpdateFinished(newVersion, cancellationToken).ConfigureAwait(false);
 
 			return (true, newVersion);
 		} finally {
@@ -887,7 +887,7 @@ public static class ASF {
 		}
 	}
 
-	private static async Task UpdateAndRestart() {
+	private static async Task UpdateAndRestart(CancellationToken cancellationToken = default) {
 		if (GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
@@ -909,13 +909,13 @@ public static class ASF {
 			ArchiLogger.LogGenericInfo(Strings.FormatAutoUpdateCheckInfo(autoUpdatePeriod.ToHumanReadable()));
 		}
 
-		(bool updated, Version? newVersion) = await Update().ConfigureAwait(false);
+		(bool updated, Version? newVersion) = await Update(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (!updated) {
 			if ((newVersion != null) && (SharedInfo.Version > newVersion)) {
 				// User is running version newer than their channel allows
 				ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
-				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay, cancellationToken).ConfigureAwait(false);
 			}
 
 			return;
@@ -924,10 +924,10 @@ public static class ASF {
 		// Allow crash file recovery, if needed
 		Program.AllowCrashFileRemoval = true;
 
-		await RestartOrExit().ConfigureAwait(false);
+		await RestartOrExit(cancellationToken).ConfigureAwait(false);
 	}
 
-	private static async Task<bool> UpdateFromArchive(Version newVersion, GlobalConfig.EUpdateChannel updateChannel, bool updateOverride, bool forced, ZipArchive zipArchive) {
+	private static async Task<bool> UpdateFromArchive(Version newVersion, GlobalConfig.EUpdateChannel updateChannel, bool updateOverride, bool forced, ZipArchive zipArchive, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(newVersion);
 
 		if (!Enum.IsDefined(updateChannel)) {
@@ -948,9 +948,9 @@ public static class ASF {
 		}
 
 		// We're ready to start update process, handle any plugin updates ready for new version
-		await PluginsCore.UpdatePlugins(newVersion, true, updateChannel, updateOverride, forced).ConfigureAwait(false);
+		await PluginsCore.UpdatePlugins(newVersion, true, updateChannel, updateOverride, forced, cancellationToken).ConfigureAwait(false);
 
-		return await Utilities.UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory).ConfigureAwait(false);
+		return await Utilities.UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory, cancellationToken).ConfigureAwait(false);
 	}
 
 	[PublicAPI]

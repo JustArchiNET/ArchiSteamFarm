@@ -43,7 +43,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal static class Backend {
-	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> AnnounceDiffForListing(WebBrowser webBrowser, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, IReadOnlyCollection<AssetForListing> inventoryRemoved, string previousInventoryChecksum, string? nickname = null, string? avatarHash = null) {
+	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> AnnounceDiffForListing(WebBrowser webBrowser, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, IReadOnlyCollection<AssetForListing> inventoryRemoved, string previousInventoryChecksum, string? nickname = null, string? avatarHash = null, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -71,10 +71,10 @@ internal static class Backend {
 
 		AnnouncementDiffRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, inventory, inventoryChecksum, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, tradeToken, inventoryRemoved, previousInventoryChecksum, nickname, avatarHash);
 
-		return await webBrowser.UrlPostToJsonObject<GenericResponse<BackgroundTaskResponse>, AnnouncementDiffRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
+		return await webBrowser.UrlPostToJsonObject<GenericResponse<BackgroundTaskResponse>, AnnouncementDiffRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
-	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> AnnounceForListing(WebBrowser webBrowser, ulong steamID, IReadOnlyList<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, string? nickname = null, string? avatarHash = null) {
+	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> AnnounceForListing(WebBrowser webBrowser, ulong steamID, IReadOnlyList<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, string? nickname = null, string? avatarHash = null, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -102,10 +102,10 @@ internal static class Backend {
 
 		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, inventory, inventoryChecksum, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, tradeToken, nickname, avatarHash);
 
-		return await webBrowser.UrlPostToJsonObject<GenericResponse<BackgroundTaskResponse>, AnnouncementRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
+		return await webBrowser.UrlPostToJsonObject<GenericResponse<BackgroundTaskResponse>, AnnouncementRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
-	internal static async Task<ObjectResponse<GenericResponse<bool>>?> CheckAnnounceDiffForListing(WebBrowser webBrowser, ulong steamID, string previousInventoryChecksum) {
+	internal static async Task<ObjectResponse<GenericResponse<bool>>?> CheckAnnounceDiffForListing(WebBrowser webBrowser, ulong steamID, string previousInventoryChecksum, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -118,7 +118,7 @@ internal static class Backend {
 
 		AnnouncementDiffCheckRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, previousInventoryChecksum);
 
-		return await webBrowser.UrlPostToJsonObject<GenericResponse<bool>, AnnouncementDiffCheckRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
+		return await webBrowser.UrlPostToJsonObject<GenericResponse<bool>, AnnouncementDiffCheckRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	internal static string GenerateChecksumFor(IEnumerable<AssetForListing> assetsForListings) {
@@ -145,7 +145,7 @@ internal static class Backend {
 		return Convert.ToHexString(incrementalHash.GetHashAndReset());
 	}
 
-	internal static async Task<HttpStatusCode?> GetLicenseStatus(Guid licenseID, WebBrowser webBrowser) {
+	internal static async Task<HttpStatusCode?> GetLicenseStatus(Guid licenseID, WebBrowser webBrowser, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfEqual(licenseID, Guid.Empty);
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
@@ -155,12 +155,12 @@ internal static class Backend {
 			{ "X-License-Key", licenseID.ToString("N") }
 		};
 
-		ObjectResponse<GenericResponse>? response = await webBrowser.UrlGetToJsonObject<GenericResponse>(request, headers, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+		ObjectResponse<GenericResponse>? response = await webBrowser.UrlGetToJsonObject<GenericResponse>(request, headers, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.StatusCode;
 	}
 
-	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Guid licenseID, Bot bot, WebBrowser webBrowser, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<EAssetType> acceptedMatchableTypes) {
+	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Guid licenseID, Bot bot, WebBrowser webBrowser, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<EAssetType> acceptedMatchableTypes, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfEqual(licenseID, Guid.Empty);
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(webBrowser);
@@ -181,7 +181,7 @@ internal static class Backend {
 
 		InventoriesRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, inventory, acceptedMatchableTypes);
 
-		ObjectResponse<GenericResponse<ImmutableHashSet<ListedUser>>>? response = await webBrowser.UrlPostToJsonObject<GenericResponse<ImmutableHashSet<ListedUser>>, InventoriesRequest>(request, headers, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<ImmutableHashSet<ListedUser>>>? response = await webBrowser.UrlPostToJsonObject<GenericResponse<ImmutableHashSet<ListedUser>>, InventoriesRequest>(request, headers, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -212,7 +212,7 @@ internal static class Backend {
 		return await webBrowser.UrlPostToJsonObject<GenericResponse<ImmutableHashSet<SetPart>>, SetPartsRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
-	internal static async Task<BasicResponse?> HeartBeatForListing(Bot bot, WebBrowser webBrowser) {
+	internal static async Task<BasicResponse?> HeartBeatForListing(Bot bot, WebBrowser webBrowser, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
@@ -220,10 +220,10 @@ internal static class Backend {
 
 		HeartBeatRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID);
 
-		return await webBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
+		return await webBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
-	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> PollResult(WebBrowser webBrowser, ulong steamID, Guid requestID) {
+	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> PollResult(WebBrowser webBrowser, ulong steamID, Guid requestID, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -238,6 +238,6 @@ internal static class Backend {
 
 		Uri request = new(ArchiNet.URL, $"/Api/Listing/PollResult/{steamID}/{requestID:N}");
 
-		return await webBrowser.UrlGetToJsonObject<GenericResponse<BackgroundTaskResponse>>(request, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+		return await webBrowser.UrlGetToJsonObject<GenericResponse<BackgroundTaskResponse>>(request, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 }

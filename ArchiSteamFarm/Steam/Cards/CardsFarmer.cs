@@ -201,10 +201,10 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		Utilities.InBackground(StopFarming);
+		Utilities.InBackground(() => StopFarming());
 	}
 
-	internal async Task OnNewGameAdded() {
+	internal async Task OnNewGameAdded(CancellationToken cancellationToken = default) {
 		// This update has a potential to modify local ignores, therefore we need to purge our cache
 		LocallyIgnoredAppIDs.Clear();
 
@@ -221,7 +221,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			ParsingScheduled = true;
 		}
 
-		await EventSemaphore.WaitAsync().ConfigureAwait(false);
+		await EventSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
@@ -231,7 +231,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 			// If we're not farming yet, obviously it's worth it to make a check
 			if (!NowFarming) {
-				await StartFarming().ConfigureAwait(false);
+				await StartFarming(cancellationToken).ConfigureAwait(false);
 
 				return;
 			}
@@ -240,17 +240,17 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			// The order is affected when user uses farming order that isn't independent of the game data (it could alter the order in deterministic way if the game was considered in current queue)
 			// The efficiency is affected only in complex algorithm (entirely), as it depends on hours order that is not independent (as specified above)
 			if (!ShouldSkipNewGamesIfPossible && ((Bot.BotConfig.HoursUntilCardDrops > 0) || (!Bot.BotConfig.FarmingOrders.IsEmpty && Bot.BotConfig.FarmingOrders.Any(static farmingOrder => farmingOrder is not BotConfig.EFarmingOrder.Unordered and not BotConfig.EFarmingOrder.Random)))) {
-				await StopFarming().ConfigureAwait(false);
-				await StartFarming().ConfigureAwait(false);
+				await StopFarming(cancellationToken).ConfigureAwait(false);
+				await StartFarming(cancellationToken).ConfigureAwait(false);
 			}
 		} finally {
 			EventSemaphore.Release();
 		}
 	}
 
-	internal async Task OnNewItemsNotification() {
+	internal async Task OnNewItemsNotification(CancellationToken cancellationToken = default) {
 		if (NowFarming) {
-			await FarmingInitializationSemaphore.WaitAsync().ConfigureAwait(false);
+			await FarmingInitializationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 			try {
 				if (NowFarming) {
@@ -266,11 +266,11 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		// If we're not farming, and we got new items, it's likely to be a booster pack or likewise
 		// In this case, perform a loot if user wants to do so
 		if (Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && !Bot.BotConfig.LootableTypes.IsEmpty) {
-			await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
+			await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type), cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 	}
 
-	internal async Task Pause(bool permanent) {
+	internal async Task Pause(bool permanent, CancellationToken cancellationToken = default) {
 		if (permanent) {
 			PermanentlyPaused = true;
 		}
@@ -281,10 +281,10 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		await StopFarming().ConfigureAwait(false);
+		await StopFarming(cancellationToken).ConfigureAwait(false);
 	}
 
-	internal async Task<bool> Resume(bool userAction) {
+	internal async Task<bool> Resume(bool userAction, CancellationToken cancellationToken = default) {
 		if (PermanentlyPaused) {
 			if (!userAction) {
 				Bot.ArchiLogger.LogGenericInfo(Strings.IgnoredPermanentPauseEnabled);
@@ -305,7 +305,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return false;
 		}
 
-		await StartFarming().ConfigureAwait(false);
+		await StartFarming(cancellationToken).ConfigureAwait(false);
 
 		return true;
 	}
@@ -315,26 +315,26 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		ShouldResumeFarming = ShouldSkipNewGamesIfPossible = false;
 	}
 
-	internal async Task StartFarming() {
+	internal async Task StartFarming(CancellationToken cancellationToken = default) {
 		if (NowFarming || Paused || !Bot.IsPlayingPossible) {
 			return;
 		}
 
 		if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmPriorityQueueOnly) && (Bot.BotDatabase.FarmingPriorityQueueAppIDs.Count == 0))) {
 			Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
-			await Bot.OnFarmingFinished(false).ConfigureAwait(false);
+			await Bot.OnFarmingFinished(false, cancellationToken).ConfigureAwait(false);
 
 			return;
 		}
 
-		await FarmingInitializationSemaphore.WaitAsync().ConfigureAwait(false);
+		await FarmingInitializationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (NowFarming || Paused || !Bot.IsPlayingPossible) {
 				return;
 			}
 
-			bool? isAnythingToFarm = await IsAnythingToFarm().ConfigureAwait(false);
+			bool? isAnythingToFarm = await IsAnythingToFarm(cancellationToken).ConfigureAwait(false);
 
 			if (!isAnythingToFarm.HasValue) {
 				return;
@@ -342,7 +342,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 			if (!isAnythingToFarm.Value) {
 				Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
-				await Bot.OnFarmingFinished(false).ConfigureAwait(false);
+				await Bot.OnFarmingFinished(false, cancellationToken).ConfigureAwait(false);
 
 				return;
 			}
@@ -367,7 +367,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					Bot.ArchiLogger.LogGenericInfo(Strings.FormatBotExtraIdlingCooldown(TimeSpan.FromSeconds(minFarmingDelayAfterBlock).ToHumanReadable()));
 
 					for (byte i = 0; (i < minFarmingDelayAfterBlock) && Bot is { IsConnectedAndLoggedOn: true, IsPlayingPossible: true, PlayingWasBlocked: true }; i++) {
-						await Task.Delay(1000).ConfigureAwait(false);
+						await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 					}
 
 					if (!Bot.IsConnectedAndLoggedOn) {
@@ -383,20 +383,20 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			NowFarming = true;
-			Utilities.InBackground(Farm, true);
+			Utilities.InBackground(() => Farm(CancellationToken.None), true);
 
-			await PluginsCore.OnBotFarmingStarted(Bot).ConfigureAwait(false);
+			await PluginsCore.OnBotFarmingStarted(Bot, cancellationToken).ConfigureAwait(false);
 		} finally {
 			FarmingInitializationSemaphore.Release();
 		}
 	}
 
-	internal async Task StopFarming() {
+	internal async Task StopFarming(CancellationToken cancellationToken = default) {
 		if (!NowFarming) {
 			return;
 		}
 
-		await FarmingInitializationSemaphore.WaitAsync().ConfigureAwait(false);
+		await FarmingInitializationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			if (!NowFarming) {
@@ -406,7 +406,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			for (byte i = 0; (i < byte.MaxValue) && NowFarming; i++) {
 				FarmingResetEvent?.TrySetResult(false);
 
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (NowFarming) {
@@ -418,18 +418,18 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.IdlingStopped);
-			await Bot.OnFarmingStopped().ConfigureAwait(false);
+			await Bot.OnFarmingStopped(cancellationToken).ConfigureAwait(false);
 		} finally {
 			FarmingInitializationSemaphore.Release();
 		}
 	}
 
-	private async Task CheckGame(uint appID, string name, float hours, byte badgeLevel) {
+	private async Task CheckGame(uint appID, string name, float hours, byte badgeLevel, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentException.ThrowIfNullOrEmpty(name);
 		ArgumentOutOfRangeException.ThrowIfNegative(hours);
 
-		Game? game = await GetGameCardsInfo(appID).ConfigureAwait(false);
+		Game? game = await GetGameCardsInfo(appID, cancellationToken).ConfigureAwait(false);
 
 		if (game == null) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningCouldNotCheckCardsStatus(appID, name));
@@ -452,7 +452,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		await StartFarming().ConfigureAwait(false);
 	}
 
-	private async Task CheckPage(IParentNode badgePage, ISet<uint> parsedAppIDs, IReadOnlyCollection<uint>? privateAppIDs = null) {
+	private async Task CheckPage(IParentNode badgePage, ISet<uint> parsedAppIDs, IReadOnlyCollection<uint>? privateAppIDs = null, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(badgePage);
 		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
@@ -742,7 +742,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 				GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining, badgeLevel));
 			} else {
-				Task task = CheckGame(appID, name, hours, badgeLevel);
+				Task task = CheckGame(appID, name, hours, badgeLevel, cancellationToken);
 
 				switch (ASF.GlobalConfig?.OptimizationMode) {
 					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -765,22 +765,22 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task<bool> CheckPage(byte page, ISet<uint> parsedAppIDs, IReadOnlyCollection<uint>? privateAppIDs = null) {
+	private async Task<bool> CheckPage(byte page, ISet<uint> parsedAppIDs, IReadOnlyCollection<uint>? privateAppIDs = null, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(page);
 		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
-		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
+		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (htmlDocument == null) {
 			return false;
 		}
 
-		await CheckPage(htmlDocument, parsedAppIDs, privateAppIDs).ConfigureAwait(false);
+		await CheckPage(htmlDocument, parsedAppIDs, privateAppIDs, cancellationToken).ConfigureAwait(false);
 
 		return true;
 	}
 
-	private async Task Farm() {
+	private async Task Farm(CancellationToken cancellationToken = default) {
 		do {
 			Bot.ArchiLogger.LogGenericInfo(Strings.FormatGamesToIdle(GamesToFarm.Count, GamesToFarm.Sum(static game => game.CardsRemaining), TimeRemaining.ToHumanReadable()));
 
@@ -804,7 +804,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 							continue;
 						}
 
-						if (await FarmSolo(game).ConfigureAwait(false)) {
+						if (await FarmSolo(game, cancellationToken).ConfigureAwait(false)) {
 							innerGamesToFarm.Remove(game);
 
 							continue;
@@ -842,7 +842,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					}
 
 					// Otherwise, we farm our innerGamesToFarm batch until any game hits HoursUntilCardDrops
-					if (await FarmMultiple(innerGamesToFarm).ConfigureAwait(false)) {
+					if (await FarmMultiple(innerGamesToFarm, cancellationToken).ConfigureAwait(false)) {
 						Bot.ArchiLogger.LogGenericInfo(Strings.FormatIdlingFinishedForGames(string.Join(", ", innerGamesToFarm.Select(static game => game.AppID))));
 					} else {
 						NowFarming = false;
@@ -866,7 +866,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 						continue;
 					}
 
-					if (await FarmSolo(game).ConfigureAwait(false)) {
+					if (await FarmSolo(game, cancellationToken).ConfigureAwait(false)) {
 						continue;
 					}
 
@@ -875,27 +875,27 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					return;
 				}
 			}
-		} while ((await IsAnythingToFarm().ConfigureAwait(false)).GetValueOrDefault());
+		} while ((await IsAnythingToFarm(cancellationToken).ConfigureAwait(false)).GetValueOrDefault());
 
 		NowFarming = false;
 
 		Bot.ArchiLogger.LogGenericInfo(Strings.IdlingFinished);
-		await Bot.OnFarmingFinished(true).ConfigureAwait(false);
+		await Bot.OnFarmingFinished(true, cancellationToken).ConfigureAwait(false);
 	}
 
-	private async Task<bool> FarmCards(Game game) {
+	private async Task<bool> FarmCards(Game game, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(game);
 
 		if (game.AppID != game.PlayableAppID) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningIdlingGameMismatch(game.AppID, game.GameName, game.PlayableAppID));
 		}
 
-		await Bot.IdleGame(game).ConfigureAwait(false);
+		await Bot.IdleGame(game, cancellationToken).ConfigureAwait(false);
 
 		bool keepFarming = true;
 		DateTime endFarmingDate = DateTime.UtcNow.AddHours(ASF.GlobalConfig?.MaxFarmingTime ?? GlobalConfig.DefaultMaxFarmingTime);
 
-		while ((DateTime.UtcNow < endFarmingDate) && (await ShouldFarm(game).ConfigureAwait(false)).GetValueOrDefault(true)) {
+		while ((DateTime.UtcNow < endFarmingDate) && (await ShouldFarm(game, cancellationToken).ConfigureAwait(false)).GetValueOrDefault(true)) {
 			Bot.ArchiLogger.LogGenericInfo(Strings.FormatStillIdling(game.AppID, game.GameName));
 
 			DateTime startFarmingPeriod = DateTime.UtcNow;
@@ -907,11 +907,11 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			TimeSpan timeSpan = TimeSpan.FromMinutes(ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay) + TimeSpan.FromSeconds(ExtraFarmingDelaySeconds);
 
 			try {
-				keepFarming = await FarmingResetEvent.Task.WaitAsync(timeSpan).ConfigureAwait(false);
+				keepFarming = await FarmingResetEvent.Task.WaitAsync(timeSpan, cancellationToken).ConfigureAwait(false);
 
 				if (keepFarming) {
 					// We've got an event that suggests item drop, wait for a brief moment to fight with potential cache issues
-					await Task.Delay(2000).ConfigureAwait(false);
+					await Task.Delay(2000, cancellationToken).ConfigureAwait(false);
 				}
 			} catch (TimeoutException e) {
 				Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -930,7 +930,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		return keepFarming;
 	}
 
-	private async Task<bool> FarmHours(HashSet<Game> games) {
+	private async Task<bool> FarmHours(HashSet<Game> games, CancellationToken cancellationToken = default) {
 		if ((games == null) || (games.Count == 0)) {
 			throw new ArgumentNullException(nameof(games));
 		}
@@ -949,7 +949,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return true;
 		}
 
-		await Bot.IdleGames(games).ConfigureAwait(false);
+		await Bot.IdleGames(games, cancellationToken).ConfigureAwait(false);
 
 		bool keepFarming = true;
 
@@ -965,7 +965,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			TimeSpan timeSpan = TimeSpan.FromMinutes(ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay) + TimeSpan.FromSeconds(ExtraFarmingDelaySeconds);
 
 			try {
-				keepFarming = await FarmingResetEvent.Task.WaitAsync(timeSpan).ConfigureAwait(false);
+				keepFarming = await FarmingResetEvent.Task.WaitAsync(timeSpan, cancellationToken).ConfigureAwait(false);
 			} catch (TimeoutException e) {
 				Bot.ArchiLogger.LogGenericDebuggingException(e);
 			}
@@ -989,7 +989,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		return keepFarming;
 	}
 
-	private async Task<bool> FarmMultiple(HashSet<Game> games) {
+	private async Task<bool> FarmMultiple(HashSet<Game> games, CancellationToken cancellationToken = default) {
 		if ((games == null) || (games.Count == 0)) {
 			throw new ArgumentNullException(nameof(games));
 		}
@@ -1003,20 +1003,20 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			Bot.ArchiLogger.LogGenericInfo(Strings.FormatNowIdlingList(string.Join(", ", games.Select(static game => game.AppID))));
 		}
 
-		bool result = await FarmHours(games).ConfigureAwait(false);
+		bool result = await FarmHours(games, cancellationToken).ConfigureAwait(false);
 		CurrentGamesFarming.Clear();
 
 		return result;
 	}
 
-	private async Task<bool> FarmSolo(Game game) {
+	private async Task<bool> FarmSolo(Game game, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(game);
 
 		CurrentGamesFarming.Add(game);
 
 		Bot.ArchiLogger.LogGenericInfo(Strings.FormatNowIdling(game.AppID, game.GameName));
 
-		bool result = await FarmCards(game).ConfigureAwait(false);
+		bool result = await FarmCards(game, cancellationToken).ConfigureAwait(false);
 		CurrentGamesFarming.Clear();
 
 		if (!result) {
@@ -1030,10 +1030,10 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
-	private async Task<Game?> GetGameCardsInfo(uint appID) {
+	private async Task<Game?> GetGameCardsInfo(uint appID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
-		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
+		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID, cancellationToken).ConfigureAwait(false);
 
 		if (htmlDocument == null) {
 			return null;
@@ -1156,11 +1156,11 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		return new Game(appID, name, hours, cardsRemaining, badgeLevel);
 	}
 
-	private async Task<bool?> IsAnythingToFarm() {
+	private async Task<bool?> IsAnythingToFarm(CancellationToken cancellationToken = default) {
 		// Find the number of badge pages
 		Bot.ArchiLogger.LogGenericInfo(Strings.CheckingFirstBadgePage);
 
-		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1, Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.EnableRiskyCardsDiscovery) ? (byte) 2 : WebBrowser.MaxTries).ConfigureAwait(false);
+		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1, Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.EnableRiskyCardsDiscovery) ? (byte) 2 : WebBrowser.MaxTries, cancellationToken).ConfigureAwait(false);
 
 		if (htmlDocument == null) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
@@ -1169,7 +1169,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				return null;
 			}
 
-			return await IsAnythingToFarmRisky().ConfigureAwait(false);
+			return await IsAnythingToFarmRisky(cancellationToken).ConfigureAwait(false);
 		}
 
 		ShouldSkipNewGamesIfPossible = false;
@@ -1202,7 +1202,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		ConcurrentHashSet<uint> parsedAppIDs = [];
 
-		Task mainTask = CheckPage(htmlDocument, parsedAppIDs, privateAppIDs);
+		Task mainTask = CheckPage(htmlDocument, parsedAppIDs, privateAppIDs, cancellationToken);
 
 		bool allTasksSucceeded = true;
 
@@ -1214,7 +1214,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
 
 					for (byte page = 2; page <= maxPages; page++) {
-						if (!await CheckPage(page, parsedAppIDs, privateAppIDs).ConfigureAwait(false)) {
+						if (!await CheckPage(page, parsedAppIDs, privateAppIDs, cancellationToken).ConfigureAwait(false)) {
 							allTasksSucceeded = false;
 						}
 					}
@@ -1230,7 +1230,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					for (byte page = 2; page <= maxPages; page++) {
 						// ReSharper disable once InlineTemporaryVariable - we need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
 						byte currentPage = page;
-						tasks.Add(CheckPage(currentPage, parsedAppIDs, privateAppIDs));
+						tasks.Add(CheckPage(currentPage, parsedAppIDs, privateAppIDs, cancellationToken));
 					}
 
 					bool[] taskResults = await Task.WhenAll(tasks).ConfigureAwait(false);
@@ -1257,19 +1257,19 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				return false;
 			}
 
-			return await IsAnythingToFarmRisky().ConfigureAwait(false);
+			return await IsAnythingToFarmRisky(cancellationToken).ConfigureAwait(false);
 		}
 
 		ShouldResumeFarming = true;
-		await SortGamesToFarm().ConfigureAwait(false);
+		await SortGamesToFarm(cancellationToken).ConfigureAwait(false);
 
 		return true;
 	}
 
-	private async Task<bool?> IsAnythingToFarmRisky() {
-		Task<ImmutableHashSet<BoosterCreatorEntry>?> boosterCreatorEntriesTask = Bot.ArchiWebHandler.GetBoosterCreatorEntries();
+	private async Task<bool?> IsAnythingToFarmRisky(CancellationToken cancellationToken = default) {
+		Task<ImmutableHashSet<BoosterCreatorEntry>?> boosterCreatorEntriesTask = Bot.ArchiWebHandler.GetBoosterCreatorEntries(cancellationToken);
 
-		HashSet<uint>? boosterElibility = await Bot.ArchiWebHandler.GetBoosterEligibility().ConfigureAwait(false);
+		HashSet<uint>? boosterElibility = await Bot.ArchiWebHandler.GetBoosterEligibility(cancellationToken).ConfigureAwait(false);
 
 		if (boosterElibility == null) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
@@ -1325,7 +1325,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		DateTime ignoredUntil = now.AddDays(DaysToIgnoreRiskyAppIDs);
 
 		foreach (uint appID in gamesToFarmOrdered) {
-			Game? game = await GetGameCardsInfo(appID).ConfigureAwait(false);
+			Game? game = await GetGameCardsInfo(appID, cancellationToken).ConfigureAwait(false);
 
 			if (game == null) {
 				if (++failuresInRow >= WebBrowser.MaxTries) {
@@ -1362,7 +1362,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		}
 
 		ShouldResumeFarming = ShouldSkipNewGamesIfPossible = true;
-		await SortGamesToFarm().ConfigureAwait(false);
+		await SortGamesToFarm(cancellationToken).ConfigureAwait(false);
 
 		return true;
 	}
@@ -1393,15 +1393,15 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return (false, null);
 		}
 
-		HashSet<uint>? result = await bot.ArchiWebHandler.GetAppList().ConfigureAwait(false);
+		HashSet<uint>? result = await bot.ArchiWebHandler.GetAppList(cancellationToken).ConfigureAwait(false);
 
 		return (result?.Count > 0, result?.ToFrozenSet());
 	}
 
-	private async Task<bool?> ShouldFarm(Game game) {
+	private async Task<bool?> ShouldFarm(Game game, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(game);
 
-		Game? latestGameData = await GetGameCardsInfo(game.AppID).ConfigureAwait(false);
+		Game? latestGameData = await GetGameCardsInfo(game.AppID, cancellationToken).ConfigureAwait(false);
 
 		if (latestGameData == null) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.FormatWarningCouldNotCheckCardsStatus(game.AppID, game.GameName));
@@ -1448,7 +1448,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
-	private async Task SortGamesToFarm() {
+	private async Task SortGamesToFarm(CancellationToken cancellationToken = default) {
 		// Put priority idling appIDs on top
 		IOrderedEnumerable<Game> orderedGamesToFarm = GamesToFarm.AsLinqThreadSafeEnumerable().OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
 
@@ -1482,7 +1482,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 					break;
 				case BotConfig.EFarmingOrder.MarketableAscending:
 				case BotConfig.EFarmingOrder.MarketableDescending:
-					(_, FrozenSet<uint>? marketableAppIDs) = await MarketableAppIDs.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+					(_, FrozenSet<uint>? marketableAppIDs) = await MarketableAppIDs.GetValue(ECacheFallback.SuccessPreviously, cancellationToken).ConfigureAwait(false);
 
 					if (marketableAppIDs?.Count > 0) {
 						FrozenSet<uint> marketableAppIDsCopy = marketableAppIDs;

@@ -27,6 +27,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
@@ -61,7 +62,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			field = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -76,7 +77,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			field = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -90,7 +91,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			field = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -110,7 +111,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			field = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -150,7 +151,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			field = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -165,7 +166,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			field = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -180,7 +181,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 
 			field = value;
-			Utilities.InBackground(Save);
+			Utilities.InBackground(() => Save());
 		}
 	}
 
@@ -301,7 +302,7 @@ public sealed class BotDatabase : GenericDatabase {
 		base.Dispose(disposing);
 	}
 
-	protected override Task Save() => Save(this);
+	protected override Task Save(CancellationToken cancellationToken = default) => Save(this, cancellationToken);
 
 	internal void AddGamesToRedeemInBackground(IReadOnlyDictionary<string, string> games) {
 		if ((games == null) || (games.Count == 0)) {
@@ -318,7 +319,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 		}
 
-		Utilities.InBackground(Save);
+		Utilities.InBackground(() => Save());
 	}
 
 	internal void ClearGamesToRedeemInBackground() {
@@ -330,10 +331,10 @@ public sealed class BotDatabase : GenericDatabase {
 			GamesToRedeemInBackground.Clear();
 		}
 
-		Utilities.InBackground(Save);
+		Utilities.InBackground(() => Save());
 	}
 
-	internal static async Task<BotDatabase?> CreateOrLoad(string filePath) {
+	internal static async Task<BotDatabase?> CreateOrLoad(string filePath, CancellationToken cancellationToken = default) {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
@@ -343,7 +344,7 @@ public sealed class BotDatabase : GenericDatabase {
 		BotDatabase? botDatabase;
 
 		try {
-			string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+			string json = await File.ReadAllTextAsync(filePath, cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(json)) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsEmpty(nameof(json)));
@@ -408,7 +409,7 @@ public sealed class BotDatabase : GenericDatabase {
 			}
 		}
 
-		Utilities.InBackground(Save);
+		Utilities.InBackground(() => Save());
 	}
 
 	private (bool Valid, string? ErrorMessage) CheckValidation() => GamesToRedeemInBackground.Any(static entry => !IsValidGameToRedeemInBackground(entry.Key, entry.Value)) ? (false, Strings.FormatErrorConfigPropertyInvalid(nameof(GamesToRedeemInBackground), string.Join("", GamesToRedeemInBackground))) : (true, null);
