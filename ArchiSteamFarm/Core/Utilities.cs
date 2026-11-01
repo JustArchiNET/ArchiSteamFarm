@@ -292,6 +292,8 @@ public static class Utilities {
 
 				await DeletePotentiallyUsedDirectory(backupDirectory, cancellationToken).ConfigureAwait(false);
 			}
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 

@@ -773,7 +773,9 @@ public static class ASF {
 			ArchiLogger.LogGenericInfo(Strings.FetchingChecksumFromRemoteServer);
 
 			// Keep short timeout allowed for this call, as we don't want to hold the flow for too long
-			using CancellationTokenSource archiNetCancellation = new(TimeSpan.FromSeconds(15));
+			using CancellationTokenSource archiNetCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+			archiNetCancellation.CancelAfter(TimeSpan.FromSeconds(15));
 
 			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, BuildInfo.Variant, archiNetCancellation.Token).ConfigureAwait(false);
 
@@ -824,7 +826,7 @@ public static class ASF {
 				return (false, newVersion);
 			}
 
-			await PluginsCore.OnUpdateProceeding(newVersion, cancellationToken).ConfigureAwait(false);
+			await PluginsCore.OnUpdateProceeding(newVersion, CancellationToken.None).ConfigureAwait(false);
 
 			bool kestrelWasRunning = ArchiKestrel.IsRunning;
 
@@ -843,6 +845,8 @@ public static class ASF {
 
 			ArchiLogger.LogGenericInfo(Strings.PatchingFiles);
 
+			bool updateSucceeded = false;
+
 			try {
 				MemoryStream memoryStream = new(responseBytes);
 
@@ -850,21 +854,25 @@ public static class ASF {
 					ZipArchive zipArchive = new(memoryStream);
 
 					await using (zipArchive.ConfigureAwait(false)) {
-						if (!await UpdateFromArchive(newVersion, channel.Value, updateOverride, forced, zipArchive, CancellationToken.None).ConfigureAwait(false)) {
+						updateSucceeded = await UpdateFromArchive(newVersion, channel.Value, updateOverride, forced, zipArchive, CancellationToken.None).ConfigureAwait(false);
+
+						if (!updateSucceeded) {
 							ArchiLogger.LogGenericError(Strings.WarningFailed);
 						}
 					}
 				}
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
+			}
 
+			if (!updateSucceeded) {
 				if (kestrelWasRunning) {
 					// We've temporarily disabled ArchiKestrel but the update has failed, let's bring it back up
 					// We can't even be sure if it's possible to bring it back up in this state, but it's worth trying anyway
 					try {
 						await ArchiKestrel.Start(CancellationToken.None).ConfigureAwait(false);
-					} catch (Exception ex) {
-						ArchiLogger.LogGenericWarningException(ex);
+					} catch (Exception e) {
+						ArchiLogger.LogGenericWarningException(e);
 					}
 				}
 
@@ -924,7 +932,7 @@ public static class ASF {
 		// Allow crash file recovery, if needed
 		Program.AllowCrashFileRemoval = true;
 
-		await RestartOrExit(cancellationToken).ConfigureAwait(false);
+		await RestartOrExit(CancellationToken.None).ConfigureAwait(false);
 	}
 
 	private static async Task<bool> UpdateFromArchive(Version newVersion, GlobalConfig.EUpdateChannel updateChannel, bool updateOverride, bool forced, ZipArchive zipArchive, CancellationToken cancellationToken = default) {

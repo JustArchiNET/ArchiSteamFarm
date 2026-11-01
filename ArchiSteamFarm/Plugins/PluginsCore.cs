@@ -755,7 +755,7 @@ public static class PluginsCore {
 
 		ASF.ArchiLogger.LogGenericInfo(Strings.PluginUpdatesChecking);
 
-		IList<bool> pluginUpdates = await Utilities.InParallel(plugins.Select(plugin => UpdatePlugin(asfVersion, asfUpdate, plugin, updateChannel.Value, updateOverride, forced, cancellationToken)), cancellationToken).ConfigureAwait(false);
+		IList<bool> pluginUpdates = await Utilities.InParallel(plugins.Select(plugin => UpdatePlugin(asfVersion, asfUpdate, plugin, updateChannel.Value, updateOverride, forced, cancellationToken)), CancellationToken.None).ConfigureAwait(false);
 
 		return pluginUpdates.Any(static updated => updated);
 	}
@@ -904,6 +904,8 @@ public static class PluginsCore {
 					}
 				}
 			}
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			return false;
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
