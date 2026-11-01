@@ -104,7 +104,7 @@ public sealed class MobileAuthenticator : IDisposable {
 
 		Span<byte> sharedSecret = stackalloc byte[32];
 
-		if (!Convert.TryFromBase64String(SharedSecret, sharedSecret, out int bytesWritten)) {
+		if (!Convert.TryFromBase64String(SharedSecret, sharedSecret, out int bytesWritten) && !TryFromBase64StringRelaxed(SharedSecret, sharedSecret, out bytesWritten)) {
 			Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(SharedSecret)));
 
 			return null;
@@ -320,7 +320,7 @@ public sealed class MobileAuthenticator : IDisposable {
 
 		Span<byte> identitySecret = stackalloc byte[32];
 
-		if (!Convert.TryFromBase64String(IdentitySecret, identitySecret, out int bytesWritten)) {
+		if (!Convert.TryFromBase64String(IdentitySecret, identitySecret, out int bytesWritten) && !TryFromBase64StringRelaxed(IdentitySecret, identitySecret, out bytesWritten)) {
 			Bot.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(IdentitySecret)));
 
 			return null;
@@ -380,5 +380,27 @@ public sealed class MobileAuthenticator : IDisposable {
 		}
 
 		return (true, deviceID);
+	}
+
+	private static bool TryFromBase64StringRelaxed(string input, Span<byte> destination, out int bytesWritten) {
+		// Some real-world secrets are encoded in a non-canonical way (e.g. with non-zero bits discarded by the padding of the last base64 group), which the standard, strict base64 decoder refuses to decode. This is a lenient fallback decoder that tolerates such input
+		ArgumentNullException.ThrowIfNull(input);
+
+		ReadOnlySpan<char> inputSpan = input;
+		int length = inputSpan.TrimEnd('=').Length;
+		int paddingLength = inputSpan.Length - length;
+		int firstPadding = inputSpan.IndexOf('=');
+		int requiredBytes = ((length / 4) * 3) + (((length % 4) * 6) / 8);
+
+		if ((inputSpan.Length == 0) || (inputSpan.Length % 4 != 0) || (paddingLength > 2) || (length % 4 == 1) || ((firstPadding >= 0) && (firstPadding != length)) || (destination.Length < requiredBytes)) {
+			bytesWritten = 0;
+
+			return false;
+		}
+
+		bool result = Convert.TryFromBase64String(input.Replace('=', 'A'), destination, out _);
+		bytesWritten = result ? requiredBytes : 0;
+
+		return result;
 	}
 }

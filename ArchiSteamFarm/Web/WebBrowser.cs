@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -767,14 +768,7 @@ public sealed class WebBrowser : IDisposable {
 
 					// Compress the request if caller specified it, so they know that the server supports it, and the content is not compressed yet
 					if (requestOptions.HasFlag(ERequestOptions.CompressRequest) && (requestMessage.Content.Headers.ContentEncoding.Count == 0)) {
-						HttpContent originalContent = requestMessage.Content;
-
-						requestMessage.Content = await WebBrowserUtilities.CreateCompressedHttpContent(originalContent, cancellationToken).ConfigureAwait(false);
-
-						if (data is not HttpContent) {
-							// We don't need to keep old HttpContent around anymore, help GC
-							originalContent.Dispose();
-						}
+						requestMessage.Content = new BrotliCompressedContent(requestMessage.Content, CompressionLevel.SmallestSize);
 					}
 				}
 
