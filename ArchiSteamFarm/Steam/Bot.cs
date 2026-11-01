@@ -681,14 +681,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return GetFilePath(BotName, fileType);
 	}
 
-	[Obsolete($"Use {nameof(GetRequiredHandler)} instead, this method will be removed in future versions.")]
-	[PublicAPI]
-	public T? GetHandler<T>() where T : ClientMsgHandler => SteamClient.GetHandler<T>();
-
-	[Obsolete($"Use {nameof(GetItemsForFullSets)} variant that accepts AppID and ContextID as well, this method will be removed in future versions.")]
-	[PublicAPI]
-	public static HashSet<Asset> GetItemsForFullSets(IReadOnlyCollection<Asset> inventory, IReadOnlyDictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract, ushort maxItems = Trading.MaxItemsPerTrade) => GetItemsForFullSets(inventory, amountsToExtract.ToDictionary(static kv => (Asset.SteamAppID, Asset.SteamCommunityContextID, kv.Key.RealAppID, kv.Key.Type, kv.Key.Rarity), static kv => kv.Value), maxItems);
-
 	[PublicAPI]
 	public static HashSet<Asset> GetItemsForFullSets(IReadOnlyCollection<Asset> inventory, IReadOnlyDictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract, ushort maxItems = Trading.MaxItemsPerTrade) {
 		if ((inventory == null) || (inventory.Count == 0)) {
