@@ -439,7 +439,9 @@ public sealed class Trading : IDisposable {
 			// Deny trades from bad steamIDs if user wishes to do so
 			if (ASF.GlobalConfig?.FilterBadBots ?? GlobalConfig.DefaultFilterBadBots) {
 				// Keep short timeout allowed for this call, as we don't want to hold the flow for too long
-				using CancellationTokenSource archiNetCancellation = new(TimeSpan.FromSeconds(15));
+				using CancellationTokenSource archiNetCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+				archiNetCancellation.CancelAfter(TimeSpan.FromSeconds(15));
 
 				bool? isBadBot = await ArchiNet.IsBadBot(tradeOffer.OtherSteamID64, archiNetCancellation.Token).ConfigureAwait(false);
 

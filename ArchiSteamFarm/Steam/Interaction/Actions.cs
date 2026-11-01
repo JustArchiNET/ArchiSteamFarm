@@ -190,6 +190,8 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 
 				return (null, Strings.FormatWarningFailedWithError(e.Message));
+			} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+				throw;
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericException(e);
 
@@ -312,9 +314,9 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			// We want to let family sharing users access our library, and in this case we must also stop GamesPlayedWhileIdle
 			// We add extra delay because OnFarmingStopped() also executes PlayGames()
 			// Despite of proper order on our end, Steam network might not respect it
-			await Task.Delay(Bot.CallbackSleep, cancellationToken).ConfigureAwait(false);
+			await Task.Delay(Bot.CallbackSleep, CancellationToken.None).ConfigureAwait(false);
 
-			await Bot.ArchiHandler.PlayGames([], Bot.BotConfig.CustomGamePlayedWhileIdle, cancellationToken).ConfigureAwait(false);
+			await Bot.ArchiHandler.PlayGames([], Bot.BotConfig.CustomGamePlayedWhileIdle, CancellationToken.None).ConfigureAwait(false);
 		}
 
 		if (resumeInSeconds > 0) {
@@ -341,11 +343,15 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			return (false, Strings.BotNotConnected);
 		}
 
+		CancellationToken playCancellationToken = cancellationToken;
+
 		if (!Bot.CardsFarmer.Paused) {
 			await Bot.CardsFarmer.Pause(true, cancellationToken).ConfigureAwait(false);
+
+			playCancellationToken = CancellationToken.None;
 		}
 
-		await Bot.ArchiHandler.PlayGames(gameIDs, gameName, cancellationToken).ConfigureAwait(false);
+		await Bot.ArchiHandler.PlayGames(gameIDs, gameName, playCancellationToken).ConfigureAwait(false);
 
 		return (true, gameIDs.Count > 0 ? Strings.FormatBotIdlingSelectedGames(nameof(gameIDs), string.Join(", ", gameIDs)) : Strings.Done);
 	}
@@ -503,6 +509,8 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 
 				return (false, Strings.FormatWarningFailedWithError(e.Message));
+			} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+				throw;
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericException(e);
 
@@ -559,6 +567,8 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			Bot.ArchiLogger.LogGenericWarningException(e);
 
 			return false;
+		} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+			throw;
 		} catch (Exception e) {
 			Bot.ArchiLogger.LogGenericException(e);
 

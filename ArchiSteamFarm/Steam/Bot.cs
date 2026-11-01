@@ -1840,11 +1840,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return false;
 		}
 
+		CancellationToken renameCancellationToken = cancellationToken;
+
 		if (KeepRunning) {
 			await Stop(true, cancellationToken).ConfigureAwait(false);
+
+			renameCancellationToken = CancellationToken.None;
 		}
 
-		await BotDatabase.MakeReadOnly(cancellationToken).ConfigureAwait(false);
+		await BotDatabase.MakeReadOnly(renameCancellationToken).ConfigureAwait(false);
 
 		// We handle the config file last as it'll trigger new bot creation
 		foreach ((string filePath, EFileType fileType) in RelatedFiles.Where(static file => File.Exists(file.FilePath)).OrderByDescending(static file => file.FileType != EFileType.Config)) {
