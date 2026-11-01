@@ -897,7 +897,7 @@ public static class PluginsCore {
 				await using (zipArchive.ConfigureAwait(false)) {
 					await plugin.OnPluginUpdateProceeding().ConfigureAwait(false);
 
-					if (!await Utilities.UpdateFromArchive(zipArchive, assemblyDirectory, cancellationToken).ConfigureAwait(false)) {
+					if (!await Utilities.UpdateFromArchive(zipArchive, assemblyDirectory, CancellationToken.None).ConfigureAwait(false)) {
 						ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
 
 						return false;

@@ -381,7 +381,7 @@ public sealed class ArchiWebHandler : IDisposable {
 					ASF.InventorySemaphore.Release();
 				} else {
 					Utilities.InBackground(async () => {
-							await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
+							await Task.Delay(rateLimitingDelay, CancellationToken.None).ConfigureAwait(false);
 							ASF.InventorySemaphore.Release();
 						}
 					);
@@ -2193,7 +2193,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				ASF.InventorySemaphore.Release();
 			} else {
 				Utilities.InBackground(async () => {
-						await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
+						await Task.Delay(rateLimitingDelay, CancellationToken.None).ConfigureAwait(false);
 						ASF.InventorySemaphore.Release();
 					}
 				);

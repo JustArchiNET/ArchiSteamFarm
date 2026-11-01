@@ -360,7 +360,7 @@ public sealed class MobileAuthenticator : IDisposable {
 		await ASF.ConfirmationsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		Utilities.InBackground(async () => {
-				await Task.Delay(confirmationsLimiterDelay * 1000, cancellationToken).ConfigureAwait(false);
+				await Task.Delay(confirmationsLimiterDelay * 1000, CancellationToken.None).ConfigureAwait(false);
 				ASF.ConfirmationsSemaphore.Release();
 			}
 		);

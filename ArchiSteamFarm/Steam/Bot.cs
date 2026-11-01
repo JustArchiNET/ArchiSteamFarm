@@ -2001,7 +2001,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			CancellationToken token = CallbacksAborted.Token;
 
 			Utilities.InBackground(() => HandleCallbacks(token), true);
-			Utilities.InBackground(() => Connect(CancellationToken.None));
+			Utilities.InBackground(() => Connect(token));
 		} finally {
 			ConnectionSemaphore.Release();
 		}
@@ -2100,7 +2100,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		Bots.TryRemove(BotName, out _);
-		await PluginsCore.OnBotDestroy(this, cancellationToken).ConfigureAwait(false);
+		await PluginsCore.OnBotDestroy(this, CancellationToken.None).ConfigureAwait(false);
 	}
 
 	private void Disconnect(bool reconnect = false) {
@@ -2745,7 +2745,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			ASF.LoginRateLimitingSemaphore.Release();
 		} finally {
 			Utilities.InBackground(async () => {
-					await Task.Delay(loginLimiterDelay * 1000, cancellationToken).ConfigureAwait(false);
+					await Task.Delay(loginLimiterDelay * 1000, CancellationToken.None).ConfigureAwait(false);
 					ASF.LoginSemaphore.Release();
 				}
 			);

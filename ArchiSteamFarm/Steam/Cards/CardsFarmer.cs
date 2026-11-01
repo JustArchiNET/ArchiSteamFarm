@@ -385,7 +385,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			NowFarming = true;
 			Utilities.InBackground(() => Farm(CancellationToken.None), true);
 
-			await PluginsCore.OnBotFarmingStarted(Bot, cancellationToken).ConfigureAwait(false);
+			await PluginsCore.OnBotFarmingStarted(Bot, CancellationToken.None).ConfigureAwait(false);
 		} finally {
 			FarmingInitializationSemaphore.Release();
 		}

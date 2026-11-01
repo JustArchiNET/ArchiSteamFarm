@@ -315,7 +315,7 @@ internal static class Logging {
 	}
 
 	internal static void StartInteractiveConsole() {
-		Utilities.InBackground(static () => HandleConsoleInteractively(CancellationToken.None), true);
+		Utilities.InBackground(static () => HandleConsoleInteractively(), true);
 		ASF.ArchiLogger.LogGenericInfo(Strings.InteractiveConsoleEnabled);
 	}
 

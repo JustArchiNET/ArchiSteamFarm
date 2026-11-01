@@ -803,7 +803,7 @@ public static class ASF {
 			BinaryResponse? response;
 
 			try {
-				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL, progressReporter: progressReporter, cancellationToken: CancellationToken.None).ConfigureAwait(false);
+				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL, progressReporter: progressReporter, cancellationToken: cancellationToken).ConfigureAwait(false);
 			} finally {
 				progressReporter.ProgressChanged -= onProgressChanged;
 			}
@@ -833,7 +833,7 @@ public static class ASF {
 				ASFController.PendingVersionUpdate = newVersion;
 
 				try {
-					await ArchiKestrel.Stop(cancellationToken).ConfigureAwait(false);
+					await ArchiKestrel.Stop(CancellationToken.None).ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 				} finally {
@@ -850,7 +850,7 @@ public static class ASF {
 					ZipArchive zipArchive = new(memoryStream);
 
 					await using (zipArchive.ConfigureAwait(false)) {
-						if (!await UpdateFromArchive(newVersion, channel.Value, updateOverride, forced, zipArchive, cancellationToken).ConfigureAwait(false)) {
+						if (!await UpdateFromArchive(newVersion, channel.Value, updateOverride, forced, zipArchive, CancellationToken.None).ConfigureAwait(false)) {
 							ArchiLogger.LogGenericError(Strings.WarningFailed);
 						}
 					}
@@ -862,7 +862,7 @@ public static class ASF {
 					// We've temporarily disabled ArchiKestrel but the update has failed, let's bring it back up
 					// We can't even be sure if it's possible to bring it back up in this state, but it's worth trying anyway
 					try {
-						await ArchiKestrel.Start(cancellationToken).ConfigureAwait(false);
+						await ArchiKestrel.Start(CancellationToken.None).ConfigureAwait(false);
 					} catch (Exception ex) {
 						ArchiLogger.LogGenericWarningException(ex);
 					}
@@ -873,7 +873,7 @@ public static class ASF {
 
 			ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
 
-			await PluginsCore.OnUpdateFinished(newVersion, cancellationToken).ConfigureAwait(false);
+			await PluginsCore.OnUpdateFinished(newVersion, CancellationToken.None).ConfigureAwait(false);
 
 			return (true, newVersion);
 		} finally {

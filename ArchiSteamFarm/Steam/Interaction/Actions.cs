@@ -56,7 +56,6 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 	private Timer? CardsFarmerResumeTimer;
 	private bool ProcessingGiftsScheduled;
-	private bool TradingScheduled;
 
 	internal Actions(Bot bot) {
 		ArgumentNullException.ThrowIfNull(bot);
@@ -497,21 +496,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 		HashSet<Asset> inventory;
 
-		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-		lock (TradingSemaphore) {
-			if (TradingScheduled) {
-				return (false, Strings.ErrorAborted);
-			}
-
-			TradingScheduled = true;
-		}
-
 		using (await GetTradingLock(cancellationToken).ConfigureAwait(false)) {
-			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-			lock (TradingSemaphore) {
-				TradingScheduled = false;
-			}
-
 			try {
 				inventory = await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID, true, cancellationToken: cancellationToken).Where(item => filterFunction(item)).ToHashSetAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 			} catch (TimeoutException e) {
@@ -725,7 +710,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		await ASF.GiftsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		Utilities.InBackground(async () => {
-				await Task.Delay(giftsLimiterDelay * 1000, cancellationToken).ConfigureAwait(false);
+				await Task.Delay(giftsLimiterDelay * 1000, CancellationToken.None).ConfigureAwait(false);
 				ASF.GiftsSemaphore.Release();
 			}
 		);

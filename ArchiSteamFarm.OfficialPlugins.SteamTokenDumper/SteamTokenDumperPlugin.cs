@@ -447,7 +447,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 							bot.ArchiLogger.LogGenericWarningException(e);
 						} finally {
 							Utilities.InBackground(async () => {
-									await Task.Delay(DepotsRateLimitingDelay, cancellationToken).ConfigureAwait(false);
+									await Task.Delay(DepotsRateLimitingDelay, CancellationToken.None).ConfigureAwait(false);
 
 									// ReSharper disable once AccessToDisposedClosure - we're waiting for the semaphore to be free before disposing it
 									depotsRateLimitingSemaphore.Release();
@@ -473,7 +473,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 							bot.ArchiLogger.LogGenericWarningException(e);
 						} finally {
 							Utilities.InBackground(async () => {
-									await Task.Delay(DepotsRateLimitingDelay, cancellationToken).ConfigureAwait(false);
+									await Task.Delay(DepotsRateLimitingDelay, CancellationToken.None).ConfigureAwait(false);
 
 									// ReSharper disable once AccessToDisposedClosure - we're waiting for the semaphore to be free before disposing it
 									depotsRateLimitingSemaphore.Release();
@@ -503,7 +503,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 				synchronization.RefreshTimer.Change(timeSpan, timeSpan);
 			}
 
-			await depotsRateLimitingSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+			await depotsRateLimitingSemaphore.WaitAsync(CancellationToken.None).ConfigureAwait(false);
 
 			synchronization.RefreshSemaphore.Release();
 
