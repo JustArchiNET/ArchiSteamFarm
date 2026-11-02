@@ -23,7 +23,7 @@
 
 namespace ArchiSteamFarm.Steam.Integration;
 
-public enum ESession : byte {
+public enum EWebSessionFormat : byte {
 	None,
 	Lowercase,
 	CamelCase,

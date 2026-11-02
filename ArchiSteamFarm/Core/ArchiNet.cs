@@ -100,7 +100,7 @@ internal static class ArchiNet {
 		// We expect data or redirection to Steam OpenID
 		Uri authenticateRequest = new(URL, $"/Api/Steam/Authenticate?steamID={bot.SteamID}");
 
-		ObjectResponse<GenericResponse<ulong>>? authenticateResponse = await webBrowser.UrlGetToJsonObject<GenericResponse<ulong>>(authenticateRequest, requestOptions: ERequestOptions.ReturnRedirections | ERequestOptions.ReturnClientErrors | ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<ulong>>? authenticateResponse = await webBrowser.UrlGetToJsonObject<GenericResponse<ulong>>(authenticateRequest, requestOptions: EWebRequestOptions.ReturnRedirections | EWebRequestOptions.ReturnClientErrors | EWebRequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (authenticateResponse == null) {
 			return null;
@@ -168,14 +168,14 @@ internal static class ArchiNet {
 		data.Add(nonceContent, "nonce");
 
 		// Accept OpenID request presented and follow redirection back to the data we initially expected
-		BasicResponse? loginResponse = await bot.ArchiWebHandler.WebBrowser.UrlPost(loginRequest, data: data, requestOptions: ERequestOptions.ReturnRedirections, cancellationToken: cancellationToken).ConfigureAwait(false);
+		BasicResponse? loginResponse = await bot.ArchiWebHandler.WebBrowser.UrlPost(loginRequest, data: data, requestOptions: EWebRequestOptions.ReturnRedirections, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (loginResponse == null) {
 			return null;
 		}
 
 		// We've got a final redirection, follow it and complete login procedure
-		authenticateResponse = await webBrowser.UrlGetToJsonObject<GenericResponse<ulong>>(loginResponse.FinalUri, requestOptions: ERequestOptions.ReturnClientErrors | ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
+		authenticateResponse = await webBrowser.UrlGetToJsonObject<GenericResponse<ulong>>(loginResponse.FinalUri, requestOptions: EWebRequestOptions.ReturnClientErrors | EWebRequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (authenticateResponse == null) {
 			return null;

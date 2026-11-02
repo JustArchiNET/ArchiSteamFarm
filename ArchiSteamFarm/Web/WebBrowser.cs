@@ -128,7 +128,7 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<BinaryResponse?> UrlGetToBinary(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, IProgress<byte>? progressReporter = null, CancellationToken cancellationToken = default) {
+	public async Task<BinaryResponse?> UrlGetToBinary(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, IProgress<byte>? progressReporter = null, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -138,7 +138,7 @@ public sealed class WebBrowser : IDisposable {
 				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
+			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | EWebRequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -147,19 +147,19 @@ public sealed class WebBrowser : IDisposable {
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnRedirections)) {
 						break;
 					}
 				}
 
 				if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnClientErrors)) {
 						break;
 					}
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnServerErrors)) {
 						continue;
 					}
 				}
@@ -234,7 +234,7 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocument(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) {
+	public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocument(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -244,7 +244,7 @@ public sealed class WebBrowser : IDisposable {
 				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
+			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | EWebRequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -253,19 +253,19 @@ public sealed class WebBrowser : IDisposable {
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnRedirections)) {
 						break;
 					}
 				}
 
 				if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnClientErrors)) {
 						break;
 					}
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnServerErrors)) {
 						continue;
 					}
 				}
@@ -279,7 +279,7 @@ public sealed class WebBrowser : IDisposable {
 				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
-					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
+					if ((requestOptions.HasFlag(EWebRequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(EWebRequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new HtmlDocumentResponse(response);
 					}
 
@@ -296,7 +296,7 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<T>?> UrlGetToJsonObject<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) {
+	public async Task<ObjectResponse<T>?> UrlGetToJsonObject<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -306,7 +306,7 @@ public sealed class WebBrowser : IDisposable {
 				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
+			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | EWebRequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -315,19 +315,19 @@ public sealed class WebBrowser : IDisposable {
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnRedirections)) {
 						break;
 					}
 				}
 
 				if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnClientErrors)) {
 						break;
 					}
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnServerErrors)) {
 						continue;
 					}
 				}
@@ -343,7 +343,7 @@ public sealed class WebBrowser : IDisposable {
 				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
-					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
+					if ((requestOptions.HasFlag(EWebRequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(EWebRequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new ObjectResponse<T>(response);
 					}
 
@@ -354,7 +354,7 @@ public sealed class WebBrowser : IDisposable {
 				}
 
 				if (obj is null) {
-					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
+					if ((requestOptions.HasFlag(EWebRequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(EWebRequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new ObjectResponse<T>(response);
 					}
 
@@ -374,7 +374,7 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<StreamResponse?> UrlGetToStream(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) {
+	public async Task<StreamResponse?> UrlGetToStream(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -392,19 +392,19 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			if (response.StatusCode.IsRedirectionCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+				if (!requestOptions.HasFlag(EWebRequestOptions.ReturnRedirections)) {
 					break;
 				}
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+				if (!requestOptions.HasFlag(EWebRequestOptions.ReturnClientErrors)) {
 					break;
 				}
 			}
 
 			if (response.StatusCode.IsServerErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+				if (!requestOptions.HasFlag(EWebRequestOptions.ReturnServerErrors)) {
 					continue;
 				}
 			}
@@ -419,7 +419,7 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<BasicResponse?> UrlHead(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) {
+	public async Task<BasicResponse?> UrlHead(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -436,19 +436,19 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			if (response.StatusCode.IsRedirectionCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+				if (!requestOptions.HasFlag(EWebRequestOptions.ReturnRedirections)) {
 					break;
 				}
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+				if (!requestOptions.HasFlag(EWebRequestOptions.ReturnClientErrors)) {
 					break;
 				}
 			}
 
 			if (response.StatusCode.IsServerErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+				if (!requestOptions.HasFlag(EWebRequestOptions.ReturnServerErrors)) {
 					continue;
 				}
 			}
@@ -463,7 +463,7 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<BasicResponse?> UrlPost<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) where T : class {
+	public async Task<BasicResponse?> UrlPost<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -480,19 +480,19 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			if (response.StatusCode.IsRedirectionCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+				if (!requestOptions.HasFlag(EWebRequestOptions.ReturnRedirections)) {
 					break;
 				}
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+				if (!requestOptions.HasFlag(EWebRequestOptions.ReturnClientErrors)) {
 					break;
 				}
 			}
 
 			if (response.StatusCode.IsServerErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+				if (!requestOptions.HasFlag(EWebRequestOptions.ReturnServerErrors)) {
 					continue;
 				}
 			}
@@ -507,7 +507,7 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocument<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) where T : class {
+	public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocument<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -517,7 +517,7 @@ public sealed class WebBrowser : IDisposable {
 				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
+			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | EWebRequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -526,19 +526,19 @@ public sealed class WebBrowser : IDisposable {
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnRedirections)) {
 						break;
 					}
 				}
 
 				if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnClientErrors)) {
 						break;
 					}
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnServerErrors)) {
 						continue;
 					}
 				}
@@ -552,7 +552,7 @@ public sealed class WebBrowser : IDisposable {
 				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
-					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
+					if ((requestOptions.HasFlag(EWebRequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(EWebRequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new HtmlDocumentResponse(response);
 					}
 
@@ -569,7 +569,7 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<TResult>?> UrlPostToJsonObject<TResult, TData>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, TData? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) where TData : class {
+	public async Task<ObjectResponse<TResult>?> UrlPostToJsonObject<TResult, TData>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, TData? data = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) where TData : class {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -579,7 +579,7 @@ public sealed class WebBrowser : IDisposable {
 				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
+			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | EWebRequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -588,19 +588,19 @@ public sealed class WebBrowser : IDisposable {
 
 			await using (response.ConfigureAwait(false)) {
 				if (response.StatusCode.IsRedirectionCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnRedirections)) {
 						break;
 					}
 				}
 
 				if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnClientErrors)) {
 						break;
 					}
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+					if (!requestOptions.HasFlag(EWebRequestOptions.ReturnServerErrors)) {
 						continue;
 					}
 				}
@@ -616,7 +616,7 @@ public sealed class WebBrowser : IDisposable {
 				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
-					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
+					if ((requestOptions.HasFlag(EWebRequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(EWebRequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new ObjectResponse<TResult>(response);
 					}
 
@@ -627,7 +627,7 @@ public sealed class WebBrowser : IDisposable {
 				}
 
 				if (obj is null) {
-					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
+					if ((requestOptions.HasFlag(EWebRequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(EWebRequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new ObjectResponse<TResult>(response);
 					}
 
@@ -647,7 +647,7 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<StreamResponse?> UrlPostToStream<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) where T : class {
+	public async Task<StreamResponse?> UrlPostToStream<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -665,19 +665,19 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			if (response.StatusCode.IsRedirectionCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+				if (!requestOptions.HasFlag(EWebRequestOptions.ReturnRedirections)) {
 					break;
 				}
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+				if (!requestOptions.HasFlag(EWebRequestOptions.ReturnClientErrors)) {
 					break;
 				}
 			}
 
 			if (response.StatusCode.IsServerErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+				if (!requestOptions.HasFlag(EWebRequestOptions.ReturnServerErrors)) {
 					continue;
 				}
 			}
@@ -691,7 +691,7 @@ public sealed class WebBrowser : IDisposable {
 		return null;
 	}
 
-	private async Task<HttpResponseMessage?> InternalGet(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) {
+	private async Task<HttpResponseMessage?> InternalGet(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(httpCompletionOption)) {
@@ -701,7 +701,7 @@ public sealed class WebBrowser : IDisposable {
 		return await InternalRequest<object>(request, HttpMethod.Get, headers, null, referer, requestOptions, httpCompletionOption, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
-	private async Task<HttpResponseMessage?> InternalHead(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) {
+	private async Task<HttpResponseMessage?> InternalHead(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(httpCompletionOption)) {
@@ -711,7 +711,7 @@ public sealed class WebBrowser : IDisposable {
 		return await InternalRequest<object>(request, HttpMethod.Head, headers, null, referer, requestOptions, httpCompletionOption, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
-	private async Task<HttpResponseMessage?> InternalPost<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) where T : class {
+	private async Task<HttpResponseMessage?> InternalPost<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(httpCompletionOption)) {
@@ -722,7 +722,7 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	private async Task<HttpResponseMessage?> InternalRequest<T>(Uri request, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries, CancellationToken cancellationToken = default) where T : class {
+	private async Task<HttpResponseMessage?> InternalRequest<T>(Uri request, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, EWebRequestOptions requestOptions = EWebRequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentNullException.ThrowIfNull(httpMethod);
 
@@ -767,7 +767,7 @@ public sealed class WebBrowser : IDisposable {
 					}
 
 					// Compress the request if caller specified it, so they know that the server supports it, and the content is not compressed yet
-					if (requestOptions.HasFlag(ERequestOptions.CompressRequest) && (requestMessage.Content.Headers.ContentEncoding.Count == 0)) {
+					if (requestOptions.HasFlag(EWebRequestOptions.CompressRequest) && (requestMessage.Content.Headers.ContentEncoding.Count == 0)) {
 						requestMessage.Content = new BrotliCompressedContent(requestMessage.Content, CompressionLevel.SmallestSize);
 					}
 				}
@@ -776,7 +776,7 @@ public sealed class WebBrowser : IDisposable {
 					requestMessage.Headers.Referrer = referer;
 				}
 
-				if (requestOptions.HasFlag(ERequestOptions.SteamWafWorkarounds)) {
+				if (requestOptions.HasFlag(EWebRequestOptions.SteamWafWorkarounds)) {
 					requestMessage.Headers.Accept.Clear();
 					requestMessage.Headers.Accept.ParseAdd("text/html,application/xhtml+xml,application/xml;q=0.9,image/jxl,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
 
@@ -830,7 +830,7 @@ public sealed class WebBrowser : IDisposable {
 
 			// WARNING: We still have not disposed response by now, make sure to dispose it ASAP if we're not returning it!
 			if (response.StatusCode.IsRedirectionCode() && (maxRedirections > 0)) {
-				if (requestOptions.HasFlag(ERequestOptions.ReturnRedirections)) {
+				if (requestOptions.HasFlag(EWebRequestOptions.ReturnRedirections)) {
 					// User wants to handle it manually, that's alright
 					return response;
 				}
@@ -903,7 +903,7 @@ public sealed class WebBrowser : IDisposable {
 			return response;
 		}
 
-		if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors) && response.StatusCode.IsServerErrorCode()) {
+		if (requestOptions.HasFlag(EWebRequestOptions.ReturnServerErrors) && response.StatusCode.IsServerErrorCode()) {
 			if (Debugging.IsUserDebugging) {
 				ArchiLogger.LogGenericDebug(Strings.FormatContent(await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)));
 			}

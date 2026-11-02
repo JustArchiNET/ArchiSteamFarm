@@ -26,7 +26,7 @@ using System;
 namespace ArchiSteamFarm.Web;
 
 [Flags]
-public enum ERequestOptions : byte {
+public enum EWebRequestOptions : byte {
 	None = 0,
 	ReturnClientErrors = 1,
 	ReturnServerErrors = 2,

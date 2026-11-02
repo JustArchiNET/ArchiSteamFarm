@@ -114,7 +114,7 @@ public sealed class SignInWithSteamController : ArchiController {
 		data.Add(nonceContent, "nonce");
 
 		// Accept OpenID request presented and follow redirection back to the data we initially expected
-		BasicResponse? loginResponse = await bot.ArchiWebHandler.WebBrowser.UrlPost(loginRequest, data: data, requestOptions: ERequestOptions.ReturnRedirections, cancellationToken: cancellationToken).ConfigureAwait(false);
+		BasicResponse? loginResponse = await bot.ArchiWebHandler.WebBrowser.UrlPost(loginRequest, data: data, requestOptions: EWebRequestOptions.ReturnRedirections, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return loginResponse != null ? Ok(new GenericResponse<SignInWithSteamResponse>(new SignInWithSteamResponse(loginResponse.FinalUri))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, Strings.FormatErrorRequestFailedTooManyTimes(WebBrowser.MaxTries)));
 	}

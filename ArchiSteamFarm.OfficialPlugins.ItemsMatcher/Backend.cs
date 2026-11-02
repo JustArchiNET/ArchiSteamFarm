@@ -71,7 +71,7 @@ internal static class Backend {
 
 		AnnouncementDiffRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, inventory, inventoryChecksum, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, tradeToken, inventoryRemoved, previousInventoryChecksum, nickname, avatarHash);
 
-		return await webBrowser.UrlPostToJsonObject<GenericResponse<BackgroundTaskResponse>, AnnouncementDiffRequest>(request, data: data, requestOptions: ERequestOptions.ReturnRedirections | ERequestOptions.ReturnClientErrors | ERequestOptions.AllowInvalidBodyOnErrors | ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
+		return await webBrowser.UrlPostToJsonObject<GenericResponse<BackgroundTaskResponse>, AnnouncementDiffRequest>(request, data: data, requestOptions: EWebRequestOptions.ReturnRedirections | EWebRequestOptions.ReturnClientErrors | EWebRequestOptions.AllowInvalidBodyOnErrors | EWebRequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> AnnounceForListing(WebBrowser webBrowser, ulong steamID, IReadOnlyList<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, string? nickname = null, string? avatarHash = null, CancellationToken cancellationToken = default) {
@@ -102,7 +102,7 @@ internal static class Backend {
 
 		AnnouncementRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, inventory, inventoryChecksum, acceptedMatchableTypes, totalInventoryCount, matchEverything, ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration, tradeToken, nickname, avatarHash);
 
-		return await webBrowser.UrlPostToJsonObject<GenericResponse<BackgroundTaskResponse>, AnnouncementRequest>(request, data: data, requestOptions: ERequestOptions.ReturnRedirections | ERequestOptions.ReturnClientErrors | ERequestOptions.AllowInvalidBodyOnErrors | ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
+		return await webBrowser.UrlPostToJsonObject<GenericResponse<BackgroundTaskResponse>, AnnouncementRequest>(request, data: data, requestOptions: EWebRequestOptions.ReturnRedirections | EWebRequestOptions.ReturnClientErrors | EWebRequestOptions.AllowInvalidBodyOnErrors | EWebRequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	internal static async Task<ObjectResponse<GenericResponse<bool>>?> CheckAnnounceDiffForListing(WebBrowser webBrowser, ulong steamID, string previousInventoryChecksum, CancellationToken cancellationToken = default) {
@@ -118,7 +118,7 @@ internal static class Backend {
 
 		AnnouncementDiffCheckRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, previousInventoryChecksum);
 
-		return await webBrowser.UrlPostToJsonObject<GenericResponse<bool>, AnnouncementDiffCheckRequest>(request, data: data, requestOptions: ERequestOptions.ReturnRedirections | ERequestOptions.ReturnClientErrors | ERequestOptions.AllowInvalidBodyOnErrors | ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
+		return await webBrowser.UrlPostToJsonObject<GenericResponse<bool>, AnnouncementDiffCheckRequest>(request, data: data, requestOptions: EWebRequestOptions.ReturnRedirections | EWebRequestOptions.ReturnClientErrors | EWebRequestOptions.AllowInvalidBodyOnErrors | EWebRequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	internal static string GenerateChecksumFor(IEnumerable<AssetForListing> assetsForListings) {
@@ -155,7 +155,7 @@ internal static class Backend {
 			{ "X-License-Key", licenseID.ToString("N") }
 		};
 
-		ObjectResponse<GenericResponse>? response = await webBrowser.UrlGetToJsonObject<GenericResponse>(request, headers, requestOptions: ERequestOptions.ReturnClientErrors | ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
+		ObjectResponse<GenericResponse>? response = await webBrowser.UrlGetToJsonObject<GenericResponse>(request, headers, requestOptions: EWebRequestOptions.ReturnClientErrors | EWebRequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.StatusCode;
 	}
@@ -181,7 +181,7 @@ internal static class Backend {
 
 		InventoriesRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID, inventory, acceptedMatchableTypes);
 
-		ObjectResponse<GenericResponse<ImmutableHashSet<ListedUser>>>? response = await webBrowser.UrlPostToJsonObject<GenericResponse<ImmutableHashSet<ListedUser>>, InventoriesRequest>(request, headers, data, requestOptions: ERequestOptions.ReturnClientErrors | ERequestOptions.AllowInvalidBodyOnErrors | ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<ImmutableHashSet<ListedUser>>>? response = await webBrowser.UrlPostToJsonObject<GenericResponse<ImmutableHashSet<ListedUser>>, InventoriesRequest>(request, headers, data, requestOptions: EWebRequestOptions.ReturnClientErrors | EWebRequestOptions.AllowInvalidBodyOnErrors | EWebRequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -209,7 +209,7 @@ internal static class Backend {
 
 		SetPartsRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), steamID, matchableTypes, realAppIDs);
 
-		return await webBrowser.UrlPostToJsonObject<GenericResponse<ImmutableHashSet<SetPart>>, SetPartsRequest>(request, data: data, requestOptions: ERequestOptions.ReturnRedirections | ERequestOptions.ReturnClientErrors | ERequestOptions.AllowInvalidBodyOnErrors | ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
+		return await webBrowser.UrlPostToJsonObject<GenericResponse<ImmutableHashSet<SetPart>>, SetPartsRequest>(request, data: data, requestOptions: EWebRequestOptions.ReturnRedirections | EWebRequestOptions.ReturnClientErrors | EWebRequestOptions.AllowInvalidBodyOnErrors | EWebRequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	internal static async Task<BasicResponse?> HeartBeatForListing(Bot bot, WebBrowser webBrowser, CancellationToken cancellationToken = default) {
@@ -220,7 +220,7 @@ internal static class Backend {
 
 		HeartBeatRequest data = new(ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid(), bot.SteamID);
 
-		return await webBrowser.UrlPost(request, data: data, requestOptions: ERequestOptions.ReturnRedirections | ERequestOptions.ReturnClientErrors | ERequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
+		return await webBrowser.UrlPost(request, data: data, requestOptions: EWebRequestOptions.ReturnRedirections | EWebRequestOptions.ReturnClientErrors | EWebRequestOptions.CompressRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> PollResult(WebBrowser webBrowser, ulong steamID, Guid requestID, CancellationToken cancellationToken = default) {
@@ -238,6 +238,6 @@ internal static class Backend {
 
 		Uri request = new(ArchiNet.URL, $"/Api/Listing/PollResult/{steamID}/{requestID:N}");
 
-		return await webBrowser.UrlGetToJsonObject<GenericResponse<BackgroundTaskResponse>>(request, requestOptions: ERequestOptions.ReturnRedirections | ERequestOptions.ReturnClientErrors | ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
+		return await webBrowser.UrlGetToJsonObject<GenericResponse<BackgroundTaskResponse>>(request, requestOptions: EWebRequestOptions.ReturnRedirections | EWebRequestOptions.ReturnClientErrors | EWebRequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 }
