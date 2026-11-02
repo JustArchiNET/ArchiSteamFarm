@@ -58,21 +58,21 @@ internal sealed class BotCredentialsProvider : IAuthenticator {
 		}
 
 		// Ask the user what they want
-		string input = await ProvideInput(ASF.EUserInputType.DeviceConfirmation, false).ConfigureAwait(false);
+		string input = await ProvideInput(EUserInputType.DeviceConfirmation, false).ConfigureAwait(false);
 
 		return input.Equals("Y", StringComparison.OrdinalIgnoreCase);
 	}
 
-	public Task<string> GetDeviceCodeAsync(bool previousCodeWasIncorrect) => ProvideInput(ASF.EUserInputType.TwoFactorAuthentication, previousCodeWasIncorrect);
+	public Task<string> GetDeviceCodeAsync(bool previousCodeWasIncorrect) => ProvideInput(EUserInputType.TwoFactorAuthentication, previousCodeWasIncorrect);
 
-	public Task<string> GetEmailCodeAsync(string email, bool previousCodeWasIncorrect) => ProvideInput(ASF.EUserInputType.SteamGuard, previousCodeWasIncorrect);
+	public Task<string> GetEmailCodeAsync(string email, bool previousCodeWasIncorrect) => ProvideInput(EUserInputType.SteamGuard, previousCodeWasIncorrect);
 
-	private async Task<string> ProvideInput(ASF.EUserInputType inputType, bool previousCodeWasIncorrect) {
+	private async Task<string> ProvideInput(EUserInputType inputType, bool previousCodeWasIncorrect) {
 		if (!Enum.IsDefined(inputType)) {
-			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
+			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(EUserInputType));
 		}
 
-		EResult reason = inputType == ASF.EUserInputType.TwoFactorAuthentication ? EResult.TwoFactorCodeMismatch : EResult.InvalidLoginAuthCode;
+		EResult reason = inputType == EUserInputType.TwoFactorAuthentication ? EResult.TwoFactorCodeMismatch : EResult.InvalidLoginAuthCode;
 
 		if (previousCodeWasIncorrect) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.FormatBotUnableToLogin(reason, reason));

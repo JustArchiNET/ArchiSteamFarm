@@ -169,7 +169,7 @@ public sealed class BotController : ArchiController {
 				}
 			}
 
-			string filePath = Bot.GetFilePath(botName, Bot.EFileType.Config);
+			string filePath = Bot.GetFilePath(botName, EBotFileType.Config);
 
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new InvalidOperationException(nameof(filePath));
@@ -271,7 +271,7 @@ public sealed class BotController : ArchiController {
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
-		if ((request.Type == ASF.EUserInputType.None) || !Enum.IsDefined(request.Type) || string.IsNullOrEmpty(request.Value)) {
+		if ((request.Type == EUserInputType.None) || !Enum.IsDefined(request.Type) || string.IsNullOrEmpty(request.Value)) {
 			return BadRequest(new GenericResponse(false, Strings.FormatErrorIsInvalid($"{nameof(request.Type)} || {nameof(request.Value)}")));
 		}
 

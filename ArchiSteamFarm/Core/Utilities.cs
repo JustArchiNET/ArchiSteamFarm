@@ -155,7 +155,7 @@ public static class Utilities {
 
 		// Do not return while already-started child operations can still commit side effects.
 		switch (ASF.GlobalConfig?.OptimizationMode) {
-			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+			case EOptimizationMode.MinMemoryUsage:
 				List<T> results = [];
 
 				foreach (Task<T> task in tasks) {
@@ -187,7 +187,7 @@ public static class Utilities {
 		ArgumentNullException.ThrowIfNull(tasks);
 
 		switch (ASF.GlobalConfig?.OptimizationMode) {
-			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+			case EOptimizationMode.MinMemoryUsage:
 				foreach (Task task in tasks) {
 					try {
 						await task.WaitAsync(cancellationToken).ConfigureAwait(false);

@@ -116,7 +116,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		ObjectResponse<TradeOfferAcceptResponse>? response = null;
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			response = await UrlPostToJsonObjectWithSession<TradeOfferAcceptResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
+			response = await UrlPostToJsonObjectWithSession<TradeOfferAcceptResponse>(request, data: data, referer: referer, requestOptions: ERequestOptions.ReturnServerErrors | ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				return (false, false);
@@ -337,7 +337,7 @@ public sealed class ArchiWebHandler : IDisposable {
 						await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 					}
 
-					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.SteamWafWorkarounds, rateLimitingDelay: rateLimitingDelay, cancellationToken: cancellationToken).ConfigureAwait(false);
+					response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request, requestOptions: ERequestOptions.ReturnClientErrors | ERequestOptions.ReturnServerErrors | ERequestOptions.AllowInvalidBodyOnErrors | ERequestOptions.SteamWafWorkarounds, rateLimitingDelay: rateLimitingDelay, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 					if (response == null) {
 						throw new HttpRequestException(Strings.FormatErrorObjectIsNull(nameof(response)));
@@ -452,7 +452,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	public async Task<ImmutableDictionary<uint, InventoryAppData>?> GetInventoryContextData(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamCommunityURL, "/my/inventory?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, requestOptions: ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		IElement? htmlNode = response?.Content?.QuerySelectorAll("script[type='text/javascript']").FirstOrDefault(static scriptNode => scriptNode.TextContent.Contains("g_rgAppContextData = {", StringComparison.Ordinal));
 
@@ -552,7 +552,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				await Task.Delay(i * 1000, cancellationToken).ConfigureAwait(false);
 			}
 
-			ObjectResponse<APIWrappedResponse<TradeOffersResponse>>? response = await WebLimitRequest(Bot.SteamConfiguration.WebAPIBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
+			ObjectResponse<APIWrappedResponse<TradeOffersResponse>>? response = await WebLimitRequest(Bot.SteamConfiguration.WebAPIBaseAddress, async () => await WebBrowser.UrlGetToJsonObject<APIWrappedResponse<TradeOffersResponse>>(request, requestOptions: ERequestOptions.ReturnClientErrors | ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				continue;
@@ -717,7 +717,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			ObjectResponse<TradeOfferSendResponse>? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: tradeSubmissionCancellationToken).ConfigureAwait(false);
+				response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(request, data: data, referer: referer, requestOptions: ERequestOptions.ReturnServerErrors | ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: tradeSubmissionCancellationToken).ConfigureAwait(false);
 
 				if (response == null) {
 					return (false, tradeOfferIDs, mobileTradeOfferIDs);
@@ -764,7 +764,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
+	public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -829,7 +829,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -846,7 +846,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
+	public async Task<ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -911,7 +911,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -928,7 +928,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<bool> UrlHeadWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
+	public async Task<bool> UrlHeadWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
@@ -993,7 +993,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -1010,7 +1010,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
+	public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
@@ -1103,7 +1103,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -1120,7 +1120,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
+	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
@@ -1213,7 +1213,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -1230,7 +1230,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, ICollection<KeyValuePair<string, string>>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
+	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, ICollection<KeyValuePair<string, string>>? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
@@ -1326,7 +1326,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -1343,7 +1343,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<bool> UrlPostWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
+	public async Task<bool> UrlPostWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
@@ -1436,7 +1436,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-		if (!requestOptions.HasFlag(WebBrowser.ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
+		if (!requestOptions.HasFlag(ERequestOptions.ReturnRedirections) && await IsProfileUri(response.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false) && !await IsProfileUri(request, cancellationToken: cancellationToken).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericDebug(Strings.FormatWarningWorkaroundTriggered(nameof(IsProfileUri)));
 
 			if (--maxTries == 0) {
@@ -1544,7 +1544,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			{ "ajax", "true" }
 		};
 
-		ObjectResponse<JsonNode>? response = await UrlPostToJsonObjectWithSession<JsonNode>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
+		ObjectResponse<JsonNode>? response = await UrlPostToJsonObjectWithSession<JsonNode>(request, data: data, requestOptions: ERequestOptions.ReturnClientErrors | ERequestOptions.ReturnServerErrors | ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return (EResult.Timeout, EPurchaseResultDetail.Timeout);
@@ -1876,7 +1876,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Uri request = new(SteamCommunityURL, $"/mobileconf/getlist?a={Bot.SteamID}&k={Uri.EscapeDataString(confirmationHash)}&l=english&m=react&p={Uri.EscapeDataString(deviceID)}&t={time}&tag=conf");
 
-		ObjectResponse<ConfirmationsResponse>? response = await UrlGetToJsonObjectWithSession<ConfirmationsResponse>(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
+		ObjectResponse<ConfirmationsResponse>? response = await UrlGetToJsonObjectWithSession<ConfirmationsResponse>(request, requestOptions: ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return response?.Content;
 	}
@@ -1980,7 +1980,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}?l=english");
 
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, requestOptions: ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		IElement? htmlNode = response?.Content?.QuerySelector("div[class='pagecontent'] > script");
 
@@ -2199,7 +2199,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			markingScheduled = false;
 
-			await UrlHeadWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, rateLimitingDelay: rateLimitingDelay, cancellationToken: cancellationToken).ConfigureAwait(false);
+			await UrlHeadWithSession(request, requestOptions: ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, rateLimitingDelay: rateLimitingDelay, cancellationToken: cancellationToken).ConfigureAwait(false);
 		} finally {
 			if (markingScheduled) {
 				lock (ASF.InventorySemaphore) {
@@ -2224,7 +2224,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal async Task MarkSentTrades(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamCommunityURL, "/my/tradeoffers/sent");
 
-		await UrlHeadWithSession(request, requestOptions: WebBrowser.ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
+		await UrlHeadWithSession(request, requestOptions: ERequestOptions.SteamWafWorkarounds, checkSessionPreemptively: false, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	internal void OnDisconnected() => Initialized = false;
@@ -2489,12 +2489,5 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		return true;
-	}
-
-	public enum ESession : byte {
-		None,
-		Lowercase,
-		CamelCase,
-		PascalCase
 	}
 }

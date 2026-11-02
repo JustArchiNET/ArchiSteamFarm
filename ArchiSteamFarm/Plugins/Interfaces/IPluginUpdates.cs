@@ -47,7 +47,7 @@ public interface IPluginUpdates : IPlugin {
 	/// <param name="forced">Boolean value specifying whether user has requested forced plugin update, that is, one that should always execute if possible - even with the same and lower version (downgrade).</param>
 	/// <param name="cancellationToken">Cancellation token.</param>
 	/// <returns>Target release asset URL that should be used for auto-update. It's permitted to return null if you want to skip update, e.g. because no new version is available.</returns>
-	public Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, GlobalConfig.EUpdateChannel updateChannel, bool forced, CancellationToken cancellationToken = default);
+	public Task<Uri?> GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, EUpdateChannel updateChannel, bool forced, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	///     ASF will call this method after update to the new plugin version has been finished, just before restart of the process.

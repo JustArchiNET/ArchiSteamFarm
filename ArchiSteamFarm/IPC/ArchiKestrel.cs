@@ -139,7 +139,7 @@ internal static class ArchiKestrel {
 		app.UseForwardedHeaders();
 
 		// Add support for response caching - must be called before static files as we want to cache those as well
-		if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+		if (ASF.GlobalConfig?.OptimizationMode != EOptimizationMode.MinMemoryUsage) {
 			// As previously in services, we skip it if memory usage is super important for us
 			app.UseResponseCaching();
 		}
@@ -252,7 +252,7 @@ internal static class ArchiKestrel {
 		app.UseWebSockets();
 
 		// Add support for output caching
-		if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+		if (ASF.GlobalConfig?.OptimizationMode != EOptimizationMode.MinMemoryUsage) {
 			app.UseOutputCache();
 		}
 
@@ -274,7 +274,7 @@ internal static class ArchiKestrel {
 		// Add support for OpenAPI, responsible for automatic API documentation generation, this should be on the end, once we're done with API
 		IEndpointConventionBuilder openApi = app.MapOpenApi("/swagger/{documentName}/swagger.json");
 
-		if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+		if (ASF.GlobalConfig?.OptimizationMode != EOptimizationMode.MinMemoryUsage) {
 			openApi.CacheOutput();
 		}
 
@@ -334,7 +334,7 @@ internal static class ArchiKestrel {
 		);
 
 		// Add support for response caching
-		if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+		if (ASF.GlobalConfig?.OptimizationMode != EOptimizationMode.MinMemoryUsage) {
 			// We can skip it if memory usage is super important for us
 			services.AddResponseCaching();
 		}
@@ -351,7 +351,7 @@ internal static class ArchiKestrel {
 		}
 
 		// Add support for output caching
-		if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+		if (ASF.GlobalConfig?.OptimizationMode != EOptimizationMode.MinMemoryUsage) {
 			services.AddOutputCache();
 		}
 

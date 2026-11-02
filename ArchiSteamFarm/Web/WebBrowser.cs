@@ -920,16 +920,4 @@ public sealed class WebBrowser : IDisposable {
 			return null;
 		}
 	}
-
-	[Flags]
-	public enum ERequestOptions : byte {
-		None = 0,
-		ReturnClientErrors = 1,
-		ReturnServerErrors = 2,
-		ReturnRedirections = 4,
-		AllowInvalidBodyOnSuccess = 8,
-		AllowInvalidBodyOnErrors = 16,
-		CompressRequest = 32,
-		SteamWafWorkarounds = 64
-	}
 }

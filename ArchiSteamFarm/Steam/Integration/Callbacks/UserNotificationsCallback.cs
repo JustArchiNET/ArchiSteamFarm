@@ -25,13 +25,12 @@ using System;
 using System.Collections.Generic;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
-using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.Steam.Integration.Callbacks;
 
-public sealed class UserNotificationsCallback : CallbackMsg {
+internal sealed class UserNotificationsCallback : CallbackMsg {
 	internal readonly Dictionary<EUserNotification, uint> Notifications;
 
 	internal UserNotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
@@ -87,21 +86,5 @@ public sealed class UserNotificationsCallback : CallbackMsg {
 
 		JobID = jobID;
 		Notifications = new Dictionary<EUserNotification, uint>(1) { { EUserNotification.Comments, msg.count_new_comments + msg.count_new_comments_owner + msg.count_new_comments_subscriptions } };
-	}
-
-	[PublicAPI]
-	public enum EUserNotification : byte {
-		Unknown,
-		Trading,
-		GameTurns,
-		ModeratorMessages,
-		Comments,
-		Items,
-		Invites,
-		Unknown7, // Unknown type of notification, never seen in the wild
-		Gifts,
-		Chat,
-		HelpRequestReplies,
-		AccountAlerts
 	}
 }

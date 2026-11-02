@@ -87,7 +87,7 @@ public sealed class GlobalConfig {
 	public const string? DefaultIPCPassword = null;
 
 	[PublicAPI]
-	public const ArchiCryptoHelper.EHashingMethod DefaultIPCPasswordFormat = ArchiCryptoHelper.EHashingMethod.PlainText;
+	public const EHashingMethod DefaultIPCPasswordFormat = EHashingMethod.PlainText;
 
 	[PublicAPI]
 	public const byte DefaultIdleFarmingPeriod = 8;
@@ -251,7 +251,7 @@ public sealed class GlobalConfig {
 	} = DefaultIPCPassword;
 
 	[JsonInclude]
-	public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; init; } = DefaultIPCPasswordFormat;
+	public EHashingMethod IPCPasswordFormat { get; init; } = DefaultIPCPasswordFormat;
 
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
@@ -497,8 +497,8 @@ public sealed class GlobalConfig {
 		}
 
 		switch (IPCPasswordFormat) {
-			case ArchiCryptoHelper.EHashingMethod.Pbkdf2 when !string.IsNullOrEmpty(IPCPassword):
-			case ArchiCryptoHelper.EHashingMethod.SCrypt when !string.IsNullOrEmpty(IPCPassword):
+			case EHashingMethod.Pbkdf2 when !string.IsNullOrEmpty(IPCPassword):
+			case EHashingMethod.SCrypt when !string.IsNullOrEmpty(IPCPassword):
 				try {
 					// Ensure IPCPassword is in the appropriate format, base64-encoded string in this case
 					_ = Convert.FromBase64String(IPCPassword);
@@ -584,8 +584,8 @@ public sealed class GlobalConfig {
 
 		if (globalConfig.IPC) {
 			switch (globalConfig.IPCPasswordFormat) {
-				case ArchiCryptoHelper.EHashingMethod.Pbkdf2 when ArchiCryptoHelper.HasDefaultCryptKey:
-				case ArchiCryptoHelper.EHashingMethod.SCrypt when ArchiCryptoHelper.HasDefaultCryptKey:
+				case EHashingMethod.Pbkdf2 when ArchiCryptoHelper.HasDefaultCryptKey:
+				case EHashingMethod.SCrypt when ArchiCryptoHelper.HasDefaultCryptKey:
 					ASF.ArchiLogger.LogGenericWarning(Strings.FormatWarningDefaultCryptKeyUsedForHashing(globalConfig.IPCPasswordFormat, nameof(IPCPassword)));
 
 					break;
@@ -610,24 +610,5 @@ public sealed class GlobalConfig {
 		string json = globalConfig.ToJsonText(true);
 
 		return await SerializableFile.Write(filePath, json, cancellationToken).ConfigureAwait(false);
-	}
-
-	[PublicAPI]
-	public enum EOptimizationMode : byte {
-		MaxPerformance,
-		MinMemoryUsage
-	}
-
-	[PublicAPI]
-	public enum EPluginsUpdateMode : byte {
-		Whitelist,
-		Blacklist
-	}
-
-	[PublicAPI]
-	public enum EUpdateChannel : byte {
-		None,
-		Stable,
-		PreRelease
 	}
 }

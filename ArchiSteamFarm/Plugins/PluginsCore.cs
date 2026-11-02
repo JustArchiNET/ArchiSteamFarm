@@ -278,7 +278,7 @@ public static class PluginsCore {
 			Console.Title = SharedInfo.ProgramIdentifier;
 		}
 
-		GlobalConfig.EPluginsUpdateMode pluginsUpdateMode = ASF.GlobalConfig?.PluginsUpdateMode ?? GlobalConfig.DefaultPluginsUpdateMode;
+		EPluginsUpdateMode pluginsUpdateMode = ASF.GlobalConfig?.PluginsUpdateMode ?? GlobalConfig.DefaultPluginsUpdateMode;
 		ImmutableHashSet<string> pluginsUpdateList = ASF.GlobalConfig?.PluginsUpdateList ?? GlobalConfig.DefaultPluginsUpdateList;
 
 		HashSet<IPluginUpdates> activePluginUpdates = [];
@@ -293,15 +293,15 @@ public static class PluginsCore {
 			}
 
 			switch (pluginsUpdateMode) {
-				case GlobalConfig.EPluginsUpdateMode.Blacklist when !pluginsUpdateList.Contains(pluginAssemblyName):
-				case GlobalConfig.EPluginsUpdateMode.Whitelist when pluginsUpdateList.Contains(pluginAssemblyName):
+				case EPluginsUpdateMode.Blacklist when !pluginsUpdateList.Contains(pluginAssemblyName):
+				case EPluginsUpdateMode.Whitelist when pluginsUpdateList.Contains(pluginAssemblyName):
 					activePluginUpdates.Add(plugin);
 
 					ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateEnabled(plugin.Name, pluginAssemblyName));
 
 					break;
-				case GlobalConfig.EPluginsUpdateMode.Blacklist when pluginsUpdateList.Contains(pluginAssemblyName):
-				case GlobalConfig.EPluginsUpdateMode.Whitelist when !pluginsUpdateList.Contains(pluginAssemblyName):
+				case EPluginsUpdateMode.Blacklist when pluginsUpdateList.Contains(pluginAssemblyName):
+				case EPluginsUpdateMode.Whitelist when !pluginsUpdateList.Contains(pluginAssemblyName):
 					ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateDisabled(plugin.Name, pluginAssemblyName));
 
 					break;
@@ -361,11 +361,11 @@ public static class PluginsCore {
 		}
 	}
 
-	internal static async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
+	internal static async Task<string?> OnBotCommand(Bot bot, EBotUserAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(message);
@@ -588,7 +588,7 @@ public static class PluginsCore {
 		return [.. responses.Where(static response => response != null).SelectMany(static handlers => handlers ?? [])];
 	}
 
-	internal static async Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ParseTradeResult.EResult asfResult, CancellationToken cancellationToken = default) {
+	internal static async Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ETradeResult asfResult, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(tradeOffer);
 
@@ -627,7 +627,7 @@ public static class PluginsCore {
 		}
 	}
 
-	internal static async Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications, CancellationToken cancellationToken = default) {
+	internal static async Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<EUserNotification> newNotifications, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((newNotifications == null) || (newNotifications.Count == 0)) {
@@ -718,11 +718,11 @@ public static class PluginsCore {
 		}
 	}
 
-	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool asfUpdate, GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false, CancellationToken cancellationToken = default) {
+	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool asfUpdate, EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 
 		if (updateChannel.HasValue && !Enum.IsDefined(updateChannel.Value)) {
-			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
+			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(EUpdateChannel));
 		}
 
 		if (ActivePluginUpdates.Count == 0) {
@@ -732,7 +732,7 @@ public static class PluginsCore {
 		return await UpdatePlugins(asfVersion, asfUpdate, ActivePluginUpdates, updateChannel, updateOverride, forced, cancellationToken).ConfigureAwait(false);
 	}
 
-	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool asfUpdate, IReadOnlyCollection<IPluginUpdates> plugins, GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false, CancellationToken cancellationToken = default) {
+	internal static async Task<bool> UpdatePlugins(Version asfVersion, bool asfUpdate, IReadOnlyCollection<IPluginUpdates> plugins, EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 
 		if ((plugins == null) || (plugins.Count == 0)) {
@@ -740,7 +740,7 @@ public static class PluginsCore {
 		}
 
 		if (updateChannel.HasValue && !Enum.IsDefined(updateChannel.Value)) {
-			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
+			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(EUpdateChannel));
 		}
 
 		if (ASF.WebBrowser == null) {
@@ -749,7 +749,7 @@ public static class PluginsCore {
 
 		updateChannel ??= ASF.GlobalConfig?.UpdateChannel ?? GlobalConfig.DefaultUpdateChannel;
 
-		if (updateChannel == GlobalConfig.EUpdateChannel.None) {
+		if (updateChannel == EUpdateChannel.None) {
 			return false;
 		}
 
@@ -825,12 +825,12 @@ public static class PluginsCore {
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL3000", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	private static async Task<bool> UpdatePlugin(Version asfVersion, bool asfUpdate, IPluginUpdates plugin, GlobalConfig.EUpdateChannel updateChannel, bool updateOverride, bool forced, CancellationToken cancellationToken = default) {
+	private static async Task<bool> UpdatePlugin(Version asfVersion, bool asfUpdate, IPluginUpdates plugin, EUpdateChannel updateChannel, bool updateOverride, bool forced, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentNullException.ThrowIfNull(plugin);
 
-		if (!Enum.IsDefined(updateChannel) || (updateChannel == GlobalConfig.EUpdateChannel.None)) {
-			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
+		if (!Enum.IsDefined(updateChannel) || (updateChannel == EUpdateChannel.None)) {
+			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(EUpdateChannel));
 		}
 
 		if (ASF.WebBrowser == null) {

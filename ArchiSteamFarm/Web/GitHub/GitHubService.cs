@@ -85,7 +85,7 @@ public static class GitHubService {
 
 		Uri request = new($"{SharedInfo.ProjectURL}/wiki/{page}/_history");
 
-		using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
+		using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request, requestOptions: ERequestOptions.ReturnClientErrors | ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.StatusCode.IsClientErrorCode() == true) {
 			return response.StatusCode switch {

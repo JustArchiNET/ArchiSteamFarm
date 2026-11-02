@@ -42,5 +42,5 @@ public interface IBotUserNotifications : IPlugin {
 	/// <param name="bot">Bot object related to this callback.</param>
 	/// <param name="newNotifications">Collection containing those notification types that are new (that is, when new count > previous count of that notification type).</param>
 	/// <param name="cancellationToken">Cancellation token.</param>
-	public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications, CancellationToken cancellationToken = default);
+	public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<EUserNotification> newNotifications, CancellationToken cancellationToken = default);
 }

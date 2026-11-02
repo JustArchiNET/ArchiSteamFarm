@@ -88,11 +88,11 @@ internal sealed class ExamplePlugin : IASF, IBot, IBotCommand2, IBotConnection, 
 	// Since ASF already had to do initial parsing in order to determine that the command is unknown, args[] are splitted using standard ASF delimiters
 	// If by any chance you want to handle message in its raw format, you also have it available, although for usual ASF pattern you can most likely stick with args[] exclusively. The message has CommandPrefix already stripped for your convenience
 	// If you do not recognize the command, just return null/empty and allow ASF to gracefully return "unknown command" to user on usual basis
-	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
+	public async Task<string?> OnBotCommand(Bot bot, EBotUserAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		// In comparison with OnBotMessage(), we're using asynchronous CatAPI call here, so we declare our method as async and return the message as usual
 		// Notice how we handle access here as well, it'll work only for FamilySharing+
 		switch (args[0].ToUpperInvariant()) {
-			case "CAT" when access >= EAccess.FamilySharing:
+			case "CAT" when access >= EBotUserAccess.FamilySharing:
 				// Notice how we can decide whether to use bot's AWH WebBrowser or ASF's one. For Steam-related requests, AWH's one should always be used, for third-party requests like those it doesn't really matter
 				// Still, it makes sense to pass AWH's one, so in case you get some errors or alike, you know from which bot instance they come from. It's similar to using Bot's ArchiLogger compared to ASF's one
 				Uri? randomCatURL = await CatAPI.GetRandomCatURL(bot.ArchiWebHandler.WebBrowser, cancellationToken).ConfigureAwait(false);
@@ -174,7 +174,7 @@ internal sealed class ExamplePlugin : IASF, IBot, IBotCommand2, IBotConnection, 
 	// It allows you not only to analyze such trades, but generate a response whether ASF should accept it (true), or proceed like usual (false)
 	// Thanks to that, you can implement custom rules for all trades that aren't handled by ASF, for example cross-set trading on your own custom rules
 	// You'd implement your own logic here, as an example we'll allow all trades to be accepted if the bot's name starts from "TrashBot"
-	public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ParseTradeResult.EResult asfResult, CancellationToken cancellationToken = default) => Task.FromResult(bot.BotName.StartsWith("TrashBot", StringComparison.OrdinalIgnoreCase));
+	public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ETradeResult asfResult, CancellationToken cancellationToken = default) => Task.FromResult(bot.BotName.StartsWith("TrashBot", StringComparison.OrdinalIgnoreCase));
 
 	// This is the earliest method that will be called, right after loading the plugin, long before any bot initialization takes place
 	// It's a good place to initialize all potential (non-bot-specific) structures that you will need across lifetime of your plugin, such as global timers, concurrent dictionaries and alike

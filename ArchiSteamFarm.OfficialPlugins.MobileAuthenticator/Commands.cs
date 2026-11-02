@@ -38,11 +38,11 @@ using SteamKit2.Internal;
 namespace ArchiSteamFarm.OfficialPlugins.MobileAuthenticator;
 
 internal static class Commands {
-	internal static async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
+	internal static async Task<string?> OnBotCommand(Bot bot, EBotUserAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(message);
@@ -87,16 +87,16 @@ internal static class Commands {
 		return null;
 	}
 
-	private static async Task<string?> ResponseTwoFactorFinalize(EAccess access, Bot bot, string activationCode, CancellationToken cancellationToken = default) {
+	private static async Task<string?> ResponseTwoFactorFinalize(EBotUserAccess access, Bot bot, string activationCode, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentException.ThrowIfNullOrEmpty(activationCode);
 
-		if (access < EAccess.Master) {
-			return access > EAccess.None ? bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied) : null;
+		if (access < EBotUserAccess.Master) {
+			return access > EBotUserAccess.None ? bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied) : null;
 		}
 
 		if (bot.HasMobileAuthenticator) {
@@ -107,7 +107,7 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		string maFilePath = bot.GetFilePath(Bot.EFileType.MobileAuthenticator);
+		string maFilePath = bot.GetFilePath(EBotFileType.MobileAuthenticator);
 		string maFilePendingPath = $"{maFilePath}.PENDING";
 
 		if (!File.Exists(maFilePendingPath)) {
@@ -173,9 +173,9 @@ internal static class Commands {
 		return bot.Commands.FormatBotResponse(Strings.Done);
 	}
 
-	private static async Task<string?> ResponseTwoFactorFinalize(EAccess access, string botNames, string activationCode, ulong steamID = 0, CancellationToken cancellationToken = default) {
+	private static async Task<string?> ResponseTwoFactorFinalize(EBotUserAccess access, string botNames, string activationCode, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
@@ -188,7 +188,7 @@ internal static class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? Steam.Interaction.Commands.FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
+			return access >= EBotUserAccess.Owner ? Steam.Interaction.Commands.FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseTwoFactorFinalize(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot, activationCode, cancellationToken)), cancellationToken).ConfigureAwait(false);
@@ -198,22 +198,22 @@ internal static class Commands {
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
-	private static async Task<string?> ResponseTwoFactorFinalized(EAccess access, Bot bot, string? activationCode = null, CancellationToken cancellationToken = default) {
+	private static async Task<string?> ResponseTwoFactorFinalized(EBotUserAccess access, Bot bot, string? activationCode = null, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if (access < EAccess.Master) {
-			return access > EAccess.None ? bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied) : null;
+		if (access < EBotUserAccess.Master) {
+			return access > EBotUserAccess.None ? bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied) : null;
 		}
 
 		if (bot.HasMobileAuthenticator) {
 			return bot.Commands.FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(bot.HasMobileAuthenticator)));
 		}
 
-		string maFilePath = bot.GetFilePath(Bot.EFileType.MobileAuthenticator);
+		string maFilePath = bot.GetFilePath(EBotFileType.MobileAuthenticator);
 		string maFilePendingPath = $"{maFilePath}.PENDING";
 
 		if (!File.Exists(maFilePendingPath)) {
@@ -271,9 +271,9 @@ internal static class Commands {
 		return bot.Commands.FormatBotResponse(Strings.Done);
 	}
 
-	private static async Task<string?> ResponseTwoFactorFinalized(EAccess access, string botNames, string? activationCode = null, ulong steamID = 0, CancellationToken cancellationToken = default) {
+	private static async Task<string?> ResponseTwoFactorFinalized(EBotUserAccess access, string botNames, string? activationCode = null, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
@@ -285,7 +285,7 @@ internal static class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? Steam.Interaction.Commands.FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
+			return access >= EBotUserAccess.Owner ? Steam.Interaction.Commands.FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseTwoFactorFinalized(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot, activationCode, cancellationToken)), cancellationToken).ConfigureAwait(false);
@@ -295,15 +295,15 @@ internal static class Commands {
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
-	private static async Task<string?> ResponseTwoFactorInit(EAccess access, Bot bot, CancellationToken cancellationToken = default) {
+	private static async Task<string?> ResponseTwoFactorInit(EBotUserAccess access, Bot bot, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if (access < EAccess.Master) {
-			return access > EAccess.None ? bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied) : null;
+		if (access < EBotUserAccess.Master) {
+			return access > EBotUserAccess.None ? bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied) : null;
 		}
 
 		if (bot.HasMobileAuthenticator) {
@@ -330,7 +330,7 @@ internal static class Commands {
 
 		MaFileData maFileData = new(response, bot.SteamID, deviceID);
 
-		string maFilePendingPath = $"{bot.GetFilePath(Bot.EFileType.MobileAuthenticator)}.PENDING";
+		string maFilePendingPath = $"{bot.GetFilePath(EBotFileType.MobileAuthenticator)}.PENDING";
 		string json = maFileData.ToJsonText(true);
 
 		try {
@@ -344,9 +344,9 @@ internal static class Commands {
 		return bot.Commands.FormatBotResponse(Strings.Done);
 	}
 
-	private static async Task<string?> ResponseTwoFactorInit(EAccess access, string botNames, ulong steamID = 0, CancellationToken cancellationToken = default) {
+	private static async Task<string?> ResponseTwoFactorInit(EBotUserAccess access, string botNames, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
@@ -358,7 +358,7 @@ internal static class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? Steam.Interaction.Commands.FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
+			return access >= EBotUserAccess.Owner ? Steam.Interaction.Commands.FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseTwoFactorInit(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot, cancellationToken)), cancellationToken).ConfigureAwait(false);

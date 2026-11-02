@@ -37,7 +37,7 @@ public sealed class ParseTradeResult {
 	public IReadOnlyCollection<Asset>? ItemsToReceive { get; }
 
 	[PublicAPI]
-	public EResult Result { get; }
+	public ETradeResult Result { get; }
 
 	[PublicAPI]
 	public ulong TradeOfferID { get; }
@@ -45,11 +45,11 @@ public sealed class ParseTradeResult {
 	[PublicAPI]
 	public bool Confirmed { get; internal set; }
 
-	internal ParseTradeResult(ulong tradeOfferID, EResult result, bool requiresMobileConfirmation, IReadOnlyCollection<Asset>? itemsToGive = null, IReadOnlyCollection<Asset>? itemsToReceive = null) {
+	internal ParseTradeResult(ulong tradeOfferID, ETradeResult result, bool requiresMobileConfirmation, IReadOnlyCollection<Asset>? itemsToGive = null, IReadOnlyCollection<Asset>? itemsToReceive = null) {
 		ArgumentOutOfRangeException.ThrowIfZero(tradeOfferID);
 
-		if ((result == EResult.Unknown) || !Enum.IsDefined(result)) {
-			throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(EResult));
+		if ((result == ETradeResult.Unknown) || !Enum.IsDefined(result)) {
+			throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(ETradeResult));
 		}
 
 		TradeOfferID = tradeOfferID;
@@ -57,15 +57,5 @@ public sealed class ParseTradeResult {
 		Confirmed = !requiresMobileConfirmation;
 		ItemsToGive = itemsToGive;
 		ItemsToReceive = itemsToReceive;
-	}
-
-	public enum EResult : byte {
-		Unknown,
-		Accepted,
-		Blacklisted,
-		Ignored,
-		Rejected,
-		TryAgain,
-		RetryAfterOthers
 	}
 }

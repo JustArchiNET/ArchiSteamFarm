@@ -106,9 +106,9 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public static string? Encrypt(ArchiCryptoHelper.ECryptoMethod cryptoMethod, string stringToEncrypt) {
+	public static string? Encrypt(ECryptoMethod cryptoMethod, string stringToEncrypt) {
 		if (!Enum.IsDefined(cryptoMethod)) {
-			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ArchiCryptoHelper.ECryptoMethod));
+			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ECryptoMethod));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(stringToEncrypt);
@@ -160,7 +160,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 	[PublicAPI]
 	public ulong GetFirstSteamMasterID() {
-		ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(static kv => kv.Key).OrderBy(static steamID => steamID).FirstOrDefault();
+		ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == EBotAccess.Master)).Select(static kv => kv.Key).OrderBy(static steamID => steamID).FirstOrDefault();
 
 		if (steamMasterID > 0) {
 			return steamMasterID;
@@ -292,9 +292,9 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public static string Hash(ArchiCryptoHelper.EHashingMethod hashingMethod, string stringToHash) {
+	public static string Hash(EHashingMethod hashingMethod, string stringToHash) {
 		if (!Enum.IsDefined(hashingMethod)) {
-			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(ArchiCryptoHelper.EHashingMethod));
+			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(stringToHash);
@@ -572,9 +572,9 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public static async Task<(bool Success, string? Message, Version? Version)> Update(GlobalConfig.EUpdateChannel? channel = null, bool forced = false, CancellationToken cancellationToken = default) {
+	public static async Task<(bool Success, string? Message, Version? Version)> Update(EUpdateChannel? channel = null, bool forced = false, CancellationToken cancellationToken = default) {
 		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
-			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
+			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(EUpdateChannel));
 		}
 
 		(bool updated, Version? newVersion) = await ASF.Update(channel, true, forced, cancellationToken).ConfigureAwait(false);
@@ -587,9 +587,9 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public static async Task<(bool Success, string? Message)> UpdatePlugins(GlobalConfig.EUpdateChannel? channel = null, IReadOnlyCollection<string>? plugins = null, bool forced = false, CancellationToken cancellationToken = default) {
+	public static async Task<(bool Success, string? Message)> UpdatePlugins(EUpdateChannel? channel = null, IReadOnlyCollection<string>? plugins = null, bool forced = false, CancellationToken cancellationToken = default) {
 		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
-			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
+			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(EUpdateChannel));
 		}
 
 		bool updated;

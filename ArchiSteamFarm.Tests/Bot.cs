@@ -474,16 +474,16 @@ internal sealed class Bot : TestContextBase {
 
 		Steam.Bot bot = GenerateBot();
 
-		Assert.IsNull(await bot.Commands.Response(EAccess.Owner, message, cancellationToken: CancellationToken).ConfigureAwait(false));
+		Assert.IsNull(await bot.Commands.Response(EBotUserAccess.Owner, message, cancellationToken: CancellationToken).ConfigureAwait(false));
 	}
 
 	[TestMethod]
 	internal void SetUserInputAcceptsQrCodeLoginChoice() {
 		Steam.Bot bot = GenerateBot();
 
-		Assert.IsTrue(bot.SetUserInput(ASF.EUserInputType.QrCodeLogin, "Y"));
-		Assert.IsTrue(bot.SetUserInput(ASF.EUserInputType.QrCodeLogin, "n"));
-		Assert.IsFalse(bot.SetUserInput(ASF.EUserInputType.QrCodeLogin, "maybe"));
+		Assert.IsTrue(bot.SetUserInput(EUserInputType.QrCodeLogin, "Y"));
+		Assert.IsTrue(bot.SetUserInput(EUserInputType.QrCodeLogin, "n"));
+		Assert.IsFalse(bot.SetUserInput(EUserInputType.QrCodeLogin, "maybe"));
 	}
 
 	[TestMethod]

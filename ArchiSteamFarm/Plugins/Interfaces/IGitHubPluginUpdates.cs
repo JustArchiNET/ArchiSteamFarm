@@ -58,15 +58,15 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	/// <example>JustArchiNET/ArchiSteamFarm</example>
 	public string RepositoryName { get; }
 
-	Task<Uri?> IPluginUpdates.GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, GlobalConfig.EUpdateChannel updateChannel, bool forced, CancellationToken cancellationToken) {
+	Task<Uri?> IPluginUpdates.GetTargetReleaseURL(Version asfVersion, string asfVariant, bool asfUpdate, EUpdateChannel updateChannel, bool forced, CancellationToken cancellationToken) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 
 		if (!Enum.IsDefined(updateChannel)) {
-			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
+			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(EUpdateChannel));
 		}
 
-		return GetTargetReleaseURL(asfVersion, asfVariant, asfUpdate, updateChannel == GlobalConfig.EUpdateChannel.Stable, forced, cancellationToken);
+		return GetTargetReleaseURL(asfVersion, asfVariant, asfUpdate, updateChannel == EUpdateChannel.Stable, forced, cancellationToken);
 	}
 
 	/// <summary>

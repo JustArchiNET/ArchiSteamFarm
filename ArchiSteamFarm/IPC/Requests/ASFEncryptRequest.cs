@@ -35,7 +35,7 @@ public sealed class ASFEncryptRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public ArchiCryptoHelper.ECryptoMethod CryptoMethod { get; private init; }
+	public ECryptoMethod CryptoMethod { get; private init; }
 
 	[Description($"String to encrypt with provided {nameof(CryptoMethod)}")]
 	[JsonInclude]

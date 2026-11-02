@@ -93,7 +93,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		Bot = bot;
 		WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy, true);
 
-		if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) && Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
+		if (Bot.BotConfig.TradingPreferences.HasFlag(ETradingPreferences.SteamTradeMatcher) && Bot.BotConfig.RemoteCommunication.HasFlag(ERemoteCommunication.PublicListing)) {
 			HeartBeatTimer = new Timer(
 				OnHeartBeatTimer,
 				null,
@@ -102,7 +102,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			);
 		}
 
-		if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively)) {
+		if (Bot.BotConfig.TradingPreferences.HasFlag(ETradingPreferences.MatchActively)) {
 			if ((ASF.GlobalConfig?.LicenseID != null) && (ASF.GlobalConfig.LicenseID != Guid.Empty)) {
 				MatchActivelyTimer = new Timer(
 					MatchActively,
@@ -111,7 +111,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					TimeSpan.FromHours(6)
 				);
 			} else {
-				bot.ArchiLogger.LogGenericError(Strings.FormatWarningNoLicense(nameof(BotConfig.ETradingPreferences.MatchActively)));
+				bot.ArchiLogger.LogGenericError(Strings.FormatWarningNoLicense(nameof(ETradingPreferences.MatchActively)));
 			}
 		}
 	}
@@ -183,7 +183,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	internal void OnNewItemsNotification() => ShouldSendAnnouncementEarlier = true;
 
 	internal async Task OnPersonaState(string? nickname = null, string? avatarHash = null, CancellationToken cancellationToken = default) {
-		if (!Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
+		if (!Bot.BotConfig.RemoteCommunication.HasFlag(ERemoteCommunication.PublicListing) || !Bot.BotConfig.TradingPreferences.HasFlag(ETradingPreferences.SteamTradeMatcher)) {
 			return;
 		}
 
@@ -279,7 +279,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			bool matchEverything = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything);
+			bool matchEverything = Bot.BotConfig.TradingPreferences.HasFlag(ETradingPreferences.MatchEverything);
 
 			uint index = 0;
 			ulong previousAssetID = 0;
@@ -958,7 +958,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(ASF.GlobalConfig.LicenseID));
 		}
 
-		if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything)) {
+		if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(ETradingPreferences.MatchEverything)) {
 			Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
 
 			return;

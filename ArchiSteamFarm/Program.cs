@@ -309,7 +309,7 @@ internal static class Program {
 		}
 
 		if (InputCryptkeyManually) {
-			string? cryptkey = await Logging.GetUserInput(ASF.EUserInputType.Cryptkey, cancellationToken: cancellationToken).ConfigureAwait(false);
+			string? cryptkey = await Logging.GetUserInput(EUserInputType.Cryptkey, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(cryptkey)) {
 				ASF.ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(cryptkey)));
@@ -331,7 +331,7 @@ internal static class Program {
 	}
 
 	private static async Task<bool> InitGlobalConfigAndLanguage(CancellationToken cancellationToken = default) {
-		string globalConfigFile = ASF.GetFilePath(ASF.EFileType.Config);
+		string globalConfigFile = ASF.GetFilePath(ASF.EGlobalFileType.Config);
 
 		if (string.IsNullOrEmpty(globalConfigFile)) {
 			throw new InvalidOperationException(nameof(globalConfigFile));
@@ -389,7 +389,7 @@ internal static class Program {
 	}
 
 	private static async Task<bool> InitGlobalDatabaseAndServices(CancellationToken cancellationToken = default) {
-		string globalDatabaseFile = ASF.GetFilePath(ASF.EFileType.Database);
+		string globalDatabaseFile = ASF.GetFilePath(ASF.EGlobalFileType.Database);
 
 		if (string.IsNullOrEmpty(globalDatabaseFile)) {
 			throw new InvalidOperationException(nameof(globalDatabaseFile));
@@ -460,7 +460,7 @@ internal static class Program {
 
 		// Remove crash file if allowed
 		if ((exitCode == 0) && AllowCrashFileRemoval) {
-			string crashFile = ASF.GetFilePath(ASF.EFileType.Crash);
+			string crashFile = ASF.GetFilePath(ASF.EGlobalFileType.Crash);
 
 			if (File.Exists(crashFile)) {
 				try {

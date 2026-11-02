@@ -44,5 +44,5 @@ public interface IBotTradeOffer2 : IPlugin {
 	/// <param name="asfResult">ASF result in regards to parsing this trade offer, can be useful for determining why it wasn't accepted as part of the core logic.</param>
 	/// <param name="cancellationToken">Cancellation token.</param>
 	/// <returns>True if the trade offer should be accepted as part of this plugin, false otherwise.</returns>
-	public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ParseTradeResult.EResult asfResult, CancellationToken cancellationToken = default);
+	public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer, ETradeResult asfResult, CancellationToken cancellationToken = default);
 }

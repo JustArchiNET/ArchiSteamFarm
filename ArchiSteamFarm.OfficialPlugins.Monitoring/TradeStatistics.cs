@@ -43,26 +43,26 @@ internal sealed class TradeStatistics {
 
 		lock (Lock) {
 			switch (result.Result) {
-				case ParseTradeResult.EResult.Accepted when result.Confirmed:
+				case ETradeResult.Accepted when result.Confirmed:
 					ConfirmedOffers++;
 
 					ItemsGiven += result.ItemsToGive?.Count ?? 0;
 					ItemsReceived += result.ItemsToReceive?.Count ?? 0;
 
-					goto case ParseTradeResult.EResult.Accepted;
-				case ParseTradeResult.EResult.Accepted:
+					goto case ETradeResult.Accepted;
+				case ETradeResult.Accepted:
 					AcceptedOffers++;
 
 					break;
-				case ParseTradeResult.EResult.Rejected:
+				case ETradeResult.Rejected:
 					RejectedOffers++;
 
 					break;
-				case ParseTradeResult.EResult.Blacklisted:
+				case ETradeResult.Blacklisted:
 					BlacklistedOffers++;
 
 					break;
-				case ParseTradeResult.EResult.Ignored:
+				case ETradeResult.Ignored:
 					IgnoredOffers++;
 
 					break;

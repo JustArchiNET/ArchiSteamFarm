@@ -33,7 +33,7 @@ namespace ArchiSteamFarm.IPC.Requests;
 public sealed class PluginUpdateRequest {
 	[Description($"Target update channel. Not required, will default to {nameof(GlobalConfig.UpdateChannel)} if not provided")]
 	[JsonInclude]
-	public GlobalConfig.EUpdateChannel? Channel { get; private init; }
+	public EUpdateChannel? Channel { get; private init; }
 
 	[Description($"Forced update. This allows ASF to potentially downgrade to previous version available on selected {nameof(Channel)}, which isn't permitted normally")]
 	[JsonInclude]

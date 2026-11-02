@@ -23,13 +23,12 @@
 
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Steam;
+namespace ArchiSteamFarm.Steam.Storage;
 
 [PublicAPI]
-public enum EAccess : byte {
+public enum EBotAccess : byte {
 	None,
-	FamilySharing = 10,
-	Operator = 50,
-	Master = 100,
-	Owner = 255
+	FamilySharing,
+	Operator,
+	Master
 }

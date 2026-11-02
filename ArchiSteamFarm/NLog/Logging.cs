@@ -74,9 +74,9 @@ internal static class Logging {
 		}
 	}
 
-	internal static async Task<string?> GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF, CancellationToken cancellationToken = default) {
-		if ((userInputType == ASF.EUserInputType.None) || !Enum.IsDefined(userInputType)) {
-			throw new InvalidEnumArgumentException(nameof(userInputType), (int) userInputType, typeof(ASF.EUserInputType));
+	internal static async Task<string?> GetUserInput(EUserInputType userInputType, string botName = SharedInfo.ASF, CancellationToken cancellationToken = default) {
+		if ((userInputType == EUserInputType.None) || !Enum.IsDefined(userInputType)) {
+			throw new InvalidEnumArgumentException(nameof(userInputType), (int) userInputType, typeof(EUserInputType));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(botName);
@@ -97,7 +97,7 @@ internal static class Logging {
 			try {
 				// Since we're in the user input section, logging to NLog will not spam our console targets, but will still leave appropriate trace e.g. in the file targets
 				switch (userInputType) {
-					case ASF.EUserInputType.Cryptkey:
+					case EUserInputType.Cryptkey:
 						string cryptKeyText = Bot.FormatBotResponse(Strings.UserInputCryptkey, botName);
 
 						ASF.ArchiLogger.LogGenericWarning(cryptKeyText);
@@ -108,9 +108,9 @@ internal static class Logging {
 						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result.AsMasked()));
 
 						break;
-					case ASF.EUserInputType.DeviceConfirmation:
-					case ASF.EUserInputType.QrCodeLogin:
-						string confirmationText = Bot.FormatBotResponse(userInputType == ASF.EUserInputType.QrCodeLogin ? Strings.UserInputQrCodeLogin : Strings.UserInputDeviceConfirmation, botName);
+					case EUserInputType.DeviceConfirmation:
+					case EUserInputType.QrCodeLogin:
+						string confirmationText = Bot.FormatBotResponse(userInputType == EUserInputType.QrCodeLogin ? Strings.UserInputQrCodeLogin : Strings.UserInputDeviceConfirmation, botName);
 
 						while (true) {
 							ASF.ArchiLogger.LogGenericWarning(confirmationText);
@@ -126,7 +126,7 @@ internal static class Logging {
 						}
 
 						break;
-					case ASF.EUserInputType.Login:
+					case EUserInputType.Login:
 						string loginText = Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName);
 
 						ASF.ArchiLogger.LogGenericWarning(loginText);
@@ -137,7 +137,7 @@ internal static class Logging {
 						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result));
 
 						break;
-					case ASF.EUserInputType.Password:
+					case EUserInputType.Password:
 						string passwordText = Bot.FormatBotResponse(Strings.UserInputSteamPassword, botName);
 
 						ASF.ArchiLogger.LogGenericWarning(passwordText);
@@ -148,7 +148,7 @@ internal static class Logging {
 						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result.AsMasked()));
 
 						break;
-					case ASF.EUserInputType.SteamGuard:
+					case EUserInputType.SteamGuard:
 						string steamGuardText = Bot.FormatBotResponse(Strings.UserInputSteamGuard, botName);
 
 						ASF.ArchiLogger.LogGenericWarning(steamGuardText);
@@ -159,7 +159,7 @@ internal static class Logging {
 						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result));
 
 						break;
-					case ASF.EUserInputType.SteamParentalCode:
+					case EUserInputType.SteamParentalCode:
 						string steamParentalCodeText = Bot.FormatBotResponse(Strings.UserInputSteamParentalCode, botName);
 
 						ASF.ArchiLogger.LogGenericWarning(steamParentalCodeText);
@@ -170,7 +170,7 @@ internal static class Logging {
 						ASF.ArchiLogger.LogGenericInfo(Strings.FormatInput(result.AsMasked()));
 
 						break;
-					case ASF.EUserInputType.TwoFactorAuthentication:
+					case EUserInputType.TwoFactorAuthentication:
 						string twoFactorAuthenticationText = Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName);
 
 						ASF.ArchiLogger.LogGenericWarning(twoFactorAuthenticationText);
@@ -491,7 +491,7 @@ internal static class Logging {
 
 						Console.WriteLine($@"<> {Strings.Executing}");
 
-						string? response = await targetBot.Commands.Response(EAccess.Owner, command, cancellationToken: cancellationToken).ConfigureAwait(false);
+						string? response = await targetBot.Commands.Response(EBotUserAccess.Owner, command, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(response)) {
 							ASF.ArchiLogger.LogNullError(response);

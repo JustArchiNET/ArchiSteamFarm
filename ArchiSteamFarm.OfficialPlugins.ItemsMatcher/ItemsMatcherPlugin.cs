@@ -52,11 +52,11 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 	[JsonInclude]
 	public override Version Version => typeof(ItemsMatcherPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
+	public async Task<string?> OnBotCommand(Bot bot, EBotUserAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(message);
@@ -108,7 +108,7 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 		}
 
 		// We're interested only in Items notification for Bot that has RemoteCommunication enabled
-		if (!RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication) || !tradeResults.Any(tradeResult => tradeResult is { Result: ParseTradeResult.EResult.Accepted, Confirmed: true } && ((tradeResult.ItemsToGive?.Any(item => bot.BotConfig.MatchableTypes.Contains(item.Type)) == true) || (tradeResult.ItemsToReceive?.Any(item => bot.BotConfig.MatchableTypes.Contains(item.Type)) == true)))) {
+		if (!RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication) || !tradeResults.Any(tradeResult => tradeResult is { Result: ETradeResult.Accepted, Confirmed: true } && ((tradeResult.ItemsToGive?.Any(item => bot.BotConfig.MatchableTypes.Contains(item.Type)) == true) || (tradeResult.ItemsToReceive?.Any(item => bot.BotConfig.MatchableTypes.Contains(item.Type)) == true)))) {
 			return Task.CompletedTask;
 		}
 
@@ -117,7 +117,7 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 		return Task.CompletedTask;
 	}
 
-	public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications, CancellationToken cancellationToken = default) {
+	public Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<EUserNotification> newNotifications, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if ((newNotifications == null) || (newNotifications.Count == 0)) {
@@ -125,7 +125,7 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 		}
 
 		// We're interested only in Items notification for Bot that has RemoteCommunication enabled
-		if (!newNotifications.Contains(UserNotificationsCallback.EUserNotification.Items) || !RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication)) {
+		if (!newNotifications.Contains(EUserNotification.Items) || !RemoteCommunications.TryGetValue(bot, out RemoteCommunication? remoteCommunication)) {
 			return Task.CompletedTask;
 		}
 

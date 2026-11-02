@@ -99,15 +99,15 @@ public static class ASF {
 		return steamID == GlobalConfig?.SteamOwnerID;
 	}
 
-	internal static string GetFilePath(EFileType fileType) {
+	internal static string GetFilePath(EGlobalFileType fileType) {
 		if (!Enum.IsDefined(fileType)) {
-			throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EFileType));
+			throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EGlobalFileType));
 		}
 
 		return fileType switch {
-			EFileType.Config => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName),
-			EFileType.Database => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName),
-			EFileType.Crash => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalCrashFileName),
+			EGlobalFileType.Config => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName),
+			EGlobalFileType.Database => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName),
+			EGlobalFileType.Crash => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalCrashFileName),
 			_ => throw new InvalidOperationException(nameof(fileType))
 		};
 	}
@@ -191,9 +191,9 @@ public static class ASF {
 		}
 	}
 
-	internal static async Task<(bool Updated, Version? NewVersion)> Update(GlobalConfig.EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false, CancellationToken cancellationToken = default) {
+	internal static async Task<(bool Updated, Version? NewVersion)> Update(EUpdateChannel? updateChannel = null, bool updateOverride = false, bool forced = false, CancellationToken cancellationToken = default) {
 		if (updateChannel.HasValue && !Enum.IsDefined(updateChannel.Value)) {
-			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
+			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(EUpdateChannel));
 		}
 
 		if (GlobalConfig == null) {
@@ -386,7 +386,7 @@ public static class ASF {
 	}
 
 	private static async Task OnConfigChanged(CancellationToken cancellationToken = default) {
-		string globalConfigFile = GetFilePath(EFileType.Config);
+		string globalConfigFile = GetFilePath(EGlobalFileType.Config);
 
 		if (string.IsNullOrEmpty(globalConfigFile)) {
 			throw new InvalidOperationException(nameof(globalConfigFile));
@@ -637,7 +637,7 @@ public static class ASF {
 			return true;
 		}
 
-		string crashFilePath = GetFilePath(EFileType.Crash);
+		string crashFilePath = GetFilePath(EGlobalFileType.Crash);
 
 		CrashFile crashFile = await CrashFile.CreateOrLoad(crashFilePath, cancellationToken).ConfigureAwait(false);
 
@@ -700,9 +700,9 @@ public static class ASF {
 		await Utilities.InParallel(botNames.OrderBy(static botName => botName, Bot.BotsComparer).Select(botName => Bot.RegisterBot(botName, cancellationToken)), cancellationToken).ConfigureAwait(false);
 	}
 
-	private static async Task<(bool Updated, Version? NewVersion)> UpdateASF(GlobalConfig.EUpdateChannel? channel = null, bool updateOverride = false, bool forced = false, CancellationToken cancellationToken = default) {
+	private static async Task<(bool Updated, Version? NewVersion)> UpdateASF(EUpdateChannel? channel = null, bool updateOverride = false, bool forced = false, CancellationToken cancellationToken = default) {
 		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
-			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
+			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(EUpdateChannel));
 		}
 
 		if (GlobalConfig == null) {
@@ -715,7 +715,7 @@ public static class ASF {
 
 		channel ??= GlobalConfig.UpdateChannel;
 
-		if (!BuildInfo.CanUpdate || (channel == GlobalConfig.EUpdateChannel.None)) {
+		if (!BuildInfo.CanUpdate || (channel == EUpdateChannel.None)) {
 			return (false, null);
 		}
 
@@ -731,7 +731,7 @@ public static class ASF {
 
 			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
 
-			ReleaseResponse? releaseResponse = await GitHubService.GetLatestRelease(SharedInfo.GithubRepo, channel == GlobalConfig.EUpdateChannel.Stable, cancellationToken).ConfigureAwait(false);
+			ReleaseResponse? releaseResponse = await GitHubService.GetLatestRelease(SharedInfo.GithubRepo, channel == EUpdateChannel.Stable, cancellationToken).ConfigureAwait(false);
 
 			if ((releaseResponse == null) || string.IsNullOrEmpty(releaseResponse.Tag)) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
@@ -895,7 +895,7 @@ public static class ASF {
 			throw new InvalidOperationException(nameof(GlobalConfig));
 		}
 
-		if (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None) {
+		if (GlobalConfig.UpdateChannel == EUpdateChannel.None) {
 			return;
 		}
 
@@ -930,11 +930,11 @@ public static class ASF {
 		await RestartOrExit(CancellationToken.None).ConfigureAwait(false);
 	}
 
-	private static async Task<bool> UpdateFromArchive(Version newVersion, GlobalConfig.EUpdateChannel updateChannel, bool updateOverride, bool forced, ZipArchive zipArchive, CancellationToken cancellationToken = default) {
+	private static async Task<bool> UpdateFromArchive(Version newVersion, EUpdateChannel updateChannel, bool updateOverride, bool forced, ZipArchive zipArchive, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(newVersion);
 
 		if (!Enum.IsDefined(updateChannel)) {
-			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(GlobalConfig.EUpdateChannel));
+			throw new InvalidEnumArgumentException(nameof(updateChannel), (int) updateChannel, typeof(EUpdateChannel));
 		}
 
 		ArgumentNullException.ThrowIfNull(zipArchive);
@@ -956,20 +956,7 @@ public static class ASF {
 		return await Utilities.UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory, cancellationToken).ConfigureAwait(false);
 	}
 
-	[PublicAPI]
-	public enum EUserInputType : byte {
-		None,
-		Login,
-		Password,
-		SteamGuard,
-		SteamParentalCode,
-		TwoFactorAuthentication,
-		Cryptkey,
-		DeviceConfirmation,
-		QrCodeLogin
-	}
-
-	internal enum EFileType : byte {
+	internal enum EGlobalFileType : byte {
 		Config,
 		Database,
 		Crash

@@ -24,6 +24,7 @@
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Helpers;
 using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ArchiSteamFarm.Helpers.ArchiCryptoHelper;

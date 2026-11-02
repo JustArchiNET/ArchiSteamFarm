@@ -35,7 +35,7 @@ public sealed class ASFHashRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public ArchiCryptoHelper.EHashingMethod HashingMethod { get; private init; }
+	public EHashingMethod HashingMethod { get; private init; }
 
 	[Description($"String to hash with provided {nameof(HashingMethod)}")]
 	[JsonInclude]

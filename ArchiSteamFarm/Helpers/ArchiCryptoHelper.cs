@@ -38,7 +38,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Helpers;
 
-public static class ArchiCryptoHelper {
+internal static class ArchiCryptoHelper {
 	private const byte DefaultHashLength = 32;
 	private const byte MinimumRecommendedCryptKeyBytes = 32;
 	private const ushort SteamParentalPbkdf2Iterations = 10000;
@@ -317,19 +317,5 @@ public static class ArchiCryptoHelper {
 		}
 
 		return text.Trim();
-	}
-
-	public enum ECryptoMethod : byte {
-		PlainText,
-		AES,
-		ProtectedDataForCurrentUser,
-		EnvironmentVariable,
-		File
-	}
-
-	public enum EHashingMethod : byte {
-		PlainText,
-		SCrypt,
-		Pbkdf2
 	}
 }

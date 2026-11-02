@@ -175,7 +175,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private readonly Timer HeartBeatTimer;
 	private readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
 	private readonly SemaphoreSlim MessagingSemaphore = new(1, 1);
-	private readonly ConcurrentDictionary<UserNotificationsCallback.EUserNotification, uint> PastNotifications = new();
+	private readonly ConcurrentDictionary<EUserNotification, uint> PastNotifications = new();
 	private readonly SemaphoreSlim RefreshWebSessionSemaphore = new(1, 1);
 	private readonly SemaphoreSlim SendCompleteTypesSemaphore = new(1, 1);
 	private readonly SteamClient SteamClient;
@@ -183,9 +183,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private readonly SteamUser SteamUser;
 	private readonly SemaphoreSlim UnpackBoosterPacksSemaphore = new(1, 1);
 
-	private IEnumerable<(string FilePath, EFileType FileType)> RelatedFiles {
+	private IEnumerable<(string FilePath, EBotFileType FileType)> RelatedFiles {
 		get {
-			foreach (EFileType fileType in Enum.GetValues<EFileType>()) {
+			foreach (EBotFileType fileType in Enum.GetValues<EBotFileType>()) {
 				string filePath = GetFilePath(fileType);
 
 				if (string.IsNullOrEmpty(filePath)) {
@@ -263,7 +263,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	[JsonRequired]
 	[PublicAPI]
 	[Required]
-	public ASF.EUserInputType RequiredInput { get; private set; }
+	public EUserInputType RequiredInput { get; private set; }
 
 	[JsonInclude]
 	[JsonRequired]
@@ -486,26 +486,26 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public EAccess GetAccess(ulong steamID) {
+	public EBotUserAccess GetAccess(ulong steamID) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
 		if (ASF.IsOwner(steamID)) {
-			return EAccess.Owner;
+			return EBotUserAccess.Owner;
 		}
 
-		if (BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess permission)) {
+		if (BotConfig.SteamUserPermissions.TryGetValue(steamID, out EBotAccess permission)) {
 			return permission switch {
-				BotConfig.EAccess.None => EAccess.None,
-				BotConfig.EAccess.FamilySharing => EAccess.FamilySharing,
-				BotConfig.EAccess.Operator => EAccess.Operator,
-				BotConfig.EAccess.Master => EAccess.Master,
+				EBotAccess.None => EBotUserAccess.None,
+				EBotAccess.FamilySharing => EBotUserAccess.FamilySharing,
+				EBotAccess.Operator => EBotUserAccess.Operator,
+				EBotAccess.Master => EBotUserAccess.Master,
 				_ => throw new InvalidOperationException(Strings.FormatWarningUnknownValuePleaseReport(nameof(permission), permission))
 			};
 		}
 
-		return SteamFamilySharingIDs.Contains(steamID) ? EAccess.FamilySharing : EAccess.None;
+		return SteamFamilySharingIDs.Contains(steamID) ? EBotUserAccess.FamilySharing : EBotUserAccess.None;
 	}
 
 	[PublicAPI]
@@ -651,31 +651,31 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public static string GetFilePath(string botName, EFileType fileType) {
+	public static string GetFilePath(string botName, EBotFileType fileType) {
 		ArgumentException.ThrowIfNullOrEmpty(botName);
 
 		if (!Enum.IsDefined(fileType)) {
-			throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EFileType));
+			throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EBotFileType));
 		}
 
 		string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
 
 		return fileType switch {
-			EFileType.Config => $"{botPath}{SharedInfo.JsonConfigExtension}",
-			EFileType.Database => $"{botPath}{SharedInfo.DatabaseExtension}",
-			EFileType.KeysToRedeem => $"{botPath}{SharedInfo.KeysExtension}",
-			EFileType.KeysToRedeemInvalid => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysInvalidExtension}",
-			EFileType.KeysToRedeemUnused => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUnusedExtension}",
-			EFileType.KeysToRedeemUsed => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUsedExtension}",
-			EFileType.MobileAuthenticator => $"{botPath}{SharedInfo.MobileAuthenticatorExtension}",
+			EBotFileType.Config => $"{botPath}{SharedInfo.JsonConfigExtension}",
+			EBotFileType.Database => $"{botPath}{SharedInfo.DatabaseExtension}",
+			EBotFileType.KeysToRedeem => $"{botPath}{SharedInfo.KeysExtension}",
+			EBotFileType.KeysToRedeemInvalid => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysInvalidExtension}",
+			EBotFileType.KeysToRedeemUnused => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUnusedExtension}",
+			EBotFileType.KeysToRedeemUsed => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUsedExtension}",
+			EBotFileType.MobileAuthenticator => $"{botPath}{SharedInfo.MobileAuthenticatorExtension}",
 			_ => throw new InvalidOperationException(nameof(fileType))
 		};
 	}
 
 	[PublicAPI]
-	public string GetFilePath(EFileType fileType) {
+	public string GetFilePath(EBotFileType fileType) {
 		if (!Enum.IsDefined(fileType)) {
-			throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EFileType));
+			throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EBotFileType));
 		}
 
 		return GetFilePath(BotName, fileType);
@@ -781,7 +781,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		switch (ASF.GlobalConfig?.OptimizationMode) {
-			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+			case EOptimizationMode.MinMemoryUsage:
 				for (byte page = 2; page <= maxPages; page++) {
 					HashSet<uint>? pageIDs = await GetPossiblyCompletedBadgeAppIDs(page, cancellationToken).ConfigureAwait(false);
 
@@ -865,7 +865,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		IReadOnlySet<uint> uniqueAppIDs = appIDs as IReadOnlySet<uint> ?? appIDs.ToHashSet();
 
 		switch (ASF.GlobalConfig?.OptimizationMode) {
-			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+			case EOptimizationMode.MinMemoryUsage:
 				Dictionary<uint, byte> result = new(uniqueAppIDs.Count);
 
 				foreach (uint appID in uniqueAppIDs) {
@@ -940,19 +940,19 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public bool SetUserInput(ASF.EUserInputType inputType, string inputValue) {
-		if ((inputType == ASF.EUserInputType.None) || !Enum.IsDefined(inputType)) {
-			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
+	public bool SetUserInput(EUserInputType inputType, string inputValue) {
+		if ((inputType == EUserInputType.None) || !Enum.IsDefined(inputType)) {
+			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(EUserInputType));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(inputValue);
 
 		// This switch should cover ONLY bot properties
 		switch (inputType) {
-			case ASF.EUserInputType.DeviceConfirmation:
+			case EUserInputType.DeviceConfirmation:
 				// Nothing to do for us
 				break;
-			case ASF.EUserInputType.QrCodeLogin:
+			case EUserInputType.QrCodeLogin:
 				inputValue = inputValue.Trim().ToUpperInvariant();
 
 				if (inputValue is not "Y" and not "N") {
@@ -966,24 +966,24 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 
 				break;
-			case ASF.EUserInputType.Login:
+			case EUserInputType.Login:
 				BotConfig.SteamLogin = inputValue;
 
 				// Do not allow saving this account credential
 				BotConfig.IsSteamLoginSet = false;
 
 				break;
-			case ASF.EUserInputType.Password:
+			case EUserInputType.Password:
 				BotConfig.SteamPassword = inputValue;
 
 				// Do not allow saving this account credential
 				BotConfig.IsSteamPasswordSet = false;
 
 				// If by any chance user has wrongly configured password format, we reset it back to plaintext
-				BotConfig.PasswordFormat = ArchiCryptoHelper.ECryptoMethod.PlainText;
+				BotConfig.PasswordFormat = ECryptoMethod.PlainText;
 
 				break;
-			case ASF.EUserInputType.SteamGuard:
+			case EUserInputType.SteamGuard:
 				if (inputValue.Length != 5) {
 					return false;
 				}
@@ -991,7 +991,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				AuthCode = inputValue;
 
 				break;
-			case ASF.EUserInputType.SteamParentalCode:
+			case EUserInputType.SteamParentalCode:
 				if ((inputValue.Length != BotConfig.SteamParentalCodeLength) || inputValue.Any(static character => character is < '0' or > '9')) {
 					return false;
 				}
@@ -1002,7 +1002,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				BotConfig.IsSteamParentalCodeSet = false;
 
 				break;
-			case ASF.EUserInputType.TwoFactorAuthentication:
+			case EUserInputType.TwoFactorAuthentication:
 				switch (inputValue.Length) {
 					case MobileAuthenticator.BackupCodeDigits:
 					case MobileAuthenticator.CodeDigits:
@@ -1025,7 +1025,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (RequiredInput == inputType) {
-			RequiredInput = ASF.EUserInputType.None;
+			RequiredInput = EUserInputType.None;
 		}
 
 		return true;
@@ -1065,7 +1065,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal bool DeleteRedeemedKeysFiles() {
-		string invalidKeysFilePath = GetFilePath(EFileType.KeysToRedeemInvalid);
+		string invalidKeysFilePath = GetFilePath(EBotFileType.KeysToRedeemInvalid);
 
 		if (string.IsNullOrEmpty(invalidKeysFilePath)) {
 			throw new InvalidOperationException(nameof(invalidKeysFilePath));
@@ -1081,7 +1081,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		string unusedKeysFilePath = GetFilePath(EFileType.KeysToRedeemUnused);
+		string unusedKeysFilePath = GetFilePath(EBotFileType.KeysToRedeemUnused);
 
 		if (string.IsNullOrEmpty(unusedKeysFilePath)) {
 			throw new InvalidOperationException(nameof(unusedKeysFilePath));
@@ -1097,7 +1097,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		string usedKeysFilePath = GetFilePath(EFileType.KeysToRedeemUsed);
+		string usedKeysFilePath = GetFilePath(EBotFileType.KeysToRedeemUsed);
 
 		if (string.IsNullOrEmpty(usedKeysFilePath)) {
 			throw new InvalidOperationException(nameof(usedKeysFilePath));
@@ -1133,7 +1133,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return (0, DateTime.MaxValue, true);
 		}
 
-		if ((hoursPlayed < CardsFarmer.HoursForRefund) && BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SkipRefundableGames)) {
+		if ((hoursPlayed < CardsFarmer.HoursForRefund) && BotConfig.FarmingPreferences.HasFlag(EFarmingPreferences.SkipRefundableGames)) {
 			DateTime mostRecent = DateTime.MinValue;
 
 			foreach (uint packageID in packageIDs) {
@@ -1425,7 +1425,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal async Task<(Dictionary<string, string>? UnusedKeys, Dictionary<string, string>? UsedKeys)> GetUsedAndUnusedKeys(CancellationToken cancellationToken = default) {
-		string[] files = [GetFilePath(EFileType.KeysToRedeemUnused), GetFilePath(EFileType.KeysToRedeemUsed)];
+		string[] files = [GetFilePath(EBotFileType.KeysToRedeemUnused), GetFilePath(EBotFileType.KeysToRedeemUsed)];
 
 		IList<Dictionary<string, string>?> results = await Utilities.InParallel(files.Select(filePath => GetKeysFromFile(filePath, cancellationToken)), cancellationToken).ConfigureAwait(false);
 
@@ -1481,7 +1481,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new FileNotFoundException(nameof(filePath), filePath);
 		}
 
-		string keysToRedeemInvalidFilePath = GetFilePath(EFileType.KeysToRedeemInvalid);
+		string keysToRedeemInvalidFilePath = GetFilePath(EBotFileType.KeysToRedeemInvalid);
 
 		if (string.IsNullOrEmpty(keysToRedeemInvalidFilePath)) {
 			throw new InvalidOperationException(nameof(keysToRedeemInvalidFilePath));
@@ -1585,7 +1585,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		string configFile = GetFilePath(EFileType.Config);
+		string configFile = GetFilePath(EBotFileType.Config);
 
 		if (string.IsNullOrEmpty(configFile)) {
 			throw new InvalidOperationException(nameof(configFile));
@@ -1624,13 +1624,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	internal async Task OnFarmingFinished(bool farmedSomething, CancellationToken cancellationToken = default) {
 		await OnFarmingStopped(cancellationToken).ConfigureAwait(false);
 
-		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && !BotConfig.LootableTypes.IsEmpty && (farmedSomething || !FirstTradeSent)) {
+		if (BotConfig.FarmingPreferences.HasFlag(EFarmingPreferences.SendOnFarmingFinished) && !BotConfig.LootableTypes.IsEmpty && (farmedSomething || !FirstTradeSent)) {
 			FirstTradeSent = true;
 
 			await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type), cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 
-		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.ShutdownOnFarmingFinished)) {
+		if (BotConfig.FarmingPreferences.HasFlag(EFarmingPreferences.ShutdownOnFarmingFinished)) {
 			await Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 
@@ -1731,7 +1731,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		string configFilePath = GetFilePath(botName, EFileType.Config);
+		string configFilePath = GetFilePath(botName, EBotFileType.Config);
 
 		if (string.IsNullOrEmpty(configFilePath)) {
 			throw new InvalidOperationException(nameof(configFilePath));
@@ -1757,7 +1757,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 		}
 
-		string databaseFilePath = GetFilePath(botName, EFileType.Database);
+		string databaseFilePath = GetFilePath(botName, EBotFileType.Database);
 
 		if (string.IsNullOrEmpty(databaseFilePath)) {
 			throw new InvalidOperationException(nameof(databaseFilePath));
@@ -1851,7 +1851,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await BotDatabase.MakeReadOnly(renameCancellationToken).ConfigureAwait(false);
 
 		// We handle the config file last as it'll trigger new bot creation
-		foreach ((string filePath, EFileType fileType) in RelatedFiles.Where(static file => File.Exists(file.FilePath)).OrderByDescending(static file => file.FileType != EFileType.Config)) {
+		foreach ((string filePath, EBotFileType fileType) in RelatedFiles.Where(static file => File.Exists(file.FilePath)).OrderByDescending(static file => file.FileType != EBotFileType.Config)) {
 			string newFilePath = GetFilePath(newBotName, fileType);
 
 			if (string.IsNullOrEmpty(newFilePath)) {
@@ -1870,31 +1870,31 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
-	internal async Task<string?> RequestInput(ASF.EUserInputType inputType, bool previousCodeWasIncorrect, CancellationToken cancellationToken = default) {
-		if ((inputType == ASF.EUserInputType.None) || !Enum.IsDefined(inputType)) {
-			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
+	internal async Task<string?> RequestInput(EUserInputType inputType, bool previousCodeWasIncorrect, CancellationToken cancellationToken = default) {
+		if ((inputType == EUserInputType.None) || !Enum.IsDefined(inputType)) {
+			throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(EUserInputType));
 		}
 
 		switch (inputType) {
-			case ASF.EUserInputType.QrCodeLogin when !string.IsNullOrEmpty(QrCodeLoginInput):
+			case EUserInputType.QrCodeLogin when !string.IsNullOrEmpty(QrCodeLoginInput):
 				string? savedQrCodeLoginInput = QrCodeLoginInput;
 
 				QrCodeLoginInput = null;
 
 				return savedQrCodeLoginInput;
-			case ASF.EUserInputType.SteamGuard when !string.IsNullOrEmpty(AuthCode):
+			case EUserInputType.SteamGuard when !string.IsNullOrEmpty(AuthCode):
 				string? savedAuthCode = AuthCode;
 
 				AuthCode = null;
 
 				return savedAuthCode;
-			case ASF.EUserInputType.TwoFactorAuthentication when !string.IsNullOrEmpty(TwoFactorCode):
+			case EUserInputType.TwoFactorAuthentication when !string.IsNullOrEmpty(TwoFactorCode):
 				string? savedTwoFactorCode = TwoFactorCode;
 
 				TwoFactorCode = null;
 
 				return savedTwoFactorCode;
-			case ASF.EUserInputType.TwoFactorAuthentication when BotDatabase.MobileAuthenticator != null:
+			case EUserInputType.TwoFactorAuthentication when BotDatabase.MobileAuthenticator != null:
 				if (previousCodeWasIncorrect) {
 					// There is a possibility that our cached time is no longer appropriate, so we should reset the cache in this case in order to fetch it upon the next login attempt
 					// Yes, this might as well be just invalid 2FA credentials, but we can't be sure about that, and we have LoginFailures designed to verify that for us
@@ -1976,7 +1976,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			// Support and convert 2FA files
 			if (!HasMobileAuthenticator) {
-				string mobileAuthenticatorFilePath = GetFilePath(EFileType.MobileAuthenticator);
+				string mobileAuthenticatorFilePath = GetFilePath(EBotFileType.MobileAuthenticator);
 
 				if (string.IsNullOrEmpty(mobileAuthenticatorFilePath)) {
 					throw new InvalidOperationException(nameof(mobileAuthenticatorFilePath));
@@ -1987,7 +1987,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 			}
 
-			string keysToRedeemFilePath = GetFilePath(EFileType.KeysToRedeem);
+			string keysToRedeemFilePath = GetFilePath(EBotFileType.KeysToRedeem);
 
 			if (string.IsNullOrEmpty(keysToRedeemFilePath)) {
 				throw new InvalidOperationException(nameof(keysToRedeemFilePath));
@@ -2327,11 +2327,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			case EResult.AccountLogonDenied:
 			case EResult.InvalidLoginAuthCode:
 				// SteamGuard input required
-				RequiredInput = ASF.EUserInputType.SteamGuard;
+				RequiredInput = EUserInputType.SteamGuard;
 
-				string? authCode = await Logging.GetUserInput(ASF.EUserInputType.SteamGuard, BotName, cancellationToken).ConfigureAwait(false);
+				string? authCode = await Logging.GetUserInput(EUserInputType.SteamGuard, BotName, cancellationToken).ConfigureAwait(false);
 
-				if (string.IsNullOrEmpty(authCode) || !SetUserInput(ASF.EUserInputType.SteamGuard, authCode)) {
+				if (string.IsNullOrEmpty(authCode) || !SetUserInput(EUserInputType.SteamGuard, authCode)) {
 					ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(authCode)));
 
 					await Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -2341,11 +2341,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			case EResult.AccountLoginDeniedNeedTwoFactor:
 			case EResult.TwoFactorCodeMismatch:
 				// TwoFactorAuthentication input required
-				RequiredInput = ASF.EUserInputType.TwoFactorAuthentication;
+				RequiredInput = EUserInputType.TwoFactorAuthentication;
 
-				string? twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName, cancellationToken).ConfigureAwait(false);
+				string? twoFactorCode = await Logging.GetUserInput(EUserInputType.TwoFactorAuthentication, BotName, cancellationToken).ConfigureAwait(false);
 
-				if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode)) {
+				if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(EUserInputType.TwoFactorAuthentication, twoFactorCode)) {
 					ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(twoFactorCode)));
 
 					await Stop(cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -2467,11 +2467,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private async Task<bool> InitLoginAndPassword(bool requiresPassword, CancellationToken cancellationToken = default) {
 		if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
-			RequiredInput = ASF.EUserInputType.Login;
+			RequiredInput = EUserInputType.Login;
 
-			string? steamLogin = await Logging.GetUserInput(ASF.EUserInputType.Login, BotName, cancellationToken).ConfigureAwait(false);
+			string? steamLogin = await Logging.GetUserInput(EUserInputType.Login, BotName, cancellationToken).ConfigureAwait(false);
 
-			if (string.IsNullOrEmpty(steamLogin) || !SetUserInput(ASF.EUserInputType.Login, steamLogin)) {
+			if (string.IsNullOrEmpty(steamLogin) || !SetUserInput(EUserInputType.Login, steamLogin)) {
 				ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(steamLogin)));
 
 				return false;
@@ -2482,11 +2482,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			string? decryptedSteamPassword = await BotConfig.GetDecryptedSteamPassword(cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(decryptedSteamPassword)) {
-				RequiredInput = ASF.EUserInputType.Password;
+				RequiredInput = EUserInputType.Password;
 
-				string? steamPassword = await Logging.GetUserInput(ASF.EUserInputType.Password, BotName, cancellationToken).ConfigureAwait(false);
+				string? steamPassword = await Logging.GetUserInput(EUserInputType.Password, BotName, cancellationToken).ConfigureAwait(false);
 
-				if (string.IsNullOrEmpty(steamPassword) || !SetUserInput(ASF.EUserInputType.Password, steamPassword)) {
+				if (string.IsNullOrEmpty(steamPassword) || !SetUserInput(EUserInputType.Password, steamPassword)) {
 					ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(steamPassword)));
 
 					return false;
@@ -2505,7 +2505,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		AccountFlags = EAccountFlags.NormalUser;
 		AvatarHash = IPCountryCode = Nickname = null;
 		MasterChatGroupID = 0;
-		RequiredInput = ASF.EUserInputType.None;
+		RequiredInput = EUserInputType.None;
 		WalletBalance = 0;
 		WalletCurrency = ECurrencyCode.Invalid;
 
@@ -2546,7 +2546,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			RefreshToken = null;
 		}
 
-		CardsFarmer.SetInitialState(BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmingPausedByDefault));
+		CardsFarmer.SetInitialState(BotConfig.FarmingPreferences.HasFlag(EFarmingPreferences.FarmingPausedByDefault));
 
 		if (SendItemsTimer != null) {
 			await SendItemsTimer.DisposeAsync().ConfigureAwait(false);
@@ -2560,7 +2560,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			TradeCheckTimer = null;
 		}
 
-		if (BotConfig is { SendTradePeriod: > 0, LootableTypes.Count: > 0 } && BotConfig.SteamUserPermissions.Values.Any(static permission => permission >= BotConfig.EAccess.Master)) {
+		if (BotConfig is { SendTradePeriod: > 0, LootableTypes.Count: > 0 } && BotConfig.SteamUserPermissions.Values.Any(static permission => permission >= EBotAccess.Master)) {
 			SendItemsTimer = new Timer(
 				OnSendItemsTimer,
 				null,
@@ -2569,7 +2569,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			);
 		}
 
-		if ((BotConfig.TradeCheckPeriod > 0) && !BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DisableIncomingTradesParsing)) {
+		if ((BotConfig.TradeCheckPeriod > 0) && !BotConfig.BotBehaviour.HasFlag(EBotBehaviour.DisableIncomingTradesParsing)) {
 			TradeCheckTimer = new Timer(
 				OnTradeCheckTimer,
 				null,
@@ -2773,7 +2773,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				}
 			).ConfigureAwait(false);
 
-			RequiredInput = ASF.EUserInputType.QrCodeLogin;
+			RequiredInput = EUserInputType.QrCodeLogin;
 			await publishQrChallengeUrl(cancellationToken).ConfigureAwait(false);
 			authSession.ChallengeURLChanged = async void () => await publishQrChallengeUrl().ConfigureAwait(false);
 
@@ -2787,7 +2787,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 					return false;
 				}
-			} else if (!SetUserInput(ASF.EUserInputType.Login, pollResult.AccountName)) {
+			} else if (!SetUserInput(EUserInputType.Login, pollResult.AccountName)) {
 				ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(pollResult.AccountName)));
 
 				return false;
@@ -2817,8 +2817,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		} finally {
 			QrChallengeURL = null;
 
-			if (RequiredInput == ASF.EUserInputType.QrCodeLogin) {
-				RequiredInput = ASF.EUserInputType.None;
+			if (RequiredInput == EUserInputType.QrCodeLogin) {
+				RequiredInput = EUserInputType.None;
 			}
 		}
 	}
@@ -3089,7 +3089,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		// Wait with reconnection until we're done with the prompt, not earlier
-		while (RequiredInput != ASF.EUserInputType.None) {
+		while (RequiredInput != EUserInputType.None) {
 			await Task.Delay(1000).ConfigureAwait(false);
 
 			if (!KeepRunning) {
@@ -3133,7 +3133,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						break;
 					}
 
-					if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidGroupInvites)) {
+					if (BotConfig.BotBehaviour.HasFlag(EBotBehaviour.RejectInvalidGroupInvites)) {
 						ArchiLogger.LogInvite(friend.SteamID, false);
 
 						ArchiHandler.AcknowledgeClanInvite(friend.SteamID, false);
@@ -3145,7 +3145,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 					break;
 				default:
-					if (GetAccess(friend.SteamID) >= EAccess.FamilySharing) {
+					if (GetAccess(friend.SteamID) >= EBotUserAccess.FamilySharing) {
 						ArchiLogger.LogInvite(friend.SteamID, true);
 
 						if (!await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false)) {
@@ -3167,7 +3167,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 						break;
 					}
 
-					if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidFriendInvites)) {
+					if (BotConfig.BotBehaviour.HasFlag(EBotBehaviour.RejectInvalidFriendInvites)) {
 						ArchiLogger.LogInvite(friend.SteamID, false);
 
 						if (!await ArchiHandler.RemoveFriend(friend.SteamID).ConfigureAwait(false)) {
@@ -3309,12 +3309,12 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private void OnInventoryChanged() {
 		Utilities.InBackground(() => CardsFarmer.OnNewItemsNotification());
 
-		if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DismissInventoryNotifications)) {
+		if (BotConfig.BotBehaviour.HasFlag(EBotBehaviour.DismissInventoryNotifications)) {
 			Utilities.InBackground(() => ArchiWebHandler.MarkInventory());
 		}
 
 		// The following actions should be synchronized, as they modify the state of the inventory
-		if (BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.AutoUnpackBoosterPacks)) {
+		if (BotConfig.FarmingPreferences.HasFlag(EFarmingPreferences.AutoUnpackBoosterPacks)) {
 			Utilities.InBackground(async () => {
 					if (!await UnpackBoosterPacks().ConfigureAwait(false)) {
 						// Another task is already in progress, so it'll handle the actions below as well
@@ -3515,7 +3515,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				if (!string.IsNullOrEmpty(steamParentalCode)) {
 					// We were able to automatically generate it, potentially with help of the config
 					if (BotConfig.SteamParentalCode != steamParentalCode) {
-						if (!SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
+						if (!SetUserInput(EUserInputType.SteamParentalCode, steamParentalCode)) {
 							ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(steamParentalCode)));
 
 							await Stop().ConfigureAwait(false);
@@ -3525,11 +3525,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 					}
 				} else {
 					// We failed to generate the pin ourselves, ask the user
-					RequiredInput = ASF.EUserInputType.SteamParentalCode;
+					RequiredInput = EUserInputType.SteamParentalCode;
 
-					steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
+					steamParentalCode = await Logging.GetUserInput(EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
-					if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
+					if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(EUserInputType.SteamParentalCode, steamParentalCode)) {
 						ArchiLogger.LogGenericError(Strings.FormatErrorIsInvalid(nameof(steamParentalCode)));
 
 						await Stop().ConfigureAwait(false);
@@ -3576,7 +3576,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			);
 		}
 
-		if (BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.SteamGroup)) {
+		if (BotConfig.RemoteCommunication.HasFlag(ERemoteCommunication.SteamGroup)) {
 			Utilities.InBackground(() => ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID));
 		}
 
@@ -3676,9 +3676,9 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		HashSet<UserNotificationsCallback.EUserNotification> newPluginNotifications = [];
+		HashSet<EUserNotification> newPluginNotifications = [];
 
-		foreach ((UserNotificationsCallback.EUserNotification notification, uint count) in callback.Notifications) {
+		foreach ((EUserNotification notification, uint count) in callback.Notifications) {
 			bool newNotification;
 
 			if (count > 0) {
@@ -3696,15 +3696,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			ArchiLogger.LogGenericTrace($"{notification} = {count}");
 
 			switch (notification) {
-				case UserNotificationsCallback.EUserNotification.Gifts when newNotification && BotConfig.AcceptGifts:
+				case EUserNotification.Gifts when newNotification && BotConfig.AcceptGifts:
 					Utilities.InBackground(() => Actions.AcceptDigitalGiftCards());
 
 					break;
-				case UserNotificationsCallback.EUserNotification.Items when newNotification:
+				case EUserNotification.Items when newNotification:
 					OnInventoryChanged();
 
 					break;
-				case UserNotificationsCallback.EUserNotification.Trading when newNotification && !BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DisableIncomingTradesParsing):
+				case EUserNotification.Trading when newNotification && !BotConfig.BotBehaviour.HasFlag(EBotBehaviour.DisableIncomingTradesParsing):
 					Utilities.InBackground(() => Trading.OnNewTrade());
 
 					break;
@@ -3754,7 +3754,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 			ArchiLogger.LogGenericInfo(Strings.FormatInfoKeysLoaded(GamesToRedeemInBackgroundCount));
 
-			bool assumeWalletKeyOnBadActivationCode = BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.AssumeWalletKeyOnBadActivationCode);
+			bool assumeWalletKeyOnBadActivationCode = BotConfig.RedeemingPreferences.HasFlag(ERedeemingPreferences.AssumeWalletKeyOnBadActivationCode);
 
 			while (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
 				(string? key, string? name) = BotDatabase.GetGameToRedeemInBackground();
@@ -3840,7 +3840,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				string logEntry = $"{name}{DefaultBackgroundKeysRedeemerSeparator}[{purchaseResultDetail}]{(items?.Count > 0 ? $"{DefaultBackgroundKeysRedeemerSeparator}{string.Join(", ", items)}" : "")}{DefaultBackgroundKeysRedeemerSeparator}{key}";
 
-				string filePath = GetFilePath(redeemed ? EFileType.KeysToRedeemUsed : EFileType.KeysToRedeemUnused);
+				string filePath = GetFilePath(redeemed ? EBotFileType.KeysToRedeemUsed : EBotFileType.KeysToRedeemUnused);
 
 				if (string.IsNullOrEmpty(filePath)) {
 					throw new InvalidOperationException(nameof(filePath));
@@ -4133,11 +4133,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(Bots));
 		}
 
-		if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
+		if (BotConfig.BotBehaviour.HasFlag(EBotBehaviour.MarkReceivedMessagesAsRead)) {
 			return true;
 		}
 
-		return BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkBotMessagesAsRead) && Bots.Values.Any(bot => bot.SteamID == steamID);
+		return BotConfig.BotBehaviour.HasFlag(EBotBehaviour.MarkBotMessagesAsRead) && Bots.Values.Any(bot => bot.SteamID == steamID);
 	}
 
 	private void StopConnectionFailureTimer() {
@@ -4300,15 +4300,15 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(settings));
 		}
 
-		ArchiCryptoHelper.EHashingMethod steamParentalHashingMethod;
+		EHashingMethod steamParentalHashingMethod;
 
 		switch (settings.passwordhashtype) {
 			case 4:
-				steamParentalHashingMethod = ArchiCryptoHelper.EHashingMethod.Pbkdf2;
+				steamParentalHashingMethod = EHashingMethod.Pbkdf2;
 
 				break;
 			case 6:
-				steamParentalHashingMethod = ArchiCryptoHelper.EHashingMethod.SCrypt;
+				steamParentalHashingMethod = EHashingMethod.SCrypt;
 
 				break;
 			default:
@@ -4365,18 +4365,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return false;
 		}
 
-		string? input = await RequestInput(ASF.EUserInputType.QrCodeLogin, false, cancellationToken).ConfigureAwait(false);
+		string? input = await RequestInput(EUserInputType.QrCodeLogin, false, cancellationToken).ConfigureAwait(false);
 
 		return input?.Equals("Y", StringComparison.OrdinalIgnoreCase) == true;
-	}
-
-	public enum EFileType : byte {
-		Config,
-		Database,
-		KeysToRedeem,
-		KeysToRedeemUnused,
-		KeysToRedeemUsed,
-		MobileAuthenticator,
-		KeysToRedeemInvalid
 	}
 }

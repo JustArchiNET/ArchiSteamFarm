@@ -36,11 +36,11 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal static class Commands {
-	internal static async Task<string?> OnBotCommand(Bot bot, EAccess access, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
+	internal static async Task<string?> OnBotCommand(Bot bot, EBotUserAccess access, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		if ((args == null) || (args.Length == 0)) {
@@ -71,23 +71,23 @@ internal static class Commands {
 		return null;
 	}
 
-	private static string? ResponseMatch(EAccess access, Bot bot) {
+	private static string? ResponseMatch(EBotUserAccess access, Bot bot) {
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if (access < EAccess.Master) {
-			return access > EAccess.None ? bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied) : null;
+		if (access < EBotUserAccess.Master) {
+			return access > EBotUserAccess.None ? bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied) : null;
 		}
 
 		if (!bot.IsConnectedAndLoggedOn) {
 			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		if (bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything)) {
-			return bot.Commands.FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(BotConfig.ETradingPreferences.MatchEverything)));
+		if (bot.BotConfig.TradingPreferences.HasFlag(ETradingPreferences.MatchEverything)) {
+			return bot.Commands.FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(ETradingPreferences.MatchEverything)));
 		}
 
 		if ((ASF.GlobalConfig?.LicenseID == null) || (ASF.GlobalConfig.LicenseID == Guid.Empty)) {
@@ -103,9 +103,9 @@ internal static class Commands {
 		return bot.Commands.FormatBotResponse(Strings.Done);
 	}
 
-	private static async Task<string?> ResponseMatch(EAccess access, string botNames, ulong steamID = 0, CancellationToken cancellationToken = default) {
+	private static async Task<string?> ResponseMatch(EBotUserAccess access, string botNames, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
@@ -117,7 +117,7 @@ internal static class Commands {
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? Steam.Interaction.Commands.FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
+			return access >= EBotUserAccess.Owner ? Steam.Interaction.Commands.FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => ResponseMatch(Steam.Interaction.Commands.GetProxyAccess(bot, access, steamID), bot), cancellationToken)), cancellationToken).ConfigureAwait(false);

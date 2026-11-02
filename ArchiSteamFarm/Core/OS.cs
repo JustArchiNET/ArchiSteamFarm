@@ -111,16 +111,16 @@ internal static class OS {
 		return $"{SharedInfo.AssemblyName}-{objectName}";
 	}
 
-	internal static void Init(GlobalConfig.EOptimizationMode optimizationMode) {
+	internal static void Init(EOptimizationMode optimizationMode) {
 		if (!Enum.IsDefined(optimizationMode)) {
-			throw new InvalidEnumArgumentException(nameof(optimizationMode), (int) optimizationMode, typeof(GlobalConfig.EOptimizationMode));
+			throw new InvalidEnumArgumentException(nameof(optimizationMode), (int) optimizationMode, typeof(EOptimizationMode));
 		}
 
 		switch (optimizationMode) {
-			case GlobalConfig.EOptimizationMode.MaxPerformance:
+			case EOptimizationMode.MaxPerformance:
 				// No specific tuning required for now, ASF is optimized for max performance by default
 				break;
-			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+			case EOptimizationMode.MinMemoryUsage:
 				// We can disable regex cache which will slightly lower memory usage (for a huge performance hit)
 				Regex.CacheSize = 0;
 

@@ -46,11 +46,11 @@ internal sealed class MobileAuthenticatorPlugin : OfficialPlugin, IBotCommand2 {
 	[JsonInclude]
 	public override Version Version => typeof(MobileAuthenticatorPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
+	public async Task<string?> OnBotCommand(Bot bot, EBotUserAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(message);

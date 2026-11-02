@@ -165,11 +165,11 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginInitializedAndEnabled(nameof(SteamTokenDumperPlugin), startIn.ToHumanReadable()));
 	}
 
-	public Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
+	public Task<string?> OnBotCommand(Bot bot, EBotUserAccess access, string message, string[] args, ulong steamID = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		if ((args == null) || (args.Length == 0)) {
@@ -524,15 +524,15 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		}
 	}
 
-	private static string? ResponseRefreshManually(EAccess access, Bot bot) {
+	private static string? ResponseRefreshManually(EBotUserAccess access, Bot bot) {
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentNullException.ThrowIfNull(bot);
 
-		if (access < EAccess.Master) {
-			return access > EAccess.None ? bot.Commands.FormatBotResponse(ArchiSteamFarm.Localization.Strings.ErrorAccessDenied) : null;
+		if (access < EBotUserAccess.Master) {
+			return access > EBotUserAccess.None ? bot.Commands.FormatBotResponse(ArchiSteamFarm.Localization.Strings.ErrorAccessDenied) : null;
 		}
 
 		if (GlobalCache == null) {
@@ -548,9 +548,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		return bot.Commands.FormatBotResponse(ArchiSteamFarm.Localization.Strings.Done);
 	}
 
-	private static string? ResponseRefreshManually(EAccess access, string botNames, ulong steamID = 0) {
+	private static string? ResponseRefreshManually(EBotUserAccess access, string botNames, ulong steamID = 0) {
 		if (!Enum.IsDefined(access)) {
-			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
 
 		ArgumentException.ThrowIfNullOrEmpty(botNames);
@@ -562,12 +562,12 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 		if ((bots == null) || (bots.Count == 0)) {
-			return access >= EAccess.Owner ? Commands.FormatStaticResponse(ArchiSteamFarm.Localization.Strings.FormatBotNotFound(botNames)) : null;
+			return access >= EBotUserAccess.Owner ? Commands.FormatStaticResponse(ArchiSteamFarm.Localization.Strings.FormatBotNotFound(botNames)) : null;
 		}
 
-		if (bots.RemoveWhere(bot => Commands.GetProxyAccess(bot, access, steamID) < EAccess.Master) > 0) {
+		if (bots.RemoveWhere(bot => Commands.GetProxyAccess(bot, access, steamID) < EBotUserAccess.Master) > 0) {
 			if (bots.Count == 0) {
-				return access >= EAccess.Owner ? Commands.FormatStaticResponse(ArchiSteamFarm.Localization.Strings.FormatBotNotFound(botNames)) : null;
+				return access >= EBotUserAccess.Owner ? Commands.FormatStaticResponse(ArchiSteamFarm.Localization.Strings.FormatBotNotFound(botNames)) : null;
 			}
 		}
 
@@ -630,7 +630,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotC
 
 			ASF.ArchiLogger.LogGenericInfo(Strings.FormatSubmissionInProgress(appTokens.Count, packageTokens.Count, depotKeys.Count));
 
-			ObjectResponse<SubmitResponse>? response = await ASF.WebBrowser.UrlPostToJsonObject<SubmitResponse, SubmitRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
+			ObjectResponse<SubmitResponse>? response = await ASF.WebBrowser.UrlPostToJsonObject<SubmitResponse, SubmitRequest>(request, data: data, requestOptions: ERequestOptions.ReturnClientErrors | ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				ASF.ArchiLogger.LogGenericWarning(ArchiSteamFarm.Localization.Strings.WarningFailed);

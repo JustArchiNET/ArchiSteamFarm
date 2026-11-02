@@ -140,7 +140,7 @@ public sealed class ASFController : ArchiController {
 			request.GlobalConfig.AdditionalProperties.TrimExcess();
 		}
 
-		string filePath = ASF.GetFilePath(ASF.EFileType.Config);
+		string filePath = ASF.GetFilePath(ASF.EGlobalFileType.Config);
 
 		if (string.IsNullOrEmpty(filePath)) {
 			ASF.ArchiLogger.LogNullError(filePath);

@@ -83,7 +83,7 @@ public sealed class BotConfig {
 	public const EPersonaState DefaultOnlineStatus = EPersonaState.Online;
 
 	[PublicAPI]
-	public const ArchiCryptoHelper.ECryptoMethod DefaultPasswordFormat = ArchiCryptoHelper.ECryptoMethod.PlainText;
+	public const ECryptoMethod DefaultPasswordFormat = ECryptoMethod.PlainText;
 
 	[PublicAPI]
 	public const ERedeemingPreferences DefaultRedeemingPreferences = ERedeemingPreferences.None;
@@ -149,7 +149,7 @@ public sealed class BotConfig {
 	public static readonly ImmutableHashSet<EAssetType> DefaultMatchableTypes = [EAssetType.TradingCard];
 
 	[PublicAPI]
-	public static readonly ImmutableDictionary<ulong, EAccess> DefaultSteamUserPermissions = ImmutableDictionary<ulong, EAccess>.Empty;
+	public static readonly ImmutableDictionary<ulong, EBotAccess> DefaultSteamUserPermissions = ImmutableDictionary<ulong, EBotAccess>.Empty;
 
 	[PublicAPI]
 	public static readonly ImmutableHashSet<EAssetType> DefaultTransferableTypes = [EAssetType.BoosterPack, EAssetType.FoilTradingCard, EAssetType.TradingCard];
@@ -255,7 +255,7 @@ public sealed class BotConfig {
 	public EPersonaState OnlineStatus { get; init; } = DefaultOnlineStatus;
 
 	[JsonInclude]
-	public ArchiCryptoHelper.ECryptoMethod PasswordFormat { get; internal set; } = DefaultPasswordFormat;
+	public ECryptoMethod PasswordFormat { get; internal set; } = DefaultPasswordFormat;
 
 	[JsonInclude]
 	public ERedeemingPreferences RedeemingPreferences { get; init; } = DefaultRedeemingPreferences;
@@ -317,7 +317,7 @@ public sealed class BotConfig {
 
 	[JsonDisallowNull]
 	[JsonInclude]
-	public ImmutableDictionary<ulong, EAccess> SteamUserPermissions { get; init; } = DefaultSteamUserPermissions;
+	public ImmutableDictionary<ulong, EBotAccess> SteamUserPermissions { get; init; } = DefaultSteamUserPermissions;
 
 	[JsonInclude]
 	[Range(byte.MinValue, byte.MaxValue)]
@@ -594,7 +594,7 @@ public sealed class BotConfig {
 			return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(SteamTradeToken), SteamTradeToken));
 		}
 
-		foreach ((ulong steamID, EAccess permission) in SteamUserPermissions) {
+		foreach ((ulong steamID, EBotAccess permission) in SteamUserPermissions) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				return (false, Strings.FormatErrorConfigPropertyInvalid(nameof(SteamUserPermissions), steamID));
 			}
@@ -616,7 +616,7 @@ public sealed class BotConfig {
 			return null;
 		}
 
-		if (PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText) {
+		if (PasswordFormat == ECryptoMethod.PlainText) {
 			// We can return SteamPassword only with PlainText, as despite no transformation other password formats still require decryption process
 			return SteamPassword;
 		}
@@ -677,11 +677,11 @@ public sealed class BotConfig {
 		}
 
 		switch (botConfig.PasswordFormat) {
-			case ArchiCryptoHelper.ECryptoMethod.AES when ArchiCryptoHelper.HasDefaultCryptKey:
+			case ECryptoMethod.AES when ArchiCryptoHelper.HasDefaultCryptKey:
 				ASF.ArchiLogger.LogGenericError(Strings.FormatWarningDefaultCryptKeyUsedForEncryption(botConfig.PasswordFormat, nameof(SteamPassword)));
 
 				break;
-			case ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser when ArchiCryptoHelper.HasDefaultCryptKey:
+			case ECryptoMethod.ProtectedDataForCurrentUser when ArchiCryptoHelper.HasDefaultCryptKey:
 				ASF.ArchiLogger.LogGenericInfo(Strings.FormatWarningDefaultCryptKeyUsedForHashing(botConfig.PasswordFormat, nameof(SteamPassword)));
 
 				break;
@@ -696,94 +696,5 @@ public sealed class BotConfig {
 		botConfig.Saving = false;
 
 		return (botConfig, json != latestJson ? latestJson : null);
-	}
-
-	[PublicAPI]
-	public enum EAccess : byte {
-		None,
-		FamilySharing,
-		Operator,
-		Master
-	}
-
-	[Flags]
-	[PublicAPI]
-	public enum EBotBehaviour : byte {
-		None = 0,
-		RejectInvalidFriendInvites = 1,
-		RejectInvalidTrades = 2,
-		RejectInvalidGroupInvites = 4,
-		DismissInventoryNotifications = 8,
-		MarkReceivedMessagesAsRead = 16,
-		MarkBotMessagesAsRead = 32,
-		DisableIncomingTradesParsing = 64,
-		All = RejectInvalidFriendInvites | RejectInvalidTrades | RejectInvalidGroupInvites | DismissInventoryNotifications | MarkReceivedMessagesAsRead | MarkBotMessagesAsRead | DisableIncomingTradesParsing
-	}
-
-	[PublicAPI]
-	public enum EFarmingOrder : byte {
-		Unordered,
-		AppIDsAscending,
-		AppIDsDescending,
-		CardDropsAscending,
-		CardDropsDescending,
-		HoursAscending,
-		HoursDescending,
-		NamesAscending,
-		NamesDescending,
-		Random,
-		BadgeLevelsAscending,
-		BadgeLevelsDescending,
-		RedeemDateTimesAscending,
-		RedeemDateTimesDescending,
-		MarketableAscending,
-		MarketableDescending
-	}
-
-	[Flags]
-	[PublicAPI]
-	public enum EFarmingPreferences : ushort {
-		None = 0,
-		FarmingPausedByDefault = 1,
-		ShutdownOnFarmingFinished = 2,
-		SendOnFarmingFinished = 4,
-		FarmPriorityQueueOnly = 8,
-		SkipRefundableGames = 16,
-		SkipUnplayedGames = 32,
-		EnableRiskyCardsDiscovery = 64,
-		AutoUnpackBoosterPacks = 256,
-		All = FarmingPausedByDefault | ShutdownOnFarmingFinished | SendOnFarmingFinished | FarmPriorityQueueOnly | SkipRefundableGames | SkipUnplayedGames | EnableRiskyCardsDiscovery | AutoUnpackBoosterPacks
-	}
-
-	[Flags]
-	[PublicAPI]
-	public enum ERedeemingPreferences : byte {
-		None = 0,
-		Forwarding = 1,
-		Distributing = 2,
-		KeepMissingGames = 4,
-		AssumeWalletKeyOnBadActivationCode = 8,
-		All = Forwarding | Distributing | KeepMissingGames | AssumeWalletKeyOnBadActivationCode
-	}
-
-	[Flags]
-	[PublicAPI]
-	public enum ERemoteCommunication : byte {
-		None = 0,
-		SteamGroup = 1,
-		PublicListing = 2,
-		All = SteamGroup | PublicListing
-	}
-
-	[Flags]
-	[PublicAPI]
-	public enum ETradingPreferences : byte {
-		None = 0,
-		AcceptDonations = 1,
-		SteamTradeMatcher = 2,
-		MatchEverything = 4,
-		DontAcceptBotTrades = 8,
-		MatchActively = 16,
-		All = AcceptDonations | SteamTradeMatcher | MatchEverything | DontAcceptBotTrades | MatchActively
 	}
 }

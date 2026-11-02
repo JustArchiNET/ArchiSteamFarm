@@ -63,11 +63,11 @@ internal sealed class GitHubPluginUpdates : TestContextBase {
 
 		IGitHubPluginUpdates plugin = new TestGitHubPluginUpdates(version);
 
-		Uri? releaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, GlobalConfig.EUpdateChannel.Stable, false, CancellationToken).ConfigureAwait(false);
+		Uri? releaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, EUpdateChannel.Stable, false, CancellationToken).ConfigureAwait(false);
 
 		Assert.IsNull(releaseURL);
 
-		Uri? forcedReleaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, GlobalConfig.EUpdateChannel.Stable, true, CancellationToken).ConfigureAwait(false);
+		Uri? forcedReleaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, EUpdateChannel.Stable, true, CancellationToken).ConfigureAwait(false);
 
 		Assert.IsNotNull(forcedReleaseURL);
 	}

@@ -90,7 +90,7 @@ public sealed class CommandController : ArchiController {
 		CancellationTokenRegistration applicationStoppingRegistration = ApplicationLifetime.ApplicationStopping.Register(() => applicationStopping.SetResult(true));
 
 		await using (applicationStoppingRegistration.ConfigureAwait(false)) {
-			Task<string?> commandTask = targetBot.Commands.Response(EAccess.Owner, command, cancellationToken: cancellationToken);
+			Task<string?> commandTask = targetBot.Commands.Response(EBotUserAccess.Owner, command, cancellationToken: cancellationToken);
 
 			string? response;
 

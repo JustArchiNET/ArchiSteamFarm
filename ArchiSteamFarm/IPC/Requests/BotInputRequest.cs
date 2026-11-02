@@ -35,7 +35,7 @@ public sealed class BotInputRequest {
 	[JsonInclude]
 	[JsonRequired]
 	[Required]
-	public ASF.EUserInputType Type { get; private init; }
+	public EUserInputType Type { get; private init; }
 
 	[Description($"Specifies the value for given input type (declared in {nameof(Type)})")]
 	[JsonInclude]

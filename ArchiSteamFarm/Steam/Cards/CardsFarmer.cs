@@ -245,7 +245,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			// We should restart the farming if the order or efficiency of the farming could be affected by the newly-activated product
 			// The order is affected when user uses farming order that isn't independent of the game data (it could alter the order in deterministic way if the game was considered in current queue)
 			// The efficiency is affected only in complex algorithm (entirely), as it depends on hours order that is not independent (as specified above)
-			if (!ShouldSkipNewGamesIfPossible && ((Bot.BotConfig.HoursUntilCardDrops > 0) || (!Bot.BotConfig.FarmingOrders.IsEmpty && Bot.BotConfig.FarmingOrders.Any(static farmingOrder => farmingOrder is not BotConfig.EFarmingOrder.Unordered and not BotConfig.EFarmingOrder.Random)))) {
+			if (!ShouldSkipNewGamesIfPossible && ((Bot.BotConfig.HoursUntilCardDrops > 0) || (!Bot.BotConfig.FarmingOrders.IsEmpty && Bot.BotConfig.FarmingOrders.Any(static farmingOrder => farmingOrder is not EFarmingOrder.Unordered and not EFarmingOrder.Random)))) {
 				await StopFarming(cancellationToken).ConfigureAwait(false);
 				await StartFarming(CancellationToken.None).ConfigureAwait(false);
 			}
@@ -280,7 +280,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		// If we're not farming, and we got new items, it's likely to be a booster pack or likewise
 		// In this case, perform a loot if user wants to do so
-		if (Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SendOnFarmingFinished) && !Bot.BotConfig.LootableTypes.IsEmpty) {
+		if (Bot.BotConfig.FarmingPreferences.HasFlag(EFarmingPreferences.SendOnFarmingFinished) && !Bot.BotConfig.LootableTypes.IsEmpty) {
 			await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type), cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 	}
@@ -566,7 +566,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				}
 			}
 
-			if ((hours <= 0.0F) && Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.SkipUnplayedGames)) {
+			if ((hours <= 0.0F) && Bot.BotConfig.FarmingPreferences.HasFlag(EFarmingPreferences.SkipUnplayedGames)) {
 				// User is skipping unplayed games, ignore this entry
 				continue;
 			}
@@ -689,7 +689,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				Task task = CheckGame(appID, name, hours, badgeLevel, cancellationToken);
 
 				switch (ASF.GlobalConfig?.OptimizationMode) {
-					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					case EOptimizationMode.MinMemoryUsage:
 						await task.ConfigureAwait(false);
 
 						break;
@@ -1104,12 +1104,12 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		// Find the number of badge pages
 		Bot.ArchiLogger.LogGenericInfo(Strings.CheckingFirstBadgePage);
 
-		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1, Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.EnableRiskyCardsDiscovery) ? (byte) 2 : WebBrowser.MaxTries, cancellationToken).ConfigureAwait(false);
+		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1, Bot.BotConfig.FarmingPreferences.HasFlag(EFarmingPreferences.EnableRiskyCardsDiscovery) ? (byte) 2 : WebBrowser.MaxTries, cancellationToken).ConfigureAwait(false);
 
 		if (htmlDocument == null) {
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
 
-			if (!Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.EnableRiskyCardsDiscovery)) {
+			if (!Bot.BotConfig.FarmingPreferences.HasFlag(EFarmingPreferences.EnableRiskyCardsDiscovery)) {
 				return null;
 			}
 
@@ -1151,7 +1151,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		bool allTasksSucceeded = true;
 
 		switch (ASF.GlobalConfig?.OptimizationMode) {
-			case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+			case EOptimizationMode.MinMemoryUsage:
 				await mainTask.ConfigureAwait(false);
 
 				if (maxPages > 1) {
@@ -1197,7 +1197,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			ShouldResumeFarming = false;
 
 			// Allow changing to risky algorithm only if we failed at least some badge pages and we have the prop enabled
-			if (allTasksSucceeded || !Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.EnableRiskyCardsDiscovery)) {
+			if (allTasksSucceeded || !Bot.BotConfig.FarmingPreferences.HasFlag(EFarmingPreferences.EnableRiskyCardsDiscovery)) {
 				return false;
 			}
 
@@ -1370,7 +1370,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	private bool ShouldIdle(uint appID) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
-		if (SalesBlacklist.Contains(appID) || (ASF.GlobalConfig?.Blacklist.Contains(appID) == true) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmPriorityQueueOnly) && !Bot.IsPriorityIdling(appID))) {
+		if (SalesBlacklist.Contains(appID) || (ASF.GlobalConfig?.Blacklist.Contains(appID) == true) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.FarmingPreferences.HasFlag(EFarmingPreferences.FarmPriorityQueueOnly) && !Bot.IsPriorityIdling(appID))) {
 			// We're configured to ignore this appID, so skip it
 			return false;
 		}
@@ -1396,73 +1396,73 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 		// Put priority idling appIDs on top
 		IOrderedEnumerable<Game> orderedGamesToFarm = GamesToFarm.AsLinqThreadSafeEnumerable().OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
 
-		foreach (BotConfig.EFarmingOrder farmingOrder in Bot.BotConfig.FarmingOrders) {
+		foreach (EFarmingOrder farmingOrder in Bot.BotConfig.FarmingOrders) {
 			switch (farmingOrder) {
-				case BotConfig.EFarmingOrder.Unordered:
+				case EFarmingOrder.Unordered:
 					break;
-				case BotConfig.EFarmingOrder.AppIDsAscending:
+				case EFarmingOrder.AppIDsAscending:
 					orderedGamesToFarm = orderedGamesToFarm.ThenBy(static game => game.AppID);
 
 					break;
-				case BotConfig.EFarmingOrder.AppIDsDescending:
+				case EFarmingOrder.AppIDsDescending:
 					orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(static game => game.AppID);
 
 					break;
-				case BotConfig.EFarmingOrder.BadgeLevelsAscending:
+				case EFarmingOrder.BadgeLevelsAscending:
 					orderedGamesToFarm = orderedGamesToFarm.ThenBy(static game => game.BadgeLevel);
 
 					break;
-				case BotConfig.EFarmingOrder.BadgeLevelsDescending:
+				case EFarmingOrder.BadgeLevelsDescending:
 					orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(static game => game.BadgeLevel);
 
 					break;
-				case BotConfig.EFarmingOrder.CardDropsAscending:
+				case EFarmingOrder.CardDropsAscending:
 					orderedGamesToFarm = orderedGamesToFarm.ThenBy(static game => game.CardsRemaining);
 
 					break;
-				case BotConfig.EFarmingOrder.CardDropsDescending:
+				case EFarmingOrder.CardDropsDescending:
 					orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(static game => game.CardsRemaining);
 
 					break;
-				case BotConfig.EFarmingOrder.MarketableAscending:
-				case BotConfig.EFarmingOrder.MarketableDescending:
+				case EFarmingOrder.MarketableAscending:
+				case EFarmingOrder.MarketableDescending:
 					(_, FrozenSet<uint>? marketableAppIDs) = await MarketableAppIDs.GetValue(ECacheFallback.SuccessPreviously, cancellationToken).ConfigureAwait(false);
 
 					if (marketableAppIDs?.Count > 0) {
 						FrozenSet<uint> marketableAppIDsCopy = marketableAppIDs;
 
 						orderedGamesToFarm = farmingOrder switch {
-							BotConfig.EFarmingOrder.MarketableAscending => orderedGamesToFarm.ThenBy(game => marketableAppIDsCopy.Contains(game.AppID)),
-							BotConfig.EFarmingOrder.MarketableDescending => orderedGamesToFarm.ThenByDescending(game => marketableAppIDsCopy.Contains(game.AppID)),
+							EFarmingOrder.MarketableAscending => orderedGamesToFarm.ThenBy(game => marketableAppIDsCopy.Contains(game.AppID)),
+							EFarmingOrder.MarketableDescending => orderedGamesToFarm.ThenByDescending(game => marketableAppIDsCopy.Contains(game.AppID)),
 							_ => throw new InvalidOperationException(nameof(farmingOrder))
 						};
 					}
 
 					break;
-				case BotConfig.EFarmingOrder.HoursAscending:
+				case EFarmingOrder.HoursAscending:
 					orderedGamesToFarm = orderedGamesToFarm.ThenBy(static game => game.HoursPlayed);
 
 					break;
-				case BotConfig.EFarmingOrder.HoursDescending:
+				case EFarmingOrder.HoursDescending:
 					orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(static game => game.HoursPlayed);
 
 					break;
-				case BotConfig.EFarmingOrder.NamesAscending:
+				case EFarmingOrder.NamesAscending:
 					orderedGamesToFarm = orderedGamesToFarm.ThenBy(static game => game.GameName);
 
 					break;
-				case BotConfig.EFarmingOrder.NamesDescending:
+				case EFarmingOrder.NamesDescending:
 					orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(static game => game.GameName);
 
 					break;
-				case BotConfig.EFarmingOrder.Random:
+				case EFarmingOrder.Random:
 #pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
 					orderedGamesToFarm = orderedGamesToFarm.ThenBy(static _ => Random.Shared.Next());
 #pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
 
 					break;
-				case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
-				case BotConfig.EFarmingOrder.RedeemDateTimesDescending:
+				case EFarmingOrder.RedeemDateTimesAscending:
+				case EFarmingOrder.RedeemDateTimesDescending:
 					Dictionary<uint, DateTime> redeemDates = new(GamesToFarm.Count);
 
 					foreach (Game game in GamesToFarm) {
@@ -1488,10 +1488,10 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 					orderedGamesToFarm = farmingOrder switch {
 						// ReSharper disable once AccessToModifiedClosure - you're wrong
-						BotConfig.EFarmingOrder.RedeemDateTimesAscending => orderedGamesToFarm.ThenBy(game => redeemDates[game.AppID]),
+						EFarmingOrder.RedeemDateTimesAscending => orderedGamesToFarm.ThenBy(game => redeemDates[game.AppID]),
 
 						// ReSharper disable once AccessToModifiedClosure - you're wrong
-						BotConfig.EFarmingOrder.RedeemDateTimesDescending => orderedGamesToFarm.ThenByDescending(game => redeemDates[game.AppID]),
+						EFarmingOrder.RedeemDateTimesDescending => orderedGamesToFarm.ThenByDescending(game => redeemDates[game.AppID]),
 
 						_ => throw new InvalidOperationException(nameof(farmingOrder))
 					};
@@ -1514,7 +1514,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmPriorityQueueOnly) && (Bot.BotDatabase.FarmingPriorityQueueAppIDs.Count == 0))) {
+		if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.FarmingPreferences.HasFlag(EFarmingPreferences.FarmPriorityQueueOnly) && (Bot.BotDatabase.FarmingPriorityQueueAppIDs.Count == 0))) {
 			Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
 			await Bot.OnFarmingFinished(false, cancellationToken).ConfigureAwait(false);
 
