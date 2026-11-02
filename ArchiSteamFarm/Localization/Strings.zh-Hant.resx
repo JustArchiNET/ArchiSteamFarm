@@ -190,15 +190,15 @@
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
 	<data name="UserInputDeviceConfirmation" xml:space="preserve">
-		<value>請查看您的 Steam 行動裝置應用程式，您應該已收到登入請求通知。若您已收到且確認了登入請求，請輸入 Y；若您想要提供登入代碼，則輸入 N：</value>
+		<value>請查看您的 Steam 行動應用程式，您應該已收到登入請求通知。若您已收到且確認了登入請求，請輸入 Y；若您想要提供登入代碼，則輸入 N：</value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputQrCodeLogin" xml:space="preserve">
-		<value>輸入 Y 以使用 Steam 行動裝置應用程式掃描 QR 碼登入，輸入 N 以使用憑證登入：</value>
+		<value>輸入 Y 以使用 Steam 行動應用程式掃描 QR 碼登入，輸入 N 以使用帳號密碼登入：</value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="QrCodeLoginUrl" xml:space="preserve">
-		<value>請使用 Steam 行動裝置應用程式掃描此 QR 碼（若 Steam 重新整理，將會顯示新的 QR 碼）：{0}</value>
+		<value>請使用 Steam 行動應用程式掃描此 QR 碼（若 Steam 重新整理，將會顯示新的 QR 碼）：{0}</value>
 		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
 	</data>
 	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
@@ -344,7 +344,7 @@
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
 	</data>
 	<data name="BotAddLicenseNoItems" xml:space="preserve">
-		<value>未取得程式或軟體</value>
+		<value>未取得應用程式或遊戲組合包</value>
 		<comment>Used in place of the list of granted IDs when Steam reports no granted apps or packages. This does not indicate why no grants were reported.</comment>
 	</data>
 	<data name="BotAddLicenseWithItems" xml:space="preserve">
