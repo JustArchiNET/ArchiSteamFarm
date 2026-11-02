@@ -381,7 +381,7 @@ public static class PluginsCore {
 		IList<string?> responses;
 
 		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand2>().Select(plugin => plugin.OnBotCommand(bot, access, message, args, steamID, cancellationToken)), cancellationToken).ConfigureAwait(false);
+			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand>().Select(plugin => plugin.OnBotCommand(bot, access, message, args, steamID, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -599,7 +599,7 @@ public static class PluginsCore {
 		IList<bool> responses;
 
 		try {
-			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOffer2>().Select(plugin => plugin.OnBotTradeOffer(bot, tradeOffer, asfResult, cancellationToken)), cancellationToken).ConfigureAwait(false);
+			responses = await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOffer>().Select(plugin => plugin.OnBotTradeOffer(bot, tradeOffer, asfResult, cancellationToken)), cancellationToken).ConfigureAwait(false);
 		} catch (Exception e) when (e is not OperationCanceledException || !cancellationToken.IsCancellationRequested) {
 			ASF.ArchiLogger.LogGenericException(e);
 

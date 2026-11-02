@@ -43,7 +43,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 [Export(typeof(IPlugin))]
-internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, IBotIdentity, IBotModules, IBotTradeOfferResults, IBotUserNotifications {
+internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand, IBotIdentity, IBotModules, IBotTradeOfferResults, IBotUserNotifications {
 	internal static readonly ConcurrentDictionary<Bot, RemoteCommunication> RemoteCommunications = new();
 
 	[JsonInclude]

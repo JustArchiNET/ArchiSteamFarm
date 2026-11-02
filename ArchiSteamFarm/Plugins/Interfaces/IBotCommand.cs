@@ -35,7 +35,7 @@ namespace ArchiSteamFarm.Plugins.Interfaces;
 /// </summary>
 /// <remarks>This is used for commands, irrelevant of their origin (IPC, console, Steam). If you want to grab non-command Steam messages, check <see cref="IBotMessage" /> interface instead.</remarks>
 [PublicAPI]
-public interface IBotCommand2 : IPlugin {
+public interface IBotCommand : IPlugin {
 	/// <summary>
 	///     ASF will call this method for unrecognized commands.
 	/// </summary>

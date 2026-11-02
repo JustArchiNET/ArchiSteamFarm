@@ -50,7 +50,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
 [Export(typeof(IPlugin))]
-internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotCommand2, IBotSteamClient, ISteamPICSChanges {
+internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotCommand, IBotSteamClient, ISteamPICSChanges {
 	private const ushort DepotsRateLimitingDelay = 500;
 
 	internal static SteamTokenDumperConfig? Config { get; private set; }

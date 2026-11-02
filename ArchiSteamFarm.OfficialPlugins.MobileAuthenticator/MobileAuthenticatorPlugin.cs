@@ -39,7 +39,7 @@ namespace ArchiSteamFarm.OfficialPlugins.MobileAuthenticator;
 
 [Export(typeof(IPlugin))]
 [SuppressMessage("ReSharper", "MemberCanBeFileLocal")]
-internal sealed class MobileAuthenticatorPlugin : OfficialPlugin, IBotCommand2 {
+internal sealed class MobileAuthenticatorPlugin : OfficialPlugin, IBotCommand {
 	[JsonInclude]
 	public override string Name => nameof(MobileAuthenticatorPlugin);
 

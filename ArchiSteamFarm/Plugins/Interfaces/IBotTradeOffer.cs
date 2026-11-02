@@ -35,7 +35,7 @@ namespace ArchiSteamFarm.Plugins.Interfaces;
 ///     Implementing this interface allows your plugin to implement custom logic for accepting trades that ASF isn't willing to handle itself.
 /// </summary>
 [PublicAPI]
-public interface IBotTradeOffer2 : IPlugin {
+public interface IBotTradeOffer : IPlugin {
 	/// <summary>
 	///     ASF will call this method for unhandled (e.g. blacklisted, ignored and rejected) trade offers received by the bot.
 	/// </summary>
