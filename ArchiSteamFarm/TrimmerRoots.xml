@@ -23,6 +23,11 @@
 		<type fullname="Microsoft.AspNetCore.Http.TagsAttribute" />
 	</assembly>
 
+	<!-- Required for MobileAuthenticator plugin -->
+	<assembly fullname="SteamKit2">
+		<type fullname="SteamKit2.WebAPI/WebAPIResponse`1" />
+	</assembly>
+
 	<!-- Required for ItemsMatcher plugin -->
 	<assembly fullname="System.Collections">
 		<type fullname="System.Collections.Generic.HashSet`1">
