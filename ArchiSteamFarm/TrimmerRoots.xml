@@ -23,8 +23,18 @@
 		<type fullname="Microsoft.AspNetCore.Http.TagsAttribute" />
 	</assembly>
 
-	<!-- Required for MobileAuthenticator plugin -->
 	<assembly fullname="SteamKit2">
+		<!-- Required for SteamTokenDumper plugin -->
+		<type fullname="SteamKit2.SteamApps">
+			<method name="GetDepotDecryptionKey" />
+		</type>
+
+		<!-- Required for MobileAuthenticator plugin -->
+		<type fullname="SteamKit2.WebAPI/AsyncInterface">
+			<method name="CallProtobufAsync" />
+		</type>
+
+		<!-- Required for MobileAuthenticator plugin -->
 		<type fullname="SteamKit2.WebAPI/WebAPIResponse`1" />
 	</assembly>
 
