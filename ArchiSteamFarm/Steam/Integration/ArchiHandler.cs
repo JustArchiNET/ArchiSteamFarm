@@ -95,7 +95,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	public void Dispose() => InventorySemaphore.Dispose();
 
 	[PublicAPI]
-	public async Task<bool> AddFriend(ulong steamID) {
+	public async Task<bool> AddFriend(ulong steamID, CancellationToken cancellationToken = default) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -126,7 +126,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<CClanChatRooms_GetClanChatRoomInfo_Response?> GetClanChatRoomInfo(ulong steamID) {
+	public async Task<CClanChatRooms_GetClanChatRoomInfo_Response?> GetClanChatRoomInfo(ulong steamID, CancellationToken cancellationToken = default) {
 		if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -158,7 +158,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<CCredentials_LastCredentialChangeTime_Response?> GetCredentialChangeTimeDetails() {
+	public async Task<CCredentials_LastCredentialChangeTime_Response?> GetCredentialChangeTimeDetails(CancellationToken cancellationToken = default) {
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
 		}
@@ -340,7 +340,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<Dictionary<uint, string>?> GetOwnedGames(ulong steamID) {
+	public async Task<Dictionary<uint, string>?> GetOwnedGames(ulong steamID, CancellationToken cancellationToken = default) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
@@ -375,7 +375,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<long?> GetPointsBalance() {
+	public async Task<long?> GetPointsBalance(CancellationToken cancellationToken = default) {
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
 		}
@@ -410,7 +410,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<Dictionary<uint, LoyaltyRewardDefinition>?> GetRewardItems(IReadOnlyCollection<uint> definitionIDs) {
+	public async Task<Dictionary<uint, LoyaltyRewardDefinition>?> GetRewardItems(IReadOnlyCollection<uint> definitionIDs, CancellationToken cancellationToken = default) {
 		if ((definitionIDs == null) || (definitionIDs.Count == 0)) {
 			throw new ArgumentNullException(nameof(definitionIDs));
 		}
@@ -462,7 +462,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<CCredentials_GetSteamGuardDetails_Response?> GetSteamGuardStatus() {
+	public async Task<CCredentials_GetSteamGuardDetails_Response?> GetSteamGuardStatus(CancellationToken cancellationToken = default) {
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
 		}
@@ -487,7 +487,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<string?> GetTradeToken() {
+	public async Task<string?> GetTradeToken(CancellationToken cancellationToken = default) {
 		if (Client == null) {
 			throw new InvalidOperationException(nameof(Client));
 		}
@@ -549,7 +549,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {
+	public async Task<bool> JoinChatRoomGroup(ulong chatGroupID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(chatGroupID);
 
 		if (Client == null) {
@@ -576,7 +576,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<bool> LeaveChatRoomGroup(ulong chatGroupID) {
+	public async Task<bool> LeaveChatRoomGroup(ulong chatGroupID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(chatGroupID);
 
 		if (Client == null) {
@@ -603,7 +603,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<EResult> RedeemPoints(uint definitionID) {
+	public async Task<EResult> RedeemPoints(uint definitionID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
 
 		if (Client == null) {
@@ -632,7 +632,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<EResult> RedeemPointsForBadgeLevel(uint definitionID, byte levels = 1) {
+	public async Task<EResult> RedeemPointsForBadgeLevel(uint definitionID, byte levels = 1, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
 		ArgumentOutOfRangeException.ThrowIfZero(levels);
 
@@ -663,7 +663,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<bool> RemoveFriend(ulong steamID) {
+	public async Task<bool> RemoveFriend(ulong steamID, CancellationToken cancellationToken = default) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}

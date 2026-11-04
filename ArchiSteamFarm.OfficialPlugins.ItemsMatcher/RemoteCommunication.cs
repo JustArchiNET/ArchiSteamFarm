@@ -209,7 +209,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 
 			// Don't announce if we don't meet conditions
-			bool? eligible = await IsEligibleForListing().ConfigureAwait(false);
+			bool? eligible = await IsEligibleForListing(cancellationToken).ConfigureAwait(false);
 
 			if (!eligible.HasValue) {
 				// This is actually network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -237,7 +237,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				throw new InvalidOperationException(nameof(acceptedMatchableTypes));
 			}
 
-			string? tradeToken = await Bot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
+			string? tradeToken = await Bot.ArchiHandler.GetTradeToken(cancellationToken).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(tradeToken)) {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -859,9 +859,9 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task<bool?> IsEligibleForListing() {
+	private async Task<bool?> IsEligibleForListing(CancellationToken cancellationToken = default) {
 		// Bot must be eligible for matching
-		bool? isEligibleForMatching = await IsEligibleForMatching().ConfigureAwait(false);
+		bool? isEligibleForMatching = await IsEligibleForMatching(cancellationToken).ConfigureAwait(false);
 
 		if (isEligibleForMatching != true) {
 			return isEligibleForMatching;
@@ -879,7 +879,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		return true;
 	}
 
-	private async Task<bool?> IsEligibleForMatching() {
+	private async Task<bool?> IsEligibleForMatching(CancellationToken cancellationToken = default) {
 		// Bot can't be limited
 		if (Bot.IsAccountLimited) {
 			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(Bot.IsAccountLimited)}: {Bot.IsAccountLimited}"));
@@ -909,7 +909,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		// Bot must pass some general trading requirements
-		CCredentials_GetSteamGuardDetails_Response? steamGuardStatus = await Bot.ArchiHandler.GetSteamGuardStatus().ConfigureAwait(false);
+		CCredentials_GetSteamGuardDetails_Response? steamGuardStatus = await Bot.ArchiHandler.GetSteamGuardStatus(cancellationToken).ConfigureAwait(false);
 
 		if (steamGuardStatus == null) {
 			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(steamGuardStatus)}: null"));
@@ -931,7 +931,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return false;
 		}
 
-		CCredentials_LastCredentialChangeTime_Response? credentialChangeTimeDetails = await Bot.ArchiHandler.GetCredentialChangeTimeDetails().ConfigureAwait(false);
+		CCredentials_LastCredentialChangeTime_Response? credentialChangeTimeDetails = await Bot.ArchiHandler.GetCredentialChangeTimeDetails(cancellationToken).ConfigureAwait(false);
 
 		if (credentialChangeTimeDetails == null) {
 			Bot.ArchiLogger.LogGenericTrace(Strings.FormatWarningFailedWithError($"{nameof(credentialChangeTimeDetails)}: null"));

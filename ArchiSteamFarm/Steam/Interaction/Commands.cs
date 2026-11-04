@@ -157,7 +157,7 @@ public sealed class Commands {
 					case "PAUSE~":
 						return await ResponsePause(access, false, cancellationToken: cancellationToken).ConfigureAwait(false);
 					case "POINTS":
-						return await ResponsePointsBalance(access).ConfigureAwait(false);
+						return await ResponsePointsBalance(access, cancellationToken).ConfigureAwait(false);
 					case "RESET":
 						return await ResponseReset(access, cancellationToken).ConfigureAwait(false);
 					case "RESUME":
@@ -280,7 +280,7 @@ public sealed class Commands {
 					case "OWNS" when args.Length > 2:
 						return await ResponseOwns(access, args[1], Utilities.GetArgsAsText(message, 2), steamID, cancellationToken).ConfigureAwait(false);
 					case "OWNS":
-						return (await ResponseOwns(access, args[1]).ConfigureAwait(false)).Response;
+						return (await ResponseOwns(access, args[1], cancellationToken).ConfigureAwait(false)).Response;
 					case "PAUSE":
 						return await ResponsePause(access, Utilities.GetArgsAsText(args, 1, ","), true, steamID: steamID, cancellationToken: cancellationToken).ConfigureAwait(false);
 					case "PAUSE~":
@@ -528,7 +528,7 @@ public sealed class Commands {
 
 	internal void OnNewLicenseList() => CachedGamesOwned = FrozenDictionary<uint, string>.Empty;
 
-	private async Task<IReadOnlyDictionary<uint, string>?> FetchGamesOwned(bool cachedOnly = false) {
+	private async Task<IReadOnlyDictionary<uint, string>?> FetchGamesOwned(bool cachedOnly = false, CancellationToken cancellationToken = default) {
 		FrozenDictionary<uint, string> cachedGamesOwned = CachedGamesOwned;
 
 		if (cachedGamesOwned.Count > 0) {
@@ -539,7 +539,7 @@ public sealed class Commands {
 			return null;
 		}
 
-		Dictionary<uint, string>? gamesOwned = await Bot.ArchiHandler.GetOwnedGames(Bot.SteamID).ConfigureAwait(false);
+		Dictionary<uint, string>? gamesOwned = await Bot.ArchiHandler.GetOwnedGames(Bot.SteamID, cancellationToken).ConfigureAwait(false);
 
 		if ((gamesOwned?.Count > 0) && (CachedGamesOwned.Count == 0)) {
 			return CachedGamesOwned = gamesOwned.ToFrozenDictionary();
@@ -2072,7 +2072,7 @@ public sealed class Commands {
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
-	private async Task<(string? Response, Dictionary<string, string>? OwnedGames)> ResponseOwns(EBotUserAccess access, string query) {
+	private async Task<(string? Response, Dictionary<string, string>? OwnedGames)> ResponseOwns(EBotUserAccess access, string query, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
@@ -2087,7 +2087,7 @@ public sealed class Commands {
 			return (FormatBotResponse(Strings.BotNotConnected), null);
 		}
 
-		IReadOnlyDictionary<uint, string>? gamesOwned = await FetchGamesOwned(true).ConfigureAwait(false);
+		IReadOnlyDictionary<uint, string>? gamesOwned = await FetchGamesOwned(true, cancellationToken).ConfigureAwait(false);
 
 		StringBuilder response = new();
 		Dictionary<string, string> result = new(StringComparer.Ordinal);
@@ -2120,7 +2120,7 @@ public sealed class Commands {
 						}
 					} else {
 						if (gamesOwned == null) {
-							gamesOwned = await FetchGamesOwned().ConfigureAwait(false);
+							gamesOwned = await FetchGamesOwned(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 							if (gamesOwned == null) {
 								response.AppendLine(FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(gamesOwned))));
@@ -2151,7 +2151,7 @@ public sealed class Commands {
 					}
 
 					if (gamesOwned == null) {
-						gamesOwned = await FetchGamesOwned().ConfigureAwait(false);
+						gamesOwned = await FetchGamesOwned(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 						if (gamesOwned == null) {
 							response.AppendLine(FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(gamesOwned))));
@@ -2192,7 +2192,7 @@ public sealed class Commands {
 					break;
 				default:
 					if (gamesOwned == null) {
-						gamesOwned = await FetchGamesOwned().ConfigureAwait(false);
+						gamesOwned = await FetchGamesOwned(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 						if (gamesOwned == null) {
 							response.AppendLine(FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(gamesOwned))));
@@ -2235,7 +2235,7 @@ public sealed class Commands {
 			return access >= EBotUserAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
-		IList<(string? Response, Dictionary<string, string>? OwnedGames)> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseOwns(GetProxyAccess(bot, access, steamID), query)), cancellationToken).ConfigureAwait(false);
+		IList<(string? Response, Dictionary<string, string>? OwnedGames)> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseOwns(GetProxyAccess(bot, access, steamID), query, cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		List<(string Response, Dictionary<string, string> OwnedGames)> validResults = [.. results.Where(static result => !string.IsNullOrEmpty(result.Response) && (result.OwnedGames != null)).Select(static result => (result.Response!, result.OwnedGames!))];
 
@@ -2396,7 +2396,7 @@ public sealed class Commands {
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
 
-	private async Task<string?> ResponsePointsBalance(EBotUserAccess access) {
+	private async Task<string?> ResponsePointsBalance(EBotUserAccess access, CancellationToken cancellationToken = default) {
 		if (!Enum.IsDefined(access)) {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EBotUserAccess));
 		}
@@ -2409,7 +2409,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		long? points = await Bot.ArchiHandler.GetPointsBalance().ConfigureAwait(false);
+		long? points = await Bot.ArchiHandler.GetPointsBalance(cancellationToken).ConfigureAwait(false);
 
 		return FormatBotResponse(points.HasValue ? Strings.FormatBotPointsBalance(points) : Strings.WarningFailed);
 	}
@@ -2427,7 +2427,7 @@ public sealed class Commands {
 			return access >= EBotUserAccess.Owner ? FormatStaticResponse(Strings.FormatBotNotFound(botNames)) : null;
 		}
 
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePointsBalance(GetProxyAccess(bot, access, steamID))), cancellationToken).ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePointsBalance(GetProxyAccess(bot, access, steamID), cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		List<string> responses = [.. results.Where(static result => !string.IsNullOrEmpty(result)).Select(static result => result!)];
 
@@ -2895,7 +2895,7 @@ public sealed class Commands {
 		HashSet<uint> definitionIDsToCheck = [.. definitionIDs.Where(static entry => !entry.Value).Select(static entry => entry.Key)];
 
 		if (definitionIDsToCheck.Count > 0) {
-			Dictionary<uint, LoyaltyRewardDefinition>? definitions = await Bot.Actions.GetRewardItems(definitionIDsToCheck).ConfigureAwait(false);
+			Dictionary<uint, LoyaltyRewardDefinition>? definitions = await Bot.Actions.GetRewardItems(definitionIDsToCheck, cancellationToken).ConfigureAwait(false);
 
 			if (definitions == null) {
 				return FormatBotResponse(Strings.FormatWarningFailedWithError(nameof(Bot.Actions.GetRewardItems)));
@@ -2913,7 +2913,7 @@ public sealed class Commands {
 		}
 
 		// We already did more optimized check, therefore we can skip the one in actions
-		IList<EResult> results = await Utilities.InParallel(definitionIDs.Keys.Select(definitionID => Bot.Actions.RedeemPoints(definitionID, true)), cancellationToken).ConfigureAwait(false);
+		IList<EResult> results = await Utilities.InParallel(definitionIDs.Keys.Select(definitionID => Bot.Actions.RedeemPoints(definitionID, true, cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		int i = 0;
 
@@ -3025,7 +3025,7 @@ public sealed class Commands {
 						break;
 					}
 
-					EResult result = await Bot.Actions.RemoveLicenseApp(gameID).ConfigureAwait(false);
+					EResult result = await Bot.Actions.RemoveLicenseApp(gameID, cancellationToken).ConfigureAwait(false);
 
 					response.AppendLine(FormatBotResponse(Strings.FormatBotAddLicense($"app/{gameID}", result)));
 

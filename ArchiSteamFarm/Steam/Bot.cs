@@ -842,7 +842,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		Bot? targetBot = Bots.Values.FirstOrDefault(bot => bot.SteamID == steamID);
 
 		if (targetBot?.IsConnectedAndLoggedOn == true) {
-			string? targetTradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
+			string? targetTradeToken = await targetBot.ArchiHandler.GetTradeToken(cancellationToken).ConfigureAwait(false);
 
 			if (!string.IsNullOrEmpty(targetTradeToken)) {
 				byte? tradeHoldDuration = await ArchiWebHandler.GetCombinedTradeHoldDurationAgainstUser(steamID, targetTradeToken, cancellationToken).ConfigureAwait(false);
@@ -2696,13 +2696,13 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		};
 	}
 
-	private async Task JoinMasterChatGroupID() {
+	private async Task JoinMasterChatGroupID(CancellationToken cancellationToken = default) {
 		if ((BotConfig.SteamMasterClanID == 0) || IsAccountLimited) {
 			return;
 		}
 
 		if (MasterChatGroupID == 0) {
-			CClanChatRooms_GetClanChatRoomInfo_Response? clanChatRoomInfo = await ArchiHandler.GetClanChatRoomInfo(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+			CClanChatRooms_GetClanChatRoomInfo_Response? clanChatRoomInfo = await ArchiHandler.GetClanChatRoomInfo(BotConfig.SteamMasterClanID, cancellationToken).ConfigureAwait(false);
 
 			if ((clanChatRoomInfo == null) || (clanChatRoomInfo.chat_group_summary.chat_group_id == 0)) {
 				return;
@@ -2717,7 +2717,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		if (!await ArchiHandler.JoinChatRoomGroup(MasterChatGroupID).ConfigureAwait(false)) {
+		if (!await ArchiHandler.JoinChatRoomGroup(MasterChatGroupID, cancellationToken).ConfigureAwait(false)) {
 			ArchiLogger.LogGenericWarning(Strings.FormatWarningFailedWithError(nameof(ArchiHandler.JoinChatRoomGroup)));
 		}
 	}

@@ -394,7 +394,7 @@ public sealed class BotController : ArchiController {
 			return BadRequest(new GenericResponse(false, Strings.FormatBotNotFound(botNames)));
 		}
 
-		IList<EResult> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.RedeemPoints(definitionID, forced)), cancellationToken).ConfigureAwait(false);
+		IList<EResult> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.RedeemPoints(definitionID, forced, cancellationToken)), cancellationToken).ConfigureAwait(false);
 
 		Dictionary<string, EResult> result = new(bots.Count, Bot.BotsComparer);
 
@@ -609,7 +609,7 @@ public sealed class BotController : ArchiController {
 					continue;
 				}
 
-				apps[appID] = await bot.Actions.RemoveLicenseApp(appID).ConfigureAwait(false);
+				apps[appID] = await bot.Actions.RemoveLicenseApp(appID, cancellationToken).ConfigureAwait(false);
 			}
 		}
 

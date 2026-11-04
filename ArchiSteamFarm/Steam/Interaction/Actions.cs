@@ -201,12 +201,12 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<Dictionary<uint, LoyaltyRewardDefinition>?> GetRewardItems(IReadOnlyCollection<uint> definitionIDs) {
+	public async Task<Dictionary<uint, LoyaltyRewardDefinition>?> GetRewardItems(IReadOnlyCollection<uint> definitionIDs, CancellationToken cancellationToken = default) {
 		if ((definitionIDs == null) || (definitionIDs.Count == 0)) {
 			throw new ArgumentNullException(nameof(definitionIDs));
 		}
 
-		return await Bot.ArchiHandler.GetRewardItems(definitionIDs).ConfigureAwait(false);
+		return await Bot.ArchiHandler.GetRewardItems(definitionIDs, cancellationToken).ConfigureAwait(false);
 	}
 
 	[MustDisposeResource]
@@ -357,10 +357,10 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<EResult> RedeemPoints(uint definitionID, bool forced = false) {
+	public async Task<EResult> RedeemPoints(uint definitionID, bool forced = false, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(definitionID);
 
-		Dictionary<uint, LoyaltyRewardDefinition>? definitions = await Bot.Actions.GetRewardItems(new HashSet<uint>(1) { definitionID }).ConfigureAwait(false);
+		Dictionary<uint, LoyaltyRewardDefinition>? definitions = await Bot.Actions.GetRewardItems(new HashSet<uint>(1) { definitionID }, cancellationToken).ConfigureAwait(false);
 
 		if (definitions == null) {
 			return EResult.Timeout;
@@ -376,11 +376,11 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		return definition.type == 2 ? await Bot.ArchiHandler.RedeemPointsForBadgeLevel(definitionID).ConfigureAwait(false) : await Bot.ArchiHandler.RedeemPoints(definitionID).ConfigureAwait(false);
+		return definition.type == 2 ? await Bot.ArchiHandler.RedeemPointsForBadgeLevel(definitionID, cancellationToken: cancellationToken).ConfigureAwait(false) : await Bot.ArchiHandler.RedeemPoints(definitionID, cancellationToken).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
-	public async Task<EResult> RemoveLicenseApp(uint appID) {
+	public async Task<EResult> RemoveLicenseApp(uint appID, CancellationToken cancellationToken = default) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		return await Bot.ArchiHandler.RemoveLicenseForApp(appID).ConfigureAwait(false);
@@ -454,7 +454,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			Bot? targetBot = Bot.Bots?.Values.FirstOrDefault(bot => bot.SteamID == targetSteamID);
 
 			if (targetBot?.IsConnectedAndLoggedOn == true) {
-				tradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
+				tradeToken = await targetBot.ArchiHandler.GetTradeToken(cancellationToken).ConfigureAwait(false);
 			}
 		}
 
