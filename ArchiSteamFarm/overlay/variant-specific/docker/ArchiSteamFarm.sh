@@ -82,7 +82,6 @@ if [ -n "${ASF_UID-}" ]; then
 
 		# Create missing user if needed
 		if ! getent passwd "$ASF_UID" > /dev/null; then
-			# Create missing user
 			useradd -r -d "$(pwd)" -g "$ASF_UID" -u "$ASF_UID" "asf-${ASF_UID}"
 		fi
 
