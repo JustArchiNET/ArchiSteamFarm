@@ -102,13 +102,16 @@ RUN <<EOF
 
     mkdir -p "$ASF_PATH"
 
-    if ! id -u "$ASF_UID" >/dev/null 2>&1; then
-        groupadd -r -g "$ASF_UID" "asf"
-        useradd -r -d "$ASF_PATH" -g "$ASF_UID" -u "$ASF_UID" "asf"
+    if ! getent group "$ASF_UID" > /dev/null; then
+        groupadd -r -g "$ASF_UID" "asf-${ASF_UID}"
     fi
 
-    chown -h "${ASF_UID}:${ASF_UID}" "$ASF_PATH"
-	chown -hR "${ASF_UID}:${ASF_UID}" /asf
+    if ! getent passwd "$ASF_UID" > /dev/null; then
+        useradd -r -d "$ASF_PATH" -g "$ASF_UID" -u "$ASF_UID" "asf-${ASF_UID}"
+    fi
+
+    chown -hR "${ASF_UID}:${ASF_UID}" "$ASF_PATH"
+    chown -hR "${ASF_UID}:${ASF_UID}" /asf
 
     ln -s /asf/ArchiSteamFarm.sh /usr/bin/ArchiSteamFarm
 EOF

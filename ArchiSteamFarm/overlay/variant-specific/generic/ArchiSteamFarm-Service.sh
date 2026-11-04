@@ -68,11 +68,21 @@ done
 
 BINARY_PREFIX=""
 
-if [ -n "${ASF_UID-}" ] && [ "$(id -u)" -eq 0 ] && id -u "$ASF_UID" >/dev/null 2>&1 && [ "$(id -u "$ASF_UID")" -gt 0 ]; then
-	# Fix permissions first to ensure ASF has read/write access to the directory specified by --path and its own
-	chown -hR "${ASF_UID}:${ASF_UID}" . "$SCRIPT_DIR" || true
+if [ -n "${ASF_UID-}" ] && [ "$(id -u)" -eq 0 ]; then
+	if ! getent group "$ASF_UID" > /dev/null; then
+		groupadd -r -g "$ASF_UID" "asf-${ASF_UID}"
+	fi
 
-	BINARY_PREFIX="su $(id -nu "$ASF_UID") -c"
+	if ! getent passwd "$ASF_UID" > /dev/null; then
+		useradd -r -d "$(pwd)" -g "$ASF_UID" -u "$ASF_UID" "asf-${ASF_UID}"
+	fi
+
+	if [ "$(id -u "$ASF_UID")" -gt 0 ]; then
+		# Fix permissions to ensure ASF has read/write access to the directory specified by --path and its own
+		chown -hR "${ASF_UID}:${ASF_UID}" . "$SCRIPT_DIR" || true
+
+		BINARY_PREFIX="su $(id -nu "$ASF_UID") -c"
+	fi
 fi
 
 CONFIG_PATH="$(pwd)/${CONFIG_PATH}"
