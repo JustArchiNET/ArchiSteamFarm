@@ -76,6 +76,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	/// <param name="asfVariant">ASF variant of current instance, which may be useful if you're providing different versions for different ASF variants.</param>
 	/// <param name="newPluginVersion">The target (new) version of the plugin found available in <see cref="RepositoryName" />.</param>
 	/// <param name="releaseAssets">Available release assets for auto-update. Those come directly from your release on GitHub.</param>
+	/// <param name="cancellationToken">Cancellation token.</param>
 	/// <remarks>
 	///     Default implementation will select release asset in following order:
 	///     - {Name}-V{Major}-{Minor}-{Build}-{Revision}.zip
@@ -105,7 +106,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 	///     - *.zip, if exactly one match is found
 	/// </remarks>
 	/// <returns>Target release asset from those provided that should be used for auto-update. You may return null if the update is unavailable, for example, because ASF version/variant is determined unsupported, or due to any other reason.</returns>
-	public Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets) {
+	public Task<ReleaseAsset?> GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 		ArgumentNullException.ThrowIfNull(newPluginVersion);
@@ -195,7 +196,7 @@ public interface IGitHubPluginUpdates : IPluginUpdates {
 			return null;
 		}
 
-		ReleaseAsset? asset = await GetTargetReleaseAsset(asfVersion, asfVariant, newVersion, releaseResponse.Assets).ConfigureAwait(false);
+		ReleaseAsset? asset = await GetTargetReleaseAsset(asfVersion, asfVariant, newVersion, releaseResponse.Assets, cancellationToken).ConfigureAwait(false);
 
 		if ((asset == null) || !releaseResponse.Assets.Contains(asset)) {
 			ASF.ArchiLogger.LogGenericWarning(Strings.FormatPluginUpdateNoAssetFound(Name, Version, newVersion));

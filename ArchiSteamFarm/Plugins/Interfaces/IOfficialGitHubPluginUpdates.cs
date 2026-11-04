@@ -23,13 +23,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Web.GitHub.Data;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
 internal interface IOfficialGitHubPluginUpdates : IGitHubPluginUpdates {
-	Task<ReleaseAsset?> IGitHubPluginUpdates.GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets) {
+	Task<ReleaseAsset?> IGitHubPluginUpdates.GetTargetReleaseAsset(Version asfVersion, string asfVariant, Version newPluginVersion, IReadOnlyCollection<ReleaseAsset> releaseAssets, CancellationToken cancellationToken) {
 		ArgumentNullException.ThrowIfNull(asfVersion);
 		ArgumentException.ThrowIfNullOrEmpty(asfVariant);
 		ArgumentNullException.ThrowIfNull(newPluginVersion);

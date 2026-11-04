@@ -895,7 +895,7 @@ public static class PluginsCore {
 				ZipArchive zipArchive = new(memoryStream);
 
 				await using (zipArchive.ConfigureAwait(false)) {
-					await plugin.OnPluginUpdateProceeding().ConfigureAwait(false);
+					await plugin.OnPluginUpdateProceeding(cancellationToken).ConfigureAwait(false);
 
 					if (!await Utilities.UpdateFromArchive(zipArchive, assemblyDirectory, CancellationToken.None).ConfigureAwait(false)) {
 						ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
@@ -915,7 +915,7 @@ public static class PluginsCore {
 		ASF.ArchiLogger.LogGenericInfo(Strings.FormatPluginUpdateFinished(pluginName));
 
 		try {
-			await plugin.OnPluginUpdateFinished().ConfigureAwait(false);
+			await plugin.OnPluginUpdateFinished(CancellationToken.None).ConfigureAwait(false);
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 		}

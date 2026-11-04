@@ -52,10 +52,12 @@ public interface IPluginUpdates : IPlugin {
 	/// <summary>
 	///     ASF will call this method after update to the new plugin version has been finished, just before restart of the process.
 	/// </summary>
-	public Task OnPluginUpdateFinished() => Task.CompletedTask;
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnPluginUpdateFinished(CancellationToken cancellationToken = default) => Task.CompletedTask;
 
 	/// <summary>
 	///     ASF will call this method before proceeding with an update to the new plugin version.
 	/// </summary>
-	public Task OnPluginUpdateProceeding() => Task.CompletedTask;
+	/// <param name="cancellationToken">Cancellation token.</param>
+	public Task OnPluginUpdateProceeding(CancellationToken cancellationToken = default) => Task.CompletedTask;
 }
