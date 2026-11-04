@@ -1225,7 +1225,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null) && IsConnectedAndLoggedOn; i++) {
 			try {
-				productInfoResultSet = await SteamApps.PICSGetProductInfo(request.ToEnumerable(), []).ToLongRunningTask().ConfigureAwait(false);
+				productInfoResultSet = await SteamApps.PICSGetProductInfo([request], []).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 			}
@@ -4317,7 +4317,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return (true, null);
 		}
 
-		foreach (string? parentalCode in steamParentalCode.ToEnumerable().Append(cachedSteamParentalCode)) {
+		foreach (string? parentalCode in (IEnumerable<string?>) [steamParentalCode, cachedSteamParentalCode]) {
 			if (string.IsNullOrEmpty(parentalCode)) {
 				continue;
 			}

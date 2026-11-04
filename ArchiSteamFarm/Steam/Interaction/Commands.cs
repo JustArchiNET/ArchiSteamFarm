@@ -3280,7 +3280,7 @@ public sealed class Commands {
 
 		string extraResponse = Strings.FormatBotStatusOverview(botsRunning.Count, validResults.Count, botsRunning.Sum(static bot => bot.CardsFarmer.GamesToFarmReadOnly.Count), botsRunning.Sum(static bot => bot.CardsFarmer.GamesToFarmReadOnly.Sum(static game => game.CardsRemaining)));
 
-		return string.Join(Environment.NewLine, validResults.Select(static result => result.Response).Union(extraResponse.ToEnumerable()));
+		return string.Join(Environment.NewLine, validResults.Select(static result => result.Response).Union([extraResponse]));
 	}
 
 	private async Task<string?> ResponseStop(EBotUserAccess access, CancellationToken cancellationToken = default) {

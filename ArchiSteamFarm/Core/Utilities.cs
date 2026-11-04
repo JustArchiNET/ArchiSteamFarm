@@ -223,12 +223,7 @@ public static class Utilities {
 	public static bool IsValidHexadecimalText(string text) {
 		ArgumentException.ThrowIfNullOrEmpty(text);
 
-		return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
-	}
-
-	[PublicAPI]
-	public static IEnumerable<T> ToEnumerable<T>(this T item) {
-		yield return item;
+		return (text.Length % 2 == 0) && text.All(char.IsAsciiHexDigit);
 	}
 
 	[PublicAPI]
