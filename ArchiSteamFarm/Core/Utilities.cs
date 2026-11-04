@@ -53,7 +53,6 @@ public static class Utilities {
 
 	private static readonly FrozenSet<char> DirectorySeparators = [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar];
 
-#pragma warning disable CA1034 // False positive, there's no other way we can declare this block
 	extension(HttpStatusCode statusCode) {
 		[PublicAPI]
 		public bool IsClientErrorCode() => statusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError;
@@ -67,7 +66,6 @@ public static class Utilities {
 		[PublicAPI]
 		public bool IsSuccessCode() => statusCode is >= HttpStatusCode.OK and < HttpStatusCode.Ambiguous;
 	}
-#pragma warning restore CA1034 // False positive, there's no other way we can declare this block
 
 	[PublicAPI]
 	public static IEnumerable<T> AsLinqThreadSafeEnumerable<T>(this ICollection<T> collection) {
