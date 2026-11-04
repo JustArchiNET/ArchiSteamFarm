@@ -522,7 +522,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 
 		switch (packetMsg.MsgType) {
 			case EMsg.ClientCommentNotifications:
-				ClientMsgProtobuf<CMsgClientCommentNotifications> commentNotifications = new(packetMsg);
+				ClientMsgProtobuf<CMsgClientCommentNotifications> commentNotifications = new(packetMsg, SteamKitProtobuf.Model);
 				Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, commentNotifications.Body));
 
 				break;
@@ -531,17 +531,17 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 
 				break;
 			case EMsg.ClientItemAnnouncements:
-				ClientMsgProtobuf<CMsgClientItemAnnouncements> itemAnnouncements = new(packetMsg);
+				ClientMsgProtobuf<CMsgClientItemAnnouncements> itemAnnouncements = new(packetMsg, SteamKitProtobuf.Model);
 				Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, itemAnnouncements.Body));
 
 				break;
 			case EMsg.ClientSharedLibraryLockStatus:
-				ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus> sharedLibraryLockStatus = new(packetMsg);
+				ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus> sharedLibraryLockStatus = new(packetMsg, SteamKitProtobuf.Model);
 				Client.PostCallback(new SharedLibraryLockStatusCallback(packetMsg.TargetJobID, sharedLibraryLockStatus.Body));
 
 				break;
 			case EMsg.ClientUserNotifications:
-				ClientMsgProtobuf<CMsgClientUserNotifications> userNotifications = new(packetMsg);
+				ClientMsgProtobuf<CMsgClientUserNotifications> userNotifications = new(packetMsg, SteamKitProtobuf.Model);
 				Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, userNotifications.Body));
 
 				break;
@@ -967,7 +967,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			return;
 		}
 
-		ClientMsgProtobuf<CMsgClientGamesPlayed> request = new(EMsg.ClientGamesPlayedWithDataBlob) {
+		ClientMsgProtobuf<CMsgClientGamesPlayed> request = new(EMsg.ClientGamesPlayedWithDataBlob, SteamKitProtobuf.Model) {
 			Body = {
 				// Underflow here is to be expected, this is Steam's logic
 				client_os_type = unchecked((uint) Bot.OSType)
@@ -1025,7 +1025,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			return null;
 		}
 
-		ClientMsgProtobuf<CMsgClientRedeemGuestPass> request = new(EMsg.ClientRedeemGuestPass) {
+		ClientMsgProtobuf<CMsgClientRedeemGuestPass> request = new(EMsg.ClientRedeemGuestPass, SteamKitProtobuf.Model) {
 			SourceJobID = Client.GetNextJobID(),
 			Body = { guest_pass_id = guestPassID }
 		};
@@ -1100,7 +1100,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			return;
 		}
 
-		ClientMsgProtobuf<CMsgClientRequestItemAnnouncements> request = new(EMsg.ClientRequestItemAnnouncements);
+		ClientMsgProtobuf<CMsgClientRequestItemAnnouncements> request = new(EMsg.ClientRequestItemAnnouncements, SteamKitProtobuf.Model);
 		Client.Send(request);
 	}
 
@@ -1115,7 +1115,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			return;
 		}
 
-		ClientMsgProtobuf<CMsgClientGetClientAppListResponse> request = new(EMsg.ClientGetClientAppListResponse) {
+		ClientMsgProtobuf<CMsgClientGetClientAppListResponse> request = new(EMsg.ClientGetClientAppListResponse, SteamKitProtobuf.Model) {
 			TargetJobID = jobID
 		};
 
@@ -1237,7 +1237,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 			return;
 		}
 
-		ClientMsgProtobuf<CMsgClientChangeStatus> request = new(EMsg.ClientChangeStatus) {
+		ClientMsgProtobuf<CMsgClientChangeStatus> request = new(EMsg.ClientChangeStatus, SteamKitProtobuf.Model) {
 			Body = {
 				persona_state = (uint) state,
 				persona_state_flags = (uint) flags
