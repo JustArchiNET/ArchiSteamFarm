@@ -30,15 +30,8 @@
 		</type>
 
 		<!-- Required for SteamTokenDumper plugin -->
-		<type fullname="SteamKit2.SteamApps/DepotKeyCallback">
-			<property name="Result" />
-		</type>
-
-		<!-- Required for SteamTokenDumper plugin -->
-		<type fullname="SteamKit2.SteamApps/PICSTokensCallback">
-			<property name="AppTokens" />
-			<property name="AppTokensDenied" />
-		</type>
+		<type fullname="SteamKit2.SteamApps/DepotKeyCallback" />
+		<type fullname="SteamKit2.SteamApps/PICSTokensCallback" />
 
 		<!-- Required for MobileAuthenticator plugin -->
 		<type fullname="SteamKit2.WebAPI/AsyncInterface">
