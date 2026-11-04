@@ -68,20 +68,51 @@ done
 
 BINARY_PREFIX=""
 
-if [ -n "${ASF_UID-}" ] && [ "$(id -u)" -eq 0 ]; then
-	if ! getent group "$ASF_UID" > /dev/null; then
-		groupadd -r -g "$ASF_UID" "asf-${ASF_UID}"
-	fi
+if [ -n "${ASF_UID-}" ]; then
+	# ASF_UID specified, what can we do about it?
+	SCRIPT_UID="$(id -u)"
 
-	if ! getent passwd "$ASF_UID" > /dev/null; then
-		useradd -r -d "$(pwd)" -g "$ASF_UID" -u "$ASF_UID" "asf-${ASF_UID}"
-	fi
+	if [ "$SCRIPT_UID" -eq 0 ]; then
+		# We're running as root, so we can fix everything
 
-	if [ "$(id -u "$ASF_UID")" -gt 0 ]; then
-		# Fix permissions to ensure ASF has read/write access to the directory specified by --path and its own
-		chown -hR "${ASF_UID}:${ASF_UID}" . "$SCRIPT_DIR" || true
+		# Create missing group if needed
+		if ! getent group "$ASF_UID" > /dev/null; then
+			groupadd -r -g "$ASF_UID" "asf-${ASF_UID}"
+		fi
 
-		BINARY_PREFIX="su $(id -nu "$ASF_UID") -c"
+		# Create missing user if needed
+		if ! getent passwd "$ASF_UID" > /dev/null; then
+			# Create missing user
+			useradd -r -d "$(pwd)" -g "$ASF_UID" -u "$ASF_UID" "asf-${ASF_UID}"
+		fi
+
+		# Is target different than root?
+		if [ "$(id -u "$ASF_UID")" -gt 0 ]; then
+			# Fix permissions to ensure ASF has read/write access to the directory specified by --path and its own
+			chown -hR "${ASF_UID}:${ASF_UID}" . "$SCRIPT_DIR" || true
+
+			# And finally run as target user
+			BINARY_PREFIX="su $(id -nu "$ASF_UID") -c"
+		fi
+	else
+		# We're not running as root, we have to rely on user doing things right
+		if [ "$(stat -L -c '%u' .)" -ne "$SCRIPT_UID" ]; then
+			echo "WARNING: Current user ${SCRIPT_UID} does NOT have access to ${SCRIPT_DIR} - fix that ASAP, as you'll run into permission problems soon enough!"
+		fi
+
+		UID_HOME="$(pwd)"
+
+		# Does current directory belong to us at least?
+		if ! [ "$(stat -L -c '%u' .)" -eq "$SCRIPT_UID" ]; then
+			# We can't do much more, avoid .NET failure at the very least
+			UID_HOME="/tmp/asf-${SCRIPT_UID}"
+			mkdir -p "$UID_HOME"
+
+			echo "WARNING: Current user ${SCRIPT_UID} does NOT have access to $(pwd) - fix that ASAP, as you'll run into permission problems soon enough!"
+		fi
+
+		export HOME="$UID_HOME"
+		export XDG_RUNTIME_DIR="$UID_HOME"
 	fi
 fi
 
