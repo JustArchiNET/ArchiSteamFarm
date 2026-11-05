@@ -95,19 +95,22 @@ if [ -n "${ASF_UID-}" ]; then
 		fi
 	else
 		# We're not running as root, we have to rely on user doing things right
-		if [ "$(stat -L -c '%u' .)" -ne "$SCRIPT_UID" ]; then
+		if [ "$(stat -L -c '%u' "$SCRIPT_DIR")" -ne "$SCRIPT_UID" ]; then
 			echo "WARNING: Current user ${SCRIPT_UID} does NOT have access to ${SCRIPT_DIR} - fix that ASAP, as you'll run into permission problems soon enough!"
 		fi
 
 		UID_HOME="$(pwd)"
 
 		# Does current directory belong to us at least?
-		if [ "$(stat -L -c '%u' .)" -ne "$SCRIPT_UID" ]; then
+		if [ "$(stat -L -c '%u' "$UID_HOME")" -ne "$SCRIPT_UID" ]; then
+			# Don't warn about the same directory twice
+			if [ "$UID_HOME" != "$SCRIPT_DIR" ]; then
+				echo "WARNING: Current user ${SCRIPT_UID} does NOT have access to ${UID_HOME} - fix that ASAP, as you'll run into permission problems soon enough!"
+			fi
+
 			# We can't do much more, avoid .NET failure at the very least
 			UID_HOME="/tmp/asf-${SCRIPT_UID}"
 			mkdir -p "$UID_HOME"
-
-			echo "WARNING: Current user ${SCRIPT_UID} does NOT have access to $(pwd) - fix that ASAP, as you'll run into permission problems soon enough!"
 		fi
 
 		export HOME="$UID_HOME"
