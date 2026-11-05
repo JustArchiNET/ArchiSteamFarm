@@ -128,6 +128,20 @@ public sealed class ReleaseResponse {
 	[JsonRequired]
 	public string Tag { get; private init; } = "";
 
+	internal ReleaseResponse(string tag, bool isPreRelease, DateTime publishedAt, ImmutableHashSet<ReleaseAsset> assets, string changelogHTML, string changelogPlainText) {
+		ArgumentException.ThrowIfNullOrEmpty(tag);
+		ArgumentNullException.ThrowIfNull(assets);
+		ArgumentNullException.ThrowIfNull(changelogHTML);
+		ArgumentNullException.ThrowIfNull(changelogPlainText);
+
+		Tag = tag;
+		IsPreRelease = isPreRelease;
+		PublishedAt = publishedAt;
+		Assets = assets;
+		ChangelogHTML = changelogHTML;
+		ChangelogPlainText = changelogPlainText;
+	}
+
 	[JsonConstructor]
 	private ReleaseResponse() { }
 

@@ -44,6 +44,15 @@ public sealed class ReleaseAsset {
 	[JsonRequired]
 	public uint Size { get; private init; }
 
+	internal ReleaseAsset(Uri downloadURL, string name, uint size) {
+		ArgumentNullException.ThrowIfNull(downloadURL);
+		ArgumentException.ThrowIfNullOrEmpty(name);
+
+		DownloadURL = downloadURL;
+		Name = name;
+		Size = size;
+	}
+
 	[JsonConstructor]
 	private ReleaseAsset() { }
 }
