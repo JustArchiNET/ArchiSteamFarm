@@ -102,7 +102,7 @@ if [ -n "${ASF_UID-}" ]; then
 		UID_HOME="$(pwd)"
 
 		# Does current directory belong to us at least?
-		if ! [ "$(stat -L -c '%u' .)" -eq "$SCRIPT_UID" ]; then
+		if [ "$(stat -L -c '%u' .)" -ne "$SCRIPT_UID" ]; then
 			# We can't do much more, avoid .NET failure at the very least
 			UID_HOME="/tmp/asf-${SCRIPT_UID}"
 			mkdir -p "$UID_HOME"
