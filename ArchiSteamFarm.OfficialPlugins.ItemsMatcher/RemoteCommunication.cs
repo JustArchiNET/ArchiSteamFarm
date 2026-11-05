@@ -1345,17 +1345,19 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			Bot.ArchiLogger.LogGenericTrace($"{listedUser.SteamID}...");
 
-			HashSet<Asset> theirInventory = [.. listedUser.Assets.Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((Asset.SteamAppID, Asset.SteamCommunityContextID, item.RealAppID, item.Type, item.Rarity))).Select(static asset => asset.ToAsset())];
+			HashSet<Asset> theirVerifiedInventory = [.. listedUser.Assets.Where(item => item.Verified && wantedSets.Contains((Asset.SteamAppID, Asset.SteamCommunityContextID, item.RealAppID, item.Type, item.Rarity))).Select(static asset => asset.ToAsset())];
 
-			if (theirInventory.Count == 0) {
+			if (theirVerifiedInventory.Count == 0) {
 				continue;
 			}
+
+			HashSet<Asset>? theirKnownInventory = null;
 
 			skippedSetsThisUser.Clear();
 
 			byte? tradeHoldDuration = null;
 
-			Dictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> theirTradableState = MatchingUtilities.GetTradableInventoryState(theirInventory);
+			Dictionary<(uint AppID, ulong ContextID, uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> theirTradableState = MatchingUtilities.GetTradableInventoryState(theirVerifiedInventory);
 
 			for (byte i = 0; i < Trading.MaxTradesPerAccount; i++) {
 				byte itemsInTrade = 0;
@@ -1420,11 +1422,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 									fairStateApplied = true;
 
 									// Filter their inventory for the sets we're trading or have traded with this user
-									HashSet<Asset> fairFiltered = [.. theirInventory.Where(item => ((item.AppID == set.AppID) && (item.ContextID == set.ContextID) && (item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.AppID, item.ContextID, item.RealAppID, item.Type, item.Rarity)))];
+									theirKnownInventory ??= [.. listedUser.Assets.Where(item => wantedSets.Contains((Asset.SteamAppID, Asset.SteamCommunityContextID, item.RealAppID, item.Type, item.Rarity))).Select(static asset => asset.ToAsset())];
+
+									HashSet<Asset> fairFiltered = [.. theirKnownInventory.Where(item => ((item.AppID == set.AppID) && (item.ContextID == set.ContextID) && (item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.AppID, item.ContextID, item.RealAppID, item.Type, item.Rarity)))];
+									HashSet<Asset> fairVerifiedFiltered = [.. theirVerifiedInventory.Where(item => ((item.AppID == set.AppID) && (item.ContextID == set.ContextID) && (item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.AppID, item.ContextID, item.RealAppID, item.Type, item.Rarity)))];
 
 									// Get tradable items from our and their inventory
 									HashSet<Asset> fairItemsToGive = MatchingUtilities.GetTradableItemsFromInventory([.. ourInventory.Values.Where(item => ((item.AppID == set.AppID) && (item.ContextID == set.ContextID) && (item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity)) || skippedSetsThisTrade.Contains((item.AppID, item.ContextID, item.RealAppID, item.Type, item.Rarity)))], fairClassIDsToGive);
-									HashSet<Asset> fairItemsToReceive = MatchingUtilities.GetTradableItemsFromInventory(fairFiltered, fairClassIDsToReceive);
+									HashSet<Asset> fairItemsToReceive = MatchingUtilities.GetTradableItemsFromInventory(fairVerifiedFiltered, fairClassIDsToReceive);
 
 									// Actual check, since we do this against remote user, we flip places for items
 									if (!Trading.IsTradeNeutralOrBetter(fairFiltered, fairItemsToReceive, fairItemsToGive)) {
@@ -1563,7 +1568,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 				// Remove the items from inventories
 				HashSet<Asset> itemsToGive = MatchingUtilities.GetTradableItemsFromInventory(ourInventory.Values, classIDsToGive);
-				HashSet<Asset> itemsToReceive = MatchingUtilities.GetTradableItemsFromInventory(theirInventory, classIDsToReceive, true);
+				HashSet<Asset> itemsToReceive = MatchingUtilities.GetTradableItemsFromInventory(theirVerifiedInventory, classIDsToReceive, true);
 
 				if ((itemsToGive.Count != itemsToReceive.Count) || !Trading.IsFairExchange(itemsToGive, itemsToReceive)) {
 					// Failsafe

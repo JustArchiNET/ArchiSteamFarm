@@ -173,7 +173,7 @@ internal static class Backend {
 			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
 		}
 
-		Uri request = new(ArchiNet.URL, "/Api/Listing/Inventories/v2");
+		Uri request = new(ArchiNet.URL, "/Api/Listing/Inventories/v3");
 
 		Dictionary<string, string> headers = new(1, StringComparer.Ordinal) {
 			{ "X-License-Key", licenseID.ToString("N") }

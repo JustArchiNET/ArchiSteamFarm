@@ -33,7 +33,7 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 internal sealed class ListedUser {
 	[JsonInclude]
 	[JsonRequired]
-	internal ImmutableHashSet<AssetInInventory> Assets { get; private init; } = [];
+	internal ImmutableHashSet<AssetForListedUser> Assets { get; private init; } = [];
 
 	[JsonInclude]
 	[JsonRequired]
