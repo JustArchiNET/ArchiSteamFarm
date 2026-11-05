@@ -22,19 +22,63 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
+using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
+using ArchiSteamFarm.NLog;
+using ArchiSteamFarm.Web;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ArchiSteamFarm.Tests;
 
-internal abstract class TestContextBase {
+public abstract class TestBase {
 	protected CancellationToken CancellationToken => TestContext.CancellationToken;
 
 	private readonly TestContext TestContext;
 
-	internal TestContextBase(TestContext testContext) {
+	internal TestBase(TestContext testContext) {
 		ArgumentNullException.ThrowIfNull(testContext);
 
 		TestContext = testContext;
+	}
+
+	protected void Print<T>(T obj) => TestContext.WriteLine(obj?.ToJsonText(true) ?? "null");
+
+	protected async Task<T> WithWebBrowser<T>(Func<CancellationToken, Task<T>> action) {
+		ArgumentNullException.ThrowIfNull(action);
+
+		WebBrowser? previousWebBrowser = ASF.WebBrowser;
+
+		PropertyInfo webBrowserProperty = typeof(ASF).GetProperty(nameof(ASF.WebBrowser)) ?? throw new InvalidOperationException(nameof(ASF.WebBrowser));
+
+		using WebBrowser webBrowser = new(new ArchiLogger("Test"));
+
+		webBrowserProperty.SetValue(null, webBrowser);
+
+		try {
+			return await action(CancellationToken).ConfigureAwait(false);
+		} finally {
+			webBrowserProperty.SetValue(null, previousWebBrowser);
+		}
+	}
+
+	protected async Task WithWebBrowser(Func<CancellationToken, Task> action) {
+		ArgumentNullException.ThrowIfNull(action);
+
+		WebBrowser? previousWebBrowser = ASF.WebBrowser;
+
+		PropertyInfo webBrowserProperty = typeof(ASF).GetProperty(nameof(ASF.WebBrowser)) ?? throw new InvalidOperationException(nameof(ASF.WebBrowser));
+
+		using WebBrowser webBrowser = new(new ArchiLogger("Test"));
+
+		webBrowserProperty.SetValue(null, webBrowser);
+
+		try {
+			await action(CancellationToken).ConfigureAwait(false);
+		} finally {
+			webBrowserProperty.SetValue(null, previousWebBrowser);
+		}
 	}
 }

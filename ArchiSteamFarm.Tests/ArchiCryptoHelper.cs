@@ -33,7 +33,7 @@ namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class ArchiCryptoHelper : TestContextBase {
+internal sealed class ArchiCryptoHelper : TestBase {
 	private const string TestPassword = "a2o41PuPdZNDLw9AT6dZt5pLVC23MN9O7NfKI4a0MWJgWWIAVGt3naYiIA0BhPel";
 
 	[UsedImplicitly]
@@ -48,6 +48,8 @@ internal sealed class ArchiCryptoHelper : TestContextBase {
 		}
 
 		string? encrypted = Encrypt(cryptoMethod, TestPassword);
+
+		Print(encrypted);
 
 		Assert.IsNotNull(encrypted);
 

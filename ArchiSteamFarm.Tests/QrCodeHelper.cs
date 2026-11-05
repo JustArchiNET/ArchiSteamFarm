@@ -23,18 +23,24 @@
 
 using System;
 using System.Buffers;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class QrCodeHelper {
+internal sealed class QrCodeHelper : TestBase {
 	private static readonly SearchValues<char> AllowedQrAscii = SearchValues.Create("█▀▄ \r\n");
+
+	[UsedImplicitly]
+	public QrCodeHelper(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
 
 	[TestMethod]
 	internal void GenerateAsciiContainsQrModules() {
 		string result = Helpers.QrCodeHelper.GenerateAscii("https://s.team/q/l/test");
+
+		Print(result);
 
 		Assert.IsFalse(string.IsNullOrWhiteSpace(result));
 		Assert.IsFalse(result.AsSpan().ContainsAnyExcept(AllowedQrAscii));

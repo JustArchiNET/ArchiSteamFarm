@@ -32,7 +32,7 @@ namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class SerializableFile : TestContextBase {
+internal sealed class SerializableFile : TestBase {
 	[UsedImplicitly]
 	public SerializableFile(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
 

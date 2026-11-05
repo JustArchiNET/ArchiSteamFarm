@@ -26,10 +26,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
-using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Storage;
-using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.GitHub;
 using ArchiSteamFarm.Web.GitHub.Data;
 using JetBrains.Annotations;
@@ -38,8 +36,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
+[DoNotParallelize]
 [TestClass]
-internal sealed class GitHubPluginUpdates : TestContextBase {
+internal sealed class GitHubPluginUpdates : TestBase {
 	private const string PluginName = "ArchiSteamFarm.OfficialPlugins.Monitoring";
 	private const string Repository = "JustArchiNET/ArchiSteamFarm";
 
@@ -48,29 +47,29 @@ internal sealed class GitHubPluginUpdates : TestContextBase {
 
 	[TestCategory("Manual")]
 	[TestMethod]
-	internal async Task DoesNotOfferPointlessUpdatesWhenMultipleAssetsAreFound() {
-		using WebBrowser webBrowser = new(new ArchiLogger("Test"));
+	internal async Task DoesNotOfferPointlessUpdatesWhenMultipleAssetsAreFound() =>
+		await WithWebBrowser(async cancellationToken => {
+				ReleaseResponse? response = await GitHubService.GetLatestRelease(Repository, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		typeof(ASF).GetProperty(nameof(ASF.WebBrowser))?.SetValue(null, webBrowser);
+				if (response == null) {
+					Assert.Inconclusive(Strings.FormatWarningFailedWithError(nameof(response)));
+				}
 
-		ReleaseResponse? response = await GitHubService.GetLatestRelease(Repository, cancellationToken: CancellationToken).ConfigureAwait(false);
+				Print(response);
 
-		if (response == null) {
-			Assert.Inconclusive(Strings.FormatWarningFailedWithError(nameof(response)));
-		}
+				Version version = Version.Parse(response.Tag);
 
-		Version version = Version.Parse(response.Tag);
+				IGitHubPluginUpdates plugin = new TestGitHubPluginUpdates(version);
 
-		IGitHubPluginUpdates plugin = new TestGitHubPluginUpdates(version);
+				Uri? releaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, EUpdateChannel.Stable, false, cancellationToken).ConfigureAwait(false);
 
-		Uri? releaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, EUpdateChannel.Stable, false, CancellationToken).ConfigureAwait(false);
+				Assert.IsNull(releaseURL);
 
-		Assert.IsNull(releaseURL);
+				Uri? forcedReleaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, EUpdateChannel.Stable, true, cancellationToken).ConfigureAwait(false);
 
-		Uri? forcedReleaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, EUpdateChannel.Stable, true, CancellationToken).ConfigureAwait(false);
-
-		Assert.IsNotNull(forcedReleaseURL);
-	}
+				Assert.IsNotNull(forcedReleaseURL);
+			}
+		).ConfigureAwait(false);
 
 	private sealed class TestGitHubPluginUpdates : IGitHubPluginUpdates {
 		public string Name => PluginName;

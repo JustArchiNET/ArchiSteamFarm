@@ -34,7 +34,7 @@ namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class SteamChatMessage : TestContextBase {
+internal sealed class SteamChatMessage : TestBase {
 	[UsedImplicitly]
 	public SteamChatMessage(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
 
@@ -46,6 +46,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 		const string message = $"{emoji}{emoji}{emoji}{emoji}";
 
 		List<string> output = await GetMessageParts(message, prefix, true, CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
+
+		Print(output);
 
 		Assert.HasCount(4, output);
 
@@ -63,6 +65,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 		string message = $"asdf{Environment.NewLine}{Environment.NewLine}asdf";
 
 		List<string> output = await GetMessageParts(message, cancellationToken: CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
+
+		Print(output);
 
 		Assert.HasCount(1, output);
 		Assert.AreEqual(message, output.First());
@@ -82,6 +86,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 
 		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited, cancellationToken: CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
 
+		Print(output);
+
 		Assert.HasCount(2, output);
 
 		Assert.AreEqual($"{longSequence}{ContinuationCharacter}", output[0]);
@@ -94,6 +100,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 		const string escapedMessage = @"abcdef\[";
 
 		List<string> output = await GetMessageParts(message, cancellationToken: CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
+
+		Print(output);
 
 		Assert.HasCount(1, output);
 		Assert.AreEqual(escapedMessage, output.First());
@@ -111,6 +119,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 
 		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited, cancellationToken: CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
 
+		Print(output);
+
 		Assert.HasCount(1, output);
 		Assert.AreEqual($@"{message}\", output.First());
 	}
@@ -127,6 +137,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 
 		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited, cancellationToken: CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
 
+		Print(output);
+
 		Assert.HasCount(2, output);
 
 		Assert.AreEqual($"{longLine}{ContinuationCharacter}", output[0]);
@@ -139,6 +151,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 
 		List<string> output = await GetMessageParts(message, cancellationToken: CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
 
+		Print(output);
+
 		Assert.HasCount(1, output);
 		Assert.AreEqual(message, output.First());
 	}
@@ -148,6 +162,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 		const string message = "abcdef";
 
 		List<string> output = await GetMessageParts(message, cancellationToken: CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
+
+		Print(output);
 
 		Assert.HasCount(1, output);
 		Assert.AreEqual(message, output.First());
@@ -163,6 +179,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 
 		List<string> output = await GetMessageParts(message, cancellationToken: CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
 
+		Print(output);
+
 		Assert.HasCount(1, output);
 		Assert.AreEqual(escapedMessage, output.First());
 	}
@@ -175,6 +193,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 		const string message = "asdf";
 
 		List<string> output = await GetMessageParts(message, prefix, cancellationToken: CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
+
+		Print(output);
 
 		Assert.HasCount(1, output);
 		Assert.AreEqual($"{escapedPrefix}{message}", output.First());
@@ -191,6 +211,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 		string message = $"{longLine}{longLine}{longLine}{longLine}";
 
 		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited, cancellationToken: CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
+
+		Print(output);
 
 		Assert.HasCount(4, output);
 
@@ -266,6 +288,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 
 		List<string> output = await GetMessageParts(message, prefix, cancellationToken: CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
 
+		Print(output);
+
 		Assert.HasCount(2, output);
 
 		foreach (string messagePart in output) {
@@ -309,6 +333,8 @@ internal sealed class SteamChatMessage : TestContextBase {
 		string message = $"{newlinePart}{Environment.NewLine}{newlinePart}{Environment.NewLine}{newlinePart}{Environment.NewLine}{newlinePart}";
 
 		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited, cancellationToken: CancellationToken).ToListAsync(CancellationToken).ConfigureAwait(false);
+
+		Print(output);
 
 		Assert.HasCount(4, output);
 

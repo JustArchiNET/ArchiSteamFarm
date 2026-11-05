@@ -42,7 +42,7 @@ namespace ArchiSteamFarm.Tests;
 
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [TestClass]
-internal sealed class Bot : TestContextBase {
+internal sealed class Bot : TestBase {
 	[UsedImplicitly]
 	public Bot(TestContext testContext) : base(testContext) => ArgumentNullException.ThrowIfNull(testContext);
 
