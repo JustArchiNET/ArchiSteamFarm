@@ -35,7 +35,7 @@ namespace ArchiSteamFarm.Tests;
 #pragma warning disable CA1812 // False positive, the class is used during MSTest
 [DoNotParallelize]
 [TestClass]
-public sealed class GitHubServiceTests : TestBase {
+internal sealed class GitHubServiceTests : TestBase {
 	private const string Repository = "JustArchiNET/ArchiSteamFarm";
 
 	[UsedImplicitly]

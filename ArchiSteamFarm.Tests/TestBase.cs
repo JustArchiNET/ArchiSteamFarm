@@ -33,7 +33,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ArchiSteamFarm.Tests;
 
-public abstract class TestBase {
+internal abstract class TestBase {
 	protected CancellationToken CancellationToken => TestContext.CancellationToken;
 
 	private readonly TestContext TestContext;
