@@ -47,8 +47,8 @@ internal sealed class GitHubPluginUpdates : TestBase {
 
 	[TestCategory("Manual")]
 	[TestMethod]
-	internal async Task DoesNotOfferPointlessUpdatesWhenMultipleAssetsAreFound() =>
-		await WithWebBrowser(async cancellationToken => {
+	internal async Task DoesNotOfferPointlessUpdatesWhenMultipleAssetsAreFound() {
+		(Uri? releaseURL, Uri? forcedReleaseURL) = await WithWebBrowser(async cancellationToken => {
 				ReleaseResponse? response = await GitHubService.GetLatestRelease(Repository, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				if (response == null) {
@@ -63,13 +63,15 @@ internal sealed class GitHubPluginUpdates : TestBase {
 
 				Uri? releaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, EUpdateChannel.Stable, false, cancellationToken).ConfigureAwait(false);
 
-				Assert.IsNull(releaseURL);
-
 				Uri? forcedReleaseURL = await plugin.GetTargetReleaseURL(version, BuildInfo.Variant, true, EUpdateChannel.Stable, true, cancellationToken).ConfigureAwait(false);
 
-				Assert.IsNotNull(forcedReleaseURL);
+				return (releaseURL, forcedReleaseURL);
 			}
 		).ConfigureAwait(false);
+
+		Assert.IsNull(releaseURL);
+		Assert.IsNotNull(forcedReleaseURL);
+	}
 
 	private sealed class TestGitHubPluginUpdates : IGitHubPluginUpdates {
 		public string Name => PluginName;

@@ -63,22 +63,4 @@ internal abstract class TestBase {
 			webBrowserProperty.SetValue(null, previousWebBrowser);
 		}
 	}
-
-	protected async Task WithWebBrowser(Func<CancellationToken, Task> action) {
-		ArgumentNullException.ThrowIfNull(action);
-
-		WebBrowser? previousWebBrowser = ASF.WebBrowser;
-
-		PropertyInfo webBrowserProperty = typeof(ASF).GetProperty(nameof(ASF.WebBrowser)) ?? throw new InvalidOperationException(nameof(ASF.WebBrowser));
-
-		using WebBrowser webBrowser = new(new ArchiLogger("Test"));
-
-		webBrowserProperty.SetValue(null, webBrowser);
-
-		try {
-			await action(CancellationToken).ConfigureAwait(false);
-		} finally {
-			webBrowserProperty.SetValue(null, previousWebBrowser);
-		}
-	}
 }
