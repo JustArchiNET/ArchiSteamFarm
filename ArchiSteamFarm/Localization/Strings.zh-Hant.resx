@@ -202,7 +202,7 @@
 		<comment>{0} will be replaced by the Steam QR challenge URL</comment>
 	</data>
 	<data name="ErrorQrCodeLoginAccountMismatch" xml:space="preserve">
-		<value>QR 碼登入驗證的帳號為 {0}，與設定的 Steam 登入帳號 {1} 比對不符。請使用與 Bot 設定檔中 SteamLogin 相同的 Steam 帳號掃描，或者若您想使用所掃描的帳號，請從設定檔中移除 SteamLogin。</value>
+		<value>QR 碼登入驗證的帳號為 {0}，與設定的 Steam 登入帳號 {1} 不符。請使用與 Bot 設定檔中 SteamLogin 相同的 Steam 帳號掃描，或者，如果您是想使用所掃描的帳號，請從設定檔中移除 SteamLogin。</value>
 		<comment>{0} will be replaced by authenticated account name, {1} will be replaced by configured Steam login</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
