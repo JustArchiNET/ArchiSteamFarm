@@ -136,9 +136,12 @@ internal sealed class MonitoringPlugin : OfficialPlugin, IBot, IBotTradeOfferRes
 
 		services.AddOpenTelemetry().WithMetrics(builder => {
 				builder.AddPrometheusExporter(static config => config.ScrapeEndpointPath = "/Api/metrics");
-				builder.AddRuntimeInstrumentation();
+
 				builder.AddAspNetCoreInstrumentation();
 				builder.AddHttpClientInstrumentation();
+				builder.AddProcessInstrumentation();
+				builder.AddRuntimeInstrumentation();
+
 				builder.AddMeter(Meter.Name);
 			}
 		);
