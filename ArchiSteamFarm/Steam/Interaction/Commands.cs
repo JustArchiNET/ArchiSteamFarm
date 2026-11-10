@@ -3226,7 +3226,7 @@ public sealed class Commands {
 			return (FormatBotResponse(Bot.KeepRunning ? Strings.BotStatusConnecting : Strings.BotStatusNotRunning), Bot);
 		}
 
-		if (Bot.PlayingBlocked) {
+		if (!Bot.IsPlayingPossible) {
 			return (FormatBotResponse(Strings.BotStatusPlayingNotAvailable), Bot);
 		}
 

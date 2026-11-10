@@ -139,7 +139,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	[JsonInclude]
 	[PublicAPI]
-	public bool IsPlayingPossible => !PlayingBlocked && !LibraryLocked;
+	public bool IsPlayingPossible => (PlayingBlocked == false) && !LibraryLocked;
 
 	[JsonInclude]
 	[PublicAPI]
@@ -290,7 +290,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	public ECurrencyCode WalletCurrency { get; private set; }
 
 	internal byte HeartBeatFailures { get; private set; }
-	internal bool PlayingBlocked { get; private set; }
 	internal bool PlayingWasBlocked { get; private set; }
 
 	private DateTime? AccessTokenValidUntil;
@@ -305,6 +304,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private bool LibraryLocked;
 	private byte LoginFailures;
 	private ulong MasterChatGroupID;
+	private bool? PlayingBlocked;
 	private Timer? PlayingWasBlockedTimer;
 	private string? QrCodeLoginInput;
 	private CancellationTokenSource? QrLoginCancellation;
@@ -2373,6 +2373,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				break;
 			case EResult.OK:
 				// Login succeeded
+				LoginFailures = 0;
+
 				break;
 			default:
 				// Unexpected result, shutdown immediately
@@ -2831,6 +2833,10 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		StopConnectionFailureTimer();
 
 		ArchiLogger.LogGenericInfo(Strings.BotConnected);
+
+		// Old status for these doesn't matter, we'll update them if needed
+		LibraryLocked = false;
+		PlayingBlocked = null;
 
 		if (!KeepRunning) {
 			ArchiLogger.LogGenericInfo(Strings.BotDisconnecting);
@@ -3478,10 +3484,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		ArchiLogger.LogGenericInfo(Strings.FormatBotLoggedOn($"{SteamID}{(!string.IsNullOrEmpty(callback.VanityURL) ? $"/{callback.VanityURL}" : "")}"));
 
-		// Old status for these doesn't matter, we'll update them if needed
-		LoginFailures = 0;
-		LibraryLocked = PlayingBlocked = false;
-
 		if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
 			InitPlayingWasBlockedTimer();
 		}
@@ -3578,11 +3580,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		if (BotConfig.RemoteCommunication.HasFlag(ERemoteCommunication.SteamGroup)) {
 			Utilities.InBackground(() => ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID));
-		}
-
-		if (CardsFarmer.Paused) {
-			// Emit initial game playing status in this case
-			Utilities.InBackground(() => ResetGamesPlayed());
 		}
 
 		SteamPICSChanges.OnBotLoggedOn();
@@ -3922,7 +3919,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			// This function might be executed before PlayingSessionStateCallback/SharedLibraryLockStatusCallback, ensure proper delay in this case
+			// This function might be executed before SharedLibraryLockStatusCallback, ensure proper delay in this case
 			await Task.Delay(2000, cancellationToken).ConfigureAwait(false);
 
 			if (!IsConnectedAndLoggedOn || CardsFarmer.NowFarming || !IsPlayingPossible) {
@@ -3933,6 +3930,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 				byte minFarmingDelayAfterBlock = ASF.GlobalConfig?.MinFarmingDelayAfterBlock ?? GlobalConfig.DefaultMinFarmingDelayAfterBlock;
 
 				if (minFarmingDelayAfterBlock > 0) {
+					ArchiLogger.LogGenericInfo(Strings.FormatBotExtraIdlingCooldown(TimeSpan.FromSeconds(minFarmingDelayAfterBlock).ToHumanReadable()));
+
 					for (byte i = 0; (i < minFarmingDelayAfterBlock) && IsConnectedAndLoggedOn && !CardsFarmer.NowFarming && IsPlayingPossible && PlayingWasBlocked; i++) {
 						await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 					}

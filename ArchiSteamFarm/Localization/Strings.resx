@@ -492,7 +492,7 @@ StackTrace:
 		<value>Connection to Steam Network lost. Reconnecting...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Account is no longer occupied: farming process resumed!</value>
+		<value>Account is currently free: farming process available!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Account is currently being used: ASF will resume farming when it's free...</value>
