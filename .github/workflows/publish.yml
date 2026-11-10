@@ -37,10 +37,10 @@ jobs:
       run: npm -v
 
     - name: Install npm modules for ASF-ui
-      run: npm ci --no-progress --prefix ASF-ui
+      run: npm ci --prefix ASF-ui --no-audit --no-fund --no-progress --prefer-offline
 
     - name: Publish ASF-ui
-      run: npm run-script deploy --no-progress --prefix ASF-ui
+      run: npm run-script deploy --prefix ASF-ui
 
     - name: Upload ASF-ui
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

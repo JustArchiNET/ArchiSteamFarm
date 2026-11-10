@@ -11,8 +11,8 @@ RUN <<EOF
     echo "node: $(node --version)"
     echo "npm: $(npm --version)"
 
-    npm ci --no-progress
-    npm run deploy --no-progress
+    npm ci --no-audit --no-fund --no-progress --prefer-offline
+    npm run deploy
 EOF
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:11.0${IMAGESUFFIX} AS build-dotnet

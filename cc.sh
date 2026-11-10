@@ -100,8 +100,8 @@ if [ "$ASF_UI" -eq 1 ]; then
 		# ASF-ui doesn't clean itself after old build
 		rm -rf "ASF-ui/dist"
 
-		npm ci --no-progress --prefix ASF-ui
-		npm run-script deploy --no-progress --prefix ASF-ui
+		npm ci --prefix ASF-ui --no-audit --no-fund --no-progress --prefer-offline
+		npm run-script deploy --prefix ASF-ui
 
 		# ASF's output www folder needs cleaning as well
 		rm -rf "${OUT_ASF}/www"
