@@ -290,7 +290,7 @@ public sealed class ArchiHandler : ClientMsgHandler, IDisposable {
 					throw new InvalidOperationException(nameof(response.Body.total_inventory_count));
 				}
 
-				assetIDs ??= [with((int) response.Body.total_inventory_count)];
+				assetIDs ??= new HashSet<ulong>((int) response.Body.total_inventory_count);
 
 				if (descriptions == null) {
 					descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>();

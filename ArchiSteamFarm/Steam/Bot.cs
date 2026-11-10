@@ -794,7 +794,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 				return firstPageResult;
 			default:
-				HashSet<Task<HashSet<uint>?>> tasks = [with(maxPages - 1)];
+				HashSet<Task<HashSet<uint>?>> tasks = new(maxPages - 1);
 
 				for (byte page = 2; page <= maxPages; page++) {
 					// ReSharper disable once InlineTemporaryVariable - we need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
@@ -1389,7 +1389,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			KeyValue appIDsKv = productInfo.KeyValues["appids"];
 
 			if (appIDsKv != KeyValue.Invalid) {
-				appIDs = [with(appIDsKv.Children.Count)];
+				appIDs = new HashSet<uint>(appIDsKv.Children.Count);
 
 				foreach (string? appIDText in appIDsKv.Children.Select(static app => app.Value)) {
 					if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {

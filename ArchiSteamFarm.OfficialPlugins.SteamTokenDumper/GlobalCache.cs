@@ -350,7 +350,7 @@ internal sealed class GlobalCache : SerializableFile {
 					return (false, null);
 				}
 
-				result = [with(count)];
+				result = new HashSet<uint>(count);
 
 				while (await reader.ReadLineAsync(cancellationToken).ConfigureAwait(false) is { Length: > 0 } line) {
 					if (!uint.TryParse(line, out uint depotID) || (depotID == 0)) {

@@ -2351,7 +2351,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.FormatErrorIsEmpty(nameof(games)));
 		}
 
-		HashSet<uint> gamesToPlay = [with(Math.Min(games.Length, ArchiHandler.MaxGamesPlayedConcurrently))];
+		HashSet<uint> gamesToPlay = new(Math.Min(games.Length, ArchiHandler.MaxGamesPlayedConcurrently));
 		StringBuilder gameName = new();
 
 		foreach (string game in games) {

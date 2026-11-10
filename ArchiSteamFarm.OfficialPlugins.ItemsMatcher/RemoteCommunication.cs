@@ -1262,7 +1262,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		if (matchActivelyTradeOfferIDsToken.ValueKind == JsonValueKind.Array) {
 			try {
-				matchActivelyTradeOfferIDs = [with(matchActivelyTradeOfferIDsToken.GetArrayLength())];
+				matchActivelyTradeOfferIDs = new HashSet<ulong>(matchActivelyTradeOfferIDsToken.GetArrayLength());
 
 				foreach (JsonElement tradeIDElement in matchActivelyTradeOfferIDsToken.EnumerateArray()) {
 					if (!tradeIDElement.TryGetUInt64(out ulong tradeID)) {

@@ -409,7 +409,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				throw new InvalidOperationException(nameof(response.Content.TotalInventoryCount));
 			}
 
-			assetIDs ??= [with((int) response.Content.TotalInventoryCount)];
+			assetIDs ??= new HashSet<ulong>((int) response.Content.TotalInventoryCount);
 
 			if (descriptions == null) {
 				descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription>();
@@ -748,7 +748,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				return (false, tradeOfferIDs, mobileTradeOfferIDs);
 			}
 
-			tradeOfferIDs ??= [with(trades.Count)];
+			tradeOfferIDs ??= new HashSet<ulong>(trades.Count);
 
 			tradeOfferIDs.Add(response.Content.TradeOfferID);
 			tradeSubmissionCancellationToken = CancellationToken.None;
@@ -1709,7 +1709,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			result ??= [with(apps.Count)];
+			result ??= new HashSet<uint>(apps.Count);
 
 			foreach (uint appID in apps.Select(static app => app["appid"].AsUnsignedInteger())) {
 				if (appID == 0) {

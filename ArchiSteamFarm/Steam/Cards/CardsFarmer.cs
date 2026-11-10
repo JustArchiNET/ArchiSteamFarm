@@ -1169,7 +1169,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				if (maxPages > 1) {
 					Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
 
-					HashSet<Task<bool>> tasks = [with(maxPages - 1)];
+					HashSet<Task<bool>> tasks = new(maxPages - 1);
 
 					for (byte page = 2; page <= maxPages; page++) {
 						// ReSharper disable once InlineTemporaryVariable - we need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
@@ -1448,11 +1448,11 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 					break;
 				case EFarmingOrder.NamesAscending:
-					orderedGamesToFarm = orderedGamesToFarm.ThenBy(static game => game.GameName);
+					orderedGamesToFarm = orderedGamesToFarm.ThenBy(static game => game.GameName, StringComparer.CurrentCulture);
 
 					break;
 				case EFarmingOrder.NamesDescending:
-					orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(static game => game.GameName);
+					orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(static game => game.GameName, StringComparer.CurrentCulture);
 
 					break;
 				case EFarmingOrder.Random:
