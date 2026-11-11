@@ -3428,7 +3428,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (hasNewEntries) {
-			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
+			Utilities.InBackground(() => CardsFarmer.OnNewGameAdded());
 		}
 	}
 
