@@ -475,9 +475,6 @@ StackTrace:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>החיבור לרשת Steam אבד. מתחבר מחדש...</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>החשבון כבר לא תפוס: תהליך ההרצה התחדש!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>החשבון נמצא בשימוש כעת: ASF ימשיך את תהליך ההרצה ברגע שהוא יתפנה...</value>
 	</data>

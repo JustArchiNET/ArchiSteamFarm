@@ -491,9 +491,6 @@
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>與 Steam 網路的連線中斷，正在重新連線…</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>帳號不再被佔用，已恢復掛卡！</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>帳號目前使用中，ASF 將在該帳號空閒時繼續掛卡…</value>
 	</data>

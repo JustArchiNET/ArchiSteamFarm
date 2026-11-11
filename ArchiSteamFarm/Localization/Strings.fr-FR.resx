@@ -492,7 +492,7 @@ StackTrace :
 		<value>Connexion au réseau Steam perdue. Reconnexion...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Le compte n'est plus occupé : reprise du processus de collecte !</value>
+		<value>Le compte est actuellement gratuit : le processus de farming est disponible !</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Ce compte est actuellement utilisé : ASF reprendra la collecte quand celui-ci sera libre...</value>

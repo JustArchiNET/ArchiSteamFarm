@@ -492,7 +492,7 @@
 		<value>Підключення до мережі Steam втрачено. Підключаємось повторно...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Акаунт більше не зайнятий: фарм відновлено!</value>
+		<value>Аккаунт безкоштовний: процес фермерства доступний!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Обліковий запис зараз використовується: ASF відновить роботу, коли стане вільним...</value>

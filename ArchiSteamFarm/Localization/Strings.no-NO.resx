@@ -476,7 +476,7 @@ StackTrace:
 		<value>Tilkobling til Steam nettverk tapt. Gjenopprettes...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Kontoen er ikke lenger brukt: jordbruksprosessen gjenopptatt!</value>
+		<value>Kontoen er for øyeblikket gratis: driftsprosessen tilgjengelig!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Konto er for øyeblikket i bruk: ASF vil gjenoppta oppdrett når det er gratis...</value>

@@ -493,7 +493,7 @@ StackTrace:
 		<value>Verbindung zum Steam-Netzwerk unterbrochen. Verbinde erneut...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Benutzerkonto ist nicht mehr in Verwendung: Sammelprozess fortgesetzt!</value>
+		<value>Konto ist derzeit kostenlos: landwirtschaftliche Verfahren verfügbar!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Benutzerkonto ist in Verwendung: ASF wird den Sammelprozess fortsetzen, sobald diese wieder verfügbar ist...</value>

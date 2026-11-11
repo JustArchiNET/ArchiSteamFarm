@@ -490,7 +490,7 @@
 		<value>Connessione alla rete di Steam persa. Riconnessione in corso...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>L'account non è più occupato: il farming è ricominciato!</value>
+		<value>L'account è attualmente gratuito: il processo di allevamento è disponibile!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>L'account è attualmente in uso: ASF riprenderà il farming quando sarà libero...</value>

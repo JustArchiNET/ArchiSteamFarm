@@ -451,9 +451,6 @@ StackTrace:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Izgubljena konekcija sa Steam-om, Povezujemo se ponovo...</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>Nalog više nije zauzet, proces idlovanja nastavljen!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Nalog se trenutno koristi, ASF će nastaviti sa idlovanjem kad se oslobodi...</value>
 	</data>

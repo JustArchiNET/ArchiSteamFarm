@@ -491,9 +491,6 @@ Yığın Kaydı:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Steam Ağı bağlantısı kaybedildi. Yeniden bağlanıyor...</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>Hesap artık meşgul değil, kart düşürmeye devam ediliyor!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Hesap şu anda kullanılıyor. ASF, hesap boşa çıktığında devam edecek...</value>
 	</data>

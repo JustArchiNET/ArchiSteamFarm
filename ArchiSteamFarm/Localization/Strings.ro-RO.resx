@@ -492,7 +492,7 @@ StackTrace:
 		<value>Conexiunea la rețeaua Steam a fost pierdută. Se reconectează...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Contul nu mai este ocupat, procesul de farmat se reia!</value>
+		<value>Contul este momentan gratuit: procesul de agricultură este disponibil!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Contul este în prezent folosit: ASF va relua farmatul atunci când este liber...</value>

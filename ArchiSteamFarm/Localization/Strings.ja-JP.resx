@@ -489,7 +489,7 @@
 		<value>Steam Network への接続が失われました。再接続しています...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>アカウントが開放されました: ファーミング処理を再開します！</value>
+		<value>アカウントは現在無料です：農業プロセスが利用可能です！</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>現在アカウントは使用中です: アカウントが開放されたとき、ASFはファーミングを再開します...</value>

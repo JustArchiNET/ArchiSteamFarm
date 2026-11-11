@@ -492,7 +492,7 @@ StackTrace:
 		<value>Yhteys Steam-verkkoon katkesi. Yhdistetään uudelleen...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Tili ei ole enää varattu: farmausta jatketaan!</value>
+		<value>Tili on tällä hetkellä ilmainen: viljelyprosessi saatavilla!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Tiliä käytetään tällä hetkellä muualla: ASF jatkaa farmaamista kun tili vapautuu...</value>

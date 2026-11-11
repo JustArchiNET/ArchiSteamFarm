@@ -468,9 +468,6 @@
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Връзката с мрежата на Steam е загубена. Повторно свързване...</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>Акаунтът вече не е зает: фарменето на карти е възобновено!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Акаунтът в момента се ползва: ASF ще възобнови фарменето на карти, когато е свободен...</value>
 	</data>

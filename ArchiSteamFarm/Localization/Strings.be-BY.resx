@@ -436,9 +436,6 @@ StackTrace:
 	<data name="BotStatusLimited" xml:space="preserve">
 		<value>Бот абмежаваны і не можа атрымліваць карткі праз фарменне.</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>Акаўнт больш не заняты: працэс фармавання адноўлены!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Акаўнт зараз выкарыстоўваецца: ASF адновіць фармаванне, калі ён будзе вольны...</value>
 	</data>

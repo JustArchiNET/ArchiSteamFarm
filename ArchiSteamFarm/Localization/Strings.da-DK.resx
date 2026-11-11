@@ -492,7 +492,7 @@ StackTrace:
 		<value>Forbindelse til Steam-netværket mistede. Opretter forbindelse igen...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Konto er ikke længere optaget: idling genoptaget!</value>
+		<value>Konto er i øjeblikket gratis: landbrugsproces tilgængelig!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Kontoen bruges i øjeblikket: ASF vil genoptage idling når det er fri...</value>

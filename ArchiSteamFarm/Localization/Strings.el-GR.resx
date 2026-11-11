@@ -492,7 +492,7 @@ StackTrace:
 		<value>Η σύνδεση στο δίκτυο Steam χάθηκε. Γίνεται επανασύνδεση...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Ο λογαριασμός δεν χρησιμοποιείται πλέον: ξεκινά πάλι η συλλογή καρτών!</value>
+		<value>Ο λογαριασμός είναι επί του παρόντος ελεύθερος: η διαδικασία εκτροφής είναι διαθέσιμη!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Ο λογαριασμός χρησιμοποιείται αυτή τη στιγμή: το ASF θα συνεχίσει όταν αυτός αποδεσμευτεί...</value>

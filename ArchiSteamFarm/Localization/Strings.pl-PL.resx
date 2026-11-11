@@ -492,7 +492,7 @@ StackTrace:
 		<value>Połączenie z siecią Steam zostało utracone. Trwa łączenie ponowne...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Konto nie jest już używane: proces farmienia został wznowiony!</value>
+		<value>Konto jest obecnie darmowe: proces rolniczy dostępny!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Konto jest aktualnie używane: ASF wznowi proces farmienia, gdy będzie wolne...</value>

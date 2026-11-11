@@ -472,9 +472,6 @@
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Koneksi ke Steam terputus, menghubungkan kembali...</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>Akun tidak sedang digunakan, proses farming dilanjutkan!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Akun sedang digunakan: ASF akan melanjutkan farming saat akun tidak sedang digunakan...</value>
 	</data>

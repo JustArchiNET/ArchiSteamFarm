@@ -475,9 +475,6 @@ StackTrace:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Spojenie so sieťou Steam zrušené. Znovupripájanie...</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>Účet už nie je využívaný: proces zbierania je obnovený!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Účet je momentálne využívaný: ASF bude pokračovať v zbere až po uvoľnení...</value>
 	</data>

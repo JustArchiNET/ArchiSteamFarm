@@ -492,7 +492,7 @@ StackTrace:
 		<value>A conexão com a Rede Steam foi perdida. Reconectando...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>A conta não está mais em uso: processo de coleta retomado!</value>
+		<value>A conta é atualmente gratuita: processo de coleta disponível!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>A conta está em uso: o ASF retomará a coleta quando ela estiver disponível...</value>

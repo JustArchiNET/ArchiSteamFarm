@@ -477,9 +477,6 @@ StackTrace:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>اتصال به شبکه ی استیم قطع شد. در حال اتصال مجدد...</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>اکانت دیگر در دست استفاده نیست: رویه ی فارم کردن در حال ادامه یافتن است!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>اکانت در دست استفاده است: ASF زمانی که اکانت آزاد باشد فارم کردن را شروع می کند...</value>
 	</data>

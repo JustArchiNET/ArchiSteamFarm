@@ -491,9 +491,6 @@ STACKTRACE:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>CONNECSHUN 2 STEAM NETWORK LOST. RECONNECTIN...</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>AKOWNT IZ NO LONGR OCCUPID: FARMIN PROCES RESUMD!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>AKOWNT IZ CURRENTLY BEAN USD: ASF WILL RESUME FARMIN WHEN IZ FREE...</value>
 	</data>

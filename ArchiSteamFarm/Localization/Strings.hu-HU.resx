@@ -473,9 +473,6 @@ StackTrace: {2}</value>
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Megszakadt a kapcsolat a Steam hálózattal. Újrakapcsolódás...</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>A fiók már nincs használatban. A farmolási folyamat folytatódik!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>A fiók jelenleg használatban van. Amint szabaddá válik, az ASF folytatja a farmolást...</value>
 	</data>

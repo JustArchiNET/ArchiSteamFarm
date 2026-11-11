@@ -491,7 +491,7 @@ StackTrace:
 		<value>Verbinding met Steam netwerk verbroken. Opnieuw verbinden...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Account is niet meer bezet: farming proces hervat!</value>
+		<value>Account is momenteel gratis: landbouwproces beschikbaar!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Account is momenteel in gebruik: ASF zal het farmen hervatten wanneer het account weer beschikbaar is...</value>

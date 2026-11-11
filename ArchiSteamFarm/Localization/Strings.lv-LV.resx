@@ -475,9 +475,6 @@ StackTrace:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Pazudis savienojums ar Steam Network. Atjauno savienojumu...</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>Konts ir atbrīvojies: tiek atsākts vākšanas process!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Konts šobrīd tiek lietots: ASF turpinās vākšanu, kad tas atbrīvosies...</value>
 	</data>

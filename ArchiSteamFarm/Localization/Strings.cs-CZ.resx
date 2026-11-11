@@ -492,7 +492,7 @@ StackTrace:
 		<value>Připojení k síti Steam bylo ztraceno. Opětovné připojování...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Účet již není využíván: farmení bylo obnoveno!</value>
+		<value>Účet je momentálně zdarma: farmářský proces je dostupný!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Účet je v současné době využíván: ASF bude pokračovat ve farmení poté, co bude účet uvolněn...</value>

@@ -475,9 +475,6 @@ StackTrace:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Ryšys su Steam tinklu prarastas. Bandoma jungtis iš naujo...</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>Paskyra nebėra užimta: kortelių rinkimo procesas tęsiamas!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Paskyra šiuo metu yra naudojama: ASF tęs kortelių rinkimą, kai ji atsilaisvins...</value>
 	</data>

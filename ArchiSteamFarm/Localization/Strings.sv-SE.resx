@@ -493,7 +493,7 @@ StackTrace:
 		<value>Anslutning till Steam-nätverket misslyckades, återansluter...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Kontot är inte längre upptaget, återupptar farming-processen!</value>
+		<value>Kontot är för närvarande gratis: odlingsprocessen tillgänglig!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Kontot används för närvarande, ASF återupptar farmandet när det är ledigt...</value>

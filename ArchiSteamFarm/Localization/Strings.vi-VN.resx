@@ -475,9 +475,6 @@ StackTrace:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Mất kết nối đến mạng Steam. Đang kết nối lại...</value>
 	</data>
-	<data name="BotAccountFree" xml:space="preserve">
-		<value>Tài khoản không còn được người dùng sử dụng: quá trình thu hoạch tiếp tục trở lại!</value>
-	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Tài khoản hiện tại đang được sử dụng: ASF sẽ tiếp tục việc thu hoạch khi nó rảnh...</value>
 	</data>
