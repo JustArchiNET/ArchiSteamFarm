@@ -492,7 +492,7 @@
 		<value>与 Steam 网络的连接丢失，正在重新连接……</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>帐户目前是免费的：可用的耕作过程！</value>
+		<value>帐户当前已空闲：挂卡流程可用！</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>帐户正在被占用：ASF 将会在帐户空闲时恢复挂卡……</value>
