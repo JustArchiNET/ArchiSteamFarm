@@ -5,6 +5,10 @@ on:
   - cron: '55 1 * * *'
   workflow_dispatch:
 
+concurrency:
+  group: ASF-translations
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
@@ -17,6 +21,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
+        ref: main
         show-progress: false
         submodules: recursive
         token: ${{ secrets.ARCHIBOT_GITHUB_TOKEN }}
@@ -61,7 +66,37 @@ jobs:
         if ! git diff --cached --quiet; then
             git commit -m "Automatic translations update"
 
-            git push origin HEAD:master
+            attempt=1
+            pushed=0
+
+            while [ "$attempt" -le 3 ]; do
+                if git push origin HEAD:master; then
+                    pushed=1
+
+                    break
+                fi
+
+                if [ "$attempt" -eq 3 ]; then
+                    break
+                fi
+
+                git fetch origin master
+
+                if ! git rebase origin/master; then
+                    git rebase --abort
+                    echo "Unable to rebase wiki translations onto origin/master." >&2
+
+                    exit 1
+                fi
+
+                attempt=$((attempt + 1))
+            done
+
+            if [ "$pushed" -ne 1 ]; then
+                echo "Unable to push wiki translations after ${attempt} attempts." >&2
+
+                exit 1
+            fi
         fi
 
     - name: Commit and push the changes to ASF
@@ -74,5 +109,30 @@ jobs:
         if ! git diff --cached --quiet; then
             git commit -m "Automatic translations update"
 
-            git push
+            attempt=1
+
+            while [ "$attempt" -le 3 ]; do
+                if git push origin HEAD:main; then
+                    exit 0
+                fi
+
+                if [ "$attempt" -eq 3 ]; then
+                    break
+                fi
+
+                git fetch origin main
+
+                if ! git rebase origin/main; then
+                    git rebase --abort
+                    echo "Unable to rebase translations onto origin/main." >&2
+
+                    exit 1
+                fi
+
+                attempt=$((attempt + 1))
+            done
+
+            echo "Unable to push translations after ${attempt} attempts." >&2
+
+            exit 1
         fi
