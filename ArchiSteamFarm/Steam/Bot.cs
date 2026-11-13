@@ -175,7 +175,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private readonly Timer HeartBeatTimer;
 	private readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
 	private readonly SemaphoreSlim MessagingSemaphore = new(1, 1);
-	private readonly SemaphoreSlim OccupationStatusSemaphore = new(1, 1);
 	private readonly ConcurrentDictionary<EUserNotification, uint> PastNotifications = new();
 	private readonly SemaphoreSlim RefreshWebSessionSemaphore = new(1, 1);
 	private readonly SemaphoreSlim SendCompleteTypesSemaphore = new(1, 1);
@@ -1045,29 +1044,23 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal async Task CheckOccupationStatus(CancellationToken cancellationToken = default) {
-		await OccupationStatusSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+		StopPlayingWasBlockedTimer();
 
-		try {
-			StopPlayingWasBlockedTimer();
+		if (!IsPlayingPossible) {
+			PlayingWasBlocked = true;
+			ArchiLogger.LogGenericInfo(Strings.BotAccountOccupied);
 
-			if (!IsPlayingPossible) {
-				PlayingWasBlocked = true;
-				ArchiLogger.LogGenericInfo(Strings.BotAccountOccupied);
+			return;
+		}
 
-				return;
-			}
+		if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
+			InitPlayingWasBlockedTimer();
+		}
 
-			if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
-				InitPlayingWasBlockedTimer();
-			}
+		ArchiLogger.LogGenericInfo(Strings.BotAccountFree);
 
-			ArchiLogger.LogGenericInfo(Strings.BotAccountFree);
-
-			if (!await CardsFarmer.Resume(false, cancellationToken).ConfigureAwait(false)) {
-				await ResetGamesPlayed(cancellationToken).ConfigureAwait(false);
-			}
-		} finally {
-			OccupationStatusSemaphore.Release();
+		if (!await CardsFarmer.Resume(false, cancellationToken).ConfigureAwait(false)) {
+			await ResetGamesPlayed(cancellationToken).ConfigureAwait(false);
 		}
 	}
 
@@ -2133,7 +2126,6 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		GamesRedeemerInBackgroundSemaphore.Dispose();
 		InitializationSemaphore.Dispose();
 		MessagingSemaphore.Dispose();
-		OccupationStatusSemaphore.Dispose();
 		RefreshWebSessionSemaphore.Dispose();
 		SendCompleteTypesSemaphore.Dispose();
 		Trading.Dispose();
@@ -2833,7 +2825,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task OnConnected(SteamClient.ConnectedCallback callback) {
+	private async void OnConnected(SteamClient.ConnectedCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		HeartBeatFailures = 0;
@@ -3012,7 +3004,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		SteamUser.LogOn(logOnDetails);
 	}
 
-	private async Task OnDisconnected(SteamClient.DisconnectedCallback callback) {
+	private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		if (ASF.LoginRateLimitingSemaphore == null) {
@@ -3122,7 +3114,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await Reconnect().ConfigureAwait(false);
 	}
 
-	private async Task OnFriendsList(SteamFriends.FriendsListCallback callback) {
+	private async void OnFriendsList(SteamFriends.FriendsListCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 		ArgumentNullException.ThrowIfNull(callback.FriendList);
 
@@ -3204,7 +3196,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		ArchiHandler.SendClientAppListResponse(callback.JobID);
 	}
 
-	private async Task OnGuestPassList(SteamApps.GuestPassListCallback callback) {
+	private async void OnGuestPassList(SteamApps.GuestPassListCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 		ArgumentNullException.ThrowIfNull(callback.GuestPasses);
 
@@ -3221,7 +3213,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await Actions.AcceptGuestPasses(guestPassIDs).ConfigureAwait(false);
 	}
 
-	private async Task OnIncomingChatMessage(SteamUnifiedMessages.ServiceMethodNotification<CChatRoom_IncomingChatMessage_Notification> notification) {
+	private async void OnIncomingChatMessage(SteamUnifiedMessages.ServiceMethodNotification<CChatRoom_IncomingChatMessage_Notification> notification) {
 		ArgumentNullException.ThrowIfNull(notification);
 
 		if (notification.Body.chat_group_id == 0) {
@@ -3276,7 +3268,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await Commands.HandleMessage(notification.Body.chat_group_id, notification.Body.chat_id, notification.Body.steamid_sender, message).ConfigureAwait(false);
 	}
 
-	private async Task OnIncomingMessage(SteamUnifiedMessages.ServiceMethodNotification<CFriendMessages_IncomingMessage_Notification> notification) {
+	private async void OnIncomingMessage(SteamUnifiedMessages.ServiceMethodNotification<CFriendMessages_IncomingMessage_Notification> notification) {
 		ArgumentNullException.ThrowIfNull(notification);
 
 		if (notification.Body.steamid_friend == 0) {
@@ -3345,7 +3337,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task OnLicenseList(SteamApps.LicenseListCallback callback) {
+	private async void OnLicenseList(SteamApps.LicenseListCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 		ArgumentNullException.ThrowIfNull(callback.LicenseList);
 
@@ -3436,11 +3428,11 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		if (hasNewEntries) {
-			Utilities.InBackground(() => CardsFarmer.OnNewGameAdded());
+			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 		}
 	}
 
-	private async Task OnLoggedOff(SteamUser.LoggedOffCallback callback) {
+	private async void OnLoggedOff(SteamUser.LoggedOffCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		// Keep LastLogOnResult for OnDisconnected()
@@ -3474,7 +3466,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		SteamClient.Disconnect();
 	}
 
-	private async Task OnLoggedOn(SteamUser.LoggedOnCallback callback) {
+	private async void OnLoggedOn(SteamUser.LoggedOnCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		// Always reset one-time-only access tokens when we get OnLoggedOn() response
@@ -3595,7 +3587,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await PluginsCore.OnBotLoggedOn(this).ConfigureAwait(false);
 	}
 
-	private async Task OnPersonaState(SteamFriends.PersonaStateCallback callback) {
+	private async void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.FriendID != SteamID) {
@@ -3620,7 +3612,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await PluginsCore.OnSelfPersonaState(this, callback, Nickname, AvatarHash).ConfigureAwait(false);
 	}
 
-	private void OnPlayingSessionState(SteamUser.PlayingSessionStateCallback callback) {
+	private async void OnPlayingSessionState(SteamUser.PlayingSessionStateCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.PlayingBlocked == PlayingBlocked) {
@@ -3629,7 +3621,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 		PlayingBlocked = callback.PlayingBlocked;
 
-		Utilities.InBackground(() => CheckOccupationStatus());
+		await CheckOccupationStatus().ConfigureAwait(false);
 	}
 
 	private async void OnRefreshTokensTimer(object? state = null) {
@@ -3647,7 +3639,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private async void OnSendItemsTimer(object? state = null) => await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 
-	private void OnSharedLibraryLockStatus(SharedLibraryLockStatusCallback callback) {
+	private async void OnSharedLibraryLockStatus(SharedLibraryLockStatusCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		// Ignore no status updates
@@ -3665,7 +3657,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			LibraryLocked = true;
 		}
 
-		Utilities.InBackground(() => CheckOccupationStatus());
+		await CheckOccupationStatus().ConfigureAwait(false);
 	}
 
 	private async void OnTradeCheckTimer(object? state = null) {
