@@ -175,6 +175,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	private readonly Timer HeartBeatTimer;
 	private readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
 	private readonly SemaphoreSlim MessagingSemaphore = new(1, 1);
+	private readonly SemaphoreSlim OccupationStatusSemaphore = new(1, 1);
 	private readonly ConcurrentDictionary<EUserNotification, uint> PastNotifications = new();
 	private readonly SemaphoreSlim RefreshWebSessionSemaphore = new(1, 1);
 	private readonly SemaphoreSlim SendCompleteTypesSemaphore = new(1, 1);
@@ -1044,23 +1045,29 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 	}
 
 	internal async Task CheckOccupationStatus(CancellationToken cancellationToken = default) {
-		StopPlayingWasBlockedTimer();
+		await OccupationStatusSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-		if (!IsPlayingPossible) {
-			PlayingWasBlocked = true;
-			ArchiLogger.LogGenericInfo(Strings.BotAccountOccupied);
+		try {
+			StopPlayingWasBlockedTimer();
 
-			return;
-		}
+			if (!IsPlayingPossible) {
+				PlayingWasBlocked = true;
+				ArchiLogger.LogGenericInfo(Strings.BotAccountOccupied);
 
-		if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
-			InitPlayingWasBlockedTimer();
-		}
+				return;
+			}
 
-		ArchiLogger.LogGenericInfo(Strings.BotAccountFree);
+			if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
+				InitPlayingWasBlockedTimer();
+			}
 
-		if (!await CardsFarmer.Resume(false, cancellationToken).ConfigureAwait(false)) {
-			await ResetGamesPlayed(cancellationToken).ConfigureAwait(false);
+			ArchiLogger.LogGenericInfo(Strings.BotAccountFree);
+
+			if (!await CardsFarmer.Resume(false, cancellationToken).ConfigureAwait(false)) {
+				await ResetGamesPlayed(cancellationToken).ConfigureAwait(false);
+			}
+		} finally {
+			OccupationStatusSemaphore.Release();
 		}
 	}
 
@@ -2126,6 +2133,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		GamesRedeemerInBackgroundSemaphore.Dispose();
 		InitializationSemaphore.Dispose();
 		MessagingSemaphore.Dispose();
+		OccupationStatusSemaphore.Dispose();
 		RefreshWebSessionSemaphore.Dispose();
 		SendCompleteTypesSemaphore.Dispose();
 		Trading.Dispose();
@@ -3612,7 +3620,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		await PluginsCore.OnSelfPersonaState(this, callback, Nickname, AvatarHash).ConfigureAwait(false);
 	}
 
-	private async Task OnPlayingSessionState(SteamUser.PlayingSessionStateCallback callback) {
+	private void OnPlayingSessionState(SteamUser.PlayingSessionStateCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		if (callback.PlayingBlocked == PlayingBlocked) {
@@ -3620,7 +3628,8 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 		}
 
 		PlayingBlocked = callback.PlayingBlocked;
-		await CheckOccupationStatus().ConfigureAwait(false);
+
+		Utilities.InBackground(() => CheckOccupationStatus());
 	}
 
 	private async void OnRefreshTokensTimer(object? state = null) {
@@ -3638,7 +3647,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 
 	private async void OnSendItemsTimer(object? state = null) => await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 
-	private async Task OnSharedLibraryLockStatus(SharedLibraryLockStatusCallback callback) {
+	private void OnSharedLibraryLockStatus(SharedLibraryLockStatusCallback callback) {
 		ArgumentNullException.ThrowIfNull(callback);
 
 		// Ignore no status updates
@@ -3656,7 +3665,7 @@ public sealed class Bot : IAsyncDisposable, IDisposable {
 			LibraryLocked = true;
 		}
 
-		await CheckOccupationStatus().ConfigureAwait(false);
+		Utilities.InBackground(() => CheckOccupationStatus());
 	}
 
 	private async void OnTradeCheckTimer(object? state = null) {
