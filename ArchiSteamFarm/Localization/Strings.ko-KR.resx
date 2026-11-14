@@ -491,6 +491,9 @@ StackTrace:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Steam 네트워크 연결이 끊어졌습니다. 다시 연결 중...</value>
 	</data>
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>계정이 현재 사용되고 있지 않습니다: 농사를 시작할 수 있습니다!</value>
+	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>계정이 현재 사용 중입니다. ASF는 계정이 아무것도 하지 않고 있을 경우 농사를 재개할 것입니다...</value>
 	</data>
