@@ -492,7 +492,7 @@
 		<value>Потеряно соединение с сетью Steam. Переподключение...</value>
 	</data>
 	<data name="BotAccountFree" xml:space="preserve">
-		<value>Аккаунт в настоящее время бесплатный: доступен процесс фермерства!</value>
+		<value>Аккаунт сейчас свободен: можно запускать фарм!</value>
 	</data>
 	<data name="BotAccountOccupied" xml:space="preserve">
 		<value>Аккаунт сейчас используется: ASF продолжит фарм, когда он освободится...</value>
