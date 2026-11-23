@@ -321,6 +321,11 @@ public sealed class GlobalDatabase : GenericDatabase {
 				return;
 			}
 
+			if (packagesData.Count == 0) {
+				// None of the packages had any data for us (e.g. not owned by the bot), nothing changed, so there is nothing to save
+				return;
+			}
+
 			foreach ((uint packageID, PackageData packageData) in packagesData) {
 				PackagesData[packageID] = packageData;
 			}
